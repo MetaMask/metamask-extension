@@ -876,6 +876,9 @@ describe('Sentry errors', function () {
         },
         quotesLastFetched: true,
         quotesLoadingStatus: true,
+        quotesRefreshCount: true,
+        quoteFetchError: true,
+        quotesInitialLoadTime: true,
       },
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial

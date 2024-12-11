@@ -31,9 +31,7 @@ jest.mock('../components/simulation-details/useSimulationMetrics');
 const middleware = [thunk];
 
 setBackgroundConnection({
-  gasFeeStartPollingByNetworkClientId: jest
-    .fn()
-    .mockResolvedValue('pollingToken'),
+  gasFeeStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>
     Promise.resolve({

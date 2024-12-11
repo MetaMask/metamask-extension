@@ -6,7 +6,6 @@ import { TransactionMetricsRequest } from '../../app/scripts/lib/transaction/met
 type SmartTransactionMetricsProperties = {
   is_smart_transaction: boolean;
   gas_included: boolean;
-  smart_transaction_duplicated?: boolean;
   smart_transaction_timed_out?: boolean;
   smart_transaction_proxied?: boolean;
 };
@@ -31,8 +30,6 @@ export const getSmartTransactionMetricsProperties = (
   if (!smartTransactionStatusMetadata) {
     return properties;
   }
-  properties.smart_transaction_duplicated =
-    smartTransactionStatusMetadata.duplicated;
   properties.smart_transaction_timed_out =
     smartTransactionStatusMetadata.timedOut;
   properties.smart_transaction_proxied = smartTransactionStatusMetadata.proxied;

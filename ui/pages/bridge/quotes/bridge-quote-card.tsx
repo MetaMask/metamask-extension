@@ -6,30 +6,42 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import {
-  getBridgeQuotes,
-  getRecommendedQuote,
-} from '../../../ducks/bridge/selectors';
+import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getQuoteDisplayData } from '../utils/quote';
+import {
+  formatCurrencyAmount,
+  formatTokenAmount,
+  formatEtaInMinutes,
+} from '../utils/quote';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
-import { QuoteInfoRow } from './quote-info-row';
+import { getCurrentCurrency } from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+import { QuoteInfoRow } from './quote-info-row';
 
 export const BridgeQuoteCard = () => {
   const t = useI18nContext();
-  const recommendedQuote = useSelector(getRecommendedQuote);
-  const { isLoading } = useSelector(getBridgeQuotes);
-
-  const { etaInMinutes, totalFees, quoteRate } =
-    getQuoteDisplayData(recommendedQuote);
+  const { isLoading, isQuoteGoingToRefresh, activeQuote } =
+    useSelector(getBridgeQuotes);
+  const currency = useSelector(getCurrentCurrency);
+  const ticker = useSelector(getNativeCurrency);
 
   const secondsUntilNextRefresh = useCountdownTimer();
 
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+  const { quoteRequestProperties } = useRequestProperties();
+  const requestMetadataProperties = useRequestMetadataProperties();
+  const quoteListProperties = useQuoteProperties();
+
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
-  if (isLoading && !recommendedQuote) {
+  if (isLoading && !activeQuote) {
     return (
       <Box>
         <MascotBackgroundAnimation />
@@ -37,14 +49,14 @@ export const BridgeQuoteCard = () => {
     );
   }
 
-  return etaInMinutes && totalFees && quoteRate ? (
+  return activeQuote ? (
     <Box className="quote-card">
       <BridgeQuotesModal
         isOpen={showAllQuotes}
         onClose={() => setShowAllQuotes(false)}
       />
       <Box className="bridge-box quote-card__timer">
-        {!isLoading && (
+        {!isLoading && isQuoteGoingToRefresh && (
           <Text>{t('swapNewQuoteIn', [secondsUntilNextRefresh])}</Text>
         )}
       </Box>
@@ -53,15 +65,44 @@ export const BridgeQuoteCard = () => {
         <QuoteInfoRow
           label={t('estimatedTime')}
           tooltipText={t('bridgeTimingTooltipText')}
-          description={t('bridgeTimingMinutes', [etaInMinutes])}
+          description={t('bridgeTimingMinutes', [
+            formatEtaInMinutes(activeQuote.estimatedProcessingTimeInSeconds),
+          ])}
         />
-        <QuoteInfoRow label={t('quoteRate')} description={quoteRate} />
-        <QuoteInfoRow
-          label={t('totalFees')}
-          tooltipText={t('bridgeTotalFeesTooltipText')}
-          description={totalFees.fiat}
-          secondaryDescription={totalFees?.amount}
-        />
+        {activeQuote.swapRate && (
+          <QuoteInfoRow
+            label={t('quoteRate')}
+            description={`1 ${
+              activeQuote.quote.srcAsset.symbol
+            } = ${formatTokenAmount(
+              activeQuote.swapRate,
+              activeQuote.quote.destAsset.symbol,
+            )}`}
+          />
+        )}
+        {activeQuote.totalNetworkFee && (
+          <QuoteInfoRow
+            label={t('totalFees')}
+            tooltipText={t('bridgeTotalFeesTooltipText')}
+            description={
+              formatCurrencyAmount(
+                activeQuote.totalNetworkFee?.valueInCurrency,
+                currency,
+                2,
+              ) ??
+              formatTokenAmount(activeQuote.totalNetworkFee?.amount, ticker, 6)
+            }
+            secondaryDescription={
+              activeQuote.totalNetworkFee?.valueInCurrency
+                ? formatTokenAmount(
+                    activeQuote.totalNetworkFee?.amount,
+                    ticker,
+                    6,
+                  )
+                : undefined
+            }
+          />
+        )}
       </Box>
 
       <Box className="bridge-box quote-card__footer">
@@ -70,6 +111,17 @@ export const BridgeQuoteCard = () => {
           <Button
             variant={ButtonVariant.Link}
             onClick={() => {
+              quoteRequestProperties &&
+                requestMetadataProperties &&
+                quoteListProperties &&
+                trackCrossChainSwapsEvent({
+                  event: MetaMetricsEventName.AllQuotesOpened,
+                  properties: {
+                    ...quoteRequestProperties,
+                    ...requestMetadataProperties,
+                    ...quoteListProperties,
+                  },
+                });
               setShowAllQuotes(true);
             }}
           >

@@ -419,6 +419,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "Estimated changes for this transaction have been updated. Review them closely before proceeding."
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "You're interacting with this address for the first time. Make sure that it's correct before you continue."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail."
   },
@@ -461,6 +464,9 @@
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
   },
+  "alertReasonFirstTimeInteraction": {
+    "message": "1st interaction"
+  },
   "alertReasonGasEstimateFailed": {
     "message": "Inaccurate fee"
   },
@@ -488,6 +494,9 @@
   "alertReasonWrongAccount": {
     "message": "Wrong account"
   },
+  "alertSelectedAccountWarning": {
+    "message": "This request is for a different account than the one selected in your wallet. To use another account, connect it to the site."
+  },
   "alerts": {
     "message": "Alerts"
   },
@@ -501,7 +510,7 @@
     "message": "No accounts available to connect"
   },
   "allNetworks": {
-    "message": "All Networks",
+    "message": "All networks",
     "description": "Speicifies to token network filter to filter by all Networks"
   },
   "allOfYour": {
@@ -847,8 +856,15 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeApproval": {
+    "message": "Approve $1 for bridge",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
+  },
+  "bridgeDestination": {
+    "message": "Destination"
   },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
@@ -856,11 +872,14 @@
   "bridgeEnterAmount": {
     "message": "Enter amount"
   },
+  "bridgeExplorerLinkViewOn": {
+    "message": "View on $1"
+  },
   "bridgeFrom": {
     "message": "Bridge from"
   },
-  "bridgeOverallCost": {
-    "message": "Overall cost"
+  "bridgeNetCost": {
+    "message": "Net cost"
   },
   "bridgeSelectNetwork": {
     "message": "Select network"
@@ -868,8 +887,27 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
   },
+  "bridgeSource": {
+    "message": "Source"
+  },
+  "bridgeStepActionBridgeComplete": {
+    "message": "$1 received on $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionBridgePending": {
+    "message": "Receiving $1 on $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "Swapped $1 for $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "Swapping $1 for $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
   "bridgeTimingMinutes": {
-    "message": "$1 minutes",
+    "message": "$1 min",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTimingTooltipText": {
@@ -878,8 +916,63 @@
   "bridgeTo": {
     "message": "Bridge to"
   },
+  "bridgeToChain": {
+    "message": "Bridge to $1"
+  },
   "bridgeTotalFeesTooltipText": {
     "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
+  },
+  "bridgeTxDetailsBaseFee": {
+    "message": "Base fee (GWEI)"
+  },
+  "bridgeTxDetailsBridgeAmount": {
+    "message": "Bridge amount"
+  },
+  "bridgeTxDetailsBridgeType": {
+    "message": "Bridge type"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Reach out to"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMask Support"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "Has it been longer than 3 hours?"
+  },
+  "bridgeTxDetailsGasLimit": {
+    "message": "Gas limit (units)"
+  },
+  "bridgeTxDetailsGasUsed": {
+    "message": "Gas used (units)"
+  },
+  "bridgeTxDetailsMaxFeePerGas": {
+    "message": "Max fee per gas"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "Nonce"
+  },
+  "bridgeTxDetailsPriorityFee": {
+    "message": "Priority fee (GWEI)"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "Status"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "Time stamp"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$1 at $2",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTotal": {
+    "message": "Total"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "Total gas fee"
+  },
+  "bridgeTypeDirectionTo": {
+    "message": "To"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -1044,8 +1137,8 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Allowance request"
+  "confirmTitleApproveTransactionNFT": {
+    "message": "Withdrawal request"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
@@ -1343,6 +1436,10 @@
   "creatorAddress": {
     "message": "Creator address"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "This reflects the value of all tokens you own on all networks. If you prefer seeing this value in ETH or other currencies, go to $1.",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
   },
@@ -1375,7 +1472,7 @@
     "message": "Current language"
   },
   "currentNetwork": {
-    "message": "Current Network",
+    "message": "Current network",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
@@ -1730,6 +1827,12 @@
   "dropped": {
     "message": "Dropped"
   },
+  "duplicateContactTooltip": {
+    "message": "This contact name collides with an existing account or contact"
+  },
+  "duplicateContactWarning": {
+    "message": "You have duplicate contacts"
+  },
   "edit": {
     "message": "Edit"
   },
@@ -1815,6 +1918,9 @@
   },
   "editGasTooLow": {
     "message": "Unknown processing time"
+  },
+  "editInPortfolio": {
+    "message": "Edit in Portfolio"
   },
   "editNetworkLink": {
     "message": "edit the original network"
@@ -3024,6 +3130,9 @@
     "message": "Address",
     "description": "Label above address field in name component modal."
   },
+  "nameAlreadyInUse": {
+    "message": "Name is already in use"
+  },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -3175,6 +3284,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameSolana": {
+    "message": "Solana"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -3370,6 +3482,13 @@
   },
   "noTransactions": {
     "message": "You have no transactions"
+  },
+  "noTransactionsChainIdMismatch": {
+    "message": "Please switch network to view transactions"
+  },
+  "noTransactionsNetworkName": {
+    "message": "Please switch to $1 network to view transactions",
+    "description": "$1 represents the network name"
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
@@ -4132,6 +4251,24 @@
   "permissionsPageTourTitle": {
     "message": "Connected sites are now permissions"
   },
+  "permitSimulationChange_approve": {
+    "message": "Spending cap"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "You bid"
+  },
+  "permitSimulationChange_listing": {
+    "message": "You list"
+  },
+  "permitSimulationChange_receive": {
+    "message": "You receive"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "Spending cap"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "You send"
+  },
   "permitSimulationDetailInfo": {
     "message": "You're giving the spender permission to spend this many tokens from your account."
   },
@@ -4334,6 +4471,13 @@
   },
   "quoteRate": {
     "message": "Quote rate"
+  },
+  "quotedNetworkFee": { "message": "$1 network fee" },
+  "quotedReceiveAmount": {
+    "message": "$1 receive amount"
+  },
+  "quotedReceivingAmount": {
+    "message": "$1 receiving"
   },
   "rank": {
     "message": "Rank"
@@ -4696,7 +4840,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1",
+    "message": "This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. $1",
     "description": "Link to learn more about security alerts"
   },
   "securityAndPrivacy": {
@@ -4817,6 +4961,9 @@
   },
   "selectType": {
     "message": "Select Type"
+  },
+  "selectedAccountMismatch": {
+    "message": "Different account selected"
   },
   "selectingAllWillAllow": {
     "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
@@ -4969,6 +5116,12 @@
   "signatureRequestGuidance": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site."
   },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "The NFT will be reflected in your wallet, when the bid is accepted."
+  },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "Expect changes only if someone buys your NFTs."
+  },
   "signed": {
     "message": "Signed"
   },
@@ -4980,6 +5133,9 @@
   },
   "signingInWith": {
     "message": "Signing in with"
+  },
+  "signingWith": {
+    "message": "Signing with"
   },
   "simulationApproveHeading": {
     "message": "Withdraw"
@@ -5028,7 +5184,7 @@
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "simulationsSettingDescription": {
-    "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. $1"
+    "message": "Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. $1"
   },
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
@@ -5346,6 +5502,9 @@
   },
   "spendingCapTooltipDesc": {
     "message": "This is the amount of tokens the spender will be able to access on your behalf."
+  },
+  "spendingCaps": {
+    "message": "Spending caps"
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
@@ -5981,6 +6140,10 @@
   "switchedNetworkToastMessage": {
     "message": "$1 is now active on $2",
     "description": "$1 represents the account name, $2 represents the network name"
+  },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "You're now using $1",
+    "description": "$1 represents the network name"
   },
   "switchedTo": {
     "message": "You're now using"
@@ -6618,10 +6781,6 @@
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
-  },
-  "xOfYPending": {
-    "message": "$1 of $2 pending",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Yes"

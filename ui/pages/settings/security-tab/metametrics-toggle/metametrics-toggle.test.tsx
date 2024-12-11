@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
-import * as MetametricsHooks from '../../../../hooks/metamask-notifications/useMetametrics';
+import * as MetametricsHooks from '../../../../hooks/identity/useMetametrics';
 import MetametricsToggle from './metametrics-toggle';
 
 let mockUseSelectorReturnValue = false;

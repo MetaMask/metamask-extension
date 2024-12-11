@@ -2,35 +2,59 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '../../../components/component-library';
 import {
-  getBridgeQuotes,
   getFromAmount,
   getFromChain,
   getFromToken,
-  getToAmount,
-  getToChain,
   getToToken,
+  getBridgeQuotes,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
+import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
+import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 export const BridgeCTAButton = () => {
   const t = useI18nContext();
+
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
 
   const fromChain = useSelector(getFromChain);
-  const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const toAmount = useSelector(getToAmount);
 
-  const { isLoading } = useSelector(getBridgeQuotes);
+  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
-  const isTxSubmittable =
-    fromToken && toToken && fromChain && toChain && fromAmount && toAmount;
+  const { submitBridgeTransaction } = useSubmitBridgeTransaction();
+
+  const { isNoQuotesAvailable, isInsufficientBalance } =
+    useSelector(getValidationErrors);
+
+  const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
+
+  const isTxSubmittable = useIsTxSubmittable();
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+  const { quoteRequestProperties } = useRequestProperties();
+  const requestMetadataProperties = useRequestMetadataProperties();
+  const tradeProperties = useTradeProperties();
 
   const label = useMemo(() => {
     if (isLoading && !isTxSubmittable) {
       return t('swapFetchingQuotes');
+    }
+
+    if (isNoQuotesAvailable) {
+      return t('swapQuotesNotAvailableErrorTitle');
+    }
+
+    if (isInsufficientBalance(balanceAmount)) {
+      return t('alertReasonInsufficientBalance');
     }
 
     if (!fromAmount) {
@@ -45,14 +69,32 @@ export const BridgeCTAButton = () => {
     }
 
     return t('swapSelectToken');
-  }, [isLoading, fromAmount, toToken, isTxSubmittable]);
+  }, [
+    isLoading,
+    fromAmount,
+    toToken,
+    isTxSubmittable,
+    balanceAmount,
+    isInsufficientBalance,
+  ]);
 
   return (
     <Button
       data-testid="bridge-cta-button"
       onClick={() => {
-        if (isTxSubmittable) {
-          // dispatch tx submission
+        if (activeQuote && isTxSubmittable) {
+          quoteRequestProperties &&
+            requestMetadataProperties &&
+            tradeProperties &&
+            trackCrossChainSwapsEvent({
+              event: MetaMetricsEventName.ActionSubmitted,
+              properties: {
+                ...quoteRequestProperties,
+                ...requestMetadataProperties,
+                ...tradeProperties,
+              },
+            });
+          submitBridgeTransaction(activeQuote);
         }
       }}
       disabled={!isTxSubmittable}

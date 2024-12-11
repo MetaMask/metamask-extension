@@ -9,9 +9,9 @@ import { getUsedSwapsGasPrice } from '../../../../../../../ducks/swaps/swaps';
 import {
   getCurrentCurrency,
   checkNetworkAndAccountSupports1559,
-  getCurrentChainId,
   getIsSwapsChain,
 } from '../../../../../../../selectors';
+import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import useEthFeeData from './useEthFeeData';
 
 jest.mock('react-redux', () => ({

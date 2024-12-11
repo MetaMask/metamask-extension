@@ -245,7 +245,7 @@ describe('Test Snap Metrics', function () {
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
           origin: 'https://metamask.github.io',
-          version: '2.1.4',
+          version: '2.2.0',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
@@ -545,7 +545,7 @@ describe('Test Snap Metrics', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
-          version: '2.1.4',
+          version: '2.2.0',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
@@ -900,6 +900,7 @@ describe('Test Snap Metrics', function () {
         testSpecificMock: mockSegment,
         ignoredConsoleErrors: [
           'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/bip32-example-snap": Failed to fetch tarball for package "@metamask/bip32-example-snap"..',
+          'Failed to fetch snap "npm:@metamask/bip32-example-…ball for package "@metamask/bip32-example-snap"..',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

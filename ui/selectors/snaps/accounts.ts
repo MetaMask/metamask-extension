@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { getAccountName } from '../selectors';
 import { getInternalAccounts } from '../accounts';
-import { createDeepEqualSelector } from '../util';
+import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 
 /**
  * The Metamask state for the accounts controller.

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import { getTokens } from '../ducks/metamask/metamask';
-import { getCurrentChainId } from '../selectors';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { ASSET_ROUTE } from '../helpers/constants/routes';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,

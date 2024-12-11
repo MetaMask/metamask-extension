@@ -27,7 +27,7 @@ import {
 } from '../../../ui/helpers/utils/metrics';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
+import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -196,6 +196,7 @@ function finalizeSignatureFragment(
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.isConfirmationRedesignEnabled
+ * @param {Function} opts.isRedesignedConfirmationsDeveloperEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
@@ -214,6 +215,7 @@ export default function createRPCMethodTrackingMiddleware({
   getAccountType,
   getDeviceModel,
   isConfirmationRedesignEnabled,
+  isRedesignedConfirmationsDeveloperEnabled,
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
@@ -315,13 +317,15 @@ export default function createRPCMethodTrackingMiddleware({
             req.securityAlertResponse.description;
         }
 
-        const isConfirmationRedesign =
-          isConfirmationRedesignEnabled() &&
-          REDESIGN_APPROVAL_TYPES.find(
-            (type) => type === MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
-          );
-
-        if (isConfirmationRedesign) {
+        if (
+          shouldUseRedesignForSignatures({
+            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
+            isRedesignedSignaturesUserSettingEnabled:
+              isConfirmationRedesignEnabled(),
+            isRedesignedConfirmationsDeveloperEnabled:
+              isRedesignedConfirmationsDeveloperEnabled(),
+          })
+        ) {
           eventProperties.ui_customizations = [
             ...(eventProperties.ui_customizations || []),
             MetaMetricsEventUiCustomization.RedesignedConfirmation,

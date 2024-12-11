@@ -1,4 +1,5 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
+import { DecodingData } from '@metamask/signature-controller';
 import { SIWEMessage } from '@metamask/controller-utils';
 import {
   TransactionMeta,
@@ -38,6 +39,8 @@ export type SignatureRequestType = {
   type: TransactionType;
   custodyId?: string;
   securityAlertResponse?: SecurityAlertResponse;
+  decodingLoading?: boolean;
+  decodingData?: DecodingData;
 };
 
 export type Confirmation = SignatureRequestType | TransactionMeta;

@@ -132,6 +132,7 @@ export async function updateSecurityAlertResponse({
 export function handlePPOMError(
   error: unknown,
   logMessage: string,
+  source: SecurityAlertSource = SecurityAlertSource.API,
 ): SecurityAlertResponse {
   const errorData = getErrorData(error);
   const description = getErrorMessage(error);
@@ -142,6 +143,7 @@ export function handlePPOMError(
   return {
     ...SECURITY_ALERT_RESPONSE_ERROR,
     description,
+    source,
   };
 }
 
@@ -158,7 +160,7 @@ export async function isChainSupported(chainId: Hex): Promise<boolean> {
       `Error fetching supported chains from security alerts API`,
     );
   }
-  return supportedChainIds.includes(chainId);
+  return supportedChainIds.includes(chainId as Hex);
 }
 
 function normalizePPOMRequest(
@@ -236,15 +238,23 @@ async function validateWithController(
   request: SecurityAlertsAPIRequest | JsonRpcRequest,
   chainId: string,
 ): Promise<SecurityAlertResponse> {
-  const response = (await ppomController.usePPOM(
-    (ppom: PPOM) => ppom.validateJsonRpc(request),
-    chainId,
-  )) as SecurityAlertResponse;
+  try {
+    const response = (await ppomController.usePPOM(
+      (ppom: PPOM) => ppom.validateJsonRpc(request),
+      chainId,
+    )) as SecurityAlertResponse;
 
-  return {
-    ...response,
-    source: SecurityAlertSource.Local,
-  };
+    return {
+      ...response,
+      source: SecurityAlertSource.Local,
+    };
+  } catch (error: unknown) {
+    return handlePPOMError(
+      error,
+      `Error validating request with PPOM controller`,
+      SecurityAlertSource.Local,
+    );
+  }
 }
 
 async function validateWithAPI(

@@ -1,18 +1,13 @@
 import { useSelector } from 'react-redux';
-import { zeroAddress } from 'ethereumjs-util';
-import { Web3Provider } from '@ethersproject/providers';
 import { Hex } from '@metamask/utils';
-import { BigNumber } from 'ethers';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { DEFAULT_PRECISION } from '../useCurrencyDisplay';
-import { fetchTokenBalance } from '../../../shared/lib/token-util';
-import {
-  getCurrentChainId,
-  getSelectedInternalAccount,
-  SwapsEthToken,
-} from '../../selectors';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getSelectedInternalAccount, SwapsEthToken } from '../../selectors';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
+import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -28,21 +23,25 @@ const useLatestBalance = (
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const currentChainId = useSelector(getCurrentChainId);
 
-  const { value: latestBalance } = useAsyncResult<BigNumber>(async () => {
-    if (token && chainId && currentChainId === chainId) {
-      if (!token.address || token.address === zeroAddress()) {
-        const ethersProvider = new Web3Provider(global.ethereumProvider);
-        return await ethersProvider.getBalance(selectedAddress);
-      }
-      return await fetchTokenBalance(
-        token.address,
-        selectedAddress,
+  const { value: latestBalance } = useAsyncResult<
+    Numeric | undefined
+  >(async () => {
+    if (token?.address && chainId && currentChainId === chainId) {
+      return await calcLatestSrcBalance(
         global.ethereumProvider,
+        selectedAddress,
+        token.address,
+        chainId,
       );
     }
-
     return undefined;
-  }, [token, selectedAddress, global.ethereumProvider]);
+  }, [
+    chainId,
+    currentChainId,
+    token,
+    selectedAddress,
+    global.ethereumProvider,
+  ]);
 
   if (token && !token.decimals) {
     throw new Error(
@@ -55,10 +54,14 @@ const useLatestBalance = (
   return {
     formattedBalance:
       token && latestBalance
-        ? Numeric.from(latestBalance.toString(), 10)
+        ? latestBalance
             .shiftedBy(tokenDecimals)
             .round(DEFAULT_PRECISION)
             .toString()
+        : undefined,
+    balanceAmount:
+      token && latestBalance
+        ? calcTokenAmount(latestBalance.toString(), tokenDecimals)
         : undefined,
   };
 };

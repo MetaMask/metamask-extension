@@ -15,11 +15,7 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
-import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
-
-import { providerErrors } from '@metamask/rpc-errors';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 
 import {
@@ -29,9 +25,6 @@ import {
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -53,9 +46,7 @@ import {
   FakeLedgerBridge,
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../ui/selectors';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
 import migrations from './migrations';
@@ -286,12 +277,14 @@ function maybeDetectPhishing(theController) {
 
       // Determine the block reason based on the type
       let blockReason;
+      let blockedUrl = hostname;
       if (phishingTestResponse?.result && blockedRequestResponse.result) {
         blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
       } else if (phishingTestResponse?.result) {
         blockReason = phishingTestResponse.type;
       } else {
         blockReason = blockedRequestResponse.type;
+        blockedUrl = details.initiator;
       }
 
       theController.metaMetricsController.trackEvent({
@@ -299,11 +292,12 @@ function maybeDetectPhishing(theController) {
         event: MetaMetricsEventName.PhishingPageDisplayed,
         category: MetaMetricsEventCategory.Phishing,
         properties: {
-          url: hostname,
+          url: blockedUrl,
           referrer: {
-            url: hostname,
+            url: blockedUrl,
           },
           reason: blockReason,
+          requestDomain: blockedRequestResponse.result ? hostname : undefined,
         },
       });
       const querystring = new URLSearchParams({ hostname, href });
@@ -771,7 +765,6 @@ export function setupController(
   //
   // MetaMask Controller
   //
-
   controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
@@ -890,6 +883,8 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+
+      initializeRemoteFeatureFlags();
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1023,8 +1018,8 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.appStateController.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.APP_STATE_UNLOCK_CHANGE,
     updateBadge,
   );
 
@@ -1045,11 +1040,6 @@ export function setupController(
 
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_MARK_AS_READ,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
     updateBadge,
   );
 
@@ -1098,6 +1088,22 @@ export function setupController(
     }
   }
 
+  /**
+   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
+   * This function is called when MM is during internal process.
+   * If the request fails, the error will be logged but won't interrupt extension initialization.
+   *
+   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
+   */
+  async function initializeRemoteFeatureFlags() {
+    try {
+      // initialize the request to fetch remote feature flags
+      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
+    } catch (error) {
+      log.error('Error initializing remote feature flags:', error);
+    }
+  }
+
   function getPendingApprovalCount() {
     try {
       let pendingApprovalCount =
@@ -1121,8 +1127,14 @@ export function setupController(
         controller.notificationServicesController.state;
 
       const snapNotificationCount = Object.values(
-        controller.notificationController.state.notifications,
-      ).filter((notification) => notification.readDate === null).length;
+        controller.notificationServicesController.state
+          .metamaskNotificationsList,
+      ).filter(
+        (notification) =>
+          notification.type ===
+            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
+          notification.readDate === null,
+      ).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
         ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
@@ -1140,7 +1152,9 @@ export function setupController(
               !notification.isRead &&
               notification.type !==
                 NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT,
+                  .FEATURES_ANNOUNCEMENT &&
+              notification.type !==
+                NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
           ).length
         : 0;
 
@@ -1180,34 +1194,7 @@ export function setupController(
       REJECT_NOTIFICATION_CLOSE,
     );
 
-    // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
-    Object.values(controller.approvalController.state.pendingApprovals).forEach(
-      ({ id, type }) => {
-        switch (type) {
-          case ApprovalType.SnapDialogAlert:
-          case ApprovalType.SnapDialogPrompt:
-          case DIALOG_APPROVAL_TYPES.default:
-            controller.approvalController.accept(id, null);
-            break;
-          case ApprovalType.SnapDialogConfirmation:
-            controller.approvalController.accept(id, false);
-            break;
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
-          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
-          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
-            controller.approvalController.accept(id, false);
-            break;
-          ///: END:ONLY_INCLUDE_IF
-          default:
-            controller.approvalController.reject(
-              id,
-              providerErrors.userRejectedRequest(),
-            );
-            break;
-        }
-      },
-    );
+    controller.rejectAllPendingApprovals();
   }
 
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.

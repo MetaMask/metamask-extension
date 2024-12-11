@@ -16,21 +16,31 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import {
+  getCurrentCurrency,
+  getIsBridgeChain,
+  getIsBridgeEnabled,
+} from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
   Footer,
   Header,
 } from '../../components/multichain/pages/page';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
-import { resetInputFields, setFromChain } from '../../ducks/bridge/actions';
+import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
+import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
+import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
+import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
+import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
+  // Load swaps feature flags so that we can use smart transactions
+  useSwapsFeatureFlags();
   useBridging();
 
   const history = useHistory();
@@ -39,17 +49,36 @@ const CrossChainSwap = () => {
   const isBridgeEnabled = useSelector(getIsBridgeEnabled);
   const providerConfig = useSelector(getProviderConfig);
   const isBridgeChain = useSelector(getIsBridgeChain);
+  const currency = useSelector(getCurrentCurrency);
 
   useEffect(() => {
-    isBridgeChain &&
-      isBridgeEnabled &&
-      providerConfig &&
+    if (isBridgeChain && isBridgeEnabled && providerConfig) {
       dispatch(setFromChain(providerConfig.chainId));
+    }
+  }, [isBridgeChain, isBridgeEnabled, providerConfig, currency]);
+
+  const resetControllerAndInputStates = async () => {
+    await dispatch(resetBridgeState());
+  };
+
+  useEffect(() => {
+    // Reset controller and inputs before unloading the page
+    resetControllerAndInputStates();
+
+    window.addEventListener('beforeunload', resetControllerAndInputStates);
 
     return () => {
-      dispatch(resetInputFields());
+      window.removeEventListener('beforeunload', resetControllerAndInputStates);
+      resetControllerAndInputStates();
     };
-  }, [isBridgeChain, isBridgeEnabled, providerConfig]);
+  }, []);
+
+  // Needed for refreshing gas estimates
+  useGasFeeEstimates(providerConfig?.id);
+  // Needed for fetching exchange rates for tokens that have not been imported
+  useBridgeExchangeRates();
+  // Emits events related to quote-fetching
+  useQuoteFetchEvents();
 
   const redirectToDefaultRoute = async () => {
     history.push({
@@ -58,6 +87,7 @@ const CrossChainSwap = () => {
     });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
+    await resetControllerAndInputStates();
   };
 
   return (
