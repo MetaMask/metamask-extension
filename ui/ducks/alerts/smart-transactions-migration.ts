@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, Action, Dispatch } from '@reduxjs/toolkit';
 import { captureException } from '@sentry/browser';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import { setAlertEnabledness } from '../../store/actions';
@@ -9,6 +9,15 @@ const name = AlertTypes.smartTransactionsMigration;
 
 const initialState = {
   state: ALERT_STATE.CLOSED,
+};
+
+type MetaMaskStateAction = Action<
+  typeof actionConstants.UPDATE_METAMASK_STATE
+> & {
+  value: {
+    preferences?: { smartTransactionsOptInStatus?: boolean };
+    alertEnabledness?: { [key: string]: boolean };
+  };
 };
 
 const slice = createSlice({
@@ -26,20 +35,29 @@ const slice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(actionConstants.UPDATE_METAMASK_STATE, (state, action) => {
-      if (
-        action.value?.preferences?.smartTransactionsOptInStatus === true &&
-        action.value?.alertEnabledness?.[AlertTypes.smartTransactionsMigration] !== false
-      ) {
-        state.state = ALERT_STATE.OPEN;
-      }
-    });
+    builder.addCase(
+      actionConstants.UPDATE_METAMASK_STATE,
+      (state, action: MetaMaskStateAction) => {
+        if (
+          action.value?.preferences?.smartTransactionsOptInStatus === true &&
+          action.value?.alertEnabledness?.[
+            AlertTypes.smartTransactionsMigration
+          ] !== false
+        ) {
+          state.state = ALERT_STATE.OPEN;
+        }
+      },
+    );
   },
 });
 
 const { actions, reducer } = slice;
 
-export const shouldShowSmartTransactionsMigrationAlert = (state) =>
+type RootState = {
+  [name]: typeof initialState;
+};
+
+export const shouldShowSmartTransactionsMigrationAlert = (state: RootState) =>
   state[name]?.state === ALERT_STATE.OPEN;
 
 export const {
@@ -49,7 +67,7 @@ export const {
 } = actions;
 
 export const dismissAndDisableAlert = () => {
-  return async (dispatch) => {
+  return async (dispatch: Dispatch) => {
     try {
       // Show loading state
       await dispatch(disableAlertRequested());

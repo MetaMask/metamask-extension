@@ -6,13 +6,19 @@ import reducer, {
   shouldShowSmartTransactionsMigrationAlert,
 } from './smart-transactions-migration';
 import { ALERT_STATE } from './enums';
+import { SpyInstance } from 'jest-mock';
 
 jest.mock('../../store/actions', () => ({
-  setAlertEnabledness: jest.fn().mockResolvedValue(),
+  setAlertEnabledness: jest
+    .fn<Promise<void>, [string, boolean]>()
+    .mockResolvedValue(undefined),
 }));
 
 describe('Smart Transactions Migration Alert', () => {
-  let consoleErrorSpy;
+  let consoleErrorSpy: jest.SpyInstance<
+    void,
+    [message?: any, ...optionalParams: any[]]
+  >;
 
   const mockState = {
     [AlertTypes.smartTransactionsMigration]: {
@@ -30,7 +36,7 @@ describe('Smart Transactions Migration Alert', () => {
   });
 
   it('should initialize with CLOSED state', () => {
-    const result = reducer(undefined, {});
+    const result = reducer(undefined, { type: 'INIT' });
     expect(result.state).toStrictEqual(ALERT_STATE.CLOSED);
   });
 
@@ -107,7 +113,9 @@ describe('Smart Transactions Migration Alert', () => {
     it('should handle errors', async () => {
       const mockDispatch = jest.fn();
       const error = new Error('Failed to disable alert');
-      setAlertEnabledness.mockRejectedValueOnce(error);
+      (
+        setAlertEnabledness as jest.MockedFunction<typeof setAlertEnabledness>
+      ).mockRejectedValueOnce(error);
       await dismissAndDisableAlert()(mockDispatch);
 
       expect(mockDispatch).toHaveBeenNthCalledWith(1, {
