@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
@@ -31,7 +31,6 @@ import {
   PRIMARY,
   SUPPORT_REQUEST_LINK,
 } from '../../../helpers/constants/common';
-import CurrencyDisplay from '../../../components/ui/currency-display/currency-display.component';
 import {
   BridgeHistoryItem,
   StatusTypes,
@@ -56,6 +55,9 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import Disclosure from '../../../components/ui/disclosure';
+import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -156,6 +158,7 @@ const CrossChainSwapTxDetails = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
   const history = useHistory();
+  const location = useLocation();
   const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const selectedAddressTxList = useSelector(
@@ -166,6 +169,10 @@ const CrossChainSwapTxDetails = () => {
     getNetworkConfigurationsByChainId,
   );
 
+  const { transactionGroup, isEarliestNonce } = location.state as {
+    transactionGroup: TransactionGroup;
+    isEarliestNonce: boolean;
+  };
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.id === srcTxMetaId,
   );
@@ -437,71 +444,20 @@ const CrossChainSwapTxDetails = () => {
                     : undefined
                 }
               />
-
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsGasLimit')}
-                value={data?.gas ? hexToDecimal(data?.gas) : undefined}
-              />
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsGasUsed')}
-                value={data?.gasUsed ? hexToDecimal(data?.gasUsed) : undefined}
-              />
-              {data?.isEIP1559Transaction &&
-                typeof data?.baseFee !== 'undefined' && (
-                  <TransactionDetailRow
-                    title={t('bridgeTxDetailsBaseFee')}
-                    value={
-                      <CurrencyDisplay
-                        currency={data?.nativeCurrency}
-                        denomination={EtherDenomination.GWEI}
-                        value={data?.baseFee}
-                        numberOfDecimals={10}
-                        hideLabel
-                      />
-                    }
-                  />
-                )}
-              {data?.isEIP1559Transaction &&
-                typeof data?.priorityFee !== 'undefined' && (
-                  <TransactionDetailRow
-                    title={t('bridgeTxDetailsPriorityFee')}
-                    value={
-                      <CurrencyDisplay
-                        currency={data?.nativeCurrency}
-                        denomination={EtherDenomination.GWEI}
-                        value={data?.priorityFee}
-                        numberOfDecimals={10}
-                        hideLabel
-                      />
-                    }
-                  />
-                )}
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsTotal')}
-                value={
-                  <UserPreferencedCurrencyDisplay
-                    type={PRIMARY}
-                    value={data?.totalInHex}
-                    numberOfDecimals={data?.l1HexGasTotal ? 18 : undefined}
-                  />
-                }
-              />
-
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsMaxFeePerGas')}
-                value={
-                  <UserPreferencedCurrencyDisplay
-                    currency={data?.nativeCurrency}
-                    denomination={EtherDenomination.ETH}
-                    numberOfDecimals={9}
-                    value={data?.maxFeePerGas}
-                    type={PRIMARY}
-                  />
-                }
-              />
+              <Disclosure
+                title={t('activityLog')}
+                size="small"
+                isScrollToBottomOnOpen
+              >
+                <TransactionActivityLog
+                  transactionGroup={transactionGroup}
+                  className="transaction-list-item-details__transaction-activity-log"
+                  onCancel={() => {}}
+                  onRetry={() => {}}
+                  isEarliestNonce={isEarliestNonce}
+                />
+              </Disclosure>
             </Box>
-
-            <Divider />
           </Box>
         </Content>
       </div>

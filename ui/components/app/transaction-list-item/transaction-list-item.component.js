@@ -99,6 +99,7 @@ function TransactionListItemInner({
   const { bridgeTxHistoryItem, isBridgeComplete, showBridgeTxDetails } =
     useBridgeTxHistoryData({
       transactionGroup,
+      isEarliestNonce,
     });
 
   const {
