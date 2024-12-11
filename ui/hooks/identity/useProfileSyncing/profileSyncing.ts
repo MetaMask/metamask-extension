@@ -1,12 +1,14 @@
 import { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
 import { useMetamaskNotificationsContext } from '../../../contexts/metamask-notifications/metamask-notifications';
+import { getParticipateInMetaMetrics } from '../../../selectors';
 import {
   disableProfileSyncing as disableProfileSyncingAction,
   enableProfileSyncing as enableProfileSyncingAction,
   setIsProfileSyncingEnabled as setIsProfileSyncingEnabledAction,
   hideLoadingIndication,
+  performSignOut,
 } from '../../../store/actions';
 
 /**
@@ -53,6 +55,7 @@ export function useDisableProfileSyncing(): {
 } {
   const dispatch = useDispatch();
   const { listNotifications } = useMetamaskNotificationsContext();
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -62,6 +65,11 @@ export function useDisableProfileSyncing(): {
     try {
       // disable profile syncing
       await dispatch(disableProfileSyncingAction());
+
+      // sign out the user if MetaMetrics is not enabled
+      if (!isMetaMetricsEnabled) {
+        await dispatch(performSignOut());
+      }
 
       // list notifications to update the counter
       await listNotifications();

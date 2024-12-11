@@ -46,4 +46,25 @@ describe('useDisableProfileSyncing()', () => {
 
     expect(mockDisableProfileSyncingAction).toHaveBeenCalled();
   });
+
+  it('should sign out the user if MetaMetrics is not enabled', async () => {
+    const mockPerformSignOutAction = jest.spyOn(actions, 'performSignOut');
+
+    const { result } = renderHookWithProviderTyped(
+      () => useDisableProfileSyncing(),
+      {
+        metamask: {
+          participateInMetaMetrics: false,
+        },
+      },
+      undefined,
+      MetamaskNotificationsProvider,
+    );
+
+    await act(async () => {
+      await result.current.disableProfileSyncing();
+    });
+
+    expect(mockPerformSignOutAction).toHaveBeenCalled();
+  });
 });
