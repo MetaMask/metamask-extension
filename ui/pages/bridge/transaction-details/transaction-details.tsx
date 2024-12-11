@@ -56,7 +56,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
-import Disclosure from '../../../components/ui/disclosure';
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
