@@ -14,11 +14,11 @@ exports[`SendPageNetworkPicker render renders correctly 1`] = `
       >
         G
       </div>
-      <span
+      <p
         class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
       >
         Goerli
-      </span>
+      </p>
       <span
         class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
         style="mask-image: url('./images/icons/arrow-down.svg');"

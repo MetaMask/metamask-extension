@@ -132,12 +132,23 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
                         data-testid="Ethereum Mainnet"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
+                        <div
+                          class="multichain-network-list-item__tooltip"
                         >
-                          Ethereum Mainnet
-                        </p>
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Ethereum Mainnet
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -183,12 +194,23 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
                         data-testid="Linea Mainnet"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
+                        <div
+                          class="multichain-network-list-item__tooltip"
                         >
-                          Linea Mainnet
-                        </p>
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Linea Mainnet
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -234,12 +256,23 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
                         data-testid="BNB Chain"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
+                        <div
+                          class="multichain-network-list-item__tooltip"
                         >
-                          BNB Chain
-                        </p>
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              BNB Chain
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -281,12 +314,23 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
                         data-testid="Chain 5"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
+                        <div
+                          class="multichain-network-list-item__tooltip"
                         >
-                          Chain 5
-                        </p>
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Chain 5
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <button
