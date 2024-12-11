@@ -5,7 +5,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 
-const SOLANA_URL_REGEX = /^https:\/\/.*\.solana.*/u;
+const SOLANA_URL_REGEX = /^https:\/\/.*solana.*/u;
 
 export enum SendFlowPlaceHolders {
   AMOUNT = 'Enter amount to send',
@@ -28,7 +28,7 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
               apiVersion: '2.0.15',
               slot: 305352614,
             },
-            value: 0,
+            value: 5,
           },
         },
       };

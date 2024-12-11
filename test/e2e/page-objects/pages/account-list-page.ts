@@ -118,6 +118,8 @@ class AccountListPage {
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
 
+  private readonly selectAccountSelector = '.multichain-account-list-item__account-name'
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -627,6 +629,10 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.assertElementNotPresent(this.removeAccountButton);
+  }
+
+  async selectAccount(accountLabel: string): Promise<void> {
+    await this.driver.clickElement({css: this.selectAccountSelector, text: accountLabel})
   }
 }
 

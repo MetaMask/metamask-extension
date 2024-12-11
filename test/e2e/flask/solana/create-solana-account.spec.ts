@@ -73,7 +73,6 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         console.log('Opened account menu again');
         await accountListPage.check_numberOfAvailableAccounts(3);
-        console.log('Checked number of available accounts: 3');
       },
     );
   });
