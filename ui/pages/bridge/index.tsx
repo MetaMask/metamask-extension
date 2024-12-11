@@ -39,6 +39,7 @@ import {
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
+import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 
 const CrossChainSwap = () => {
@@ -141,6 +142,9 @@ const CrossChainSwap = () => {
             <Content className="bridge__content">
               <AwaitingSignatures />
             </Content>
+            <Footer>
+              <AwaitingSignaturesCancelButton />
+            </Footer>
           </Route>
         </Switch>
       </div>
