@@ -42,15 +42,16 @@
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-    "nftsDropdownState": {},
-    "termsOfUseLastAgreed": "number",
-    "qrHardware": {},
-    "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
+    "switchedNetworkNeverShowMessage": "boolean",
+    "slides": "object",
+    "qrHardware": {},
+    "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
-    "switchedNetworkNeverShowMessage": "boolean",
-    "currentExtensionPopupId": "number"
+    "currentExtensionPopupId": "number",
+    "termsOfUseLastAgreed": "number",
+    "snapsInstallPrivacyWarningShown": true
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -344,7 +345,6 @@
     "allDetectedTokens": {}
   },
   "TxController": {
-    "lastFetchedBlockNumbers": "object",
     "methodData": "object",
     "transactions": "object",
     "lastFetchedBlockNumbers": "object",
