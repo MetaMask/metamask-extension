@@ -96,11 +96,11 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
           >
             <div
               class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--background-color-primary-muted"
-              style="position: relative; height: 78px;"
+              style="position: relative;"
             >
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-primary-default"
-                style="position: absolute; left: 4px; top: 4px; height: 70px; width: 4px; border-radius: 8px;"
+                style="position: absolute; left: 4px; top: 4px; height: calc(100% - 8px); width: 4px; border-radius: 8px;"
               />
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -136,7 +136,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
             </div>
             <div
               class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
-              style="position: relative; height: 78px;"
+              style="position: relative;"
             >
               <div
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
