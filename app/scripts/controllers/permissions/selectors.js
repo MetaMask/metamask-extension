@@ -158,7 +158,7 @@ export const getAuthorizationsDiff = (
 ) => {
   const changesMap = new Map();
   if (previousAuthorizationsMap === undefined) {
-    newAuthorizationsMap.forEach((origin, authorization) => {
+    newAuthorizationsMap.forEach((authorization, origin) =>{
       changesMap.set(origin, {
         added: authorization,
         removed: {
@@ -175,7 +175,7 @@ export const getAuthorizationsDiff = (
   }
 
   if (newAuthorizationsMap === previousAuthorizationsMap) {
-    newAuthorizationsMap.forEach((origin, authorization) => {
+    newAuthorizationsMap.forEach((authorization, origin) => {
       changesMap.set(origin, {
         added: {
           requiredScopes: {},
@@ -191,7 +191,7 @@ export const getAuthorizationsDiff = (
     return changesMap;
   }
 
-  previousAuthorizationsMap.forEach((origin, oldAuthorization) => {
+  previousAuthorizationsMap.forEach((oldAuthorization, origin) => {
     const newAuthorization = newAuthorizationsMap.get(origin) ?? {
       requiredScopes: {},
       optionalScopes: {},
@@ -221,7 +221,7 @@ export const getAuthorizationsDiff = (
     });
   });
 
-  newAuthorizationsMap.forEach((origin, newAuthorization) => {
+  newAuthorizationsMap.forEach((newAuthorization, origin) => {
     if (!previousAuthorizationsMap.get(origin)) {
       changesMap.set(origin, {
         added: newAuthorization,
