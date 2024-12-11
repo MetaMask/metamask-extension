@@ -721,6 +721,11 @@ export const createBridgeMockStore = (
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
+    // For initial state of dest asset picker
+    swaps: {
+      ...swapsStore.swaps,
+      topAssets: [],
+    },
     bridge: {
       toChainId: null,
       sortOrder: 'cost_ascending',
@@ -754,7 +759,7 @@ export const createBridgeMockStore = (
       ...mockTokenData,
       ...metamaskStateOverrides,
       bridgeState: {
-        ...(swapsStore.metamask.bridgeState ?? {}),
+        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
         bridgeFeatureFlags: {
           ...featureFlagOverrides,
           extensionConfig: {
@@ -763,8 +768,6 @@ export const createBridgeMockStore = (
             ...featureFlagOverrides.extensionConfig,
           },
         },
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
         ...bridgeStateOverrides,
       },
       bridgeStatusState: {
