@@ -254,12 +254,8 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export function getMultichainCurrentCurrency(
-  state: MultichainState,
-  _account?: InternalAccount,
-) {
-  const currentCurrency = getCurrentCurrency(state);
-  return currentCurrency;
+export function getMultichainCurrentCurrency(state: MultichainState) {
+  return getCurrentCurrency(state);
 }
 
 export function getMultichainCurrencyImage(
@@ -380,7 +376,21 @@ function getNonEvmCachedBalance(
       network.chainId as MultichainNetworks
     ]?.[0];
 
-  return balances?.[selectedAccount.id]?.[asset]?.amount ?? 0;
+  if (!asset) {
+    console.error('Could not find asset type for network:', network);
+  }
+
+  const balancesForAccount = balances?.[selectedAccount.id];
+  if (!balancesForAccount) {
+    console.error('Could not find balances for account:', selectedAccount);
+  }
+
+  const balanceOfAsset = balancesForAccount?.[asset];
+  if (!balanceOfAsset) {
+    console.error('Could not find balance for asset:', asset);
+  }
+
+  return balanceOfAsset?.amount ?? 0;
 }
 
 export function getImageForChainId(chainId: string) {
