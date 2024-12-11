@@ -15,7 +15,7 @@ import { Stream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { createHash } from 'node:crypto';
 import { extract as extractTar } from 'tar';
-import { Open as Unzip, type Source, type Entry } from 'unzipper';
+import { Open as Unzip, type Entry } from 'unzipper';
 import yargs from 'yargs/yargs';
 import { Minipass } from 'minipass';
 import {
@@ -336,6 +336,23 @@ async function extractFromTar(
   return downloads;
 }
 
+// Add these custom type definitions to handle unzipper's actual API
+type Source = {
+  size(): Promise<number>;
+  stream(offset: number, length?: number): NodeJS.ReadableStream;
+};
+
+type UnzipDirectory = {
+  files: {
+    path: string;
+    stream: () => Entry;
+  }[];
+};
+
+type UnzipStatic = {
+  url(source: Source, options: object): Promise<UnzipDirectory>;
+};
+
 /**
  * Extracts the binaries from a zip archive.
  *
@@ -371,7 +388,8 @@ async function extractFromZip(
       return startDownload(url, options);
     },
   };
-  const directory = await Unzip.url(source, {});
+
+  const directory = await (Unzip as unknown as UnzipStatic).url(source, {});
   const filtered = directory.files.filter(({ path }: { path: string }) =>
     binaries.includes(basename(path, extname(path))),
   );
@@ -390,13 +408,9 @@ async function extractFromZip(
             }
           };
           await pipeline(entry, hashStream, destStream);
-          const absolutePath = entry.absolute;
-          if (!absolutePath) {
-            throw new Error('Missing absolute path for entry');
-          }
           return {
-            path: absolutePath,
-            binary: entry.path,
+            path: dest,
+            binary: path,
             checksum: hash.digest('hex'),
           };
         }
