@@ -1,13 +1,4 @@
-export type CarouselSlide = {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  onClick?: () => void;
-  dismissed?: boolean;
-  href?: string;
-  undismissable?: boolean;
-};
+import { CarouselSlide } from '../../../../shared/constants/app-state';
 
 export type CarouselProps = {
   slides: CarouselSlide[];
