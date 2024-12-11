@@ -28,6 +28,16 @@ export type StatusRequest = {
   refuel?: boolean; // lifi
 };
 
+export type StatusRequestDto = Omit<
+  StatusRequest,
+  'quote' | 'srcChainId' | 'destChainId' | 'refuel'
+> & {
+  srcChainId: string; // lifi, socket, squid
+  destChainId: string; // lifi, socket, squid
+  requestId?: string;
+  refuel?: string; // lifi
+};
+
 export type StatusRequestWithSrcTxHash = StatusRequest & {
   srcTxHash: string;
 };
