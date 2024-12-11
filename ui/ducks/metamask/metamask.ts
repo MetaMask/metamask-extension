@@ -14,7 +14,6 @@ import {
   NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';

@@ -1,4 +1,6 @@
 import { NameType } from '@metamask/name-controller';
+// TODO: Replace with import from `@metamask/preferences-controller` once migration to core repo is complete.
+// eslint-disable-next-line import/no-restricted-paths
 import { getDefaultPreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
 import type {
   BackgroundStateProxy,

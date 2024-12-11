@@ -41,7 +41,7 @@ function QrCodeView({
   accountName,
 }: {
   Qr: { message: string; data: string };
-  warning: string | null | undefined;
+  warning?: string | null;
   accountName?: string;
 }) {
   const trackEvent = useContext(MetaMetricsContext);
