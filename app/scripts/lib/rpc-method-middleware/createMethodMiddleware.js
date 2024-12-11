@@ -16,6 +16,7 @@ import { revokePermissionsHandler } from './handlers/wallet-revokePermissions';
 export const createEip1193MethodMiddleware = makeMethodMiddlewareMaker([
   ...localHandlers,
   ...eip1193OnlyHandlers,
+  // EIP-2255 Permission handlers
   getPermissionsHandler,
   requestPermissionsHandler,
   revokePermissionsHandler,
