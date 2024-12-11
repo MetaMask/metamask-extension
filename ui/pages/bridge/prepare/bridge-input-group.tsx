@@ -160,6 +160,7 @@ export const BridgeInputGroup = ({
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
+          autoFocus={false}
         >
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (
