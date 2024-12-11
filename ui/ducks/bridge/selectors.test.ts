@@ -6,10 +6,7 @@ import {
   CHAIN_IDS,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
-import {
-  ALLOWED_BRIDGE_CHAIN_IDS,
-  BRIDGE_QUOTE_MAX_ETA_SECONDS,
-} from '../../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
@@ -22,13 +19,11 @@ import {
   getFromChains,
   getFromToken,
   getFromTokens,
-  getFromTopAssets,
   getIsBridgeTx,
   getToChain,
   getToChains,
   getToToken,
   getToTokens,
-  getToTopAssets,
   getValidationErrors,
 } from './selectors';
 
@@ -480,19 +475,6 @@ describe('Bridge selectors', () => {
       });
     });
 
-    it('returns empty dest tokens from controller state when toChainId is undefined', () => {
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-        },
-      });
-      const result = getToTokens(state as never);
-
-      expect(result).toStrictEqual({});
-    });
-  });
-
-  describe('getToTopAssets', () => {
     it('returns dest top assets from controller state when toChainId is defined', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { toChainId: '0x1' },
@@ -501,21 +483,11 @@ describe('Bridge selectors', () => {
           destTopAssets: [{ address: '0x00', symbol: 'TEST' }],
         },
       });
-      const result = getToTopAssets(state as never);
+      const result = getToTokens(state as never);
 
-      expect(result).toStrictEqual([{ address: '0x00', symbol: 'TEST' }]);
-    });
-
-    it('returns empty dest top assets from controller state when toChainId is undefined', () => {
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          destTopAssets: [{ address: '0x00', symbol: 'TEST' }],
-        },
-      });
-      const result = getToTopAssets(state as never);
-
-      expect(result).toStrictEqual([]);
+      expect(result.toTopAssets).toStrictEqual([
+        { address: '0x00', symbol: 'TEST' },
+      ]);
     });
   });
 
@@ -525,17 +497,20 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: { toChainId: '0x1' },
         bridgeStateOverrides: {
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          srcTopAssets: [{ address: '0x01', symbol: 'SYMB' }],
         },
       });
       const result = getFromTokens(state as never);
 
       expect(result).toStrictEqual({
-        '0x00': { address: '0x00', symbol: 'TEST' },
+        fromTokens: {
+          '0x00': { address: '0x00', symbol: 'TEST' },
+        },
+        fromTopAssets: [{ address: '0x01', symbol: 'SYMB' }],
+        isLoading: false,
       });
     });
-  });
 
-  describe('getFromTopAssets', () => {
     it('returns src top assets from controller state', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { toChainId: '0x1' },
@@ -544,9 +519,11 @@ describe('Bridge selectors', () => {
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
         },
       });
-      const result = getFromTopAssets(state as never);
+      const result = getFromTokens(state as never);
 
-      expect(result).toStrictEqual([{ address: '0x00', symbol: 'TEST' }]);
+      expect(result.fromTopAssets).toStrictEqual([
+        { address: '0x00', symbol: 'TEST' },
+      ]);
     });
   });
 
@@ -936,136 +913,6 @@ describe('Bridge selectors', () => {
         mockBridgeQuotesNativeErc20[0]?.quote.requestId,
       );
     });
-
-    it('should recommend 2nd cheapest quote if ETA exceeds 1 hour', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: { sortOrder: SortOrder.COST_ASC },
-        bridgeStateOverrides: {
-          quotes: [
-            mockBridgeQuotesNativeErc20[1],
-            {
-              ...mockBridgeQuotesNativeErc20[0],
-              estimatedProcessingTimeInSeconds:
-                BRIDGE_QUOTE_MAX_ETA_SECONDS + 1,
-              quote: {
-                ...mockBridgeQuotesNativeErc20[0].quote,
-                requestId: 'cheapestQuoteWithLongETA',
-              },
-            },
-          ],
-        },
-      });
-
-      const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
-        state as never,
-      );
-
-      expect(activeQuote?.quote.requestId).toStrictEqual(
-        '4277a368-40d7-4e82-aa67-74f29dc5f98a',
-      );
-      expect(recommendedQuote?.quote.requestId).toStrictEqual(
-        '4277a368-40d7-4e82-aa67-74f29dc5f98a',
-      );
-      expect(sortedQuotes).toHaveLength(2);
-      expect(sortedQuotes[0]?.quote.requestId).toStrictEqual(
-        '4277a368-40d7-4e82-aa67-74f29dc5f98a',
-      );
-      expect(sortedQuotes[1]?.quote.requestId).toStrictEqual(
-        'cheapestQuoteWithLongETA',
-      );
-    });
-
-    it('should recommend 2nd fastest quote if adjustedReturn is less than 80% of cheapest quote', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          extensionConfig: {
-            chains: {
-              '0xa': { isActiveSrc: true, isActiveDest: false },
-              '0x89': { isActiveSrc: false, isActiveDest: true },
-            },
-          },
-        },
-        bridgeSliceOverrides: {
-          toChainId: '0x89',
-          fromToken: { address: zeroAddress(), symbol: 'ETH' },
-          toToken: { address: zeroAddress(), symbol: 'TEST' },
-          fromTokenExchangeRate: 2524.25,
-          sortOrder: SortOrder.ETA_ASC,
-          toTokenExchangeRate: 0.998781,
-        },
-        bridgeStateOverrides: {
-          quotes: [
-            ...mockBridgeQuotesNativeErc20,
-            {
-              ...mockBridgeQuotesNativeErc20[0],
-              estimatedProcessingTimeInSeconds: 1,
-              quote: {
-                ...mockBridgeQuotesNativeErc20[0].quote,
-                requestId: 'fastestQuote',
-                destTokenAmount: '1',
-              },
-            },
-          ],
-        },
-        metamaskStateOverrides: {
-          currencyRates: {
-            ETH: {
-              conversionRate: 2524.25,
-            },
-            POL: {
-              conversionRate: 0.354073,
-              usdConversionRate: 1,
-            },
-          },
-          marketData: {},
-          ...mockNetworkState(
-            { chainId: CHAIN_IDS.MAINNET },
-            { chainId: CHAIN_IDS.LINEA_MAINNET },
-            { chainId: CHAIN_IDS.POLYGON },
-            { chainId: CHAIN_IDS.OPTIMISM },
-          ),
-        },
-      });
-
-      const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
-        state as never,
-      );
-      const {
-        sentAmount,
-        totalNetworkFee,
-        toTokenAmount,
-        adjustedReturn,
-        cost,
-      } = activeQuote ?? {};
-
-      expect(activeQuote?.quote.requestId).toStrictEqual(
-        '4277a368-40d7-4e82-aa67-74f29dc5f98a',
-      );
-      expect(recommendedQuote?.quote.requestId).toStrictEqual(
-        '4277a368-40d7-4e82-aa67-74f29dc5f98a',
-      );
-      expect(sentAmount?.valueInCurrency?.toString()).toStrictEqual('25.2425');
-      expect(totalNetworkFee?.valueInCurrency?.toString()).toStrictEqual(
-        '2.52459306428938562',
-      );
-      expect(toTokenAmount?.valueInCurrency?.toString()).toStrictEqual(
-        '24.226654664163',
-      );
-      expect(adjustedReturn?.valueInCurrency?.toString()).toStrictEqual(
-        '21.70206159987361438',
-      );
-      expect(cost?.valueInCurrency?.toString()).toStrictEqual(
-        '3.54043840012638562',
-      );
-      expect(sortedQuotes).toHaveLength(3);
-      expect(sortedQuotes[0]?.quote.requestId).toStrictEqual('fastestQuote');
-      expect(sortedQuotes[1]?.quote.requestId).toStrictEqual(
-        '4277a368-40d7-4e82-aa67-74f29dc5f98a',
-      );
-      expect(sortedQuotes[2]?.quote.requestId).toStrictEqual(
-        '381c23bc-e3e4-48fe-bc53-257471e388ad',
-      );
-    });
   });
 
   describe('getValidationErrors', () => {
@@ -1102,12 +949,14 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toChainId: '0x1',
-          fromTokenInputValue: '0.001',
+          fromToken: { decimals: 6, address: zeroAddress() },
+          fromChain: { chainId: CHAIN_IDS.MAINNET },
         },
         bridgeStateOverrides: {
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
+          quoteRequest: { srcTokenAmount: '1000' },
         },
       });
       const result = getValidationErrors(state as never);
@@ -1151,12 +1000,14 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toChainId: '0x1',
-          fromTokenInputValue: '0.001',
+          fromToken: { decimals: 6, address: zeroAddress() },
+          fromChain: { chainId: CHAIN_IDS.MAINNET },
         },
         bridgeStateOverrides: {
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
+          quoteRequest: { srcTokenAmount: '1000' },
         },
       });
       const result = getValidationErrors(state as never);
@@ -1338,6 +1189,7 @@ describe('Bridge selectors', () => {
           toChainId: '0x89',
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
+          fromTokenInputValue: '1',
           fromTokenExchangeRate: 2524.25,
           toTokenExchangeRate: 0.798781,
         },
