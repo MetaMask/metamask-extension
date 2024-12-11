@@ -79,8 +79,8 @@ describe('Carousel', () => {
 
     const slide = container.querySelector('.mm-carousel-slide');
     expect(slide).toHaveStyle({
-      margin: `${MARGIN_VALUES.NONE} ${MARGIN_VALUES.OUTER_EDGE}`,
-      width: WIDTH_VALUES.SINGLE_SLIDE,
+      margin: `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.CONTAINER_SIDE}`,
+      width: 'calc(100% - 32px)',
     });
   });
 
@@ -89,21 +89,21 @@ describe('Carousel', () => {
 
     const slides = container.querySelectorAll('.mm-carousel-slide');
     expect(slides[0]).toHaveStyle({
-      width: WIDTH_VALUES.MULTIPLE_SLIDES_BORDER,
+      width: 'calc(98% - 16px)',
     });
 
     expect(slides[1]).toHaveStyle({
-      width: WIDTH_VALUES.MULTIPLE_SLIDES_CENTER,
+      width: WIDTH_VALUES.STANDARD_SLIDE,
     });
 
     // Check margins for first slide
     expect(slides[0]).toHaveStyle({
-      margin: `${MARGIN_VALUES.NONE} ${MARGIN_VALUES.NONE} ${MARGIN_VALUES.BOTTOM} ${MARGIN_VALUES.INNER_EDGE}`,
+      margin: `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.SLIDE_BOTTOM} 16px`,
     });
 
     // Check margins for subsequent slides
     expect(slides[1]).toHaveStyle({
-      margin: `${MARGIN_VALUES.NONE} ${MARGIN_VALUES.NONE} ${MARGIN_VALUES.BOTTOM} ${MARGIN_VALUES.NONE}`,
+      margin: `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.SLIDE_BOTTOM} ${MARGIN_VALUES.ZERO}`,
     });
   });
 
