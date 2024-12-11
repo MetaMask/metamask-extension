@@ -584,7 +584,7 @@ export default class MetaMetricsController extends BaseController<
       : {};
 
     this.update((state) => {
-      state.fragments[id] = merge(additionalFragmentProps, fragment);
+      state.fragments[id] = merge({}, additionalFragmentProps, fragment);
     });
 
     if (fragment.initialEvent) {

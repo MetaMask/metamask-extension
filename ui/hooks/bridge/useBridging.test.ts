@@ -42,11 +42,11 @@ describe('useBridging', () => {
     });
   });
 
-  describe('extensionSupport=false, chainId=1', () => {
+  describe('extensionConfig.support=false, chainId=1', () => {
     beforeEach(() => {
       nock(BRIDGE_API_BASE_URL)
         .get('/getAllFeatureFlags')
-        .reply(200, { 'extension-support': false });
+        .reply(200, { 'extension-config': { support: false } });
       jest.clearAllMocks();
     });
     // @ts-expect-error This is missing from the Mocha type definitions
@@ -91,7 +91,9 @@ describe('useBridging', () => {
             metaMetricsId: MOCK_METAMETRICS_ID,
             bridgeState: {
               bridgeFeatureFlags: {
-                extensionSupport: false,
+                extensionConfig: {
+                  support: false,
+                },
               },
             },
             internalAccounts: {
@@ -113,11 +115,11 @@ describe('useBridging', () => {
     );
   });
 
-  describe('extensionSupport=true, chain=1', () => {
+  describe('extensionConfig.support=true, chain=1', () => {
     beforeEach(() => {
       nock(BRIDGE_API_BASE_URL)
         .get('/getAllFeatureFlags')
-        .reply(200, { 'extension-support': true });
+        .reply(200, { 'extension-config': { support: true } });
       jest.clearAllMocks();
     });
     // @ts-expect-error This is missing from the Mocha type definitions
@@ -161,8 +163,11 @@ describe('useBridging', () => {
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             metaMetricsId: MOCK_METAMETRICS_ID,
             bridgeState: {
+              isBridgeEnabled: true,
               bridgeFeatureFlags: {
-                extensionSupport: true,
+                extensionConfig: {
+                  support: true,
+                },
               },
             },
             internalAccounts: {
