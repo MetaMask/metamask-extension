@@ -17,7 +17,7 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getCurrentNetwork,
   getDetectedTokensInCurrentNetwork,
-  getPreferences,
+  getTokenNetworkFilter,
 } from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
@@ -41,14 +41,14 @@ const DetectedTokenSelectionPopover = ({
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const allOpts = {};
   Object.keys(allNetworks || {}).forEach((networkId) => {
     allOpts[networkId] = true;
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(tokenNetworkFilter).length !==
     Object.keys(allOpts || {}).length;
 
   const currentNetwork = useSelector(getCurrentNetwork);

@@ -11,7 +11,7 @@ import {
 import {
   getDetectedTokensInCurrentNetwork,
   getAllDetectedTokensForSelectedAddress,
-  getPreferences,
+  getTokenNetworkFilter,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -28,7 +28,7 @@ export const DetectedTokensBanner = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const allOpts = {};
@@ -37,7 +37,7 @@ export const DetectedTokensBanner = ({
   });
 
   const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
+    Object.keys(tokenNetworkFilter).length !==
     Object.keys(allOpts || {}).length;
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
