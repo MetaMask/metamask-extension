@@ -5,7 +5,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableMetametrics,
   useDisableMetametrics,
-} from '../../../../hooks/identity/useMetametrics';
+} from '../../../../hooks/useMetametrics';
 import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
 import { selectParticipateInMetaMetrics } from '../../../../selectors/identity/authentication';
 import {

@@ -1,19 +1,15 @@
 import { useState, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import log from 'loglevel';
-import { selectIsSignedIn } from '../../selectors/identity/authentication';
-import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
 import {
-  performSignOut,
-  performSignIn,
   setParticipateInMetaMetrics,
   showLoadingIndication,
   hideLoadingIndication,
-} from '../../store/actions';
+} from '../store/actions';
 
 /**
  * Provides a hook to enable MetaMetrics tracking.
- * This hook handles user sign-in if not already signed in and sets participation in MetaMetrics to true.
+ * This hook handles sets participation in MetaMetrics to true.
  *
  * @returns An object containing the `enableMetametrics` function, a `loading` boolean indicating the operation status, and an `error` string for error messages.
  */
@@ -23,8 +19,6 @@ export function useEnableMetametrics(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const isUserSignedIn = useSelector(selectIsSignedIn);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,10 +29,6 @@ export function useEnableMetametrics(): {
     setError(null);
 
     try {
-      if (isProfileSyncingEnabled && !isUserSignedIn) {
-        await dispatch(performSignIn());
-      }
-
       await dispatch(setParticipateInMetaMetrics(true));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
@@ -50,7 +40,7 @@ export function useEnableMetametrics(): {
     }
 
     dispatch(hideLoadingIndication());
-  }, [dispatch, isUserSignedIn]);
+  }, [dispatch]);
 
   return {
     enableMetametrics,
@@ -71,8 +61,6 @@ export function useDisableMetametrics(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const isUserSignedIn = useSelector(selectIsSignedIn);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,9 +71,6 @@ export function useDisableMetametrics(): {
     setError(null);
 
     try {
-      if (isProfileSyncingEnabled && isUserSignedIn) {
-        await dispatch(performSignOut());
-      }
       await dispatch(setParticipateInMetaMetrics(false));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
@@ -96,7 +81,7 @@ export function useDisableMetametrics(): {
     }
 
     dispatch(hideLoadingIndication());
-  }, [dispatch, isProfileSyncingEnabled]);
+  }, [dispatch]);
 
   return {
     disableMetametrics,
