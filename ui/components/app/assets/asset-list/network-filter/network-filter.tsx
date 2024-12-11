@@ -32,14 +32,13 @@ import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-d
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
-  FEATURED_NETWORK_NAMES,
   FEATURED_RPCS,
   MAINNET_DISPLAY_NAME,
+  CHAIN_IDS,
 } from '../../../../../../shared/constants/network';
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 type SortControlProps = {
   handleClose: () => void;
