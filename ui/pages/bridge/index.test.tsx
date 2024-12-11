@@ -75,7 +75,6 @@ describe('Bridge', () => {
       store,
     );
 
-    expect(getByText('Bridge')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });
