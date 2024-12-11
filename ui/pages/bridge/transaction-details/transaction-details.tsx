@@ -444,19 +444,12 @@ const CrossChainSwapTxDetails = () => {
                     : undefined
                 }
               />
-              <Disclosure
-                title={t('activityLog')}
-                size="small"
-                isScrollToBottomOnOpen
-              >
-                <TransactionActivityLog
-                  transactionGroup={transactionGroup}
-                  className="transaction-list-item-details__transaction-activity-log"
-                  onCancel={() => {}}
-                  onRetry={() => {}}
-                  isEarliestNonce={isEarliestNonce}
-                />
-              </Disclosure>
+
+              <TransactionActivityLog
+                transactionGroup={transactionGroup}
+                className="transaction-list-item-details__transaction-activity-log"
+                isEarliestNonce={isEarliestNonce}
+              />
             </Box>
           </Box>
         </Content>
