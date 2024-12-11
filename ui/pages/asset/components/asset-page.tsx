@@ -139,7 +139,7 @@ const AssetPage = ({
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<Hex, Hex>;
 
-  const { tokenBalances } = useTokenBalances();
+  const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
   const selectedAccountTokenBalancesAcrossChains =
     tokenBalances[selectedAccount.address];
 
