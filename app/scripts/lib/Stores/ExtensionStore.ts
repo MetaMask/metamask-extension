@@ -10,8 +10,6 @@ import {
   EmptyState,
 } from './BaseStore';
 
-const { sentry } = global;
-
 /**
  * Returns whether or not the given object contains no keys
  *
