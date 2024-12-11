@@ -2,6 +2,7 @@
 
 .prepare-bridge-page {
   flex: 1;
+
   .mm-text-field {
     background-color: inherit;
 
@@ -11,7 +12,8 @@
   }
 
   .defined {
-    & > .mm-input--disabled, p {
+    & > .mm-input--disabled,
+    p {
       opacity: 1;
     }
   }
@@ -70,12 +72,12 @@
 
     [data-theme='light'],
     .light {
-      box-shadow: 0px 0px 2px 0px #E2E4E9, 0px 0px 16px 0px rgba(226, 228, 233, 0.16);
+      box-shadow: 0 0 2px 0 #e2e4e9, 0 0 16px 0 rgba(226, 228, 233, 0.16);
     }
 
     [data-theme='dark'],
     .dark {
-      box-shadow: 0px 0px 2px 0px #18191B, 0px 0px 16px 0px #18191B;
+      box-shadow: 0 0 2px 0 #18191b, 0 0 16px 0 #18191b;
     }
   }
 }
@@ -83,7 +85,7 @@
 .bridge-settings-modal {
   .mm-button-secondary {
     &:hover {
-      background-color: var(--color-background-default-hover)
+      background-color: var(--color-background-default-hover);
     }
   }
 
