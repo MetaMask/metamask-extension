@@ -138,21 +138,6 @@ const baseStore = {
           methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
-        permissionHistory: {
-          'https://uniswap.org/': {
-            eth_accounts: {
-              accounts: {
-                '0x0': 1709225290848,
-              },
-            },
-          },
-        },
-      },
-      activeTab: {
-        origin: 'https://uniswap.org/',
-      },
-      appState: {
-        sendInputCurrencySwitched: false,
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
