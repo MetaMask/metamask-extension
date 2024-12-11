@@ -15,6 +15,7 @@ import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
 
 const debugLog = createProjectLogger('bridge');
+const LINEA_DELAY_MS = 5000;
 
 export default function useSubmitBridgeTransaction() {
   const history = useHistory();
@@ -51,7 +52,9 @@ export default function useSubmitBridgeTransaction() {
       debugLog(
         'Delaying submitting bridge tx to make Linea confirmation more likely',
       );
-      const waitPromise = new Promise((resolve) => setTimeout(resolve, 5000));
+      const waitPromise = new Promise((resolve) =>
+        setTimeout(resolve, LINEA_DELAY_MS),
+      );
       await waitPromise;
     }
 
