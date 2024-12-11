@@ -69,6 +69,7 @@ export const SnapInsight = ({ snapId, data }) => {
               interfaceId={interfaceId}
               delineatorType={DelineatorType.Insights}
               isLoading={isLoading}
+              disableCustomBackground
             />
           ) : (
             <Text
