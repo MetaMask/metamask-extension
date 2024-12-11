@@ -11,6 +11,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import * as txUtil from '../../../../../shared/modules/transaction.utils';
 import * as metamaskControllerUtils from '../../../../../shared/lib/metamask-controller-utils';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { AlertTypes } from '../../../../../shared/constants/alerts';
+import { ALERT_STATE } from '../../../../ducks/alerts/enums';
 import TransactionAlerts from './transaction-alerts';
 
 jest.mock('../../../../selectors/transactions', () => {
@@ -33,6 +35,9 @@ const STATE_MOCK = {
     ...mockNetworkState({
       chainId: CHAIN_ID_MOCK,
     }),
+  },
+  [AlertTypes.smartTransactionsMigration]: {
+    state: ALERT_STATE.OPEN,
   },
 };
 
@@ -556,5 +561,49 @@ describe('TransactionAlerts', () => {
         getByText('The gas for this transaction will be paid by a paymaster.'),
       ).toBeInTheDocument();
     });
+  });
+});
+
+describe('Smart Transactions Migration Alert', () => {
+  it('should show smart transactions banner when shouldShowSmartTransactionsMigrationAlert is true', () => {
+    const { getByTestId } = render({
+      componentProps: {
+        txData: {
+          chainId: CHAIN_ID_MOCK,
+          txParams: { value: '0x1' },
+        },
+      },
+    });
+    expect(getByTestId('smart-transactions-banner-alert')).toBeInTheDocument();
+  });
+
+  it('should not show smart transactions banner when shouldShowSmartTransactionsMigrationAlert is false', () => {
+    const closedState = {
+      ...STATE_MOCK,
+      metamask: {
+        ...STATE_MOCK.metamask,
+        alerts: {
+          [AlertTypes.smartTransactionsMigration]: {
+            state: ALERT_STATE.CLOSED,
+          },
+        },
+      },
+      [AlertTypes.smartTransactionsMigration]: {
+        state: ALERT_STATE.CLOSED,
+      },
+    };
+    const store = configureStore(closedState);
+    const { queryByTestId } = renderWithProvider(
+      <TransactionAlerts
+        txData={{
+          chainId: CHAIN_ID_MOCK,
+          txParams: { value: '0x1' },
+        }}
+      />,
+      store,
+    );
+    expect(
+      queryByTestId('smart-transactions-banner-alert'),
+    ).not.toBeInTheDocument();
   });
 });
