@@ -3305,7 +3305,7 @@ export default class MetamaskController extends EventEmitter {
    * Gets relevant state for the provider of an external origin.
    *
    * @param {string} origin - The origin to get the provider state for.
-   * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[] }>} An object with relevant state properties.
+   * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[], extensionId: string | undefined }>} An object with relevant state properties.
    */
   async getProviderState(origin) {
     const providerNetworkState = await this.getProviderNetworkState(
@@ -3315,7 +3315,9 @@ export default class MetamaskController extends EventEmitter {
     return {
       isUnlocked: this.isUnlocked(),
       accounts: await this.getPermittedAccounts(origin),
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       extensionId: chrome?.runtime?.id,
+      ///: END:ONLY_INCLUDE_IF
       ...providerNetworkState,
     };
   }
