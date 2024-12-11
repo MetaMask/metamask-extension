@@ -90,7 +90,6 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                   src={member.avatarValue}
                   name={member.symbol ?? ''}
                   size={AvatarNetworkSize.Xs}
-                  borderColor={BorderColor.backgroundDefault}
                 />
               )}
             </Box>
@@ -102,7 +101,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
             style={{ marginLeft: marginLeftValue, fontSize: 8 }}
             size={AvatarBaseSize.Xs}
             borderColor={BorderColor.backgroundDefault}
-            borderRadius={BorderRadius.full}
+            borderRadius={BorderRadius.MD}
             color={TextColor.overlayInverse}
           >
             {tagValue}
