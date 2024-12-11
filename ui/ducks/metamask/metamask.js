@@ -24,42 +24,7 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-
-const initialState = {
-  isInitialized: false,
-  isUnlocked: false,
-  internalAccounts: { accounts: {}, selectedAccount: '' },
-  transactions: [],
-  networkConfigurations: {},
-  addressBook: [],
-  useBlockie: false,
-  featureFlags: {},
-  currentLocale: '',
-  currentBlockGasLimit: '',
-  currentBlockGasLimitByChainId: {},
-  preferences: {
-    autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
-    showExtensionInFullSizeView: false,
-    showFiatInTestnets: false,
-    showTestNetworks: false,
-    smartTransactionsOptInStatus: true,
-    petnamesEnabled: true,
-    featureNotificationsEnabled: false,
-    privacyMode: false,
-    showMultiRpcModal: false,
-  },
-  firstTimeFlowType: null,
-  completedOnboarding: false,
-  knownMethodData: {},
-  use4ByteResolution: true,
-  participateInMetaMetrics: null,
-  dataCollectionForMarketing: null,
-  currencyRates: {
-    ETH: {
-      conversionRate: null,
-    },
-  },
-};
+import { initialMetamaskState } from './constants';
 
 /**
  * Temporary types for this slice so that inferrence of MetaMask state tree can
