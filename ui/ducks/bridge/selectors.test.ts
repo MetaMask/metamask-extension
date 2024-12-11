@@ -392,6 +392,8 @@ describe('Bridge selectors', () => {
         name: 'Ether',
         symbol: 'ETH',
         type: 'NATIVE',
+        balance: '0',
+        string: '0',
       });
     });
 
@@ -410,6 +412,8 @@ describe('Bridge selectors', () => {
         name: 'Ether',
         symbol: 'ETH',
         type: 'NATIVE',
+        balance: '0',
+        string: '0',
       });
     });
   });
