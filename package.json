@@ -268,12 +268,12 @@
     "@metamask/keyring-snap-internal-client@npm:0.0.1": "npm:@metamask-previews/keyring-snap-internal-client@0.0.1-f78dac4",
     "@metamask/keyring-snap-sdk@npm:^0.0.1": "npm:@metamask-previews/keyring-snap-sdk@0.0.1-f78dac4",
     "@metamask/keyring-snap-sdk@npm:0.0.1": "npm:@metamask-previews/keyring-snap-sdk@0.0.1-f78dac4",
-    "@metamask/keyring-controller@npm:19.0.0": "npm:@metamask-previews/keyring-controller@19.0.1-preview-9c296dcb",
-    "@metamask/keyring-controller@npm:^19.0.0": "npm:@metamask-previews/keyring-controller@19.0.1-preview-9c296dcb",
-    "@metamask/accounts-controller@npm:20.0.0": "npm:@metamask-previews/accounts-controller@20.0.1-preview-9c296dcb",
-    "@metamask/accounts-controller@npm:^20.0.0": "npm:@metamask-previews/accounts-controller@20.0.1-preview-9c296dcb",
-    "@metamask/assets-controllers@npm:45.1.0": "npm:@metamask-previews/assets-controllers@45.1.0-preview-9c296dcb",
-    "@metamask/chain-controller@npm:0.2.0": "npm:@metamask-previews/chain-controller@0.2.0-preview-9c296dcb"
+    "@metamask/keyring-controller@npm:19.0.0": "npm:@metamask-previews/keyring-controller@19.0.1-preview-470d2e31",
+    "@metamask/keyring-controller@npm:^19.0.0": "npm:@metamask-previews/keyring-controller@19.0.1-preview-470d2e31",
+    "@metamask/accounts-controller@npm:20.0.0": "npm:@metamask-previews/accounts-controller@20.0.1-preview-470d2e31",
+    "@metamask/accounts-controller@npm:^20.0.0": "npm:@metamask-previews/accounts-controller@20.0.1-preview-470d2e31",
+    "@metamask/assets-controllers@npm:45.1.0": "npm:@metamask-previews/assets-controllers@45.1.0-preview-470d2e31",
+    "@metamask/chain-controller@npm:0.2.0": "npm:@metamask-previews/chain-controller@0.2.0-preview-470d2e31"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
