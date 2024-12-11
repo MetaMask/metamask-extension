@@ -2272,6 +2272,64 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary>@stablelib/int": true
       }
     },
+    "@metamask/providers": {
+      "globals": {
+        "CustomEvent": true,
+        "Event": true,
+        "addEventListener": true,
+        "chrome.runtime.connect": true,
+        "console": true,
+        "dispatchEvent": true,
+        "document.createElement": true,
+        "document.readyState": true,
+        "ethereum": "write",
+        "location.hostname": true,
+        "removeEventListener": true,
+        "web3": true
+      },
+      "packages": {
+        "@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-middleware-stream": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/providers>detect-browser": true,
+        "@metamask/providers>extension-port-stream": true,
+        "@metamask/providers>is-stream": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "eslint>fast-deep-equal": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/providers>detect-browser": {
+      "globals": {
+        "document": true,
+        "navigator": true
+      },
+      "packages": {
+        "process": true
+      }
+    },
+    "@metamask/providers>extension-port-stream": {
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream": {
+      "globals": {
+        "AbortController": true,
+        "AggregateError": true,
+        "Blob": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>string_decoder": true,
+        "extension-port-stream>readable-stream>abort-controller": true,
+        "process": true,
+        "webpack>events": true
+      }
+    },
     "@metamask/queued-request-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -5371,21 +5429,6 @@
     "web3": {
       "globals": {
         "XMLHttpRequest": true
-      }
-    },
-    "web3-stream-provider": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>util": true,
-        "readable-stream": true,
-        "web3-stream-provider>uuid": true
-      }
-    },
-    "web3-stream-provider>uuid": {
-      "globals": {
-        "crypto": true
       }
     },
     "webextension-polyfill": {
