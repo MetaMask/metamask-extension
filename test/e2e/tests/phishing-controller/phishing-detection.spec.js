@@ -323,6 +323,7 @@ describe('Phishing Detection', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
+          await mockServer.forAnyWebSocket().thenEcho();
           await setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
           });
@@ -365,6 +366,7 @@ describe('Phishing Detection', function () {
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
+          await mockServer.forAnyWebSocket().thenEcho();
           await setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
           });

@@ -125,8 +125,6 @@ async function setupMocking(
     },
   });
 
-  await server.forAnyWebSocket().thenEcho();
-
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
 
