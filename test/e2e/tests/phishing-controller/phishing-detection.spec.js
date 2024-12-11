@@ -328,7 +328,6 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        enableWebSocketServer: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -371,7 +370,6 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        enableWebSocketServer: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
