@@ -497,6 +497,7 @@ export function addNewAccount(): ThunkAction<
         internalAccount.metadata.keyring.type === KeyringTypes.hd,
     );
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    // We are trying to obtain the HD keyring ID by first determining the keyring type of the currently selected account. If the account belongs to an HD keyring, we can retrieve its keyring ID, which will be used to create a new account. If the selected account is not part of an HD keyring, we will assume that the user intends to create the new account within the primary HD keyring.
     const selectedAccount = getSelectedInternalAccount(getState());
     const keyrings = getMetaMaskKeyrings(getState());
     // find keyring containing selected account
