@@ -29,7 +29,7 @@ export enum SortOrder {
 }
 
 export type BridgeToken =
-  | ((AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>) & {
+  | (AssetWithDisplayData<NativeAsset | ERC20Asset> & {
       aggregators?: string[];
       address: string;
     })
