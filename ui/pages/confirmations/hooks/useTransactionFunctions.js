@@ -14,6 +14,7 @@ import {
 import {
   createCancelTransaction,
   createSpeedUpTransaction,
+  showModal,
   updateCustomSwapsEIP1559GasParams,
   updatePreviousGasParams,
   updateSwapsUserFeeLevel,
@@ -153,12 +154,23 @@ export const useTransactionFunctions = ({
     );
   }, [dispatch, estimatedBaseFee, transaction]);
 
-  const speedUpTransaction = useCallback(() => {
-    dispatch(
-      createSpeedUpTransaction(transaction.id, transaction.txParams, {
-        estimatedBaseFee,
-      }),
-    );
+  const speedUpTransaction = useCallback(async () => {
+    try {
+      await dispatch(
+        createSpeedUpTransaction(transaction.id, transaction.txParams, {
+          estimatedBaseFee,
+        }),
+      );
+    } catch (error) {
+      dispatch(
+        showModal({
+          name: 'TRANSACTION_FAILED',
+          errorMessage: error?.message,
+          closeNotification: true,
+        }),
+      );
+      console.log('================> error inside speedUpTransaction', error);
+    }
   }, [dispatch, estimatedBaseFee, transaction]);
 
   const updateTransactionToTenPercentIncreasedGasFee = useCallback(
