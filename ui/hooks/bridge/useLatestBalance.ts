@@ -3,11 +3,9 @@ import { Hex } from '@metamask/utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import { BridgeToken } from '../../pages/bridge/types';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -17,7 +15,11 @@ import { BridgeToken } from '../../pages/bridge/types';
  * @returns An object containing the balanceAmount as a string.
  */
 const useLatestBalance = (
-  token: SwapsTokenObject | BridgeToken,
+  token: {
+    address: string;
+    decimals: number;
+    symbol: string;
+  } | null,
   chainId?: Hex,
 ) => {
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
