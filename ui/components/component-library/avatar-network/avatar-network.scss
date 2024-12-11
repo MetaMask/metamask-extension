@@ -4,9 +4,7 @@
   }
 
   &__network-image {
-    // TODO undo this when we have new images that are more zoomed in
-    // width: 100%;
-    min-width: 120%;
+    width: 100%;
 
     &--blurred {
       filter: blur(8px);
