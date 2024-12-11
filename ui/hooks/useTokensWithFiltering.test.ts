@@ -4,7 +4,6 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
-  TokenBucketPriority,
 } from '../../shared/constants/swaps';
 import { useTokensWithFiltering } from './useTokensWithFiltering';
 
@@ -42,7 +41,9 @@ describe('useTokensWithFiltering should return token list generator', () => {
         useTokensWithFiltering(
           MOCK_TOKEN_LIST_BY_ADDRESS,
           MOCK_TOP_ASSETS,
-          TokenBucketPriority.top,
+          {
+            [TEST_CHAIN_ID]: new Set(Object.keys(MOCK_TOKEN_LIST_BY_ADDRESS)),
+          },
           TEST_CHAIN_ID,
         ),
       mockStore,
@@ -61,6 +62,7 @@ describe('useTokensWithFiltering should return token list generator', () => {
       name: 'Ether',
       primaryLabel: 'ETH',
       rawFiat: '',
+      chainId: '0x1',
       rightPrimaryLabel: undefined,
       rightSecondaryLabel: '',
       secondaryLabel: 'Ether',
@@ -74,6 +76,7 @@ describe('useTokensWithFiltering should return token list generator', () => {
       decimals: 18,
       erc20: true,
       erc721: false,
+      chainId: '0x1',
       iconUrl:
         'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b3595068778dd592e39a122f4f5a5cf09c90fe2.png',
       identiconAddress: null,
@@ -104,7 +107,9 @@ describe('useTokensWithFiltering should return token list generator', () => {
         useTokensWithFiltering(
           MOCK_TOKEN_LIST_BY_ADDRESS,
           MOCK_TOP_ASSETS,
-          TokenBucketPriority.owned,
+          {
+            [TEST_CHAIN_ID]: new Set(Object.keys(MOCK_TOKEN_LIST_BY_ADDRESS)),
+          },
           TEST_CHAIN_ID,
         ),
       mockStore,
@@ -121,6 +126,7 @@ describe('useTokensWithFiltering should return token list generator', () => {
       identiconAddress: null,
       image: './images/eth_logo.svg',
       name: 'Ether',
+      chainId: '0x1',
       primaryLabel: 'ETH',
       rawFiat: '0',
       rightPrimaryLabel: '0 ETH',
@@ -141,6 +147,7 @@ describe('useTokensWithFiltering should return token list generator', () => {
       identiconAddress: null,
       image: 'images/contract/usdt.svg',
       name: 'Tether USD',
+      chainId: '0x1',
       primaryLabel: 'USDT',
       rawFiat: '',
       rightPrimaryLabel: undefined,

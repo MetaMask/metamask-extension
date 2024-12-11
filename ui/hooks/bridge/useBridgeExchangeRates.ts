@@ -5,11 +5,16 @@ import {
   getQuoteRequest,
   getToChain,
 } from '../../ducks/bridge/selectors';
-import { getCurrentCurrency, getMarketData } from '../../selectors';
+import {
+  getCurrentCurrency,
+  getMarketData,
+  getParticipateInMetaMetrics,
+} from '../../selectors';
 import { decimalToPrefixedHex } from '../../../shared/modules/conversion.utils';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
 } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
@@ -19,6 +24,7 @@ export const useBridgeExchangeRates = () => {
   const { activeQuote } = useSelector(getBridgeQuotes);
   const chainId = useSelector(getCurrentChainId);
   const toChain = useSelector(getToChain);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
   const dispatch = useDispatch();
 
@@ -78,6 +84,16 @@ export const useBridgeExchangeRates = () => {
             currency,
           }),
         );
+        // If the selected currency is not USD, fetch the USD exchange rate for metrics
+        if (isMetaMetricsEnabled && currency !== 'usd') {
+          dispatch(
+            setDestTokenUsdExchangeRates({
+              chainId: toChainId,
+              tokenAddress: toTokenAddress,
+              currency: 'usd',
+            }),
+          );
+        }
       }
     }
   }, [toChainId, toTokenAddress]);

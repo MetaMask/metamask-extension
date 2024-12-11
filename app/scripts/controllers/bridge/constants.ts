@@ -27,6 +27,8 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
     },
   },
   srcTokens: {},
+  srcTokensLoadingStatus: undefined,
+  destTokensLoadingStatus: undefined,
   srcTopAssets: [],
   destTokens: {},
   destTopAssets: [],
