@@ -328,10 +328,11 @@ const PrepareBridgePage = () => {
           network: fromChain,
           networks: fromChains,
           onNetworkChange: (networkConfig) => {
-            trackInputEvent({
-              input: 'chain_source',
-              value: networkConfig.chainId,
-            });
+            networkConfig.chainId !== fromChain?.chainId &&
+              trackInputEvent({
+                input: 'chain_source',
+                value: networkConfig.chainId,
+              });
             if (networkConfig.chainId === toChain?.chainId) {
               dispatch(setToChainId(null));
               dispatch(setToToken(null));
@@ -454,10 +455,11 @@ const PrepareBridgePage = () => {
             network: toChain,
             networks: toChains,
             onNetworkChange: (networkConfig) => {
-              trackInputEvent({
-                input: 'chain_destination',
-                value: networkConfig.chainId,
-              });
+              networkConfig.chainId !== toChain?.chainId &&
+                trackInputEvent({
+                  input: 'chain_destination',
+                  value: networkConfig.chainId,
+                });
               dispatch(setToChainId(networkConfig.chainId));
               dispatch(setToChain(networkConfig.chainId));
               dispatch(setToToken(null));
