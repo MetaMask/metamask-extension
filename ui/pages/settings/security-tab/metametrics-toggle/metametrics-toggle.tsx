@@ -7,7 +7,6 @@ import {
   useDisableMetametrics,
 } from '../../../../hooks/useMetametrics';
 import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../../selectors/identity/authentication';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -21,6 +20,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { getParticipateInMetaMetrics } from '../../../../selectors';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,
@@ -39,7 +39,7 @@ const MetametricsToggle = ({
   const error = enableMetametricsError || disableMetametricsError;
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
   const handleUseParticipateInMetaMetrics = async () => {
     if (participateInMetaMetrics) {
