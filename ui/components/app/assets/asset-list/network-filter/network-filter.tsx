@@ -7,6 +7,7 @@ import {
   getSelectedAccount,
   getAllChainsToPoll,
   getTokenNetworkFilter,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
@@ -49,6 +50,10 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const [chainsToShow, setChainsToShow] = useState<string[]>([]);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -101,10 +106,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   return (
     <>
       <SelectableListItem
-        isSelected={
-          Object.keys(tokenNetworkFilter).length ===
-          Object.keys(allNetworks || {}).length
-        }
+        isSelected={!isTokenNetworkFilterEqualCurrentNetwork}
         onClick={() => handleFilter(allOpts)}
         testId="network-filter-all"
       >

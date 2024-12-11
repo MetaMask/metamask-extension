@@ -699,6 +699,7 @@ const state = {
     },
     useBlockie: false,
     featureFlags: {},
+    slides: [],
     currentLocale: 'en',
     preferences: {
       showNativeTokenAsMainBalance: true,

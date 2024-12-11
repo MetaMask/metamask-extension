@@ -1078,6 +1078,10 @@ export function getQueuedRequestCount(state) {
   return state.metamask.queuedRequestCount ?? 0;
 }
 
+export function getSlides(state) {
+  return state.metamask.slides || [];
+}
+
 export function getTotalUnapprovedMessagesCount(state) {
   const {
     unapprovedPersonalMsgCount = 0,
