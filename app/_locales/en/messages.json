@@ -933,9 +933,6 @@
   "bridgeToChain": {
     "message": "Bridge to $1"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
-  },
   "bridgeTxDetailsBaseFee": {
     "message": "Base fee (GWEI)"
   },
@@ -3153,6 +3150,9 @@
     "message": "+ $1 more networks",
     "description": "$1 is the number of networks"
   },
+  "moreQuotes": {
+    "message": "More quotes"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
@@ -4520,9 +4520,6 @@
   },
   "quoteRate": {
     "message": "Quote rate"
-  },
-  "quotedNetworkFee": {
-    "message": "$1 network fee"
   },
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
@@ -6387,9 +6384,6 @@
   "total": {
     "message": "Total"
   },
-  "totalFees": {
-    "message": "Total fees"
-  },
   "totalVolume": {
     "message": "Total volume"
   },
@@ -6730,7 +6724,7 @@
     "message": "View activity"
   },
   "viewAllQuotes": {
-    "message": "More quotes"
+    "message": "view all quotes"
   },
   "viewContact": {
     "message": "View contact"

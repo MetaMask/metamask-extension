@@ -861,14 +861,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Sélectionnez le jeton et le montant"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Il s’agit d’une estimation du temps nécessaire pour que la passerelle soit établie."
-  },
   "bridgeTo": {
     "message": "Passerelle vers"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Cela comprend les frais de gaz (payés aux mineurs de crypto-monnaies) et les frais pour relayeurs (payés pour assurer des services complexes tels que l’établissement de passerelles).\nLes frais sont basés sur le trafic réseau et la complexité des transactions. MetaMask ne tire aucun profit de ces frais."
   },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
@@ -1988,9 +1982,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Montant payé pour traiter la transaction sur le réseau."
-  },
-  "estimatedTime": {
-    "message": "Temps estimé"
   },
   "ethGasPriceFetchWarning": {
     "message": "Le prix de carburant de sauvegarde est fourni, car le service principal d’estimation du carburant est momentanément indisponible."
@@ -6117,9 +6108,6 @@
   },
   "total": {
     "message": "Total"
-  },
-  "totalFees": {
-    "message": "Frais totaux"
   },
   "totalVolume": {
     "message": "Volume total"
