@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -153,8 +153,11 @@ describe('Confirm', () => {
       const { container, findAllByText } =
         await renderWithConfirmContextProvider(<Confirm />, mockStore);
 
-      const valueElement = await findAllByText('14,615,016,373,...');
-      expect(valueElement[0]).toBeInTheDocument();
+      await waitFor(async () => {
+        const element = await findAllByText('Unlimited');
+        expect(element[0]).toBeInTheDocument();
+      });
+
       expect(container).toMatchSnapshot();
     });
   });
@@ -177,8 +180,11 @@ describe('Confirm', () => {
       const { container, findAllByText } =
         await renderWithConfirmContextProvider(<Confirm />, mockStore);
 
-      const valueElement = await findAllByText('14,615,016,373,...');
-      expect(valueElement[0]).toBeInTheDocument();
+      await waitFor(async () => {
+        const element = await findAllByText('Unlimited');
+        expect(element[0]).toBeInTheDocument();
+      });
+
       expect(container).toMatchSnapshot();
     });
   });

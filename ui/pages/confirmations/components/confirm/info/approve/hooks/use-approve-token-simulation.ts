@@ -10,7 +10,7 @@ import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
 
-const UNLIMITED_THRESHOLD = 10 ** 15;
+export const UNLIMITED_THRESHOLD = 10 ** 15;
 
 function isSpendingCapUnlimited(decodedSpendingCap: number) {
   return decodedSpendingCap >= UNLIMITED_THRESHOLD;

@@ -30,6 +30,8 @@ import {
 import Name from '../../../../../../../../components/app/name/name';
 import { TokenDetailsERC20 } from '../../../../../../utils/token';
 import { getAmountColors } from '../../../utils';
+import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
+import { UNLIMITED_THRESHOLD } from '../../../approve/hooks/use-approve-token-simulation';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */
@@ -69,6 +71,8 @@ const PermitSimulationValueDisplay: React.FC<
   credit,
   debit,
 }) => {
+  const t = useI18nContext();
+
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
   const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
@@ -88,18 +92,24 @@ const PermitSimulationValueDisplay: React.FC<
     return undefined;
   }, [exchangeRate, tokenDecimals, value]);
 
-  const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    if (!value || tokenId) {
-      return { tokenValue: null, tokenValueMaxPrecision: null };
-    }
+  const { tokenValue, tokenValueMaxPrecision, shouldShowUnlimitedValue } =
+    useMemo(() => {
+      if (!value || tokenId) {
+        return {
+          tokenValue: null,
+          tokenValueMaxPrecision: null,
+          shouldShowUnlimitedValue: false,
+        };
+      }
 
-    const tokenAmount = calcTokenAmount(value, tokenDecimals);
+      const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
-    return {
-      tokenValue: formatAmount('en-US', tokenAmount),
-      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
-    };
-  }, [tokenDecimals, value]);
+      return {
+        tokenValue: formatAmount('en-US', tokenAmount),
+        tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
+        shouldShowUnlimitedValue: Number(value) > UNLIMITED_THRESHOLD,
+      };
+    }, [tokenDecimals, value]);
 
   /** Temporary error capturing as we are building out Permit Simulations */
   if (!tokenContract) {
@@ -138,13 +148,15 @@ const PermitSimulationValueDisplay: React.FC<
             >
               {credit && '+ '}
               {debit && '- '}
-              {tokenValue !== null &&
-                shortenString(tokenValue || '', {
-                  truncatedCharLimit: 15,
-                  truncatedStartChars: 15,
-                  truncatedEndChars: 0,
-                  skipCharacterInEnd: true,
-                })}
+              {shouldShowUnlimitedValue
+                ? t('unlimited')
+                : tokenValue !== null &&
+                  shortenString(tokenValue || '', {
+                    truncatedCharLimit: 15,
+                    truncatedStartChars: 15,
+                    truncatedEndChars: 0,
+                    skipCharacterInEnd: true,
+                  })}
               {tokenId && `#${tokenId}`}
             </Text>
           </Tooltip>
