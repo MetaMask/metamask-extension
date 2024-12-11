@@ -14,6 +14,9 @@ import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminde
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import InstitutionalNotificationsModal from '../../components/institutional/institutional-notifications-modal';
+///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import Typography from '../../components/ui/typography/typography';
@@ -950,6 +953,13 @@ export default class Home extends PureComponent {
           participateInMetaMetrics === true
             ? this.renderOnboardingPopover()
             : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+          }
+          <InstitutionalNotificationsModal />
+          {
+            ///: END:ONLY_INCLUDE_IF
+          }
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
