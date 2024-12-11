@@ -27,6 +27,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
   CASH_SLIDE,
+  ZERO_BALANCE,
 } from './constants';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
@@ -42,7 +43,7 @@ export const AccountOverviewLayout = ({
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isLoading = useSelector(getAppIsLoading);
 
-  const hasZeroBalance = totalBalance === '0x00';
+  const hasZeroBalance = totalBalance === ZERO_BALANCE;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();

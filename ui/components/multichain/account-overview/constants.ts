@@ -30,3 +30,5 @@ export const CASH_SLIDE = {
   image: './images/slide-sell-icon.svg',
   href: 'https://portfolio.metamask.io/buy/build-quote',
 };
+
+export const ZERO_BALANCE = '0x00';
