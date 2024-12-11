@@ -1,6 +1,5 @@
 .mm-carousel {
   height: 100px;
-  cursor: pointer;
 }
 
 .mm-carousel--single-slide {
@@ -11,12 +10,9 @@
   }
 }
 
-.mm-carousel__loading {
-  cursor: default;
-}
-
 .mm-carousel-slide {
   position: relative;
+  cursor: pointer;
 
   /* !important needed to override react-responsive-carousel default padding */
   padding: 0 !important;
@@ -26,9 +22,14 @@
     background-color: var(--color-background-muted-hover);
   }
 
-  &:active {
+  &:active,
+  &.active {
     background-color: var(--color-background-muted-active);
   }
+}
+
+.mm-carousel__loading {
+  cursor: default;
 }
 
 .mm-carousel-slide__accessory {
