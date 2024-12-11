@@ -7,7 +7,6 @@ import {
   AlignItems,
   TextVariant,
   FontWeight,
-  BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import type { CarouselProps } from './carousel.types';
@@ -96,9 +95,7 @@ export const Carousel = React.forwardRef(
                 className="mm-carousel-slide"
                 textAlign={TextAlign.Left}
                 alignItems={AlignItems.center}
-                backgroundColor={BackgroundColor.backgroundAlternative}
-                borderColor={BorderColor.infoMuted}
-                borderWidth={1}
+                borderColor={BorderColor.borderMuted}
                 paddingLeft={0}
                 paddingRight={0}
                 style={{
@@ -171,9 +168,7 @@ export const Carousel = React.forwardRef(
                 fontWeight: FontWeight.Medium,
                 marginLeft: 2,
               }}
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              borderColor={BorderColor.infoMuted}
-              borderWidth={1}
+              borderColor={BorderColor.borderMuted}
               descriptionProps={{
                 variant: TextVariant.bodyXs,
                 fontWeight: FontWeight.Normal,
