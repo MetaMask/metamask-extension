@@ -421,9 +421,6 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
-  "alertMessagePendingTransactions": {
-    "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
