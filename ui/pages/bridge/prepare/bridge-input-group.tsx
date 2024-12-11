@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { getAddress } from 'ethers/lib/utils';
 import {
   Text,
   TextField,
@@ -33,6 +34,8 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
 import { BridgeToken } from '../types';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { MINUTE } from '../../../../shared/constants/time';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 export const BridgeInputGroup = ({
@@ -71,23 +74,19 @@ export const BridgeInputGroup = ({
   const { isInsufficientBalance, isEstimatedReturnLow } =
     useSelector(getValidationErrors);
   const currency = useSelector(getCurrentCurrency);
+  const locale = useSelector(getLocale);
 
   const selectedChainId = networkProps?.network?.chainId;
-
-  const blockExplorerUrl =
-    networkProps?.network?.defaultBlockExplorerUrlIndex === undefined
-      ? undefined
-      : networkProps.network.blockExplorerUrls?.[
-          networkProps.network.defaultBlockExplorerUrlIndex
-        ];
-
   const { balanceAmount } = useLatestBalance(token, selectedChainId);
+
+  const [, handleCopy] = useCopyToClipboard(MINUTE) as [
+    boolean,
+    (text: string) => void,
+  ];
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [isLowReturnTooltipOpen, setIsLowReturnTooltipOpen] = useState(true);
-
-  const locale = useSelector(getLocale);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -222,7 +221,6 @@ export const BridgeInputGroup = ({
             {amountInFiat && formatCurrencyAmount(amountInFiat, currency, 2)}
           </Text>
         </Row>
-
         <Text
           display={Display.Flex}
           gap={1}
@@ -232,11 +230,16 @@ export const BridgeInputGroup = ({
               ? TextColor.errorDefault
               : TextColor.textAlternativeSoft
           }
+          onClick={() => {
+            if (isAmountReadOnly && token && selectedChainId) {
+              handleCopy(getAddress(token.address));
+            }
+          }}
+          as={isAmountReadOnly ? 'a' : 'p'}
         >
           {isAmountReadOnly &&
           token &&
           selectedChainId &&
-          blockExplorerUrl &&
           token.type === AssetType.token
             ? shortenString(token.address, {
                 truncatedCharLimit: 11,
