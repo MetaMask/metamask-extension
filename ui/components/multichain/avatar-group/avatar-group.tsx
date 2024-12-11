@@ -61,17 +61,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
         {visibleMembers.map((member, i) => {
           return (
             <Box
-              borderRadius={
-                avatarType === AvatarType.NETWORK
-                  ? BorderRadius.MD
-                  : BorderRadius.full
-              }
-              borderColor={
-                avatarType === AvatarType.NETWORK
-                  ? BorderColor.backgroundDefault
-                  : undefined
-              }
-              borderWidth={avatarType === AvatarType.NETWORK ? 1 : undefined}
+              borderRadius={BorderRadius.full}
               key={i}
               style={{ marginLeft: i === 0 ? '0' : marginLeftValue }}
             >
