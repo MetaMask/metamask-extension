@@ -102,6 +102,9 @@ describe('Token Details', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await importToken(driver);
+        await driver.clickElement(
+          '.actionable-message__message button[aria-label="Close"]',
+        );
         await openTokenDetails(driver);
         await verifyToken(driver);
       },
