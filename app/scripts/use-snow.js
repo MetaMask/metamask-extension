@@ -104,6 +104,14 @@ Changing this code must be done cautiously to avoid breaking the app!
         return ret;
       }}
     );
+    const initMouseEvent = Object.getOwnPropertyDescriptor(MouseEvent.prototype, 'initMouseEvent').value;
+    Object.defineProperty(MouseEvent.prototype, 'initMouseEvent', {value: function (a,b,c,w,e,f,g,h,i,j,k,l,m,n,o) {
+        if (winp === w) {
+          w = win;
+        }
+        return initMouseEvent.call(this, a,b,c,w,e,f,g,h,i,j,k,l,m,n,o);
+      }}
+    );
   }
   const log = console.log.bind(console);
   // eslint-disable-next-line no-undef
