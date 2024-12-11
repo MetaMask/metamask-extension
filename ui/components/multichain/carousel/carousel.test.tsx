@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { Carousel } from './carousel';
+import { MARGIN_VALUES, WIDTH_VALUES } from './constants';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -78,8 +79,8 @@ describe('Carousel', () => {
 
     const slide = container.querySelector('.mm-carousel-slide');
     expect(slide).toHaveStyle({
-      margin: '0 4% 40px 4%',
-      width: '100%',
+      margin: `${MARGIN_VALUES.NONE} ${MARGIN_VALUES.OUTER_EDGE}`,
+      width: WIDTH_VALUES.SINGLE_SLIDE,
     });
   });
 
@@ -88,7 +89,21 @@ describe('Carousel', () => {
 
     const slides = container.querySelectorAll('.mm-carousel-slide');
     expect(slides[0]).toHaveStyle({
-      width: '96%',
+      width: WIDTH_VALUES.MULTIPLE_SLIDES_BORDER,
+    });
+
+    expect(slides[1]).toHaveStyle({
+      width: WIDTH_VALUES.MULTIPLE_SLIDES_CENTER,
+    });
+
+    // Check margins for first slide
+    expect(slides[0]).toHaveStyle({
+      margin: `${MARGIN_VALUES.NONE} ${MARGIN_VALUES.NONE} ${MARGIN_VALUES.BOTTOM} ${MARGIN_VALUES.INNER_EDGE}`,
+    });
+
+    // Check margins for subsequent slides
+    expect(slides[1]).toHaveStyle({
+      margin: `${MARGIN_VALUES.NONE} ${MARGIN_VALUES.NONE} ${MARGIN_VALUES.BOTTOM} ${MARGIN_VALUES.NONE}`,
     });
   });
 
