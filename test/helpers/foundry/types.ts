@@ -4,19 +4,19 @@ import type { InferredOptionTypes, Options } from 'yargs';
 
 // #region utils
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I,
-) => void
+type UnionToIntersection<U> = ((k: U) => void) extends (k: infer I) => void
   ? I
   : never;
 
-type LastInUnion<U> = UnionToIntersection<
-  U extends any ? () => U : never
+type LastInUnion<U extends PropertyKey> = UnionToIntersection<
+  U extends string | number | symbol ? () => U : never
 > extends () => infer Last
   ? Last
   : never;
 
-type UnionToTuple<U, Last = LastInUnion<U>> = [U] extends [never]
+type UnionToTuple<U extends PropertyKey, Last = LastInUnion<U>> = [U] extends [
+  never,
+]
   ? []
   : [...UnionToTuple<Exclude<U, Last>>, Last];
 
@@ -54,7 +54,12 @@ export enum Binary {
 /**
  * Tuple representing all members of the {@link Binary} enum.
  */
-export type BinariesTuple = UnionToTuple<Binary>;
+export type BinariesTuple = [
+  Binary.Anvil,
+  Binary.Forge,
+  Binary.Cast,
+  Binary.Chisel,
+];
 
 /**
  * Tuple representing all members of the {@link Architecture} enum.

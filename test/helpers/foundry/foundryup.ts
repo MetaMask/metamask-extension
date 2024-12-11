@@ -86,7 +86,7 @@ export async function checkAndDownloadBinaries(
         'darwin-arm64': '',
       },
     },
-  }
+  },
 ): Promise<Dir> {
   let downloadedBinaries: Dir;
   try {

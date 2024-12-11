@@ -54,11 +54,13 @@ export function parseArgs(args: string[] = argv.slice(2)) {
     // enable ENV parsing, which allows the user to specify foundryup options
     // via environment variables prefixed with `FOUNDRYUP_`
     .env('FOUNDRYUP')
-    .command(['$0', 'install'], 'Install foundry binaries', (yargs) => {
-      yargs.options(getOptions()).pkgConf('foundryup');
+    .command(['$0', 'install'], 'Install foundry binaries', (yargsBuilder) => {
+      yargsBuilder.options(getOptions()).pkgConf('foundryup');
     })
-    .command('cache', '', (yargs) => {
-      yargs.command('clean', 'Remove the shared cache files').demandCommand();
+    .command('cache', '', (yargsBuilder) => {
+      yargsBuilder
+        .command('clean', 'Remove the shared cache files')
+        .demandCommand();
     })
     .parseSync(args);
 
@@ -74,8 +76,9 @@ export function parseArgs(args: string[] = argv.slice(2)) {
         command: 'install',
         options: parsed as ParsedOptions<ReturnType<typeof getOptions>>,
       } as const;
+    default:
+      throw new Error(`Unknown command: '${command}'`);
   }
-  throw new Error(`Unknown command: '${command}'`);
 }
 
 function getOptions(
@@ -147,8 +150,7 @@ function getOptions(
 /**
  * Returns the system architecture, normalized to one of the supported
  *
- * {@link Architecture}
- * @param architecture
+ * @param architecture - The architecture string to normalize (e.g., 'x64', 'arm64')
  * @returns
  */
 function normalizeSystemArchitecture(
@@ -167,7 +169,9 @@ function normalizeSystemArchitecture(
       if (execSync('sysctl -n sysctl.proc_translated 2>/dev/null')[0] === 1) {
         return Architecture.Arm64;
       }
-    } catch {} // if `sysctl` check fails, assume native `amd64`
+    } catch {
+      // Ignore error: if sysctl check fails, we assume native amd64
+    }
   }
 
   return Architecture.Amd64; // Default for all other architectures
@@ -245,12 +249,12 @@ export async function extractFrom(
         // check the target's checksum matches the expected checksum
         say(`verifying checksum for ${binary}`);
         const expected = checksums.binaries[binary as Binary];
-        if (checksum !== expected) {
+        if (checksum === expected) {
+          say(`checksum verified for ${binary}`);
+        } else {
           throw new Error(
             `checksum mismatch for ${binary}, expected ${expected}, got ${checksum}`,
           );
-        } else {
-          say(`checksum verified for ${binary}`);
         }
       }
       // add the *final* path to the list of binaries
@@ -301,18 +305,29 @@ async function extractFromTar(
             const passThrough = new Minipass({ async: true });
             passThrough.pipe(hash);
             passThrough.on('end', () => {
+              const absolutePath = entry.absolute;
+              if (!absolutePath) {
+                throw new Error('Missing absolute path for entry');
+              }
               downloads.push({
-                path: entry.absolute!,
+                path: absolutePath,
                 binary: entry.path,
                 checksum: hash.digest('hex'),
               });
             });
             return passThrough;
           }
+          // When no checksum is needed, record the entry and return undefined
+          // to use the original stream without transformation
+          const absolutePath = entry.absolute;
+          if (!absolutePath) {
+            throw new Error('Missing absolute path for entry');
+          }
           downloads.push({
-            path: entry.absolute!,
+            path: absolutePath,
             binary: entry.path,
           });
+          return undefined;
         },
       },
       binaries,
@@ -506,24 +521,27 @@ export function isCodedError(
  * object.
  *
  * @param checksums - The CLI checksum object
- * @param platform - The build platform
- * @param arch - The build architecture
+ * @param targetPlatform - The build platform
+ * @param architecture - The build architecture
  * @returns
  */
 export function transformChecksums(
   checksums: Checksums | undefined,
-  platform: Platform,
-  arch: Architecture,
+  targetPlatform: Platform,
+  architecture: Architecture,
 ): PlatformArchChecksums | null {
   if (!checksums) {
     return null;
   }
 
-  const key = `${platform}-${arch}` as const;
+  const key = `${targetPlatform}-${architecture}` as const;
   return {
     algorithm: checksums.algorithm,
     binaries: Object.entries(checksums.binaries).reduce(
-      (acc, [name, record]) => ((acc[name as Binary] = record[key]), acc),
+      (acc, [name, record]) => {
+        acc[name as Binary] = record[key];
+        return acc;
+      },
       {} as Record<Binary, string>,
     ),
   };

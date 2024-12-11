@@ -4,12 +4,27 @@ import { join, relative } from 'path';
 import { parse as parseYaml } from 'yaml';
 import nock from 'nock';
 import {
-  getCacheDirectory,
-  getBinaryArchiveUrl,
   checkAndDownloadBinaries,
+  getBinaryArchiveUrl,
+  getCacheDirectory,
 } from './foundryup';
-import { Platform, Architecture } from './types';
 import { isCodedError, parseArgs } from './helpers';
+import type { Checksums } from './types';
+import { Architecture, Platform } from './types';
+
+type OperationDetails = {
+  path?: string;
+  repo?: string;
+  tag?: string;
+  version?: string;
+  platform?: Platform;
+  arch?: Architecture;
+  binaries?: string[];
+  binDir?: string;
+  cachePath?: string;
+  url?: URL;
+  checksums?: Checksums;
+};
 
 jest.mock('fs/promises', () => {
   console.log('Mocking fs/promises');
@@ -20,7 +35,8 @@ jest.mock('fs/promises', () => {
       console.log('Mock opendir called with path:', path);
       // Simulate ENOENT error for the first call
       const error = new Error(
-        `ENOENT: no such file or directory, opendir '${path}`);
+        `ENOENT: no such file or directory, opendir '${path}`,
+      );
       (error as NodeJS.ErrnoException).code = 'ENOENT';
       throw error;
     }),
@@ -32,27 +48,34 @@ jest.mock('fs/promises', () => {
     rm: jest.fn(),
   };
 });
+
 jest.mock('fs');
 jest.mock('yaml');
 jest.mock('os', () => ({
   homedir: jest.fn().mockReturnValue('/home/user'),
 }));
 
-jest.mock('./helpers.ts', () => ({
-  ...jest.requireActual('./helpers.ts'),
-  getVersion: jest.fn().mockReturnValue('0.1.0'),
-  isCodedError: jest.requireActual('./helpers.ts').isCodedError,
-  noop: jest.requireActual('./helpers.ts').noop,
-  extractFrom: jest.fn().mockResolvedValue(['mock/path/to/binary']),
+jest.mock('./helpers', () => ({
+  ...jest.requireActual('./helpers'),
   parseArgs: jest.fn(),
+  printBanner: jest.fn(),
+  say: jest.fn(),
+  getVersion: jest.fn().mockReturnValue('0.1.0'),
+  isCodedError: jest.requireActual('./helpers').isCodedError,
+  noop: jest.requireActual('./helpers').noop,
+  extractFrom: jest.fn().mockResolvedValue(['mock/path/to/binary']),
 }));
 
 export const mockInstallBinaries = async (
   downloadedBinaries: Dir,
   BIN_DIR: string,
   cachePath: string,
-): Promise<{ operation: string, source?: string, target?: string}[]> => {
-  const mockOperations: {operation: string, source?: string, target?: string}[] = [];
+): Promise<{ operation: string; source?: string; target?: string }[]> => {
+  const mockOperations: {
+    operation: string;
+    source?: string;
+    target?: string;
+  }[] = [];
 
   for await (const file of downloadedBinaries) {
     if (!file.isFile()) {
@@ -74,7 +97,11 @@ export const mockInstallBinaries = async (
       if (!(isCodedError(e) && ['EPERM', 'EXDEV'].includes(e.code))) {
         throw e;
       }
-      mockOperations.push({ operation: 'copyFile', source: target, target: path });
+      mockOperations.push({
+        operation: 'copyFile',
+        source: target,
+        target: path,
+      });
     }
 
     mockOperations.push({ operation: 'getVersion', target: path });
@@ -83,8 +110,10 @@ export const mockInstallBinaries = async (
   return mockOperations;
 };
 
-export const mockDownloadAndInstallFoundryBinaries = async (): Promise<Array<{operation: string, details?: any}>> => {
-  const operations: Array<{ operation: string; details?: any}> = [];
+export const mockDownloadAndInstallFoundryBinaries = async (): Promise<
+  { operation: string; details?: OperationDetails }[]
+> => {
+  const operations: { operation: string; details?: OperationDetails }[] = [];
   const parsedArgs = parseArgs();
 
   operations.push({ operation: 'getCacheDirectory' });
@@ -252,7 +281,7 @@ describe('foundryup', () => {
     const mockBinDir = '/mock/bin/dir';
     const mockCachePath = '/mock/cache/path';
     const mockDir = {
-      [Symbol.asyncIterator]: async function* () {
+      async *[Symbol.asyncIterator]() {
         yield {
           name: 'forge',
           isFile: () => true,
@@ -311,9 +340,7 @@ describe('foundryup', () => {
 
       await expect(
         mockInstallBinaries(mockDir, mockBinDir, mockCachePath),
-      )
-        .rejects
-        .toThrow('Other error');
+      ).rejects.toThrow('Other error');
     });
   });
 
@@ -355,11 +382,11 @@ describe('foundryup', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      jest.spyOn(require('./helpers'), 'parseArgs').mockReturnValue(mockArgs);
-      jest
-        .spyOn(require('./helpers'), 'printBanner')
-        .mockImplementation(jest.fn());
-      jest.spyOn(require('./helpers'), 'say').mockImplementation(jest.fn());
+      const mockedHelpers = jest.requireMock('./helpers');
+
+      mockedHelpers.parseArgs.mockReturnValue(mockArgs);
+      mockedHelpers.printBanner.mockImplementation(jest.fn());
+      mockedHelpers.say.mockImplementation(jest.fn());
     });
 
     it('should execute all operations in correct order', async () => {
@@ -402,9 +429,7 @@ describe('foundryup', () => {
         command: 'cache clean',
       };
 
-      jest
-        .spyOn(require('./helpers'), 'parseArgs')
-        .mockReturnValue(mockCleanArgs);
+      (parseArgs as jest.Mock).mockReturnValue(mockCleanArgs);
       const rmSpy = jest.spyOn(fs, 'rm').mockResolvedValue();
 
       const operations = await mockDownloadAndInstallFoundryBinaries();
@@ -430,9 +455,7 @@ describe('foundryup', () => {
         command: 'cache clean',
       };
 
-      jest
-        .spyOn(require('./helpers'), 'parseArgs')
-        .mockReturnValue(mockCleanArgs);
+      (parseArgs as jest.Mock).mockReturnValue(mockCleanArgs);
 
       try {
         await mockDownloadAndInstallFoundryBinaries();
