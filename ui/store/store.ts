@@ -3,7 +3,7 @@ import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import rootReducer from '../ducks';
 import { AppSliceState } from '../ducks/app/app';
-import { MetamaskSliceState } from '../ducks/metamask/metamask';
+import { MetaMaskSliceState } from '../ducks/metamask/metamask';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file
@@ -45,7 +45,7 @@ type ReduxState = {
   activeTab: {
     origin: string;
   };
-  metamask: MetamaskSliceState['metamask'];
+  metamask: MetaMaskSliceState['metamask'];
   appState: AppSliceState['appState'];
 } & Omit<RootReducerReturnType, 'activeTab' | 'metamask' | 'appState'>;
 
