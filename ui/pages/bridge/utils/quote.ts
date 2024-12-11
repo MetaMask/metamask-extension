@@ -199,7 +199,7 @@ export const formatCurrencyAmount = (
   }
   if (precision === 0) {
     if (amount.lt(0.01)) {
-      return `<${formatCurrency('0', currency, precision)}`;
+      return '<$0.01';
     }
     if (amount.lt(1)) {
       return formatCurrency(amount.toString(), currency, 2);
