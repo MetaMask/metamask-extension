@@ -309,6 +309,7 @@ describe('MetaMetricsController', function () {
           });
 
           const expectedFragment = merge(
+            {},
             SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT,
             SAMPLE_PERSISTED_EVENT_NO_ID,
             {

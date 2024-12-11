@@ -452,9 +452,10 @@ class FixtureBuilder {
     this.fixture.data.BridgeController = {
       bridgeState: {
         bridgeFeatureFlags: {
-          destNetworkAllowlist: [],
-          extensionSupport: false,
-          srcNetworkAllowlist: [],
+          extensionConfig: {
+            support: false,
+            chains: {},
+          },
         },
         destTokens: {},
         destTopAssets: [],
@@ -1479,6 +1480,24 @@ class FixtureBuilder {
         },
         selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
       });
+  }
+
+  withIncomingTransactionsPreferences(incomingTransactionsPreferences) {
+    return this.withPreferencesController({
+      featureFlags: {
+        showIncomingTransactions: incomingTransactionsPreferences,
+      },
+    });
+  }
+
+  withIncomingTransactionsCache(cache) {
+    return this.withTransactionController({ lastFetchedBlockNumbers: cache });
+  }
+
+  withTransactions(transactions) {
+    return this.withTransactionController({
+      transactions,
+    });
   }
 
   build() {

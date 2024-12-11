@@ -4,6 +4,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import log from 'loglevel';
 
+import { type MarkAsReadNotificationsParam } from '@metamask/notification-services-controller/notification-services';
 import {
   createOnChainTriggers,
   fetchAndUpdateMetamaskNotifications,
@@ -11,10 +12,7 @@ import {
   enableMetamaskNotifications,
   disableMetamaskNotifications,
 } from '../../store/actions';
-
-type Notification = NotificationServicesController.Types.INotification;
-type MarkAsReadNotificationsParam =
-  NotificationServicesController.Types.MarkAsReadNotificationsParam;
+import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
 
 // Define KeyringType interface
 type KeyringType = {
