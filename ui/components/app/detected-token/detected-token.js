@@ -210,14 +210,16 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
       const promises = Object.entries(groupedByChainId).map(
         async ([chainId, tokens]) => {
-          const chainConfig = allNetworks[chainId];
-          const { defaultRpcEndpointIndex } = chainConfig;
-          const { networkClientId: networkInstanceId } =
-            chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+          const { defaultRpcEndpointIndex, rpcEndpoints } =
+            allNetworks[chainId];
+          const networkInstanceId =
+            rpcEndpoints[defaultRpcEndpointIndex].networkClientId;
+
+          const tokensToIgnore = tokens.map((token) => token.address);
 
           await dispatch(
             ignoreTokens({
-              tokensToIgnore: tokens,
+              tokensToIgnore,
               dontShowLoadingIndicator: true,
               networkClientId: networkInstanceId,
             }),

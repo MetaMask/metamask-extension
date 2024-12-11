@@ -1484,6 +1484,20 @@ export function getUSDConversionRate(state) {
     ?.usdConversionRate;
 }
 
+export const getUSDConversionRateByChainId = (chainId) =>
+  createSelector(
+    getCurrencyRates,
+    (state) => selectNetworkConfigurationByChainId(state, chainId),
+    (currencyRates, networkConfiguration) => {
+      if (!networkConfiguration) {
+        return undefined;
+      }
+
+      const { nativeCurrency } = networkConfiguration;
+      return currencyRates[nativeCurrency]?.usdConversionRate;
+    },
+  );
+
 export function getCurrencyRates(state) {
   return state.metamask.currencyRates;
 }
@@ -1572,7 +1586,8 @@ export const getIsBridgeEnabled = createSelector(
   (bridgeFeatureFlags, shouldUseExternalServices) => {
     return (
       (shouldUseExternalServices &&
-        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_SUPPORT]) ??
+        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
+          ?.support) ??
       false
     );
   },
