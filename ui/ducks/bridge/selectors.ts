@@ -270,11 +270,31 @@ export const getToTokenConversionRate = createDeepEqualSelector(
   getToChain,
   getMarketData,
   getToToken,
+  getNetworkConfigurationsByChainId,
   (state) => ({
     state,
     toTokenExchangeRate: state.bridge.toTokenExchangeRate,
+    toTokenUsdExchangeRate: state.bridge.toTokenUsdExchangeRate,
   }),
-  (toChain, marketData, toToken, { state, toTokenExchangeRate }) => {
+  (
+    toChain,
+    marketData,
+    toToken,
+    allNetworksByChainId,
+    { state, toTokenExchangeRate, toTokenUsdExchangeRate },
+  ) => {
+    // When the toChain is not imported, the exchange rate to native asset is not available
+    // The rate in the bridge state is used instead
+    if (
+      toChain?.chainId &&
+      !allNetworksByChainId[toChain.chainId] &&
+      toTokenExchangeRate
+    ) {
+      return {
+        valueInCurrency: toTokenExchangeRate,
+        usd: toTokenUsdExchangeRate,
+      };
+    }
     if (toChain?.chainId && toToken && marketData) {
       const { chainId } = toChain;
 

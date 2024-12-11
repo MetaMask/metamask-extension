@@ -14,6 +14,7 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 import {
   bridgeSlice,
   setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
 } from './bridge';
 
@@ -36,6 +37,7 @@ export {
   setFromToken,
   setFromTokenInputValue,
   setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,
