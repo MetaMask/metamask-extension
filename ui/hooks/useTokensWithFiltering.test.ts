@@ -4,7 +4,6 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
-  TokenBucketPriority,
 } from '../../shared/constants/swaps';
 import { useTokensWithFiltering } from './useTokensWithFiltering';
 
@@ -42,7 +41,9 @@ describe('useTokensWithFiltering should return token list generator', () => {
         useTokensWithFiltering(
           MOCK_TOKEN_LIST_BY_ADDRESS,
           MOCK_TOP_ASSETS,
-          TokenBucketPriority.top,
+          {
+            [TEST_CHAIN_ID]: new Set(Object.keys(MOCK_TOKEN_LIST_BY_ADDRESS)),
+          },
           TEST_CHAIN_ID,
         ),
       mockStore,
@@ -106,7 +107,9 @@ describe('useTokensWithFiltering should return token list generator', () => {
         useTokensWithFiltering(
           MOCK_TOKEN_LIST_BY_ADDRESS,
           MOCK_TOP_ASSETS,
-          TokenBucketPriority.owned,
+          {
+            [TEST_CHAIN_ID]: new Set(Object.keys(MOCK_TOKEN_LIST_BY_ADDRESS)),
+          },
           TEST_CHAIN_ID,
         ),
       mockStore,
