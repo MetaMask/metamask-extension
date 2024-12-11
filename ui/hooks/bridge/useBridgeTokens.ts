@@ -22,9 +22,13 @@ export const useBridgeTokens = () => {
 
     (async () => {
       const results = await tokenAllowlistPromises;
-      const tokenAllowlistResults = results.reduce(
-        (acc, { value }) => ({ ...acc, ...value }),
-        {},
+      const tokenAllowlistResults = Object.fromEntries(
+        results.map((result) => {
+          if (result.status === 'fulfilled') {
+            return Object.entries(result.value)[0];
+          }
+          return [];
+        }),
       );
       setTokenAllowlistByChainId(tokenAllowlistResults);
     })();
