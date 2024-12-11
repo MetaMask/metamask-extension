@@ -181,7 +181,7 @@ export const BridgeQuotesModal = ({
                 paddingInline={4}
                 paddingTop={3}
                 paddingBottom={3}
-                style={{ position: 'relative', height: 78 }}
+                style={{ position: 'relative' }}
               >
                 {isQuoteActive && (
                   <Column
@@ -189,7 +189,7 @@ export const BridgeQuotesModal = ({
                       position: 'absolute',
                       left: 4,
                       top: 4,
-                      height: 70,
+                      height: 'calc(100% - 8px)',
                       width: 4,
                       borderRadius: 8,
                     }}

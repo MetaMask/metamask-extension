@@ -471,7 +471,7 @@ const PrepareBridgePage = () => {
           customTokenListGenerator={
             toChain && toTokens && toTopAssets
               ? toTokenListGenerator
-              : fromTokenListGenerator
+              : undefined
           }
           amountInFiat={
             activeQuote?.toTokenAmount?.valueInCurrency || undefined
