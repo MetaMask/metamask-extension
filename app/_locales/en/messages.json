@@ -509,6 +509,9 @@
   "allCustodianAccountsConnectedTitle": {
     "message": "No accounts available to connect"
   },
+  "allNetworks": {
+    "message": "All networks"
+  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -579,6 +582,9 @@
   "appNameMmi": {
     "message": "MetaMask Institutional",
     "description": "The name of the application (MMI)"
+  },
+  "apply": {
+    "message": "Apply"
   },
   "approve": {
     "message": "Approve spend limit"
@@ -876,6 +882,9 @@
   },
   "bridgeNetCost": {
     "message": "Net cost"
+  },
+  "bridgeQuoteExpired": {
+    "message": "Quotes expired - please request again"
   },
   "bridgeSelectNetwork": {
     "message": "Select network"
@@ -2931,6 +2940,7 @@
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
   },
+  "loadingTokenList": { "message": "Loading token list" },
   "loadingTokens": {
     "message": "Loading tokens..."
   },
@@ -4825,6 +4835,9 @@
   "searchTokens": {
     "message": "Search tokens"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "Search tokens by name or address"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -5190,6 +5203,9 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "singleNetwork": {
+    "message": "1 network"
+  },
   "siweIssued": {
     "message": "Issued"
   },
@@ -5213,6 +5229,30 @@
   },
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+  },
+  "slideBridgeDescription": {
+    "message": "Move across 9 chains, all within your wallet"
+  },
+  "slideBridgeTitle": {
+    "message": "Ready to bridge?"
+  },
+  "slideCashOutDescription": {
+    "message": "Sell your crypto for cash"
+  },
+  "slideCashOutTitle": {
+    "message": "Cash out with MetaMask"
+  },
+  "slideDebitCardDescription": {
+    "message": "Available in selected regions"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMask debit card"
+  },
+  "slideFundWalletDescription": {
+    "message": "Get started by adding funds"
+  },
+  "slideFundWalletTitle": {
+    "message": "Fund your wallet"
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -5418,6 +5458,9 @@
   },
   "solanaSupportToggleTitle": {
     "message": "Enable \"Add a new Solana account (Beta)\""
+  },
+  "someNetworks": {
+    "message": "$1 networks"
   },
   "somethingDoesntLookRight": {
     "message": "Something doesn't look right? $1",
