@@ -17,6 +17,7 @@ export type BridgeState = {
   fromTokenInputValue: string | null;
   fromTokenExchangeRate: number | null; // Exchange rate from selected token to the default currency (can be fiat or crypto)
   toTokenExchangeRate: number | null; // Exchange rate from the selected token to the default currency (can be fiat or crypto)
+  toTokenUsdExchangeRate: number | null; // Exchange rate from the selected token to the USD. This is needed for metrics
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
   slippage: number;
@@ -29,6 +30,7 @@ const initialState: BridgeState = {
   fromTokenInputValue: null,
   fromTokenExchangeRate: null,
   toTokenExchangeRate: null,
+  toTokenUsdExchangeRate: null,
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   slippage: BRIDGE_DEFAULT_SLIPPAGE,
@@ -41,6 +43,11 @@ export const setSrcTokenExchangeRates = createAsyncThunk(
 
 export const setDestTokenExchangeRates = createAsyncThunk(
   'bridge/setDestTokenExchangeRates',
+  getTokenExchangeRate,
+);
+
+export const setDestTokenUsdExchangeRates = createAsyncThunk(
+  'bridge/setDestTokenUsdExchangeRates',
   getTokenExchangeRate,
 );
 
@@ -78,11 +85,17 @@ const bridgeSlice = createSlice({
     builder.addCase(setDestTokenExchangeRates.pending, (state) => {
       state.toTokenExchangeRate = null;
     });
+    builder.addCase(setDestTokenUsdExchangeRates.pending, (state) => {
+      state.toTokenUsdExchangeRate = null;
+    });
     builder.addCase(setSrcTokenExchangeRates.pending, (state) => {
       state.fromTokenExchangeRate = null;
     });
     builder.addCase(setDestTokenExchangeRates.fulfilled, (state, action) => {
       state.toTokenExchangeRate = action.payload ?? null;
+    });
+    builder.addCase(setDestTokenUsdExchangeRates.fulfilled, (state, action) => {
+      state.toTokenUsdExchangeRate = action.payload ?? null;
     });
     builder.addCase(setSrcTokenExchangeRates.fulfilled, (state, action) => {
       state.fromTokenExchangeRate = action.payload ?? null;
