@@ -863,9 +863,6 @@
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
-  "bridgeDestination": {
-    "message": "Destination"
-  },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
@@ -886,9 +883,6 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
-  },
-  "bridgeSource": {
-    "message": "Source"
   },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
@@ -924,9 +918,6 @@
   },
   "bridgeTxDetailsBaseFee": {
     "message": "Base fee (GWEI)"
-  },
-  "bridgeTxDetailsBridgeAmount": {
-    "message": "Bridge amount"
   },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
@@ -980,9 +971,6 @@
   },
   "bridgeTxDetailsYouSent": {
     "message": "You sent"
-  },
-  "bridgeTypeDirectionTo": {
-    "message": "To"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
