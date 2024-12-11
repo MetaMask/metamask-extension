@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
@@ -32,9 +32,6 @@ import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-d
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
-  FEATURED_RPCS,
-  MAINNET_DISPLAY_NAME,
-  CHAIN_IDS,
 } from '../../../../../../shared/constants/network';
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
