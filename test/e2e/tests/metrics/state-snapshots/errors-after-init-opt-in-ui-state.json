@@ -38,10 +38,6 @@
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": {
-        "0x1": "boolean",
-        "0xaa36a7": "boolean",
-        "0xe705": "boolean",
-        "0xe708": "boolean",
         "0x539": "boolean"
       },
       "redesignedConfirmationsEnabled": true,
@@ -180,8 +176,6 @@
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
     "tokensChainsCache": {
-      "0x1": "object",
-      "0xe708": "object",
       "0x539": "object"
     },
     "preventPollingOnNetworkRestart": false,
