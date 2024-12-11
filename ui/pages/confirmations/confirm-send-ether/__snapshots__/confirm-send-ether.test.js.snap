@@ -87,12 +87,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           >
             G
           </div>
-          <span
+          <p
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
             data-testid="network-display"
           >
             Goerli
-          </span>
+          </p>
           <span
             class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
             style="mask-image: url('./images/icons/arrow-down.svg');"
