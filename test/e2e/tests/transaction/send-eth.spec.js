@@ -469,25 +469,19 @@ describe('Send ETH', function () {
             smartContract,
             title: this.test.fullTitle(),
           },
-          async ({ driver, contractRegistry, ganacheServer }) => {
-            const contractAddress = await contractRegistry.getContractAddress(
-              smartContract,
-            );
+          async ({ driver, ganacheServer }) => {
             await logInWithBalanceValidation(driver, ganacheServer);
 
             // Wait for balance to load
             await driver.delay(500);
 
             await driver.clickElement('[data-testid="eth-overview-send"]');
-            await driver.fill(
-              'input[placeholder="Enter public address (0x) or domain name"]',
-              contractAddress,
-            );
+            await driver.clickElement({ text: 'Account 1', tag: 'button' });
 
             const inputAmount = await driver.findElement(
               'input[placeholder="0"]',
             );
-            await inputAmount.press('1');
+            await inputAmount.sendKeys('1');
 
             // Continue to next screen
             await driver.clickElement({ text: 'Continue', tag: 'button' });
