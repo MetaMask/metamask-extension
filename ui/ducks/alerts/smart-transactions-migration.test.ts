@@ -6,7 +6,6 @@ import reducer, {
   shouldShowSmartTransactionsMigrationAlert,
 } from './smart-transactions-migration';
 import { ALERT_STATE } from './enums';
-import { SpyInstance } from 'jest-mock';
 
 jest.mock('../../store/actions', () => ({
   setAlertEnabledness: jest
@@ -15,10 +14,7 @@ jest.mock('../../store/actions', () => ({
 }));
 
 describe('Smart Transactions Migration Alert', () => {
-  let consoleErrorSpy: jest.SpyInstance<
-    void,
-    [message?: any, ...optionalParams: any[]]
-  >;
+  let consoleErrorSpy: jest.SpyInstance;
 
   const mockState = {
     [AlertTypes.smartTransactionsMigration]: {

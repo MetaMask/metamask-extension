@@ -15,9 +15,9 @@ import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constan
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
-interface SmartTransactionsBannerAlertProps {
+type SmartTransactionsBannerAlertProps = {
   marginType?: MarginType;
-}
+};
 
 export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlertProps> =
   React.memo(({ marginType = 'default' }) => {
