@@ -154,8 +154,8 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
                   ];
                 return (
                   <AvatarNetwork
-                    key={chainId}
-                    name="All"
+                    key={networkImageUrl}
+                    name={networkImageUrl}
                     src={networkImageUrl ?? undefined}
                     size={AvatarNetworkSize.Sm}
                     // overlap the icons
