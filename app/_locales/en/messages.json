@@ -5243,6 +5243,9 @@
   "smartTransactions": {
     "message": "Smart Transactions"
   },
+  "smartTransactionsEnabled": {
+    "message": "You're now protected with MetaMask Smart Transactions"
+  },
   "snapAccountCreated": {
     "message": "Account created"
   },
@@ -6823,8 +6826,5 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
-  },
-  "smartTransactionsEnabled": {
-    "message": "You're now protected with MetaMask Smart Transactions"
   }
 }
