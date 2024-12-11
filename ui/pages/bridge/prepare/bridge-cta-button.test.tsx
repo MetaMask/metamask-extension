@@ -3,10 +3,8 @@ import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { RequestStatus } from '../../../../shared/constants/bridge';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { RequestStatus } from '../../../../app/scripts/controllers/bridge/constants';
 import { BridgeCTAButton } from './bridge-cta-button';
 
 describe('BridgeCTAButton', () => {

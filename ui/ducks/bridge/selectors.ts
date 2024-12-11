@@ -20,6 +20,7 @@ import {
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_ETA_SECONDS,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  RequestStatus,
 } from '../../../shared/constants/bridge';
 import {
   BridgeState,
@@ -36,9 +37,6 @@ import {
 } from '../../../shared/modules/selectors/networks';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import {
   calcAdjustedReturn,
   calcCost,
