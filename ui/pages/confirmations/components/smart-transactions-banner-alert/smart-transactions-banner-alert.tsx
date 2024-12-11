@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -14,13 +13,14 @@ import {
 } from '../../../../ducks/alerts/smart-transactions-migration';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
 
-/**
- * @typedef {'default' | 'none' | 'noTop' | 'onlyTop'} MarginType
- * @param {object} props
- * @param {MarginType} [props.marginType='default']
- */
-const SmartTransactionsBannerAlert = React.memo(
-  ({ marginType = 'default' }) => {
+type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
+
+interface SmartTransactionsBannerAlertProps {
+  marginType?: MarginType;
+}
+
+export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlertProps> =
+  React.memo(({ marginType = 'default' }) => {
     const dispatch = useDispatch();
     const shouldShow = useSelector(shouldShowSmartTransactionsMigrationAlert);
     const t = useI18nContext();
@@ -36,7 +36,7 @@ const SmartTransactionsBannerAlert = React.memo(
         case 'noTop':
           return { marginTop: 0 };
         case 'onlyTop':
-          return { margin: 0, marginTop: 16 }; // or whatever the default top margin value should be
+          return { margin: 0, marginTop: 16 };
         default:
           return undefined;
       }
@@ -64,13 +64,8 @@ const SmartTransactionsBannerAlert = React.memo(
         </Text>
       </BannerAlert>
     );
-  },
-);
-
-SmartTransactionsBannerAlert.propTypes = {
-  marginType: PropTypes.oneOf(['default', 'none', 'noTop', 'onlyTop']),
-};
+  });
 
 SmartTransactionsBannerAlert.displayName = 'SmartTransactionsBannerAlert';
 
-export { SmartTransactionsBannerAlert };
+export default SmartTransactionsBannerAlert;

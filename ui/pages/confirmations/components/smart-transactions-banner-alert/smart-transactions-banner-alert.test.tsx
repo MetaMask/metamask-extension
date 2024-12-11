@@ -6,14 +6,12 @@ import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { ALERT_STATE } from '../../../../ducks/alerts/enums';
 import { SmartTransactionsBannerAlert } from './smart-transactions-banner-alert';
 
-// Mock the entire module
 jest.mock('../../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key) => key,
+  useI18nContext: () => (key: string) => key,
   __esModule: true,
-  default: () => (key) => key,
+  default: () => (key: string) => key,
 }));
 
-// Mock the setAlertEnabledness function
 jest.mock('../../../../store/actions', () => ({
   setAlertEnabledness: jest.fn().mockResolvedValue(undefined),
 }));
@@ -70,7 +68,6 @@ describe('SmartTransactionsBannerAlert', () => {
 
     screen.getByRole('button', { name: /close/iu }).click();
 
-    // Wait for the async action to complete
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     const state = store.getState();
@@ -85,7 +82,6 @@ describe('SmartTransactionsBannerAlert', () => {
 
     screen.getByText('learnMore').click();
 
-    // Wait for the async action to complete
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     const state = store.getState();
