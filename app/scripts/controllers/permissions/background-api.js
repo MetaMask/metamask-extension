@@ -1,29 +1,164 @@
 import nanoid from 'nanoid';
 import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
-import { CaveatFactories, PermissionNames } from './specifications';
+  MethodNames,
+  PermissionDoesNotExistError,
+} from '@metamask/permission-controller';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getEthAccounts,
+  setEthAccounts,
+  getPermittedEthChainIds,
+  setPermittedEthChainIds,
+} from '@metamask/multichain';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
+import { PermissionNames } from './specifications';
 
-export function getPermissionBackgroundApiMethods(permissionController) {
+const snapsPrefixes = ['npm:', 'local:'];
+const isSnap = (origin) =>
+  snapsPrefixes.some((prefix) => origin.startsWith(prefix));
+
+export function getPermissionBackgroundApiMethods({
+  permissionController,
+  approvalController,
+}) {
+  // To add more than one account when already connected to the dapp
   const addMoreAccounts = (origin, accounts) => {
-    const caveat = CaveatFactories.restrictReturnedAccounts(accounts);
+    let caip25Caveat;
+    try {
+      caip25Caveat = permissionController.getCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    } catch (err) {
+      if (err instanceof PermissionDoesNotExistError) {
+        // suppress expected error in case that the origin
+        // does not have the target permission yet
+      } else {
+        throw err;
+      }
+    }
 
-    permissionController.grantPermissionsIncremental({
-      subject: { origin },
-      approvedPermissions: {
-        [RestrictedMethods.eth_accounts]: { caveats: [caveat] },
-      },
-    });
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot add account permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
+    }
+
+    const ethAccounts = getEthAccounts(caip25Caveat.value);
+
+    const updatedEthAccounts = Array.from(
+      new Set([...ethAccounts, ...accounts]),
+    );
+
+    const updatedCaveatValue = setEthAccounts(
+      caip25Caveat.value,
+      updatedEthAccounts,
+    );
+
+    permissionController.updateCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      updatedCaveatValue,
+    );
   };
 
   const addMoreChains = (origin, chainIds) => {
-    const caveat = CaveatFactories.restrictNetworkSwitching(chainIds);
+    let caip25Caveat;
+    try {
+      caip25Caveat = permissionController.getCaveat(
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    } catch (err) {
+      if (err instanceof PermissionDoesNotExistError) {
+        // suppress expected error in case that the origin
+        // does not have the target permission yet
+      } else {
+        throw err;
+      }
+    }
 
-    permissionController.grantPermissionsIncremental({
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot add chain permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
+    }
+
+    const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
+
+    const updatedEthChainIds = Array.from(
+      new Set([...ethChainIds, ...chainIds]),
+    );
+
+    let updatedCaveatValue = setPermittedEthChainIds(
+      caip25Caveat.value,
+      updatedEthChainIds,
+    );
+
+    // ensure that the list of permitted eth accounts is set for the newly added eth scopes
+    const ethAccounts = getEthAccounts(updatedCaveatValue);
+    updatedCaveatValue = setEthAccounts(updatedCaveatValue, ethAccounts);
+
+    permissionController.updateCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      updatedCaveatValue,
+    );
+  };
+
+  const requestAccountsAndChainPermissions = async (origin, id) => {
+    // Note that we are purposely requesting an approval from the ApprovalController
+    // and then manually forming the permission that is then granted via the
+    // PermissionController rather than calling the PermissionController.requestPermissions()
+    // directly because the Approval UI is still dependent on the notion of there
+    // being separate "eth_accounts" and "endowment:permitted-chains" permissions.
+    // After that depedency is refactored, we can move to requesting "endowment:caip25"
+    // directly from the PermissionController instead.
+    const legacyApproval = await approvalController.addAndShowApprovalRequest({
+      id,
+      origin,
+      requestData: {
+        metadata: {
+          id,
+          origin,
+        },
+        permissions: {
+          [RestrictedMethods.eth_accounts]: {},
+          [PermissionNames.permittedChains]: {},
+        },
+      },
+      type: MethodNames.RequestPermissions,
+    });
+
+    let caveatValue = {
+      requiredScopes: {},
+      optionalScopes: {},
+      isMultichainOrigin: false,
+    };
+
+    caveatValue = setPermittedEthChainIds(
+      caveatValue,
+      legacyApproval.approvedChainIds,
+    );
+
+    caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
+
+    permissionController.grantPermissions({
       subject: { origin },
       approvedPermissions: {
-        [PermissionNames.permittedChains]: { caveats: [caveat] },
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValue,
+            },
+          ],
+        },
       },
     });
   };
@@ -31,15 +166,34 @@ export function getPermissionBackgroundApiMethods(permissionController) {
   return {
     addPermittedAccount: (origin, account) =>
       addMoreAccounts(origin, [account]),
+
     addPermittedAccounts: (origin, accounts) =>
       addMoreAccounts(origin, accounts),
 
     removePermittedAccount: (origin, account) => {
-      const { value: existingAccounts } = permissionController.getCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
+      let caip25Caveat;
+      try {
+        caip25Caveat = permissionController.getCaveat(
+          origin,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+        );
+      } catch (err) {
+        if (err instanceof PermissionDoesNotExistError) {
+          // suppress expected error in case that the origin
+          // does not have the target permission yet
+        } else {
+          throw err;
+        }
+      }
+
+      if (!caip25Caveat) {
+        throw new Error(
+          `Cannot remove account "${account}": No permissions exist for origin "${origin}".`,
+        );
+      }
+
+      const existingAccounts = getEthAccounts(caip25Caveat.value);
 
       const remainingAccounts = existingAccounts.filter(
         (existingAccount) => existingAccount !== account,
@@ -52,73 +206,81 @@ export function getPermissionBackgroundApiMethods(permissionController) {
       if (remainingAccounts.length === 0) {
         permissionController.revokePermission(
           origin,
-          RestrictedMethods.eth_accounts,
+          Caip25EndowmentPermissionName,
         );
       } else {
+        const updatedCaveatValue = setEthAccounts(
+          caip25Caveat.value,
+          remainingAccounts,
+        );
         permissionController.updateCaveat(
           origin,
-          RestrictedMethods.eth_accounts,
-          CaveatTypes.restrictReturnedAccounts,
-          remainingAccounts,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          updatedCaveatValue,
         );
       }
     },
 
     addPermittedChain: (origin, chainId) => addMoreChains(origin, [chainId]),
+
     addPermittedChains: (origin, chainIds) => addMoreChains(origin, chainIds),
 
     removePermittedChain: (origin, chainId) => {
-      const { value: existingChains } = permissionController.getCaveat(
-        origin,
-        PermissionNames.permittedChains,
-        CaveatTypes.restrictNetworkSwitching,
+      let caip25Caveat;
+      try {
+        caip25Caveat = permissionController.getCaveat(
+          origin,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+        );
+      } catch (err) {
+        if (err instanceof PermissionDoesNotExistError) {
+          // suppress expected error in case that the origin
+          // does not have the target permission yet
+        } else {
+          throw err;
+        }
+      }
+
+      if (!caip25Caveat) {
+        throw new Error(
+          `Cannot remove permission for chainId "${chainId}": No permissions exist for origin "${origin}".`,
+        );
+      }
+
+      const existingEthChainIds = getPermittedEthChainIds(caip25Caveat.value);
+
+      const remainingChainIds = existingEthChainIds.filter(
+        (existingChainId) => existingChainId !== chainId,
       );
 
-      const remainingChains = existingChains.filter(
-        (existingChain) => existingChain !== chainId,
-      );
-
-      if (remainingChains.length === existingChains.length) {
+      if (remainingChainIds.length === existingEthChainIds.length) {
         return;
       }
 
-      if (remainingChains.length === 0) {
+      if (remainingChainIds.length === 0 && !isSnap(origin)) {
         permissionController.revokePermission(
           origin,
-          PermissionNames.permittedChains,
+          Caip25EndowmentPermissionName,
         );
       } else {
+        const updatedCaveatValue = setPermittedEthChainIds(
+          caip25Caveat.value,
+          remainingChainIds,
+        );
         permissionController.updateCaveat(
           origin,
-          PermissionNames.permittedChains,
-          CaveatTypes.restrictNetworkSwitching,
-          remainingChains,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          updatedCaveatValue,
         );
       }
     },
 
-    requestAccountsAndChainPermissionsWithId: async (origin) => {
+    requestAccountsAndChainPermissionsWithId: (origin) => {
       const id = nanoid();
-      permissionController.requestPermissions(
-        { origin },
-        {
-          [PermissionNames.eth_accounts]: {},
-          [PermissionNames.permittedChains]: {},
-        },
-        { id },
-      );
-      return id;
-    },
-
-    requestAccountsPermissionWithId: async (origin) => {
-      const id = nanoid();
-      permissionController.requestPermissions(
-        { origin },
-        {
-          eth_accounts: {},
-        },
-        { id },
-      );
+      requestAccountsAndChainPermissions(origin, id);
       return id;
     },
   };
