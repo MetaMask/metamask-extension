@@ -138,6 +138,8 @@ describe('preferences controller', () => {
           keyrings: [
             {
               type: 'HD Key Tree',
+              typeIndex: 0,
+              id: 'test-keyring-id-1',
               accounts: [firstAddress, secondAddress],
             },
           ],
@@ -183,6 +185,8 @@ describe('preferences controller', () => {
           keyrings: [
             {
               type: 'HD Key Tree',
+              typeIndex: 0,
+              id: 'test-keyring-id-1',
               accounts: [firstAddress, secondAddress],
             },
           ],
@@ -234,6 +238,8 @@ describe('preferences controller', () => {
           keyrings: [
             {
               type: 'HD Key Tree',
+              typeIndex: 0,
+              id: 'test-keyring-id-1',
               accounts: [firstAddress, secondAddress],
             },
           ],
@@ -269,6 +275,8 @@ describe('preferences controller', () => {
           keyrings: [
             {
               type: 'HD Key Tree',
+              typeIndex: 0,
+              id: 'test-keyring-id-1',
               accounts: [firstAddress, secondAddress],
             },
           ],
@@ -521,6 +529,8 @@ describe('preferences controller', () => {
           keyrings: [
             {
               type: 'HD Key Tree',
+              typeIndex: 0,
+              id: 'test-keyring-id-1',
               accounts: [firstAddress, secondAddress],
             },
           ],

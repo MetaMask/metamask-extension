@@ -11,7 +11,7 @@ const VALID_SECRET_RECOVERY_PHRASE =
   'input turtle oil scorpion exile useless dry foster vessel knee area label';
 
 jest.mock('../../../../store/actions', () => ({
-  createNewVaultAndRestoreFromMnemonic: jest
+  addNewMnemonicToVault: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue(null)),
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
@@ -53,7 +53,7 @@ describe('ImportSRP', () => {
     expect(getByText('Import wallet')).not.toBeEnabled();
   });
 
-  it('should call createNewVaultAndRestoreFromMnemonic and showAlert on successful import', async () => {
+  it('should call addNewMnemonicToVault and showAlert on successful import', async () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = renderWithProvider(
       <ImportSRP onActionComplete={onActionComplete} />,
@@ -69,7 +69,7 @@ describe('ImportSRP', () => {
     fireEvent.click(getByText('Import wallet'));
 
     await waitFor(() => {
-      expect(actions.createNewVaultAndRestoreFromMnemonic).toHaveBeenCalledWith(
+      expect(actions.addNewMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
       expect(actions.showAlert).toHaveBeenCalledWith(
@@ -80,7 +80,7 @@ describe('ImportSRP', () => {
   });
 
   it('should log an error and not call onActionComplete on import failure', async () => {
-    (actions.createNewVaultAndRestoreFromMnemonic as jest.Mock).mockImplementation(() =>
+    (actions.addNewMnemonicToVault as jest.Mock).mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
@@ -99,7 +99,7 @@ describe('ImportSRP', () => {
     fireEvent.click(getByText('Import wallet'));
 
     await waitFor(() => {
-      expect(actions.createNewVaultAndRestoreFromMnemonic).toHaveBeenCalledWith(
+      expect(actions.addNewMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
       expect(onActionComplete).not.toHaveBeenCalled();
