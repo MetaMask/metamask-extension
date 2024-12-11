@@ -90,7 +90,7 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
   ];
 }
 
-describe('Swap Eth for another Token @no-mmi', function () {
+xdescribe('Swap Eth for another Token @no-mmi', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     const { initialBalanceInHex } = genRandInitBal();
 

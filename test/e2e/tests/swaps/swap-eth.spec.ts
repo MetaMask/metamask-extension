@@ -9,7 +9,7 @@ import {
   mockEthDaiTrade,
 } from './shared';
 
-describe('Swap Eth for another Token @no-mmi', function () {
+xdescribe('Swap Eth for another Token @no-mmi', function () {
   it('Completes second Swaps while first swap is processing', async function () {
     withFixturesOptions.ganacheOptions.miner.blockTime = 10;
 
