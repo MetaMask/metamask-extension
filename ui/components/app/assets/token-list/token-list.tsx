@@ -18,6 +18,7 @@ import {
   getSelectedAccountTokensAcrossChains,
   getShowFiatInTestnets,
   getTokenExchangeRates,
+  getTokenNetworkFilter,
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
@@ -87,12 +88,9 @@ export default function TokenList({
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
-  const {
-    tokenSortConfig,
-    tokenNetworkFilter,
-    privacyMode,
-    hideZeroBalanceTokens,
-  } = useSelector(getPreferences);
+  const { tokenSortConfig, privacyMode, hideZeroBalanceTokens } =
+    useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
   const contractExchangeRates = useSelector(
@@ -124,7 +122,7 @@ export default function TokenList({
       const allNetworkFilters = Object.fromEntries(
         Object.keys(allNetworks).map((chainId) => [chainId, true]),
       );
-      if (Object.keys(tokenNetworkFilter || {}).length > 1) {
+      if (Object.keys(tokenNetworkFilter).length > 1) {
         dispatch(setTokenNetworkFilter(allNetworkFilters));
       }
     }

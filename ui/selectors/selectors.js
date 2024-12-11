@@ -1076,8 +1076,7 @@ export function getPetnamesEnabled(state) {
 
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
-  const { tokenNetworkFilter: tokenNetworkFilterValue } = getPreferences(state);
-  const tokenNetworkFilter = tokenNetworkFilterValue || {};
+  const tokenNetworkFilter = getTokenNetworkFilter(state);
   if (
     Object.keys(tokenNetworkFilter).length === 1 &&
     Object.keys(tokenNetworkFilter)[0] === chainId
@@ -1085,6 +1084,11 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
     return true;
   }
   return false;
+}
+
+export function getTokenNetworkFilter(state) {
+  const { tokenNetworkFilter } = getPreferences(state);
+  return tokenNetworkFilter || {};
 }
 
 export function getUseTransactionSimulations(state) {
@@ -1452,6 +1456,20 @@ export function getUSDConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.usdConversionRate;
 }
+
+export const getUSDConversionRateByChainId = (chainId) =>
+  createSelector(
+    getCurrencyRates,
+    (state) => selectNetworkConfigurationByChainId(state, chainId),
+    (currencyRates, networkConfiguration) => {
+      if (!networkConfiguration) {
+        return undefined;
+      }
+
+      const { nativeCurrency } = networkConfiguration;
+      return currencyRates[nativeCurrency]?.usdConversionRate;
+    },
+  );
 
 export function getCurrencyRates(state) {
   return state.metamask.currencyRates;
