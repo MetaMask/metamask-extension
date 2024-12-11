@@ -1,5 +1,5 @@
 /* eslint-disable import/no-restricted-paths */
-/** Circular dependencies in this file should not have any impact at build time and runtime, ås all imports/exports are types that will be stripped */
+/** Circular dependencies in this file should have no impact at build time and runtime, ås all imports/exports are types that will be stripped by tsc */
 import {
   TokenRatesController,
   CurrencyRateController,
@@ -163,8 +163,8 @@ import AppMetadataController, {
   AppMetadataControllerState,
 } from '../../app/scripts/controllers/app-metadata';
 import { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
-import { BridgeControllerState } from '../../app/scripts/controllers/bridge/types';
 
+import { BridgeControllerState } from './bridge';
 import { BridgeStatusControllerState } from './bridge-status';
 import {
   CustodyControllerState,
