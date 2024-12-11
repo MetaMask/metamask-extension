@@ -277,7 +277,7 @@ describe('AccountListItem', () => {
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
-      it('renders fiat for non-EVM account', () => {
+      it('renders fiat and native balance for non-EVM account', () => {
         const { container } = render(
           {
             account: mockNonEvmAccount,
@@ -308,8 +308,8 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay).not.toBeInTheDocument();
-        expect(avatarGroup).toBeInTheDocument();
+        expect(secondCurrencyDisplay.textContent).toContain('1BTC');
+        expect(avatarGroup).not.toBeInTheDocument();
       });
     });
   });
