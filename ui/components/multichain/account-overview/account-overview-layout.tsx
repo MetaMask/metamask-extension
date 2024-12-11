@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { useLocation } from 'react-router-dom';
-///: END:ONLY_INCLUDE_IF
 import { removeSlide, updateSlides } from '../../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import useBridging from '../../../hooks/bridge/useBridging';
-///: END:ONLY_INCLUDE_IF
 import { Carousel } from '..';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
   ///: END:ONLY_INCLUDE_IF
   getSelectedAccountCachedBalance,
   getAppIsLoading,
   getSlides,
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+///: END:ONLY_INCLUDE_IF
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -46,9 +46,10 @@ export const AccountOverviewLayout = ({
   const hasZeroBalance = totalBalance === ZERO_BALANCE;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const location = useLocation();
-  const { openBridgeExperience } = useBridging();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
@@ -77,13 +78,17 @@ export const AccountOverviewLayout = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleCarouselClick = (id: string) => {
     if (id === 'bridge') {
-      if (defaultSwapsToken) {
-        openBridgeExperience(
-          'Home',
-          defaultSwapsToken,
-          location.pathname.includes('asset') ? '&token=native' : '',
-        );
-      }
+      const portfolioUrl = getPortfolioUrl(
+        'bridge',
+        'ext_bridge_prepare_swap_link',
+        metaMetricsId,
+        isMetaMetricsEnabled,
+        isMarketingEnabled,
+      );
+
+      global.platform.openTab({
+        url: `${portfolioUrl}&token=${defaultSwapsToken}`,
+      });
     }
   };
   ///: END:ONLY_INCLUDE_IF
