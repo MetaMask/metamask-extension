@@ -3,9 +3,8 @@
 # actions that may result in code from that branch being executed
 # such as installing dependencies or running build scripts.
 
-# Updating this file on feature branches or forks will not reflect changes.
-# For security reasons, always the latest version from the default branch is used.
-# This means any changes made to this file in a feature branch will not be considered until they are merged.
+# For security reasons, this file always uses the latest version from the default branch.
+# Changes made in feature branches or forks will not take effect until they are merged.
 
 name: SonarCloud
 
