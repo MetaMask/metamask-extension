@@ -28,7 +28,7 @@ export const CASH_SLIDE = {
   title: 'slideCashOutTitle',
   description: 'slideCashOutDescription',
   image: './images/slide-sell-icon.svg',
-  href: 'https://portfolio.metamask.io/buy/build-quote',
+  href: 'https://portfolio.metamask.io/sell',
 };
 
 export const ZERO_BALANCE = '0x00';
