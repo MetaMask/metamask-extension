@@ -1,0 +1,22 @@
+.mm-skeleton {
+  @keyframes skeleton-pulse {
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-clip: padding-box;
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+
+  &--hide-children * {
+    visibility: hidden;
+  }
+}
