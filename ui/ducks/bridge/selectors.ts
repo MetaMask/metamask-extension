@@ -24,9 +24,7 @@ import {
 import {
   BridgeState,
   BridgeFeatureFlagsKey,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
+} from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getProviderConfig,

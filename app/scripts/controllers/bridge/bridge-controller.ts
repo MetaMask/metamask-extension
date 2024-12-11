@@ -34,6 +34,10 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidQuoteRequest } from '../../../../ui/pages/bridge/utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
+import {
+  BridgeControllerState,
+  BridgeFeatureFlagsKey,
+} from '../../../../shared/types/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   BRIDGE_CONTROLLER_NAME,
@@ -42,11 +46,7 @@ import {
   RequestStatus,
   METABRIDGE_CHAIN_TO_ADDRESS_MAP,
 } from './constants';
-import {
-  BridgeControllerState,
-  BridgeControllerMessenger,
-  BridgeFeatureFlagsKey,
-} from './types';
+import { BridgeControllerMessenger } from './types';
 
 const metadata: StateMetadata<BridgeControllerState> = {
   bridgeState: {

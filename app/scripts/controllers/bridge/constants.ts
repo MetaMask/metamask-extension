@@ -9,7 +9,7 @@ import {
   BridgeState,
   BridgeFeatureFlagsKey,
   BridgeControllerState,
-} from './types';
+} from '../../../../shared/types/bridge';
 
 export const BRIDGE_CONTROLLER_NAME = 'BridgeController';
 export const REFRESH_INTERVAL_MS = 30 * 1000;

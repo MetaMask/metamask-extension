@@ -4,9 +4,7 @@ import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
+} from '../../../shared/types/bridge';
 import {
   BRIDGE_API_BASE_URL,
   BRIDGE_CLIENT_ID,
