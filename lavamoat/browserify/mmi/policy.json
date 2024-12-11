@@ -2392,6 +2392,11 @@
         "@segment/loosely-validate-event>join-component": true
       }
     },
+    "@selfpentest/notpasswdstrength": {
+      "globals": {
+        "fetch": true
+      }
+    },
     "@sentry/browser>@sentry-internal/browser-utils": {
       "globals": {
         "PerformanceEventTiming.prototype": true,
