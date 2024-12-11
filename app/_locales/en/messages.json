@@ -916,9 +916,6 @@
   "bridgeTotalFeesTooltipText": {
     "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
   },
-  "bridgeTxDetailsBaseFee": {
-    "message": "Base fee (GWEI)"
-  },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
   },
@@ -931,20 +928,8 @@
   "bridgeTxDetailsDelayedTitle": {
     "message": "Has it been longer than 3 hours?"
   },
-  "bridgeTxDetailsGasLimit": {
-    "message": "Gas limit (units)"
-  },
-  "bridgeTxDetailsGasUsed": {
-    "message": "Gas used (units)"
-  },
-  "bridgeTxDetailsMaxFeePerGas": {
-    "message": "Max fee per gas"
-  },
   "bridgeTxDetailsNonce": {
     "message": "Nonce"
-  },
-  "bridgeTxDetailsPriorityFee": {
-    "message": "Priority fee (GWEI)"
   },
   "bridgeTxDetailsStatus": {
     "message": "Status"
@@ -959,9 +944,6 @@
   "bridgeTxDetailsTokenAmountOnChain": {
     "message": "$1 $2 on",
     "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
-  },
-  "bridgeTxDetailsTotal": {
-    "message": "Total"
   },
   "bridgeTxDetailsTotalGasFee": {
     "message": "Total gas fee"
