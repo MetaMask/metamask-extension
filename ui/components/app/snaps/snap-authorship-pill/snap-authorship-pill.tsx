@@ -22,7 +22,6 @@ const SnapAuthorshipPill: React.FC<SnapAuthorshipPillProps> = ({
   onClick,
 }) => {
   const { name: snapName } = useSelector((state) =>
-    // @ts-expect-error ts is picking up the wrong type for the selector
     getSnapMetadata(state, snapId),
   );
 

@@ -13,7 +13,11 @@ import {
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
-import { SortOrder } from '../../pages/bridge/types';
+import {
+  QuoteMetadata,
+  QuoteResponse,
+  SortOrder,
+} from '../../pages/bridge/types';
 import {
   getAllBridgeableNetworks,
   getBridgeQuotes,
@@ -710,9 +714,11 @@ describe('Bridge selectors', () => {
         { valueInCurrency: new BigNumber('0.156562871410260918428') },
         { valueInCurrency: new BigNumber('0.33900008283534602') },
       ];
-      result.sortedQuotes.forEach((quote, idx) => {
-        expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
-      });
+      result.sortedQuotes.forEach(
+        (quote: QuoteMetadata & QuoteResponse, idx: number) => {
+          expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
+        },
+      );
       expect(result).toStrictEqual({
         sortedQuotes: expect.any(Array),
         recommendedQuote: {
@@ -809,9 +815,11 @@ describe('Bridge selectors', () => {
         { valueInCurrency: new BigNumber('0.15656287141025952') },
         { valueInCurrency: new BigNumber('0.33900008283534464') },
       ];
-      result.sortedQuotes.forEach((quote, idx) => {
-        expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
-      });
+      result.sortedQuotes.forEach(
+        (quote: QuoteMetadata & QuoteResponse, idx: number) => {
+          expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
+        },
+      );
 
       expect(result).toStrictEqual({
         sortedQuotes: expect.any(Array),
@@ -880,14 +888,18 @@ describe('Bridge selectors', () => {
         '381c23bc-e3e4-48fe-bc53-257471e388ad',
       );
       expect(sortedQuotes).toHaveLength(2);
-      sortedQuotes.forEach((quote, idx) => {
-        expect(
-          quoteMetadataKeys.every((k) => Object.keys(quote ?? {}).includes(k)),
-        ).toBe(true);
-        expect(quote?.quote.requestId).toStrictEqual(
-          mockBridgeQuotesNativeErc20[idx]?.quote.requestId,
-        );
-      });
+      sortedQuotes.forEach(
+        (quote: QuoteMetadata & QuoteResponse, idx: number) => {
+          expect(
+            quoteMetadataKeys.every((k) =>
+              Object.keys(quote ?? {}).includes(k),
+            ),
+          ).toBe(true);
+          expect(quote?.quote.requestId).toStrictEqual(
+            mockBridgeQuotesNativeErc20[idx]?.quote.requestId,
+          );
+        },
+      );
     });
 
     it('should sort quotes by ETA', () => {
