@@ -6,21 +6,21 @@ export type L1GasFees = {
 };
 
 // Values derived from the quote response
-// fiat values are calculated based on the user's selected currency
+// valueInCurrency values are calculated based on the user's selected currency
 export type QuoteMetadata = {
-  gasFee: { amount: BigNumber; fiat: BigNumber | null };
-  totalNetworkFee: { amount: BigNumber; fiat: BigNumber | null }; // gasFees + relayerFees
-  toTokenAmount: { amount: BigNumber; fiat: BigNumber | null };
-  adjustedReturn: { fiat: BigNumber | null }; // destTokenAmount - totalNetworkFee
-  sentAmount: { amount: BigNumber; fiat: BigNumber | null }; // srcTokenAmount + metabridgeFee
+  gasFee: { amount: BigNumber; valueInCurrency: BigNumber | null };
+  totalNetworkFee: { amount: BigNumber; valueInCurrency: BigNumber | null }; // gasFees + relayerFees
+  toTokenAmount: { amount: BigNumber; valueInCurrency: BigNumber | null };
+  adjustedReturn: { valueInCurrency: BigNumber | null }; // destTokenAmount - totalNetworkFee
+  sentAmount: { amount: BigNumber; valueInCurrency: BigNumber | null }; // srcTokenAmount + metabridgeFee
   swapRate: BigNumber; // destTokenAmount / sentAmount
-  cost: { fiat: BigNumber | null }; // sentAmount - adjustedReturn
+  cost: { valueInCurrency: BigNumber | null }; // sentAmount - adjustedReturn
 };
 
 // Sort order set by the user
 export enum SortOrder {
-  COST_ASC,
-  ETA_ASC,
+  COST_ASC = 'cost_ascending',
+  ETA_ASC = 'time_descending',
 }
 
 // Types copied from Metabridge API
@@ -56,7 +56,7 @@ export type QuoteRequest = {
   destChainId: ChainId;
   srcTokenAddress: string;
   destTokenAddress: string;
-  srcTokenAmount: string;
+  srcTokenAmount: string; // This is the amount sent
   slippage: number;
   aggIds?: string[];
   bridgeIds?: string[];
@@ -94,6 +94,8 @@ export type Quote = {
   requestId: string;
   srcChainId: ChainId;
   srcAsset: BridgeAsset;
+  // This is amount sent - metabridge fee, however, some tokens have a fee of 0
+  // So sometimes it's equal to amount sent
   srcTokenAmount: string;
   destChainId: ChainId;
   destAsset: BridgeAsset;

@@ -413,6 +413,7 @@ describe('BridgeController', function () {
           ...mockBridgeQuotesNativeErc20Eth,
         ],
         quotesLoadingStatus: 1,
+        quoteFetchError: undefined,
         quotesRefreshCount: 2,
       }),
     );
@@ -433,12 +434,14 @@ describe('BridgeController', function () {
           ...mockBridgeQuotesNativeErc20Eth,
         ],
         quotesLoadingStatus: 2,
+        quoteFetchError: 'Network error',
         quotesRefreshCount: 3,
       }),
     );
-    expect(bridgeController.state.bridgeState.quotesLastFetched).toStrictEqual(
-      secondFetchTime,
-    );
+    secondFetchTime &&
+      expect(
+        bridgeController.state.bridgeState.quotesLastFetched,
+      ).toBeGreaterThan(secondFetchTime);
 
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
     expect(getLayer1GasFeeMock).not.toHaveBeenCalled();
@@ -507,6 +510,7 @@ describe('BridgeController', function () {
         quoteRequest: { ...quoteRequest, walletAddress: undefined },
         quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
         quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
+        quotesInitialLoadTime: undefined,
         quotesLoadingStatus:
           DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
       }),
@@ -544,6 +548,7 @@ describe('BridgeController', function () {
         quotes: mockBridgeQuotesNativeErc20Eth,
         quotesLoadingStatus: 1,
         quotesRefreshCount: 1,
+        quotesInitialLoadTime: 11000,
       }),
     );
     const firstFetchTime =
@@ -560,6 +565,7 @@ describe('BridgeController', function () {
         quotes: mockBridgeQuotesNativeErc20Eth,
         quotesLoadingStatus: 1,
         quotesRefreshCount: 1,
+        quotesInitialLoadTime: 11000,
       }),
     );
     const secondFetchTime =

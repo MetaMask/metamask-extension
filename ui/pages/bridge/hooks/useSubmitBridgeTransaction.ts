@@ -20,6 +20,7 @@ export default function useSubmitBridgeTransaction() {
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
+    // TODO catch errors and emit ActionFailed here
     // Execute transaction(s)
     let approvalTxMeta: TransactionMeta | undefined;
     if (quoteResponse?.approval) {
