@@ -33,11 +33,13 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_NETWORK_CHAIN_IDS,
   FEATURED_NETWORK_NAMES,
-  TEST_CHAINS,
+  FEATURED_RPCS,
+  MAINNET_DISPLAY_NAME,
 } from '../../../../../../shared/constants/network';
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -92,6 +94,15 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     allOpts[chain] = true;
   });
 
+  const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
+    (chain) => allOpts[chain],
+  ).map((chain) => {
+    if (chain === CHAIN_IDS.MAINNET) {
+      return MAINNET_DISPLAY_NAME;
+    }
+    return FEATURED_RPCS.find((rpc) => rpc.chainId === chain)?.name || '';
+  });
+
   return (
     <>
       <SelectableListItem
@@ -133,27 +144,29 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <InfoTooltip
               position="bottom"
-              contentText={FEATURED_NETWORK_NAMES.join(', ')}
+              contentText={allAddedPopularNetworks.join(', ')}
             />
-            {FEATURED_NETWORK_CHAIN_IDS.map((chain, index) => {
-              const networkImageUrl =
-                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                  chain as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                ];
-              return (
-                <AvatarNetwork
-                  key={chainId}
-                  name="All"
-                  src={networkImageUrl ?? undefined}
-                  size={AvatarNetworkSize.Sm}
-                  // overlap the icons
-                  style={{
-                    marginLeft: index === 0 ? 0 : '-20px',
-                    zIndex: 5 - index,
-                  }}
-                />
-              );
-            })}
+            {FEATURED_NETWORK_CHAIN_IDS.filter((chain) => allOpts[chain]).map(
+              (chain, index) => {
+                const networkImageUrl =
+                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                    chain as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                  ];
+                return (
+                  <AvatarNetwork
+                    key={chainId}
+                    name="All"
+                    src={networkImageUrl ?? undefined}
+                    size={AvatarNetworkSize.Sm}
+                    // overlap the icons
+                    style={{
+                      marginLeft: index === 0 ? 0 : '-20px',
+                      zIndex: 5 - index,
+                    }}
+                  />
+                );
+              },
+            )}
           </Box>
         </Box>
       </SelectableListItem>
