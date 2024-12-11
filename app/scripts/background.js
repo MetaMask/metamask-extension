@@ -366,7 +366,9 @@ function overrideContentSecurityPolicyHeader() {
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 let connectExternalCaip;
+///: END:ONLY_INCLUDE_IF
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -379,13 +381,18 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  const port = args[0];
 
-  if (port.sender.tab?.id && process.env.BARAD_DUR) {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-mmi)
+  connectExternalExtension(...args);
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const port = args[0];
+  if (port.sender.tab?.id) {
     connectExternalCaip(...args);
   } else {
     connectExternalExtension(...args);
   }
+  ///: END:ONLY_INCLUDE_IF
 });
 
 function saveTimestamp() {
@@ -974,6 +981,7 @@ export function setupController(
     });
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   connectExternalCaip = async (remotePort) => {
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
@@ -992,6 +1000,7 @@ export function setupController(
       sender: remotePort.sender,
     });
   };
+  ///: END:ONLY_INCLUDE_IF
 
   if (overrides?.registerConnectListeners) {
     overrides.registerConnectListeners(connectRemote, connectExternalExtension);
