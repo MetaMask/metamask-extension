@@ -3806,6 +3806,10 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      createNewVaultAndRestoreFromMnemonic:
+        this.createNewVaultAndRestoreFromMnemonic.bind(this),
+      ///: END:ONLY_INCLUDE_IF
       exportAccount: this.exportAccount.bind(this),
 
       // txController
@@ -4547,6 +4551,33 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Creates a new vault and restores from a mnemonic.
+   *
+   * @param {string} mnemonic
+   * @returns {object} newAccount
+   */
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  async createNewVaultAndRestoreFromMnemonic(mnemonic) {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      const newAccount = await this.keyringController.createKeyringFromMnemonic(
+        mnemonic,
+      );
+      const account = this.accountsController.getAccountByAddress(newAccount);
+      this.accountsController.setSelectedAccount(account.id);
+      const keyring = await this.keyringController.getKeyringForAccount(
+        newAccount,
+      );
+      this._addAccountsWithBalance(keyring.opts.id);
+
+      return newAccount;
+    } finally {
+      releaseLock();
+    }
+  }
+  ///: END:ONLY_INCLUDE_IF
+
+  /**
    * Create a new Vault and restore an existent keyring.
    *
    * @param {string} password
@@ -4595,13 +4626,15 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async _addAccountsWithBalance() {
+  async _addAccountsWithBalance(keyringId) {
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
       const ethQuery = new EthQuery(this.provider);
-      const accounts = await this.keyringController.getAccounts();
+      const accounts = await this.keyringController.getAccounts(keyringId);
       let address = accounts[accounts.length - 1];
+      console.log('accounts: ', accounts);
+      console.log('address: ', address);
 
       for (let count = accounts.length; ; count++) {
         const balance = await this.getBalance(address, ethQuery);
@@ -4622,16 +4655,19 @@ export default class MetamaskController extends EventEmitter {
             (tokens?.length ?? 0) === 0 &&
             (detectedTokens?.length ?? 0) === 0
           ) {
+            console.log('no balance or tokens');
             // This account has no balance or tokens
             if (count !== 1) {
+              console.log('removing account...');
               await this.removeAccount(address);
             }
             break;
           }
         }
 
+        console.log('adding new account...');
         // This account has assets, so check the next one
-        address = await this.keyringController.addNewAccount(count);
+        address = await this.keyringController.addNewAccount(count, keyringId);
       }
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -5083,14 +5119,18 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
-   * @param accountCount
+   * @param {number} accountCount
+   * @param {string} keyringId
    * @returns {Promise<string>} The address of the newly-created account.
    */
-  async addNewAccount(accountCount) {
+  async addNewAccount(accountCount, keyringId) {
     const oldAccounts = await this.keyringController.getAccounts();
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      keyringId,
+      ///: END:ONLY_INCLUDE_IF
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {
