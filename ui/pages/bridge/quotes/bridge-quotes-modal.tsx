@@ -146,6 +146,7 @@ export const BridgeQuotesModal = ({
               estimatedProcessingTimeInSeconds,
               toTokenAmount,
               cost,
+              sentAmount,
               quote: { destAsset, bridges, requestId },
             } = quote;
             const isQuoteActive = requestId === activeQuote?.quote.requestId;
@@ -202,10 +203,13 @@ export const BridgeQuotesModal = ({
                       formatCurrencyAmount(cost.valueInCurrency, currency, 0)}
                   </Text>
                   {[
-                    totalNetworkFee?.valueInCurrency
+                    totalNetworkFee?.valueInCurrency &&
+                    sentAmount?.valueInCurrency
                       ? t('quotedTotalCost', [
                           formatCurrencyAmount(
-                            totalNetworkFee.valueInCurrency,
+                            totalNetworkFee.valueInCurrency.plus(
+                              sentAmount.valueInCurrency,
+                            ),
                             currency,
                             0,
                           ),
