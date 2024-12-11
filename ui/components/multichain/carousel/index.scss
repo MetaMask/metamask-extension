@@ -3,6 +3,14 @@
   cursor: pointer;
 }
 
+.mm-carousel--single-slide {
+  height: 70px;
+
+  .control-dots {
+    display: none !important;
+  }
+}
+
 .mm-carousel__loading {
   cursor: default;
 }

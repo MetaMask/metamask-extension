@@ -6,8 +6,9 @@ export const MARGIN_VALUES = {
 };
 
 export const WIDTH_VALUES = {
-  SINGLE_SLIDE: '100%',
-  MULTIPLE_SLIDES: '96%',
+  SINGLE_SLIDE: '92%',
+  MULTIPLE_SLIDES_CENTER: '98%',
+  MULTIPLE_SLIDES_BORDER: '96%',
 };
 
 export const BANNER_STYLES = {

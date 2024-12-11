@@ -104,7 +104,7 @@ export const Carousel = React.forwardRef(
                 style={{
                   height: BANNER_STYLES.HEIGHT,
                   margin: getSlideMargin(index, 3),
-                  width: getSlideWidth(3),
+                  width: getSlideWidth(index, 3),
                 }}
               />
             ))}
@@ -118,21 +118,29 @@ export const Carousel = React.forwardRef(
     }
 
     return (
-      <Box className="mm-carousel" ref={ref} {...(props as BoxProps<'div'>)}>
+      <Box
+        className={`mm-carousel ${
+          visibleSlides.length === 1 ? 'mm-carousel--single-slide' : ''
+        }`}
+        ref={ref}
+        {...(props as BoxProps<'div'>)}
+      >
         <ResponsiveCarousel
           selectedItem={selectedIndex}
           showArrows={false}
-          onChange={handleChange}
+          onClickItem={(index) => handleChange(index)}
+          onChange={(index) => handleChange(index)}
           className="mm-carousel__carousel"
           showStatus={false}
           autoPlay={false}
+          showThumbs={false}
           swipeScrollTolerance={5}
+          swipeable={visibleSlides.length > 1}
           centerSlidePercentage={getCenterSlidePercentage(visibleSlides.length)}
           axis="horizontal"
           preventMovementUntilSwipeScrollTolerance
           emulateTouch
           centerMode
-          swipeable
         >
           {visibleSlides.map((slide, index) => (
             <BannerBase
@@ -183,7 +191,7 @@ export const Carousel = React.forwardRef(
               style={{
                 height: BANNER_STYLES.HEIGHT,
                 margin: getSlideMargin(index, visibleSlides.length),
-                width: getSlideWidth(visibleSlides.length),
+                width: getSlideWidth(index, visibleSlides.length),
                 position: 'relative',
               }}
               padding={0}
