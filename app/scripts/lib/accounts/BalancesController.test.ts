@@ -5,6 +5,7 @@ import {
   CaipAssetType,
   InternalAccount,
 } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
@@ -29,6 +30,7 @@ const mockBtcAccount = createMockInternalAccount({
   options: {
     scope: MultichainNetworks.BITCOIN_TESTNET,
   },
+  keyringType: KeyringTypes.snap,
 });
 
 const mockBalanceResult = {
