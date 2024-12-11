@@ -141,20 +141,24 @@ export const snapKeyringBuilder = (
       redirectUser: async (snapId: string, url: string, message: string) => {
         // Either url or message must be defined
         if (url.length > 0 || message.length > 0) {
-          const isBlocked = await isBlockedUrl(
-            url,
-            async () => {
-              return await controllerMessenger.call(
-                'PhishingController:maybeUpdateState',
-              );
-            },
-            (urlToTest: string) => {
-              return controllerMessenger.call(
-                'PhishingController:testOrigin',
-                urlToTest,
-              );
-            },
-          );
+          // If the url is empty, we don't need to check if it's blocked
+          const isBlocked =
+            url.length === 0
+              ? false
+              : await isBlockedUrl(
+                  url,
+                  async () => {
+                    return await controllerMessenger.call(
+                      'PhishingController:maybeUpdateState',
+                    );
+                  },
+                  (urlToTest: string) => {
+                    return controllerMessenger.call(
+                      'PhishingController:testOrigin',
+                      urlToTest,
+                    );
+                  },
+                );
 
           const confirmationResult = await controllerMessenger.call(
             'ApprovalController:addRequest',
