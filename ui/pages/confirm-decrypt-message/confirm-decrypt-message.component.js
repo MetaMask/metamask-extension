@@ -5,7 +5,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 
 import AccountListItem from '../../components/app/account-list-item';
@@ -43,19 +43,23 @@ import {
   getTargetAccountWithSendEtherInfo,
   unconfirmedTransactionsListSelector,
 } from '../../selectors';
+import { Nav } from '../confirmations/components/confirm/nav';
 
-const Header = () => {
+const Header = ({ approvalId }) => {
   const t = useI18nContext();
   return (
-    <div className="request-decrypt-message__header">
-      <div className="request-decrypt-message__header-background" />
-      <div className="request-decrypt-message__header__text">
-        {t('decryptRequest')}
+    <>
+      <Nav confirmationId={approvalId} />
+      <div className="request-decrypt-message__header">
+        <div className="request-decrypt-message__header-background" />
+        <div className="request-decrypt-message__header__text">
+          {t('decryptRequest')}
+        </div>
+        <div className="request-decrypt-message__header__tip-container">
+          <div className="request-decrypt-message__header__tip" />
+        </div>
       </div>
-      <div className="request-decrypt-message__header__tip-container">
-        <div className="request-decrypt-message__header__tip" />
-      </div>
-    </div>
+    </>
   );
 };
 
@@ -391,11 +395,15 @@ const ConfirmDecryptMessage = () => {
   const [rawMessage, setRawMessage] = useState('');
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const { id: approvalId } = useParams();
 
   const unconfirmedTransactions = useSelector(
     unconfirmedTransactionsListSelector,
   );
-  const messageData = cloneDeep(unconfirmedTransactions[0]);
+
+  const messageData = cloneDeep(
+    unconfirmedTransactions.find((tx) => tx.id === approvalId),
+  );
 
   const fromAccount = useSelector((state) =>
     getTargetAccountWithSendEtherInfo(state, messageData?.msgParams?.from),
@@ -427,7 +435,7 @@ const ConfirmDecryptMessage = () => {
 
   return (
     <div className="request-decrypt-message__container">
-      <Header />
+      <Header approvalId={approvalId} />
       <div className="request-decrypt-message__body">
         <Account fromAccount={fromAccount} nativeCurrency={nativeCurrency} />
         <VisualSection
