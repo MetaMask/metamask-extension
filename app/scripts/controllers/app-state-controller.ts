@@ -28,7 +28,10 @@ import {
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
 import { SecurityAlertResponse } from '../lib/ppom/types';
-import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
+import {
+  AccountOverviewTabKey,
+  CarouselSlide,
+} from '../../../shared/constants/app-state';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -76,6 +79,7 @@ export type AppStateControllerState = {
   interactiveReplacementToken?: { url: string; oldRefreshToken: string };
   noteToTraderMessage?: string;
   custodianDeepLink?: { fromAddress: string; custodyId: string };
+  slides: CarouselSlide[];
 };
 
 const controllerName = 'AppStateController';
@@ -186,6 +190,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
+  slides: [],
   ...getInitialStateOverrides(),
 });
 
@@ -341,6 +346,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   custodianDeepLink: {
+    persist: true,
+    anonymous: true,
+  },
+  slides: {
     persist: true,
     anonymous: true,
   },
@@ -528,6 +537,55 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
+    });
+  }
+
+  /**
+   * Updates slides by adding new slides that don't already exist in state
+   *
+   * @param slides - Array of new slides to add
+   */
+  updateSlides(slides: CarouselSlide[]): void {
+    this.update((state) => {
+      const currentSlides = state.slides || [];
+
+      // Updates the undismissable property for slides that already exist in state
+      const updatedCurrentSlides = currentSlides.map((currentSlide) => {
+        const matchingNewSlide = slides.find((s) => s.id === currentSlide.id);
+        if (matchingNewSlide) {
+          return {
+            ...currentSlide,
+            undismissable: matchingNewSlide.undismissable,
+          };
+        }
+        return currentSlide;
+      });
+
+      // Adds new slides that don't already exist in state
+      const newSlides = slides.filter((newSlide) => {
+        return !currentSlides.some(
+          (currentSlide) => currentSlide.id === newSlide.id,
+        );
+      });
+
+      state.slides = [...updatedCurrentSlides, ...newSlides];
+    });
+  }
+
+  /**
+   * Marks a slide as dismissed by ID
+   *
+   * @param id - ID of the slide to dismiss
+   */
+  removeSlide(id: string): void {
+    this.update((state) => {
+      const slides = state.slides || [];
+      state.slides = slides.map((slide) => {
+        if (slide.id === id) {
+          return { ...slide, dismissed: true };
+        }
+        return slide;
+      });
     });
   }
 

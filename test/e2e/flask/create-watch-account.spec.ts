@@ -374,7 +374,9 @@ describe('Account-watcher snap', function (this: Suite) {
 
     const toggleWatchAccountOptionAndCloseSettings = async (driver: Driver) => {
       await driver.clickElement('[data-testid="watch-account-toggle-div"]');
-      await driver.clickElement('button[aria-label="Close"]');
+      await driver.clickElement(
+        '.settings-page__header__title-container__close-button',
+      );
     };
 
     const verifyWatchAccountOptionAndCloseMenu = async (
@@ -396,7 +398,7 @@ describe('Account-watcher snap', function (this: Suite) {
           tag: 'button',
         });
       }
-      await driver.clickElement('button[aria-label="Close"]');
+      await driver.clickElement('header button[aria-label="Close"]');
     };
 
     it("will show the 'Watch an Ethereum account (Beta)' option when setting is enabled", async function () {

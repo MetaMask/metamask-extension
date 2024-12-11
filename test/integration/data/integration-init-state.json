@@ -801,6 +801,7 @@
   "showProductTour": false,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
+  "slides": [],
   "smartTransactionsState": {
     "fees": {},
     "liveness": true,
