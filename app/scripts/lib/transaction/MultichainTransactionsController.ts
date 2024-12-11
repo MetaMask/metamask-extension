@@ -22,25 +22,10 @@ import type {
   AccountsControllerAccountRemovedEvent,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
-import { TransactionsTracker } from './MultichainTransactionsTracker';
+import type { Transaction } from '../../../../shared/types/multichain/transactions';
+import { MultichainTransactionsTracker } from './MultichainTransactionsTracker';
 
 const controllerName = 'MultichainTransactionsController';
-
-type Transaction = {
-  id: string;
-  account: string;
-  chain: string;
-  type: 'send' | 'receive';
-  status: 'submitted' | 'unconfirmed' | 'confirmed' | 'failed';
-  timestamp: number | null;
-  from: Array<Record<string, Json>>;
-  to: Array<Record<string, Json>>;
-  fees: Array<Record<string, Json>>;
-  events: {
-    status: 'submitted' | 'unconfirmed' | 'confirmed' | 'failed';
-    timestamp: number | null;
-  }[];
-};
 
 export type PaginationOptions = {
   limit: number;
@@ -173,7 +158,7 @@ export class MultichainTransactionsController extends BaseController<
   MultichainTransactionsControllerState,
   MultichainTransactionsControllerMessenger
 > {
-  #tracker: TransactionsTracker;
+  #tracker: MultichainTransactionsTracker;
 
   constructor({
     messenger,
@@ -192,7 +177,7 @@ export class MultichainTransactionsController extends BaseController<
       },
     });
 
-    this.#tracker = new TransactionsTracker(
+    this.#tracker = new MultichainTransactionsTracker(
       async (accountId: string, pagination: PaginationOptions) =>
         await this.#updateTransactions(accountId, pagination),
     );
@@ -242,13 +227,16 @@ export class MultichainTransactionsController extends BaseController<
 
   /**
    * Updates the transactions for one account.
+   *
+   * @param accountId - The ID of the account to update transactions for.
+   * @param pagination - Options for paginating transaction results.
    */
   async #updateTransactions(accountId: string, pagination: PaginationOptions) {
     const account = this.#listAccounts().find(
-      (account) => account.id === accountId,
+      (accountItem) => accountItem.id === accountId,
     );
 
-    if (account && account.metadata.snap) {
+    if (account?.metadata.snap) {
       const response = await this.#getTransactions(
         account.id,
         account.metadata.snap.id,
@@ -261,13 +249,19 @@ export class MultichainTransactionsController extends BaseController<
           next: response.next,
           lastUpdated: Date.now(),
         };
-        state.nonEvmTransactions[account.id] = entry as any;
+        // @ts-expect-error come back later or use Object.assign
+        state.nonEvmTransactions[account.id] = entry;
       });
     }
   }
 
   /**
    * Gets transactions for an account.
+   *
+   * @param accountId - The ID of the account to get transactions for.
+   * @param snapId - The ID of the snap that manages the account.
+   * @param pagination - Options for paginating transaction results.
+   * @returns A promise that resolves to the transaction data and pagination info.
    */
   async #getTransactions(
     accountId: string,
@@ -285,6 +279,8 @@ export class MultichainTransactionsController extends BaseController<
 
   /**
    * Updates transactions for a specific account
+   *
+   * @param accountId - The ID of the account to get transactions for.
    */
   async updateTransactionsForAccount(accountId: string) {
     await this.#tracker.updateTransactionsForAccount(accountId);

@@ -26,6 +26,25 @@ const defaultState = {
 const btcState = {
   metamask: {
     ...mockState.metamask,
+    nonEvmTransactions: {
+      [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
+        data: [
+          {
+            timestamp: 1733736433,
+            chain: MultichainNetworks.BITCOIN,
+            status: 'confirmed',
+            type: 'send',
+            account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+            from: [],
+            to: [],
+            fees: [],
+            events: [],
+          },
+        ],
+        next: null,
+        lastUpdated: expect.any(Number),
+      },
+    },
     internalAccounts: {
       ...mockState.metamask.internalAccounts,
       accounts: {
@@ -62,12 +81,18 @@ describe('TransactionList', () => {
     expect(getByText('You have no transactions')).toBeInTheDocument();
   });
 
-  it('renders TransactionList component and shows Bitcoin activity is not supported text', () => {
-    const { getByText, getByRole } = render(btcState);
+  it('renders TransactionList component and shows a Bitcoin Tx in the activity list', () => {
+    const { getByText, getByRole, getByTestId } = render(btcState);
 
-    expect(getByText('Bitcoin activity is not supported')).toBeInTheDocument();
+    // The activity list item has a status of "Confirmed" and a type of "Send"
+    expect(getByText('Confirmed')).toBeInTheDocument();
+    expect(getByText('Send')).toBeInTheDocument();
+
+    // A BTC activity list iteem exists
+    expect(getByTestId('activity-list-item')).toBeInTheDocument();
+
     const viewOnExplorerBtn = getByRole('button', {
-      name: 'View on block explorer',
+      name: 'View more on block explorer',
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
 

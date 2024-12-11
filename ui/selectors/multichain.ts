@@ -19,7 +19,10 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
-import { MultichainTransactionsControllerState } from '../../app/scripts/lib/transaction/MultichainTransactionsController';
+import {
+  MultichainTransactionsControllerState,
+  Transaction,
+} from '../../shared/types/multichain/transactions';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -385,8 +388,14 @@ export function getMultichainTransactions(
 
 export function getSelectedAccountMultichainTransactions(
   state: MultichainState,
-) {
+):
+  | { data: Transaction[]; next: string | null; lastUpdated: number }
+  | undefined {
   const selectedAccount = getSelectedInternalAccount(state);
+
+  if (isEvmAccountType(selectedAccount.type)) {
+    return undefined;
+  }
 
   return state.metamask.nonEvmTransactions[selectedAccount.id];
 }

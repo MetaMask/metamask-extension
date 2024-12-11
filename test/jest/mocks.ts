@@ -5,6 +5,8 @@ import {
   BtcAccountType,
   InternalAccount,
   isEvmAccountType,
+  SolAccountType,
+  SolMethod,
 } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
@@ -222,6 +224,9 @@ export function createMockInternalAccount({
       break;
     case BtcAccountType.P2wpkh:
       methods = [BtcMethod.SendBitcoin];
+      break;
+    case SolAccountType.DataAccount:
+      methods = [SolMethod.SendAndConfirmTransaction];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);

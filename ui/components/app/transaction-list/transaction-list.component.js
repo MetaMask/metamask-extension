@@ -9,6 +9,10 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { capitalize } from 'lodash';
+import { isEvmAccountType } from '@metamask/keyring-api';
+///: END:ONLY_INCLUDE_IF
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
@@ -41,10 +45,6 @@ import {
 } from '../../component-library';
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
-import { capitalize } from 'lodash';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { isEvmAccountType } from '@metamask/keyring-api';
-///: END:ONLY_INCLUDE_IF
 
 import {
   Display,
@@ -60,18 +60,19 @@ import {
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
-import {
-  isSelectedInternalAccountBtc,
-  isSelectedInternalAccountSolana,
-} from '../../../selectors/accounts';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getMultichainNetwork,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getSelectedAccountMultichainTransactions,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors/multichain';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { getSelectedAccountMultichainTransactions } from '../../../selectors/multichain';
 import { ActivityListItem } from '../../multichain';
+
 const PAGE_INCREMENT = 10;
 
 // When we are on a token page, we only want to show transactions that involve that token.
@@ -383,7 +384,6 @@ export default function TransactionList({
                             />
                           </BadgeWrapper>
                         }
-                        onClick={() => {}}
                         rightContent={
                           <>
                             <Text
@@ -396,7 +396,7 @@ export default function TransactionList({
                               title="Primary Currency"
                               variant="body-lg-medium"
                             >
-                              {`${transaction.from[0].asset.amount} ${transaction.from[0].asset.unit}`}
+                              {`${transaction.from[0]?.asset?.amount} ${transaction.from[0]?.asset?.unit}`}
                             </Text>
                           </>
                         }

@@ -7,18 +7,24 @@ type TransactionInfo = {
   pagination: PaginationOptions;
 };
 
-// Every 7s in milliseconds.
-const TRANSACTIONS_TRACKING_INTERVAL = 7 * 1000;
+// Every 5s in milliseconds.
+const TRANSACTIONS_TRACKING_INTERVAL = 5 * 1000;
 
-export class TransactionsTracker {
+export class MultichainTransactionsTracker {
   #poller: Poller;
 
-  #updateTransactions: (accountId: string, pagination: PaginationOptions) => Promise<void>;
+  #updateTransactions: (
+    accountId: string,
+    pagination: PaginationOptions,
+  ) => Promise<void>;
 
   #transactions: Record<string, TransactionInfo> = {};
 
   constructor(
-    updateTransactionsCallback: (accountId: string, pagination: PaginationOptions) => Promise<void>,
+    updateTransactionsCallback: (
+      accountId: string,
+      pagination: PaginationOptions,
+    ) => Promise<void>,
   ) {
     this.#updateTransactions = updateTransactionsCallback;
 
@@ -69,8 +75,13 @@ export class TransactionsTracker {
    *
    * @param accountId - The account ID.
    * @param blockTime - The block time (used when refreshing the account transactions).
+   * @param pagination - Options for paginating transaction results. Defaults to { limit: 10 }.
    */
-  track(accountId: string, blockTime: number, pagination: PaginationOptions = { limit: 10 }) {
+  track(
+    accountId: string,
+    blockTime: number,
+    pagination: PaginationOptions = { limit: 10 },
+  ) {
     if (!this.isTracked(accountId)) {
       this.#transactions[accountId] = {
         lastUpdated: 0,
