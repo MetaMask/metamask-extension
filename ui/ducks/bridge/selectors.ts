@@ -53,12 +53,12 @@ import {
 } from '../../pages/bridge/utils/quote';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { BridgeSlice } from './bridge';
 import {
-  exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
+  exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
 } from './utils';
-import { BridgeSlice } from './bridge';
 
 type BridgeAppState = {
   metamask: { bridgeState: BridgeState } & NetworkState & {
