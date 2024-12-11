@@ -861,14 +861,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Seleccione token y monto"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Este es el tiempo estimado que tardará en completarse el puenteo."
-  },
   "bridgeTo": {
     "message": "Puentear hacia"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Esto incluye las tarifas de gas (pagadas a los mineros de criptomonedas) y las tarifas de repetidores (pagadas para alimentar servicios complejos como el puenteo).\nLas tarifas se basan en el tráfico de la red y la complejidad de las transacciones. MetaMask no lucra con ninguna de las dos tarifas."
   },
   "browserNotSupported": {
     "message": "Su explorador no es compatible..."
@@ -1988,9 +1982,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Monto pagado para procesar la transacción en la red."
-  },
-  "estimatedTime": {
-    "message": "Tiempo estimado"
   },
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
@@ -6117,9 +6108,6 @@
   },
   "total": {
     "message": "Total"
-  },
-  "totalFees": {
-    "message": "Tarifas totales"
   },
   "totalVolume": {
     "message": "Volúmen total"

@@ -861,15 +861,10 @@
   "bridgeSelectTokenAndAmount": {
     "message": "选择代币和金额"
   },
-  "bridgeTimingTooltipText": {
-    "message": "这是完成桥接所需的预估时间。"
-  },
   "bridgeTo": {
     "message": "桥接至"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "这包括燃料费（支付给加密货币矿工）和中继器费用（用于为桥接等复杂服务提供动力）。\n费用根据网络流量和交易复杂性而定。MetaMask 不会从这两项费用中获利。"
-  },
+
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
   },
@@ -1988,9 +1983,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "为在网络上处理交易而支付的金额。"
-  },
-  "estimatedTime": {
-    "message": "预估时间"
   },
   "ethGasPriceFetchWarning": {
     "message": "由于目前主要的燃料估算服务不可用，因此提供了备用燃料价格。"
@@ -6117,9 +6109,6 @@
   },
   "total": {
     "message": "共计"
-  },
-  "totalFees": {
-    "message": "总费用"
   },
   "totalVolume": {
     "message": "总交易额"
