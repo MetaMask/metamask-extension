@@ -858,15 +858,10 @@
   "bridgeSelectTokenAndAmount": {
     "message": "토큰 및 금액 선택"
   },
-  "bridgeTimingTooltipText": {
-    "message": "브릿지가 완료되는 데 걸리는 예상 시간입니다."
-  },
   "bridgeTo": {
     "message": "브릿지 대상"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "가스비(암호화폐 채굴자에게 지급)와 릴레이어 수수료(브릿지와 같은 복잡한 서비스 제공에 지급)가 포함됩니다.\n수수료는 네트워크 트래픽과 트랜잭션 복잡성에 따라 달라집니다. MetaMask는 어떤 수수료에서도 수익을 얻지 않습니다."
-  },
+
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
@@ -1985,9 +1980,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "네트워크에서 트랜잭션을 처리하기 위해 지불한 금액입니다."
-  },
-  "estimatedTime": {
-    "message": "예상 시간"
   },
   "ethGasPriceFetchWarning": {
     "message": "현재 주요 가스 견적 서비스를 사용할 수 없으므로 백업 가스 가격을 제공합니다."
@@ -6108,9 +6100,6 @@
   },
   "total": {
     "message": "합계"
-  },
-  "totalFees": {
-    "message": "총 수수료"
   },
   "totalVolume": {
     "message": "총 거래량"

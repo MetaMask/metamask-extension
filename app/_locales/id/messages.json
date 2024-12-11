@@ -858,14 +858,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Pilih token dan jumlah"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Ini merupakan estimasi waktu yang diperlukan untuk menyelesaikan bridge."
-  },
   "bridgeTo": {
     "message": "Bridge ke"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Ini termasuk biaya gas (dibayarkan kepada penambang kripto) dan biaya relayer (dibayarkan untuk menjalankan layanan kompleks seperti bridge).\nBiaya didasarkan pada lalu lintas jaringan dan kompleksitas transaksi. MetaMask tidak mendapat keuntungan dari kedua biaya tersebut."
   },
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
@@ -1985,9 +1979,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Jumlah yang dibayarkan untuk memproses transaksi di jaringan."
-  },
-  "estimatedTime": {
-    "message": "Estimasi waktu"
   },
   "ethGasPriceFetchWarning": {
     "message": "Biaya gas cadangan diberikan karena layanan estimasi gas utama saat ini tidak tersedia."
@@ -6108,9 +6099,6 @@
   },
   "total": {
     "message": "Total"
-  },
-  "totalFees": {
-    "message": "Total biaya"
   },
   "totalVolume": {
     "message": "Volume total"
