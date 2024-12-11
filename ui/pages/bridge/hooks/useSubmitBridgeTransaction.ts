@@ -1,14 +1,23 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { createProjectLogger } from '@metamask/utils';
 import { QuoteMetadata, QuoteResponse } from '../types';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  AWAITING_SIGNATURES_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+  DEFAULT_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
+import { isHardwareWallet } from '../../../selectors';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
+
+const debugLog = createProjectLogger('bridge');
 
 export default function useSubmitBridgeTransaction() {
   const history = useHistory();
@@ -16,24 +25,42 @@ export default function useSubmitBridgeTransaction() {
   const { addSourceToken, addDestToken } = useAddToken();
   const { handleApprovalTx } = useHandleApprovalTx();
   const { handleBridgeTx } = useHandleBridgeTx();
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
-    // Execute transaction(s)
-    let approvalTxMeta: TransactionMeta | undefined;
-    if (quoteResponse?.approval) {
-      // This will never be an STX
-      approvalTxMeta = await handleApprovalTx({
-        approval: quoteResponse.approval,
-        quoteResponse,
-      });
+    if (hardwareWalletUsed) {
+      history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
 
-    const bridgeTxMeta = await handleBridgeTx({
-      quoteResponse,
-      approvalTxId: approvalTxMeta?.id,
-    });
+    // Execute transaction(s)
+    let approvalTxMeta: TransactionMeta | undefined;
+    try {
+      if (quoteResponse?.approval) {
+        // This will never be an STX
+        approvalTxMeta = await handleApprovalTx({
+          approval: quoteResponse.approval,
+          quoteResponse,
+        });
+      }
+    } catch (e) {
+      debugLog('Approve transaction failed', e);
+      history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+      return;
+    }
+
+    let bridgeTxMeta: TransactionMeta | undefined;
+    try {
+      bridgeTxMeta = await handleBridgeTx({
+        quoteResponse,
+        approvalTxId: approvalTxMeta?.id,
+      });
+    } catch (e) {
+      debugLog('Bridge transaction failed', e);
+      history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+      return;
+    }
 
     // Get bridge tx status
     const statusRequest = {
