@@ -18,7 +18,7 @@ describe('Carousel component e2e tests', () => {
         );
 
         await driver.waitForSelector('.mm-carousel');
-        await driver.delay(1000);
+        await driver.waitForSelector('.mm-carousel-slide');
 
         const slides = await driver.findElements('.mm-carousel-slide');
         assert.ok(slides.length > 0, 'Carousel should have slides');
@@ -32,7 +32,9 @@ describe('Carousel component e2e tests', () => {
           if (i > 0) {
             const dots = await driver.findElements('.dot');
             await dots[i].click();
-            await driver.delay(1000);
+            await driver.waitForSelector(
+              `[data-testid="slide-${slideIds[i]}"]`,
+            );
           }
 
           const slideSelector = `[data-testid="slide-${slideIds[i]}"]`;
@@ -68,13 +70,11 @@ describe('Carousel component e2e tests', () => {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         await driver.waitForSelector('.mm-carousel');
-        await driver.delay(1000);
+        await driver.waitForSelector('.mm-carousel-slide');
 
-        // First verify we have all 4 slides
         const initialSlides = await driver.findElements('.mm-carousel-slide');
         assert.equal(initialSlides.length, 4);
 
-        // Dismiss each slide one by one
         for (let i = 0; i < 4; i++) {
           const currentSlides = await driver.findElements('.mm-carousel-slide');
           assert.equal(
@@ -88,21 +88,21 @@ describe('Carousel component e2e tests', () => {
           );
           await dismissButton.click();
 
-          // Only wait for the next state if we're not on the last slide
           if (i < 3) {
             await driver.wait(async () => {
               const remainingSlides = await driver.findElements(
                 '.mm-carousel-slide',
               );
               return remainingSlides.length === 3 - i;
-            }, 1000);
+            }, 5e3);
           }
         }
 
-        // Wait briefly for any animations to complete
-        await driver.delay(500);
+        await driver.wait(async () => {
+          const carouselExists = await driver.isElementPresent('.mm-carousel');
+          return !carouselExists;
+        }, 5e3);
 
-        // Verify carousel is no longer present
         const carouselExists = await driver.isElementPresent('.mm-carousel');
         assert.equal(
           carouselExists,
