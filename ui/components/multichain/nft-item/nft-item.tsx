@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
@@ -21,18 +20,29 @@ import {
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 
+type NftItemProps = {
+  alt: string;
+  src?: string;
+  name?: string;
+  tokenId?: string;
+  networkName: string;
+  networkSrc?: string;
+  onClick?: () => void;
+  isIpfsURL?: boolean;
+  clickable?: boolean;
+  badgeWrapperClassname?: string;
+};
+
 export const NftItem = ({
   alt,
-  name,
   src,
   networkName,
   networkSrc,
-  tokenId,
   onClick,
   clickable,
   isIpfsURL,
-  badgeWrapperClassname,
-}) => {
+  badgeWrapperClassname = '',
+}: NftItemProps) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
   const openSeaEnabled = useSelector(getOpenSeaEnabled);
@@ -55,8 +65,6 @@ export const NftItem = ({
       <NftDefaultImage
         className="nft-item__default-image"
         data-testid="nft-default-image"
-        name={name}
-        tokenId={tokenId}
         clickable={clickable && isIpfsURL}
       />
     );
@@ -73,7 +81,7 @@ export const NftItem = ({
           'nft-item__badge-wrapper',
           badgeWrapperClassname,
           {
-            'nft-item__badge-wrapper__clickable': clickable,
+            'nft-item__badge-wrapper__clickable': Boolean(clickable),
           },
         )}
         anchorElementShape={BadgeWrapperAnchorElementShape.circular}
@@ -88,10 +96,8 @@ export const NftItem = ({
             name={networkName}
             src={networkSrc}
             borderWidth={2}
+            // @ts-expect-error: We are using BackgroundColor.backgroundDefault here because there is no equivalent BorderColor to get the "cutout" effect
             borderColor={BackgroundColor.backgroundDefault}
-            /* We are using BackgroundColor.backgroundDefault here because
-             * there is no equivalent BorderColor to get the "cutout" effect
-             */
           />
         }
       >
@@ -99,44 +105,4 @@ export const NftItem = ({
       </BadgeWrapper>
     </Box>
   );
-};
-
-NftItem.propTypes = {
-  /**
-   * NFT media source
-   */
-  src: PropTypes.string,
-  /**
-   * Alt text for the NFT
-   */
-  alt: PropTypes.string.isRequired,
-  /**
-   * The NFT's name
-   */
-  name: PropTypes.string,
-  /**
-   * Name of the network the NFT lives on
-   */
-  networkName: PropTypes.string.isRequired,
-  /**
-   * Image that represents the network
-   */
-  networkSrc: PropTypes.string,
-  /**
-   * Token ID of the NFT
-   */
-  tokenId: PropTypes.string.isRequired,
-  /**
-   * Executes when the NFT is clicked
-   */
-  onClick: PropTypes.func,
-  /**
-   * Represents if the NFT is clickable for larger image
-   */
-  clickable: PropTypes.bool,
-  /**
-   * Whether the src url resolve to ipfs
-   */
-  isIpfsURL: PropTypes.bool,
-  badgeWrapperClassname: PropTypes.string,
 };
