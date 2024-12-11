@@ -107,7 +107,7 @@ export const BridgeQuoteCard = () => {
                   setShowAllQuotes(true);
                 }}
               >
-                {t('viewAllQuotes')}
+                {t('moreQuotes')}
               </Text>
             </Column>
           </Row>
