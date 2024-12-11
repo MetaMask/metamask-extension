@@ -3,26 +3,26 @@ import { MARGIN_VALUES, WIDTH_VALUES } from './constants';
 export function getSlideMargin(index: number, totalSlides: number) {
   // Single slide case
   if (totalSlides === 1) {
-    return `${MARGIN_VALUES.NONE} ${MARGIN_VALUES.OUTER_EDGE}`;
+    return `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.CONTAINER_SIDE}`;
   }
 
   // Three or more slides case
   if (index === 0) {
-    return `${MARGIN_VALUES.NONE} ${MARGIN_VALUES.NONE} ${MARGIN_VALUES.BOTTOM} ${MARGIN_VALUES.INNER_EDGE}`;
+    return `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.SLIDE_BOTTOM} ${MARGIN_VALUES.CONTAINER_SIDE}`;
   }
-  return `${MARGIN_VALUES.NONE} ${MARGIN_VALUES.NONE} ${MARGIN_VALUES.BOTTOM} ${MARGIN_VALUES.NONE}`;
+  return `${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.ZERO} ${MARGIN_VALUES.SLIDE_BOTTOM} ${MARGIN_VALUES.ZERO}`;
 }
 
 export function getSlideWidth(index: number, totalSlides: number) {
   if (totalSlides === 1) {
-    return WIDTH_VALUES.SINGLE_SLIDE;
+    return `calc(${WIDTH_VALUES.FULL_WIDTH} - 32px)`;
   }
 
   if (index === 0) {
-    return WIDTH_VALUES.MULTIPLE_SLIDES_BORDER;
+    return `calc(${WIDTH_VALUES.STANDARD_SLIDE} - ${MARGIN_VALUES.CONTAINER_SIDE})`;
   }
 
-  return WIDTH_VALUES.MULTIPLE_SLIDES_CENTER;
+  return WIDTH_VALUES.STANDARD_SLIDE;
 }
 
 export function getCenterSlidePercentage(totalSlides: number) {

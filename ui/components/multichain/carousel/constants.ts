@@ -1,14 +1,14 @@
 export const MARGIN_VALUES = {
-  BOTTOM: '40px',
-  OUTER_EDGE: '4%',
-  INNER_EDGE: '2%',
-  NONE: '0',
+  SLIDE_BOTTOM: '40px',
+  CONTAINER_SIDE: '16px',
+  SLIDE_GAP: '2%',
+  ZERO: '0',
 };
 
 export const WIDTH_VALUES = {
-  SINGLE_SLIDE: '92%',
-  MULTIPLE_SLIDES_CENTER: '98%',
-  MULTIPLE_SLIDES_BORDER: '96%',
+  FULL_WIDTH: '100%',
+  STANDARD_SLIDE: '98%',
+  FIRST_SLIDE: '94%',
 };
 
 export const BANNER_STYLES = {
