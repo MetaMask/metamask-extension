@@ -7757,10 +7757,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@selfpentest/notpasswdstrength@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@selfpentest/notpasswdstrength@npm:1.0.0"
-  checksum: 10/0719de3fa3a4cf46aaa147e673d1bfad51f524537f181666cd06624b3b78bd3c0229ed1e49c47df1ec92eba587ae170f3ae81286303ac27184bb0f519eafb8b3
+"@selfpentest/notpasswdstrength@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@selfpentest/notpasswdstrength@npm:1.1.0"
+  checksum: 10/e2571735867aef121d4fa7f807198dd50c010c52a72d1193eb41d15bacfaa11df9c15de048838d46c4aa67a1a1a60d790e3cf6573e0245d5b231370fee582588
   languageName: node
   linkType: hard
 
@@ -26556,7 +26556,7 @@ __metadata:
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
     "@segment/loosely-validate-event": "npm:^2.0.0"
-    "@selfpentest/notpasswdstrength": "npm:1.0.0"
+    "@selfpentest/notpasswdstrength": "npm:1.1.0"
     "@sentry/browser": "npm:^8.33.1"
     "@sentry/cli": "npm:^2.19.4"
     "@sentry/types": "npm:^8.33.1"
