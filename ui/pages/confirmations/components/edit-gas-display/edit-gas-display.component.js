@@ -54,7 +54,7 @@ export default function EditGasDisplay({
   if (
     gasLimit !== undefined &&
     properGasLimit !== undefined &&
-    new BigNumber(gasLimit).lessThan(new BigNumber(properGasLimit))
+    new BigNumber(gasLimit || 0).lessThan(new BigNumber(properGasLimit))
   ) {
     warningMessage = t('gasLimitRecommended', [properGasLimit]);
   }
