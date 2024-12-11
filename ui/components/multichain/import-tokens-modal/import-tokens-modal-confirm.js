@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
+  getPendingTokens,
   getTestNetworkBackgroundColor,
   getTokenList,
 } from '../../../selectors';
@@ -22,7 +23,6 @@ import {
   AlignItems,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { getPendingTokens } from '../../../ducks/metamask/metamask';
 import TokenBalance from '../../ui/token-balance/token-balance';
 import { I18nContext } from '../../../contexts/i18n';
 
