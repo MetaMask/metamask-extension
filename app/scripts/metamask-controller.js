@@ -343,12 +343,11 @@ import AppMetadataController from './controllers/app-metadata';
 import {
   getAuthorizedScopesByOrigin,
   getCaveatSpecifications,
-  getChangedAuthorizations,
+  getAuthorizationsDiff,
   diffMap,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
-  getRemovedAuthorizations,
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
   unrestrictedMethods,
@@ -3055,45 +3054,18 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
-        const changedAuthorizations = getChangedAuthorizations(
+        const authorizationsDiff = getAuthorizationsDiff(
           currentValue,
           previousValue,
         );
 
-        const removedAuthorizations = getRemovedAuthorizations(
-          currentValue,
-          previousValue,
-        );
-
-        // remove any existing notification subscriptions for removed authorizations
-        for (const [origin, authorization] of removedAuthorizations.entries()) {
-          const sessionScopes = getSessionScopes(authorization);
-          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-          // then remove middleware and unsubscribe
-          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-            if (
-              scopeObject.notifications.includes('eth_subscription') &&
-              scopeObject.methods.includes('eth_subscribe')
-            ) {
-              this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
-                scope,
-                origin,
-              );
-              this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
-                scope,
-                origin,
-              );
-            }
-          });
-        }
-
-        // add new notification subscriptions for changed authorizations
-        for (const [origin, authorization] of changedAuthorizations.entries()) {
-          const sessionScopes = getSessionScopes(authorization);
-
-          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-          // then get the subscriptionManager going for that scope
-          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
+        // update new notification subscriptions for changed authorizations
+        for (const [
+          origin,
+          authorizationDiff,
+        ] of authorizationsDiff.entries()) {
+          const addedSessionScopes = getSessionScopes(authorizationDiff.added);
+          Object.entries(addedSessionScopes).forEach(([scope, scopeObject]) => {
             if (
               scopeObject.notifications.includes('eth_subscription') &&
               scopeObject.methods.includes('eth_subscribe')
@@ -3115,47 +3087,36 @@ export default class MetamaskController extends EventEmitter {
                   });
                 },
               );
-            } else {
-              this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
-                scope,
-                origin,
-              );
-              this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
-                scope,
-                origin,
-              );
             }
           });
 
-          // TODO: could be pushed into selectors?
-          const previousAuthorization = previousValue.get(origin);
-          if (previousAuthorization) {
-            const previousSessionScopes = getSessionScopes(
-              previousAuthorization,
-            );
+          const removedSessionScopes = getSessionScopes(
+            authorizationDiff.removed,
+          );
+          Object.entries(removedSessionScopes).forEach(
+            ([scope, scopeObject]) => {
+              if (
+                scopeObject.notifications.includes('eth_subscription') &&
+                scopeObject.methods.includes('eth_subscribe')
+              ) {
+                this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
+                  scope,
+                  origin,
+                );
+                this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
+                  scope,
+                  origin,
+                );
+              }
+            },
+          );
 
-            Object.entries(previousSessionScopes).forEach(
-              ([scope, scopeObject]) => {
-                if (!sessionScopes[scope]) {
-                  if (
-                    scopeObject.notifications.includes('eth_subscription') &&
-                    scopeObject.methods.includes('eth_subscribe')
-                  ) {
-                    this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
-                      scope,
-                      origin,
-                    );
-                    this.multichainSubscriptionManager.unsubscribeByScopeAndOrigin(
-                      scope,
-                      origin,
-                    );
-                  }
-                }
-              },
-            );
+          if (
+            Object.keys(addedSessionScopes).length > 0 ||
+            Object.keys(removedSessionScopes).length > 0
+          ) {
+            this._notifyAuthorizationChange(origin, currentValue.get(origin));
           }
-
-          this._notifyAuthorizationChange(origin, authorization);
         }
       },
       getAuthorizedScopesByOrigin,
