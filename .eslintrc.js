@@ -487,6 +487,7 @@ module.exports = {
               'getNfts',
               'getProviderConfig',
               'getRpcPrefsForCurrentProvider',
+              'getSelectedNetworkClientId',
               'getUSDConversionRate',
               'isCurrentProviderCustom',
             ]

@@ -71,7 +71,6 @@ import {
   getSendToAccounts,
   findKeyringForAddress,
 } from '../../../ducks/metamask/metamask';
-import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   addHexPrefix,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -163,7 +162,6 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
-  const selectedNetworkClientId = getSelectedNetworkClientId(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const envType = getEnvironmentType();
@@ -354,7 +352,6 @@ const mapStateToProps = (state, ownProps) => {
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
-    selectedNetworkClientId,
     isEthGasPriceFetched,
     noGasPrice,
     supportsEIP1559,
