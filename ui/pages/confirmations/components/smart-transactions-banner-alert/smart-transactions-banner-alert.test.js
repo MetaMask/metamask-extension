@@ -4,7 +4,7 @@ import { renderWithProvider } from '../../../../../test/jest/rendering';
 import configureStore from '../../../../store/store';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { ALERT_STATE } from '../../../../ducks/alerts/enums';
-import SmartTransactionsBannerAlert from './smart-transactions-banner-alert';
+import { SmartTransactionsBannerAlert } from './smart-transactions-banner-alert';
 
 // Mock the entire module
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -36,9 +36,11 @@ describe('SmartTransactionsBannerAlert', () => {
     const store = configureStore(mockState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
-    expect(screen.getByTestId('stx-banner-alert')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('smart-transactions-banner-alert'),
+    ).toBeInTheDocument();
     expect(screen.getByText('smartTransactionsEnabled')).toBeInTheDocument();
-    expect(screen.getByText('learnMoreUpperCase')).toBeInTheDocument();
+    expect(screen.getByText('learnMore')).toBeInTheDocument();
   });
 
   it('does not render when alert is closed', () => {
@@ -57,7 +59,9 @@ describe('SmartTransactionsBannerAlert', () => {
     const store = configureStore(closedState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
-    expect(screen.queryByTestId('stx-banner-alert')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('smart-transactions-banner-alert'),
+    ).not.toBeInTheDocument();
   });
 
   it('dispatches dismissal action when close button clicked', async () => {
@@ -79,7 +83,7 @@ describe('SmartTransactionsBannerAlert', () => {
     const store = configureStore(mockState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
-    screen.getByText('learnMoreUpperCase').click();
+    screen.getByText('learnMore').click();
 
     // Wait for the async action to complete
     await new Promise((resolve) => setTimeout(resolve, 0));
