@@ -838,7 +838,7 @@ describe('Bridge selectors', () => {
         isLoading: false,
         isQuoteGoingToRefresh: false,
         quotesLastFetchedMs: undefined,
-        quotesRefreshCount: undefined,
+        quotesRefreshCount: 0,
         recommendedQuote: undefined,
         quotesInitialLoadTimeMs: undefined,
         sortedQuotes: [],
