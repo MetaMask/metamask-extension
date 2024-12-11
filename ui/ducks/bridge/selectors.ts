@@ -24,6 +24,10 @@ import {
 import {
   BridgeState,
   BridgeFeatureFlagsKey,
+  L1GasFees,
+  QuoteMetadata,
+  QuoteResponse,
+  SortOrder,
 } from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
@@ -35,12 +39,6 @@ import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
-import {
-  L1GasFees,
-  QuoteMetadata,
-  QuoteResponse,
-  SortOrder,
-} from '../../pages/bridge/types';
 import {
   calcAdjustedReturn,
   calcCost,

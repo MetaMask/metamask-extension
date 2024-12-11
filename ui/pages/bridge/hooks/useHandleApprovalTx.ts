@@ -1,7 +1,11 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { TxData, QuoteResponse, FeeType } from '../types';
+import {
+  TxData,
+  QuoteResponse,
+  FeeType,
+} from '../../../../shared/types/bridge';
 import { isEthUsdt, getEthUsdtResetData } from '../bridge.util';
 import { ETH_USDT_ADDRESS } from '../../../../shared/constants/bridge';
 import { getBridgeERC20Allowance } from '../../../ducks/bridge/actions';

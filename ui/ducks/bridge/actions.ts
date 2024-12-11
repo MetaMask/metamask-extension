@@ -4,10 +4,10 @@ import { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
+  QuoteRequest,
 } from '../../../shared/types/bridge';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { QuoteRequest } from '../../pages/bridge/types';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import {
   bridgeSlice,

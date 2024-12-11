@@ -4,7 +4,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { ContractMarketData } from '@metamask/assets-controllers';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { TxData } from '../../pages/bridge/types';
+import { TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 
