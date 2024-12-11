@@ -5682,9 +5682,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@file:../metamask/core/packages/keyring-controller::locator=metamask-crx%40workspace%3A.":
-  version: 19.0.1
-  resolution: "@metamask/keyring-controller@file:../metamask/core/packages/keyring-controller#../metamask/core/packages/keyring-controller::hash=f70dbe&locator=metamask-crx%40workspace%3A."
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@19.0.1-preview-5db6a424":
+  version: 19.0.1-preview-5db6a424
+  resolution: "@metamask-previews/keyring-controller@npm:19.0.1-preview-5db6a424"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5703,7 +5703,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^18.1.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/f88b672218d5d290180e54ac4a0a76ec9eeca3e002ab68d146d93a4353ddbfb657ed017dbf23709c10980d7c6c7ecd3420b342999bff18f6218a7cb3b6d2d282
+  checksum: 10/9801543ee8e1e50d679580931a8bea50c2c185b7b612191dd461be374afd5b8c64b9f1210cbbcd4b191e6316de6c18d322a26e985aaba669ae706e7db47e761a
   languageName: node
   linkType: hard
 
@@ -26693,10 +26693,8 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
-    "@metamask/keyring-api": "npm:^12.0.0"
-    "@metamask/keyring-controller": "npm:^19.0.2"
-    "@metamask/keyring-internal-api": "npm:^1.0.0"
-    "@metamask/keyring-snap-client": "npm:^1.0.0"
+    "@metamask/keyring-api": "npm:^10.1.0"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.0.1-preview-5db6a424"
     "@metamask/logging-controller": "npm:^6.0.0"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^11.0.0"
