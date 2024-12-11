@@ -1099,7 +1099,10 @@ export function getTokenNetworkFilter(state) {
   const { tokenNetworkFilter } = getPreferences(state);
 
   // Portfolio view not enabled outside popular networks
-  if (!FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)) {
+  if (
+    !process.env.PORTFOLIO_VIEW ||
+    !FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)
+  ) {
     return { [currentChainId]: true };
   }
 
