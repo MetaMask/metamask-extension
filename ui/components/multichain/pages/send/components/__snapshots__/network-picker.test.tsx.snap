@@ -6,7 +6,7 @@ exports[`SendPageNetworkPicker render renders correctly 1`] = `
     class="mm-box mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
   >
     <button
-      class="mm-box mm-picker-network mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+      class="mm-box mm-picker-network mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
       data-testid="send-page-network-picker"
     >
       <div
@@ -14,11 +14,11 @@ exports[`SendPageNetworkPicker render renders correctly 1`] = `
       >
         G
       </div>
-      <span
+      <p
         class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
       >
         Goerli
-      </span>
+      </p>
       <span
         class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
         style="mask-image: url('./images/icons/arrow-down.svg');"

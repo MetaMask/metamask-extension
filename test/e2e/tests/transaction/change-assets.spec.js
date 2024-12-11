@@ -111,7 +111,7 @@ describe('Change assets', function () {
 
           // Click the Send button
           await driver.clickElement({
-            css: '[data-testid="multichain-token-list-button"] span',
+            css: '[data-testid="multichain-token-list-button"] p',
             text: 'TST',
           });
 
@@ -471,7 +471,7 @@ describe('Change assets', function () {
 
           // Click the Send button
           await driver.clickElement({
-            css: '[data-testid="multichain-token-list-button"] span',
+            css: '[data-testid="multichain-token-list-button"] p',
             text: 'TST',
           });
 

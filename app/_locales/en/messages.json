@@ -584,6 +584,9 @@
     "message": "MetaMask Institutional",
     "description": "The name of the application (MMI)"
   },
+  "apply": {
+    "message": "Apply"
+  },
   "approve": {
     "message": "Approve spend limit"
   },
@@ -2935,6 +2938,7 @@
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
   },
+  "loadingTokenList": { "message": "Loading token list" },
   "loadingTokens": {
     "message": "Loading tokens..."
   },
@@ -4824,6 +4828,9 @@
   "searchTokens": {
     "message": "Search tokens"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "Search tokens by name or address"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -5189,6 +5196,9 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "singleNetwork": {
+    "message": "1 network"
+  },
   "siweIssued": {
     "message": "Issued"
   },
@@ -5417,6 +5427,9 @@
   },
   "solanaSupportToggleTitle": {
     "message": "Enable \"Add a new Solana account (Beta)\""
+  },
+  "someNetworks": {
+    "message": "$1 networks"
   },
   "somethingDoesntLookRight": {
     "message": "Something doesn't look right? $1",
