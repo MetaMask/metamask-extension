@@ -93,8 +93,6 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     allOpts[chain] = true;
   });
 
-  console.log(allNetworks);
-
   const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
     (chain) => allOpts[chain],
   ).map((chain) => {
