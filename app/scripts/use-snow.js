@@ -77,7 +77,7 @@ Changing this code must be done cautiously to avoid breaking the app!
       });
     }
     try {win.Node} catch {return;}
-    const {document, Object, Node} = win;
+    const {document, Object, Node, MouseEvent} = win;
     const winp = generateTamedWindow(win);
     const proxy = generateTamedDocument(document, winp);
     Object.defineProperty(Node.prototype, 'ownerDocument', {get: function() {
