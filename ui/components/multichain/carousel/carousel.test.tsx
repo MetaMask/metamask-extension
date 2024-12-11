@@ -132,11 +132,12 @@ describe('Carousel', () => {
     const slidesWithClick = [
       {
         ...mockSlides[0],
-        onClick: mockOnClick,
       },
     ];
 
-    const { container } = render(<Carousel slides={slidesWithClick} />);
+    const { container } = render(
+      <Carousel slides={slidesWithClick} onClick={mockOnClick} />,
+    );
 
     const slide = container.querySelector('.mm-carousel-slide');
     if (!slide) {
@@ -144,7 +145,7 @@ describe('Carousel', () => {
     }
     fireEvent.click(slide);
 
-    expect(mockOnClick).toHaveBeenCalled();
+    expect(mockOnClick).toHaveBeenCalledWith('1');
   });
 
   it('should not show close button for undismissable slides', () => {
