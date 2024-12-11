@@ -36,11 +36,13 @@ import {
 } from '../../../../shared/types/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
+  RequestStatus,
+  METABRIDGE_CHAIN_TO_ADDRESS_MAP,
+} from '../../../../shared/constants/bridge';
+import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_STATE,
   REFRESH_INTERVAL_MS,
-  RequestStatus,
-  METABRIDGE_CHAIN_TO_ADDRESS_MAP,
 } from './constants';
 import { BridgeControllerMessenger } from './types';
 
