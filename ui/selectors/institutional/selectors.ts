@@ -10,33 +10,6 @@ import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { AccountType } from '../../../shared/constants/custody';
-import { BackgroundStateProxy } from '../../../shared/types/metamask';
-
-type MmiState = {
-  metamask: Pick<
-    BackgroundStateProxy,
-    | 'CustodyController'
-    | 'InstitutionalFeaturesController'
-    | 'MmiConfigurationController'
-    | 'AccountsController'
-    | 'AppStateController'
-    | 'KeyringController'
-  >;
-};
-
-type AppState = {
-  modal?: {
-    modalState?: {
-      props?: {
-        address?: string;
-      };
-    };
-  };
-};
-
-export type State = MmiState & {
-  appState?: AppState;
-};
 
 export function getWaitForConfirmDeepLinkDialog(state: State) {
   return state.metamask.waitForConfirmDeepLinkDialog;
