@@ -10,7 +10,7 @@ import {
 } from '../../pages/bridge/types';
 import { getTokenExchangeRate } from './utils';
 
-export type BridgeState = {
+export type BridgeSlice = {
   toChainId: Hex | null;
   fromToken: SwapsTokenObject | SwapsEthToken | null;
   toToken: SwapsTokenObject | SwapsEthToken | null;
@@ -22,7 +22,7 @@ export type BridgeState = {
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
 };
 
-const initialState: BridgeState = {
+const initialState: BridgeSlice = {
   toChainId: null,
   fromToken: null,
   toToken: null,
