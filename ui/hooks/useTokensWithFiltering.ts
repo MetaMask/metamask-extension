@@ -118,7 +118,7 @@ export const useTokensWithFiltering = (
             image: token.iconUrl,
             // Only tokens with 0 balance are processed here so hardcode empty string
             balance: '',
-            string: '',
+            string: undefined,
             address: token.address || zeroAddress(),
           };
         }
