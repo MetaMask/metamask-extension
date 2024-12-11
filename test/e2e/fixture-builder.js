@@ -452,9 +452,10 @@ class FixtureBuilder {
     this.fixture.data.BridgeController = {
       bridgeState: {
         bridgeFeatureFlags: {
-          destNetworkAllowlist: [],
-          extensionSupport: false,
-          srcNetworkAllowlist: [],
+          extensionConfig: {
+            support: false,
+            chains: {},
+          },
         },
         destTokens: {},
         destTopAssets: [],
