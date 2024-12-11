@@ -5,7 +5,7 @@ import {
   calcSentAmount,
   calcSwapRate,
   calcToAmount,
-  calcTotalGasFee,
+  calcEstimatedAndMaxTotalGasFee,
   calcRelayerFee,
   formatEtaInMinutes,
 } from './quote';
@@ -177,7 +177,12 @@ describe('Bridge quote utils', () => {
         approval: approvalGasLimit ? { gasLimit: approvalGasLimit } : undefined,
         quote: { srcAsset, srcTokenAmount, feeData },
       } as never;
-      const gasFee = calcTotalGasFee(quote, '0.00010456', '0.0001', 2517.42);
+      const gasFee = calcEstimatedAndMaxTotalGasFee(
+        quote,
+        '0.00010456',
+        '0.0001',
+        2517.42,
+      );
       const relayerFee = calcRelayerFee(quote, 2517.42);
       const result = {
         amount: gasFee.amount.plus(relayerFee.amount),
@@ -264,7 +269,12 @@ describe('Bridge quote utils', () => {
         quote: { srcAsset, srcTokenAmount, feeData },
         l1GasFeesInHexWei: '0x25F63418AA4',
       } as never;
-      const gasFee = calcTotalGasFee(quote, '0.00010456', '0.0001', 2517.42);
+      const gasFee = calcEstimatedAndMaxTotalGasFee(
+        quote,
+        '0.00010456',
+        '0.0001',
+        2517.42,
+      );
       const relayerFee = calcRelayerFee(quote, 2517.42);
       const result = {
         amount: gasFee.amount.plus(relayerFee.amount),

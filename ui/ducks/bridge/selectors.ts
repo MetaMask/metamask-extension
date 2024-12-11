@@ -50,7 +50,7 @@ import {
   calcSentAmount,
   calcSwapRate,
   calcToAmount,
-  calcTotalGasFee,
+  calcEstimatedAndMaxTotalGasFee,
   isNativeAddress,
 } from '../../pages/bridge/utils/quote';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
@@ -191,6 +191,8 @@ const _getBridgeFeesPerGas = createSelector(
     maxPriorityFeePerGasInDecGwei: (gasFeeEstimates as GasFeeEstimates)?.[
       BRIDGE_PREFERRED_GAS_ESTIMATE
     ]?.suggestedMaxPriorityFeePerGas,
+    maxFeePerGasInDecGwei: (gasFeeEstimates as GasFeeEstimates)?.high
+      ?.suggestedMaxFeePerGas,
     maxFeePerGas: decGWEIToHexWEI(
       (gasFeeEstimates as GasFeeEstimates)?.high?.suggestedMaxFeePerGas,
     ),
@@ -280,40 +282,53 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
     toTokenExchangeRate,
     fromTokenExchangeRate,
     nativeExchangeRate,
-    { estimatedBaseFeeInDecGwei, maxPriorityFeePerGasInDecGwei },
+    {
+      estimatedBaseFeeInDecGwei,
+      maxPriorityFeePerGasInDecGwei,
+      maxFeePerGasInDecGwei,
+    },
   ): (QuoteResponse & QuoteMetadata)[] => {
     const newQuotes = quotes.map((quote: QuoteResponse) => {
       const toTokenAmount = calcToAmount(
         quote.quote,
         toTokenExchangeRate.valueInCurrency,
       );
-      const gasFee = calcTotalGasFee(
+      const gasFee = calcEstimatedAndMaxTotalGasFee(
         quote,
         estimatedBaseFeeInDecGwei,
+        maxFeePerGasInDecGwei,
         maxPriorityFeePerGasInDecGwei,
         nativeExchangeRate,
       );
       const relayerFee = calcRelayerFee(quote, nativeExchangeRate);
-      const totalNetworkFee = {
+      const totalEstimatedNetworkFee = {
         amount: gasFee.amount.plus(relayerFee.amount),
         valueInCurrency:
           gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
           null,
       };
+      const totalMaxNetworkFee = {
+        amount: gasFee.amountMax.plus(relayerFee.amount),
+        valueInCurrency:
+          gasFee.valueInCurrencyMax?.plus(relayerFee.valueInCurrency || '0') ??
+          null,
+      };
+
       const sentAmount = calcSentAmount(
         quote.quote,
         fromTokenExchangeRate.valueInCurrency,
       );
       const adjustedReturn = calcAdjustedReturn(
         toTokenAmount.valueInCurrency,
-        totalNetworkFee.valueInCurrency,
+        totalEstimatedNetworkFee.valueInCurrency,
       );
 
       return {
         ...quote,
         toTokenAmount,
         sentAmount,
-        totalNetworkFee,
+        totalNetworkFee: totalEstimatedNetworkFee,
+        totalMaxNetworkFee,
         adjustedReturn,
         gasFee,
         swapRate: calcSwapRate(sentAmount.amount, toTokenAmount.amount),
@@ -518,10 +533,10 @@ export const getValidationErrors = createDeepEqualSelector(
         if (balance && activeQuote && fromToken) {
           return isNativeAddress(fromToken.address)
             ? balance
-                .sub(activeQuote.totalNetworkFee.amount)
+                .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
                 .lte(0)
-            : balance.lte(activeQuote.totalNetworkFee.amount);
+            : balance.lte(activeQuote.totalMaxNetworkFee.amount);
         }
         return false;
       },
