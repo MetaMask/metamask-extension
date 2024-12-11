@@ -34,7 +34,7 @@ export const ImportSRP = ({
   async function importWallet() {
     if (secretRecoveryPhrase.trim()) {
       await dispatch(
-        actions.createNewVaultAndRestoreFromMnemonic(
+        actions.addNewMnemonicToVault(
           secretRecoveryPhrase.trim(),
         ),
       );

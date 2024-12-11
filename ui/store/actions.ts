@@ -242,25 +242,21 @@ export function createNewVaultAndRestore(
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-export function createNewVaultAndRestoreFromMnemonic(
+export function addNewMnemonicToVault(
   mnemonic: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.createNewVaultAndRestoreFromMnemonic`);
+    log.debug(`background.addNewMnemonicToVault`);
 
     return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod(
-        'createNewVaultAndRestoreFromMnemonic',
-        [mnemonic],
-        (err) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve();
-        },
-      );
+      callBackgroundMethod('addNewMnemonicToVault', [mnemonic], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
     })
       .then(async () => {
         dispatch(hideLoadingIndication());
@@ -443,6 +439,7 @@ export function removeAccount(
           resolve(account);
         });
       });
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;

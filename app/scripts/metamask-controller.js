@@ -3859,8 +3859,7 @@ export default class MetamaskController extends EventEmitter {
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-      createNewVaultAndRestoreFromMnemonic:
-        this.createNewVaultAndRestoreFromMnemonic.bind(this),
+      addNewMnemonicToVault: this.addNewMnemonicToVault.bind(this),
       ///: END:ONLY_INCLUDE_IF
       exportAccount: this.exportAccount.bind(this),
 
@@ -4610,13 +4609,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Creates a new vault and restores from a mnemonic.
+   * Adds a new mnemonic to the vault.
    *
    * @param {string} mnemonic
    * @returns {object} newAccount
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  async createNewVaultAndRestoreFromMnemonic(mnemonic) {
+  async addNewMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       const newAccount = await this.keyringController.createKeyringFromMnemonic(
