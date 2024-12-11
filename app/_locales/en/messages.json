@@ -928,8 +928,8 @@
   "bridgeTxDetailsBridgeAmount": {
     "message": "Bridge amount"
   },
-  "bridgeTxDetailsBridgeType": {
-    "message": "Bridge type"
+  "bridgeTxDetailsBridging": {
+    "message": "Bridging"
   },
   "bridgeTxDetailsDelayedDescription": {
     "message": "Reach out to"
@@ -965,11 +965,21 @@
     "message": "$1 at $2",
     "description": "$1 is the date, $2 is the time"
   },
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "$1 $2 on",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
+  },
   "bridgeTxDetailsTotal": {
     "message": "Total"
   },
   "bridgeTxDetailsTotalGasFee": {
     "message": "Total gas fee"
+  },
+  "bridgeTxDetailsYouReceived": {
+    "message": "You received"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "You sent"
   },
   "bridgeTypeDirectionTo": {
     "message": "To"
