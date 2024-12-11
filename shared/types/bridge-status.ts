@@ -119,12 +119,12 @@ export type BridgeHistoryItem = {
   txMetaId: string; // Need this to handle STX that might not have a txHash immediately
   quote: Quote;
   status: StatusResponse;
-  startTime?: number;
+  startTime?: number; // timestamp in ms
   estimatedProcessingTimeInSeconds: number;
   slippagePercentage: number;
   completionTime?: number;
   pricingData?: {
-    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, accounts for the MM fees
+    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
 
     quotedGasInUsd?: string;
     quotedReturnInUsd?: string;
