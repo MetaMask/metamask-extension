@@ -24,8 +24,8 @@ import {
   getToToken,
   getToChain,
 } from '../../../ducks/bridge/selectors';
-import SwapStepIcon from './bridge-step-icon';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import BridgeStepIcon from './bridge-step-icon';
 
 export default function AwaitingSignatures() {
   const t = useI18nContext();
@@ -58,14 +58,13 @@ export default function AwaitingSignatures() {
   }, []);
 
   return (
-    <div className="awaiting-signatures">
+    <div className="awaiting-bridge-signatures">
       <Box
-        paddingLeft={8}
-        paddingRight={8}
+        paddingLeft={6}
+        paddingRight={6}
         height={BlockSize.Full}
         justifyContent={JustifyContent.center}
         display={Display.Flex}
-        className="awaiting-signatures__content"
       >
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />
@@ -84,9 +83,9 @@ export default function AwaitingSignatures() {
             <Text variant={TextVariant.bodyMdBold} marginTop={2}>
               {t('bridgeConfirmTwoTransactions')}
             </Text>
-            <ul className="awaiting-signatures__steps">
+            <ul className="awaiting-bridge-signatures__steps">
               <li>
-                <SwapStepIcon stepNumber={1} />
+                <BridgeStepIcon stepNumber={1} />
                 {t('bridgeAllowSwappingOf', [
                   <Text
                     as="span"
@@ -95,11 +94,7 @@ export default function AwaitingSignatures() {
                   >
                     {fromAmount}
                   </Text>,
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodyMd}
-                    key="allowToken"
-                  >
+                  <Text as="span" variant={TextVariant.bodyMd} key="allowToken">
                     {fromToken?.symbol}
                   </Text>,
                   <Text
@@ -112,27 +107,15 @@ export default function AwaitingSignatures() {
                 ])}
               </li>
               <li>
-                <SwapStepIcon stepNumber={2} />
+                <BridgeStepIcon stepNumber={2} />
                 {t('bridgeFromTo', [
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodyMd}
-                    key="fromAmount"
-                  >
+                  <Text as="span" variant={TextVariant.bodyMd} key="fromAmount">
                     {fromAmount}
                   </Text>,
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodyMd}
-                    key="fromToken"
-                  >
+                  <Text as="span" variant={TextVariant.bodyMd} key="fromToken">
                     {fromToken?.symbol}
                   </Text>,
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodyMd}
-                    key="toNetwork"
-                  >
+                  <Text as="span" variant={TextVariant.bodyMd} key="toNetwork">
                     {toChain?.name}
                   </Text>,
                 ])}
