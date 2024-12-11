@@ -5,8 +5,10 @@ import type {
   PolymorphicComponentPropWithRef,
 } from '../box';
 
-export interface SkeletonStyleUtilityProps
-  extends Omit<StyleUtilityProps, 'height' | 'width'> {
+export type SkeletonStyleUtilityProps = Omit<
+  StyleUtilityProps,
+  'height' | 'width'
+> & {
   /**
    * Additional className to add to the Skeleton
    */
@@ -23,7 +25,7 @@ export interface SkeletonStyleUtilityProps
    * The children of the Skeleton
    */
   children?: React.ReactNode;
-}
+};
 
 export type SkeletonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, SkeletonStyleUtilityProps>;
