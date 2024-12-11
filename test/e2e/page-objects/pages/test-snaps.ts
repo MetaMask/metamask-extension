@@ -1,9 +1,11 @@
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
-import { WINDOW_TITLES } from '../../helpers';
+import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 
 export class TestSnaps {
   driver: Driver;
+
+  private readonly installedSnapsHeader = '[data-testid="InstalledSnaps"]';
 
   private readonly connectDialogsSnapButton =
     '[data-testid="dialogs"] [data-testid="connect-button"]';
@@ -16,10 +18,14 @@ export class TestSnaps {
 
   async openPage() {
     await this.driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-    await this.driver.delay(1000);
+    await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 
   async clickConnectDialogsSnapButton() {
+    await this.driver.scrollToElement(
+      this.driver.findClickableElement(this.connectDialogsSnapButton),
+    );
+    await this.driver.delay(largeDelayMs);
     await this.driver.clickElement(this.connectDialogsSnapButton);
   }
 
