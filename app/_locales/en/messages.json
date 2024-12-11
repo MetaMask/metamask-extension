@@ -2551,6 +2551,12 @@
   "importPrivateKey": {
     "message": "Import Private Key"
   },
+  "importSRPDescription": {
+    "message": "Enter your wallet's secret recovery phrase. You can import any Ethereum, Solana, or Bitcoin secret recovery phrase."
+  },
+  "importSRPPlaceholder": {
+    "message": "Recovery phrase"
+  },
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
@@ -2559,12 +2565,6 @@
   },
   "importSelectedTokensDescription": {
     "message": "Only the tokens you've selected will appear in your wallet. You can always import hidden tokens later by searching for them."
-  },
-  "importSRPDescription": {
-    "message": "Enter your wallet's secret recovery phrase. You can import any Ethereum, Solana, or Bitcoin secret recovery phrase."
-  },
-  "importSRPPlaceholder": {
-    "message": "Recovery phrase"
   },
   "importTokenQuestion": {
     "message": "Import token?"

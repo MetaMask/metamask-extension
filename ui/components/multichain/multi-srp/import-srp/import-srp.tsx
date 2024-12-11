@@ -17,26 +17,27 @@ import {
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
+import { setShowNewSRPAddedToast } from '../../../app/toast-master/utils';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 
 export const ImportSRP = ({
-  onActionComplete
-  }: {
-    onActionComplete: (completed: boolean) => void}) => {
+  onActionComplete,
+}: {
+  onActionComplete: (completed: boolean) => void;
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const [srpError, setSrpError] = React.useState('');
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   async function importWallet() {
     if (secretRecoveryPhrase.trim()) {
       await dispatch(
-        actions.addNewMnemonicToVault(
-          secretRecoveryPhrase.trim(),
-        ),
+        actions.addNewMnemonicToVault(secretRecoveryPhrase.trim()),
       );
     }
   }
@@ -74,7 +75,6 @@ export const ImportSRP = ({
               newSrpError = t('invalidSeedPhrase');
             }
 
-
             setSrpError(newSrpError);
           }}
         />
@@ -84,14 +84,13 @@ export const ImportSRP = ({
         <ButtonPrimary
           width={BlockSize.Full}
           disabled={!secretRecoveryPhrase.trim()}
+          loading={loading}
           onClick={async () => {
             try {
+              setLoading(true);
               await importWallet();
               onActionComplete(true);
-              dispatch(actions.showAlert(t('importWalletSuccess')));
-              setTimeout(() => {
-                dispatch(actions.hideAlert());
-              }, 5000);
+              dispatch(setShowNewSRPAddedToast(true));
             } catch (e) {
               console.error('error', e);
             }
@@ -101,8 +100,11 @@ export const ImportSRP = ({
         </ButtonPrimary>
       </Box>
       {srpError ? (
-        <BannerAlert severity={BannerAlertSeverity.Danger} description={srpError} />
+        <BannerAlert
+          severity={BannerAlertSeverity.Danger}
+          description={srpError}
+        />
       ) : null}
     </Box>
   );
-}
+};

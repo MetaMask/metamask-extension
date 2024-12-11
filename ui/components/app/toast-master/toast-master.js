@@ -51,6 +51,9 @@ import {
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectSwitchedNetworkNeverShowMessage,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  selectNewSRPAdded,
+  ///: END:ONLY_INCLUDE_IF
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -58,6 +61,9 @@ import {
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
   setSwitchedNetworkNeverShowMessage,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  setShowNewSRPAddedToast,
+  ///: END:ONLY_INCLUDE_IF
 } from './utils';
 
 export function ToastMaster() {
@@ -79,6 +85,11 @@ export function ToastMaster() {
         <SwitchedNetworkToast />
         <NftEnablementToast />
         <PermittedNetworkToast />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          <NewSRPAddedToast />
+          ///: END:ONLY_INCLUDE_IF
+        }
       </ToastContainer>
     );
   }
@@ -324,3 +335,25 @@ function PermittedNetworkToast() {
     )
   );
 }
+
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+function NewSRPAddedToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showNewSRPAddedToast = useSelector(selectNewSRPAdded);
+
+  return (
+    showNewSRPAddedToast && (
+      <Toast
+        key="new-srp-added-toast"
+        text={t('importWalletSuccess')}
+        startAdornment={
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowNewSRPAddedToast(false))}
+      />
+    )
+  );
+}
+///: END:ONLY_INCLUDE_IF

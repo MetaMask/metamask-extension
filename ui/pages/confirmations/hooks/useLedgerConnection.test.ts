@@ -38,6 +38,8 @@ const updateLedgerHardwareAccounts = (keyrings: KeyringObject[]) => {
     // If 'Ledger Hardware' does not exist, create a new entry
     keyrings.push({
       type: KeyringType.ledger,
+      typeIndex: 0,
+      id: 'test-keyring-id-1',
       accounts: [MOCK_LEDGER_ACCOUNT],
     });
   } else {
