@@ -37,6 +37,11 @@ class AccountListPage {
     tag: 'button',
   };
 
+  private readonly addSolanaAccountButton = {
+    text: messages.addNewSolanaAccount.message,
+    tag: 'button',
+  };
+
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
 
@@ -222,6 +227,41 @@ class AccountListPage {
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
       );
+    }
+  }
+
+  async addNewSolanaAccount({
+    solanaAccountCreationEnabled = true,
+    accountName = '',
+  }: {
+    solanaAccountCreationEnabled?: boolean;
+    accountName?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Adding new Solana account${
+        accountName ? ` with custom name: ${accountName}` : ' with default name'
+      }`,
+    );
+    if (solanaAccountCreationEnabled) {
+      await this.driver.clickElement(this.addSolanaAccountButton);
+      // needed to mitigate a race condition with the state update
+      // there is no condition we can wait for in the UI
+      if (accountName) {
+        await this.driver.fill(this.accountNameInput, accountName);
+      }
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
+      );
+    } else {
+      const createButton = await this.driver.findElement(
+        this.addSolanaAccountButton,
+      );
+      assert.equal(await createButton.isEnabled(), false);
+      await this.driver.clickElement(this.closeAccountModalButton);
     }
   }
 
@@ -462,6 +502,18 @@ class AccountListPage {
     });
   }
 
+  async check_accountNotDisplayedInAccountList(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
+    console.log(
+      `Check that account label ${expectedLabel} is not displayed in account list`,
+    );
+    await this.driver.assertElementNotPresent({
+      css: this.accountListItem,
+      text: expectedLabel,
+    });
+  }
+
   /**
    * Checks that the account with the specified label is not displayed in the account list.
    *
@@ -541,12 +593,25 @@ class AccountListPage {
     console.log(
       `Verify the number of accounts in the account menu is: ${expectedNumberOfAccounts}`,
     );
-    await this.driver.wait(async () => {
-      const internalAccounts = await this.driver.findElements(
-        this.accountListItem,
-      );
-      return internalAccounts.length === expectedNumberOfAccounts;
-    }, 20000);
+    await this.driver.waitForSelector(this.accountListItem);
+    await this.driver.wait(
+      async () => {
+        await this.driver.delay(500);
+        const internalAccounts = await this.driver.findElements(
+          this.accountListItem,
+        );
+        console.log(
+          `Number of accounts: ${
+            internalAccounts.length
+          } is equal to ${expectedNumberOfAccounts}? ${
+            internalAccounts.length === expectedNumberOfAccounts
+          }`,
+        );
+        return internalAccounts.length === expectedNumberOfAccounts;
+      },
+      20000,
+      true,
+    );
   }
 
   /**
