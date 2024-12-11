@@ -3315,6 +3315,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       isUnlocked: this.isUnlocked(),
       accounts: await this.getPermittedAccounts(origin),
+      extensionId: chrome?.runtime?.id,
       ...providerNetworkState,
     };
   }
