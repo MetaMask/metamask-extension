@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
+import { ACCOUNT_TYPE } from '../common';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -203,6 +204,13 @@ class AccountListPage {
     }
   }
 
+  async isBtcAccountCreationButtonEnabled() {
+    const createButton = await this.driver.findElement(
+      this.addBtcAccountButton,
+    );
+    return await createButton.isEnabled();
+  }
+
   /**
    * Import a new account with a private key.
    *
@@ -230,6 +238,40 @@ class AccountListPage {
     }
   }
 
+  async addAccount(accountType: ACCOUNT_TYPE, accountName: string) {
+    await this.driver.clickElement(this.createAccountButton);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let addAccountButton: any;
+    switch (accountType) {
+      case ACCOUNT_TYPE.ETHEREUM:
+        addAccountButton = this.addEthereumAccountButton;
+        // await this.driver.clickElement(this.addEthereumAccountButton);
+
+        break;
+      case ACCOUNT_TYPE.BITCOIN:
+        addAccountButton = this.addBtcAccountButton;
+        // await this.driver.clickElement(this.addBtcAccountButton);
+        break;
+      case ACCOUNT_TYPE.SOLANA:
+        addAccountButton = this.addSolanaAccountButton;
+        // await this.driver.clickElement(this.addSolanaAccountButton);
+        break;
+      default:
+        console.log('Account type does not match with any of the options');
+        return;
+    }
+
+    await this.driver.clickElement(addAccountButton);
+    if (accountName) {
+      await this.driver.fill(this.accountNameInput, accountName);
+    }
+
+    await this.driver.clickElementAndWaitToDisappear(
+      this.addAccountConfirmButton,
+      5000,
+    );
+  }
+
   async addNewSolanaAccount({
     solanaAccountCreationEnabled = true,
     accountName = '',
@@ -251,9 +293,6 @@ class AccountListPage {
       }
       await this.driver.clickElementAndWaitToDisappear(
         this.addAccountConfirmButton,
-        // Longer timeout than usual, this reduces the flakiness
-        // around Bitcoin account creation (mainly required for
-        // Firefox)
         5000,
       );
     } else {
@@ -593,6 +632,7 @@ class AccountListPage {
     console.log(
       `Verify the number of accounts in the account menu is: ${expectedNumberOfAccounts}`,
     );
+
     await this.driver.waitForSelector(this.accountListItem);
     await this.driver.wait(
       async () => {

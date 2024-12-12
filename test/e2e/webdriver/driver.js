@@ -879,7 +879,7 @@ class Driver {
   async waitForControllersLoaded() {
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.controller-loaded')),
-      10 * 20000,
+      20 * 1000,
     );
   }
 

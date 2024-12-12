@@ -4,6 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
+import { ACCOUNT_TYPE } from '../../page-objects/common';
 
 const SOLANA_URL_REGEX = /^https:\/\/.*\.solana.*/u;
 
@@ -63,10 +64,7 @@ export async function withSolanaAccountSnap(
       console.log('Opening account menu');
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      console.log('Opening add account modal');
-      await accountListPage.openAddAccountModal();
-      console.log('Adding new Solana account: Solana 1');
-      await accountListPage.addNewSolanaAccount({ accountName: 'Solana 1' });
+      await accountListPage.addAccount(ACCOUNT_TYPE.SOLANA, 'Solana 1');
       console.log('Running test');
       await test(driver, mockServer);
     },
