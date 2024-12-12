@@ -14,6 +14,7 @@ import {
   getBridgeQuotes,
   getFromChain,
   getToChain,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -35,6 +36,7 @@ import {
   BackgroundColor,
   BlockSize,
   IconColor,
+  BorderRadius,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -55,6 +57,7 @@ export const BridgeQuoteCard = () => {
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
   const ticker = useSelector(getNativeCurrency);
+  const { isEstimatedReturnLow } = useSelector(getValidationErrors);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
@@ -172,10 +175,19 @@ export const BridgeQuoteCard = () => {
               </Row>
             </Row>
 
-            <Row>
+            <Row
+              backgroundColor={
+                isEstimatedReturnLow ? BackgroundColor.warningMuted : undefined
+              }
+              borderRadius={isEstimatedReturnLow ? BorderRadius.LG : undefined}
+            >
               <Text
                 variant={TextVariant.bodyMdMedium}
-                color={TextColor.textAlternativeSoft}
+                color={
+                  isEstimatedReturnLow
+                    ? TextColor.warningDefault
+                    : TextColor.textAlternativeSoft
+                }
               >
                 {t('networkFees')}
               </Text>
@@ -183,7 +195,13 @@ export const BridgeQuoteCard = () => {
                 {shouldShowNetworkFeesInGasToken ? (
                   <>
                     {/* Network fee in gas token amounts  */}
-                    <Text>
+                    <Text
+                      color={
+                        isEstimatedReturnLow
+                          ? TextColor.warningDefault
+                          : undefined
+                      }
+                    >
                       {activeQuote.totalNetworkFee?.valueInCurrency
                         ? formatTokenAmount(
                             locale,
@@ -191,9 +209,7 @@ export const BridgeQuoteCard = () => {
                             ticker,
                           )
                         : undefined}
-                    </Text>
-                    <Text>-</Text>
-                    <Text>
+                      -
                       {activeQuote.totalMaxNetworkFee?.valueInCurrency
                         ? formatTokenAmount(
                             locale,
@@ -206,7 +222,13 @@ export const BridgeQuoteCard = () => {
                 ) : (
                   <>
                     {/* Network fee in display currency */}
-                    <Text>
+                    <Text
+                      color={
+                        isEstimatedReturnLow
+                          ? TextColor.warningDefault
+                          : undefined
+                      }
+                    >
                       {formatCurrencyAmount(
                         activeQuote.totalNetworkFee?.valueInCurrency,
                         currency,
@@ -217,9 +239,7 @@ export const BridgeQuoteCard = () => {
                           activeQuote.totalNetworkFee?.amount,
                           ticker,
                         )}
-                    </Text>
-                    <Text>-</Text>
-                    <Text>
+                      -
                       {formatCurrencyAmount(
                         activeQuote.totalMaxNetworkFee?.valueInCurrency,
                         currency,
@@ -235,7 +255,11 @@ export const BridgeQuoteCard = () => {
                 )}
                 <Icon
                   style={{ cursor: 'pointer' }}
-                  color={IconColor.iconAlternativeSoft}
+                  color={
+                    isEstimatedReturnLow
+                      ? IconColor.warningDefault
+                      : IconColor.iconAlternativeSoft
+                  }
                   name={IconName.SwapVertical}
                   size={IconSize.Md}
                   onClick={() =>
