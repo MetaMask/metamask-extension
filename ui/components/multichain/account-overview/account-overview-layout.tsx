@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
+///: END:ONLY_INCLUDE_IF
 import { removeSlide, updateSlides } from '../../../store/actions';
 import { Carousel } from '..';
 import {
   getSelectedAccountCachedBalance,
   getAppIsLoading,
   getSlides,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
