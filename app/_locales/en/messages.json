@@ -861,9 +861,6 @@
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
-  "bridgeDestination": {
-    "message": "Destination"
-  },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
@@ -887,9 +884,6 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
-  },
-  "bridgeSource": {
-    "message": "Source"
   },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
@@ -923,14 +917,8 @@
   "bridgeTotalFeesTooltipText": {
     "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
   },
-  "bridgeTxDetailsBaseFee": {
-    "message": "Base fee (GWEI)"
-  },
-  "bridgeTxDetailsBridgeAmount": {
-    "message": "Bridge amount"
-  },
-  "bridgeTxDetailsBridgeType": {
-    "message": "Bridge type"
+  "bridgeTxDetailsBridging": {
+    "message": "Bridging"
   },
   "bridgeTxDetailsDelayedDescription": {
     "message": "Reach out to"
@@ -941,20 +929,8 @@
   "bridgeTxDetailsDelayedTitle": {
     "message": "Has it been longer than 3 hours?"
   },
-  "bridgeTxDetailsGasLimit": {
-    "message": "Gas limit (units)"
-  },
-  "bridgeTxDetailsGasUsed": {
-    "message": "Gas used (units)"
-  },
-  "bridgeTxDetailsMaxFeePerGas": {
-    "message": "Max fee per gas"
-  },
   "bridgeTxDetailsNonce": {
     "message": "Nonce"
-  },
-  "bridgeTxDetailsPriorityFee": {
-    "message": "Priority fee (GWEI)"
   },
   "bridgeTxDetailsStatus": {
     "message": "Status"
@@ -966,14 +942,18 @@
     "message": "$1 at $2",
     "description": "$1 is the date, $2 is the time"
   },
-  "bridgeTxDetailsTotal": {
-    "message": "Total"
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "$1 $2 on",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
   },
   "bridgeTxDetailsTotalGasFee": {
     "message": "Total gas fee"
   },
-  "bridgeTypeDirectionTo": {
-    "message": "To"
+  "bridgeTxDetailsYouReceived": {
+    "message": "You received"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "You sent"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
