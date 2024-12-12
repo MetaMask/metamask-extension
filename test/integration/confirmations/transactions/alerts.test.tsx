@@ -362,7 +362,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),
     ).toHaveTextContent(
-      'This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.',
+      "This transaction won't go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.",
     );
   });
 
