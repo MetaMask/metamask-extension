@@ -4,7 +4,7 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
-import { createSelector, defaultMemoize } from 'reselect';
+import { createSelector } from 'reselect';
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
