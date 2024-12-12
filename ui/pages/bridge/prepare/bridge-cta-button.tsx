@@ -110,7 +110,7 @@ export const BridgeCTAButton = () => {
       onClick={() => {
         if (activeQuote && isTxSubmittable) {
           try {
-            // We don't need to worry about setting to true if the tx submission succeeds
+            // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
             setIsSubmitting(true);
 
@@ -126,13 +126,13 @@ export const BridgeCTAButton = () => {
                 },
               });
             submitBridgeTransaction(activeQuote);
-          } catch (error) {
+          } finally {
             setIsSubmitting(false);
           }
         }
       }}
       loading={isSubmitting}
-      disabled={!isTxSubmittable || isQuoteExpired}
+      disabled={!isTxSubmittable || isQuoteExpired || isSubmitting}
     >
       {label}
     </Button>
