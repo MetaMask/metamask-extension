@@ -69,7 +69,7 @@ const mockTransactionResult = {
     {
       id: '123',
       account: mockBtcAccount.id,
-      chain: 'bip122:000000000933ea01ad0ee984209779ba',
+      chain: 'bip122:000000000019d6689c085ae165831e93',
       type: 'send',
       status: 'confirmed',
       timestamp: Date.now(),

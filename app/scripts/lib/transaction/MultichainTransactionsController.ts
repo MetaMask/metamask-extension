@@ -24,6 +24,7 @@ import type {
 } from '@metamask/accounts-controller';
 import type { Transaction } from '../../../../shared/types/multichain/transactions';
 import { MultichainTransactionsTracker } from './MultichainTransactionsTracker';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 const controllerName = 'MultichainTransactionsController';
 
@@ -243,14 +244,24 @@ export class MultichainTransactionsController extends BaseController<
         pagination,
       );
 
+      /**
+       * Filter mainnet transactions based on chain prefix
+       * For now, we don't look at the current network, but we will in the future
+       */
+      const mainnetTransactions = response.data.filter(
+        (tx) =>
+          tx.chain.startsWith(MultichainNetworks.SOLANA) ||
+          tx.chain.startsWith(MultichainNetworks.BITCOIN),
+      );
+
       this.update((state: Draft<MultichainTransactionsControllerState>) => {
         const entry: TransactionStateEntry = {
-          data: response.data,
+          data: mainnetTransactions,
           next: response.next,
           lastUpdated: Date.now(),
         };
-        // @ts-expect-error come back later or use Object.assign
-        state.nonEvmTransactions[account.id] = entry;
+
+        Object.assign(state.nonEvmTransactions, { [account.id]: entry });
       });
     }
   }
