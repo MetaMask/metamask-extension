@@ -49,6 +49,7 @@ import {
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
   TEST_NETWORK_IDS,
+  FEATURED_NETWORK_CHAIN_IDS,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1076,8 +1077,7 @@ export function getPetnamesEnabled(state) {
 
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
-  const { tokenNetworkFilter: tokenNetworkFilterValue } = getPreferences(state);
-  const tokenNetworkFilter = tokenNetworkFilterValue || {};
+  const tokenNetworkFilter = getTokenNetworkFilter(state);
   if (
     Object.keys(tokenNetworkFilter).length === 1 &&
     Object.keys(tokenNetworkFilter)[0] === chainId
@@ -1085,6 +1085,37 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
     return true;
   }
   return false;
+}
+
+/**
+ * Returns an object indicating which networks
+ * tokens should be shown on in the portfolio view.
+ *
+ * @param {*} state
+ * @returns {Record<Hex, boolean>}
+ */
+export function getTokenNetworkFilter(state) {
+  const currentChainId = getCurrentChainId(state);
+  const { tokenNetworkFilter } = getPreferences(state);
+
+  // Portfolio view not enabled outside popular networks
+  if (
+    !process.env.PORTFOLIO_VIEW ||
+    !FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)
+  ) {
+    return { [currentChainId]: true };
+  }
+
+  // Portfolio view only enabled on featured networks
+  return Object.entries(tokenNetworkFilter || {}).reduce(
+    (acc, [chainId, value]) => {
+      if (FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
+        acc[chainId] = value;
+      }
+      return acc;
+    },
+    {},
+  );
 }
 
 export function getUseTransactionSimulations(state) {
@@ -2345,7 +2376,9 @@ export const getAllChainsToPoll = createDeepEqualSelector(
     }
 
     return Object.keys(networkConfigurations).filter(
-      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+      (chainId) =>
+        chainId === currentChainId ||
+        FEATURED_NETWORK_CHAIN_IDS.includes(chainId),
     );
   },
 );
@@ -2367,7 +2400,9 @@ export const getChainIdsToPoll = createDeepEqualSelector(
     }
 
     return Object.keys(networkConfigurations).filter(
-      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+      (chainId) =>
+        chainId === currentChainId ||
+        FEATURED_NETWORK_CHAIN_IDS.includes(chainId),
     );
   },
 );
@@ -2395,7 +2430,10 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
 
     return Object.entries(networkConfigurations).reduce(
       (acc, [chainId, network]) => {
-        if (chainId === currentChainId || !TEST_CHAINS.includes(chainId)) {
+        if (
+          chainId === currentChainId ||
+          FEATURED_NETWORK_CHAIN_IDS.includes(chainId)
+        ) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,

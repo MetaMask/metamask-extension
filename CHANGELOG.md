@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.9.1]
+### Changed
+- The 'All Networks' view of assets on the home screen will now only get data across the 9 'popular networks' ([#29071](https://github.com/MetaMask/metamask-extension/pull/29071))
+
+### Fixed
+- Ensure tokens with zero balance are hidden if the hide zero balance setting is on ([#29058](https://github.com/MetaMask/metamask-extension/pull/29058))
+- Ensure token detection prompt is no longer shown after it is clicked and the subsquent prompt is closed ([#29059](https://github.com/MetaMask/metamask-extension/pull/29059))
+
 ## [12.9.0]
 ### Added
 - Added error handling to ensure users are not redirected to an incorrect network when sending or swapping tokens ([#28740](https://github.com/MetaMask/metamask-extension/pull/28740))
@@ -5469,7 +5477,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.9.1...HEAD
+[12.9.1]: https://github.com/MetaMask/metamask-extension/compare/v12.9.0...v12.9.1
 [12.9.0]: https://github.com/MetaMask/metamask-extension/compare/v12.8.1...v12.9.0
 [12.8.1]: https://github.com/MetaMask/metamask-extension/compare/v12.8.0...v12.8.1
 [12.8.0]: https://github.com/MetaMask/metamask-extension/compare/v12.7.2...v12.8.0
