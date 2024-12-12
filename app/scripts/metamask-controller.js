@@ -5147,12 +5147,13 @@ export default class MetamaskController extends EventEmitter {
    * Called when the first account is created and on unlocking the vault.
    *
    * @param password
+   * @param typeIndex - This is the identifier for the hd keyring.
    * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
    * encoded as an array of UTF-8 bytes.
    */
-  async getSeedPhrase(password) {
+  async getSeedPhrase(password, typeIndex) {
     return this._convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(password),
+      await this.keyringController.exportSeedPhrase(password, typeIndex),
     );
   }
 

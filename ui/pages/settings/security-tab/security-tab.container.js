@@ -30,6 +30,7 @@ import {
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
+import { getSelectedInternalAccount } from '../../../selectors';
 
 const mapStateToProps = (state) => {
   const { metamask } = state;
@@ -77,6 +78,7 @@ const mapStateToProps = (state) => {
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
+    selectedAccount: getSelectedInternalAccount(state),
   };
 };
 

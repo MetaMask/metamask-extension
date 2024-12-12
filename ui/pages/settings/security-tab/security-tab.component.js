@@ -56,6 +56,7 @@ import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import MetametricsToggle from './metametrics-toggle';
 import ProfileSyncToggle from './profile-sync-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
+import { InternalAccountPropType } from '../../../selectors/multichain';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -104,6 +105,7 @@ export default class SecurityTab extends PureComponent {
     toggleExternalServices: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    selectedAccount: InternalAccountPropType,
   };
 
   state = {
@@ -203,6 +205,7 @@ export default class SecurityTab extends PureComponent {
           </Button>
           {this.state.srpQuizModalVisible && (
             <SRPQuiz
+              accountId={this.props.selectedAccount.id}
               isOpen={this.state.srpQuizModalVisible}
               onClose={this.hideSrpQuizModal}
             />

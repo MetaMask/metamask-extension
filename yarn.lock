@@ -5622,9 +5622,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@file:../metamask/core/packages/keyring-controller::locator=metamask-crx%40workspace%3A.":
+"@metamask/keyring-controller@file:/Users/montelai/consensys/core/packages/keyring-controller::locator=metamask-crx%40workspace%3A.":
   version: 19.0.1
-  resolution: "@metamask/keyring-controller@file:../metamask/core/packages/keyring-controller#../metamask/core/packages/keyring-controller::hash=f70dbe&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/keyring-controller@file:/Users/montelai/consensys/core/packages/keyring-controller#/Users/montelai/consensys/core/packages/keyring-controller::hash=0e1cbb&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5643,7 +5643,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^18.1.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/f88b672218d5d290180e54ac4a0a76ec9eeca3e002ab68d146d93a4353ddbfb657ed017dbf23709c10980d7c6c7ecd3420b342999bff18f6218a7cb3b6d2d282
+  checksum: 10/bc7572f147fede8e1e00c3e9d4fffcaabebad0d29f78bc6640e3f093f858f1568d054a4fd58c6c1e95f6d5ba1cd285361563a6cc829da1873578b7a9cddd29d3
   languageName: node
   linkType: hard
 
@@ -26458,7 +26458,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^10.1.0"
-    "@metamask/keyring-controller": "file:../metamask/core/packages/keyring-controller"
+    "@metamask/keyring-controller": "file:/Users/montelai/consensys/core/packages/keyring-controller"
     "@metamask/logging-controller": "npm:^6.0.0"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^11.0.0"
