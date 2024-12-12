@@ -604,7 +604,13 @@ describe('Bridge selectors', () => {
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
+          amountMax: new BigNumber('3.49092e-8'),
           valueInCurrency: new BigNumber('7.141025952e-8'),
+          valueInCurrencyMax: new BigNumber('3.49092e-8'),
+        },
+        totalMaxNetworkFee: {
+          amount: new BigNumber('0.0010000349092'),
+          valueInCurrency: new BigNumber('0.0010000349092'),
         },
         totalNetworkFee: {
           valueInCurrency: new BigNumber('0.00100007141025952'),
@@ -698,11 +704,17 @@ describe('Bridge selectors', () => {
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
+          amountMax: new BigNumber('3.49092e-8'),
           valueInCurrency: new BigNumber('7.141025952e-8'),
+          valueInCurrencyMax: new BigNumber('3.49092e-8'),
         },
         totalNetworkFee: {
           valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
+        },
+        totalMaxNetworkFee: {
+          valueInCurrency: new BigNumber('0.0010000349092'),
+          amount: new BigNumber('0.0010000349092'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
@@ -797,11 +809,17 @@ describe('Bridge selectors', () => {
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
+          amountMax: new BigNumber('3.49092e-8'),
           valueInCurrency: new BigNumber('7.141025952e-8'),
+          valueInCurrencyMax: new BigNumber('3.49092e-8'),
         },
         totalNetworkFee: {
           valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
+        },
+        totalMaxNetworkFee: {
+          valueInCurrency: new BigNumber('0.0010000349092'),
+          amount: new BigNumber('0.0010000349092'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
