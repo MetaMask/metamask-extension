@@ -5068,10 +5068,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/design-tokens@npm:4.0.0"
-  checksum: 10/337968d86bf963ccdf7ab416cc8f87ec1d35d9fb56f686dea954964edd6f5cb0067a920cb2c1f9008150d3decac51cb1b392b3e67dc1d46ca308b503ffe7eabd
+"@metamask/design-tokens@npm:^4.0.0, @metamask/design-tokens@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@metamask/design-tokens@npm:4.2.0"
+  checksum: 10/aa92b20f8860a59b2b272e7a8a704d7e426a94030081c69c42b87ea81985c5d6585122def5906ce5a5751cb99f070efed77fabecc751ae0a7d84738f0e0ae522
   languageName: node
   linkType: hard
 
@@ -26421,7 +26421,7 @@ __metadata:
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.4.0"
-    "@metamask/design-tokens": "npm:^4.0.0"
+    "@metamask/design-tokens": "npm:^4.2.0"
     "@metamask/ens-controller": "npm:^15.0.0"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/eslint-config": "npm:^9.0.0"
