@@ -86,6 +86,8 @@ class ChromeDriver {
       });
     }
 
+    options.addArguments('no-sandbox');
+
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
