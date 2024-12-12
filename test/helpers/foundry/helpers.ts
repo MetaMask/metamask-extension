@@ -300,15 +300,16 @@ async function extractFromTar(
       {
         cwd: dir,
         transform: (entry) => {
+          const absolutePath = entry.absolute;
+          if (!absolutePath) {
+            throw new Error('Missing absolute path for entry');
+          }
+
           if (checksumAlgorithm) {
             const hash = createHash(checksumAlgorithm);
             const passThrough = new Minipass({ async: true });
             passThrough.pipe(hash);
             passThrough.on('end', () => {
-              const absolutePath = entry.absolute;
-              if (!absolutePath) {
-                throw new Error('Missing absolute path for entry');
-              }
               downloads.push({
                 path: absolutePath,
                 binary: entry.path,
@@ -319,10 +320,6 @@ async function extractFromTar(
           }
           // When no checksum is needed, record the entry and return undefined
           // to use the original stream without transformation
-          const absolutePath = entry.absolute;
-          if (!absolutePath) {
-            throw new Error('Missing absolute path for entry');
-          }
           downloads.push({
             path: absolutePath,
             binary: entry.path,
