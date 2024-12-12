@@ -127,20 +127,15 @@ const CrossChainSwap = () => {
             redirectRoute={SWAPS_MAINTENANCE_ROUTE}
             flag={isBridgeEnabled}
             path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
-            render={() => {
-              return (
-                <>
-                  <BridgeTransactionSettingsModal
-                    isOpen={isSettingsModalOpen}
-                    onClose={() => {
-                      setIsSettingsModalOpen(false);
-                    }}
-                  />
-                  <PrepareBridgePage />
-                </>
-              );
-            }}
-          />
+          >
+            <BridgeTransactionSettingsModal
+              isOpen={isSettingsModalOpen}
+              onClose={() => {
+                setIsSettingsModalOpen(false);
+              }}
+            />
+            <PrepareBridgePage />
+          </FeatureToggledRoute>
           <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
             <Content>
               <AwaitingSignatures />
