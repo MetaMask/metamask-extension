@@ -1,13 +1,15 @@
 import { createProjectLogger, getKnownPropertyNames } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
-import type { BackgroundStateProxy } from '../../../shared/types/metamask';
+import { MemStoreControllersComposedState } from '../../../shared/types/metamask';
 import ComposableObservableStore from './ComposableObservableStore';
 import { sanitizeUIState } from './state-utils';
 
 const log = createProjectLogger('patch-store');
 
-export class PatchStore {
+export class PatchStore<
+  ControllerKey extends keyof MemStoreControllersComposedState,
+> {
   private id: string;
 
   private observableStore: ComposableObservableStore;
@@ -15,9 +17,9 @@ export class PatchStore {
   private pendingPatches: Map<string, Patch> = new Map();
 
   private listener: (request: {
-    controllerKey?: keyof BackgroundStateProxy;
-    oldState: BackgroundStateProxy;
-    newState: BackgroundStateProxy;
+    controllerKey: ControllerKey;
+    oldState: MemStoreControllersComposedState[ControllerKey];
+    newState: MemStoreControllersComposedState[ControllerKey];
   }) => void;
 
   constructor(observableStore: ComposableObservableStore) {
@@ -52,17 +54,19 @@ export class PatchStore {
     oldState,
     newState,
   }: {
-    controllerKey?: keyof BackgroundStateProxy;
-    oldState: BackgroundStateProxy;
-    newState: BackgroundStateProxy;
+    controllerKey: ControllerKey;
+    oldState: MemStoreControllersComposedState[ControllerKey];
+    newState: MemStoreControllersComposedState[ControllerKey];
   }) {
-    const sanitizedNewState = sanitizeUIState(newState);
+    const sanitizedNewState = sanitizeUIState<ControllerKey>({
+      [controllerKey]: newState,
+    } as Pick<MemStoreControllersComposedState, ControllerKey>);
     const patches = this._generatePatches({
       controllerKey,
       oldState,
-      newState: sanitizedNewState,
+      newState: sanitizedNewState[controllerKey],
     });
-    const isInitialized = Boolean(newState.KeyringController.vault);
+    const isInitialized = 'vault' in newState && Boolean(newState.vault);
 
     if (isInitialized) {
       patches.push({
@@ -90,41 +94,22 @@ export class PatchStore {
     oldState,
     newState,
   }: {
-    controllerKey?: keyof BackgroundStateProxy;
-    oldState: BackgroundStateProxy;
-    newState: BackgroundStateProxy;
+    controllerKey: ControllerKey;
+    oldState: MemStoreControllersComposedState[ControllerKey];
+    newState: MemStoreControllersComposedState[ControllerKey];
   }): Patch[] {
-    return controllerKey
-      ? getKnownPropertyNames(newState[controllerKey]).reduce<Patch[]>(
-          (patches, key) => {
-            // @ts-expect-error There's no way to narrow `key` to a type that corresponds to the current iteration's `controllerKey` value.
-            const oldData = oldState[controllerKey][key];
-            // @ts-expect-error There's no way to narrow `key` to a type that corresponds to the current iteration's `controllerKey` value.
-            const newData = newState[controllerKey][key];
+    return getKnownPropertyNames(newState).reduce<Patch[]>((patches, key) => {
+      const oldData = oldState[key as keyof typeof oldState];
+      const newData = newState[key as keyof typeof newState];
 
-            if (oldData !== newData) {
-              patches.push({
-                op: 'replace' as const,
-                path: [controllerKey, String(key)],
-                value: newData,
-              });
-            }
-            return patches;
-          },
-          [],
-        )
-      : getKnownPropertyNames(newState).reduce<Patch[]>((patches, key) => {
-          const oldData = oldState[key];
-          const newData = newState[key];
-
-          if (oldData !== newData) {
-            patches.push({
-              op: 'replace' as const,
-              path: [key],
-              value: newData,
-            });
-          }
-          return patches;
-        }, []);
+      if (oldData !== newData) {
+        patches.push({
+          op: 'replace' as const,
+          path: [controllerKey, key],
+          value: newData,
+        });
+      }
+      return patches;
+    }, []);
   }
 }
