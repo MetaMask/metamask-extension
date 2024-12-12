@@ -168,7 +168,6 @@ export function validateAddEthereumChainParams(params) {
  *
  * @param response - The JSON RPC request's response object.
  * @param end - The JSON RPC request's end callback.
- * @param {string} origin - The origin for the request.
  * @param {string} chainId - The chainId being switched to.
  * @param {string} networkClientId - The network client being switched to.
  * @param {string} [approvalFlowId] - The optional approval flow ID to handle.
@@ -185,7 +184,6 @@ export function validateAddEthereumChainParams(params) {
 export async function switchChain(
   response,
   end,
-  origin,
   chainId,
   networkClientId,
   approvalFlowId,
@@ -236,7 +234,6 @@ export async function switchChain(
         );
 
         updateCaveat(
-          origin,
           Caip25EndowmentPermissionName,
           Caip25CaveatType,
           updatedCaveatValue,
@@ -264,16 +261,13 @@ export async function switchChain(
       caveatValue = addPermittedEthChainId(caveatValue, chainId);
 
       grantPermissions({
-        subject: { origin },
-        approvedPermissions: {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: caveatValue,
-              },
-            ],
-          },
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValue,
+            },
+          ],
         },
       });
     }
