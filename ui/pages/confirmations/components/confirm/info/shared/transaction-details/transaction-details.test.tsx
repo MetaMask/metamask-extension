@@ -11,6 +11,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { TransactionDetails } from './transaction-details';
+import { toHex } from '@metamask/controller-utils';
 
 jest.mock(
   '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -105,13 +106,20 @@ describe('<TransactionDetails />', () => {
 
     it('should not be in the document when value and simulated native balance mismatch is within threshold', () => {
       // Transaction value is set to 0x3782dace9d900000 below mock
+      const transactionValueInDecimal = 4000000000000000000;
+      const transactionValueInHex = toHex(transactionValueInDecimal);
+      const newBalanceInDecimal = 1;
+      const newBalanceInHex = toHex(newBalanceInDecimal);
+      const previousBalanceInDecimal = transactionValueInDecimal + newBalanceInDecimal;
+      const previousBalanceInHex = toHex(previousBalanceInDecimal);
+
       const simulationDataMock = {
         tokenBalanceChanges: [],
         nativeBalanceChange: {
-          difference: '0x3782dace9d900000' as Hex,
+          difference: transactionValueInHex,
           isDecrease: true,
-          previousBalance: '0x3782dace9d900001' as Hex,
-          newBalance: '0x0000000000000001' as Hex,
+          previousBalance: previousBalanceInHex,
+          newBalance: newBalanceInHex,
         },
       };
       const contractInteraction = genUnapprovedContractInteractionConfirmation({
