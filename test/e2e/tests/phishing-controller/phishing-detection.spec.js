@@ -2,6 +2,7 @@ const { strict: assert } = require('assert');
 const { createServer } = require('node:http');
 const { createDeferredPromise } = require('@metamask/utils');
 const { until } = require('selenium-webdriver');
+
 const {
   defaultGanacheOptions,
   withFixtures,

@@ -440,9 +440,6 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
-  "alertMessagePendingTransactions": {
-    "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
@@ -750,8 +747,7 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "This is a beta version. Please report bugs $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "This is a beta version. Please report bugs $1"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Beta Version"
@@ -865,9 +861,6 @@
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
-  "bridgeDestination": {
-    "message": "Destination"
-  },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
   },
@@ -891,9 +884,6 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
-  },
-  "bridgeSource": {
-    "message": "Source"
   },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
@@ -927,14 +917,8 @@
   "bridgeTotalFeesTooltipText": {
     "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
   },
-  "bridgeTxDetailsBaseFee": {
-    "message": "Base fee (GWEI)"
-  },
-  "bridgeTxDetailsBridgeAmount": {
-    "message": "Bridge amount"
-  },
-  "bridgeTxDetailsBridgeType": {
-    "message": "Bridge type"
+  "bridgeTxDetailsBridging": {
+    "message": "Bridging"
   },
   "bridgeTxDetailsDelayedDescription": {
     "message": "Reach out to"
@@ -945,20 +929,8 @@
   "bridgeTxDetailsDelayedTitle": {
     "message": "Has it been longer than 3 hours?"
   },
-  "bridgeTxDetailsGasLimit": {
-    "message": "Gas limit (units)"
-  },
-  "bridgeTxDetailsGasUsed": {
-    "message": "Gas used (units)"
-  },
-  "bridgeTxDetailsMaxFeePerGas": {
-    "message": "Max fee per gas"
-  },
   "bridgeTxDetailsNonce": {
     "message": "Nonce"
-  },
-  "bridgeTxDetailsPriorityFee": {
-    "message": "Priority fee (GWEI)"
   },
   "bridgeTxDetailsStatus": {
     "message": "Status"
@@ -970,14 +942,18 @@
     "message": "$1 at $2",
     "description": "$1 is the date, $2 is the time"
   },
-  "bridgeTxDetailsTotal": {
-    "message": "Total"
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "$1 $2 on",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
   },
   "bridgeTxDetailsTotalGasFee": {
     "message": "Total gas fee"
   },
-  "bridgeTypeDirectionTo": {
-    "message": "To"
+  "bridgeTxDetailsYouReceived": {
+    "message": "You received"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "You sent"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -3994,6 +3970,14 @@
   "pending": {
     "message": "Pending"
   },
+  "pendingTransactionAlertMessage": {
+    "message": "This transaction won't go through until a previous transaction is complete. $1",
+    "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
+  },
+  "pendingTransactionAlertMessageHyperlink": {
+    "message": "Learn how to cancel or speed up a transaction.",
+    "description": "The text for the hyperlink in the pending transaction alert message"
+  },
   "pendingTransactionInfo": {
     "message": "This transaction will not process until that one is complete."
   },
@@ -4250,12 +4234,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
-  },
-  "permissionsPageTourDescription": {
-    "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Connected sites are now permissions"
   },
   "permitSimulationChange_approve": {
     "message": "Spending cap"

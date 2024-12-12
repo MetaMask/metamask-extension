@@ -651,25 +651,20 @@ async function createWebSocketConnection(driver, hostname) {
   try {
     await driver.executeScript(async (wsHostname) => {
       const url = `ws://${wsHostname}:8000`;
-
       const socket = new WebSocket(url);
-
       socket.onopen = () => {
         console.log('WebSocket connection opened');
         socket.send('Hello, server!');
       };
-
       socket.onerror = (error) => {
         console.error(
           'WebSocket error:',
           error.message || 'Connection blocked',
         );
       };
-
       socket.onmessage = (event) => {
         console.log('Message received from server:', event.data);
       };
-
       socket.onclose = () => {
         console.log('WebSocket connection closed');
       };
