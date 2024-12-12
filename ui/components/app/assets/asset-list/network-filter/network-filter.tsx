@@ -101,8 +101,6 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     return allNetworks[chain].name;
   });
 
-  console.log(currentNetwork);
-
   return (
     <>
       <SelectableListItem
