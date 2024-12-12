@@ -101,6 +101,8 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     return allNetworks[chain].name;
   });
 
+  console.log(currentNetwork);
+
   return (
     <>
       <SelectableListItem
@@ -203,7 +205,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           </Box>
           <AvatarNetwork
             size={AvatarNetworkSize.Sm}
-            name="Current"
+            name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />
         </Box>
