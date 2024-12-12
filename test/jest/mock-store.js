@@ -763,6 +763,6 @@ export const createBridgeMockStore = (
     },
     send: {
       swapsBlockedTokens: [],
-    }
+    },
   };
 };
