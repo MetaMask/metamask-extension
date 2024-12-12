@@ -29,6 +29,7 @@ setBackgroundConnection({
   setBridgeFeatureFlags: jest.fn(),
   selectSrcNetwork: jest.fn(),
   resetState: () => mockResetBridgeState(),
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
 
