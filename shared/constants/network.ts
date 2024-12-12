@@ -1106,6 +1106,11 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
   },
 ];
 
+export const FEATURED_NETWORK_CHAIN_IDS = [
+  CHAIN_IDS.MAINNET,
+  ...FEATURED_RPCS.map((rpc) => rpc.chainId),
+];
+
 export const infuraChainIdsTestNets: string[] = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.HOLESKY,
