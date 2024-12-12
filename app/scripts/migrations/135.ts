@@ -1,5 +1,5 @@
 import { hasProperty, isObject } from '@metamask/utils';
-import type { CaipChainId, CaipAccountId, Json } from '@metamask/utils';
+import type { CaipChainId, CaipAccountId, Json, Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import type {
   Caveat,
@@ -43,7 +43,7 @@ const PermissionNames = {
   permittedChains: 'endowment:permitted-chains',
 } as const;
 
-const BUILT_IN_NETWORKS: ReadonlyMap<string, string> = new Map([
+const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
   ['goerli', '0x5'],
   ['sepolia', '0xaa36a7'],
   ['mainnet', '0x1'],
