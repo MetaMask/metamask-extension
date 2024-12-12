@@ -15,7 +15,7 @@ import { Stream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { createHash } from 'node:crypto';
 import { extract as extractTar } from 'tar';
-import { Open as Unzip, type Source, type Entry } from 'unzipper';
+import { Open as Unzip, type Entry } from 'unzipper';
 import yargs from 'yargs/yargs';
 import { Minipass } from 'minipass';
 import {
@@ -30,8 +30,9 @@ import {
   ArchitecturesTuple,
   PlatformsTuple,
   DownloadOptions,
-} from './types.mts';
+} from './types';
 
+// eslint-disable-next-line no-empty-function
 export function noop() {}
 
 const Binaries = Object.values(Binary) as BinariesTuple;
@@ -53,11 +54,13 @@ export function parseArgs(args: string[] = argv.slice(2)) {
     // enable ENV parsing, which allows the user to specify foundryup options
     // via environment variables prefixed with `FOUNDRYUP_`
     .env('FOUNDRYUP')
-    .command(['$0', 'install'], 'Install foundry binaries', (yargs) => {
-      yargs.options(getOptions()).pkgConf('foundryup');
+    .command(['$0', 'install'], 'Install foundry binaries', (yargsBuilder) => {
+      yargsBuilder.options(getOptions()).pkgConf('foundryup');
     })
-    .command('cache', '', (yargs) => {
-      yargs.command('clean', 'Remove the shared cache files').demandCommand();
+    .command('cache', '', (yargsBuilder) => {
+      yargsBuilder
+        .command('clean', 'Remove the shared cache files')
+        .demandCommand();
     })
     .parseSync(args);
 
@@ -73,8 +76,9 @@ export function parseArgs(args: string[] = argv.slice(2)) {
         command: 'install',
         options: parsed as ParsedOptions<ReturnType<typeof getOptions>>,
       } as const;
+    default:
+      throw new Error(`Unknown command: '${command}'`);
   }
-  throw new Error(`Unknown command: '${command}'`);
 }
 
 function getOptions(
@@ -145,8 +149,8 @@ function getOptions(
 
 /**
  * Returns the system architecture, normalized to one of the supported
- * {@link Architecture} values.
- * @param architecture
+ *
+ * @param architecture - The architecture string to normalize (e.g., 'x64', 'arm64')
  * @returns
  */
 function normalizeSystemArchitecture(
@@ -165,7 +169,9 @@ function normalizeSystemArchitecture(
       if (execSync('sysctl -n sysctl.proc_translated 2>/dev/null')[0] === 1) {
         return Architecture.Arm64;
       }
-    } catch {} // if `sysctl` check fails, assume native `amd64`
+    } catch {
+      // Ignore error: if sysctl check fails, we assume native amd64
+    }
   }
 
   return Architecture.Amd64; // Default for all other architectures
@@ -194,7 +200,7 @@ Contribute : https://github.com/orgs/foundry-rs/projects/2/
 /**
  * Log a message to the console.
  *
- * @param message The message to log
+ * @param message - The message to log
  */
 export function say(message: string) {
   console.log(`[foundryup] ${message}`);
@@ -203,9 +209,10 @@ export function say(message: string) {
 /**
  * Extracts the binaries from the given URL and writes them to the destination.
  *
- * @param url The URL of the archive to extract the binaries from
- * @param binaries The list of binaries to extract
- * @param dir The destination directory
+ * @param url - The URL of the archive to extract the binaries from
+ * @param binaries - The list of binaries to extract
+ * @param dir - The destination directory
+ * @param checksums - The checksums to verify the binaries against
  * @returns The list of binaries extracted
  */
 export async function extractFrom(
@@ -221,7 +228,7 @@ export async function extractFrom(
   // destination to avoid accidental partial extraction. We don't use
   // `os.tmpdir` for this because `rename` will fail if the directories are on
   // different file systems.
-  const tempDir = dir + '.downloading';
+  const tempDir = `${dir}.downloading`;
   const rmOpts = { recursive: true, maxRetries: 3, force: true };
   try {
     // clean up any previous in-progress downloads
@@ -242,12 +249,12 @@ export async function extractFrom(
         // check the target's checksum matches the expected checksum
         say(`verifying checksum for ${binary}`);
         const expected = checksums.binaries[binary as Binary];
-        if (checksum !== expected) {
+        if (checksum === expected) {
+          say(`checksum verified for ${binary}`);
+        } else {
           throw new Error(
             `checksum mismatch for ${binary}, expected ${expected}, got ${checksum}`,
           );
-        } else {
-          say(`checksum verified for ${binary}`);
         }
       }
       // add the *final* path to the list of binaries
@@ -270,10 +277,10 @@ export async function extractFrom(
 /**
  * Extracts the binaries from a tar archive.
  *
- * @param url The URL of the archive to extract the binaries from
- * @param binaries The list of binaries to extract
- * @param dir The destination directory
- * @param checksumAlgorithm The checksum algorithm to use
+ * @param url - The URL of the archive to extract the binaries from
+ * @param binaries - The list of binaries to extract
+ * @param dir - The destination directory
+ * @param checksumAlgorithm - The checksum algorithm to use
  * @returns The list of binaries extracted
  */
 async function extractFromTar(
@@ -293,24 +300,31 @@ async function extractFromTar(
       {
         cwd: dir,
         transform: (entry) => {
+          const absolutePath = entry.absolute;
+          if (!absolutePath) {
+            throw new Error('Missing absolute path for entry');
+          }
+
           if (checksumAlgorithm) {
             const hash = createHash(checksumAlgorithm);
             const passThrough = new Minipass({ async: true });
             passThrough.pipe(hash);
             passThrough.on('end', () => {
               downloads.push({
-                path: entry.absolute!,
+                path: absolutePath,
                 binary: entry.path,
                 checksum: hash.digest('hex'),
               });
             });
             return passThrough;
-          } else {
-            downloads.push({
-              path: entry.absolute!,
-              binary: entry.path,
-            });
           }
+          // When no checksum is needed, record the entry and return undefined
+          // to use the original stream without transformation
+          downloads.push({
+            path: absolutePath,
+            binary: entry.path,
+          });
+          return undefined;
         },
       },
       binaries,
@@ -319,13 +333,30 @@ async function extractFromTar(
   return downloads;
 }
 
+// Add these custom type definitions to handle unzipper's actual API
+type Source = {
+  size(): Promise<number>;
+  stream(offset: number, length?: number): NodeJS.ReadableStream;
+};
+
+type UnzipDirectory = {
+  files: {
+    path: string;
+    stream: () => Entry;
+  }[];
+};
+
+type UnzipStatic = {
+  url(source: Source, options: object): Promise<UnzipDirectory>;
+};
+
 /**
  * Extracts the binaries from a zip archive.
  *
- * @param url The URL of the archive to extract the binaries from
- * @param binaries The list of binaries to extract
- * @param dir  The destination directory
- * @param checksumAlgorithm The checksum algorithm to use
+ * @param url - The URL of the archive to extract the binaries from
+ * @param binaries - The list of binaries to extract
+ * @param dir - The destination directory
+ * @param checksumAlgorithm - The checksum algorithm to use
  * @returns The list of binaries extracted
  */
 async function extractFromZip(
@@ -355,46 +386,56 @@ async function extractFromZip(
     },
   };
 
-  const { files } = await Unzip.custom(source);
-  const filtered = files.filter(({ path }) =>
+  const directory = await (Unzip as unknown as UnzipStatic).url(source, {});
+  const filtered = directory.files.filter(({ path }: { path: string }) =>
     binaries.includes(basename(path, extname(path))),
   );
   return await Promise.all(
-    filtered.map(async ({ path, stream }) => {
-      const dest = join(dir, path);
-      const entry = stream();
-      const destStream = createWriteStream(dest);
-      if (checksumAlgorithm) {
-        const hash = createHash(checksumAlgorithm);
-        const hashStream = async function* (source: Entry) {
-          for await (const chunk of source) {
-            hash.update(chunk);
-            yield chunk;
-          }
-        };
-        await pipeline(entry, hashStream, destStream);
-        return {
-          path: dest,
-          binary: basename(path, extname(path)),
-          checksum: hash.digest('hex'),
-        };
-      } else {
+    filtered.map(
+      async ({ path, stream }: { path: string; stream: () => Entry }) => {
+        const dest = join(dir, path);
+        const entry = stream();
+        const destStream = createWriteStream(dest);
+        if (checksumAlgorithm) {
+          const hash = createHash(checksumAlgorithm);
+          const hashStream = async function* (entryStream: Entry) {
+            for await (const chunk of entryStream) {
+              hash.update(chunk);
+              yield chunk;
+            }
+          };
+          await pipeline(entry, hashStream, destStream);
+          return {
+            path: dest,
+            binary: path,
+            checksum: hash.digest('hex'),
+          };
+        }
         await pipeline(entry, destStream);
         return {
           path: dest,
           binary: basename(path, extname(path)),
         };
-      }
-    }),
+      },
+    ),
   );
+}
+
+export class DownloadStream extends Stream.PassThrough {
+  async response(): Promise<IncomingMessage> {
+    return new Promise((resolve, reject) => {
+      this.once('response', resolve);
+      this.once('error', reject);
+    });
+  }
 }
 
 /**
  * Starts a download from the given URL.
  *
- * @param url The URL to download from
- * @param options The download options
- * @param redirects The number of redirects that have occurred
+ * @param url - The URL to download from
+ * @param options - The download options
+ * @param redirects - The number of redirects that have occurred
  * @returns A stream of the download
  */
 function startDownload(
@@ -455,15 +496,6 @@ function startDownload(
   return stream;
 }
 
-export class DownloadStream extends Stream.PassThrough {
-  async response(): Promise<IncomingMessage> {
-    return new Promise((resolve, reject) => {
-      this.once('response', resolve);
-      this.once('error', reject);
-    });
-  }
-}
-
 /**
  * Get the version of the binary at the given path.
  *
@@ -499,23 +531,28 @@ export function isCodedError(
  * Transforms the CLI checksum object into a platform+arch-specific checksum
  * object.
  *
- * @param checksums The CLI checksum object
- * @param platform The build platform
- * @param arch The build architecture
+ * @param checksums - The CLI checksum object
+ * @param targetPlatform - The build platform
+ * @param architecture - The build architecture
  * @returns
  */
 export function transformChecksums(
   checksums: Checksums | undefined,
-  platform: Platform,
-  arch: Architecture,
+  targetPlatform: Platform,
+  architecture: Architecture,
 ): PlatformArchChecksums | null {
-  if (!checksums) return null;
+  if (!checksums) {
+    return null;
+  }
 
-  const key = `${platform}-${arch}` as const;
+  const key = `${targetPlatform}-${architecture}` as const;
   return {
     algorithm: checksums.algorithm,
     binaries: Object.entries(checksums.binaries).reduce(
-      (acc, [name, record]) => ((acc[name as Binary] = record[key]), acc),
+      (acc, [name, record]) => {
+        acc[name as Binary] = record[key];
+        return acc;
+      },
       {} as Record<Binary, string>,
     ),
   };
