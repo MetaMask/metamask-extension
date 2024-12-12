@@ -668,7 +668,6 @@ describe('requestPermissionsHandler', () => {
 
       await handler(getBaseRequest());
       expect(updateCaveat).toHaveBeenCalledWith(
-        'http://test.com',
         Caip25EndowmentPermissionName,
         Caip25CaveatType,
         {
@@ -693,10 +692,6 @@ describe('requestPermissionsHandler', () => {
 
       await handler(getBaseRequest());
       expect(grantPermissions).toHaveBeenCalledWith({
-        subject: {
-          origin: 'http://test.com',
-        },
-        approvedPermissions: {
           [Caip25EndowmentPermissionName]: {
             caveats: [
               {
@@ -710,7 +705,6 @@ describe('requestPermissionsHandler', () => {
               },
             ],
           },
-        },
       });
     });
 
