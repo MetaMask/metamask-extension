@@ -19,21 +19,6 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
-// Add default state with STX disabled for all tests
-const baseFixtureOptions = {
-  ...withFixturesOptions,
-  fixtures: {
-    data: {
-      ...withFixturesOptions.fixtures?.data,
-      metamask: {
-        preferences: {
-          smartTransactionsOptInStatus: false,
-        },
-      },
-    },
-  },
-};
-
 describe('Swaps - notifications @no-mmi', function () {
   async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
@@ -85,7 +70,7 @@ describe('Swaps - notifications @no-mmi', function () {
   it('tests notifications for verified token on 1 source and price difference', async function () {
     await withFixtures(
       {
-        ...baseFixtureOptions,
+        ...withFixturesOptions,
         testSpecificMock: mockTradesApiPriceSlippageError,
         title: this.test?.fullTitle(),
       },
@@ -122,7 +107,6 @@ describe('Swaps - notifications @no-mmi', function () {
       },
     );
   });
-
   it('tests a notification for not enough balance', async function () {
     const lowBalanceGanacheOptions = {
       accounts: [
@@ -136,7 +120,7 @@ describe('Swaps - notifications @no-mmi', function () {
 
     await withFixtures(
       {
-        ...baseFixtureOptions,
+        ...withFixturesOptions,
         ganacheOptions: lowBalanceGanacheOptions,
         testSpecificMock: mockSwapsTransactionQuote,
         title: this.test?.fullTitle(),
@@ -165,11 +149,10 @@ describe('Swaps - notifications @no-mmi', function () {
       },
     );
   });
-
   it('tests notifications for token import', async function () {
     await withFixtures(
       {
-        ...baseFixtureOptions,
+        ...withFixturesOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -188,11 +171,10 @@ describe('Swaps - notifications @no-mmi', function () {
       },
     );
   });
-
   it('tests notifications for slippage', async function () {
     await withFixtures(
       {
-        ...baseFixtureOptions,
+        ...withFixturesOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
