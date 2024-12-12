@@ -7,11 +7,11 @@ import { MemoryRouter } from 'react-router-dom';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import CrossChainSwap from '.';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
+import CrossChainSwap from '.';
 
 const mockResetBridgeState = jest.fn();
 const middleware = [thunk];
@@ -79,7 +79,9 @@ describe('Bridge', () => {
     const store = configureMockStore(middleware)(swapsMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <MemoryRouter initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}>
+      <MemoryRouter
+        initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
+      >
         <CrossChainSwap />
       </MemoryRouter>,
       store,

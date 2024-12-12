@@ -14,10 +14,16 @@ import {
   BlockSize,
   Display,
   FlexDirection,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { Box, Text } from '../../../components/component-library';
+import {
+  AvatarBase,
+  AvatarBaseSize,
+  Box,
+  Text,
+} from '../../../components/component-library';
 import {
   getBridgeQuotes,
   getFromChain,
@@ -87,7 +93,15 @@ export default function AwaitingSignatures() {
             </Text>
             <ul className="awaiting-bridge-signatures__steps">
               <li>
-                <BridgeStepIcon stepNumber={1} />
+                <AvatarBase
+                  size={AvatarBaseSize.Sm}
+                  backgroundColor={BackgroundColor.primaryMuted}
+                  color={TextColor.primaryDefault}
+                  marginRight={2}
+                >
+                  1
+                </AvatarBase>
+                {/* <BridgeStepIcon stepNumber={1} /> */}
                 {t('bridgeAllowSwappingOf', [
                   <Text
                     as="span"
@@ -109,7 +123,14 @@ export default function AwaitingSignatures() {
                 ])}
               </li>
               <li>
-                <BridgeStepIcon stepNumber={2} />
+                <AvatarBase
+                  size={AvatarBaseSize.Sm}
+                  backgroundColor={BackgroundColor.primaryMuted}
+                  color={TextColor.primaryDefault}
+                  marginRight={2}
+                >
+                  2
+                </AvatarBase>
                 {t('bridgeFromTo', [
                   <Text as="span" variant={TextVariant.bodyMd} key="fromAmount">
                     {fromAmount}
