@@ -1,37 +1,52 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { isSnapId, Snap } from '@metamask/snaps-utils';
-import { BackgroundStateProxy } from '../../../shared/types/metamask';
+import { getKnownPropertyNames } from '@metamask/utils';
+import { MemStoreControllersComposedState } from '../../../shared/types/metamask';
 
-const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'] as const;
+const REMOVE_PATHS = {
+  SnapController: ['snapStates', 'unencryptedSnapStates'],
+  KeyringController: ['vault'],
+} as const;
 
-export function sanitizeUIState(
-  state: BackgroundStateProxy,
-): BackgroundStateProxy {
+export function sanitizeUIState<
+  ControllerKey extends keyof MemStoreControllersComposedState = keyof MemStoreControllersComposedState,
+>(
+  state: Pick<MemStoreControllersComposedState, ControllerKey>,
+): Pick<MemStoreControllersComposedState, ControllerKey> {
   const newState = { ...state };
 
-  for (const key of REMOVE_KEYS) {
-    if (key === 'vault') {
-      if (newState.KeyringController && key in newState.KeyringController) {
-        delete newState.KeyringController[key];
-      }
-    } else if (newState.SnapController && key in newState.SnapController) {
-      delete newState.SnapController[key];
+  getKnownPropertyNames(REMOVE_PATHS).forEach((controllerName) => {
+    if (
+      !(controllerName in newState) ||
+      !newState[controllerName as keyof typeof newState]
+    ) {
+      return;
     }
-  }
+    const [controllerState, keys] = [
+      newState[controllerName as keyof typeof newState],
+      REMOVE_PATHS[controllerName],
+    ];
+    keys.forEach((key) => {
+      if (key in controllerState) {
+        delete controllerState[key as keyof typeof controllerState];
+      }
+    });
+  });
 
   sanitizeSnapData(newState);
 
   return newState;
 }
 
-function sanitizeSnapData(state: BackgroundStateProxy) {
-  const snapsData: SnapControllerState['snaps'] | undefined =
-    state.SnapController.snaps;
-
-  if (!snapsData) {
+function sanitizeSnapData(
+  state:
+    | Pick<MemStoreControllersComposedState, 'SnapController'>
+    | Partial<Omit<MemStoreControllersComposedState, 'SnapController'>>,
+) {
+  if (!('SnapController' in state) || !state.SnapController?.snaps) {
     return;
   }
-
+  const snapsData = state.SnapController.snaps;
   state.SnapController.snaps = Object.values(snapsData).reduce<
     SnapControllerState['snaps']
   >((acc, snap) => {
