@@ -161,23 +161,14 @@ export class ExtensionStore extends BaseStore {
    * @private
    * @returns the key-value map from local storage
    */
-  #get(): Promise<MetaMaskStorageStructure> {
+  async #get(): Promise<MetaMaskStorageStructure> {
     const { local } = browser.storage;
-    return new Promise((resolve, reject) => {
-      local
-        .get(null)
-        .then((result) => {
-          const err = checkForLastError();
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result as MetaMaskStorageStructure);
-          }
-        })
-        // Because local.get can fail, we need to catch the error and  reject
-        // it so we can deal with the error higher in the application logic.
-        .catch((e) => reject(e));
-    });
+    const result = await local.get(null);
+    const err = checkForLastError();
+    if (err) {
+      throw err;
+    }
+    return result as MetaMaskStorageStructure;
   }
 
   /**
@@ -191,23 +182,15 @@ export class ExtensionStore extends BaseStore {
    * @returns a promise resolving to undefined.
    * @private
    */
-  #set(obj: {
-    data: IntermediaryStateType;
-    meta: { version: number };
-  }): Promise<void> {
-    const { local } = browser.storage;
-    return new Promise((resolve, reject) => {
-      local
-        .set(obj)
-        .then(() => {
-          const err = checkForLastError();
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
-          }
-        })
-        .catch((e) => reject(e));
-    });
-  }
+   async #set(obj: {
+     data: IntermediaryStateType;
+     meta: { version: number };
+   }): Promise<void> {
+     const { local } = browser.storage;
+     await local.set(obj);
+     const err = checkForLastError();
+     if (err) {
+       throw err;
+     }
+   }
 }
