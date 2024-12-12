@@ -621,6 +621,13 @@ describe('migration #135', () => {
         };
 
         const newStorage = await migrate(oldStorage);
+
+        expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+          new Error(
+            `Migration ${version}: Invalid chainId for networkClientIdForOrigin "doesNotExist" of type undefined`,
+          ),
+        );
+
         expect(newStorage.data).toStrictEqual({
           ...baseData(),
           SelectedNetworkController: {
