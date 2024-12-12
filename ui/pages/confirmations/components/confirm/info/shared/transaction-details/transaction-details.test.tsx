@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Hex } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
 import {
   getMockConfirmState,
   getMockConfirmStateForTransaction,
@@ -11,7 +12,6 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { TransactionDetails } from './transaction-details';
-import { toHex } from '@metamask/controller-utils';
 
 jest.mock(
   '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -110,7 +110,8 @@ describe('<TransactionDetails />', () => {
       const transactionValueInHex = toHex(transactionValueInDecimal);
       const newBalanceInDecimal = 1;
       const newBalanceInHex = toHex(newBalanceInDecimal);
-      const previousBalanceInDecimal = transactionValueInDecimal + newBalanceInDecimal;
+      const previousBalanceInDecimal =
+        transactionValueInDecimal + newBalanceInDecimal;
       const previousBalanceInHex = toHex(previousBalanceInDecimal);
 
       const simulationDataMock = {
