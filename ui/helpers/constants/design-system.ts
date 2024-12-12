@@ -8,6 +8,7 @@
 export enum Color {
   backgroundDefault = 'background-default',
   backgroundAlternative = 'background-alternative',
+  backgroundMuted = 'background-muted',
   textDefault = 'text-default',
   textAlternative = 'text-alternative',
   textMuted = 'text-muted',
@@ -54,6 +55,7 @@ export enum Color {
 export enum BackgroundColor {
   backgroundDefault = 'background-default',
   backgroundAlternative = 'background-alternative',
+  backgroundMuted = 'background-muted',
   backgroundHover = 'background-hover',
   backgroundPressed = 'background-pressed',
   overlayDefault = 'overlay-default',
