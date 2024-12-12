@@ -77,7 +77,7 @@ export default function RevealSeedPage() {
     setSeedWords(null);
     setCompletedLongPress(false);
     setError(null);
-    dispatch(requestRevealSeedWords(password, Number(typeIndex ?? 0)))
+    dispatch(requestRevealSeedWords(password, Number(typeIndex ?? 1)))
       .then((revealedSeedWords) => {
         trackEvent({
           category: MetaMetricsEventCategory.Keys,

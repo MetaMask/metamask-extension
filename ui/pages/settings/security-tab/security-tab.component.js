@@ -206,6 +206,13 @@ export default class SecurityTab extends PureComponent {
           >
             {t('revealSeedWords')}
           </Button>
+          {this.state.srpQuizModalVisible && (
+            <SRPQuiz
+              accountId={this.props.selectedAccount.id}
+              isOpen={this.state.srpQuizModalVisible}
+              onClose={this.hideSrpQuizModal}
+            />
+          )}
         </div>
       </>
     );
