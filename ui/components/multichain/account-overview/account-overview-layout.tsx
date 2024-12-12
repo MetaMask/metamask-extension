@@ -9,7 +9,9 @@ import {
   getSlides,
   getSwapsDefaultToken,
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
+///: END:ONLY_INCLUDE_IF
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
