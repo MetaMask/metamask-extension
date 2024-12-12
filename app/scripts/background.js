@@ -308,15 +308,9 @@ function maybeDetectPhishing(theController) {
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
       if (isManifestV2) {
-        if (details.type === 'sub_frame') {
-          // redirect the entire tab to the
-          // phishing warning page instead.
-          redirectTab(details.tabId, redirectHref);
-          // don't let the sub_frame load at all
-          return { cancel: true };
-        }
-        // redirect the whole tab
-        return { redirectUrl: redirectHref };
+        // redirect the whole tab (even if it's a sub_frame request)
+        redirectTab(details.tabId, redirectHref);
+        return { cancel: true };
       }
       // redirect the whole tab (even if it's a sub_frame request)
       redirectTab(details.tabId, redirectHref);
