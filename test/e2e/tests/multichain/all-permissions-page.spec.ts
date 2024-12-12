@@ -34,7 +34,6 @@ describe('Permissions Page', function () {
 
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.closeNotificationModal();
         await permissionListPage.check_connectedToSite(DAPP_HOST_ADDRESS);
       },
     );
@@ -69,7 +68,6 @@ describe('Permissions Page', function () {
         await headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.closeNotificationModal();
         await permissionListPage.check_connectedToSite(DAPP_HOST_ADDRESS);
       },
     );

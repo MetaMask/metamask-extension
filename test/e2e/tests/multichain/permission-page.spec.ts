@@ -22,7 +22,6 @@ describe('Permissions Page', function () {
         await headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.closeNotificationModal();
 
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
         await new SitePermissionPage(driver).check_pageIsLoaded(

@@ -9,14 +9,6 @@ class PermissionListPage {
 
   private readonly permissionsPage = '[data-testid="permissions-page"]';
 
-  private readonly closeNotificationButton = {
-    text: 'Got it',
-    tag: 'button',
-  };
-
-  private readonly notificationModal =
-    '[data-testid="permissions-page-product-tour"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -32,14 +24,6 @@ class PermissionListPage {
       throw e;
     }
     console.log('Permission list page is loaded');
-  }
-
-  async closeNotificationModal(): Promise<void> {
-    console.log('Close notification modal on permission list page');
-    await this.driver.waitForSelector(this.notificationModal);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.closeNotificationButton,
-    );
   }
 
   /**
