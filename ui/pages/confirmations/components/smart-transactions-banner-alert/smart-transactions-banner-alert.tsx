@@ -10,6 +10,7 @@ import {
 import { setAlertEnabledness } from '../../../../store/actions';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
+import { useConfirmContext } from '../../context/confirm';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -35,6 +36,15 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     const dispatch = useDispatch();
     const t = useI18nContext();
 
+    // Check for ConfirmContext, default to rendering unconditionally if context is absent
+    let currentConfirmation;
+    try {
+      const context = useConfirmContext();
+      currentConfirmation = context?.currentConfirmation;
+    } catch {
+      currentConfirmation = null; // Not within ConfirmContextProvider
+    }
+
     const alertEnabled = useSelector(
       (state: RootState) =>
         state.metamask.alertEnabledness?.[
@@ -46,7 +56,15 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
         state.metamask.preferences?.smartTransactionsOptInStatus === true,
     );
 
-    if (!alertEnabled || !smartTransactionsOptIn) {
+    const shouldRender =
+      !currentConfirmation ||
+      (alertEnabled &&
+        smartTransactionsOptIn &&
+        ['simpleSend', 'tokenMethodTransfer', 'swap'].includes(
+          currentConfirmation.type as string,
+        ));
+
+    if (!shouldRender) {
       return null;
     }
 

@@ -45,29 +45,6 @@ const GasFeeContextProviderWrapper: React.FC<{
   );
 };
 
-const WrappedSmartTransactionsAlertBanner: React.FC = () => {
-  const { currentConfirmation } = useConfirmContext();
-  const shouldRenderSmartTransactionsBannerAlert = () => {
-    if (!currentConfirmation) {
-      return false;
-    }
-    const { type } = currentConfirmation;
-    const allowedTransactionTypes = [
-      'simpleSend',
-      'tokenMethodTransfer',
-      'swap',
-    ];
-    return allowedTransactionTypes.includes(type as string);
-  };
-  return (
-    <Box className="transaction-alerts">
-      {shouldRenderSmartTransactionsBannerAlert() && (
-        <SmartTransactionsBannerAlert marginType="noTop" />
-      )}
-    </Box>
-  );
-};
-
 const Confirm = () => (
   <ConfirmContextProvider>
     <TransactionModalContextProvider>
@@ -78,7 +55,9 @@ const Confirm = () => (
           <Page className="confirm_wrapper">
             <ConfirmNav />
             <Header />
-            <WrappedSmartTransactionsAlertBanner />
+            <Box className="transaction-alerts">
+              <SmartTransactionsBannerAlert marginType="noTop" />
+            </Box>
             <ScrollToBottom>
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
