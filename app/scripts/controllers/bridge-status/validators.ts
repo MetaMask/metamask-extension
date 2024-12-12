@@ -54,9 +54,10 @@ const assetValidators = [
   },
   {
     property: 'icon',
-    type: 'string|undefined',
-    validator: (v: unknown): v is string | undefined =>
-      v === undefined || typeof v === 'string',
+    // typeof null === 'object'
+    type: 'string|undefined|object',
+    validator: (v: unknown): v is string | undefined | object =>
+      v === undefined || v === null || typeof v === 'string',
   },
 ];
 

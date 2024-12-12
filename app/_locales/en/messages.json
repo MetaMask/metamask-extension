@@ -440,9 +440,6 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
-  "alertMessagePendingTransactions": {
-    "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
@@ -510,8 +507,7 @@
     "message": "No accounts available to connect"
   },
   "allNetworks": {
-    "message": "All networks",
-    "description": "Speicifies to token network filter to filter by all Networks"
+    "message": "All networks"
   },
   "allOfYour": {
     "message": "All of your $1",
@@ -583,6 +579,9 @@
   "appNameMmi": {
     "message": "MetaMask Institutional",
     "description": "The name of the application (MMI)"
+  },
+  "apply": {
+    "message": "Apply"
   },
   "approve": {
     "message": "Approve spend limit"
@@ -748,8 +747,7 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "This is a beta version. Please report bugs $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "This is a beta version. Please report bugs $1"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Beta Version"
@@ -881,6 +879,9 @@
   "bridgeNetCost": {
     "message": "Net cost"
   },
+  "bridgeQuoteExpired": {
+    "message": "Quotes expired - please request again"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
@@ -930,6 +931,15 @@
   },
   "bridgeTxDetailsBridgeType": {
     "message": "Bridge type"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Reach out to"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMask Support"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "Has it been longer than 3 hours?"
   },
   "bridgeTxDetailsGasLimit": {
     "message": "Gas limit (units)"
@@ -1128,8 +1138,8 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Allowance request"
+  "confirmTitleApproveTransactionNFT": {
+    "message": "Withdrawal request"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
@@ -2926,6 +2936,7 @@
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
   },
+  "loadingTokenList": { "message": "Loading token list" },
   "loadingTokens": {
     "message": "Loading tokens..."
   },
@@ -3979,6 +3990,14 @@
   "pending": {
     "message": "Pending"
   },
+  "pendingTransactionAlertMessage": {
+    "message": "This transaction won't go through until a previous transaction is complete. $1",
+    "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
+  },
+  "pendingTransactionAlertMessageHyperlink": {
+    "message": "Learn how to cancel or speed up a transaction.",
+    "description": "The text for the hyperlink in the pending transaction alert message"
+  },
   "pendingTransactionInfo": {
     "message": "This transaction will not process until that one is complete."
   },
@@ -4302,6 +4321,9 @@
     "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
     "description": "$1 is Learn more link"
   },
+  "popularNetworks": {
+    "message": "Popular networks"
+  },
   "portfolio": {
     "message": "Portfolio"
   },
@@ -4466,7 +4488,9 @@
   "quoteRate": {
     "message": "Quote rate"
   },
-  "quotedNetworkFee": { "message": "$1 network fee" },
+  "quotedNetworkFee": {
+    "message": "$1 network fee"
+  },
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
@@ -4818,6 +4842,9 @@
   "searchTokens": {
     "message": "Search tokens"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "Search tokens by name or address"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -5128,6 +5155,9 @@
   "signingInWith": {
     "message": "Signing in with"
   },
+  "signingWith": {
+    "message": "Signing with"
+  },
   "simulationApproveHeading": {
     "message": "Withdraw"
   },
@@ -5180,6 +5210,9 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "singleNetwork": {
+    "message": "1 network"
+  },
   "siweIssued": {
     "message": "Issued"
   },
@@ -5203,6 +5236,30 @@
   },
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+  },
+  "slideBridgeDescription": {
+    "message": "Move across 9 chains, all within your wallet"
+  },
+  "slideBridgeTitle": {
+    "message": "Ready to bridge?"
+  },
+  "slideCashOutDescription": {
+    "message": "Sell your crypto for cash"
+  },
+  "slideCashOutTitle": {
+    "message": "Cash out with MetaMask"
+  },
+  "slideDebitCardDescription": {
+    "message": "Available in selected regions"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMask debit card"
+  },
+  "slideFundWalletDescription": {
+    "message": "Get started by adding funds"
+  },
+  "slideFundWalletTitle": {
+    "message": "Fund your wallet"
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -5408,6 +5465,9 @@
   },
   "solanaSupportToggleTitle": {
     "message": "Enable \"Add a new Solana account (Beta)\""
+  },
+  "someNetworks": {
+    "message": "$1 networks"
   },
   "somethingDoesntLookRight": {
     "message": "Something doesn't look right? $1",
@@ -6772,10 +6832,6 @@
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
-  },
-  "xOfYPending": {
-    "message": "$1 of $2 pending",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Yes"

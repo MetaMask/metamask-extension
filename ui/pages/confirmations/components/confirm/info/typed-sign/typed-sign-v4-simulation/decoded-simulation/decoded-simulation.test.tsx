@@ -237,4 +237,26 @@ describe('DecodedSimulation', () => {
       expect(stateChange).toBe(StateChangeType.NFTBiddingReceive);
     });
   });
+
+  it('renders label only once if there are multiple state changes of same changeType', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
+      decodingData: {
+        stateChanges: [
+          decodingData.stateChanges[0],
+          decodingData.stateChanges[0],
+          decodingData.stateChanges[0],
+        ],
+      },
+    });
+    const mockStore = configureMockStore([])(state);
+
+    const { findAllByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(await findAllByText('Spending cap')).toHaveLength(1);
+  });
 });

@@ -416,6 +416,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "攻击者有时会通过对网站地址进行细微更改来模仿网站。在继续操作之前，请确保您是与目标网站进行交互。"
   },
+  "alertMessageChangeInSimulationResults": {
+    "message": "此交易的预计更改已更新。继续之前请仔细审查。"
+  },
   "alertMessageGasEstimateFailed": {
     "message": "我们无法提供准确的费用，估算可能较高。我们建议您输入自定义的燃料限制，但交易仍存在失败风险。"
   },
@@ -434,9 +437,6 @@
   "alertMessageNoGasPrice": {
     "message": "您手动更新费用后，我们才能继续进行此交易。"
   },
-  "alertMessagePendingTransactions": {
-    "message": "上一笔交易完成后，此交易才能继续进行。了解如何取消或加快交易。"
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "提出请求的网站不是您正在登录的网站。这可能试图窃取您的登录凭据。"
   },
@@ -454,6 +454,9 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "查看所有提醒"
+  },
+  "alertReasonChangeInSimulationResults": {
+    "message": "结果已发生变化"
   },
   "alertReasonGasEstimateFailed": {
     "message": "费用不准确"
@@ -837,8 +840,14 @@
   "bridge": {
     "message": "跨链桥"
   },
+  "bridgeCalculatingAmount": {
+    "message": "正在计算......"
+  },
   "bridgeDontSend": {
     "message": "跨链桥，不要发送"
+  },
+  "bridgeEnterAmount": {
+    "message": "输入金额"
   },
   "bridgeFrom": {
     "message": "桥接自"
@@ -846,8 +855,17 @@
   "bridgeSelectNetwork": {
     "message": "选择网络"
   },
+  "bridgeSelectTokenAndAmount": {
+    "message": "选择代币和金额"
+  },
+  "bridgeTimingTooltipText": {
+    "message": "这是完成桥接所需的预估时间。"
+  },
   "bridgeTo": {
     "message": "桥接至"
+  },
+  "bridgeTotalFeesTooltipText": {
+    "message": "这包括燃料费（支付给加密货币矿工）和中继器费用（用于为桥接等复杂服务提供动力）。\n费用根据网络流量和交易复杂性而定。MetaMask 不会从这两项费用中获利。"
   },
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
@@ -1012,9 +1030,6 @@
   "confirmRecoveryPhrase": {
     "message": "确认私钥助记词"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "许可请求"
-  },
   "confirmTitleDeployContract": {
     "message": "部署合约"
   },
@@ -1159,6 +1174,14 @@
   "connectedWithAccountName": {
     "message": "与 $1 连接",
     "description": "$1 represents account name"
+  },
+  "connectedWithNetwork": {
+    "message": "已连接 $1 网络",
+    "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "已与 $1 连接",
+    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "连接中……"
@@ -1493,6 +1516,9 @@
   "dcent": {
     "message": "D'Cent"
   },
+  "debitCreditPurchaseOptions": {
+    "message": "借记卡或信用卡购买选项"
+  },
   "decimal": {
     "message": "代币小数"
   },
@@ -1802,6 +1828,9 @@
   "editSpendingCapError": {
     "message": "支出上限不能超过 $1 小数位数。删除小数位数以继续。"
   },
+  "editSpendingCapSpecialCharError": {
+    "message": "仅输入数字"
+  },
   "enableAutoDetect": {
     "message": " 启用自动检测"
   },
@@ -1904,9 +1933,41 @@
     "message": "代码：$1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
+  "errorPageContactSupport": {
+    "message": "联系支持团队",
+    "description": "Button for contact MM support"
+  },
+  "errorPageDescribeUsWhatHappened": {
+    "message": "请描述所发生的问题",
+    "description": "Button for submitting report to sentry"
+  },
+  "errorPageInfo": {
+    "message": "您的信息不能显示。别担心，您的钱包和资金都很安全。",
+    "description": "Information banner shown in the error page"
+  },
+  "errorPageMessageTitle": {
+    "message": "错误消息",
+    "description": "Title for description, which is displayed for debugging purposes"
+  },
+  "errorPageSentryFormTitle": {
+    "message": "请描述所发生的问题",
+    "description": "In sentry feedback form, The title at the top of the feedback form."
+  },
+  "errorPageSentryMessagePlaceholder": {
+    "message": "分享如何重现错误等详细信息将有助于我们解决问题。",
+    "description": "In sentry feedback form, The placeholder for the feedback description input field."
+  },
+  "errorPageSentrySuccessMessageText": {
+    "message": "谢谢！我们将很快查看。",
+    "description": "In sentry feedback form, The message displayed after a successful feedback submission."
+  },
   "errorPageTitle": {
     "message": "MetaMask 遇到了一个错误",
     "description": "Title of generic error page"
+  },
+  "errorPageTryAgain": {
+    "message": "重试",
+    "description": "Button for try again"
   },
   "errorStack": {
     "message": "栈：",
@@ -1924,6 +1985,9 @@
   },
   "estimatedFeeTooltip": {
     "message": "为在网络上处理交易而支付的金额。"
+  },
+  "estimatedTime": {
+    "message": "预估时间"
   },
   "ethGasPriceFetchWarning": {
     "message": "由于目前主要的燃料估算服务不可用，因此提供了备用燃料价格。"
@@ -2069,6 +2133,9 @@
   },
   "functionType": {
     "message": "功能类型"
+  },
+  "fundingMethod": {
+    "message": "充值方法"
   },
   "gas": {
     "message": "燃料"
@@ -3724,6 +3791,12 @@
   "outdatedBrowserNotification": {
     "message": "您的浏览器已过期。如果不更新浏览器，您将无法获取MetaMask的安全补丁和新功能。"
   },
+  "overrideContentSecurityPolicyHeader": {
+    "message": "覆盖 Content-Security-Policy 标头"
+  },
+  "overrideContentSecurityPolicyHeaderDescription": {
+    "message": "此选项是 Firefox 中已知问题的解决方法，其中 dapp（去中心化应用）的 Content-Security-Policy 标头可能会阻止扩展程序正确加载。除非特定网页兼容性需要，否则不建议禁用此选项。"
+  },
   "padlock": {
     "message": "挂锁"
   },
@@ -4395,6 +4468,9 @@
   "requestFromInfo": {
     "message": "这是要求您签名的站点。"
   },
+  "requestFromInfoSnap": {
+    "message": "这是要求您签名的 Snap。"
+  },
   "requestFromTransactionDescription": {
     "message": "这是要求您确认的网站。"
   },
@@ -4416,6 +4492,10 @@
   "requestingForAccount": {
     "message": "请求 $1",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "请求 $1",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "待确认的请求"
@@ -4895,6 +4975,9 @@
   "simulationDetailsIncomingHeading": {
     "message": "您收到"
   },
+  "simulationDetailsNoChanges": {
+    "message": "无变化"
+  },
   "simulationDetailsOutgoingHeading": {
     "message": "您发送"
   },
@@ -4916,6 +4999,9 @@
   },
   "simulationDetailsTransactionReverted": {
     "message": "这笔交易可能会失败"
+  },
+  "simulationDetailsUnavailable": {
+    "message": "不可用"
   },
   "simulationErrorMessageV2": {
     "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
@@ -5142,6 +5228,15 @@
   "snapsUIError": {
     "message": "联系 $1 的创建者以获得进一步支持。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaSupportSectionTitle": {
+    "message": "Solana"
+  },
+  "solanaSupportToggleDescription": {
+    "message": "启用此功能后，您可以选择将 Solana 账户添加到衍生自现有私钥助记词的 MetaMask Extension 中。这是一个实验性的测试版功能，因此您应自行承担使用风险。"
+  },
+  "solanaSupportToggleTitle": {
+    "message": "启用“添加新的 Solana 账户（测试版）”"
   },
   "somethingDoesntLookRight": {
     "message": "有什么不对劲吗？$1",
@@ -5801,6 +5896,10 @@
   "swapTokenVerifiedOn1SourceTitle": {
     "message": "可能伪造的代币"
   },
+  "swapTokenVerifiedSources": {
+    "message": "已经过 $1 来源确认。在 $2 上验证。",
+    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
+  },
   "swapTooManyDecimalsError": {
     "message": "$1 允许最多 $2 个小数位",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -5918,6 +6017,12 @@
   "tips": {
     "message": "提示"
   },
+  "tipsForUsingAWallet": {
+    "message": "钱包使用提示"
+  },
+  "tipsForUsingAWalletDescription": {
+    "message": "添加代币可解锁使用 Web3 的更多方法。"
+  },
   "to": {
     "message": "至"
   },
@@ -5970,6 +6075,9 @@
   "tokenList": {
     "message": "代币列表："
   },
+  "tokenMarketplace": {
+    "message": "代币市场"
+  },
   "tokenScamSecurityRisk": {
     "message": "代币欺诈和安全风险。"
   },
@@ -6006,6 +6114,9 @@
   },
   "total": {
     "message": "共计"
+  },
+  "totalFees": {
+    "message": "总费用"
   },
   "totalVolume": {
     "message": "总交易额"
@@ -6483,10 +6594,6 @@
   },
   "wrongNetworkName": {
     "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
-  },
-  "xOfYPending": {
-    "message": "$1 / $2 待处理",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "是"
