@@ -66,8 +66,6 @@
     "clipboardWrite",
     "http://*/*",
     "https://*/*",
-    "ws://*/*",
-    "wss://*/*",
     "activeTab",
     "webRequest",
     "webRequestBlocking",
