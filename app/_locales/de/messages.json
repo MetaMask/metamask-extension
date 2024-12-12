@@ -4105,12 +4105,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Hier können Sie die Genehmigungen sehen, die Sie installierten Snaps oder verbundenen Websites gegeben haben."
   },
-  "permissionsPageTourDescription": {
-    "message": "Dies ist Ihr Kontrollfeld zum Verwalten der Genehmigungen für verbundene Websites und installierte Snaps."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Verbundene Websites sind nun Genehmigungen"
-  },
   "permitSimulationDetailInfo": {
     "message": "Sie erteilen dem Spender die Genehmigung, diese Menge an Tokens von Ihrem Konto auszugeben."
   },

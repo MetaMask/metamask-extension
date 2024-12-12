@@ -4105,12 +4105,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Burada, yüklü Snap'lere veya bağlı sitelere verdiğiniz izinleri görebilirsiniz."
   },
-  "permissionsPageTourDescription": {
-    "message": "Burası, bağlı sitelere ve yüklü Snap'lere verilen izinleri yönetebileceğiniz kontrol panelinizdir."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Bağlı siteler şimdi izinler oldu"
-  },
   "permitSimulationDetailInfo": {
     "message": "Harcama yapan tarafa hesabınızdan bu kadar çok token'i harcama izni veriyorsunuz."
   },
