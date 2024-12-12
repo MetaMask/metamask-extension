@@ -146,13 +146,19 @@ const calcTotalGasFee = ({
   };
 };
 
-export const calcEstimatedAndMaxTotalGasFee = (
-  bridgeQuote: QuoteResponse & L1GasFees,
-  estimatedBaseFeeInDecGwei: string,
-  maxFeePerGasInDecGwei: string,
-  maxPriorityFeePerGasInDecGwei: string,
-  nativeExchangeRate?: number,
-) => {
+export const calcEstimatedAndMaxTotalGasFee = ({
+  bridgeQuote,
+  estimatedBaseFeeInDecGwei,
+  maxFeePerGasInDecGwei,
+  maxPriorityFeePerGasInDecGwei,
+  nativeExchangeRate,
+}: {
+  bridgeQuote: QuoteResponse & L1GasFees;
+  estimatedBaseFeeInDecGwei: string;
+  maxFeePerGasInDecGwei: string;
+  maxPriorityFeePerGasInDecGwei: string;
+  nativeExchangeRate?: number;
+}) => {
   const { amount, valueInCurrency } = calcTotalGasFee({
     bridgeQuote,
     feePerGasInDecGwei: estimatedBaseFeeInDecGwei,

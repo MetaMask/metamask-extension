@@ -293,13 +293,13 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
         quote.quote,
         toTokenExchangeRate.valueInCurrency,
       );
-      const gasFee = calcEstimatedAndMaxTotalGasFee(
-        quote,
+      const gasFee = calcEstimatedAndMaxTotalGasFee({
+        bridgeQuote: quote,
         estimatedBaseFeeInDecGwei,
         maxFeePerGasInDecGwei,
         maxPriorityFeePerGasInDecGwei,
         nativeExchangeRate,
-      );
+      });
       const relayerFee = calcRelayerFee(quote, nativeExchangeRate);
       const totalEstimatedNetworkFee = {
         amount: gasFee.amount.plus(relayerFee.amount),
