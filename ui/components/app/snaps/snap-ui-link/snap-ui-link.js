@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Display } from '../../../../helpers/constants/design-system';
 import { useSelector } from 'react-redux';
+import { Display } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
   ButtonLinkSize,
