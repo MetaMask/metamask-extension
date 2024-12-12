@@ -2,11 +2,16 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
+import { MemoryRouter } from 'react-router-dom';
 
 import { setBackgroundConnection } from '../../store/background-connection';
 import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
 import CrossChainSwap from '.';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../helpers/constants/routes';
 
 const mockResetBridgeState = jest.fn();
 const middleware = [thunk];
@@ -67,14 +72,20 @@ describe('Bridge', () => {
       featureFlagOverrides: {
         extensionConfig: { support: true },
       },
+      metamaskStateOverrides: {
+        useExternalServices: true,
+      },
     });
     const store = configureMockStore(middleware)(swapsMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <CrossChainSwap />,
+      <MemoryRouter initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}>
+        <CrossChainSwap />
+      </MemoryRouter>,
       store,
     );
 
+    expect(getByText('Bridge')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });
