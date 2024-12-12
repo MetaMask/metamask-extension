@@ -565,7 +565,7 @@ describe('TransactionAlerts', () => {
 });
 
 describe('Smart Transactions Migration Alert', () => {
-  it('should show smart transactions banner when shouldShowSmartTransactionsMigrationAlert is true', () => {
+  it('shows when alert is enabled and opted in', () => {
     const { getByTestId } = render({
       componentProps: {
         txData: {
@@ -577,7 +577,7 @@ describe('Smart Transactions Migration Alert', () => {
     expect(getByTestId('smart-transactions-banner-alert')).toBeInTheDocument();
   });
 
-  it('should not show smart transactions banner when shouldShowSmartTransactionsMigrationAlert is false', () => {
+  it('does not show when alert is disabled', () => {
     const closedState = {
       ...STATE_MOCK,
       metamask: {
