@@ -27,18 +27,16 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
   return (
     // Ledger rejection
-    errorMessage.includes('ledger') && (
-      errorMessage.includes('rejected') ||
-      errorMessage.includes('denied') ||
-      errorMessage.includes('error while signing')
-    ) ||
+    (errorMessage.includes('ledger') &&
+      (errorMessage.includes('rejected') ||
+        errorMessage.includes('denied') ||
+        errorMessage.includes('error while signing'))) ||
     // Trezor rejection
-    errorMessage.includes('trezor') && (
-      errorMessage.includes('cancelled') ||
-      errorMessage.includes('rejected')
-    ) ||
+    (errorMessage.includes('trezor') &&
+      (errorMessage.includes('cancelled') ||
+        errorMessage.includes('rejected'))) ||
     // Lattice rejection
-    errorMessage.includes('lattice') && errorMessage.includes('rejected') ||
+    (errorMessage.includes('lattice') && errorMessage.includes('rejected')) ||
     // Generic hardware wallet rejections
     errorMessage.includes('user rejected') ||
     errorMessage.includes('user cancelled')
