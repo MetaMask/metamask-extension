@@ -9,7 +9,12 @@ import {
 } from '../../../store/actions';
 import { CreateAccount } from '../create-account';
 
-export const CreateEthAccount = ({ onActionComplete }) => {
+export const CreateEthAccount = ({
+  onActionComplete,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  onSelectSRP,
+  ///: END:ONLY_INCLUDE_IF(multi-srp)
+}) => {
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name) => {
@@ -29,6 +34,9 @@ export const CreateEthAccount = ({ onActionComplete }) => {
       onActionComplete={onActionComplete}
       onCreateAccount={onCreateAccount}
       getNextAvailableAccountName={getNextAvailableAccountName}
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      onSelectSRP={onSelectSRP}
+      ///: END:ONLY_INCLUDE_IF(multi-srp)
     ></CreateAccount>
   );
 };
@@ -38,4 +46,10 @@ CreateEthAccount.propTypes = {
    * Executes when the Create button is clicked
    */
   onActionComplete: PropTypes.func.isRequired,
+  /**
+   * Callback to select the SRP
+   */
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  onSelectSRP: PropTypes.func.isRequired,
+  ///: END:ONLY_INCLUDE_IF(multi-srp)
 };

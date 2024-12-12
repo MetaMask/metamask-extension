@@ -1,0 +1,15 @@
+@use "design-system";
+
+.srp-list-divider {
+  height: 1px;
+  background-color: var(--color-border-muted);
+}
+
+.srp-list-show-accounts {
+  color: var(--color-primary-default);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
