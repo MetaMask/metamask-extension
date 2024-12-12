@@ -53,8 +53,13 @@ export default class ReadOnlyNetworkStore extends BaseStore {
   async #init() {
     try {
       const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
+
       if (response.ok) {
         this.#state = await response.json();
+      } else {
+        log.debug(
+          `Received response with a status of ${response.status} ${response.statusText}`,
+        );
       }
     } catch (error) {
       if (isErrorWithMessage(error)) {
@@ -90,7 +95,7 @@ export default class ReadOnlyNetworkStore extends BaseStore {
     }
     // Delay setting this until after the first read, to match the
     // behavior of the local store.
-    if (!this.mostRecentRetrievedState) {
+    if (!this.mostRecentRetrievedState && this.#state?.data) {
       this.mostRecentRetrievedState = this.#state;
     }
     return this.#state?.data ? this.#state : this.generateFirstTimeState();
