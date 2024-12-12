@@ -509,10 +509,6 @@
   "allCustodianAccountsConnectedTitle": {
     "message": "No accounts available to connect"
   },
-  "allNetworks": {
-    "message": "All networks",
-    "description": "Speicifies to token network filter to filter by all Networks"
-  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -881,6 +877,9 @@
   "bridgeNetCost": {
     "message": "Net cost"
   },
+  "bridgeQuoteExpired": {
+    "message": "Quotes expired - please request again"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
   },
@@ -930,6 +929,15 @@
   },
   "bridgeTxDetailsBridgeType": {
     "message": "Bridge type"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Reach out to"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMask Support"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "Has it been longer than 3 hours?"
   },
   "bridgeTxDetailsGasLimit": {
     "message": "Gas limit (units)"
@@ -1128,8 +1136,8 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Allowance request"
+  "confirmTitleApproveTransactionNFT": {
+    "message": "Withdrawal request"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
@@ -4299,6 +4307,9 @@
     "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
     "description": "$1 is Learn more link"
   },
+  "popularNetworks": {
+    "message": "Popular networks"
+  },
   "portfolio": {
     "message": "Portfolio"
   },
@@ -4463,7 +4474,9 @@
   "quoteRate": {
     "message": "Quote rate"
   },
-  "quotedNetworkFee": { "message": "$1 network fee" },
+  "quotedNetworkFee": {
+    "message": "$1 network fee"
+  },
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
@@ -6772,10 +6785,6 @@
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
-  },
-  "xOfYPending": {
-    "message": "$1 of $2 pending",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Yes"
