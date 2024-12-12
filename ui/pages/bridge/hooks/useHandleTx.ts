@@ -54,9 +54,11 @@ export default function useHandleTx() {
     const maxGasLimit = getHexMaxGasLimit(txParams.gasLimit ?? 0);
 
     const finalTxParams = {
-      ...txParams,
+      to: txParams.to,
+      from: txParams.from,
+      value: txParams.value,
+      data: txParams.data,
       chainId: hexChainId,
-      gasLimit: maxGasLimit,
       gas: maxGasLimit,
       maxFeePerGas,
       maxPriorityFeePerGas,
