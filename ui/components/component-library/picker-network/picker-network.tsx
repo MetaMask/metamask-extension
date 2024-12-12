@@ -18,6 +18,7 @@ import {
   Text,
 } from '..';
 import { BoxProps, PolymorphicRef } from '../box';
+import { AvatarGroup } from '../../multichain/avatar-group';
 import {
   PickerNetworkComponent,
   PickerNetworkProps,
@@ -27,6 +28,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
   <C extends React.ElementType = 'button'>(
     {
       className = '',
+      avatarGroupProps,
       avatarNetworkProps,
       iconProps,
       label,
@@ -50,14 +52,19 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
         display={Display.Flex}
         {...(props as BoxProps<C>)}
       >
-        <AvatarNetwork
-          className="mm-picker-network__avatar-network"
-          src={src}
-          name={label}
-          size={AvatarNetworkSize.Xs}
-          {...avatarNetworkProps}
-        />
-        <Text as="span" ellipsis variant={TextVariant.bodySm} {...labelProps}>
+        {avatarGroupProps ? (
+          <AvatarGroup {...avatarGroupProps} isTagOverlay={true} />
+        ) : (
+          <AvatarNetwork
+            className="mm-picker-network__avatar-network"
+            src={src}
+            name={label}
+            size={AvatarNetworkSize.Xs}
+            {...avatarNetworkProps}
+          />
+        )}
+
+        <Text ellipsis variant={TextVariant.bodySm} {...labelProps}>
           {label}
         </Text>
         <Icon

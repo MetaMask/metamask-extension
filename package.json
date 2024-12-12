@@ -293,7 +293,7 @@
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.4.0",
-    "@metamask/design-tokens": "^4.0.0",
+    "@metamask/design-tokens": "^4.2.0",
     "@metamask/ens-controller": "^15.0.0",
     "@metamask/ens-resolver-snap": "^0.1.2",
     "@metamask/eth-json-rpc-filters": "^9.0.0",

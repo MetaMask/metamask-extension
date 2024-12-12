@@ -273,7 +273,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           data-testid="avatar-group"
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
             <div
               class="mm-box mm-box--rounded-full"
