@@ -44,7 +44,6 @@ import {
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
   getMarketData,
-  getNetworkConfigurationIdByChainId,
   getCurrencyRates,
 } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
