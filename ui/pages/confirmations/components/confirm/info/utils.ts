@@ -65,6 +65,7 @@ export function getPercentageChange(
 
 /**
  * Determine if the percentage change between two values is within a threshold.
+ *
  * @param originalValue - The original value.
  * @param newValue - The new value.
  * @param newNegative - Whether the new value is negative.
@@ -75,7 +76,7 @@ function percentageChangeWithinThreshold(
   newValue: Hex,
   newNegative?: boolean,
 ): boolean {
-  let originalValueBN = new BN(remove0x(originalValue), 'hex');
+  const originalValueBN = new BN(remove0x(originalValue), 'hex');
   let newValueBN = new BN(remove0x(newValue), 'hex');
 
   if (newNegative) {
@@ -90,6 +91,7 @@ function percentageChangeWithinThreshold(
 
 /**
  * Determine if a transaction has a value and simulation native balance mismatch.
+ *
  * @param transactionMeta - The transaction metadata.
  * @returns Whether the transaction has a value and simulation native balance mismatch.
  */
