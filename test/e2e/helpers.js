@@ -671,7 +671,7 @@ async function createWebSocketConnection(driver, hostname) {
     }, hostname);
   } catch (error) {
     console.error(
-      `Failed to execute WebSocket connection script for ws://${hostname}:8081`,
+      `Failed to execute WebSocket connection script for ws://${hostname}:8000`,
       error,
     );
     throw error;
