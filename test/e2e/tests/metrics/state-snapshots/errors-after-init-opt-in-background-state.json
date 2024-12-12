@@ -63,14 +63,10 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionConfig": {
-          "maxRefreshCount": "number",
           "refreshRate": "number",
+          "maxRefreshCount": "number",
           "support": "boolean",
-          "chains": {
-            "0x1": "object",
-            "0xa4b1": "object",
-            "0xe708": "object"
-          }
+          "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
         }
       },
       "srcTokens": {},
@@ -242,9 +238,7 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": {
-        "0x539": "boolean"
-      },
+      "tokenNetworkFilter": { "0x539": "boolean" },
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
     },
@@ -260,7 +254,8 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object"
+    "showIncomingTransactions": "object",
+    "smartTransactionsOptInStatus": "boolean"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
@@ -330,9 +325,7 @@
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
     "tokenList": "object",
-    "tokensChainsCache": {
-      "0x539": "object"
-    },
+    "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": { "marketData": "object" },
