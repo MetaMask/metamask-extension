@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
@@ -8,6 +8,7 @@ import {
   SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
@@ -35,6 +36,8 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
+import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
+import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -93,41 +96,51 @@ const CrossChainSwap = () => {
   return (
     <div className="bridge">
       <div className="bridge__container">
-        <Header
-          className="bridge__header"
-          startAccessory={
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('back')}
-              onClick={redirectToDefaultRoute}
-            />
-          }
-          endAccessory={
-            <ButtonIcon
-              iconName={IconName.Setting}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('settings')}
-            />
-          }
-        >
-          {t('bridge')}
-        </Header>
-        <Content className="bridge__content">
-          <Switch>
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={isBridgeEnabled}
-              path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
-              render={() => {
-                return <PrepareBridgePage />;
-              }}
-            />
-          </Switch>
-        </Content>
-        <Footer>
-          <BridgeCTAButton />
-        </Footer>
+        <Switch>
+          <FeatureToggledRoute
+            redirectRoute={SWAPS_MAINTENANCE_ROUTE}
+            flag={isBridgeEnabled}
+            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+          >
+            <>
+              <Header
+                className="bridge__header"
+                startAccessory={
+                  <ButtonIcon
+                    iconName={IconName.ArrowLeft}
+                    size={ButtonIconSize.Sm}
+                    ariaLabel={t('back')}
+                    onClick={redirectToDefaultRoute}
+                  />
+                }
+                endAccessory={
+                  <ButtonIcon
+                    iconName={IconName.Setting}
+                    size={ButtonIconSize.Sm}
+                    ariaLabel={t('settings')}
+                  />
+                }
+              >
+                {t('bridge')}
+              </Header>
+              <Content>
+                <PrepareBridgePage />
+              </Content>
+              <Footer>
+                <BridgeCTAButton />
+              </Footer>
+            </>
+          </FeatureToggledRoute>
+
+          <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
+            <Content>
+              <AwaitingSignatures />
+            </Content>
+            <Footer>
+              <AwaitingSignaturesCancelButton />
+            </Footer>
+          </Route>
+        </Switch>
       </div>
     </div>
   );
