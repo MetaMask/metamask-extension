@@ -23,12 +23,12 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
 const baseFixtureOptions = {
   ...withFixturesOptions,
   fixtures: {
-    ...withFixturesOptions.fixtures,
-    metamask: {
-      ...withFixturesOptions.fixtures?.metamask,
-      preferences: {
-        ...withFixturesOptions.fixtures?.metamask?.preferences,
-        smartTransactionsOptInStatus: false,
+    data: {
+      ...withFixturesOptions.fixtures?.data,
+      metamask: {
+        preferences: {
+          smartTransactionsOptInStatus: false,
+        },
       },
     },
   },
