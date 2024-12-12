@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.9.2]
+
 ## [12.9.1]
 ### Changed
 - The 'All Networks' view of assets on the home screen will now only get data across the 9 'popular networks' ([#29071](https://github.com/MetaMask/metamask-extension/pull/29071))
@@ -5477,7 +5479,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.9.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.9.2...HEAD
+[12.9.2]: https://github.com/MetaMask/metamask-extension/compare/v12.9.1...v12.9.2
 [12.9.1]: https://github.com/MetaMask/metamask-extension/compare/v12.9.0...v12.9.1
 [12.9.0]: https://github.com/MetaMask/metamask-extension/compare/v12.8.1...v12.9.0
 [12.8.1]: https://github.com/MetaMask/metamask-extension/compare/v12.8.0...v12.8.1
