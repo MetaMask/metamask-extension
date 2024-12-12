@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { ChainId, hexToBN } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
+import { useParams } from 'react-router-dom';
 import {
   getAllTokens,
   getCurrentCurrency,
@@ -39,6 +40,8 @@ export const useTokensWithFiltering = (
   sortOrder: TokenBucketPriority = TokenBucketPriority.owned,
   chainId?: ChainId | Hex,
 ) => {
+  const { token: tokenAddressFromUrl } = useParams();
+
   // Only includes non-native tokens
   const allDetectedTokens = useSelector(getAllTokens);
   const { address: selectedAddress, balance: balanceOnActiveChain } =
@@ -72,14 +75,20 @@ export const useTokensWithFiltering = (
   );
 
   const filteredTokenListGenerator = useCallback(
-    (shouldAddToken: (symbol: string, address?: string) => boolean) => {
+    (
+      shouldAddToken: (
+        symbol: string,
+        address?: string,
+        tokenChainId?: string,
+      ) => boolean,
+    ) => {
       const buildTokenData = (
         token: SwapsTokenObject,
       ):
         | AssetWithDisplayData<NativeAsset>
         | AssetWithDisplayData<ERC20Asset>
         | undefined => {
-        if (chainId && shouldAddToken(token.symbol, token.address)) {
+        if (chainId && shouldAddToken(token.symbol, token.address, chainId)) {
           return getRenderableTokenData(
             {
               ...token,
@@ -87,6 +96,7 @@ export const useTokensWithFiltering = (
                 ? AssetType.native
                 : AssetType.token,
               image: token.iconUrl,
+              chainId,
             },
             tokenConversionRates,
             conversionRate,
@@ -111,6 +121,7 @@ export const useTokensWithFiltering = (
                   numberOfDecimals: 4,
                   toDenomination: EtherDenomination.ETH,
                 }),
+                chainId,
               }
             : {};
         const nativeToken = buildTokenData({
@@ -121,6 +132,18 @@ export const useTokensWithFiltering = (
         });
         if (nativeToken) {
           yield nativeToken;
+        }
+
+        if (tokenAddressFromUrl) {
+          const tokenListItem =
+            tokenList?.[tokenAddressFromUrl] ??
+            tokenList?.[tokenAddressFromUrl.toLowerCase()];
+          if (tokenListItem) {
+            const tokenWithTokenListData = buildTokenData(tokenListItem);
+            if (tokenWithTokenListData) {
+              yield tokenWithTokenListData;
+            }
+          }
         }
 
         if (sortOrder === TokenBucketPriority.owned) {
@@ -171,6 +194,7 @@ export const useTokensWithFiltering = (
       currentCurrency,
       chainId,
       tokenList,
+      tokenAddressFromUrl,
     ],
   );
 

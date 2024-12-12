@@ -2110,56 +2110,6 @@
         "chokidar>anymatch>picomatch": true
       }
     },
-    "cross-spawn": {
-      "builtin": {
-        "child_process.spawn": true,
-        "child_process.spawnSync": true,
-        "fs.closeSync": true,
-        "fs.openSync": true,
-        "fs.readSync": true,
-        "path.delimiter": true,
-        "path.normalize": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "Buffer.alloc": true,
-        "process.chdir": true,
-        "process.cwd": true,
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "cross-spawn>path-key": true,
-        "cross-spawn>shebang-command": true,
-        "cross-spawn>which": true
-      }
-    },
-    "cross-spawn>path-key": {
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      }
-    },
-    "cross-spawn>shebang-command": {
-      "packages": {
-        "cross-spawn>shebang-command>shebang-regex": true
-      }
-    },
-    "cross-spawn>which": {
-      "builtin": {
-        "path.join": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.env.OSTYPE": true,
-        "process.env.PATH": true,
-        "process.env.PATHEXT": true,
-        "process.platform": true
-      },
-      "packages": {
-        "@sentry/cli>which>isexe": true
-      }
-    },
     "debounce-stream>duplexer": {
       "builtin": {
         "stream": true
@@ -3004,23 +2954,12 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>ajv": true,
+        "eslint>ajv": true,
         "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
         "nock>debug": true
-      }
-    },
-    "eslint>@eslint/eslintrc>ajv": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "eslint>@eslint/eslintrc>ajv>json-schema-traverse": true,
-        "eslint>fast-deep-equal": true,
-        "uri-js": true
       }
     },
     "eslint>@eslint/eslintrc>import-fresh": {
@@ -3185,22 +3124,8 @@
         "__dirname": true
       },
       "packages": {
-        "eslint>file-entry-cache>flat-cache>flatted": true,
-        "eslint>file-entry-cache>flat-cache>rimraf": true
-      }
-    },
-    "eslint>file-entry-cache>flat-cache>rimraf": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "path.join": true
-      },
-      "globals": {
-        "process.platform": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "nyc>glob": true
+        "del>rimraf": true,
+        "eslint>file-entry-cache>flat-cache>flatted": true
       }
     },
     "eslint>glob-parent": {
@@ -6281,19 +6206,14 @@
       "packages": {
         "@babel/register>clone-deep>is-plain-object": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true,
+        "lavamoat>lavamoat-core>merge-deep>kind-of": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
       "packages": {
         "gulp>undertaker>object.reduce>for-own>for-in": true
-      }
-    },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
@@ -6593,6 +6513,72 @@
         "postcss>nanoid": true,
         "postcss>picocolors": true,
         "postcss>source-map-js": true
+      }
+    },
+    "postcss-discard-font-face": {
+      "packages": {
+        "postcss-discard-font-face>balanced-match": true,
+        "postcss-discard-font-face>postcss": true
+      }
+    },
+    "postcss-discard-font-face>postcss": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "postcss-discard-font-face>postcss>chalk": true,
+        "postcss-discard-font-face>postcss>js-base64": true,
+        "postcss-discard-font-face>postcss>source-map": true,
+        "postcss-discard-font-face>postcss>supports-color": true
+      }
+    },
+    "postcss-discard-font-face>postcss>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "postcss-discard-font-face>postcss>chalk>ansi-styles": true,
+        "postcss-discard-font-face>postcss>chalk>escape-string-regexp": true,
+        "postcss-discard-font-face>postcss>chalk>strip-ansi": true,
+        "postcss-discard-font-face>postcss>chalk>supports-color": true,
+        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": true
+      }
+    },
+    "postcss-discard-font-face>postcss>chalk>strip-ansi": {
+      "packages": {
+        "postcss-discard-font-face>postcss>chalk>strip-ansi>ansi-regex": true
+      }
+    },
+    "postcss-discard-font-face>postcss>chalk>supports-color": {
+      "globals": {
+        "process.argv": true,
+        "process.env": true,
+        "process.platform": true,
+        "process.stdout": true
+      }
+    },
+    "postcss-discard-font-face>postcss>js-base64": {
+      "globals": {
+        "Base64": "write",
+        "define": true
+      }
+    },
+    "postcss-discard-font-face>postcss>supports-color": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "postcss-discard-font-face>postcss>supports-color>has-flag": true
+      }
+    },
+    "postcss-discard-font-face>postcss>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "postcss-rtlcss": {
@@ -7411,6 +7397,11 @@
         "walkUpLexicalEnvironments": true,
         "whitespaceOrMapCommentRegExp": true,
         "zipToModeAwareCache": true
+      }
+    },
+    "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi": {
+      "packages": {
+        "prettier-eslint>loglevel-colored-level-prefix>chalk>has-ansi>ansi-regex": true
       }
     },
     "prop-types": {
@@ -8496,15 +8487,10 @@
         "process.stdout.write": true
       },
       "packages": {
+        "eslint>ajv": true,
         "lodash": true,
-        "stylelint>table>ajv": true,
         "stylelint>table>slice-ansi": true,
         "stylelint>table>string-width": true
-      }
-    },
-    "stylelint>table>ajv": {
-      "packages": {
-        "eslint>fast-deep-equal": true
       }
     },
     "stylelint>table>slice-ansi": {

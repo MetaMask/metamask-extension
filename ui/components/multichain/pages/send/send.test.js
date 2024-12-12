@@ -89,6 +89,7 @@ const baseStore = {
     },
   },
   metamask: {
+    accountsByChainId: {},
     permissionHistory: {},
     transactions: [
       {
@@ -98,7 +99,11 @@ const baseStore = {
         },
       },
     ],
-
+    tokenBalances: {
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+        '0x5': {},
+      },
+    },
     currencyRates: {
       ETH: {
         conversionDate: 1620710825.03,
@@ -168,6 +173,7 @@ const baseStore = {
     tokens: [],
     preferences: {
       showFiatInTestnets: true,
+      tokenNetworkFilter: {},
     },
     currentCurrency: 'USD',
     nativeCurrency: 'ETH',

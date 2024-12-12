@@ -1,9 +1,16 @@
 import { FeatureFlagResponse } from '../../../../ui/pages/bridge/types';
 
 export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
-  'extension-support': false,
-  'src-network-allowlist': [1, 42161, 59144],
-  'dest-network-allowlist': [1, 42161, 59144],
+  'extension-config': {
+    refreshRate: 30,
+    maxRefreshCount: 5,
+    support: false,
+    chains: {
+      '1': { isActiveSrc: true, isActiveDest: true },
+      '42161': { isActiveSrc: true, isActiveDest: true },
+      '59144': { isActiveSrc: true, isActiveDest: true },
+    },
+  },
 };
 
 export const LOCATOR = {

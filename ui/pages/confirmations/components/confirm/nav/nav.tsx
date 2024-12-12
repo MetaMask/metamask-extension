@@ -1,8 +1,6 @@
-import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import React, { useCallback } from 'react';
 
+import { useDispatch } from 'react-redux';
 import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
@@ -16,6 +14,7 @@ import {
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
@@ -25,68 +24,38 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  SIGNATURE_REQUEST_PATH,
-} from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { pendingConfirmationsSortedSelector } from '../../../../../selectors';
-import { rejectPendingApproval } from '../../../../../store/actions';
-import { useConfirmContext } from '../../../context/confirm';
+import { rejectAllApprovals } from '../../../../../store/actions';
 import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
-import { isSignatureApprovalRequest } from '../../../utils';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
+import { useConfirmContext } from '../../../context/confirm';
 
-const Nav = () => {
-  const history = useHistory();
+export type NavProps = {
+  confirmationId?: string;
+};
+
+export const Nav = ({ confirmationId }: NavProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const { currentConfirmation } = useConfirmContext();
+  const { count, getIndex, navigateToIndex } = useConfirmationNavigation();
 
-  const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
+  const position = getIndex(confirmationId);
 
-  const currentConfirmationPosition = useMemo(() => {
-    if (pendingConfirmations?.length <= 0 || !currentConfirmation) {
-      return 0;
-    }
-    return pendingConfirmations.findIndex(
-      ({ id }) => id === currentConfirmation.id,
-    );
-  }, [currentConfirmation, pendingConfirmations]);
-
-  const onNavigateToTransaction = useCallback(
-    (pos: number) => {
-      const nextConfirmation =
-        pendingConfirmations[currentConfirmationPosition + pos];
-      // todo: once all signature request pages are ported to new designs
-      // SIGNATURE_REQUEST_PATH from path below can be removed
-      // In new routing all confirmations will support
-      // "/confirm-transaction/<confirmation_id>"
-      history.replace(
-        `${CONFIRM_TRANSACTION_ROUTE}/${nextConfirmation.id}${
-          isSignatureApprovalRequest(nextConfirmation)
-            ? SIGNATURE_REQUEST_PATH
-            : ''
-        }`,
-      );
+  const onNavigateButtonClick = useCallback(
+    (change: number) => {
+      navigateToIndex(position + change);
     },
-    [currentConfirmationPosition, pendingConfirmations],
+    [position, navigateToIndex],
   );
 
-  const onRejectAll = useCallback(() => {
-    pendingConfirmations.forEach((conf) => {
-      dispatch(
-        rejectPendingApproval(
-          conf.id,
-          serializeError(providerErrors.userRejectedRequest()),
-        ),
-      );
-    });
-  }, [pendingConfirmations]);
+  const onRejectAll = useCallback(async () => {
+    await dispatch(rejectAllApprovals());
+  }, [dispatch]);
 
   useQueuedConfirmationsEvent(QueueType.NavigationHeader);
 
-  if (pendingConfirmations.length <= 1) {
+  if (count <= 1) {
     return null;
   }
 
@@ -98,8 +67,10 @@ const Nav = () => {
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
       padding={3}
+      width={BlockSize.Full}
       style={{
         zIndex: 2,
+        position: 'relative',
       }}
     >
       <Box alignItems={AlignItems.center} display={Display.Flex}>
@@ -110,17 +81,18 @@ const Nav = () => {
           borderRadius={BorderRadius.full}
           className="confirm_nav__left_btn"
           color={IconColor.iconAlternative}
-          disabled={currentConfirmationPosition === 0}
+          disabled={position === 0}
           iconName={IconName.ArrowLeft}
-          onClick={() => onNavigateToTransaction(-1)}
+          onClick={() => onNavigateButtonClick(-1)}
           size={ButtonIconSize.Sm}
         />
         <Text
           color={TextColor.textAlternative}
           marginInline={2}
           variant={TextVariant.bodySm}
+          data-testid="confirm-page-nav-position"
         >
-          {currentConfirmationPosition + 1} of {pendingConfirmations.length}
+          {position + 1} of {count}
         </Text>
         <ButtonIcon
           ariaLabel="Next Confirmation"
@@ -129,11 +101,9 @@ const Nav = () => {
           borderRadius={BorderRadius.full}
           className="confirm_nav__right_btn"
           color={IconColor.iconAlternative}
-          disabled={
-            currentConfirmationPosition === pendingConfirmations.length - 1
-          }
+          disabled={position === count - 1}
           iconName={IconName.ArrowRight}
-          onClick={() => onNavigateToTransaction(1)}
+          onClick={() => onNavigateButtonClick(1)}
           size={ButtonIconSize.Sm}
         />
       </Box>
@@ -154,4 +124,7 @@ const Nav = () => {
   );
 };
 
-export default Nav;
+export const ConfirmNav = () => {
+  const { currentConfirmation } = useConfirmContext();
+  return <Nav confirmationId={currentConfirmation?.id} />;
+};

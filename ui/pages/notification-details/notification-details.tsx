@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import type { NotificationServicesController } from '@metamask/notification-services-controller';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -18,12 +18,12 @@ import {
   NotificationComponents,
   hasNotificationComponents,
 } from '../notifications/notification-components';
+import { type Notification } from '../notifications/notification-components/types/notifications/notifications';
+import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 import { getExtractIdentifier } from './utils/utils';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
 import { NotificationDetailsFooter } from './notification-details-footer/notification-details-footer';
-
-type Notification = NotificationServicesController.Types.INotification;
 
 function useModalNavigation() {
   const history = useHistory();
@@ -49,6 +49,8 @@ function useNotificationByPath() {
 
 function useEffectOnNotificationView(notificationData?: Notification) {
   const { markNotificationAsRead } = useMarkNotificationAsRead();
+  const { setNotificationTimeout } = useSnapNotificationTimeouts();
+
   useEffect(() => {
     if (notificationData) {
       markNotificationAsRead([
@@ -59,7 +61,13 @@ function useEffectOnNotificationView(notificationData?: Notification) {
         },
       ]);
     }
-  }, [markNotificationAsRead, notificationData]);
+
+    return () => {
+      if (notificationData?.type === TRIGGER_TYPES.SNAP) {
+        setNotificationTimeout(notificationData.id);
+      }
+    };
+  }, []);
 }
 
 export default function NotificationDetails() {

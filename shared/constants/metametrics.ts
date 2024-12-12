@@ -1,5 +1,17 @@
+import { Json } from '@metamask/utils';
 import type { EnvironmentType } from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
+
+type JsonWithUndefined =
+  | null
+  | boolean
+  | number
+  | string
+  | undefined
+  | Json[]
+  | {
+      [prop: string]: Json;
+    };
 
 /**
  * Used to attach context of where the user was at in the application when the
@@ -92,13 +104,14 @@ export type MetaMetricsEventPayload = {
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
-  properties?: object;
+  properties?: Record<string, Json>;
+
   /**
    * Sensitive values to track. These properties will be sent in an additional
    * event that excludes the user's `metaMetricsId`. Keys in this object must be
    * in `snake_case`.
    */
-  sensitiveProperties?: object;
+  sensitiveProperties?: Record<string, Json>;
   /**
    * Amount of currency that the event creates in revenue for MetaMask.
    */
@@ -130,6 +143,13 @@ export type MetaMetricsEventPayload = {
   isDuplicateAnonymizedEvent?: boolean;
 };
 
+export type UnsanitizedMetaMetricsEventPayload = Omit<
+  MetaMetricsEventPayload,
+  'properties'
+> & {
+  properties?: Record<string, JsonWithUndefined>;
+};
+
 export type MetaMetricsEventOptions = {
   /**
    * Whether or not the event happened during the opt-in workflow.
@@ -158,6 +178,10 @@ export type MetaMetricsEventOptions = {
    * as not conforming to our schema.
    */
   matomoEvent?: boolean;
+  /**
+   * Values that can used in the "properties" tracking object as keys,
+   */
+  contextPropsIntoEventProperties?: string | string[];
 };
 
 export type MetaMetricsEventFragment = {
@@ -201,13 +225,13 @@ export type MetaMetricsEventFragment = {
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
-  properties?: object;
+  properties?: Record<string, Json>;
   /**
    * Sensitive values to track. These properties will be sent in an additional
    * event that excludes the user's `metaMetricsId`. Keys in this object must be
    * in `snake_case`.
    */
-  sensitiveProperties?: object;
+  sensitiveProperties?: Record<string, Json>;
   /**
    * Amount of currency that the event creates in revenue for MetaMask.
    */
@@ -247,6 +271,13 @@ export type MetaMetricsEventFragment = {
    * The event name.
    */
   event?: string;
+
+  /**
+   * HACK: "transaction-submitted-<id>" fragment hack
+   * If this is true and the fragment is found as an abandoned fragment,
+   * then delete the fragment instead of finalizing it.
+   */
+  canDeleteIfAbandoned?: boolean;
 };
 
 /**
@@ -559,6 +590,14 @@ export enum MetaMetricsUserTrait {
    * Identified when the user changes token sort order on asset-list
    */
   TokenSortPreference = 'token_sort_preference',
+  /**
+   * Identifies if the Privacy Mode is enabled
+   */
+  PrivacyModeEnabled = 'privacy_mode_toggle',
+  /**
+   * Identified when the user prefers to see all tokens or current network tokens in wallet list
+   */
+  NetworkFilterPreference = 'selected_network_filter',
 }
 
 /**
@@ -596,6 +635,7 @@ export enum MetaMetricsEventName {
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
   AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
+  AccountsSyncErroneousSituation = 'Accounts Sync Erroneous Situation',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
@@ -607,6 +647,7 @@ export enum MetaMetricsEventName {
   BridgeLinkClicked = 'Bridge Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
+  SolanaSupportToggled = 'Solana Support Toggled',
   CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
@@ -820,7 +861,6 @@ export enum MetaMetricsEventName {
   NotificationsActivated = 'Notifications Activated',
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
-
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',
@@ -829,6 +869,19 @@ export enum MetaMetricsEventName {
   sendSwapQuoteRequested = 'Send Swap Quote Requested',
   sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
+  // Cross Chain Swaps
+  ActionCompleted = 'Action Completed',
+  ActionFailed = 'Action Failed',
+  ActionOpened = 'Action Opened',
+  ActionSubmitted = 'Action Submitted',
+  AllQuotesOpened = 'All Quotes Opened',
+  AllQuotesSorted = 'All Quotes Sorted',
+  InputChanged = 'Input Changed',
+  InputSourceDestinationFlipped = 'Source and Destination Flipped',
+  CrossChainSwapsQuoteError = 'Cross-chain Quote Error',
+  QuoteSelected = 'Quote Selected',
+  CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
+  CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -846,6 +899,7 @@ export enum QueueType {
 }
 
 export enum MetaMetricsEventAccountImportType {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   Json = 'json',
   PrivateKey = 'private_key',
   Srp = 'srp',
@@ -889,6 +943,7 @@ export enum MetaMetricsEventCategory {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IF
+  CrossChainSwaps = 'Cross Chain Swaps',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -914,6 +969,7 @@ export enum MetaMetricsNetworkEventSource {
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
   NewAddNetworkFlow = 'new_add_network_flow',
+  Bridge = 'bridge',
 }
 
 export enum MetaMetricsSwapsEventSource {

@@ -31,6 +31,7 @@ export const useTransactionEventFragment = () => {
         await createTransactionEventFragment(transactionId);
       }
       updateEventFragment(`transaction-added-${transactionId}`, params);
+      updateEventFragment(`transaction-submitted-${transactionId}`, params);
     },
     [fragmentExists, gasTransactionId],
   );

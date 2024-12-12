@@ -164,7 +164,10 @@ describe('Account-watcher snap', function (this: Suite) {
       },
       {
         input: ACCOUNT_1,
-        message: `Unknown snap error: Account address '${ACCOUNT_1}' already exists`,
+        // FIXME: Watchout, the Snap bridge will lower-case EVM addresses, even in some error messages, this is
+        // a mistake, and we might wanna re-change that later, see:
+        // - https://github.com/MetaMask/accounts/pull/90/files#r1848713364
+        message: `Unknown snap error: Account address '${ACCOUNT_1.toLowerCase()}' already exists`,
         description: 'existing address',
       },
     ];
@@ -371,7 +374,9 @@ describe('Account-watcher snap', function (this: Suite) {
 
     const toggleWatchAccountOptionAndCloseSettings = async (driver: Driver) => {
       await driver.clickElement('[data-testid="watch-account-toggle-div"]');
-      await driver.clickElement('button[aria-label="Close"]');
+      await driver.clickElement(
+        '.settings-page__header__title-container__close-button',
+      );
     };
 
     const verifyWatchAccountOptionAndCloseMenu = async (
@@ -393,7 +398,7 @@ describe('Account-watcher snap', function (this: Suite) {
           tag: 'button',
         });
       }
-      await driver.clickElement('button[aria-label="Close"]');
+      await driver.clickElement('header button[aria-label="Close"]');
     };
 
     it("will show the 'Watch an Ethereum account (Beta)' option when setting is enabled", async function () {

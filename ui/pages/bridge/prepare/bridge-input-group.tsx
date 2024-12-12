@@ -1,5 +1,6 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 import {
   Box,
@@ -27,6 +28,11 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/network';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
+import {
+  getBridgeQuotes,
+  getValidationErrors,
+} from '../../../ducks/bridge/selectors';
+import { TextColor } from '../../../helpers/constants/design-system';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -38,6 +44,7 @@ const generateAssetFromToken = (
       image: tokenDetails.iconUrl,
       symbol: tokenDetails.symbol,
       address: tokenDetails.address,
+      chainId,
     };
   }
 
@@ -51,6 +58,7 @@ const generateAssetFromToken = (
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
         chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ],
+    chainId,
   };
 };
 
@@ -62,6 +70,7 @@ export const BridgeInputGroup = ({
   onAmountChange,
   networkProps,
   customTokenListGenerator,
+  isMultiselectEnabled,
   amountFieldProps = {},
 }: {
   className: string;
@@ -69,13 +78,20 @@ export const BridgeInputGroup = ({
   token: SwapsTokenObject | SwapsEthToken | null;
   amountFieldProps?: Pick<
     React.ComponentProps<typeof TextField>,
-    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled'
+    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
   >;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
-  'networkProps' | 'header' | 'customTokenListGenerator' | 'onAssetChange'
+  | 'networkProps'
+  | 'header'
+  | 'customTokenListGenerator'
+  | 'onAssetChange'
+  | 'isMultiselectEnabled'
 >) => {
   const t = useI18nContext();
+
+  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
+  const { isInsufficientBalance } = useSelector(getValidationErrors);
 
   const tokenFiatValue = useTokenFiatAmount(
     token?.address || undefined,
@@ -92,10 +108,13 @@ export const BridgeInputGroup = ({
     true,
   );
 
-  const { formattedBalance } = useLatestBalance(
+  const { formattedBalance, balanceAmount } = useLatestBalance(
     token,
     networkProps?.network?.chainId,
   );
+
+  const isAmountReadOnly =
+    amountFieldProps?.readOnly || amountFieldProps?.disabled;
 
   return (
     <Box className={className}>
@@ -111,6 +130,7 @@ export const BridgeInputGroup = ({
           onAssetChange={onAssetChange}
           networkProps={networkProps}
           customTokenListGenerator={customTokenListGenerator}
+          isMultiselectEnabled={isMultiselectEnabled}
         />
         <Tooltip
           containerClassName="amount-tooltip"
@@ -125,7 +145,9 @@ export const BridgeInputGroup = ({
           <TextField
             type={TextFieldType.Number}
             className="amount-input"
-            placeholder="0"
+            placeholder={
+              isLoading && !activeQuote ? t('bridgeCalculatingAmount') : '0'
+            }
             onChange={(e) => {
               onAmountChange?.(e.target.value);
             }}
@@ -134,7 +156,13 @@ export const BridgeInputGroup = ({
         </Tooltip>
       </Box>
       <Box className="prepare-bridge-page__amounts-row">
-        <Text>
+        <Text
+          color={
+            !isAmountReadOnly && isInsufficientBalance(balanceAmount)
+              ? TextColor.errorDefault
+              : TextColor.textAlternative
+          }
+        >
           {formattedBalance ? `${t('balance')}: ${formattedBalance}` : ' '}
         </Text>
         <CurrencyDisplay

@@ -1,28 +1,84 @@
-import React, { ReactNode, useMemo } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
+import React, { ReactNode, useEffect, useMemo } from 'react';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box } from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
-import { TokenWithBalance } from '../asset-list/asset-list';
+import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
+  getChainIdsToPoll,
+  getCurrencyRates,
+  getCurrentNetwork,
+  getIsTestnet,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getMarketData,
+  getNetworkConfigurationIdByChainId,
+  getNewTokensImported,
   getPreferences,
   getSelectedAccount,
-  getShouldHideZeroBalanceTokens,
+  getSelectedAccountNativeTokenCachedBalanceByChainId,
+  getSelectedAccountTokensAcrossChains,
+  getShowFiatInTestnets,
   getTokenExchangeRates,
+  getTokenNetworkFilter,
 } from '../../../../selectors';
-import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { useNativeTokenBalance } from '../asset-list/native-token/use-native-token-balance';
+import { filterAssets } from '../util/filter';
+import { calculateTokenBalance } from '../util/calculateTokenBalance';
+import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
+import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import { useTokenBalances } from '../../../../hooks/useTokenBalances';
+import { setTokenNetworkFilter } from '../../../../store/actions';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { getMultichainShouldShowFiat } from '../../../../selectors/multichain';
 
 type TokenListProps = {
-  onTokenClick: (arg: string) => void;
-  nativeToken: ReactNode;
+  onTokenClick: (chainId: string, address: string) => void;
+  nativeToken?: ReactNode;
+};
+
+export type Token = {
+  address: Hex;
+  aggregators: string[];
+  chainId: Hex;
+  decimals: number;
+  isNative: boolean;
+  symbol: string;
+  image: string;
+};
+
+export type TokenWithFiatAmount = Token & {
+  tokenFiatAmount: number | null;
+  balance?: string;
+  string: string; // needed for backwards compatability TODO: fix this
+};
+
+export type AddressBalanceMapping = Record<Hex, Record<Hex, Hex>>;
+export type ChainAddressMarketData = Record<
+  Hex,
+  Record<Hex, Record<string, string | number>>
+>;
+
+const useFilteredAccountTokens = (currentNetwork: { chainId: string }) => {
+  const isTestNetwork = useMemo(() => {
+    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
+  }, [currentNetwork.chainId, TEST_CHAINS]);
+
+  const selectedAccountTokensChains: Record<string, Token[]> = useSelector(
+    getSelectedAccountTokensAcrossChains,
+  ) as Record<string, Token[]>;
+
+  const filteredAccountTokensChains = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(selectedAccountTokensChains).filter(([chainId]) =>
+        isTestNetwork
+          ? (TEST_CHAINS as string[]).includes(chainId)
+          : !(TEST_CHAINS as string[]).includes(chainId),
+      ),
+    );
+  }, [selectedAccountTokensChains, isTestNetwork, TEST_CHAINS]);
+
+  return filteredAccountTokensChains;
 };
 
 export default function TokenList({
@@ -30,66 +86,186 @@ export default function TokenList({
   nativeToken,
 }: TokenListProps) {
   const t = useI18nContext();
-  const { tokenSortConfig } = useSelector(getPreferences);
+  const dispatch = useDispatch();
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
+  const { tokenSortConfig, privacyMode, hideZeroBalanceTokens } =
+    useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
-  const nativeTokenWithBalance = useNativeTokenBalance();
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
+  const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
     shallowEqual,
   );
-  const { tokensWithBalances, loading } = useAccountTotalFiatBalance(
-    selectedAccount,
-    shouldHideZeroBalanceTokens,
-  ) as {
-    tokensWithBalances: TokenWithBalance[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mergedRates: any;
-    loading: boolean;
+  const newTokensImported = useSelector(getNewTokensImported);
+  const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
+  const isOnCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
+  const { tokenBalances } = useTokenBalances({
+    chainIds: chainIdsToPoll as Hex[],
+  });
+  const selectedAccountTokenBalancesAcrossChains =
+    tokenBalances[selectedAccount.address];
+
+  const marketData: ChainAddressMarketData = useSelector(
+    getMarketData,
+  ) as ChainAddressMarketData;
+
+  const currencyRates = useSelector(getCurrencyRates);
+  const nativeBalances: Record<Hex, Hex> = useSelector(
+    getSelectedAccountNativeTokenCachedBalanceByChainId,
+  ) as Record<Hex, Hex>;
+  const isTestnet = useSelector(getIsTestnet);
+  // Ensure newly added networks are included in the tokenNetworkFilter
+  useEffect(() => {
+    if (process.env.PORTFOLIO_VIEW) {
+      const allNetworkFilters = Object.fromEntries(
+        Object.keys(allNetworks).map((chainId) => [chainId, true]),
+      );
+      if (Object.keys(tokenNetworkFilter).length > 1) {
+        dispatch(setTokenNetworkFilter(allNetworkFilters));
+      }
+    }
+  }, [Object.keys(allNetworks).length]);
+
+  const consolidatedBalances = () => {
+    const tokensWithBalance: TokenWithFiatAmount[] = [];
+    Object.entries(selectedAccountTokensChains).forEach(
+      ([stringChainKey, tokens]) => {
+        const chainId = stringChainKey as Hex;
+        tokens.forEach((token: Token) => {
+          const { isNative, address, decimals } = token;
+          const balance =
+            calculateTokenBalance({
+              isNative,
+              chainId,
+              address,
+              decimals,
+              nativeBalances,
+              selectedAccountTokenBalancesAcrossChains,
+            }) || '0';
+
+          const tokenFiatAmount = calculateTokenFiatAmount({
+            token,
+            chainId,
+            balance,
+            marketData,
+            currencyRates,
+          });
+
+          // Respect the "hide zero balance" setting (when true):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should not display with zero balance when on all networks filter
+          // - ERC20 tokens with zero balances should respect the setting on both the current and all networks.
+
+          // Respect the "hide zero balance" setting (when false):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should always display with zero balance when on all networks filter
+          // - ERC20 tokens always display with zero balance on both the current and all networks filter.
+          if (
+            !hideZeroBalanceTokens ||
+            balance !== '0' ||
+            (token.isNative && isOnCurrentNetwork)
+          ) {
+            tokensWithBalance.push({
+              ...token,
+              balance,
+              tokenFiatAmount,
+              chainId,
+              string: String(balance),
+            });
+          }
+        });
+      },
+    );
+
+    return tokensWithBalance;
   };
 
-  const sortedTokens = useMemo(() => {
-    return sortAssets(
-      [nativeTokenWithBalance, ...tokensWithBalances],
-      tokenSortConfig,
+  const sortedFilteredTokens = useMemo(() => {
+    const consolidatedTokensWithBalances = consolidatedBalances();
+    const filteredAssets = filterAssets(consolidatedTokensWithBalances, [
+      {
+        key: 'chainId',
+        opts: tokenNetworkFilter,
+        filterCallback: 'inclusive',
+      },
+    ]);
+
+    const { nativeTokens, nonNativeTokens } = filteredAssets.reduce<{
+      nativeTokens: TokenWithFiatAmount[];
+      nonNativeTokens: TokenWithFiatAmount[];
+    }>(
+      (acc, token) => {
+        if (token.isNative) {
+          acc.nativeTokens.push(token);
+        } else {
+          acc.nonNativeTokens.push(token);
+        }
+        return acc;
+      },
+      { nativeTokens: [], nonNativeTokens: [] },
     );
+    const assets = [...nativeTokens, ...nonNativeTokens];
+    return sortAssets(assets, tokenSortConfig);
   }, [
-    tokensWithBalances,
     tokenSortConfig,
+    tokenNetworkFilter,
     conversionRate,
     contractExchangeRates,
+    currentNetwork,
+    selectedAccount,
+    selectedAccountTokensChains,
+    newTokensImported,
   ]);
 
-  return loading ? (
-    <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      padding={7}
-      data-testid="token-list-loading-message"
-    >
-      {t('loadingTokens')}
-    </Box>
-  ) : (
+  useEffect(() => {
+    if (sortedFilteredTokens) {
+      endTrace({ name: TraceName.AccountOverviewAssetListTab });
+    }
+  }, [sortedFilteredTokens]);
+
+  // Displays nativeToken if provided
+  if (nativeToken) {
+    return React.cloneElement(nativeToken as React.ReactElement);
+  }
+
+  // TODO: We can remove this string. However it will result in a huge file 50+ file diff
+  // Lets remove it in a separate PR
+  if (sortedFilteredTokens === undefined) {
+    console.log(t('loadingTokens'));
+  }
+
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    selectedAccount,
+  );
+  const isMainnet = !isTestnet;
+  // Check if show conversion is enabled
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
+
+  return (
     <div>
-      {sortedTokens.map((tokenData) => {
-        if (tokenData?.isNative) {
-          // we need cloneElement so that we can pass the unique key
-          return React.cloneElement(nativeToken as React.ReactElement, {
-            key: `${tokenData.symbol}-${tokenData.address}`,
-          });
-        }
-        return (
-          <TokenCell
-            key={`${tokenData.symbol}-${tokenData.address}`}
-            {...tokenData}
-            onClick={onTokenClick}
-          />
-        );
-      })}
+      {sortedFilteredTokens.map((tokenData) => (
+        <TokenCell
+          key={`${tokenData.chainId}-${tokenData.symbol}-${tokenData.address}`}
+          chainId={tokenData.chainId}
+          address={tokenData.address}
+          symbol={tokenData.symbol}
+          tokenFiatAmount={showFiat ? tokenData.tokenFiatAmount : null}
+          image={tokenData?.image}
+          isNative={tokenData.isNative}
+          string={tokenData.string}
+          privacyMode={privacyMode}
+          onClick={onTokenClick}
+        />
+      ))}
     </div>
   );
 }

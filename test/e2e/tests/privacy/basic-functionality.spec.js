@@ -1,13 +1,10 @@
 const { strict: assert } = require('assert');
-const {
-  TEST_SEED_PHRASE,
-  withFixtures,
-  importSRPOnboardingFlow,
-  WALLET_PASSWORD,
-  defaultGanacheOptions,
-} = require('../../helpers');
+const { defaultGanacheOptions, withFixtures } = require('../../helpers');
 const { METAMASK_STALELIST_URL } = require('../phishing-controller/helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const {
+  importSRPOnboardingFlow,
+} = require('../../page-objects/flows/onboarding.flow');
 
 async function mockApis(mockServer) {
   return [
@@ -26,8 +23,8 @@ async function mockApis(mockServer) {
         };
       }),
     await mockServer
-      .forGet('https://min-api.cryptocompare.com/data/price')
-      .withQuery({ fsym: 'ETH', tsyms: 'USD' })
+      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+      .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -49,12 +46,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         testSpecificMock: mockApis,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
-        await importSRPOnboardingFlow(
-          driver,
-          TEST_SEED_PHRASE,
-          WALLET_PASSWORD,
-        );
+        await importSRPOnboardingFlow({ driver });
 
         await driver.clickElement({
           text: 'Manage default privacy settings',
@@ -110,7 +102,8 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
         await driver.assertElementNotPresent('.loading-overlay');
-        await driver.clickElement('[data-testid="refresh-list-button"]');
+        await driver.clickElement(`[data-testid="import-token-button"]`);
+        await driver.clickElement('[data-testid="refreshList"]');
 
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
           const requests = await mockedEndpoints[i].getSeenRequests();
@@ -134,12 +127,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         testSpecificMock: mockApis,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
-        await importSRPOnboardingFlow(
-          driver,
-          TEST_SEED_PHRASE,
-          WALLET_PASSWORD,
-        );
+        await importSRPOnboardingFlow({ driver });
 
         await driver.clickElement({
           text: 'Manage default privacy settings',
@@ -170,7 +158,10 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         // Wait until network is fully switched and refresh tokens before asserting to mitigate flakiness
         await driver.assertElementNotPresent('.loading-overlay');
-        await driver.clickElement('[data-testid="refresh-list-button"]');
+        await driver.clickElement(`[data-testid="import-token-button"]`);
+        await driver.clickElement('[data-testid="refreshList"]');
+        // intended delay to allow for network requests to complete
+        await driver.delay(1000);
         for (let i = 0; i < mockedEndpoints.length; i += 1) {
           const requests = await mockedEndpoints[i].getSeenRequests();
           assert.equal(

@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -8,7 +9,6 @@ import {
   Text,
 } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
-import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import {
   AlignItems,
   BackgroundColor,
@@ -18,26 +18,18 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
-import { getWatchedToken } from '../../../../../../../selectors';
-import { MultichainState } from '../../../../../../../selectors/multichain';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { formatAmountMaxPrecision } from '../../../../simulation-details/formatAmount';
 import { useTokenValues } from '../../hooks/use-token-values';
 import { useTokenDetails } from '../../hooks/useTokenDetails';
 import { ConfirmLoader } from '../confirm-loader/confirm-loader';
 
 const SendHeading = () => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const locale = useSelector(getIntlLocale);
-  const selectedToken = useSelector((state: MultichainState) =>
-    getWatchedToken(transactionMeta)(state),
-  );
-  const { tokenImage, tokenSymbol } = useTokenDetails(
-    transactionMeta,
-    selectedToken,
-  );
+  const { tokenImage, tokenSymbol } = useTokenDetails(transactionMeta);
   const {
     decodedTransferValue,
     displayTransferValue,
@@ -45,45 +37,53 @@ const SendHeading = () => {
     pending,
   } = useTokenValues(transactionMeta);
 
+  type TestNetChainId = (typeof TEST_CHAINS)[number];
+  const isTestnet = TEST_CHAINS.includes(
+    transactionMeta.chainId as TestNetChainId,
+  );
+  const { showFiatInTestnets } = useSelector(getPreferences);
+
   const TokenImage = (
     <AvatarToken
       src={tokenImage}
-      name={selectedToken?.symbol}
+      name={tokenSymbol !== t('unknown') && tokenSymbol}
       size={AvatarTokenSize.Xl}
       backgroundColor={
-        selectedToken?.symbol
-          ? BackgroundColor.backgroundDefault
-          : BackgroundColor.overlayDefault
+        tokenSymbol === t('unknown')
+          ? BackgroundColor.overlayDefault
+          : BackgroundColor.backgroundDefault
       }
       color={
-        selectedToken?.symbol ? TextColor.textDefault : TextColor.textMuted
+        tokenSymbol === t('unknown')
+          ? TextColor.textMuted
+          : TextColor.textDefault
       }
     />
   );
 
   const TokenValue =
-    displayTransferValue ===
-    `<${formatAmountMaxPrecision(locale, MIN_AMOUNT)}` ? (
-      <Tooltip title={decodedTransferValue.toString()} position="right">
+    displayTransferValue === decodedTransferValue ? (
+      <Text
+        variant={TextVariant.headingLg}
+        color={TextColor.inherit}
+        marginTop={3}
+      >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+    ) : (
+      <Tooltip title={decodedTransferValue} position="right">
         <Text
           variant={TextVariant.headingLg}
           color={TextColor.inherit}
           marginTop={3}
         >{`${displayTransferValue} ${tokenSymbol}`}</Text>
       </Tooltip>
-    ) : (
-      <Text
-        variant={TextVariant.headingLg}
-        color={TextColor.inherit}
-        marginTop={3}
-      >{`${displayTransferValue} ${tokenSymbol}`}</Text>
     );
 
-  const TokenFiatValue = fiatDisplayValue && (
-    <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-      {fiatDisplayValue}
-    </Text>
-  );
+  const TokenFiatValue = Boolean(fiatDisplayValue) &&
+    (!isTestnet || showFiatInTestnets) && (
+      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        {fiatDisplayValue}
+      </Text>
+    );
 
   if (pending) {
     return <ConfirmLoader />;

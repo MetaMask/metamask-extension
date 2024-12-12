@@ -10,7 +10,7 @@ import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
   useSetIsProfileSyncingEnabled,
   useEnableProfileSyncing,
-} from '../../../hooks/metamask-notifications/useProfileSyncing';
+} from '../../../hooks/identity/useProfileSyncing';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -51,9 +51,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPetnamesEnabled,
   getExternalServicesOnboardingToggleState,
-  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   setIpfsGateway,
   setUseCurrencyRateCheck,

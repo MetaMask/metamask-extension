@@ -11,7 +11,10 @@ import {
   Severity,
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
@@ -381,7 +384,13 @@ function getValues(pendingApproval, t, actions, history, data) {
           nickname: pendingApproval.requestData.chainName,
         });
 
-        history.push(DEFAULT_ROUTE);
+        const locationPath = document.location.hash.replace('#', '/');
+        const isOnboardingRoute =
+          locationPath === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
+
+        if (!isOnboardingRoute) {
+          history.push(DEFAULT_ROUTE);
+        }
       }
       return [];
     },

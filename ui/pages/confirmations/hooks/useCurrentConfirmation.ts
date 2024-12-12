@@ -1,14 +1,10 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
-  getCurrentChainId,
   getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
   getRedesignedTransactionsEnabled,
@@ -18,10 +14,9 @@ import {
 } from '../../../selectors';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
-  REDESIGN_APPROVAL_TYPES,
-  REDESIGN_DEV_TRANSACTION_TYPES,
-  REDESIGN_USER_TRANSACTION_TYPES,
-} from '../utils';
+  shouldUseRedesignForSignatures,
+  shouldUseRedesignForTransactions,
+} from '../../../../shared/lib/confirmation.utils';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -36,9 +31,6 @@ const useCurrentConfirmation = () => {
   const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
 
-  // TODO: Temporary pending chain ID persisted in signature requests.
-  const globalChainId = useSelector(getCurrentChainId);
-
   const isRedesignedSignaturesUserSettingEnabled = useSelector(
     getRedesignedConfirmationsEnabled,
   );
@@ -50,10 +42,6 @@ const useCurrentConfirmation = () => {
   const isRedesignedConfirmationsDeveloperEnabled = useSelector(
     getIsRedesignedConfirmationsDeveloperEnabled,
   );
-
-  const isRedesignedConfirmationsDeveloperSettingEnabled =
-    process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
-    isRedesignedConfirmationsDeveloperEnabled;
 
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
@@ -68,37 +56,20 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const isCorrectUserTransactionType = REDESIGN_USER_TRANSACTION_TYPES.includes(
-    transactionMetadata?.type as TransactionType,
-  );
+  const useRedesignedForSignatures = shouldUseRedesignForSignatures({
+    approvalType: pendingApproval?.type as ApprovalType,
+    isRedesignedSignaturesUserSettingEnabled,
+    isRedesignedConfirmationsDeveloperEnabled,
+  });
 
-  const isCorrectDeveloperTransactionType =
-    REDESIGN_DEV_TRANSACTION_TYPES.includes(
-      transactionMetadata?.type as TransactionType,
-    );
+  const useRedesignedForTransaction = shouldUseRedesignForTransactions({
+    transactionMetadataType: transactionMetadata?.type,
+    isRedesignedTransactionsUserSettingEnabled,
+    isRedesignedConfirmationsDeveloperEnabled,
+  });
 
-  const isCorrectApprovalType = REDESIGN_APPROVAL_TYPES.includes(
-    pendingApproval?.type as ApprovalType,
-  );
-
-  const shouldUseRedesignForSignatures =
-    (isRedesignedSignaturesUserSettingEnabled && isCorrectApprovalType) ||
-    (isRedesignedConfirmationsDeveloperSettingEnabled && isCorrectApprovalType);
-
-  const shouldUseRedesignForTransactions =
-    (isRedesignedTransactionsUserSettingEnabled &&
-      isCorrectUserTransactionType) ||
-    (isRedesignedConfirmationsDeveloperSettingEnabled &&
-      isCorrectDeveloperTransactionType);
-
-  // If the developer toggle or the build time environment variable are enabled,
-  // all the signatures and transactions in development are shown. If the user
-  // facing feature toggles for signature or transactions are enabled, we show
-  // only confirmations that shipped (contained in `REDESIGN_APPROVAL_TYPES` and
-  // `REDESIGN_USER_TRANSACTION_TYPES` or `REDESIGN_DEV_TRANSACTION_TYPES`
-  // respectively).
   const shouldUseRedesign =
-    shouldUseRedesignForSignatures || shouldUseRedesignForTransactions;
+    useRedesignedForSignatures || useRedesignedForTransaction;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {
@@ -106,12 +77,10 @@ const useCurrentConfirmation = () => {
     }
 
     const currentConfirmation =
-      transactionMetadata ??
-      (signatureMessage && { ...signatureMessage, chainId: globalChainId }) ??
-      undefined;
+      transactionMetadata ?? signatureMessage ?? undefined;
 
     return { currentConfirmation };
-  }, [transactionMetadata, signatureMessage, shouldUseRedesign, globalChainId]);
+  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
 };
 
 export default useCurrentConfirmation;

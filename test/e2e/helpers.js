@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const path = require('path');
 const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
@@ -6,7 +5,6 @@ const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
-const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
@@ -43,7 +41,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 /**
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
- * @property {GanacheContractAddressRegistry | undefined} contractRegistry - The contract registry.
+ * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
  * @property {Ganache | undefined} ganacheServer - The Ganache server.
  * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
@@ -55,7 +53,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 /**
  *
  * @param {object} options
- * @param {(fixtures: Fixtures) => Promise<void>} testSuite
+ * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
 async function withFixtures(options, testSuite) {
   const {
@@ -65,6 +63,7 @@ async function withFixtures(options, testSuite) {
     smartContract,
     driverOptions,
     dappOptions,
+    staticServerOptions,
     title,
     ignoredConsoleErrors = [],
     dappPath = undefined,
@@ -118,6 +117,9 @@ async function withFixtures(options, testSuite) {
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 
+    await fixtureServer.start();
+    fixtureServer.loadJsonState(fixtures, contractRegistry);
+
     if (ganacheOptions?.concurrent) {
       ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
@@ -137,8 +139,6 @@ async function withFixtures(options, testSuite) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
-    await fixtureServer.start();
-    fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
@@ -159,7 +159,9 @@ async function withFixtures(options, testSuite) {
             'dist',
           );
         }
-        dappServer.push(createStaticServer(dappDirectory));
+        dappServer.push(
+          createStaticServer({ public: dappDirectory, ...staticServerOptions }),
+        );
         dappServer[i].listen(`${dappBasePort + i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
@@ -382,378 +384,6 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
-
-  // metrics
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-
-  await driver.waitForSelector('.import-srp__actions');
-  // import with recovery phrase
-  await driver.pasteIntoField(
-    '[data-testid="import-srp__srp-word-0"]',
-    seedPhrase,
-  );
-  await driver.clickElement('[data-testid="import-srp-confirm"]');
-
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-import"]');
-  await driver.assertElementNotPresent('.loading-overlay');
-};
-
-const completeImportSRPOnboardingFlow = async (
-  driver,
-  seedPhrase,
-  password,
-) => {
-  await importSRPOnboardingFlow(driver, seedPhrase, password);
-
-  // complete
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
-};
-
-const completeImportSRPOnboardingFlowWordByWord = async (
-  driver,
-  seedPhrase,
-  password,
-) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
-
-  // metrics
-
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-
-  // import with recovery phrase, word by word
-  const words = seedPhrase.split(' ');
-  for (const word of words) {
-    await driver.pasteIntoField(
-      `[data-testid="import-srp__srp-word-${words.indexOf(word)}"]`,
-      word,
-    );
-  }
-  await driver.clickElement('[data-testid="import-srp-confirm"]');
-
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-import"]');
-
-  // wait for loading to complete
-  await driver.assertElementNotPresent('.loading-overlay');
-
-  // complete
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
-};
-
-/**
- * Begin the create new wallet flow on onboarding screen.
- *
- * @param {WebDriver} driver
- */
-const onboardingBeginCreateNewWallet = async (driver) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-create-wallet"]');
-};
-
-/**
- * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
- *
- * @param {WebDriver} driver
- * @param {boolean} option - true to opt into metrics, default is false
- */
-const onboardingChooseMetametricsOption = async (driver, option = false) => {
-  const optionIdentifier = option ? 'i-agree' : 'no-thanks';
-  // metrics
-  await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
-};
-
-/**
- * Set a password for MetaMask during onboarding
- *
- * @param {WebDriver} driver
- * @param {string} password - Password to set
- */
-const onboardingCreatePassword = async (driver, password) => {
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-wallet"]');
-};
-
-/**
- * Choose to secure wallet, and then get recovery phrase and confirm the SRP
- * during onboarding flow.
- *
- * @param {WebDriver} driver
- */
-const onboardingRevealAndConfirmSRP = async (driver) => {
-  // secure my wallet
-  await driver.clickElement('[data-testid="secure-wallet-recommended"]');
-
-  // reveal SRP
-  await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
-
-  const revealedSeedPhrase = await driver.findElement(
-    '[data-testid="recovery-phrase-chips"]',
-  );
-
-  const recoveryPhrase = await revealedSeedPhrase.getText();
-
-  await driver.clickElement('[data-testid="recovery-phrase-next"]');
-
-  // confirm SRP
-  const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
-  const finalWords = words.filter((str) => str !== '');
-  assert.equal(finalWords.length, 12);
-
-  await driver.fill('[data-testid="recovery-phrase-input-2"]', finalWords[2]);
-  await driver.fill('[data-testid="recovery-phrase-input-3"]', finalWords[3]);
-  await driver.fill('[data-testid="recovery-phrase-input-7"]', finalWords[7]);
-
-  await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
-
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Confirm',
-  });
-};
-
-/**
- * Complete the onboarding flow by confirming completion. Final step before the
- * reminder to pin the extension.
- *
- * @param {WebDriver} driver
- */
-const onboardingCompleteWalletCreation = async (driver) => {
-  // complete
-  await driver.findElement({ text: 'Congratulations', tag: 'h2' });
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-};
-
-/**
- * Move through the steps of pinning extension after successful onboarding
- *
- * @param {WebDriver} driver
- */
-const onboardingPinExtension = async (driver) => {
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
-};
-
-/**
- * Completes the onboarding flow with optional opt-out settings for wallet creation.
- *
- * This function navigates through the onboarding process, allowing for opt-out of certain features.
- * It waits for the appropriate heading to appear, then proceeds to opt-out of third-party API
- * integration for general and assets sections if specified in the optOutOptions.
- *
- * @param {WebDriver} driver - The Selenium WebDriver instance.
- * @param {object} optOutOptions - Optional. An object specifying which features to opt-out of.
- * @param {boolean} optOutOptions.basicFunctionality - Optional. Defaults to true. Opt-out of basic functionality.
- * @param {boolean} optOutOptions.profileSync - Optional. Defaults to true. Opt-out of profile sync.
- * @param {boolean} optOutOptions.assets - Optional. Defaults to true. Opt-out of assets options.
- * @param {boolean} optOutOptions.isNewWallet - Optional. Defaults to true. Indicates if this is a new wallet creation.
- */
-const onboardingCompleteWalletCreationWithOptOut = async (
-  driver,
-  optOutOptions = {},
-) => {
-  const defaultOptOutOptions = {
-    basicFunctionality: true,
-    profileSync: true,
-    assets: true,
-    isNewWallet: true,
-  };
-
-  const optOutOptionsToUse = { ...defaultOptOutOptions, ...optOutOptions };
-
-  // wait for h2 to appear
-  await driver.findElement({
-    text: optOutOptionsToUse.isNewWallet
-      ? 'Congratulations'
-      : 'Your wallet is ready',
-    tag: 'h2',
-  });
-
-  // opt-out from third party API on general section
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Manage default privacy settings',
-    tag: 'button',
-  });
-  await driver.clickElement({ text: 'General', tag: 'p' });
-
-  if (optOutOptionsToUse.basicFunctionality) {
-    await driver.clickElement(
-      '[data-testid="basic-functionality-toggle"] .toggle-button',
-    );
-    await driver.clickElement('[id="basic-configuration-checkbox"]');
-    await driver.clickElementAndWaitToDisappear({
-      tag: 'button',
-      text: 'Turn off',
-    });
-  }
-
-  if (
-    optOutOptionsToUse.profileSync &&
-    !optOutOptionsToUse.basicFunctionality
-  ) {
-    await driver.clickElement(
-      '[data-testid="profile-sync-toggle"] .toggle-button',
-    );
-    await driver.clickElementAndWaitToDisappear({
-      tag: 'button',
-      text: 'Turn off',
-    });
-  }
-
-  await driver.clickElement('[data-testid="category-back-button"]');
-
-  if (optOutOptionsToUse.assets) {
-    // opt-out from third party API on assets section
-    await driver.clickElement({ text: 'Assets', tag: 'p' });
-    await Promise.all(
-      (
-        await driver.findClickableElements(
-          '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
-        )
-      ).map((toggle) => toggle.click()),
-    );
-
-    await driver.clickElement('[data-testid="category-back-button"]');
-  }
-
-  // Wait until the onboarding carousel has stopped moving
-  // otherwise the click has no effect.
-  await driver.waitForElementToStopMoving(
-    '[data-testid="privacy-settings-back-button"]',
-  );
-  await driver.clickElement('[data-testid="privacy-settings-back-button"]');
-
-  // complete onboarding
-  await driver.clickElementAndWaitToDisappear({
-    tag: 'button',
-    text: 'Done',
-  });
-  await onboardingPinExtension(driver);
-};
-
-/**
- * Completes the onboarding flow for creating a new wallet with opt-out options.
- *
- * This function guides the user through the onboarding process of creating a new wallet,
- * including opting out of certain features as specified by the `optOutOptions` parameter.
- *
- * @param {object} driver - The Selenium driver instance.
- * @param {string} password - The password to use for the new wallet.
- * @param {object} optOutOptions - An object specifying the features to opt out of.
- * @param {boolean} optOutOptions.isNewWallet - Indicates if this is a new wallet creation.
- * @param {boolean} optOutOptions.basicFunctionality - Indicates if basic functionality should be opted out.
- * @param {boolean} optOutOptions.profileSync - Indicates if profile sync should be opted out.
- * @param {boolean} optOutOptions.assets - Indicates if assets should be opted out.
- */
-const completeCreateNewWalletOnboardingFlowWithOptOut = async (
-  driver,
-  password,
-  optOutOptions,
-) => {
-  await onboardingBeginCreateNewWallet(driver);
-  await onboardingChooseMetametricsOption(driver, false);
-  await onboardingCreatePassword(driver, password);
-  await onboardingRevealAndConfirmSRP(driver);
-  await onboardingCompleteWalletCreationWithOptOut(driver, optOutOptions);
-};
-
-const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
-  await onboardingBeginCreateNewWallet(driver);
-  await onboardingChooseMetametricsOption(driver, false);
-  await onboardingCreatePassword(driver, password);
-  await onboardingRevealAndConfirmSRP(driver);
-  await onboardingCompleteWalletCreation(driver);
-  await onboardingPinExtension(driver);
-};
-
-const openSRPRevealQuiz = async (driver) => {
-  // navigate settings to reveal SRP
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
-
-  await driver.clickElement({ text: 'Settings', tag: 'div' });
-  await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-  await driver.clickElement('[data-testid="reveal-seed-words"]');
-};
-
-const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await unlockWallet(driver);
-  await openSRPRevealQuiz(driver);
-};
-
-const completeSRPRevealQuiz = async (driver) => {
-  // start quiz
-  await driver.clickElement('[data-testid="srp-quiz-get-started"]');
-
-  // tap correct answer 1
-  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-  // tap Continue 1
-  await driver.clickElement('[data-testid="srp-quiz-continue"]');
-
-  // tap correct answer 2
-  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-  // tap Continue 2
-  await driver.clickElement('[data-testid="srp-quiz-continue"]');
-};
-
-const tapAndHoldToRevealSRP = async (driver) => {
-  await driver.holdMouseDownOnElement(
-    {
-      text: tEn('holdToRevealSRP'),
-      tag: 'span',
-    },
-    3000,
-  );
-};
-
-const closeSRPReveal = async (driver) => {
-  await driver.clickElement({
-    text: tEn('close'),
-    tag: 'button',
-  });
-  await driver.findVisibleElement({
-    text: tEn('tokens'),
-    tag: 'button',
-  });
-};
-
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
@@ -909,7 +539,8 @@ const sendScreenToConfirmScreen = async (
   quantity,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
-  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.waitForSelector('[data-testid="ens-input"]');
+  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
   // check if element exists and click it
@@ -928,7 +559,8 @@ const sendTransaction = async (
   isAsyncFlow = false,
 ) => {
   await openActionMenuAndStartSendFlow(driver);
-  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.waitForSelector('[data-testid="ens-input"]');
+  await driver.pasteIntoField('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
 
   await driver.clickElement({
@@ -946,22 +578,6 @@ const sendTransaction = async (
     await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
-};
-
-const findAnotherAccountFromAccountList = async (
-  driver,
-  itemNumber,
-  accountName,
-) => {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  const accountMenuItemSelector = `.multichain-account-list-item:nth-child(${itemNumber})`;
-
-  await driver.findElement({
-    css: `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
-    text: accountName,
-  });
-
-  return accountMenuItemSelector;
 };
 
 const TEST_SEED_PHRASE =
@@ -999,30 +615,27 @@ const locateAccountBalanceDOM = async (
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 /**
- * Unlock the wallet with the default password.
+ * Unlocks the wallet using the provided password.
  * This method is intended to replace driver.navigate and should not be called after driver.navigate.
  *
  * @param {WebDriver} driver - The webdriver instance
- * @param {object} options - Options for unlocking the wallet
- * @param {boolean} options.navigate - Whether to navigate to the root page prior to unlocking. Defaults to true.
- * @param {boolean} options.waitLoginSuccess - Whether to wait for the login to succeed. Defaults to true.
+ * @param {object} [options] - Options for unlocking the wallet
+ * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
+ * @param {boolean} [options.waitLoginSuccess] - Whether to wait for the login to succeed - defaults to true
+ * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
  */
 async function unlockWallet(
   driver,
-  options = {
-    navigate: true,
-    waitLoginSuccess: true,
-  },
+  { navigate = true, waitLoginSuccess = true, password = WALLET_PASSWORD } = {},
 ) {
-  if (options.navigate !== false) {
+  if (navigate) {
     await driver.navigate();
   }
 
-  await driver.fill('#password', WALLET_PASSWORD);
+  await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
 
-  if (options.waitLoginSuccess !== false) {
-    // No guard is necessary here, because it goes from present to absent
+  if (waitLoginSuccess) {
     await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
 }
@@ -1110,25 +723,32 @@ async function switchToNotificationWindow(driver) {
  * mockServer method, this method will allow getting all of the seen requests
  * for each mock in the array.
  *
- * @param {WebDriver} driver
- * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints
- * @param {boolean} hasRequest
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints - mockttp mocked endpoints
+ * @param {boolean} [waitWhilePending] - Wait until no requests are pending
  * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse[]>}
  */
-async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  await driver.wait(
-    async () => {
-      let isPending = true;
+async function getEventPayloads(
+  driver,
+  mockedEndpoints,
+  waitWhilePending = true,
+) {
+  if (waitWhilePending) {
+    await driver.wait(
+      async () => {
+        const pendingStatuses = await Promise.all(
+          mockedEndpoints.map((mockedEndpoint) => mockedEndpoint.isPending()),
+        );
+        const isSomethingPending = pendingStatuses.some(
+          (pendingStatus) => pendingStatus,
+        );
 
-      for (const mockedEndpoint of mockedEndpoints) {
-        isPending = await mockedEndpoint.isPending();
-      }
-
-      return isPending === !hasRequest;
-    },
-    driver.timeout,
-    true,
-  );
+        return !isSomethingPending;
+      },
+      driver.timeout,
+      true,
+    );
+  }
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
@@ -1209,26 +829,6 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   }
 }
 
-async function removeSelectedAccount(driver) {
-  await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement(
-    '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
-  );
-  await driver.clickElement('[data-testid="account-list-menu-remove"]');
-  await driver.clickElement({ text: 'Remove', tag: 'button' });
-}
-
-async function getSelectedAccountAddress(driver) {
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="account-list-menu-details"]');
-  const accountAddress = await (
-    await driver.findElement('[data-testid="address-copy-button-text"]')
-  ).getText();
-  await driver.clickElement('.mm-box button[aria-label="Close"]');
-
-  return accountAddress;
-}
-
 /**
  * Rather than using the FixtureBuilder#withPreferencesController to set the setting
  * we need to manually set the setting because the migration #122 overrides this.
@@ -1265,6 +865,46 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
 }
 
 /**
+ * Rather than using the FixtureBuilder#withPreferencesController to set the setting
+ * we need to manually set the setting because the migration #132 overrides this.
+ * We should be able to remove this when we delete the redesignedTransactionsEnabled setting.
+ *
+ * @param driver
+ */
+async function tempToggleSettingRedesignedTransactionConfirmations(driver) {
+  // Ensure we are on the extension window
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  // Open settings menu button
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+
+  // fix race condition with mmi build
+  if (process.env.MMI) {
+    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
+  }
+
+  // Click settings from dropdown menu
+  await driver.clickElement('[data-testid="global-menu-settings"]');
+
+  // Click Experimental tab
+  const experimentalTabRawLocator = {
+    text: 'Experimental',
+    tag: 'div',
+  };
+  await driver.clickElement(experimentalTabRawLocator);
+
+  // Click redesigned transactions toggle
+  await driver.clickElement(
+    '[data-testid="toggle-redesigned-transactions-container"]',
+  );
+
+  // Close settings page
+  await driver.clickElement(
+    '.settings-page__header__title-container__close-button',
+  );
+}
+
+/**
  * Opens the account options menu safely, handling potential race conditions
  * with the MMI build.
  *
@@ -1279,6 +919,8 @@ async function openMenuSafe(driver) {
     await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
   }
 }
+
+const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 module.exports = {
   DAPP_HOST_ADDRESS,
@@ -1298,16 +940,6 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  importSRPOnboardingFlow,
-  completeImportSRPOnboardingFlow,
-  completeImportSRPOnboardingFlowWordByWord,
-  completeCreateNewWalletOnboardingFlow,
-  completeCreateNewWalletOnboardingFlowWithOptOut,
-  openSRPRevealQuiz,
-  passwordUnlockOpenSRPRevealQuiz,
-  completeSRPRevealQuiz,
-  closeSRPReveal,
-  tapAndHoldToRevealSRP,
   createDownloadFolder,
   openDapp,
   openDappConnectionsPage,
@@ -1320,7 +952,6 @@ module.exports = {
   multipleGanacheOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
-  findAnotherAccountFromAccountList,
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
@@ -1334,21 +965,14 @@ module.exports = {
   validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
-  onboardingBeginCreateNewWallet,
-  onboardingChooseMetametricsOption,
-  onboardingCreatePassword,
-  onboardingRevealAndConfirmSRP,
-  onboardingCompleteWalletCreation,
-  onboardingCompleteWalletCreationWithOptOut,
-  onboardingPinExtension,
   assertInAnyOrder,
   genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  removeSelectedAccount,
-  getSelectedAccountAddress,
   tempToggleSettingRedesignedConfirmations,
+  tempToggleSettingRedesignedTransactionConfirmations,
   openMenuSafe,
+  sentryRegEx,
 };

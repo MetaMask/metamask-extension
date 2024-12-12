@@ -8,9 +8,9 @@ import {
   getTokenExchangeRates,
   getCurrentCurrency,
   getSwapsDefaultToken,
-  getCurrentChainId,
   getTokenList,
 } from '../selectors';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { getConversionRate } from '../ducks/metamask/metamask';
 
 import { getSwapsTokens } from '../ducks/swaps/swaps';

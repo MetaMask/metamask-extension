@@ -4,7 +4,7 @@ import {
   truthyDigitString,
   validateData,
 } from '../../../../shared/lib/swaps-utils';
-import { BridgeFlag } from '../types';
+import { BridgeFlag, FeatureFlagResponse } from '../types';
 
 type Validator<ExpectedResponse> = {
   property: keyof ExpectedResponse | string;
@@ -29,18 +29,27 @@ const isValidHexAddress = (v: unknown) =>
   isValidString(v) && isValidHexAddress_(v, { allowNonPrefixed: false });
 
 export const FEATURE_FLAG_VALIDATORS = [
-  { property: BridgeFlag.EXTENSION_SUPPORT, type: 'boolean' },
   {
-    property: BridgeFlag.NETWORK_SRC_ALLOWLIST,
+    property: BridgeFlag.EXTENSION_CONFIG,
     type: 'object',
-    validator: (v: unknown): v is number[] =>
-      isValidObject(v) && Object.values(v).every(isValidNumber),
-  },
-  {
-    property: BridgeFlag.NETWORK_DEST_ALLOWLIST,
-    type: 'object',
-    validator: (v: unknown): v is number[] =>
-      isValidObject(v) && Object.values(v).every(isValidNumber),
+    validator: (
+      v: unknown,
+    ): v is Pick<FeatureFlagResponse, BridgeFlag.EXTENSION_CONFIG> =>
+      isValidObject(v) &&
+      'refreshRate' in v &&
+      isValidNumber(v.refreshRate) &&
+      'maxRefreshCount' in v &&
+      isValidNumber(v.maxRefreshCount) &&
+      'chains' in v &&
+      isValidObject(v.chains) &&
+      Object.values(v.chains).every((chain) => isValidObject(chain)) &&
+      Object.values(v.chains).every(
+        (chain) =>
+          'isActiveSrc' in chain &&
+          'isActiveDest' in chain &&
+          typeof chain.isActiveSrc === 'boolean' &&
+          typeof chain.isActiveDest === 'boolean',
+      ),
   },
 ];
 

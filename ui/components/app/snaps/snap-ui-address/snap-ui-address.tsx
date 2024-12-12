@@ -9,21 +9,29 @@ import {
   AlignItems,
   Display,
   TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { SnapUIAvatar } from '../snap-ui-avatar';
+import { useDisplayName } from '../../../../hooks/snaps/useDisplayName';
 
 export type SnapUIAddressProps = {
   // The address must be a CAIP-10 string.
   address: string;
   // This is not currently exposed to Snaps.
   avatarSize?: 'xs' | 'sm' | 'md' | 'lg';
+  truncate?: boolean;
+  displayName?: boolean;
+  avatar?: boolean;
 };
 
 export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
   address,
   avatarSize = 'md',
+  truncate = true,
+  displayName = false,
+  avatar = true,
 }) => {
   const caipIdentifier = useMemo(() => {
     if (isHexString(address)) {
@@ -40,12 +48,17 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
     [caipIdentifier],
   );
 
+  const name = useDisplayName(parsed);
+
   // For EVM addresses, we make sure they are checksummed.
   const transformedAddress =
     parsed.chain.namespace === 'eip155'
       ? toChecksumHexAddress(parsed.address)
       : parsed.address;
-  const shortenedAddress = shortenAddress(transformedAddress);
+
+  const formattedAddress = truncate
+    ? shortenAddress(transformedAddress)
+    : address;
 
   return (
     <Box
@@ -54,8 +67,14 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
       alignItems={AlignItems.center}
       gap={2}
     >
-      <SnapUIAvatar address={caipIdentifier} size={avatarSize} />
-      <Text color={TextColor.inherit}>{shortenedAddress}</Text>
+      {avatar && <SnapUIAvatar address={caipIdentifier} size={avatarSize} />}
+      <Text
+        variant={TextVariant.bodyMd}
+        color={TextColor.inherit}
+        style={{ lineBreak: 'anywhere' }}
+      >
+        {displayName && name ? name : formattedAddress}
+      </Text>
     </Box>
   );
 };

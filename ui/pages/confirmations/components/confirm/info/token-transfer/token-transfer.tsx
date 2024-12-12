@@ -1,6 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SimulationDetails } from '../../../simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -19,14 +18,12 @@ const TokenTransferInfo = () => {
     <>
       <SendHeading />
       <TransactionFlowSection />
-      {!isWalletInitiated && (
-        <ConfirmInfoSection noPadding>
-          <SimulationDetails
-            transaction={transactionMeta}
-            isTransactionsRedesign
-          />
-        </ConfirmInfoSection>
-      )}
+      <SimulationDetails
+        transaction={transactionMeta}
+        isTransactionsRedesign
+        enableMetrics
+        metricsOnly={isWalletInitiated}
+      />
       <TokenDetailsSection />
       <GasFeesSection />
       <AdvancedDetails />

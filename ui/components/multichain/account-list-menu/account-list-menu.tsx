@@ -6,12 +6,18 @@ import React, {
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useLocation,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BtcAccountType,
   EthAccountType,
+  SolAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   InternalAccount,
   KeyringAccountType,
@@ -37,12 +43,9 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import {
-  AccountListItem,
-  AccountListItemMenuTypes,
-  CreateEthAccount,
-  ImportAccount,
-} from '..';
+import { AccountListItem } from '../account-list-item';
+import { AccountListItemMenuTypes } from '../account-list-item/account-list-item.types';
+
 import {
   AlignItems,
   BlockSize,
@@ -68,6 +71,10 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getDefaultHomeActiveTabName,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  getIsSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -77,6 +84,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  CONFIRMATION_V_NEXT_ROUTE,
+  SETTINGS_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -97,15 +108,33 @@ import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,solana)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { useBitcoinWalletSnapClient } from '../../../hooks/accounts/useBitcoinWalletSnapClient';
+import {
+  WalletClientType,
+  useMultichainWalletSnapClient,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 import {
   InternalAccountWithBalance,
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import {
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
+  AccountOverviewTabKey,
+} from '../../../../shared/constants/app-state';
+import { CreateEthAccount } from '../create-eth-account';
+import { ImportAccount } from '../import-account';
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+import {
+  SOLANA_WALLET_NAME,
+  SOLANA_WALLET_SNAP_ID,
+} from '../../../../shared/lib/accounts/solana-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -188,6 +217,7 @@ export const mergeAccounts = (
 
 type AccountListMenuProps = {
   onClose: () => void;
+  privacyMode?: boolean;
   showAccountCreation?: boolean;
   accountListItemProps?: object;
   allowedAccountTypes?: KeyringAccountType[];
@@ -195,12 +225,14 @@ type AccountListMenuProps = {
 
 export const AccountListMenu = ({
   onClose,
+  privacyMode = false,
   showAccountCreation = true,
   accountListItemProps,
   allowedAccountTypes = [
     EthAccountType.Eoa,
     EthAccountType.Erc4337,
     BtcAccountType.P2wpkh,
+    SolAccountType.DataAccount,
   ],
 }: AccountListMenuProps) => {
   const t = useI18nContext();
@@ -225,6 +257,9 @@ export const AccountListMenu = ({
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const { pathname } = useLocation();
+  ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -233,6 +268,9 @@ export const AccountListMenu = ({
         allowedAccountTypes.includes(account.type),
       ),
     [updatedAccountsList, allowedAccountTypes],
+  );
+  const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
+    getDefaultHomeActiveTabName,
   );
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
@@ -267,7 +305,28 @@ export const AccountListMenu = ({
     hasCreatedBtcTestnetAccount,
   );
 
-  const bitcoinWalletSnapClient = useBitcoinWalletSnapClient();
+  const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Bitcoin,
+  );
+  const handleAccountCreation = async (network: MultichainNetworks) => {
+    // The account creation + renaming is handled by the Snap account bridge, so
+    // we need to close the current modal
+    onClose();
+    if (pathname.includes(SETTINGS_ROUTE)) {
+      // The settings route does not redirect pending confirmations. We need to redirect manually here.
+      history.push(CONFIRMATION_V_NEXT_ROUTE);
+    }
+
+    await bitcoinWalletSnapClient.createAccount(network);
+  };
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
+  const solanaWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Solana,
+  );
+
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -313,6 +372,16 @@ export const AccountListMenu = ({
           properties: {
             location: 'Main Menu',
           },
+        });
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
+        });
+        trace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
         });
         dispatch(setSelectedAccount(account.address));
       };
@@ -409,14 +478,7 @@ export const AccountListMenu = ({
                         },
                       });
 
-                      // The account creation + renaming is handled by the
-                      // Snap account bridge, so we need to close the current
-                      // modal
-                      onClose();
-
-                      await bitcoinWalletSnapClient.createAccount(
-                        MultichainNetworks.BITCOIN,
-                      );
+                      await handleAccountCreation(MultichainNetworks.BITCOIN);
                     }}
                     data-testid="multichain-account-menu-popover-add-btc-account"
                   >
@@ -435,11 +497,7 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     onClick={async () => {
-                      // The account creation + renaming is handled by the Snap account bridge, so
-                      // we need to close the current modal
-                      onClose();
-
-                      await bitcoinWalletSnapClient.createAccount(
+                      await handleAccountCreation(
                         MultichainNetworks.BITCOIN_TESTNET,
                       );
                     }}
@@ -449,6 +507,42 @@ export const AccountListMenu = ({
                   </ButtonLink>
                 </Box>
               ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(solana)
+              solanaSupportEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    onClick={async () => {
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          snap_id: SOLANA_WALLET_SNAP_ID,
+                          snap_name: SOLANA_WALLET_NAME,
+                          location: 'Main Menu',
+                        },
+                      });
+
+                      // The account creation + renaming is handled by the
+                      // Snap account bridge, so we need to close the current
+                      // modal
+                      onClose();
+
+                      await solanaWalletSnapClient.createAccount(
+                        MultichainNetworks.SOLANA,
+                      );
+                    }}
+                    data-testid="multichain-account-menu-popover-add-solana-account"
+                  >
+                    {t('addNewSolanaAccount')}
+                  </ButtonLink>
+                </Box>
+              )
               ///: END:ONLY_INCLUDE_IF
             }
             <Box marginTop={4}>
@@ -644,6 +738,7 @@ export const AccountListMenu = ({
                       isHidden={Boolean(account.hidden)}
                       currentTabOrigin={currentTabOrigin}
                       isActive={Boolean(account.active)}
+                      privacyMode={privacyMode}
                       {...accountListItemProps}
                     />
                   </Box>
