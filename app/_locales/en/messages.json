@@ -1438,6 +1438,9 @@
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
   },
+  "crossChainSwapsLinkNative": {
+    "message": "Swap across networks with Bridge"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
