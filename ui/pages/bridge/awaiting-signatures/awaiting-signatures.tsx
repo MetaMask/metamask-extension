@@ -32,7 +32,6 @@ import {
   getToChain,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import BridgeStepIcon from './bridge-step-icon';
 
 export default function AwaitingSignatures() {
   const t = useI18nContext();
