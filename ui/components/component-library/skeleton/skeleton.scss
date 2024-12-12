@@ -10,7 +10,7 @@
     }
   }
 
-  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: skeleton-pulse 2s cubic-bezier(0, 0, 1, 1) infinite;
   background-clip: padding-box;
   cursor: default;
   pointer-events: none;
