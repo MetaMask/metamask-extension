@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import { zeroAddress } from '../../__mocks__/ethereumjs-util';
+import { zeroAddress } from 'ethereumjs-util';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import * as tokenutil from '../../../shared/lib/token-util';
 import useLatestBalance from './useLatestBalance';

@@ -103,6 +103,7 @@ export const BridgeInputGroup = ({
       <Row gap={4}>
         <TextField
           inputProps={{
+            id: `amount-input-${isAmountReadOnly ? 'readonly' : 'editable'}`,
             disableStateStyles: true,
             textAlign: TextAlign.Start,
             style: {
