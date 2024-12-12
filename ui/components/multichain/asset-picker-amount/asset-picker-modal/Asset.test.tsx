@@ -1,7 +1,10 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { getTokenList } from '../../../../selectors';
+import {
+  getNetworkConfigurationIdByChainId,
+  getTokenList,
+} from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenListItem } from '../../token-list-item';
@@ -51,6 +54,10 @@ describe('Asset', () => {
         return mockState.getTokenList;
       } else if (selector === getIntlLocale) {
         return mockState.getIntlLocale;
+      } else if (selector === getNetworkConfigurationIdByChainId) {
+        return {
+          '0x1': { networkName: 'Ethereum', iconUrl: 'network-icon-url' },
+        };
       }
       return undefined;
     });
@@ -69,6 +76,7 @@ describe('Asset', () => {
         balance="10000000000000000000"
         decimals={18}
         tooltipText="tooltip"
+        chainId="0x1"
       />,
     );
 
