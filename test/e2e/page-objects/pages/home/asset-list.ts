@@ -119,7 +119,7 @@ class AssetListPage {
    */
   async hideToken(tokenName: string): Promise<void> {
     console.log(`Hide token ${tokenName} on homepage`);
-    await this.driver.clickElement({ text: tokenName, tag: 'span' });
+    await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.assetOptionsButton);
     await this.driver.clickElement(this.hideTokenButton);
     await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
