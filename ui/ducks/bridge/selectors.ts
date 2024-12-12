@@ -143,80 +143,73 @@ export const getToChain = createDeepEqualSelector(
     toChains.find(({ chainId }) => chainId === toChainId),
 );
 
-// Custom equality function for large objects that only checks references
-const referenceEqual = (a: unknown, b: unknown) => a === b;
-
-// Memoized selectors with custom equality checks
+// Memoized base selectors
 export const getFromTokensData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.srcTokens,
-  defaultMemoize((tokens) => tokens ?? {}, referenceEqual),
+  (tokens) => tokens ?? {},
 );
 
 export const getFromTopAssetsData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.srcTopAssets,
-  defaultMemoize((assets) => assets ?? [], referenceEqual),
+  (assets) => assets ?? [],
 );
 
 export const getFromTokensLoadingStatus = createSelector(
-  [
-    (state: BridgeAppState) =>
-      state.metamask.bridgeState.srcTokensLoadingStatus,
-  ],
+  (state: BridgeAppState) => state.metamask.bridgeState.srcTokensLoadingStatus,
   (status) => status === RequestStatus.LOADING,
 );
 
-// Memoized object factory
-const createFromTokensResult = defaultMemoize(
-  (
-    fromTokens: Record<string, SwapsTokenObject>,
-    fromTopAssets: { address: string }[],
-    isLoading: boolean,
-  ) => ({
-    isLoading,
-    fromTokens,
-    fromTopAssets,
-  }),
-  referenceEqual,
-);
+// Memoized result factory with stable reference
+const tokensResultCache = new WeakMap();
+const createTokensResult = (
+  tokens: Record<string, SwapsTokenObject>,
+  topAssets: { address: string }[],
+  isLoading: boolean,
+) => {
+  const key = { tokens, topAssets, isLoading };
+  let result = tokensResultCache.get(key);
+  if (!result) {
+    result = { isLoading, fromTokens: tokens, fromTopAssets: topAssets };
+    tokensResultCache.set(key, result);
+  }
+  return result;
+};
 
 export const getFromTokens = createSelector(
   [getFromTokensData, getFromTopAssetsData, getFromTokensLoadingStatus],
   (fromTokens, fromTopAssets, isLoading) =>
-    createFromTokensResult(fromTokens, fromTopAssets, isLoading),
+    createTokensResult(fromTokens, fromTopAssets, isLoading),
 );
 
-// Individual selectors for ToTokens
+// Same pattern for ToTokens
 export const getToTokensData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.destTokens,
-  defaultMemoize((tokens) => tokens ?? {}, referenceEqual),
+  (tokens) => tokens ?? {},
 );
 
 export const getToTopAssetsData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.destTopAssets,
-  defaultMemoize((assets) => assets ?? [], referenceEqual),
+  (assets) => assets ?? [],
 );
 
 export const getToTokensLoadingStatus = createSelector(
-  [
-    (state: BridgeAppState) =>
-      state.metamask.bridgeState.destTokensLoadingStatus,
-  ],
+  (state: BridgeAppState) => state.metamask.bridgeState.destTokensLoadingStatus,
   (status) => status === RequestStatus.LOADING,
 );
 
-// Memoized object factory
-const createToTokensResult = defaultMemoize(
-  (
-    toTokens: Record<string, SwapsTokenObject>,
-    toTopAssets: { address: string }[],
-    isLoading: boolean,
-  ) => ({
-    isLoading,
-    toTokens,
-    toTopAssets,
-  }),
-  referenceEqual,
-);
+const createToTokensResult = (
+  tokens: Record<string, SwapsTokenObject>,
+  topAssets: { address: string }[],
+  isLoading: boolean,
+) => {
+  const key = { tokens, topAssets, isLoading };
+  let result = tokensResultCache.get(key);
+  if (!result) {
+    result = { isLoading, toTokens: tokens, toTopAssets: topAssets };
+    tokensResultCache.set(key, result);
+  }
+  return result;
+};
 
 export const getToTokens = createSelector(
   [getToTokensData, getToTopAssetsData, getToTokensLoadingStatus],
