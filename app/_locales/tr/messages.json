@@ -748,9 +748,6 @@
     "message": "MR",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin aktivitesi desteklenmiyor"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },

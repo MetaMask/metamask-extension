@@ -748,9 +748,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "비트코인 활동이 지원되지 않습니다."
-  },
   "bitcoinSupportSectionTitle": {
     "message": "비트코인"
   },

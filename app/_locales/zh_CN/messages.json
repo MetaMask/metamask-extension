@@ -748,9 +748,6 @@
     "message": "十亿",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "比特币活动不受支持"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "比特币"
   },

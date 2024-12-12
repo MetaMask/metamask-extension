@@ -748,9 +748,6 @@
     "message": "Mrd",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "L’activité Bitcoin n’est pas prise en charge"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },

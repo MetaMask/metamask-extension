@@ -748,9 +748,6 @@
     "message": "mm",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "La actividad de Bitcoin no es compatible"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
