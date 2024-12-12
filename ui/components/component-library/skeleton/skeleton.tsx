@@ -30,7 +30,7 @@ export const Skeleton: SkeletonComponent = React.forwardRef(
         },
         className,
       )}
-      backgroundColor={BackgroundColor.iconMuted}
+      backgroundColor={BackgroundColor.iconAlternative}
       borderRadius={BorderRadius.SM}
       ref={ref}
       {...(props as BoxProps<C>)}

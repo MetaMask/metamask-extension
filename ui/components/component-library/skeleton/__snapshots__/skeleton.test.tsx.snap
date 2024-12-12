@@ -3,7 +3,7 @@
 exports[`Skeleton should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box mm-skeleton mm-box--background-color-icon-muted mm-box--rounded-sm"
+    class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
   />
 </div>
 `;
