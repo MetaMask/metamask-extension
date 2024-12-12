@@ -68,8 +68,8 @@ import {
   useSafeChains,
 } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
-import { PercentageChange } from './price/percentage-change/percentage-change';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { PercentageChange } from './price/percentage-change/percentage-change';
 
 type TokenListItemProps = {
   className?: string;
