@@ -308,6 +308,9 @@ function maybeDetectPhishing(theController) {
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
       if (isManifestV2) {
+        // We can redirect `main_frame` requests directly to the warning page.
+        // For non-`main_frame` requests (e.g. `sub_frame` or WebSocket), we cancel them
+        // and redirect the whole tab asynchronously so that the user sees the warning.
         if (details.type === 'main_frame') {
           return { redirectUrl: redirectHref };
         }
