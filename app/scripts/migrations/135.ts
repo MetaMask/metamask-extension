@@ -1,34 +1,11 @@
-import { hasProperty, isObject, NonEmptyArray, Json } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
+import type { CaipChainId, CaipAccountId, Json, Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-
-type CaveatConstraint = {
-  type: string;
-  value: Json;
-};
-
-type PermissionConstraint = {
-  parentCapability: string;
-  caveats: null | NonEmptyArray<CaveatConstraint>;
-};
-
-const PermissionNames = {
-  eth_accounts: 'eth_accounts',
-  permittedChains: 'endowment:permitted-chains',
-};
-
-const BUILT_IN_NETWORKS = {
-  goerli: '0x5',
-  sepolia: '0xaa36a7',
-  mainnet: '0x1',
-  'linea-goerli': '0xe704',
-  'linea-sepolia': '0xe705',
-  'linea-mainnet': '0xe708',
-};
-
-const Caip25CaveatType = 'authorizedScopes';
-const Caip25EndowmentPermissionName = 'endowment:caip25';
-
-const snapsPrefixes = ['npm:', 'local:'] as const;
+import type {
+  Caveat,
+  PermissionConstraint,
+  ValidPermission,
+} from '@metamask/permission-controller';
 
 type VersionedData = {
   meta: { version: number };
@@ -36,6 +13,46 @@ type VersionedData = {
 };
 
 export const version = 135;
+
+// In-lined from @metamask/multichain
+const Caip25CaveatType = 'authorizedScopes';
+const Caip25EndowmentPermissionName = 'endowment:caip25';
+
+type InternalScopeObject = {
+  accounts: CaipAccountId[];
+};
+
+type InternalScopesObject = Record<CaipChainId, InternalScopeObject>;
+
+type Caip25CaveatValue = {
+  requiredScopes: InternalScopesObject;
+  optionalScopes: InternalScopesObject;
+  sessionProperties?: Record<string, Json>;
+  isMultichainOrigin: boolean;
+};
+
+// Locally defined types
+type Caip25Caveat = Caveat<typeof Caip25CaveatType, Caip25CaveatValue>;
+type Caip25Permission = ValidPermission<
+  typeof Caip25EndowmentPermissionName,
+  Caip25Caveat
+>;
+
+const PermissionNames = {
+  eth_accounts: 'eth_accounts',
+  permittedChains: 'endowment:permitted-chains',
+} as const;
+
+const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
+  ['goerli', '0x5'],
+  ['sepolia', '0xaa36a7'],
+  ['mainnet', '0x1'],
+  ['linea-goerli', '0xe704'],
+  ['linea-sepolia', '0xe705'],
+  ['linea-mainnet', '0xe708'],
+]);
+
+const snapsPrefixes = ['npm:', 'local:'] as const;
 
 /**
  * This migration transforms `eth_accounts` and `permittedChains` permissions into
@@ -137,7 +154,10 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
-  const getChainIdForNetworkClientId = (networkClientId: string) => {
+  const getChainIdForNetworkClientId = (
+    networkClientId: string,
+    propertyName: string,
+  ): string | undefined => {
     for (const [chainId, networkConfiguration] of Object.entries(
       networkConfigurationsByChainId,
     )) {
@@ -147,7 +167,7 @@ function transformState(state: Record<string, unknown>) {
             `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"] is ${typeof networkConfiguration}`,
           ),
         );
-        return null;
+        return undefined;
       }
       if (!Array.isArray(networkConfiguration.rpcEndpoints)) {
         global.sentry?.captureException(
@@ -155,7 +175,7 @@ function transformState(state: Record<string, unknown>) {
             `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints is ${typeof networkConfiguration.rpcEndpoints}`,
           ),
         );
-        return null;
+        return undefined;
       }
       for (const rpcEndpoint of networkConfiguration.rpcEndpoints) {
         if (!isObject(rpcEndpoint)) {
@@ -164,7 +184,7 @@ function transformState(state: Record<string, unknown>) {
               `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints[] is ${typeof rpcEndpoint}`,
             ),
           );
-          return null;
+          return undefined;
         }
         if (rpcEndpoint.networkClientId === networkClientId) {
           return chainId;
@@ -172,18 +192,22 @@ function transformState(state: Record<string, unknown>) {
       }
     }
 
-    return BUILT_IN_NETWORKS[
-      networkClientId as unknown as keyof typeof BUILT_IN_NETWORKS
-    ];
+    const builtInChainId = BUILT_IN_NETWORKS.get(networkClientId);
+    if (!builtInChainId) {
+      global.sentry?.captureException(
+        new Error(
+          `Migration ${version}: No chainId found for ${propertyName} "${networkClientId}"`,
+        ),
+      );
+    }
+    return builtInChainId;
   };
 
-  const currentChainId = getChainIdForNetworkClientId(selectedNetworkClientId);
-  if (!currentChainId || typeof currentChainId !== 'string') {
-    global.sentry?.captureException(
-      new Error(
-        `Migration ${version}: Invalid chainId for selectedNetworkClientId "${selectedNetworkClientId}" of type ${typeof currentChainId}`,
-      ),
-    );
+  const currentChainId = getChainIdForNetworkClientId(
+    selectedNetworkClientId,
+    'selectedNetworkClientId',
+  );
+  if (!currentChainId) {
     return state;
   }
 
@@ -209,7 +233,7 @@ function transformState(state: Record<string, unknown>) {
       return state;
     }
 
-    let basePermission;
+    let basePermission: PermissionConstraint | undefined;
 
     let ethAccounts: string[] = [];
     if (
@@ -235,7 +259,7 @@ function transformState(state: Record<string, unknown>) {
     }
     delete permissions[PermissionNames.permittedChains];
 
-    if (ethAccounts.length === 0) {
+    if (ethAccounts.length === 0 || !basePermission) {
       continue;
     }
 
@@ -243,25 +267,31 @@ function transformState(state: Record<string, unknown>) {
       chainIds = [currentChainId];
 
       const networkClientIdForOrigin = domains[origin];
-      if (networkClientIdForOrigin) {
+      if (
+        networkClientIdForOrigin &&
+        typeof networkClientIdForOrigin === 'string'
+      ) {
         const chainIdForOrigin = getChainIdForNetworkClientId(
-          networkClientIdForOrigin as string,
+          networkClientIdForOrigin,
+          'networkClientIdForOrigin',
         );
-        if (chainIdForOrigin && typeof chainIdForOrigin === 'string') {
+        if (chainIdForOrigin) {
           chainIds = [chainIdForOrigin];
         }
       }
     }
 
     const isSnap = snapsPrefixes.some((prefix) => origin.startsWith(prefix));
-    const scopes: Record<string, Json> = {};
-    const scopeStrings = isSnap
+    const scopes: InternalScopesObject = {};
+    const scopeStrings: CaipChainId[] = isSnap
       ? []
-      : chainIds.map((chainId) => `eip155:${parseInt(chainId, 16)}`);
+      : chainIds.map<CaipChainId>(
+          (chainId) => `eip155:${parseInt(chainId, 16)}`,
+        );
     scopeStrings.push('wallet:eip155');
 
     scopeStrings.forEach((scopeString) => {
-      const caipAccounts = ethAccounts.map(
+      const caipAccounts = ethAccounts.map<CaipAccountId>(
         (account) => `${scopeString}:${account}`,
       );
       scopes[scopeString] = {
@@ -269,7 +299,7 @@ function transformState(state: Record<string, unknown>) {
       };
     });
 
-    permissions[Caip25EndowmentPermissionName] = {
+    const caip25Permission: Caip25Permission = {
       ...basePermission,
       parentCapability: Caip25EndowmentPermissionName,
       caveats: [
@@ -283,6 +313,7 @@ function transformState(state: Record<string, unknown>) {
         },
       ],
     };
+    permissions[Caip25EndowmentPermissionName] = caip25Permission;
   }
 
   return state;
