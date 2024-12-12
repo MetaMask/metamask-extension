@@ -196,7 +196,7 @@ function transformState(state: Record<string, unknown>) {
     if (!builtInChainId) {
       global.sentry?.captureException(
         new Error(
-          `Migration ${version}: Invalid chainId for ${propertyName} "${networkClientId}" of type ${typeof builtInChainId}`,
+          `Migration ${version}: No chainId found for ${propertyName} "${networkClientId}"`,
         ),
       );
     }
