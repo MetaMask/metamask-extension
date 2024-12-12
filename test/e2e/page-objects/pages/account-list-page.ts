@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
-import { largeDelayMs } from '../../helpers';
+import { largeDelayMs, regularDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../common';
 
@@ -8,6 +8,9 @@ class AccountListPage {
   private readonly driver: Driver;
 
   private readonly accountAddressText = '.qr-code__address-segments';
+
+  private readonly accountListAddressItem =
+    '[data-testid="account-list-address"]';
 
   private readonly accountListBalance =
     '[data-testid="second-currency-display"]';
@@ -46,6 +49,11 @@ class AccountListPage {
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
 
+  private readonly addHardwareWalletButton = {
+    text: 'Add hardware wallet',
+    tag: 'button',
+  };
+
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
 
@@ -54,7 +62,8 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly closeAccountModalButton = 'button[aria-label="Close"]';
+  private readonly closeAccountModalButton =
+    'header button[aria-label="Close"]';
 
   private readonly createAccountButton =
     '[data-testid="multichain-account-menu-popover-action-button"]';
@@ -456,6 +465,15 @@ class AccountListPage {
     await this.driver.waitForSelector(this.addEthereumAccountButton);
   }
 
+  async openConnectHardwareWalletModal(): Promise<void> {
+    console.log(`Open connect hardware wallet modal`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addHardwareWalletButton);
+    // This delay is needed to mitigate an existing bug in FF
+    // See https://github.com/metamask/metamask-extension/issues/25851
+    await this.driver.delay(regularDelayMs);
+  }
+
   async openHiddenAccountOptions(): Promise<void> {
     console.log(`Open hidden accounts options menu`);
     await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
@@ -512,6 +530,18 @@ class AccountListPage {
   async unpinAccount(): Promise<void> {
     console.log(`Unpin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
+  }
+
+  async check_accountAddressDisplayedInAccountList(
+    expectedAddress: string,
+  ): Promise<void> {
+    console.log(
+      `Check that account address ${expectedAddress} is displayed in account list`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountListAddressItem,
+      text: expectedAddress,
+    });
   }
 
   /**

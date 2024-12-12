@@ -437,9 +437,6 @@
   "alertMessageNoGasPrice": {
     "message": "手数料を手動で更新するまでこのトランザクションを進めることができません。"
   },
-  "alertMessagePendingTransactions": {
-    "message": "前のトランザクションが完了するまでこのトランザクションを実行できません。トランザクションをキャンセルするか加速させる方法をご覧ください。"
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "要求元のサイトはサインインしようとしているサイトではありません。ログイン情報を盗もうとしている可能性があります。"
   },
@@ -4107,12 +4104,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "ここには、インストールされたSnapや接続されたサイトに付与したアクセス許可が表示されます。"
-  },
-  "permissionsPageTourDescription": {
-    "message": "これは、接続されたサイトやインストールされたSnapに付与したアクセス許可を管理するための、コントロールパネルです。"
-  },
-  "permissionsPageTourTitle": {
-    "message": "「接続済みのサイト」が「アクセス許可」に変更されました"
   },
   "permitSimulationDetailInfo": {
     "message": "この数量のトークンをアカウントから転送する権限を使用者に付与しようとしています。"
