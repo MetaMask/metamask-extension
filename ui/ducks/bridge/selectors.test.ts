@@ -598,13 +598,13 @@ describe('Bridge selectors', () => {
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
-          amountMax: new BigNumber('3.49092e-8'),
+          amountMax: new BigNumber('9.933761952e-8'),
           valueInCurrency: new BigNumber('7.141025952e-8'),
-          valueInCurrencyMax: new BigNumber('3.49092e-8'),
+          valueInCurrencyMax: new BigNumber('9.933761952e-8'),
         },
         totalMaxNetworkFee: {
-          amount: new BigNumber('0.0010000349092'),
-          valueInCurrency: new BigNumber('0.0010000349092'),
+          amount: new BigNumber('0.00100009933761952'),
+          valueInCurrency: new BigNumber('0.00100009933761952'),
         },
         totalNetworkFee: {
           valueInCurrency: new BigNumber('0.00100007141025952'),
@@ -698,17 +698,17 @@ describe('Bridge selectors', () => {
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
-          amountMax: new BigNumber('3.49092e-8'),
+          amountMax: new BigNumber('9.933761952e-8'),
           valueInCurrency: new BigNumber('7.141025952e-8'),
-          valueInCurrencyMax: new BigNumber('3.49092e-8'),
+          valueInCurrencyMax: new BigNumber('9.933761952e-8'),
         },
         totalNetworkFee: {
           valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
         },
         totalMaxNetworkFee: {
-          valueInCurrency: new BigNumber('0.0010000349092'),
-          amount: new BigNumber('0.0010000349092'),
+          valueInCurrency: new BigNumber('0.00100009933761952'),
+          amount: new BigNumber('0.00100009933761952'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
@@ -803,17 +803,17 @@ describe('Bridge selectors', () => {
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
-          amountMax: new BigNumber('3.49092e-8'),
+          amountMax: new BigNumber('9.933761952e-8'),
           valueInCurrency: new BigNumber('7.141025952e-8'),
-          valueInCurrencyMax: new BigNumber('3.49092e-8'),
+          valueInCurrencyMax: new BigNumber('9.933761952e-8'),
         },
         totalNetworkFee: {
           valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
         },
         totalMaxNetworkFee: {
-          valueInCurrency: new BigNumber('0.0010000349092'),
-          amount: new BigNumber('0.0010000349092'),
+          valueInCurrency: new BigNumber('0.00100009933761952'),
+          amount: new BigNumber('0.00100009933761952'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
@@ -1170,7 +1170,7 @@ describe('Bridge selectors', () => {
       ).toStrictEqual(true);
     });
 
-    it('should return isInsufficientGasForQuote=false when balance is greater than required network fees in quote', () => {
+    it('should return isInsufficientGasForQuote=false when balance is greater than max network fees in quote', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toChainId: '0x1',
@@ -1190,10 +1190,13 @@ describe('Bridge selectors', () => {
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
       ).toStrictEqual(new BigNumber('0.00100012486628784'));
       expect(
+        getBridgeQuotes(state as never).activeQuote?.totalMaxNetworkFee.amount,
+      ).toStrictEqual(new BigNumber('0.00100017369940784'));
+      expect(
         getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
       ).toStrictEqual(new BigNumber('0.01'));
       expect(
-        result.isInsufficientGasForQuote(new BigNumber('0.01100012486628785')),
+        result.isInsufficientGasForQuote(new BigNumber('0.01100017369940785')),
       ).toStrictEqual(false);
     });
 
