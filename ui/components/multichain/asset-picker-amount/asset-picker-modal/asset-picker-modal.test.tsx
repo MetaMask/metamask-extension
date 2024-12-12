@@ -92,6 +92,7 @@ describe('AssetPickerModal', () => {
       image: 'image.png',
       symbol: 'SYMB',
     },
+    autoFocus: true,
   };
 
   beforeEach(() => {

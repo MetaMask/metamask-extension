@@ -10,9 +10,7 @@ const {
 const lastUpdated = 1;
 const defaultHotlist = { data: [] };
 const defaultC2DomainBlocklist = {
-  recentlyAdded: [
-    '33c8e026e76cea2df82322428554c932961cd80080fa379454350d7f13371f36', // hash for malicious.localhost
-  ],
+  recentlyAdded: [],
   recentlyRemoved: [],
   lastFetchedAt: '2024-08-27T15:30:45Z',
 };
@@ -97,12 +95,15 @@ async function setupPhishingDetectionMocks(
       };
     });
 
-  await mockServer.forGet(C2_DOMAIN_BLOCKLIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: defaultC2DomainBlocklist,
-    };
-  });
+  await mockServer
+    .forGet(C2_DOMAIN_BLOCKLIST_URL)
+    .withQuery({ timestamp: '2024-08-27T15:30:45Z' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: defaultC2DomainBlocklist,
+      };
+    });
 
   await mockServer
     .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
