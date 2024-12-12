@@ -60,6 +60,7 @@ class ChromeDriver {
     // if (process.env.CI || process.env.CODESPACES) {
     args.push('--disable-gpu');
     args.push('--no-sandbox');
+    args.push('--in-process-gpu');
     // }
 
     if (isHeadless('SELENIUM')) {
