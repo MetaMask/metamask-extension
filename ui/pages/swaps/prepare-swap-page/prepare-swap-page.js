@@ -15,7 +15,6 @@ import {
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
-import Box from '../../../components/ui/box';
 import {
   DISPLAY,
   TextColor,
@@ -132,6 +131,7 @@ import {
   Text,
   TextField,
   TextFieldSize,
+  Box,
 } from '../../../components/component-library';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
@@ -143,6 +143,7 @@ import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -822,6 +823,9 @@ export default function PrepareSwapPage({
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken isOpen {...importTokenProps} />
         )}
+        <Box>
+          <SmartTransactionsBannerAlert marginType="onlyTop" />
+        </Box>
         <Modal
           onClose={onSwapToClose}
           isOpen={isSwapToOpen}

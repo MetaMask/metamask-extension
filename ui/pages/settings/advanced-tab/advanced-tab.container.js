@@ -24,11 +24,6 @@ import {
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
-  console.log('STX LOGGING IN: Advanced Tab State:', {
-    preferences: getPreferences(state),
-    stxEnabled: getSmartTransactionsPreferenceEnabled(state),
-    metamask: state.metamask,
-  });
   const {
     appState: { errorInSettings },
     metamask,

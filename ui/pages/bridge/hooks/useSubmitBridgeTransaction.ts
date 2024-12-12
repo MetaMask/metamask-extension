@@ -1,25 +1,35 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { createProjectLogger, Hex } from '@metamask/utils';
 import { QuoteMetadata, QuoteResponse } from '../types';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
+import { getQuoteRequest } from '../../../ducks/bridge/selectors';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
 
+const debugLog = createProjectLogger('bridge');
+const LINEA_DELAY_MS = 5000;
+
 export default function useSubmitBridgeTransaction() {
   const history = useHistory();
   const dispatch = useDispatch();
+  const srcChainId = useSelector(getCurrentChainId);
   const { addSourceToken, addDestToken } = useAddToken();
   const { handleApprovalTx } = useHandleApprovalTx();
   const { handleBridgeTx } = useHandleBridgeTx();
+  const { slippage } = useSelector(getQuoteRequest);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
+    // TODO catch errors and emit ActionFailed here
     // Execute transaction(s)
     let approvalTxMeta: TransactionMeta | undefined;
     if (quoteResponse?.approval) {
@@ -30,10 +40,23 @@ export default function useSubmitBridgeTransaction() {
       });
     }
 
-    // Route user to activity tab on Home page
-    // Do it ahead of time because otherwise STX waits for a txHash on TransactionType.bridge and that can take a while
-    await dispatch(setDefaultHomeActiveTabName('activity'));
-    history.push(DEFAULT_ROUTE);
+    if (
+      (
+        [
+          CHAIN_IDS.LINEA_MAINNET,
+          CHAIN_IDS.LINEA_GOERLI,
+          CHAIN_IDS.LINEA_SEPOLIA,
+        ] as Hex[]
+      ).includes(srcChainId)
+    ) {
+      debugLog(
+        'Delaying submitting bridge tx to make Linea confirmation more likely',
+      );
+      const waitPromise = new Promise((resolve) =>
+        setTimeout(resolve, LINEA_DELAY_MS),
+      );
+      await waitPromise;
+    }
 
     const bridgeTxMeta = await handleBridgeTx({
       quoteResponse,
@@ -55,7 +78,7 @@ export default function useSubmitBridgeTransaction() {
         bridgeTxMeta,
         statusRequest,
         quoteResponse,
-        slippagePercentage: 0, // TODO pull this from redux/bridgecontroller once it's implemented. currently hardcoded in quoteRequest.slippage right now
+        slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
       }),
     );
@@ -67,6 +90,10 @@ export default function useSubmitBridgeTransaction() {
     if (quoteResponse.quote.destAsset.address !== zeroAddress()) {
       await addDestToken(quoteResponse);
     }
+
+    // Route user to activity tab on Home page
+    await dispatch(setDefaultHomeActiveTabName('activity'));
+    history.push(DEFAULT_ROUTE);
   };
 
   return {

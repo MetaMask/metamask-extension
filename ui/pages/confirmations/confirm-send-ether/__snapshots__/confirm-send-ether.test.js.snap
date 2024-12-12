@@ -8,7 +8,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
   >
     <div
       class="confirm-page-container-navigation"
-      style="display: flex;"
+      style="display: none;"
     >
       <div
         class="confirm-page-container-navigation__container"
@@ -38,11 +38,11 @@ exports[`ConfirmSendEther should render correct information for for confirm send
         <div
           class="confirm-page-container-navigation__navtext"
         >
-          0
+          1
            
           of
            
-          2
+          1
         </div>
         <div
           class="confirm-page-container-navigation__longtext"
@@ -52,7 +52,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
       </div>
       <div
         class="confirm-page-container-navigation__container"
-        style="visibility: initial;"
+        style="visibility: hidden;"
       >
         <button
           class="confirm-page-container-navigation__arrow"
@@ -80,19 +80,19 @@ exports[`ConfirmSendEther should render correct information for for confirm send
         class="confirm-page-container-header__row"
       >
         <div
-          class="mm-box mm-picker-network network-display mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-border-muted mm-box--border-width-0 box--border-style-solid box--border-width-1"
+          class="mm-box mm-picker-network network-display mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-border-muted mm-box--border-width-0 box--border-style-solid box--border-width-1"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
             G
           </div>
-          <span
+          <p
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
             data-testid="network-display"
           >
             Goerli
-          </span>
+          </p>
           <span
             class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
             style="mask-image: url('./images/icons/arrow-down.svg');"
@@ -299,7 +299,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 variant="inherit"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
                   G
                 </div>
@@ -320,6 +320,41 @@ exports[`ConfirmSendEther should render correct information for for confirm send
         <div
           class="transaction-alerts"
         >
+          <div
+            class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-info mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-primary-muted mm-box--rounded-sm"
+            data-testid="smart-transactions-banner-alert"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-primary-default"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
+            <div
+              class="mm-box mm-box--min-width-0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                You're now protected with MetaMask Smart Transactions
+                <a
+                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  href="https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  learn more
+                </a>
+              </p>
+            </div>
+            <button
+              aria-label="Close"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
           <div
             class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
           >

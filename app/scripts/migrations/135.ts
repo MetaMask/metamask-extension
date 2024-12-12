@@ -1,6 +1,7 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 export type VersionedData = {
   meta: {
@@ -71,10 +72,8 @@ function hasExistingSmartTransactions(state: VersionedData['data']): boolean {
   const { smartTransactions } =
     state.SmartTransactionsController.smartTransactionsState;
 
-  return Object.values(smartTransactions).some(
-    (chainSmartTransactions: SmartTransaction[]) =>
-      chainSmartTransactions.length > 0,
-  );
+  const mainnetTransactionsOnly = smartTransactions[CHAIN_IDS.MAINNET] || [];
+  return mainnetTransactionsOnly.length > 0;
 }
 
 export async function migrate(

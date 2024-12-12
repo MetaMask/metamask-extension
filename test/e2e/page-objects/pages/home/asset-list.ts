@@ -81,15 +81,6 @@ class AssetListPage {
     throw new Error(`${assetName} button not found`);
   }
 
-  async getAllNetworksOptionTotal(): Promise<string> {
-    console.log(`Retrieving the "All networks" option fiat value`);
-    const allNetworksValueElement = await this.driver.findElement(
-      this.allNetworksTotal,
-    );
-    const value = await allNetworksValueElement.getText();
-    return value;
-  }
-
   async getCurrentNetworksOptionTotal(): Promise<string> {
     console.log(`Retrieving the "Current network" option fiat value`);
     const allNetworksValueElement = await this.driver.findElement(
@@ -119,7 +110,7 @@ class AssetListPage {
    */
   async hideToken(tokenName: string): Promise<void> {
     console.log(`Hide token ${tokenName} on homepage`);
-    await this.driver.clickElement({ text: tokenName, tag: 'span' });
+    await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.assetOptionsButton);
     await this.driver.clickElement(this.hideTokenButton);
     await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
@@ -156,30 +147,6 @@ class AssetListPage {
     );
   }
 
-  async selectNetworkFilterAllNetworks(): Promise<void> {
-    console.log(`Selecting "All networks" from the network filter`);
-    await this.driver.clickElement(this.allNetworksOption);
-    await this.driver.waitUntil(
-      async () => {
-        const label = await this.getNetworksFilterLabel();
-        return label === 'All networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
-  async selectNetworkFilterCurrentNetwork(): Promise<void> {
-    console.log(`Selecting "Current network" from the network filter`);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const label = await this.getNetworksFilterLabel();
-        return label !== 'All networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
   async waitUntilFilterLabelIs(label: string): Promise<void> {
     console.log(`Waiting until the filter label is ${label}`);
     await this.driver.waitUntil(
@@ -189,17 +156,6 @@ class AssetListPage {
       },
       { timeout: 5000, interval: 100 },
     );
-  }
-
-  async check_ifAssetIsVisible(assetName: string): Promise<boolean> {
-    const assets = await this.driver.findElements(this.tokenListItem);
-    for (const asset of assets) {
-      const text = await asset.getText();
-      if (text.includes(assetName)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   async check_networkFilterText(expectedText: string): Promise<void> {

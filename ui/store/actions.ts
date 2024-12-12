@@ -921,6 +921,32 @@ export async function restoreUserData(jsonString: Json): Promise<true> {
   return true;
 }
 
+export function updateSlides(
+  slides,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('updateSlides', [slides]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+export function removeSlide(
+  id: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('removeSlide', [id]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
 // TODO: Not a thunk, but rather a wrapper around a background call
 export function updateTransactionGasFees(
   txId: string,
@@ -2856,6 +2882,13 @@ export function hideLoadingIndication(): Action {
   };
 }
 
+export function setSlides(slides): Action {
+  return {
+    type: actionConstants.SET_SLIDES,
+    slides,
+  };
+}
+
 export function hideNftStillFetchingIndication(): Action {
   return {
     type: actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION,
@@ -3077,14 +3110,12 @@ export function setPreference(
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
-    console.log('setPreference called:', { preference, value });
     showLoading && dispatch(showLoadingIndication());
     return new Promise<TemporaryPreferenceFlagDef>((resolve, reject) => {
       callBackgroundMethod<TemporaryPreferenceFlagDef>(
         'setPreference',
         [preference, value],
         (err, updatedPreferences) => {
-          console.log('setPreference result:', { err, updatedPreferences });
           showLoading && dispatch(hideLoadingIndication());
           if (err) {
             dispatch(displayWarning(err));
@@ -3171,10 +3202,8 @@ export function setSmartTransactionsPreferenceEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
-    console.log('Setting STX preference:', value);
     const smartTransactionsOptInStatus =
       getSmartTransactionsOptInStatusInternal(getState());
-    console.log('Current STX status:', smartTransactionsOptInStatus);
     trackMetaMetricsEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
@@ -3185,7 +3214,6 @@ export function setSmartTransactionsPreferenceEnabled(
     });
     await dispatch(setPreference('smartTransactionsOptInStatus', value));
     await forceUpdateMetamaskState(dispatch);
-    console.log('After dispatch:', getSmartTransactionsOptInStatusInternal(getState()));
   };
 }
 
@@ -5305,6 +5333,18 @@ export function requestUserApproval({
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had trouble requesting user approval'));
+    }
+  };
+}
+
+export function rejectAllApprovals() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('rejectAllPendingApprovals');
+
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
     }
   };
 }

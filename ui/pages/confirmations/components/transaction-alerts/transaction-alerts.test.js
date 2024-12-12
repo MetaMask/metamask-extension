@@ -36,7 +36,7 @@ const STATE_MOCK = {
       chainId: CHAIN_ID_MOCK,
     }),
   },
-  [AlertTypes.stxMigration]: {
+  [AlertTypes.smartTransactionsMigration]: {
     state: ALERT_STATE.OPEN,
   },
 };
@@ -564,8 +564,8 @@ describe('TransactionAlerts', () => {
   });
 });
 
-describe('STX Migration Alert', () => {
-  it('should show STX banner when stxAlertIsOpen is true', () => {
+describe('Smart Transactions Migration Alert', () => {
+  it('shows when alert is enabled and opted in', () => {
     const { getByTestId } = render({
       componentProps: {
         txData: {
@@ -574,22 +574,20 @@ describe('STX Migration Alert', () => {
         },
       },
     });
-    expect(getByTestId('stx-banner-alert')).toBeInTheDocument();
+    expect(getByTestId('smart-transactions-banner-alert')).toBeInTheDocument();
   });
 
-  it('should not show STX banner when stxAlertIsOpen is false', () => {
+  it('does not show when alert is disabled', () => {
     const closedState = {
       ...STATE_MOCK,
       metamask: {
         ...STATE_MOCK.metamask,
-        alerts: {
-          [AlertTypes.stxMigration]: {
-            state: ALERT_STATE.CLOSED,
-          },
+        alertEnabledness: {
+          [AlertTypes.smartTransactionsMigration]: false,
         },
-      },
-      [AlertTypes.stxMigration]: {
-        state: ALERT_STATE.CLOSED,
+        preferences: {
+          smartTransactionsOptInStatus: true,
+        },
       },
     };
     const store = configureStore(closedState);
@@ -602,6 +600,8 @@ describe('STX Migration Alert', () => {
       />,
       store,
     );
-    expect(queryByTestId('stx-banner-alert')).not.toBeInTheDocument();
+    expect(
+      queryByTestId('smart-transactions-banner-alert'),
+    ).not.toBeInTheDocument();
   });
 });
