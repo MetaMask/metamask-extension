@@ -63,10 +63,14 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionConfig": {
-          "refreshRate": "number",
           "maxRefreshCount": "number",
+          "refreshRate": "number",
           "support": "boolean",
-          "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
+          "chains": {
+            "0x1": "object",
+            "0xa4b1": "object",
+            "0xe708": "object"
+          }
         }
       },
       "srcTokens": {},
@@ -238,7 +242,9 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": { "0x539": "boolean" },
+      "tokenNetworkFilter": {
+        "0x539": "boolean"
+      },
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
     },
@@ -258,16 +264,7 @@
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
-    "remoteFeatureFlags": {
-      "OUTDATED_BROWSER_VERSIONS": {
-        "firefox": "<102",
-        "opera": "<95",
-        "chrome": "<109",
-        "edge": "<109"
-      },
-      "testFlagForThreshold": {},
-      "testBooleanFlag": true
-    },
+    "remoteFeatureFlags": { "feature1": true, "feature2": false },
     "cacheTimestamp": "number"
   },
   "SelectedNetworkController": { "domains": "object" },
@@ -333,7 +330,9 @@
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
     "tokenList": "object",
-    "tokensChainsCache": { "0x539": "object" },
+    "tokensChainsCache": {
+      "0x539": "object"
+    },
     "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": { "marketData": "object" },

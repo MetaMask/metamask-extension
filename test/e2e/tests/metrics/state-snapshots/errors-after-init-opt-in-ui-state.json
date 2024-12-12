@@ -37,7 +37,9 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": { "0x539": "boolean" },
+      "tokenNetworkFilter": {
+        "0x539": "boolean"
+      },
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
     },
@@ -174,7 +176,9 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
-    "tokensChainsCache": { "0x539": "object" },
+    "tokensChainsCache": {
+      "0x539": "object"
+    },
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -231,16 +235,7 @@
     "isCheckingAccountsPresence": "boolean",
     "queuedRequestCount": 0,
     "fcmToken": "string",
-    "remoteFeatureFlags": {
-      "OUTDATED_BROWSER_VERSIONS": {
-        "opera": "<95",
-        "chrome": "<109",
-        "edge": "<109",
-        "firefox": "<102"
-      },
-      "testFlagForThreshold": {},
-      "testBooleanFlag": true
-    },
+    "remoteFeatureFlags": { "feature1": true, "feature2": false },
     "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",
@@ -285,10 +280,14 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionConfig": {
-          "refreshRate": "number",
           "maxRefreshCount": "number",
+          "refreshRate": "number",
           "support": "boolean",
-          "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
+          "chains": {
+            "0x1": "object",
+            "0xa4b1": "object",
+            "0xe708": "object"
+          }
         }
       },
       "srcTokens": {},
