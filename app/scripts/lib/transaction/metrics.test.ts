@@ -18,6 +18,7 @@ import {
   MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
   MetaMetricsEventUiCustomization,
+  MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import {
@@ -165,7 +166,7 @@ describe('Transaction metrics', () => {
     };
 
     expectedSensitiveProperties = {
-      default_estimate: 'default_estimate',
+      default_estimate: MetaMetricsEventTransactionEstimateType.DefaultEstimate,
       default_gas: '0.000031501',
       default_gas_price: '2',
       first_seen: 1624408066355,
