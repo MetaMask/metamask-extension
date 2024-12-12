@@ -1326,7 +1326,7 @@ export const getAnySnapUpdateAvailable = createSelector(
 /**
  * Return if the snap branding should show in the UI.
  */
-export const getHideSnapBranding = createSelector(
+export const getHideSnapBranding = createDeepEqualSelector(
   [selectInstalledSnaps, selectSnapId],
   (installedSnaps, snapId) => {
     return installedSnaps[snapId]?.hideSnapBranding;
