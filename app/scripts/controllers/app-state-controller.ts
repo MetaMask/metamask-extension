@@ -416,7 +416,6 @@ export class AppStateController extends BaseController<
       'KeyringController:qrKeyringStateChange',
       (qrHardware: Json) =>
         this.update((currentState) => {
-          // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
           currentState.qrHardware = qrHardware;
         }),
     );

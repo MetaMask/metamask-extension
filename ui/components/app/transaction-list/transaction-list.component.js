@@ -3,7 +3,9 @@ import React, {
   useState,
   useCallback,
   Fragment,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useContext,
+  ///: END:ONLY_INCLUDE_IF
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -36,18 +38,24 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import {
   Box,
   Button,
+  Text,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ButtonSize,
   ButtonVariant,
   IconName,
-  Text,
   BadgeWrapper,
   AvatarNetwork,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
+///: END:ONLY_INCLUDE_IF
 
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   Display,
+  ///: END:ONLY_INCLUDE_IF
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -60,18 +68,19 @@ import {
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getSelectedAccountMultichainTransactions,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors/multichain';
+///: END:ONLY_INCLUDE_IF
+
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { ActivityListItem } from '../../multichain';
 
 const PAGE_INCREMENT = 10;
 
@@ -291,18 +300,18 @@ export default function TransactionList({
   const dateGroupsWithTransactionGroups = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
 
-  const trackEvent = useContext(MetaMetricsContext);
-
   useEffect(() => {
     endTrace({ name: TraceName.AccountOverviewActivityTab });
   }, []);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const trackEvent = useContext(MetaMetricsContext);
+
   const groupNonEvmTransactionsByDate = (transactions) => {
     const groupedTransactions = [];
 
