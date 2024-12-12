@@ -176,8 +176,7 @@ describe('Test Snap Signature Insights', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           // click down arrow
-          await driver.waitForSelector('.fa-arrow-down');
-          await driver.clickElement('.fa-arrow-down');
+          await driver.clickElementSafe('.fa-arrow-down');
 
           // wait for and click sign
           await clickSignOnSignatureConfirmation({
@@ -224,8 +223,7 @@ describe('Test Snap Signature Insights', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           // click down arrow
-          await driver.waitForSelector('.fa-arrow-down');
-          await driver.clickElement('.fa-arrow-down');
+          await driver.clickElementSafe('.fa-arrow-down');
 
           // wait for and click sign
           await clickSignOnSignatureConfirmation({
