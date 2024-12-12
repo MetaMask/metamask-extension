@@ -10,6 +10,7 @@ import {
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getUseExternalServices,
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
@@ -45,6 +46,7 @@ const useBridging = () => {
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
   const keyring = useSelector(getCurrentKeyring);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
 
@@ -52,7 +54,9 @@ const useBridging = () => {
   const isBridgeChain = useSelector(getIsBridgeChain);
 
   useEffect(() => {
-    dispatch(setBridgeFeatureFlags());
+    if (isExternalServicesEnabled) {
+      dispatch(setBridgeFeatureFlags());
+    }
   }, [dispatch, setBridgeFeatureFlags]);
 
   const openBridgeExperience = useCallback(
@@ -89,17 +93,9 @@ const useBridging = () => {
             chain_id: providerConfig.chainId,
           },
         });
-        if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(
-            PREPARE_SWAP_ROUTE,
-            null,
-            false,
-          );
-        } else {
-          history.push(
-            `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`,
-          );
-        }
+        history.push(
+          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`,
+        );
       } else {
         const portfolioUrl = getPortfolioUrl(
           'bridge',

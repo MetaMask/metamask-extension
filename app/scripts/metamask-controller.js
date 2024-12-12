@@ -3764,6 +3764,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setLastInteractedConfirmationInfo.bind(
           appStateController,
         ),
+      updateSlides: appStateController.updateSlides.bind(appStateController),
+      removeSlide: appStateController.removeSlide.bind(appStateController),
 
       // EnsController
       tryReverseResolveAddress:

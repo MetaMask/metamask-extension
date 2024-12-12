@@ -440,9 +440,6 @@
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
-  "alertMessagePendingTransactions": {
-    "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
@@ -508,6 +505,9 @@
   },
   "allCustodianAccountsConnectedTitle": {
     "message": "No accounts available to connect"
+  },
+  "allNetworks": {
+    "message": "All networks"
   },
   "allOfYour": {
     "message": "All of your $1",
@@ -579,6 +579,9 @@
   "appNameMmi": {
     "message": "MetaMask Institutional",
     "description": "The name of the application (MMI)"
+  },
+  "apply": {
+    "message": "Apply"
   },
   "approve": {
     "message": "Approve spend limit"
@@ -744,8 +747,7 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "This is a beta version. Please report bugs $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "This is a beta version. Please report bugs $1"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Beta Version"
@@ -852,6 +854,10 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeAllowSwappingOf": {
+    "message": "Allow exact access to $1 $2 on $3 for bridging",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
   "bridgeApproval": {
     "message": "Approve $1 for bridge",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
@@ -859,8 +865,8 @@
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
-  "bridgeDestination": {
-    "message": "Destination"
+  "bridgeConfirmTwoTransactions": {
+    "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
@@ -874,6 +880,13 @@
   "bridgeFrom": {
     "message": "Bridge from"
   },
+  "bridgeFromTo": {
+    "message": "Bridge $1 $2 to $3",
+    "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
+  },
+  "bridgeGasFeesSplit": {
+    "message": "Any network fee quoted on the previous screen includes both transactions and will be split."
+  },
   "bridgeNetCost": {
     "message": "Net cost"
   },
@@ -885,9 +898,6 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
-  },
-  "bridgeSource": {
-    "message": "Source"
   },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
@@ -921,14 +931,8 @@
   "bridgeTotalFeesTooltipText": {
     "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
   },
-  "bridgeTxDetailsBaseFee": {
-    "message": "Base fee (GWEI)"
-  },
-  "bridgeTxDetailsBridgeAmount": {
-    "message": "Bridge amount"
-  },
-  "bridgeTxDetailsBridgeType": {
-    "message": "Bridge type"
+  "bridgeTxDetailsBridging": {
+    "message": "Bridging"
   },
   "bridgeTxDetailsDelayedDescription": {
     "message": "Reach out to"
@@ -939,20 +943,8 @@
   "bridgeTxDetailsDelayedTitle": {
     "message": "Has it been longer than 3 hours?"
   },
-  "bridgeTxDetailsGasLimit": {
-    "message": "Gas limit (units)"
-  },
-  "bridgeTxDetailsGasUsed": {
-    "message": "Gas used (units)"
-  },
-  "bridgeTxDetailsMaxFeePerGas": {
-    "message": "Max fee per gas"
-  },
   "bridgeTxDetailsNonce": {
     "message": "Nonce"
-  },
-  "bridgeTxDetailsPriorityFee": {
-    "message": "Priority fee (GWEI)"
   },
   "bridgeTxDetailsStatus": {
     "message": "Status"
@@ -964,14 +956,18 @@
     "message": "$1 at $2",
     "description": "$1 is the date, $2 is the time"
   },
-  "bridgeTxDetailsTotal": {
-    "message": "Total"
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "$1 $2 on",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
   },
   "bridgeTxDetailsTotalGasFee": {
     "message": "Total gas fee"
   },
-  "bridgeTypeDirectionTo": {
-    "message": "To"
+  "bridgeTxDetailsYouReceived": {
+    "message": "You received"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "You sent"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -2934,6 +2930,7 @@
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
   },
+  "loadingTokenList": { "message": "Loading token list" },
   "loadingTokens": {
     "message": "Loading tokens..."
   },
@@ -3987,6 +3984,14 @@
   "pending": {
     "message": "Pending"
   },
+  "pendingTransactionAlertMessage": {
+    "message": "This transaction won't go through until a previous transaction is complete. $1",
+    "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
+  },
+  "pendingTransactionAlertMessageHyperlink": {
+    "message": "Learn how to cancel or speed up a transaction.",
+    "description": "The text for the hyperlink in the pending transaction alert message"
+  },
   "pendingTransactionInfo": {
     "message": "This transaction will not process until that one is complete."
   },
@@ -4243,12 +4248,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
-  },
-  "permissionsPageTourDescription": {
-    "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Connected sites are now permissions"
   },
   "permitSimulationChange_approve": {
     "message": "Spending cap"
@@ -4828,6 +4827,9 @@
   "searchTokens": {
     "message": "Search tokens"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "Search tokens by name or address"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -5193,6 +5195,9 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "singleNetwork": {
+    "message": "1 network"
+  },
   "siweIssued": {
     "message": "Issued"
   },
@@ -5216,6 +5221,30 @@
   },
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+  },
+  "slideBridgeDescription": {
+    "message": "Move across 9 chains, all within your wallet"
+  },
+  "slideBridgeTitle": {
+    "message": "Ready to bridge?"
+  },
+  "slideCashOutDescription": {
+    "message": "Sell your crypto for cash"
+  },
+  "slideCashOutTitle": {
+    "message": "Cash out with MetaMask"
+  },
+  "slideDebitCardDescription": {
+    "message": "Available in selected regions"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMask debit card"
+  },
+  "slideFundWalletDescription": {
+    "message": "Get started by adding funds"
+  },
+  "slideFundWalletTitle": {
+    "message": "Fund your wallet"
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -5421,6 +5450,9 @@
   },
   "solanaSupportToggleTitle": {
     "message": "Enable \"Add a new Solana account (Beta)\""
+  },
+  "someNetworks": {
+    "message": "$1 networks"
   },
   "somethingDoesntLookRight": {
     "message": "Something doesn't look right? $1",

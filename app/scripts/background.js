@@ -323,7 +323,7 @@ function maybeDetectPhishing(theController) {
       return {};
     },
     {
-      urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'],
+      urls: ['http://*/*', 'https://*/*'],
     },
     isManifestV2 ? ['blocking'] : [],
   );
@@ -738,6 +738,49 @@ function trackDappView(remotePort) {
 }
 
 /**
+ * Emit App Opened event
+ */
+function emitAppOpenedMetricEvent() {
+  const { metaMetricsId, participateInMetaMetrics } =
+    controller.metaMetricsController.state;
+
+  // Skip if user hasn't opted into metrics
+  if (metaMetricsId === null && !participateInMetaMetrics) {
+    return;
+  }
+
+  controller.metaMetricsController.trackEvent({
+    event: MetaMetricsEventName.AppOpened,
+    category: MetaMetricsEventCategory.App,
+  });
+}
+
+/**
+ * This function checks if the app is being opened
+ * and emits an event only if no other UI instances are currently open.
+ *
+ * @param {string} environment - The environment type where the app is opening
+ */
+function trackAppOpened(environment) {
+  // List of valid environment types to track
+  const environmentTypeList = [
+    ENVIRONMENT_TYPE_POPUP,
+    ENVIRONMENT_TYPE_NOTIFICATION,
+    ENVIRONMENT_TYPE_FULLSCREEN,
+  ];
+
+  // Check if any UI instances are currently open
+  const isFullscreenOpen = Object.values(openMetamaskTabsIDs).some(Boolean);
+  const isAlreadyOpen =
+    isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
+
+  // Only emit event if no UI is open and environment is valid
+  if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
+    emitAppOpenedMetricEvent();
+  }
+}
+
+/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -879,6 +922,7 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+      trackAppOpened(processName);
 
       initializeRemoteFeatureFlags();
 
