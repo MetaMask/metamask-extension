@@ -15,8 +15,7 @@ export const EndowmentPermissions = Object.freeze({
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
-export const ExcludedSnapPermissions = Object.freeze({
-});
+export const ExcludedSnapPermissions = Object.freeze({});
 
 export const ExcludedSnapEndowments = Object.freeze({
   'endowment:caip25':

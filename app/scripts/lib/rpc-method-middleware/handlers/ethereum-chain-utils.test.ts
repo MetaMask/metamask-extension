@@ -121,22 +121,22 @@ describe('Ethereum Chain Utils', () => {
         await switchChain('0x1', 'mainnet', 'approvalFlowId');
 
         expect(mocks.grantPermissions).toHaveBeenCalledWith({
-            [Caip25EndowmentPermissionName]: {
-              caveats: [
-                {
-                  type: Caip25CaveatType,
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      'eip155:1': {
-                        accounts: [],
-                      },
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1': {
+                      accounts: [],
                     },
-                    isMultichainOrigin: false,
                   },
+                  isMultichainOrigin: false,
                 },
-              ],
-            },
+              },
+            ],
+          },
         });
       });
 

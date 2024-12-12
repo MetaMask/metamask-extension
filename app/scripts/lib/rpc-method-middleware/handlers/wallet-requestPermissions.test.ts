@@ -692,19 +692,19 @@ describe('requestPermissionsHandler', () => {
 
       await handler(getBaseRequest());
       expect(grantPermissions).toHaveBeenCalledWith({
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: {
-                  requiredScopes: {},
-                  optionalScopes: {},
-                  sessionProperties: { caveatValueWithEthAccountsSet: true },
-                  isMultichainOrigin: false,
-                },
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {},
+                optionalScopes: {},
+                sessionProperties: { caveatValueWithEthAccountsSet: true },
+                isMultichainOrigin: false,
               },
-            ],
-          },
+            },
+          ],
+        },
       });
     });
 
