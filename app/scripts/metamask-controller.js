@@ -3419,10 +3419,11 @@ export default class MetamaskController extends EventEmitter {
   getState() {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
+    const memStoreState = this.memStore.getState();
 
     return {
       isInitialized,
-      ...sanitizeUIState(this.memStore.getState()),
+      ...sanitizeUIState(memStoreState),
     };
   }
 
