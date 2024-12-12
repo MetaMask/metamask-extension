@@ -59,7 +59,7 @@ export default class ComposableObservableStore extends ObservableStore<Backgroun
    *
    * @param {Record<string, object>} config - Describes which stores are being
    *   composed. The key is the name of the store, and the value is either an
-   *   ObserableStore, or a controller that extends one of the two base
+   *   ObservableStore, or a controller that extends one of the two base
    *   controllers in the `@metamask/base-controller` package.
    */
   updateStructure(config: MemStoreControllers) {
@@ -72,7 +72,7 @@ export default class ComposableObservableStore extends ObservableStore<Backgroun
         throw new Error(`Undefined '${controllerKey}'`);
       }
 
-      if ('store' in controller && 'subscribe' in controller.store) {
+      if ('store' in controller && Boolean(controller.store?.subscribe)) {
         const { store } = controller;
         store.subscribe(
           (state: MemStoreControllersComposedState[typeof controllerKey]) => {
