@@ -70,6 +70,7 @@ import {
 } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { PercentageChange } from './price/percentage-change/percentage-change';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 
 type TokenListItemProps = {
   className?: string;
@@ -227,9 +228,7 @@ export const TokenListItem = ({
     </Box>
   );
   // Used for badge icon
-  const allNetworks: Record<string, string> = useSelector(
-    getNetworkConfigurationIdByChainId,
-  );
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   return (
@@ -285,7 +284,7 @@ export const TokenListItem = ({
           badge={
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
-              name={allNetworks?.[chainId] || ''}
+              name={allNetworks[chainId as Hex].name}
               src={tokenChainImage || undefined}
               backgroundColor={testNetworkBackgroundColor}
               className="multichain-token-list-item__badge__avatar-network"
