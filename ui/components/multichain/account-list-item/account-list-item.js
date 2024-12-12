@@ -392,7 +392,7 @@ const AccountListItem = ({
                 <UserPreferencedCurrencyDisplay
                   account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={account.balance}
+                  value={isEvmNetwork ? account.balance : balanceToTranslate}
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"

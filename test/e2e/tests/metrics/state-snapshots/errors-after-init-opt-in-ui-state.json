@@ -90,6 +90,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "surveyLinkLastClickedOrClosed": "object",
     "switchedNetworkNeverShowMessage": "boolean",
+    "slides": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",

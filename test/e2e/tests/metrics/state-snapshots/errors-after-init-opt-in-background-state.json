@@ -44,6 +44,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "surveyLinkLastClickedOrClosed": "object",
     "switchedNetworkNeverShowMessage": "boolean",
+    "slides": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
@@ -361,7 +362,6 @@
     "allDetectedTokens": {}
   },
   "TxController": {
-    "lastFetchedBlockNumbers": "object",
     "methodData": "object",
     "transactions": "object",
     "lastFetchedBlockNumbers": "object",
