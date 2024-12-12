@@ -29,7 +29,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
-
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { SelectSRP } from '../multi-srp/select-srp/select-srp';
+///: END:ONLY_INCLUDE_IF
 type Props = {
   /**
    * Callback to get the next available account name.
@@ -45,6 +47,13 @@ type Props = {
    * Callback called once the account has been created
    */
   onActionComplete: (completed: boolean) => Promise<void>;
+
+  /**
+   * Callback to select the SRP
+   */
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  onSelectSRP: () => void;
+  ///: END:ONLY_INCLUDE_IF
 };
 
 type CreateAccountProps<C extends React.ElementType> =
@@ -60,6 +69,9 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       {
         getNextAvailableAccountName,
         onCreateAccount,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        onSelectSRP,
+        ///: END:ONLY_INCLUDE_IF
         onActionComplete,
       }: CreateAccountProps<C>,
       ref?: PolymorphicRef<C>,
@@ -142,6 +154,17 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               }
             }}
           />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+            <Box marginBottom={3}>
+              <SelectSRP
+                onClick={onSelectSRP}
+                srpName="Secret Phrase 1"
+                srpAccounts={3}
+              />
+            </Box>
+            ///: END:ONLY_INCLUDE_IF
+          }
           <Box display={Display.Flex} marginTop={1} gap={2}>
             <ButtonSecondary
               data-testid="cancel-add-account-with-name"
