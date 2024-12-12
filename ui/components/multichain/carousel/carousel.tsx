@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, BoxProps, BannerBase } from '../../component-library';
@@ -24,6 +24,7 @@ export const Carousel = React.forwardRef(
       isLoading = false,
       onClose,
       onClick,
+      onRenderSlides,
       ...props
     }: CarouselProps,
     ref: React.Ref<HTMLDivElement>,
@@ -43,6 +44,17 @@ export const Carousel = React.forwardRef(
         return 0;
       })
       .slice(0, MAX_SLIDES);
+
+    useEffect(() => {
+      if (
+        visibleSlides &&
+        visibleSlides.length > 0 &&
+        onRenderSlides &&
+        !isLoading
+      ) {
+        onRenderSlides(visibleSlides);
+      }
+    }, [visibleSlides, onRenderSlides, isLoading]);
 
     const handleClose = (e: React.MouseEvent<HTMLElement>, slideId: string) => {
       e.preventDefault();

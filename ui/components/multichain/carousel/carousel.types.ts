@@ -5,4 +5,5 @@ export type CarouselProps = {
   isLoading?: boolean;
   onClose?: (id: string) => void;
   onClick?: (id: string) => void;
+  onRenderSlides?: (slides: CarouselSlide[]) => void;
 };
