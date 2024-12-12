@@ -63,14 +63,10 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionConfig": {
-          "maxRefreshCount": "number",
           "refreshRate": "number",
+          "maxRefreshCount": "number",
           "support": "boolean",
-          "chains": {
-            "0x1": "object",
-            "0xa4b1": "object",
-            "0xe708": "object"
-          }
+          "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
         }
       },
       "srcTokens": {},
@@ -153,16 +149,8 @@
   "MultichainRatesController": {
     "fiatCurrency": "usd",
     "rates": {
-      "btc": {
-        "conversionDate": 1733923122883,
-        "conversionRate": 98232.35,
-        "usdConversionRate": 98232.35
-      },
-      "sol": {
-        "conversionDate": 1733923122883,
-        "conversionRate": 224.57,
-        "usdConversionRate": 224.57
-      }
+      "btc": { "conversionDate": 0, "conversionRate": 0 },
+      "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
     "cryptocurrencies": ["btc", "sol"]
   },
@@ -250,9 +238,7 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": {
-        "0x539": "boolean"
-      },
+      "tokenNetworkFilter": { "0x539": "boolean" },
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
     },
@@ -274,10 +260,10 @@
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
       "OUTDATED_BROWSER_VERSIONS": {
+        "firefox": "<102",
         "opera": "<95",
         "chrome": "<109",
-        "edge": "<109",
-        "firefox": "<102"
+        "edge": "<109"
       },
       "testFlagForThreshold": {},
       "testBooleanFlag": true
@@ -347,9 +333,7 @@
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
     "tokenList": "object",
-    "tokensChainsCache": {
-      "0x539": "object"
-    },
+    "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": { "marketData": "object" },

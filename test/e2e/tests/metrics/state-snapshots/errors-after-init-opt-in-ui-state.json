@@ -37,9 +37,7 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": {
-        "0x539": "boolean"
-      },
+      "tokenNetworkFilter": { "0x539": "boolean" },
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
     },
@@ -176,9 +174,7 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
-    "tokensChainsCache": {
-      "0x539": "object"
-    },
+    "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -204,16 +200,8 @@
     "submitHistory": "object",
     "fiatCurrency": "usd",
     "rates": {
-      "btc": {
-        "conversionDate": 1733923135261,
-        "conversionRate": 98238.83,
-        "usdConversionRate": 98238.83
-      },
-      "sol": {
-        "conversionDate": 1733923135261,
-        "conversionRate": 224.53,
-        "usdConversionRate": 224.53
-      }
+      "btc": { "conversionDate": 0, "conversionRate": 0 },
+      "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
     "cryptocurrencies": ["btc", "sol"],
     "snaps": "object",
@@ -297,14 +285,10 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionConfig": {
-          "maxRefreshCount": "number",
           "refreshRate": "number",
+          "maxRefreshCount": "number",
           "support": "boolean",
-          "chains": {
-            "0x1": "object",
-            "0xa4b1": "object",
-            "0xe708": "object"
-          }
+          "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
         }
       },
       "srcTokens": {},

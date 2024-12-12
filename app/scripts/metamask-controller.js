@@ -3274,7 +3274,11 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'CurrencyRateController:stateChange',
       ({ currentCurrency }) => {
-        this.multichainRatesController.setFiatCurrency(currentCurrency);
+        if (
+          currentCurrency !== this.multichainRatesController.state.fiatCurrency
+        ) {
+          this.multichainRatesController.setFiatCurrency(currentCurrency);
+        }
       },
     );
   }
