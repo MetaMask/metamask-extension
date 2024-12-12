@@ -67,6 +67,8 @@ class ChromeDriver {
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
       );
       args.push('--headless=new');
+      args.push('--no-sandbox');
+      args.push('--disable-gpu');
     }
 
     const options = new chrome.Options().addArguments(args);
@@ -85,8 +87,6 @@ class ChromeDriver {
         'dns_over_https.templates': '',
       });
     }
-
-    options.addArguments('no-sandbox');
 
     const builder = new Builder()
       .forBrowser('chrome')
