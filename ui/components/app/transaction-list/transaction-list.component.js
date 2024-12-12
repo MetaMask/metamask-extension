@@ -352,7 +352,7 @@ export default function TransactionList({
     return (
       <Box className="transaction-list" {...boxProps}>
         <Box className="transaction-list__transactions">
-          {nonEvmTransactions.data.length > 0 && (
+          {nonEvmTransactions.data.length > 0 ? (
             <Box className="transaction-list__completed-transactions">
               {groupNonEvmTransactionsByDate(nonEvmTransactions).map(
                 (dateGroup) => (
@@ -427,21 +427,27 @@ export default function TransactionList({
                   </Fragment>
                 ),
               )}
+              <Box className="transaction-list__view-on-block-explorer">
+                <Button
+                  display={Display.Flex}
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Sm}
+                  endIconName={IconName.Export}
+                  onClick={() =>
+                    openBlockExplorer(addressLink, metricsLocation, trackEvent)
+                  }
+                >
+                  {t('viewOnBlockExplorer')}
+                </Button>
+              </Box>
+            </Box>
+          ) : (
+            <Box className="transaction-list__empty">
+              <Box className="transaction-list__empty-text">
+                {t('noTransactions')}
+              </Box>
             </Box>
           )}
-        </Box>
-        <Box className="transaction-list__view-on-block-explorer">
-          <Button
-            display={Display.Flex}
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Sm}
-            endIconName={IconName.Export}
-            onClick={() =>
-              openBlockExplorer(addressLink, metricsLocation, trackEvent)
-            }
-          >
-            {t('viewOnBlockExplorer')}
-          </Button>
         </Box>
       </Box>
     );
