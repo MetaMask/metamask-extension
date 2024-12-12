@@ -38,7 +38,7 @@ export type Asset = {
   symbol: string;
   name: string;
   decimals: number;
-  icon?: string;
+  icon?: string | null;
 };
 
 export type SrcChainStatus = {
@@ -124,7 +124,7 @@ export type BridgeHistoryItem = {
   slippagePercentage: number;
   completionTime?: number;
   pricingData?: {
-    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, accounts for the MM fees
+    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
 
     quotedGasInUsd?: string;
     quotedReturnInUsd?: string;

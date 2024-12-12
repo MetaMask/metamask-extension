@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini Onayla"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Ödenek talebi"
-  },
   "confirmTitleDeployContract": {
     "message": "Bir sözleşme kurulumu gerçekleştirin"
   },
@@ -6600,10 +6597,6 @@
   },
   "wrongNetworkName": {
     "message": "Kayıtlarımıza göre ağ adı bu zincir kimliği ile doğru şekilde eşleşmiyor olabilir."
-  },
-  "xOfYPending": {
-    "message": "$1 / $2 bekliyor",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Evet"

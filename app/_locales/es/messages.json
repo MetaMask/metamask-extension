@@ -1033,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Confirmar frase secreta de recuperación"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Solicitud de asignación"
-  },
   "confirmTitleDeployContract": {
     "message": "Implementar un contrato"
   },
@@ -6600,10 +6597,6 @@
   },
   "wrongNetworkName": {
     "message": "Según nuestros registros, es posible que el nombre de la red no coincida correctamente con este ID de cadena."
-  },
-  "xOfYPending": {
-    "message": "$1 de $2 están pendientes",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Sí"

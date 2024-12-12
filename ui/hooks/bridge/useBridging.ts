@@ -10,6 +10,7 @@ import {
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getUseExternalServices,
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
@@ -17,6 +18,7 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
 } from '../../../shared/constants/metametrics';
 
 import {
@@ -30,18 +32,21 @@ import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 ///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
   const keyring = useSelector(getCurrentKeyring);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
 
@@ -49,7 +54,9 @@ const useBridging = () => {
   const isBridgeChain = useSelector(getIsBridgeChain);
 
   useEffect(() => {
-    dispatch(setBridgeFeatureFlags());
+    if (isExternalServicesEnabled) {
+      dispatch(setBridgeFeatureFlags());
+    }
   }, [dispatch, setBridgeFeatureFlags]);
 
   const openBridgeExperience = useCallback(
@@ -63,6 +70,19 @@ const useBridging = () => {
       }
 
       if (isBridgeSupported) {
+        trackCrossChainSwapsEvent({
+          event: MetaMetricsEventName.ActionOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            location:
+              location === 'Home'
+                ? MetaMetricsSwapsEventSource.MainView
+                : MetaMetricsSwapsEventSource.TokenView,
+            chain_id_source: providerConfig.chainId,
+            token_symbol_source: token.symbol,
+            token_address_source: token.address,
+          },
+        });
         trackEvent({
           event: MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
@@ -118,6 +138,7 @@ const useBridging = () => {
       history,
       metaMetricsId,
       trackEvent,
+      trackCrossChainSwapsEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
       providerConfig,
