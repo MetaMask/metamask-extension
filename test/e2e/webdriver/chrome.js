@@ -57,11 +57,9 @@ class ChromeDriver {
     args.push('--log-level=3');
     args.push('--enable-logging');
 
-    // if (process.env.CI || process.env.CODESPACES) {
-    args.push('--disable-gpu');
-    args.push('--no-sandbox');
-    args.push('--in-process-gpu');
-    // }
+    if (process.env.CI || process.env.CODESPACES) {
+      args.push('--disable-gpu');
+    }
 
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
