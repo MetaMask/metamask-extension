@@ -5,6 +5,7 @@ import TokenCell from '../token-cell';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
+  getChainIdsToPoll,
   getCurrencyRates,
   getCurrentNetwork,
   getIsTestnet,
@@ -93,6 +94,7 @@ export default function TokenList({
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
+  const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
     shallowEqual,
@@ -103,7 +105,9 @@ export default function TokenList({
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
 
-  const { tokenBalances } = useTokenBalances();
+  const { tokenBalances } = useTokenBalances({
+    chainIds: chainIdsToPoll as Hex[],
+  });
   const selectedAccountTokenBalancesAcrossChains =
     tokenBalances[selectedAccount.address];
 
