@@ -92,7 +92,7 @@ describe('TransactionList', () => {
     expect(getByTestId('activity-list-item')).toBeInTheDocument();
 
     const viewOnExplorerBtn = getByRole('button', {
-      name: 'View more on block explorer',
+      name: 'View on block explorer',
     });
     expect(viewOnExplorerBtn).toBeInTheDocument();
 

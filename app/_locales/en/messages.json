@@ -6704,7 +6704,7 @@
     "message": "View more"
   },
   "viewOnBlockExplorer": {
-    "message": "View more on block explorer"
+    "message": "View on block explorer"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View $1 at $2",
