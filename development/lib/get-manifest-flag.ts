@@ -92,7 +92,7 @@ async function getFlagsFromGitMessage(): Promise<ManifestFlags> {
  *
  * @returns Any manifest flags found
  */
-export async function getManifestFlags(): Promise<ManifestFlags> {
+export async function fetchManifestFlagsFromPRAndGit(): Promise<ManifestFlags> {
   const [prBodyFlags, gitMessageFlags] = await Promise.all([
     getFlagsFromPrBody(),
     getFlagsFromGitMessage(),
