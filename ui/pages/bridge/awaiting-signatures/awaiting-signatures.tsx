@@ -50,14 +50,16 @@ export default function AwaitingSignatures() {
     trackEvent({
       event: 'Awaiting Signature(s) on a HW wallet',
       category: MetaMetricsEventCategory.Swaps,
-      sensitiveProperties: {
+      properties: {
         needs_two_confirmations: needsTwoConfirmations,
         token_from: fromToken?.symbol ?? '',
-        token_from_amount: activeQuote?.quote?.srcTokenAmount ?? '',
         token_to: toToken?.symbol ?? '',
-        token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType ?? '',
+      },
+      sensitiveProperties: {
+        token_from_amount: activeQuote?.quote?.srcTokenAmount ?? '',
+        token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
