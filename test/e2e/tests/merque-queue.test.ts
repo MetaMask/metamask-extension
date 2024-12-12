@@ -19,7 +19,7 @@ describe('Merge Queue', function (this: Suite) {
         await driver.waitForSelector({
           text: 'Hacking in the Ethereum Dark Forest',
           tag: 'a',
-        })
+        });
       },
     );
   });
