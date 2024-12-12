@@ -437,9 +437,6 @@
   "alertMessageNoGasPrice": {
     "message": "手数料を手動で更新するまでこのトランザクションを進めることができません。"
   },
-  "alertMessagePendingTransactions": {
-    "message": "前のトランザクションが完了するまでこのトランザクションを実行できません。トランザクションをキャンセルするか加速させる方法をご覧ください。"
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "要求元のサイトはサインインしようとしているサイトではありません。ログイン情報を盗もうとしている可能性があります。"
   },
@@ -6597,10 +6594,6 @@
   },
   "wrongNetworkName": {
     "message": "弊社の記録によると、ネットワーク名がこのチェーンIDと正しく一致していない可能性があります。"
-  },
-  "xOfYPending": {
-    "message": "$2件中$1件が保留中",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "はい"

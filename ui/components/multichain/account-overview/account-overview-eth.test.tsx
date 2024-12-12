@@ -13,6 +13,8 @@ jest.mock('../../../store/actions', () => ({
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
   setTokenNetworkFilter: jest.fn(),
+  updateSlides: jest.fn(),
+  removeSlide: jest.fn(),
 }));
 
 // Mock the dispatch function

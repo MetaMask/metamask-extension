@@ -48,7 +48,8 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly closeAccountModalButton = 'button[aria-label="Close"]';
+  private readonly closeAccountModalButton =
+    'header button[aria-label="Close"]';
 
   private readonly createAccountButton =
     '[data-testid="multichain-account-menu-popover-action-button"]';

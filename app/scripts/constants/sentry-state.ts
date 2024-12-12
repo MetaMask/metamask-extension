@@ -97,10 +97,10 @@ export const SENTRY_BACKGROUND_STATE = {
   BridgeController: {
     bridgeState: {
       bridgeFeatureFlags: {
-        extensionConfig: false,
-        extensionSupport: false,
-        destNetworkAllowlist: [],
-        srcNetworkAllowlist: [],
+        extensionConfig: {
+          support: false,
+          chains: {},
+        },
       },
       destTokens: {},
       destTopAssets: [],
@@ -116,8 +116,10 @@ export const SENTRY_BACKGROUND_STATE = {
         srcTokenAmount: true,
       },
       quotes: [],
+      quotesInitialLoadTime: true,
       quotesLastFetched: true,
       quotesLoadingStatus: true,
+      quoteFetchError: true,
       quotesRefreshCount: true,
     },
   },
@@ -429,6 +431,7 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    slides: false,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,

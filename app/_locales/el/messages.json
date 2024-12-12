@@ -437,9 +437,6 @@
   "alertMessageNoGasPrice": {
     "message": "Δεν μπορούμε να συνεχίσουμε με αυτή τη συναλλαγή μέχρι να ενημερώσετε τα τέλη μη αυτόματα."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Αυτή η συναλλαγή δεν θα πραγματοποιηθεί μέχρι να ολοκληρωθεί μια προηγούμενη συναλλαγή. Μάθετε πώς να ακυρώσετε ή να επισπεύσετε μια συναλλαγή."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Ο ιστότοπος που υποβάλλει το αίτημα δεν είναι ο ιστότοπος στον οποίο έχετε συνδεθεί. Αυτό θα μπορούσε να είναι μια απόπειρα κλοπής των στοιχείων σύνδεσής σας."
   },
@@ -6597,10 +6594,6 @@
   },
   "wrongNetworkName": {
     "message": "Σύμφωνα με τα αρχεία μας, το όνομα του δικτύου ενδέχεται να μην αντιστοιχεί με αυτό το αναγνωριστικό αλυσίδας."
-  },
-  "xOfYPending": {
-    "message": "$1 από $2 σε εκκρεμότητα",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Ναι"
