@@ -262,6 +262,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleGanache()
+            .withPreferencesControllerSmartTransactionsOptedOut()
             .build(),
           dappOptions: { numberOfDapps: 2 },
           ganacheOptions: {

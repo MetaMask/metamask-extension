@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from './network';
+import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
 // TODO read from feature flags
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -31,3 +31,18 @@ export const BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = 0.8; // if a quote 
 
 export const BRIDGE_PREFERRED_GAS_ESTIMATE = 'medium';
 export const BRIDGE_DEFAULT_SLIPPAGE = 0.5;
+
+export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
+  AllowedBridgeChainIds,
+  string
+> = {
+  [CHAIN_IDS.MAINNET]: 'Ethereum',
+  [CHAIN_IDS.LINEA_MAINNET]: 'Linea',
+  [CHAIN_IDS.POLYGON]: NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON],
+  [CHAIN_IDS.AVALANCHE]: 'Avalanche',
+  [CHAIN_IDS.BSC]: NETWORK_TO_NAME_MAP[CHAIN_IDS.BSC],
+  [CHAIN_IDS.ARBITRUM]: NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM],
+  [CHAIN_IDS.OPTIMISM]: NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
+  [CHAIN_IDS.ZKSYNC_ERA]: 'ZkSync Era',
+  [CHAIN_IDS.BASE]: 'Base',
+};

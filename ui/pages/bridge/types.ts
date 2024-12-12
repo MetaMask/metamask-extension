@@ -94,12 +94,11 @@ export type Quote = {
   requestId: string;
   srcChainId: ChainId;
   srcAsset: BridgeAsset;
-  // This is amount sent - metabridge fee, however, some tokens have a fee of 0
-  // So sometimes it's equal to amount sent
-  srcTokenAmount: string;
+  // Some tokens have a fee of 0, so sometimes it's equal to amount sent
+  srcTokenAmount: string; // Atomic amount, the amount sent - fees
   destChainId: ChainId;
   destAsset: BridgeAsset;
-  destTokenAmount: string;
+  destTokenAmount: string; // Atomic amount, the amount received
   feeData: Record<FeeType.METABRIDGE, FeeData> &
     Partial<Record<FeeType, FeeData>>;
   bridgeId: string;

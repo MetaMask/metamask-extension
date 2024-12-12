@@ -432,6 +432,7 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    slides: false,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,

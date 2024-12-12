@@ -437,9 +437,6 @@
   "alertMessageNoGasPrice": {
     "message": "Kami tidak dapat melanjutkan transaksi ini hingga Anda memperbarui biayanya secara manual."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Transaksi ini tidak akan dilanjutkan hingga transaksi sebelumnya selesai. Pelajari cara membatalkan atau mempercepat transaksi."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Situs yang membuat permintaan bukanlah situs yang Anda masuki. Ini dapat merupakan upaya untuk mencuri kredensial login Anda."
   },
@@ -4107,12 +4104,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "Di sinilah Anda dapat melihat izin yang Anda berikan untuk Snap yang terinstal atau situs yang terhubung."
-  },
-  "permissionsPageTourDescription": {
-    "message": "Ini merupakan panel kontrol Anda untuk mengelola izin yang diberikan ke situs yang terhubung dan Snap yang terinstal."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Situs yang terhubung kini memiliki izin"
   },
   "permitSimulationDetailInfo": {
     "message": "Anda memberikan izin kepada pengguna untuk menggunakan token sebanyak ini dari akun."
