@@ -123,7 +123,7 @@ const CrossChainSwap = () => {
               >
                 {t('bridge')}
               </Header>
-              <Content className="bridge__content">
+              <Content>
                 <PrepareBridgePage />
               </Content>
               <Footer>
@@ -133,7 +133,7 @@ const CrossChainSwap = () => {
           </FeatureToggledRoute>
 
           <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
-            <Content className="bridge__content">
+            <Content>
               <AwaitingSignatures />
             </Content>
             <Footer>
