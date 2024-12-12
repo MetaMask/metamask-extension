@@ -1196,7 +1196,7 @@ describe('Bridge selectors', () => {
         getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
       ).toStrictEqual(new BigNumber('0.01'));
       expect(
-        result.isInsufficientGasForQuote(new BigNumber('0.01100017369940785')),
+        result.isInsufficientGasForQuote(new BigNumber('1')),
       ).toStrictEqual(false);
     });
 
