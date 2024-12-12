@@ -23,8 +23,8 @@ import type {
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
 import type { Transaction } from '../../../../shared/types/multichain/transactions';
-import { MultichainTransactionsTracker } from './MultichainTransactionsTracker';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { MultichainTransactionsTracker } from './MultichainTransactionsTracker';
 
 const controllerName = 'MultichainTransactionsController';
 
