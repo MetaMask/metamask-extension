@@ -4,7 +4,7 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
-import { createSelector } from 'reselect';
+import { createSelector, defaultMemoize } from 'reselect';
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
@@ -27,7 +27,10 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
+import {
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  SwapsTokenObject,
+} from '../../../shared/constants/swaps';
 import {
   getProviderConfig,
   getNetworkConfigurationsByChainId,
@@ -140,61 +143,85 @@ export const getToChain = createDeepEqualSelector(
     toChains.find(({ chainId }) => chainId === toChainId),
 );
 
-// Individual selectors for FromTokens
+// Custom equality function for large objects that only checks references
+const referenceEqual = (a: unknown, b: unknown) => a === b;
+
+// Memoized selectors with custom equality checks
 export const getFromTokensData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.srcTokens,
-  (tokens) => tokens ?? {},
+  defaultMemoize((tokens) => tokens ?? {}, referenceEqual),
 );
 
 export const getFromTopAssetsData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.srcTopAssets,
-  (assets) => assets ?? [],
+  defaultMemoize((assets) => assets ?? [], referenceEqual),
 );
 
 export const getFromTokensLoadingStatus = createSelector(
-  (state: BridgeAppState) =>
-    state.metamask.bridgeState.srcTokensLoadingStatus === RequestStatus.LOADING,
-  (isLoading) => isLoading,
+  [
+    (state: BridgeAppState) =>
+      state.metamask.bridgeState.srcTokensLoadingStatus,
+  ],
+  (status) => status === RequestStatus.LOADING,
 );
 
-export const getFromTokens = createSelector(
-  getFromTokensData,
-  getFromTopAssetsData,
-  getFromTokensLoadingStatus,
-  (fromTokens, fromTopAssets, isLoading) => ({
+// Memoized object factory
+const createFromTokensResult = defaultMemoize(
+  (
+    fromTokens: Record<string, SwapsTokenObject>,
+    fromTopAssets: { address: string }[],
+    isLoading: boolean,
+  ) => ({
     isLoading,
     fromTokens,
     fromTopAssets,
   }),
+  referenceEqual,
+);
+
+export const getFromTokens = createSelector(
+  [getFromTokensData, getFromTopAssetsData, getFromTokensLoadingStatus],
+  (fromTokens, fromTopAssets, isLoading) =>
+    createFromTokensResult(fromTokens, fromTopAssets, isLoading),
 );
 
 // Individual selectors for ToTokens
 export const getToTokensData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.destTokens,
-  (tokens) => tokens ?? {},
+  defaultMemoize((tokens) => tokens ?? {}, referenceEqual),
 );
 
 export const getToTopAssetsData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.destTopAssets,
-  (assets) => assets ?? [],
+  defaultMemoize((assets) => assets ?? [], referenceEqual),
 );
 
 export const getToTokensLoadingStatus = createSelector(
-  (state: BridgeAppState) =>
-    state.metamask.bridgeState.destTokensLoadingStatus ===
-    RequestStatus.LOADING,
-  (isLoading) => isLoading,
+  [
+    (state: BridgeAppState) =>
+      state.metamask.bridgeState.destTokensLoadingStatus,
+  ],
+  (status) => status === RequestStatus.LOADING,
 );
 
-export const getToTokens = createSelector(
-  getToTokensData,
-  getToTopAssetsData,
-  getToTokensLoadingStatus,
-  (toTokens, toTopAssets, isLoading) => ({
+// Memoized object factory
+const createToTokensResult = defaultMemoize(
+  (
+    toTokens: Record<string, SwapsTokenObject>,
+    toTopAssets: { address: string }[],
+    isLoading: boolean,
+  ) => ({
     isLoading,
     toTokens,
     toTopAssets,
   }),
+  referenceEqual,
+);
+
+export const getToTokens = createSelector(
+  [getToTokensData, getToTopAssetsData, getToTokensLoadingStatus],
+  (toTokens, toTopAssets, isLoading) =>
+    createToTokensResult(toTokens, toTopAssets, isLoading),
 );
 
 export const getFromToken = createSelector(
@@ -578,4 +605,15 @@ export const getValidationErrors = createDeepEqualSelector(
           : false,
     };
   },
+);
+
+// Additional granular selectors for specific use cases
+export const getFromTokensCount = createSelector(
+  [getFromTokensData],
+  (tokens) => Object.keys(tokens).length,
+);
+
+export const getToTokensCount = createSelector(
+  [getToTokensData],
+  (tokens) => Object.keys(tokens).length,
 );
