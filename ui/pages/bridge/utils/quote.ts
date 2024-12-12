@@ -104,32 +104,35 @@ export const calcRelayerFee = (
   };
 };
 
-export const calcTotalGasFee = (
-  bridgeQuote: QuoteResponse & L1GasFees,
-  estimatedBaseFeeInDecGwei: string,
-  maxPriorityFeePerGasInDecGwei: string,
-  nativeExchangeRate?: number,
-) => {
+const calcTotalGasFee = ({
+  bridgeQuote,
+  feePerGasInDecGwei,
+  priorityFeePerGasInDecGwei,
+  nativeExchangeRate,
+}: {
+  bridgeQuote: QuoteResponse & L1GasFees;
+  feePerGasInDecGwei: string;
+  priorityFeePerGasInDecGwei: string;
+  nativeExchangeRate?: number;
+}) => {
   const { approval, trade, l1GasFeesInHexWei } = bridgeQuote;
+
   const totalGasLimitInDec = sumDecimals(
     trade.gasLimit?.toString() ?? '0',
     approval?.gasLimit?.toString() ?? '0',
   );
-  const feePerGasInDecGwei = sumDecimals(
-    estimatedBaseFeeInDecGwei,
-    maxPriorityFeePerGasInDecGwei,
+  const totalFeePerGasInDecGwei = sumDecimals(
+    feePerGasInDecGwei,
+    priorityFeePerGasInDecGwei,
   );
-
   const l1GasFeesInDecGWei = Numeric.from(
     l1GasFeesInHexWei ?? '0',
     16,
     EtherDenomination.WEI,
   ).toDenomination(EtherDenomination.GWEI);
-
   const gasFeesInDecGwei = totalGasLimitInDec
-    .times(feePerGasInDecGwei)
+    .times(totalFeePerGasInDecGwei)
     .add(l1GasFeesInDecGWei);
-
   const gasFeesInDecEth = new BigNumber(
     gasFeesInDecGwei.shiftedBy(9).toString(),
   );
@@ -140,6 +143,40 @@ export const calcTotalGasFee = (
   return {
     amount: gasFeesInDecEth,
     valueInCurrency: gasFeesInUSD,
+  };
+};
+
+export const calcEstimatedAndMaxTotalGasFee = ({
+  bridgeQuote,
+  estimatedBaseFeeInDecGwei,
+  maxFeePerGasInDecGwei,
+  maxPriorityFeePerGasInDecGwei,
+  nativeExchangeRate,
+}: {
+  bridgeQuote: QuoteResponse & L1GasFees;
+  estimatedBaseFeeInDecGwei: string;
+  maxFeePerGasInDecGwei: string;
+  maxPriorityFeePerGasInDecGwei: string;
+  nativeExchangeRate?: number;
+}) => {
+  const { amount, valueInCurrency } = calcTotalGasFee({
+    bridgeQuote,
+    feePerGasInDecGwei: estimatedBaseFeeInDecGwei,
+    priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
+    nativeExchangeRate,
+  });
+  const { amount: amountMax, valueInCurrency: valueInCurrencyMax } =
+    calcTotalGasFee({
+      bridgeQuote,
+      feePerGasInDecGwei: maxFeePerGasInDecGwei,
+      priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
+      nativeExchangeRate,
+    });
+  return {
+    amount,
+    amountMax,
+    valueInCurrency,
+    valueInCurrencyMax,
   };
 };
 
