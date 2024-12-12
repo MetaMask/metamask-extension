@@ -8,7 +8,7 @@ import {
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 
-export const VALUE_COMPARISON_PERCENT_THRESHOLD = 5;
+const VALUE_COMPARISON_PERCENT_THRESHOLD = 5;
 
 export function getIsRevokeSetApprovalForAll(
   value: DecodedTransactionDataResponse | undefined,
