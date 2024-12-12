@@ -111,15 +111,19 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
             $2.52
           </p>
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative-soft"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            ·
+            -
           </p>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            0.001 ETH
+            $2.52
           </p>
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+            style="mask-image: url('./images/icons/swap-vertical.svg'); cursor: pointer;"
+          />
         </div>
       </div>
       <div
@@ -271,15 +275,19 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
             $2.52
           </p>
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative-soft"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            ·
+            -
           </p>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
-            0.001 ETH
+            $2.52
           </p>
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+            style="mask-image: url('./images/icons/swap-vertical.svg'); cursor: pointer;"
+          />
         </div>
       </div>
       <div
