@@ -1,14 +1,12 @@
-import { AddressBookController } from '@metamask/address-book-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
 /**
  * The Metamask state for the address book controller.
  */
 export type AddressBookMetaMaskState = {
-  metamask: {
-    addressBook: AddressBookController['state']['addressBook'];
-  };
+  metamask: Pick<BackgroundStateProxy, 'AddressBookController'>;
 };
 
 /**
@@ -18,7 +16,7 @@ export type AddressBookMetaMaskState = {
  * @returns The full address book.
  */
 export const getFullAddressBook = (state: AddressBookMetaMaskState) =>
-  state.metamask.addressBook;
+  state.metamask.AddressBookController.addressBook;
 
 /**
  * Get the memoized full address book.

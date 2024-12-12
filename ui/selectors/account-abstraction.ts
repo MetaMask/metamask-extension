@@ -1,14 +1,14 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { UserOperationControllerState } from '@metamask/user-operation-controller';
 import { createSelector } from 'reselect';
+import { BackgroundStateProxy } from '../../shared/types/metamask';
 
 export type AccountAbstractionState = {
   confirmTransaction?: { txData?: TransactionMeta };
-  metamask: UserOperationControllerState;
+  metamask: Pick<BackgroundStateProxy, 'UserOperationController'>;
 };
 
 export function getUserOperations(state: AccountAbstractionState) {
-  return state.metamask.userOperations || {};
+  return state.metamask.UserOperationController.userOperations || {};
 }
 
 export const selectUserOperationMetadata = createSelector(

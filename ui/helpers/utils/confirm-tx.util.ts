@@ -36,7 +36,7 @@ export function getTransactionFee({
   numberOfDecimals,
 }: {
   value: string;
-  fromCurrency: EtherDenomination;
+  fromCurrency: EtherDenomination | string;
   toCurrency: string;
   conversionRate: number;
   numberOfDecimals: number;

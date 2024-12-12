@@ -2,12 +2,10 @@ import { ApprovalControllerState } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { BackgroundStateProxy } from '../../shared/types/metamask';
 
 export type ApprovalsMetaMaskState = {
-  metamask: {
-    pendingApprovals: ApprovalControllerState['pendingApprovals'];
-    approvalFlows: ApprovalControllerState['approvalFlows'];
-  };
+  metamask: Pick<BackgroundStateProxy, 'ApprovalController'>;
 };
 
 export function hasPendingApprovals(
@@ -18,7 +16,7 @@ export function hasPendingApprovals(
   ) => boolean,
 ) {
   const pendingApprovalRequests = Object.values(
-    state.metamask.pendingApprovals,
+    state.metamask.ApprovalController.pendingApprovals,
   ).filter(({ type }) => approvalTypes.includes(type as ApprovalType));
 
   if (predicate) {
@@ -36,7 +34,7 @@ export const getApprovalRequestsByType = (
   ) => boolean,
 ) => {
   const pendingApprovalRequests = Object.values(
-    state.metamask.pendingApprovals,
+    state.metamask.ApprovalController.pendingApprovals,
   ).filter(({ type }) => type === approvalType);
 
   if (predicate) {
@@ -47,11 +45,13 @@ export const getApprovalRequestsByType = (
 };
 
 export function getApprovalFlows(state: ApprovalsMetaMaskState) {
-  return state.metamask.approvalFlows;
+  return state.metamask.ApprovalController.approvalFlows;
 }
 
 export function getPendingApprovals(state: ApprovalsMetaMaskState) {
-  return Object.values(state.metamask.pendingApprovals ?? {});
+  return Object.values(
+    state.metamask.ApprovalController.pendingApprovals ?? [],
+  );
 }
 
 export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {

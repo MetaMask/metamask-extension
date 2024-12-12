@@ -61,7 +61,9 @@ export function createTxVerificationMiddleware(
     const chainId =
       typeof params.chainId === 'string'
         ? (params.chainId.toLowerCase() as Hex)
-        : getCurrentChainId({ metamask: networkController.state });
+        : getCurrentChainId({
+            metamask: { NetworkController: networkController.state },
+          });
 
     const experienceType = getExperience(
       params.to.toLowerCase() as Hex,

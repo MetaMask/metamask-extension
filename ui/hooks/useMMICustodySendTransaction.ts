@@ -12,7 +12,6 @@ import { showCustodyConfirmLink } from '../store/institutional/institution-actio
 import {
   getIsNoteToTraderSupported,
   getIsCustodianPublishesTransactionSupported,
-  State,
 } from '../selectors/institutional/selectors';
 import { useConfirmContext } from '../pages/confirmations/context/confirm';
 import { getConfirmationSender } from '../pages/confirmations/components/confirm/utils';
@@ -20,6 +19,7 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getSmartTransactionsEnabled } from '../../shared/modules/selectors';
 import { CHAIN_ID_TO_RPC_URL_MAP } from '../../shared/constants/network';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import { MetaMaskReduxState } from '../store/store';
 
 type MMITransactionMeta = TransactionMeta & {
   txParams: { from: string };
@@ -40,12 +40,16 @@ export function useMMICustodySendTransaction() {
   const { from } = getConfirmationSender(currentConfirmation);
   const fromChecksumHexAddress = toChecksumHexAddress(from || '');
 
-  const isNoteToTraderSupported = useSelector((state: State) =>
+  const isNoteToTraderSupported = useSelector((state: MetaMaskReduxState) =>
     getIsNoteToTraderSupported(state, fromChecksumHexAddress),
   );
 
-  const custodianPublishesTransaction = useSelector((state: State) =>
-    getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress),
+  const custodianPublishesTransaction = useSelector(
+    (state: MetaMaskReduxState) =>
+      getIsCustodianPublishesTransactionSupported(
+        state,
+        fromChecksumHexAddress,
+      ),
   );
 
   const isSmartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);

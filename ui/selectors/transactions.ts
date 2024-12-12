@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import {
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -20,6 +21,7 @@ import {
   createDeepEqualSelector,
   filterAndShapeUnapprovedTransactions,
 } from '../../shared/modules/selectors/util';
+import { MetaMaskSliceState } from '../ducks/metamask/metamask';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 
@@ -40,9 +42,43 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.CANCELLED,
 ];
 
+export type TransactionGroup = {
+  /**
+   * The nonce that the transactions within this transactionGroup share.
+   */
+  nonce?: string | undefined;
+  /**
+   * An array of transaction (`txMeta`) objects.
+   */
+  transactions: (
+    | TransactionMeta
+    | ReturnType<typeof smartTransactionsListSelector>[number]
+  )[];
+  /**
+   * The transaction (`txMeta`) with the lowest "time".
+   */
+  initialTransaction:
+    | TransactionMeta
+    | ReturnType<typeof smartTransactionsListSelector>[number];
+  /**
+   * Either the latest transaction or the confirmed transaction.
+   */
+  primaryTransaction:
+    | TransactionMeta
+    | ReturnType<typeof smartTransactionsListSelector>[number];
+  /**
+   * 'true' if a transaction in the group was a retry transaction.
+   */
+  hasRetried: boolean;
+  /**
+   * 'true' if a transaction in the group was a cancel transaction.
+   */
+  hasCancelled: boolean;
+};
+
 export const getTransactions = createDeepEqualSelector(
-  (state) => {
-    const { transactions } = state.metamask ?? {};
+  (state: MetaMaskSliceState) => {
+    const { transactions } = state.metamask.TxController ?? {};
 
     if (!transactions?.length) {
       return [];
@@ -54,7 +90,7 @@ export const getTransactions = createDeepEqualSelector(
 );
 
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
-  (state) => {
+  (state: MetaMaskSliceState) => {
     const transactions = getTransactions(state);
 
     if (!transactions.length) {
@@ -71,18 +107,17 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 );
 
 export const getUnapprovedTransactions = createDeepEqualSelector(
-  (state) => {
-    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+  getCurrentNetworkTransactions,
+  (currentNetworkTransactions) => {
     return filterAndShapeUnapprovedTransactions(currentNetworkTransactions);
   },
-  (transactions) => transactions,
 );
 
 // Unlike `getUnapprovedTransactions` and `getCurrentNetworkTransactions`
 // returns the total number of unapproved transactions on all networks
 export const getAllUnapprovedTransactions = createDeepEqualSelector(
-  (state) => {
-    const { transactions } = state.metamask || [];
+  (state: MetaMaskSliceState) => {
+    const { transactions } = state.metamask.TxController ?? [];
     if (!transactions?.length) {
       return [];
     }
@@ -97,7 +132,7 @@ export const getAllUnapprovedTransactions = createDeepEqualSelector(
 );
 
 export const getApprovedAndSignedTransactions = createDeepEqualSelector(
-  (state) => {
+  (state: MetaMaskSliceState) => {
     // Fetch transactions across all networks to address a nonce management limitation.
     // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
     const transactions = getTransactions(state);
@@ -112,8 +147,9 @@ export const getApprovedAndSignedTransactions = createDeepEqualSelector(
 );
 
 export const incomingTxListSelector = createDeepEqualSelector(
-  (state) => {
-    const { incomingTransactionsPreferences } = state.metamask;
+  (state: MetaMaskSliceState) => {
+    const { incomingTransactionsPreferences } =
+      state.metamask.PreferencesController;
     if (!incomingTransactionsPreferences) {
       return [];
     }
@@ -130,18 +166,21 @@ export const incomingTxListSelector = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
-export const unapprovedPersonalMsgsSelector = (state) =>
-  state.metamask.unapprovedPersonalMsgs;
-export const unapprovedDecryptMsgsSelector = (state) =>
-  state.metamask.unapprovedDecryptMsgs;
-export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
-  state.metamask.unapprovedEncryptionPublicKeyMsgs;
-export const unapprovedTypedMessagesSelector = (state) =>
-  state.metamask.unapprovedTypedMessages;
+export const unapprovedPersonalMsgsSelector = (state: MetaMaskSliceState) =>
+  state.metamask.SignatureController.unapprovedPersonalMsgs;
+export const unapprovedDecryptMsgsSelector = (state: MetaMaskSliceState) =>
+  state.metamask.DecryptMessageController.unapprovedDecryptMsgs;
+export const unapprovedEncryptionPublicKeyMsgsSelector = (
+  state: MetaMaskSliceState,
+) =>
+  state.metamask.EncryptionPublicKeyController
+    .unapprovedEncryptionPublicKeyMsgs;
+export const unapprovedTypedMessagesSelector = (state: MetaMaskSliceState) =>
+  state.metamask.SignatureController.unapprovedTypedMessages;
 
-export const smartTransactionsListSelector = (state) => {
+export const smartTransactionsListSelector = (state: MetaMaskSliceState) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-  return state.metamask.smartTransactionsState?.smartTransactions?.[
+  return state.metamask.SmartTransactionsController.smartTransactionsState?.smartTransactions?.[
     getCurrentChainId(state)
   ]
     ?.filter((smartTransaction) => {
@@ -161,8 +200,8 @@ export const smartTransactionsListSelector = (state) => {
       return (
         (smartTransaction.type === TransactionType.swap ||
           smartTransaction.type === TransactionType.swapApproval) &&
-        allowedSwapsSmartTransactionStatusesForActivityList.includes(
-          smartTransaction.status,
+        allowedSwapsSmartTransactionStatusesForActivityList.find(
+          (status) => status === smartTransaction.status,
         )
       );
     })
@@ -172,6 +211,10 @@ export const smartTransactionsListSelector = (state) => {
       status: stx.status?.startsWith('cancelled')
         ? SmartTransactionStatus.cancelled
         : stx.status,
+      txReceipt: {
+        status: stx.status,
+        transactionIndex: stx.transactionId,
+      },
     }));
 };
 
@@ -180,12 +223,14 @@ export const selectedAddressTxListSelector = createSelector(
   getCurrentNetworkTransactions,
   smartTransactionsListSelector,
   (selectedInternalAccount, transactions = [], smTransactions = []) => {
-    return transactions
-      .filter(
-        ({ txParams }) => txParams.from === selectedInternalAccount.address,
-      )
-      .filter(({ type }) => type !== TransactionType.incoming)
-      .concat(smTransactions);
+    return [
+      ...transactions
+        .filter(
+          ({ txParams }) => txParams.from === selectedInternalAccount.address,
+        )
+        .filter(({ type }) => type !== TransactionType.incoming),
+      ...smTransactions,
+    ];
   },
 );
 
@@ -226,7 +271,7 @@ export const transactionsSelector = createSelector(
   (subSelectorTxList = [], selectedAddressTxList = []) => {
     const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
 
-    return [...txsToRender].sort((a, b) => b.time - a.time);
+    return [...txsToRender].sort((a, b) => (b.time ?? 0) - (a.time ?? 0));
   },
 );
 
@@ -238,7 +283,7 @@ export const transactionsSelector = createSelector(
  * @param {string[]} nonces - Array of nonce strings in hex
  * @param {string} nonceToInsert - Nonce string in hex to be inserted into the array of nonces.
  */
-const insertOrderedNonce = (nonces, nonceToInsert) => {
+const insertOrderedNonce = (nonces: string[], nonceToInsert: string) => {
   let insertIndex = nonces.length;
 
   for (let i = 0; i < nonces.length; i++) {
@@ -261,7 +306,10 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
  * @param {object[]} transactions - Array of transaction objects.
  * @param {object} transaction - Transaction object to be inserted into the array of transactions.
  */
-const insertTransactionByTime = (transactions, transaction) => {
+const insertTransactionByTime = (
+  transactions: TransactionGroup['transactions'],
+  transaction: TransactionGroup['transactions'][number],
+) => {
   const { time } = transaction;
 
   let insertIndex = transactions.length;
@@ -269,7 +317,7 @@ const insertTransactionByTime = (transactions, transaction) => {
   for (let i = 0; i < transactions.length; i++) {
     const tx = transactions[i];
 
-    if (tx.time > time) {
+    if ((tx.time ?? 0) > (time ?? 0)) {
       insertIndex = i;
       break;
     }
@@ -300,7 +348,10 @@ const insertTransactionByTime = (transactions, transaction) => {
  * @param {transactionGroup} transactionGroup - transactionGroup object to be inserted into the
  * array of transactionGroups.
  */
-const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
+const insertTransactionGroupByTime = (
+  transactionGroups: TransactionGroup[],
+  transactionGroup: TransactionGroup,
+) => {
   const { primaryTransaction: { time: groupToInsertTime } = {} } =
     transactionGroup;
 
@@ -310,7 +361,7 @@ const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
     const txGroup = transactionGroups[i];
     const { primaryTransaction: { time } = {} } = txGroup;
 
-    if (time > groupToInsertTime) {
+    if ((time ?? 0) > (groupToInsertTime ?? 0)) {
       insertIndex = i;
       break;
     }
@@ -330,8 +381,8 @@ const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
  * but intended to be ordered by timestamp
  */
 const mergeNonNonceTransactionGroups = (
-  orderedTransactionGroups,
-  nonNonceTransactionGroups,
+  orderedTransactionGroups: TransactionGroup[],
+  nonNonceTransactionGroups: TransactionGroup[],
 ) => {
   nonNonceTransactionGroups.forEach((transactionGroup) => {
     insertTransactionGroupByTime(orderedTransactionGroups, transactionGroup);
@@ -346,10 +397,10 @@ const mergeNonNonceTransactionGroups = (
 export const nonceSortedTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => {
-    const unapprovedTransactionGroups = [];
-    const incomingTransactionGroups = [];
-    const orderedNonces = [];
-    const nonceToTransactionsMap = {};
+    const unapprovedTransactionGroups: TransactionGroup[] = [];
+    const incomingTransactionGroups: TransactionGroup[] = [];
+    const orderedNonces: string[] = [];
+    const nonceToTransactionsMap: Record<string, TransactionGroup> = {};
 
     transactions.forEach((transaction) => {
       const {
@@ -358,7 +409,7 @@ export const nonceSortedTransactionsSelector = createSelector(
         type,
         time: txTime,
         txReceipt,
-      } = transaction;
+      } = transaction as TransactionMeta;
 
       // Don't group transactions by nonce if:
       // 1. Tx nonce is undefined
@@ -368,7 +419,9 @@ export const nonceSortedTransactionsSelector = createSelector(
         typeof nonce === 'undefined' || type === TransactionType.incoming;
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
+      shouldNotBeGrouped =
+        shouldNotBeGrouped ||
+        Boolean('custodyId' in transaction && transaction.custodyId);
       ///: END:ONLY_INCLUDE_IF
 
       if (shouldNotBeGrouped) {
@@ -389,7 +442,7 @@ export const nonceSortedTransactionsSelector = createSelector(
             transactionGroup,
           );
         }
-      } else if (nonce in nonceToTransactionsMap) {
+      } else if (nonce && nonce in nonceToTransactionsMap) {
         const nonceProps = nonceToTransactionsMap[nonce];
         insertTransactionByTime(nonceProps.transactions, transaction);
 
@@ -428,16 +481,18 @@ export const nonceSortedTransactionsSelector = createSelector(
           // useTransactionDisplayData cannot parse a retry or cancel because
           // it lacks information on whether its a simple send, token transfer,
           // etc.
-          isRetryOrCancel: INVALID_INITIAL_TRANSACTION_TYPES.includes(type),
+          isRetryOrCancel: !!INVALID_INITIAL_TRANSACTION_TYPES.find(
+            (initTxType) => initTxType === type,
+          ),
           // Primary transactions usually are the latest transaction by time,
           // but not always. This value shows whether this transaction occurred
           // after the current primary.
-          occurredAfterPrimary: txTime > primaryTxTime,
+          occurredAfterPrimary: (txTime ?? 0) > primaryTxTime,
           // Priority Statuses are those that are ones either already confirmed
           // on chain, submitted to the network, or waiting for user approval.
           // These statuses typically indicate a transaction that needs to have
           // its status reflected in the UI.
-          hasPriorityStatus: status in PRIORITY_STATUS_HASH,
+          hasPriorityStatus: status && status in PRIORITY_STATUS_HASH,
           // A confirmed transaction is the most valid transaction status to
           // display because no other transaction of the same nonce can have a
           // more valid status.
@@ -445,14 +500,14 @@ export const nonceSortedTransactionsSelector = createSelector(
           // Initial transactions usually are the earliest transaction by time,
           // but not always. THis value shows whether this transaction occurred
           // before the current initial.
-          occurredBeforeInitial: txTime < initialTxTime,
+          occurredBeforeInitial: (txTime ?? 0) < initialTxTime,
           // We only allow users to retry the transaction in certain scenarios
           // to help shield from expensive operations and other unwanted side
           // effects. This value is used to determine if the entire transaction
           // group should be marked as having had a retry.
           isValidRetry:
             type === TransactionType.retry &&
-            (status in PRIORITY_STATUS_HASH ||
+            ((status && status in PRIORITY_STATUS_HASH) ||
               status === TransactionStatus.dropped),
           // We only allow users to cancel the transaction in certain scenarios
           // to help shield from expensive operations and other unwanted side
@@ -460,8 +515,10 @@ export const nonceSortedTransactionsSelector = createSelector(
           // group should be marked as having had a cancel.
           isValidCancel:
             type === TransactionType.cancel &&
-            (status in PRIORITY_STATUS_HASH ||
+            ((status && status in PRIORITY_STATUS_HASH) ||
               status === TransactionStatus.dropped),
+          eligibleForInitial: null as boolean | null,
+          shouldBePrimary: null as boolean | null,
         };
 
         // We should never assign a retry or cancel transaction as the initial,
@@ -549,7 +606,7 @@ export const nonceSortedTransactionsSelector = createSelector(
         if (currentTransaction.isValidCancel) {
           nonceProps.hasCancelled = true;
         }
-      } else {
+      } else if (nonce) {
         nonceToTransactionsMap[nonce] = {
           nonce,
           transactions: [transaction],
@@ -557,11 +614,13 @@ export const nonceSortedTransactionsSelector = createSelector(
           primaryTransaction: transaction,
           hasRetried:
             transaction.type === TransactionType.retry &&
-            (transaction.status in PRIORITY_STATUS_HASH ||
+            ((transaction.status &&
+              transaction.status in PRIORITY_STATUS_HASH) ||
               transaction.status === TransactionStatus.dropped),
           hasCancelled:
             transaction.type === TransactionType.cancel &&
-            (transaction.status in PRIORITY_STATUS_HASH ||
+            ((transaction.status &&
+              transaction.status in PRIORITY_STATUS_HASH) ||
               transaction.status === TransactionStatus.dropped),
         };
 
@@ -585,12 +644,15 @@ export const nonceSortedTransactionsSelector = createSelector(
         // transaction is expanded to include off-chain failures because it is
         // valid to retry those with higher gas prices.
         if (
-          INVALID_INITIAL_TRANSACTION_TYPES.includes(
-            txGroup.initialTransaction?.type,
+          INVALID_INITIAL_TRANSACTION_TYPES.find(
+            (invalidType) => invalidType === txGroup.initialTransaction?.type,
           )
         ) {
           const nonRetryOrCancel = txGroup.transactions.find(
-            (tx) => !INVALID_INITIAL_TRANSACTION_TYPES.includes(tx.type),
+            (tx) =>
+              !INVALID_INITIAL_TRANSACTION_TYPES.find(
+                (invalidType) => invalidType === tx.type,
+              ),
           );
           if (nonRetryOrCancel) {
             return {
@@ -615,6 +677,7 @@ export const nonceSortedPendingTransactionsSelector = createSelector(
   (transactions = []) =>
     transactions.filter(
       ({ primaryTransaction }) =>
+        primaryTransaction.status &&
         primaryTransaction.status in PENDING_STATUS_HASH,
     ),
 );
@@ -631,6 +694,7 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
     transactions
       .filter(
         ({ primaryTransaction }) =>
+          primaryTransaction.status &&
           !(primaryTransaction.status in PENDING_STATUS_HASH),
       )
       .reverse(),
@@ -651,7 +715,7 @@ const TRANSACTION_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
-export function hasTransactionPendingApprovals(state) {
+export function hasTransactionPendingApprovals(state: MetaMaskSliceState) {
   const unapprovedTxRequests = getApprovalRequestsByType(
     state,
     ApprovalType.Transaction,
@@ -662,13 +726,17 @@ export function hasTransactionPendingApprovals(state) {
   );
 }
 
-export function selectTransactionMetadata(state, transactionId) {
-  return state.metamask.transactions.find(
-    (transaction) => transaction.id === transactionId,
+export function selectTransactionMetadata(
+  state: MetaMaskSliceState,
+  transactionId: string,
+) {
+  return state.metamask.TxController.transactions.find(
+    (transaction: TransactionMeta) => transaction.id === transactionId,
   );
 }
 
 export const selectTransactionSender = createSelector(
-  (state, transactionId) => selectTransactionMetadata(state, transactionId),
+  (state: MetaMaskSliceState, transactionId: string) =>
+    selectTransactionMetadata(state, transactionId),
   (transaction) => transaction?.txParams?.from,
 );
