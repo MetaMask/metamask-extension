@@ -4102,12 +4102,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Dito mo makikita ang mga pahintulot na iyong binigay sa mga naka-install na Snap o konektadong site."
   },
-  "permissionsPageTourDescription": {
-    "message": "Ito ang iyong control panel para pamahalaan ang mga permiso na ibinigay sa mga konektadong Snap."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Ang mga konektadong site ay pahintulot na ngayon"
-  },
   "permitSimulationDetailInfo": {
     "message": "Binibigyan mo ang gumagastos ng permiso upang gumastos ng ganito karaming token mula sa iyong account."
   },

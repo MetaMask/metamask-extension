@@ -4102,12 +4102,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Di sinilah Anda dapat melihat izin yang Anda berikan untuk Snap yang terinstal atau situs yang terhubung."
   },
-  "permissionsPageTourDescription": {
-    "message": "Ini merupakan panel kontrol Anda untuk mengelola izin yang diberikan ke situs yang terhubung dan Snap yang terinstal."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Situs yang terhubung kini memiliki izin"
-  },
   "permitSimulationDetailInfo": {
     "message": "Anda memberikan izin kepada pengguna untuk menggunakan token sebanyak ini dari akun."
   },

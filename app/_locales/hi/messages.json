@@ -4102,12 +4102,6 @@
   "permissionsPageEmptySubContent": {
     "message": "यहां पर आप इंस्टॉल किए गए Snaps या कनेक्टेड साइटों को दी गई अनुमतियां देख सकते हैं।"
   },
-  "permissionsPageTourDescription": {
-    "message": "कनेक्टेड साइटों और इंस्टॉल किए गए Snaps को दी गई अनुमतियों को मैनेज करने के लिए यह आपका कंट्रोल पैनल है।"
-  },
-  "permissionsPageTourTitle": {
-    "message": "कनेक्टेड साइटें अब अनुमतियां हैं"
-  },
   "permitSimulationDetailInfo": {
     "message": "आप खर्च करने वाले को अपने अकाउंट से इतने सारे टोकन खर्च करने की अनुमति दे रहे हैं।"
   },

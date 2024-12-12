@@ -4102,12 +4102,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Đây là nơi bạn có thể xem các quyền mà bạn đã cấp cho các Snap đã cài đặt hoặc các trang web đã kết nối."
   },
-  "permissionsPageTourDescription": {
-    "message": "Đây là bảng điều khiển để bạn quản lý các quyền được cấp cho các trang web đã kết nối và các Snap đã cài đặt."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Các trang web đã kết nối hiện đã được cấp quyền"
-  },
   "permitSimulationDetailInfo": {
     "message": "Bạn đang cấp cho người chi tiêu quyền chi tiêu số lượng token này từ tài khoản của bạn."
   },
