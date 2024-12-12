@@ -1408,7 +1408,7 @@ jobs:
           path: test/test-results/e2e
 
   benchmark:
-    executor: node-browsers-medium
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
