@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
-import { defaultGanacheOptions, withFixtures } from '../helpers';
-import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixture-builder';
+import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { Driver } from '../../webdriver/driver';
+import FixtureBuilder from '../../fixture-builder';
 
 // This spec is created just for the purposes of testing the merge queue
 // We are doing a live request, and once the PR is in the merge queue,
