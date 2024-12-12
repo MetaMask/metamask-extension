@@ -140,33 +140,61 @@ export const getToChain = createDeepEqualSelector(
     toChains.find(({ chainId }) => chainId === toChainId),
 );
 
-export const getFromTokens = createSelector(
+// Individual selectors for FromTokens
+export const getFromTokensData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.srcTokens,
-  (state: BridgeAppState) => state.metamask.bridgeState.srcTopAssets,
-  (state: BridgeAppState) =>
-    state.metamask.bridgeState.srcTokensLoadingStatus === RequestStatus.LOADING,
-  (fromTokens, fromTopAssets, isLoading) => {
-    return {
-      isLoading,
-      fromTokens: fromTokens ?? {},
-      fromTopAssets: fromTopAssets ?? [],
-    };
-  },
+  (tokens) => tokens ?? {},
 );
 
-export const getToTokens = createSelector(
+export const getFromTopAssetsData = createSelector(
+  (state: BridgeAppState) => state.metamask.bridgeState.srcTopAssets,
+  (assets) => assets ?? [],
+);
+
+export const getFromTokensLoadingStatus = createSelector(
+  (state: BridgeAppState) =>
+    state.metamask.bridgeState.srcTokensLoadingStatus === RequestStatus.LOADING,
+  (isLoading) => isLoading,
+);
+
+export const getFromTokens = createSelector(
+  getFromTokensData,
+  getFromTopAssetsData,
+  getFromTokensLoadingStatus,
+  (fromTokens, fromTopAssets, isLoading) => ({
+    isLoading,
+    fromTokens,
+    fromTopAssets,
+  }),
+);
+
+// Individual selectors for ToTokens
+export const getToTokensData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.destTokens,
+  (tokens) => tokens ?? {},
+);
+
+export const getToTopAssetsData = createSelector(
   (state: BridgeAppState) => state.metamask.bridgeState.destTopAssets,
+  (assets) => assets ?? [],
+);
+
+export const getToTokensLoadingStatus = createSelector(
   (state: BridgeAppState) =>
     state.metamask.bridgeState.destTokensLoadingStatus ===
     RequestStatus.LOADING,
-  (toTokens, toTopAssets, isLoading) => {
-    return {
-      isLoading,
-      toTokens: toTokens ?? {},
-      toTopAssets: toTopAssets ?? [],
-    };
-  },
+  (isLoading) => isLoading,
+);
+
+export const getToTokens = createSelector(
+  getToTokensData,
+  getToTopAssetsData,
+  getToTokensLoadingStatus,
+  (toTokens, toTopAssets, isLoading) => ({
+    isLoading,
+    toTokens,
+    toTopAssets,
+  }),
 );
 
 export const getFromToken = createSelector(
