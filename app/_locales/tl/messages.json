@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Hinihingi sa iyo ng site na ito na mag-sign in gamit ang maling account."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Magpapatuloy lamang ang transaksyong ito kapag nakumpleto mo na ang naunang transaksyon."
-  },
   "alertModalAcknowledge": {
     "message": "Kinikilala ko ang panganib at nais ko pa rin magpatuloy"
   },

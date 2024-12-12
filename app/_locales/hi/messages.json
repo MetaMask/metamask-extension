@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "यह साइट आपसे गलत अकाउंट का उपयोग करके साइन इन करने के लिए कह रही है।"
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "यह ट्रांसेक्शन तभी पूरा होगा जब आपका पिछला ट्रांसेक्शन पूरा हो जाएगा।"
-  },
   "alertModalAcknowledge": {
     "message": "मैंने जोखिम को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
   },
