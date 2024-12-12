@@ -267,6 +267,16 @@ class TestDapp {
     await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
+  async confirmConnectAccountModal() {
+    console.log('Confirm connect account modal in notification window');
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.connectMetaMaskMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmDialogButton,
+    );
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  }
+
   /**
    * Connect account to test dapp.
    *
@@ -275,17 +285,8 @@ class TestDapp {
   async connectAccount(publicAddress: string) {
     console.log('Connect account to test dapp');
     await this.driver.clickElement(this.connectAccountButton);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(this.connectMetaMaskMessage);
-
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmDialogButton,
-    );
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-    await this.driver.waitForSelector({
-      css: this.connectedAccount,
-      text: publicAddress.toLowerCase(),
-    });
+    await this.confirmConnectAccountModal();
+    await this.check_ifAccountIsConnected(publicAddress);
     await this.driver.waitForSelector(this.localhostNetworkMessage);
   }
 
@@ -309,10 +310,30 @@ class TestDapp {
     await this.driver.clickElement(this.revokePermissionButton);
     await this.driver.refresh();
     await this.check_pageIsLoaded();
-    await this.driver.assertElementNotPresent({
-      css: this.connectedAccount,
-      text: publicAddress.toLowerCase(),
-    });
+    await this.check_ifAccountIsConnected(publicAddress, false);
+  }
+
+  /**
+   * Check if the account is connected to the test dapp.
+   *
+   * @param publicAddress - The public address to check if the account is connected to the test dapp.
+   * @param shouldBeConnected - Whether the account should be connected to the test dapp. Defaults to true.
+   */
+  async check_ifAccountIsConnected(
+    publicAddress: string,
+    shouldBeConnected: boolean = true,
+  ) {
+    if (shouldBeConnected) {
+      await this.driver.waitForSelector({
+        css: this.connectedAccount,
+        text: publicAddress.toLowerCase(),
+      });
+    } else {
+      await this.driver.assertElementNotPresent({
+        css: this.connectedAccount,
+        text: publicAddress.toLowerCase(),
+      });
+    }
   }
 
   /**
