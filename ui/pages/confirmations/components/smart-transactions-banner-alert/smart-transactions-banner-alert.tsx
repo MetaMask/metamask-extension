@@ -45,10 +45,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     return (
       <BannerAlert
         severity={BannerAlertSeverity.Info}
-        onClose={() => {
-          console.log('Dismiss clicked');
-          dispatch(dismissAndDisableAlert());
-        }}
+        onClose={() => dispatch(dismissAndDisableAlert())}
         data-testid="smart-transactions-banner-alert"
         style={getMarginStyle()}
       >
