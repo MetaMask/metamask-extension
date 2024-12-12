@@ -353,7 +353,7 @@ describe('migration #135', () => {
 
     expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
       new Error(
-        `Migration ${version}: Invalid chainId for selectedNetworkClientId "nonExistentNetworkClientId" of type undefined`,
+        `Migration ${version}: No chainId found for selectedNetworkClientId "nonExistentNetworkClientId"`,
       ),
     );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
@@ -621,6 +621,13 @@ describe('migration #135', () => {
         };
 
         const newStorage = await migrate(oldStorage);
+
+        expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+          new Error(
+            `Migration ${version}: No chainId found for networkClientIdForOrigin "doesNotExist"`,
+          ),
+        );
+
         expect(newStorage.data).toStrictEqual({
           ...baseData(),
           SelectedNetworkController: {
