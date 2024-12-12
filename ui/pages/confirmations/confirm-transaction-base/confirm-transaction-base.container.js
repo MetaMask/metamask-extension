@@ -179,7 +179,7 @@ const mapStateToProps = (state, ownProps) => {
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || paramsTransactionId;
   const transaction = getUnapprovedTransaction(state, txId) ?? {};
-  const { chainId } = transaction;
+  const { chainId, networkClientId } = transaction;
   const conversionRate = selectConversionRateByChainId(state, chainId);
 
   const {
@@ -364,6 +364,7 @@ const mapStateToProps = (state, ownProps) => {
     nativeCurrency,
     hardwareWalletRequiresConnection,
     chainId,
+    networkClientId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     keyringForAccount: keyring,

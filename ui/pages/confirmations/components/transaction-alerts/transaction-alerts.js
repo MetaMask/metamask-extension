@@ -51,9 +51,10 @@ const TransactionAlerts = ({
   const t = useI18nContext();
   const { chainId } = txData;
 
-  const { nativeCurrency } = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
-  );
+  const { nativeCurrency } =
+    useSelector((state) =>
+      selectNetworkConfigurationByChainId(state, chainId),
+    ) ?? {};
 
   const transactionData = txData.txParams.data;
   const currentTokenSymbol = tokenSymbol || nativeCurrency;
