@@ -283,7 +283,7 @@ export const TokenListItem = ({
           badge={
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
-              name={allNetworks[chainId as Hex].name}
+              name={allNetworks?.[chainId as Hex].name}
               src={tokenChainImage || undefined}
               backgroundColor={testNetworkBackgroundColor}
               className="multichain-token-list-item__badge__avatar-network"
