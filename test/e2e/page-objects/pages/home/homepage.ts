@@ -29,6 +29,8 @@ class HomePage {
 
   private readonly popoverCloseButton = '[data-testid="popover-close"]';
 
+  private readonly portfolioLink = '[data-testid="portfolio-link"]';
+
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
   private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
@@ -77,6 +79,11 @@ class HomePage {
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
+  }
+
+  async openPortfolioPage(): Promise<void> {
+    console.log(`Open portfolio page on homepage`);
+    await this.driver.clickElement(this.portfolioLink);
   }
 
   async startSendFlow(): Promise<void> {
