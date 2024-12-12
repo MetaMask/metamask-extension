@@ -54,12 +54,7 @@ export enum Binary {
 /**
  * Tuple representing all members of the {@link Binary} enum.
  */
-export type BinariesTuple = [
-  Binary.Anvil,
-  Binary.Forge,
-  Binary.Cast,
-  Binary.Chisel,
-];
+export type BinariesTuple = UnionToTuple<Binary>;
 
 /**
  * Tuple representing all members of the {@link Architecture} enum.
