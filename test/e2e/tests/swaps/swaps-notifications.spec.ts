@@ -19,6 +19,21 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
+// Add default state with STX disabled for all tests
+const baseFixtureOptions = {
+  ...withFixturesOptions,
+  fixtures: {
+    ...withFixturesOptions.fixtures,
+    metamask: {
+      ...withFixturesOptions.fixtures?.metamask,
+      preferences: {
+        ...withFixturesOptions.fixtures?.metamask?.preferences,
+        smartTransactionsOptInStatus: false,
+      },
+    },
+  },
+};
+
 describe('Swaps - notifications @no-mmi', function () {
   async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
@@ -70,7 +85,7 @@ describe('Swaps - notifications @no-mmi', function () {
   it('tests notifications for verified token on 1 source and price difference', async function () {
     await withFixtures(
       {
-        ...withFixturesOptions,
+        ...baseFixtureOptions,
         testSpecificMock: mockTradesApiPriceSlippageError,
         title: this.test?.fullTitle(),
       },
@@ -107,6 +122,7 @@ describe('Swaps - notifications @no-mmi', function () {
       },
     );
   });
+
   it('tests a notification for not enough balance', async function () {
     const lowBalanceGanacheOptions = {
       accounts: [
@@ -120,7 +136,7 @@ describe('Swaps - notifications @no-mmi', function () {
 
     await withFixtures(
       {
-        ...withFixturesOptions,
+        ...baseFixtureOptions,
         ganacheOptions: lowBalanceGanacheOptions,
         testSpecificMock: mockSwapsTransactionQuote,
         title: this.test?.fullTitle(),
@@ -149,10 +165,11 @@ describe('Swaps - notifications @no-mmi', function () {
       },
     );
   });
+
   it('tests notifications for token import', async function () {
     await withFixtures(
       {
-        ...withFixturesOptions,
+        ...baseFixtureOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -171,10 +188,11 @@ describe('Swaps - notifications @no-mmi', function () {
       },
     );
   });
+
   it('tests notifications for slippage', async function () {
     await withFixtures(
       {
-        ...withFixturesOptions,
+        ...baseFixtureOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
