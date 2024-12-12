@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { merge } from 'lodash';
 import { ManifestFlags } from '../../app/scripts/lib/manifestFlags';
-import { getManifestFlags } from '../../development/lib/get-manifest-flag';
+import { fetchManifestFlagsFromPRAndGit } from '../../development/lib/get-manifest-flag';
 
 export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
@@ -26,7 +26,7 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
       ),
     };
 
-    const additionalManifestFlags = await getManifestFlags();
+    const additionalManifestFlags = await fetchManifestFlagsFromPRAndGit();
     merge(flags, additionalManifestFlags);
 
     // Set `flags.sentry.forceEnable` to true by default
