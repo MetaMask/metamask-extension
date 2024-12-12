@@ -6205,11 +6205,15 @@ export default class MetamaskController extends EventEmitter {
             this.alertController,
           ),
 
-        grantPermissions: this.permissionController.grantPermissions.bind(
-          this.permissionController,
-        ),
+        grantPermissions: (approvedPermissions) => {
+          return this.permissionController.grantPermissions({
+            subject: { origin },
+            approvedPermissions,
+          });
+        },
         updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
+          origin,
         ),
 
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
