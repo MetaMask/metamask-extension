@@ -330,7 +330,7 @@ function maybeDetectPhishing(theController) {
       return {};
     },
     {
-      urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'],
+      urls: ['http://*/*', 'https://*/*'],
     },
     isManifestV2 ? ['blocking'] : [],
   );
