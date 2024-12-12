@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  ButtonLink,
   ButtonPrimary,
   ButtonPrimarySize,
   Text,
@@ -17,7 +18,9 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 import {
+  AlignItems,
   BlockSize,
+  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -31,8 +34,14 @@ import { useTradeProperties } from '../../../hooks/bridge/events/useTradePropert
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { Row } from '../layout';
+import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 
-export const BridgeCTAButton = () => {
+export const BridgeCTAButton = ({
+  onFetchNewQuotes,
+}: {
+  onFetchNewQuotes: () => void;
+}) => {
   const t = useI18nContext();
 
   const fromToken = useSelector(getFromToken);
@@ -42,9 +51,14 @@ export const BridgeCTAButton = () => {
 
   const fromAmount = useSelector(getFromAmount);
 
-  const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesRefreshCount } =
+  const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesLastFetchedMs } =
     useSelector(getBridgeQuotes);
-  const { maxRefreshCount, refreshRate } = useSelector(getBridgeQuotesConfig);
+  const { refreshRate } = useSelector(getBridgeQuotesConfig);
+  const isQuoteExpired = isQuoteExpiredUtil(
+    isQuoteGoingToRefresh,
+    refreshRate,
+    quotesLastFetchedMs,
+  );
 
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,7 +87,6 @@ export const BridgeCTAButton = () => {
   const tradeProperties = useTradeProperties();
 
   const ticker = useSelector(getNativeCurrency);
-  const [isQuoteExpired, setIsQuoteExpired] = useState(false);
 
   const isInsufficientBalance = isInsufficientBalance_(balanceAmount);
 
@@ -82,24 +95,8 @@ export const BridgeCTAButton = () => {
   const isInsufficientGasForQuote =
     isInsufficientGasForQuote_(nativeAssetBalance);
 
-  useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    // Reset the isQuoteExpired if quote fethching restarts
-    if (quotesRefreshCount === 0) {
-      setIsQuoteExpired(false);
-      return () => clearTimeout(timeout);
-    }
-    // After the last quote refresh, set a timeout to expire the quote and disable the CTA
-    if (quotesRefreshCount >= maxRefreshCount && !isQuoteGoingToRefresh) {
-      timeout = setTimeout(() => {
-        setIsQuoteExpired(true);
-      }, refreshRate);
-    }
-    return () => clearTimeout(timeout);
-  }, [isQuoteGoingToRefresh, quotesRefreshCount]);
-
   const label = useMemo(() => {
-    if (isQuoteExpired && !isNoQuotesAvailable) {
+    if (isQuoteExpired) {
       return t('bridgeQuoteExpired');
     }
 
@@ -141,7 +138,7 @@ export const BridgeCTAButton = () => {
     isQuoteExpired,
   ]);
 
-  return activeQuote ? (
+  return activeQuote && !isQuoteExpired ? (
     <ButtonPrimary
       width={BlockSize.Full}
       size={activeQuote ? ButtonPrimarySize.Md : ButtonPrimarySize.Lg}
@@ -178,13 +175,28 @@ export const BridgeCTAButton = () => {
       {label}
     </ButtonPrimary>
   ) : (
-    <Text
-      variant={TextVariant.bodyMd}
-      width={BlockSize.Full}
-      textAlign={TextAlign.Center}
-      color={TextColor.textAlternativeSoft}
+    <Row
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      gap={1}
     >
-      {label}
-    </Text>
+      <Text
+        variant={TextVariant.bodyMd}
+        textAlign={TextAlign.Center}
+        color={TextColor.textAlternativeSoft}
+      >
+        {label}
+      </Text>
+      {isQuoteExpired && (
+        <ButtonLink
+          as="a"
+          variant={TextVariant.bodyMd}
+          style={{ whiteSpace: 'nowrap' }}
+          onClick={onFetchNewQuotes}
+        >
+          {t('bridgeFetchNewQuotes')}
+        </ButtonLink>
+      )}
+    </Row>
   );
 };

@@ -886,6 +886,9 @@
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
+  "bridgeFetchNewQuotes": {
+    "message": "Fetch a new one?"
+  },
   "bridgeFrom": {
     "message": "Bridge from"
   },
@@ -900,7 +903,7 @@
     "message": "Net cost"
   },
   "bridgeQuoteExpired": {
-    "message": "Quotes expired - please request again"
+    "message": "Your quote timed out."
   },
   "bridgeSelectNetwork": {
     "message": "Select network"

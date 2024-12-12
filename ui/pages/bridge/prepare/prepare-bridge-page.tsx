@@ -66,7 +66,11 @@ import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { QuoteRequest } from '../types';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
-import { formatTokenAmount, isValidQuoteRequest } from '../utils/quote';
+import {
+  formatTokenAmount,
+  isQuoteExpired as isQuoteExpiredUtil,
+  isValidQuoteRequest,
+} from '../utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
   CrossChainSwapsEventProperties,
@@ -160,10 +164,24 @@ const PrepareBridgePage = () => {
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
-  const { isLoading, activeQuote, isQuoteGoingToRefresh } =
-    useSelector(getBridgeQuotes);
-
+  const {
+    isLoading,
+    activeQuote: activeQuote_,
+    isQuoteGoingToRefresh,
+    quotesLastFetchedMs,
+    quotesRefreshCount,
+  } = useSelector(getBridgeQuotes);
   const { refreshRate } = useSelector(getBridgeQuotesConfig);
+
+  // If latest quote is expired and user has sufficient balance
+  // set activeQuote to undefined to hide stale quotes but keep inputs filled
+  const isQuoteExpired = isQuoteExpiredUtil(
+    isQuoteGoingToRefresh,
+    refreshRate,
+    quotesLastFetchedMs,
+  );
+  const activeQuote =
+    isQuoteExpired && !quoteRequest.insufficientBal ? undefined : activeQuote_;
 
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
@@ -574,9 +592,13 @@ const PrepareBridgePage = () => {
                 backgroundColor={BackgroundColor.primaryMuted}
               />
             )}
-            <BridgeQuoteCard />
+            {activeQuote && <BridgeQuoteCard />}
             <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
-              <BridgeCTAButton />
+              <BridgeCTAButton
+                onFetchNewQuotes={() => {
+                  debouncedUpdateQuoteRequestInController(quoteParams);
+                }}
+              />
               {activeQuote?.approval && fromAmount && fromToken ? (
                 <Row justifyContent={JustifyContent.center} gap={1}>
                   <Text
