@@ -582,14 +582,12 @@ describe('Smart Transactions Migration Alert', () => {
       ...STATE_MOCK,
       metamask: {
         ...STATE_MOCK.metamask,
-        alerts: {
-          [AlertTypes.smartTransactionsMigration]: {
-            state: ALERT_STATE.CLOSED,
-          },
+        alertEnabledness: {
+          [AlertTypes.smartTransactionsMigration]: false,
         },
-      },
-      [AlertTypes.smartTransactionsMigration]: {
-        state: ALERT_STATE.CLOSED,
+        preferences: {
+          smartTransactionsOptInStatus: true,
+        },
       },
     };
     const store = configureStore(closedState);

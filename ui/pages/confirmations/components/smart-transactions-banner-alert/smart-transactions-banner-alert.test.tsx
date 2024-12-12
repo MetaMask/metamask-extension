@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import configureStore from '../../../../store/store';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
-import { ALERT_STATE } from '../../../../ducks/alerts/enums';
+import { setAlertEnabledness } from '../../../../store/actions';
 import { SmartTransactionsBannerAlert } from './smart-transactions-banner-alert';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -12,25 +12,24 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   default: () => (key: string) => key,
 }));
 
+// Update the mock to return a plain action object
 jest.mock('../../../../store/actions', () => ({
-  setAlertEnabledness: jest.fn().mockResolvedValue(undefined),
+  setAlertEnabledness: jest.fn(() => ({ type: 'mock-action' })),
 }));
 
 describe('SmartTransactionsBannerAlert', () => {
   const mockState = {
     metamask: {
-      alerts: {
-        [AlertTypes.smartTransactionsMigration]: {
-          state: ALERT_STATE.OPEN,
-        },
+      alertEnabledness: {
+        [AlertTypes.smartTransactionsMigration]: true,
       },
-    },
-    [AlertTypes.smartTransactionsMigration]: {
-      state: ALERT_STATE.OPEN,
+      preferences: {
+        smartTransactionsOptInStatus: true,
+      },
     },
   };
 
-  it('renders banner when alert is open', () => {
+  it('renders banner when alert is enabled and STX is opted in', () => {
     const store = configureStore(mockState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
@@ -41,20 +40,18 @@ describe('SmartTransactionsBannerAlert', () => {
     expect(screen.getByText('learnMore')).toBeInTheDocument();
   });
 
-  it('does not render when alert is closed', () => {
-    const closedState = {
+  it('does not render when alert is disabled', () => {
+    const disabledState = {
       metamask: {
-        alerts: {
-          [AlertTypes.smartTransactionsMigration]: {
-            state: ALERT_STATE.CLOSED,
-          },
+        alertEnabledness: {
+          [AlertTypes.smartTransactionsMigration]: false,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
         },
       },
-      [AlertTypes.smartTransactionsMigration]: {
-        state: ALERT_STATE.CLOSED,
-      },
     };
-    const store = configureStore(closedState);
+    const store = configureStore(disabledState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -62,31 +59,46 @@ describe('SmartTransactionsBannerAlert', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('dispatches dismissal action when close button clicked', async () => {
+  it('does not render when STX is not opted in', () => {
+    const notOptedInState = {
+      metamask: {
+        alertEnabledness: {
+          [AlertTypes.smartTransactionsMigration]: true,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: false,
+        },
+      },
+    };
+    const store = configureStore(notOptedInState);
+    renderWithProvider(<SmartTransactionsBannerAlert />, store);
+
+    expect(
+      screen.queryByTestId('smart-transactions-banner-alert'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('calls setAlertEnabledness when close button clicked', () => {
     const store = configureStore(mockState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     screen.getByRole('button', { name: /close/iu }).click();
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    const state = store.getState();
-    expect(state[AlertTypes.smartTransactionsMigration].state).toBe(
-      ALERT_STATE.CLOSED,
+    expect(setAlertEnabledness).toHaveBeenCalledWith(
+      AlertTypes.smartTransactionsMigration,
+      false,
     );
   });
 
-  it('dispatches dismissal action when learn more link clicked', async () => {
+  it('calls setAlertEnabledness when learn more link clicked', () => {
     const store = configureStore(mockState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     screen.getByText('learnMore').click();
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    const state = store.getState();
-    expect(state[AlertTypes.smartTransactionsMigration].state).toBe(
-      ALERT_STATE.CLOSED,
+    expect(setAlertEnabledness).toHaveBeenCalledWith(
+      AlertTypes.smartTransactionsMigration,
+      false,
     );
   });
 });

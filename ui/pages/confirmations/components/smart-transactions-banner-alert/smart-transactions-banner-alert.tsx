@@ -7,10 +7,8 @@ import {
   Text,
   BannerAlertSeverity,
 } from '../../../../components/component-library';
-import {
-  shouldShowSmartTransactionsMigrationAlert,
-  dismissAndDisableAlert,
-} from '../../../../ducks/alerts/smart-transactions-migration';
+import { setAlertEnabledness } from '../../../../store/actions';
+import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
@@ -19,15 +17,44 @@ type SmartTransactionsBannerAlertProps = {
   marginType?: MarginType;
 };
 
+type MetaMaskState = {
+  alertEnabledness: {
+    [key: string]: boolean;
+  };
+  preferences: {
+    smartTransactionsOptInStatus: boolean;
+  };
+};
+
+type RootState = {
+  metamask: MetaMaskState;
+};
+
 export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlertProps> =
   React.memo(({ marginType = 'default' }) => {
     const dispatch = useDispatch();
-    const shouldShow = useSelector(shouldShowSmartTransactionsMigrationAlert);
     const t = useI18nContext();
 
-    if (!shouldShow) {
+    const alertEnabled = useSelector(
+      (state: RootState) =>
+        state.metamask.alertEnabledness?.[
+          AlertTypes.smartTransactionsMigration
+        ] !== false,
+    );
+    const smartTransactionsOptIn = useSelector(
+      (state: RootState) =>
+        state.metamask.preferences?.smartTransactionsOptInStatus === true,
+    );
+
+    if (!alertEnabled || !smartTransactionsOptIn) {
       return null;
     }
+
+    const handleDismiss = () => {
+      dispatch(
+        setAlertEnabledness(AlertTypes.smartTransactionsMigration, false),
+      );
+    };
 
     const getMarginStyle = () => {
       switch (marginType) {
@@ -45,7 +72,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     return (
       <BannerAlert
         severity={BannerAlertSeverity.Info}
-        onClose={() => dispatch(dismissAndDisableAlert())}
+        onClose={handleDismiss}
         data-testid="smart-transactions-banner-alert"
         style={getMarginStyle()}
       >
@@ -53,7 +80,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
           {t('smartTransactionsEnabled')}
           <ButtonLink
             href={SMART_TRANSACTIONS_LEARN_MORE_URL}
-            onClick={() => dispatch(dismissAndDisableAlert())}
+            onClick={handleDismiss}
             externalLink
           >
             {t('learnMore')}
