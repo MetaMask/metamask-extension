@@ -5,6 +5,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import {
   forceUpdateMetamaskState,
+  addTransaction,
+  updateTransaction,
   addTransactionAndWaitForPublish,
 } from '../../../store/actions';
 import {
@@ -14,7 +16,8 @@ import {
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { ChainId } from '../types';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -22,11 +25,12 @@ export default function useHandleTx() {
     checkNetworkAndAccountSupports1559,
   );
   const networkGasFeeEstimates = useSelector(getGasFeeEstimates);
+  const shouldUseSmartTransaction = useSelector(getIsSmartTransaction);
 
   const handleTx = async ({
     txType,
     txParams,
-    swapsOptions,
+    fieldsToAddToTxMeta,
   }: {
     txType: TransactionType.bridgeApproval | TransactionType.bridge;
     txParams: {
@@ -37,15 +41,9 @@ export default function useHandleTx() {
       data: string;
       gasLimit: number | null;
     };
-    swapsOptions: {
-      hasApproveTx: boolean;
-      meta: Partial<TransactionMeta>;
-    };
+    fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
   }) => {
-    const hexChainId = new Numeric(
-      txParams.chainId,
-      10,
-    ).toPrefixedHexString() as `0x${string}`;
+    const hexChainId = decimalToPrefixedHex(txParams.chainId);
 
     const { maxFeePerGas, maxPriorityFeePerGas } = await getTxGasEstimates({
       networkAndAccountSupports1559,
@@ -64,11 +62,26 @@ export default function useHandleTx() {
       maxPriorityFeePerGas,
     };
 
-    const txMeta = await addTransactionAndWaitForPublish(finalTxParams, {
-      requireApproval: false,
-      type: txType,
-      swaps: swapsOptions,
-    });
+    // For the bridge tx only
+    // Need access to the txMeta.id right away so we can track it in BridgeStatusController,
+    // so we call addTransaction instead of addTransactionAndWaitForPublish
+    // if it's an STX, addTransactionAndWaitForPublish blocks until there is a txHash
+    let txMeta: TransactionMeta;
+    if (txType === TransactionType.bridge && shouldUseSmartTransaction) {
+      txMeta = await addTransaction(finalTxParams, {
+        requireApproval: false,
+        type: txType,
+      });
+    } else {
+      txMeta = await addTransactionAndWaitForPublish(finalTxParams, {
+        requireApproval: false,
+        type: txType,
+      });
+    }
+
+    // Note that updateTransaction doesn't actually error if you add fields that don't conform the to the txMeta type
+    // they will be there at runtime, but you just don't get any type safety checks on them
+    dispatch(updateTransaction({ ...txMeta, ...fieldsToAddToTxMeta }, true));
 
     await forceUpdateMetamaskState(dispatch);
 

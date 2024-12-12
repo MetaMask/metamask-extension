@@ -150,7 +150,7 @@ describe('Ducks - Bridge', () => {
         fromToken: null,
         toToken: null,
         fromTokenInputValue: null,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
       });
@@ -188,7 +188,9 @@ describe('Ducks - Bridge', () => {
     it('dispatches action to the bridge controller', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore({}, { fromTokenInputValue: '10' }),
+        createBridgeMockStore({
+          bridgeSliceOverrides: { fromTokenInputValue: '10' },
+        }),
       );
       const state = mockStore.getState().bridge;
       const mockResetBridgeState = jest.fn();
@@ -211,7 +213,7 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
         toTokenExchangeRate: null,
@@ -258,7 +260,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.356628,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
     });
 
@@ -303,7 +305,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.999881,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
     });
   });

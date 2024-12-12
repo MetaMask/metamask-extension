@@ -21,7 +21,10 @@ import {
 } from '@metamask/keyring-api';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { TransactionController } from '@metamask/transaction-controller';
+import {
+  CHAIN_IDS,
+  TransactionController,
+} from '@metamask/transaction-controller';
 import {
   RatesController,
   TokenListController,
@@ -39,6 +42,7 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
+import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
 import {
   BalancesController as MultichainBalancesController,
@@ -1206,7 +1210,10 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           metamaskController.txController.wipeTransactions,
-        ).toHaveBeenCalledWith(false, selectedAddressMock);
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          chainId: CHAIN_IDS.MAINNET,
+        });
         expect(
           metamaskController.smartTransactionsController.wipeSmartTransactions,
         ).toHaveBeenCalledWith({
@@ -2599,6 +2606,131 @@ describe('MetaMaskController', () => {
         expect(spyBalancesTrackerUpdateBalance).toHaveBeenLastCalledWith(
           mockNonEvmAccount.id,
         );
+      });
+    });
+
+    describe('RemoteFeatureFlagController', () => {
+      let localMetamaskController;
+
+      beforeEach(() => {
+        localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            PreferencesController: {
+              useExternalServices: false,
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should initialize RemoteFeatureFlagController in disabled state when useExternalServices is false', async () => {
+        const { remoteFeatureFlagController, preferencesController } =
+          localMetamaskController;
+
+        expect(preferencesController.state.useExternalServices).toBe(false);
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should disable feature flag fetching when useExternalServices is disabled', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+
+        // First enable external services
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        // Then disable them
+        await simulatePreferencesChange({
+          useExternalServices: false,
+        });
+
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should handle errors during feature flag updates', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+        const mockError = new Error('Failed to fetch');
+
+        jest
+          .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
+          .mockRejectedValue(mockError);
+
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should maintain feature flag state across preference toggles', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+        const mockFlags = { testFlag: true };
+
+        jest
+          .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
+          .mockResolvedValue(mockFlags);
+
+        // Enable external services
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        // Disable external services
+        await simulatePreferencesChange({
+          useExternalServices: false,
+        });
+
+        // Verify state is cleared
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+    });
+
+    describe('_getConfigForRemoteFeatureFlagRequest', () => {
+      it('returns config in mapping', async () => {
+        const result =
+          await metamaskController._getConfigForRemoteFeatureFlagRequest();
+        expect(result).toStrictEqual({
+          distribution: 'main',
+          environment: 'dev',
+        });
+      });
+
+      it('returna config when not matching default mapping', async () => {
+        process.env.METAMASK_BUILD_TYPE = 'beta';
+        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
+
+        const result =
+          await metamaskController._getConfigForRemoteFeatureFlagRequest();
+        expect(result).toStrictEqual({
+          distribution: 'main',
+          environment: 'rc',
+        });
       });
     });
   });

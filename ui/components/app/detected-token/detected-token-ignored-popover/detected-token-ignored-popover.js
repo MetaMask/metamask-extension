@@ -69,6 +69,7 @@ const DetectedTokenIgnoredPopover = ({
             variant={BUTTON_VARIANT.PRIMARY}
             onClick={handleClearTokensSelection}
             size={BUTTON_SIZES.LG}
+            data-testid="detected-token-ignored-popover-confirm-button"
           >
             {t('confirm')}
           </Button>
