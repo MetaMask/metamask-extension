@@ -377,17 +377,17 @@ function getNonEvmCachedBalance(
     ]?.[0];
 
   if (!asset) {
-    console.error('Could not find asset type for network:', network);
+    console.warn('Could not find asset type for network:', network);
   }
 
   const balancesForAccount = balances?.[selectedAccount.id];
   if (!balancesForAccount) {
-    console.error('Could not find balances for account:', selectedAccount);
+    console.warn('Could not find balances for account:', selectedAccount);
   }
 
   const balanceOfAsset = balancesForAccount?.[asset];
   if (!balanceOfAsset) {
-    console.error('Could not find balance for asset:', asset);
+    console.warn('Could not find balance for asset:', asset);
   }
 
   return balanceOfAsset?.amount ?? 0;
