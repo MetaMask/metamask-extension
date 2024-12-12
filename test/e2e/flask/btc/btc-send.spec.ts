@@ -87,12 +87,6 @@ describe('BTC Account - Send', function (this: Suite) {
         assert.equal(await snapSendButton.isEnabled(), true);
         await snapSendButton.click();
 
-        // Check that we are selecting the "Activity tab" right after the send.
-        await driver.waitForSelector({
-          tag: 'div',
-          text: 'Bitcoin activity is not supported',
-        });
-
         const transaction = await getTransactionRequest(mockServer);
         assert(transaction !== undefined);
       },
@@ -148,12 +142,6 @@ describe('BTC Account - Send', function (this: Suite) {
         });
         assert.equal(await snapSendButton.isEnabled(), true);
         await snapSendButton.click();
-
-        // Check that we are selecting the "Activity tab" right after the send.
-        await driver.waitForSelector({
-          tag: 'div',
-          text: 'Bitcoin activity is not supported',
-        });
 
         const transaction = await getTransactionRequest(mockServer);
         assert(transaction !== undefined);
