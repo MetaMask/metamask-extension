@@ -1,4 +1,8 @@
 import { useSelector } from 'react-redux';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
@@ -10,28 +14,53 @@ import {
 } from '../../../shared/constants/network';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
 
+const getSourceAndDestChainIds = ({
+  bridgeHistoryItem,
+}: UseBridgeChainInfoProps) => {
+  const hexSrcChainId = bridgeHistoryItem
+    ? (new Numeric(
+        bridgeHistoryItem.quote.srcChainId,
+        10,
+      ).toPrefixedHexString() as Hex)
+    : undefined;
+  const hexDestChainId = bridgeHistoryItem
+    ? (new Numeric(
+        bridgeHistoryItem.quote.destChainId,
+        10,
+      ).toPrefixedHexString() as Hex)
+    : undefined;
+
+  return {
+    hexSrcChainId,
+    hexDestChainId,
+  };
+};
+
 export type UseBridgeChainInfoProps = {
   bridgeHistoryItem?: BridgeHistoryItem;
+  srcTxMeta?: TransactionMeta;
 };
 
 export default function useBridgeChainInfo({
   bridgeHistoryItem,
+  srcTxMeta,
 }: UseBridgeChainInfoProps) {
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
 
-  const decSrcChainId = bridgeHistoryItem?.quote.srcChainId;
-  const hexSrcChainId = decSrcChainId
-    ? (new Numeric(decSrcChainId, 10).toPrefixedHexString() as Hex)
-    : undefined;
+  if (srcTxMeta?.type !== TransactionType.bridge) {
+    return {
+      srcNetwork: undefined,
+      destNetwork: undefined,
+    };
+  }
 
-  const decDestChainId = bridgeHistoryItem?.quote.destChainId;
-  const hexDestChainId = decDestChainId
-    ? (new Numeric(decDestChainId, 10).toPrefixedHexString() as Hex)
-    : undefined;
+  const { hexSrcChainId, hexDestChainId } = getSourceAndDestChainIds({
+    bridgeHistoryItem,
+  });
 
-  if (!bridgeHistoryItem || !hexSrcChainId || !hexDestChainId) {
+  if (!hexSrcChainId || !hexDestChainId) {
     return {
       srcNetwork: undefined,
       destNetwork: undefined,

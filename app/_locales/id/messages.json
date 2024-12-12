@@ -416,6 +416,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Penyerang terkadang meniru situs dengan membuat perubahan kecil pada alamat situs. Pastikan Anda berinteraksi dengan situs yang dituju sebelum melanjutkan."
   },
+  "alertMessageChangeInSimulationResults": {
+    "message": "Estimasi perubahan untuk transaksi ini telah diperbarui. Tinjau dengan saksama sebelum melanjutkan."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "Kami tidak dapat memberikan biaya akurat dan estimasi ini mungkin tinggi. Kami menyarankan Anda untuk memasukkan batas gas kustom, tetapi ada risiko transaksi tetap gagal."
   },
@@ -454,6 +457,9 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Tinjau semua peringatan"
+  },
+  "alertReasonChangeInSimulationResults": {
+    "message": "Hasil telah berubah"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Biaya tidak akurat"
@@ -837,8 +843,14 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeCalculatingAmount": {
+    "message": "Menghitung..."
+  },
   "bridgeDontSend": {
     "message": "Bridge, jangan kirim"
+  },
+  "bridgeEnterAmount": {
+    "message": "Masukkan jumlah"
   },
   "bridgeFrom": {
     "message": "Bridge dari"
@@ -846,8 +858,17 @@
   "bridgeSelectNetwork": {
     "message": "Pilih jaringan"
   },
+  "bridgeSelectTokenAndAmount": {
+    "message": "Pilih token dan jumlah"
+  },
+  "bridgeTimingTooltipText": {
+    "message": "Ini merupakan estimasi waktu yang diperlukan untuk menyelesaikan bridge."
+  },
   "bridgeTo": {
     "message": "Bridge ke"
+  },
+  "bridgeTotalFeesTooltipText": {
+    "message": "Ini termasuk biaya gas (dibayarkan kepada penambang kripto) dan biaya relayer (dibayarkan untuk menjalankan layanan kompleks seperti bridge).\nBiaya didasarkan pada lalu lintas jaringan dan kompleksitas transaksi. MetaMask tidak mendapat keuntungan dari kedua biaya tersebut."
   },
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
@@ -1012,9 +1033,6 @@
   "confirmRecoveryPhrase": {
     "message": "Konfirmasikan Frasa Pemulihan Rahasia"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Permintaan izin"
-  },
   "confirmTitleDeployContract": {
     "message": "Terapkan kontrak"
   },
@@ -1159,6 +1177,14 @@
   "connectedWithAccountName": {
     "message": "Terhubung dengan $1",
     "description": "$1 represents account name"
+  },
+  "connectedWithNetwork": {
+    "message": "$1 jaringan terhubung",
+    "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "Terhubung dengan $1",
+    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Menghubungkan"
@@ -1493,6 +1519,9 @@
   "dcent": {
     "message": "D'Cent"
   },
+  "debitCreditPurchaseOptions": {
+    "message": "Opsi pembelian kartu debit atau kredit"
+  },
   "decimal": {
     "message": "Desimal token"
   },
@@ -1802,6 +1831,9 @@
   "editSpendingCapError": {
     "message": "Batas penggunaan tidak boleh melebihi $1 digit desimal. Hapus digit desimal untuk melanjutkan."
   },
+  "editSpendingCapSpecialCharError": {
+    "message": "Masukkan angka saja"
+  },
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
   },
@@ -1904,9 +1936,41 @@
     "message": "Kode: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
+  "errorPageContactSupport": {
+    "message": "Hubungi dukungan",
+    "description": "Button for contact MM support"
+  },
+  "errorPageDescribeUsWhatHappened": {
+    "message": "Jelaskan yang terjadi",
+    "description": "Button for submitting report to sentry"
+  },
+  "errorPageInfo": {
+    "message": "Informasi Anda tidak dapat ditampilkan. Jangan khawatir, dompet dan dana Anda aman.",
+    "description": "Information banner shown in the error page"
+  },
+  "errorPageMessageTitle": {
+    "message": "Pesan kesalahan",
+    "description": "Title for description, which is displayed for debugging purposes"
+  },
+  "errorPageSentryFormTitle": {
+    "message": "Jelaskan yang terjadi",
+    "description": "In sentry feedback form, The title at the top of the feedback form."
+  },
+  "errorPageSentryMessagePlaceholder": {
+    "message": "Berbagi detail seperti cara kami dapat mereproduksi bug akan membantu kami memperbaiki masalah tersebut.",
+    "description": "In sentry feedback form, The placeholder for the feedback description input field."
+  },
+  "errorPageSentrySuccessMessageText": {
+    "message": "Terima kasih! Kami akan segera memeriksanya.",
+    "description": "In sentry feedback form, The message displayed after a successful feedback submission."
+  },
   "errorPageTitle": {
     "message": "MetaMask mengalami kesalahan",
     "description": "Title of generic error page"
+  },
+  "errorPageTryAgain": {
+    "message": "Coba lagi",
+    "description": "Button for try again"
   },
   "errorStack": {
     "message": "Tumpukan:",
@@ -1924,6 +1988,9 @@
   },
   "estimatedFeeTooltip": {
     "message": "Jumlah yang dibayarkan untuk memproses transaksi di jaringan."
+  },
+  "estimatedTime": {
+    "message": "Estimasi waktu"
   },
   "ethGasPriceFetchWarning": {
     "message": "Biaya gas cadangan diberikan karena layanan estimasi gas utama saat ini tidak tersedia."
@@ -2069,6 +2136,9 @@
   },
   "functionType": {
     "message": "Jenis fungsi"
+  },
+  "fundingMethod": {
+    "message": "Metode pendanaan"
   },
   "gas": {
     "message": "Gas"
@@ -3724,6 +3794,12 @@
   "outdatedBrowserNotification": {
     "message": "Browser Anda sudah usang. Jika browser tidak diperbarui, Anda tidak akan bisa mendapatkan tambalan keamanan dan fitur baru dari MetaMask."
   },
+  "overrideContentSecurityPolicyHeader": {
+    "message": "Batalkan header Content-Security-Policy"
+  },
+  "overrideContentSecurityPolicyHeaderDescription": {
+    "message": "Opsi ini merupakan solusi sementara untuk masalah yang diketahui di Firefox, di mana header Content-Security-Policy dapp dapat mencegah ekstensi dimuat dengan benar. Menonaktifkan opsi ini tidak disarankan kecuali diperlukan untuk kompatibilitas halaman web tertentu."
+  },
   "padlock": {
     "message": "Gembok"
   },
@@ -4395,6 +4471,9 @@
   "requestFromInfo": {
     "message": "Ini merupakan situs yang meminta tanda tangan Anda."
   },
+  "requestFromInfoSnap": {
+    "message": "Ini merupakan Snap yang meminta tanda tangan Anda."
+  },
   "requestFromTransactionDescription": {
     "message": "Ini merupakan situs yang meminta konfirmasi Anda."
   },
@@ -4416,6 +4495,10 @@
   "requestingForAccount": {
     "message": "Meminta untuk $1",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "Meminta untuk $1",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "permintaan menunggu untuk disetujui"
@@ -4895,6 +4978,9 @@
   "simulationDetailsIncomingHeading": {
     "message": "Anda menerima"
   },
+  "simulationDetailsNoChanges": {
+    "message": "Tidak ada perubahan"
+  },
   "simulationDetailsOutgoingHeading": {
     "message": "Anda mengirim"
   },
@@ -4916,6 +5002,9 @@
   },
   "simulationDetailsTransactionReverted": {
     "message": "Transaksi ini kemungkinan besar akan gagal"
+  },
+  "simulationDetailsUnavailable": {
+    "message": "Tidak tersedia"
   },
   "simulationErrorMessageV2": {
     "message": "Kami tidak dapat memperkirakan gas. Tampaknya ada kesalahan dalam kontrak dan transaksi ini berpotensi gagal."
@@ -5142,6 +5231,15 @@
   "snapsUIError": {
     "message": "Hubungi pembuat $1 untuk dukungan lebih lanjut.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaSupportSectionTitle": {
+    "message": "Solana"
+  },
+  "solanaSupportToggleDescription": {
+    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Solana ke Ekstensi MetaMask yang berasal dari Frasa Pemulihan Rahasia yang sudah ada. Ini merupakan fitur Beta eksperimental, jadi Anda harus menggunakannya dengan risiko yang ditanggung sendiri."
+  },
+  "solanaSupportToggleTitle": {
+    "message": "Aktifkan \"Tambahkan akun Solana baru (Beta)\""
   },
   "somethingDoesntLookRight": {
     "message": "Ada yang tidak beres? $1",
@@ -5801,6 +5899,10 @@
   "swapTokenVerifiedOn1SourceTitle": {
     "message": "Token berpotensi tidak autentik"
   },
+  "swapTokenVerifiedSources": {
+    "message": "Dikonfirmasi oleh $1 sumber. Verifikasikan pada $2.",
+    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
+  },
   "swapTooManyDecimalsError": {
     "message": "$1 memungkinkan hingga $2 desimal",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -5918,6 +6020,12 @@
   "tips": {
     "message": "Kiat"
   },
+  "tipsForUsingAWallet": {
+    "message": "Tip menggunakan dompet"
+  },
+  "tipsForUsingAWalletDescription": {
+    "message": "Menambahkan token membuka lebih banyak cara untuk menggunakan web3."
+  },
   "to": {
     "message": "Untuk"
   },
@@ -5970,6 +6078,9 @@
   "tokenList": {
     "message": "Daftar token"
   },
+  "tokenMarketplace": {
+    "message": "Pasar token"
+  },
   "tokenScamSecurityRisk": {
     "message": "penipuan dan risiko keamanan token"
   },
@@ -6006,6 +6117,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalFees": {
+    "message": "Total biaya"
   },
   "totalVolume": {
     "message": "Volume total"
@@ -6483,10 +6597,6 @@
   },
   "wrongNetworkName": {
     "message": "Menurut catatan kami, nama jaringan mungkin tidak cocok dengan ID chain ini."
-  },
-  "xOfYPending": {
-    "message": "$1 dari $2 berstatus menunggu",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Ya"

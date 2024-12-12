@@ -69,7 +69,10 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import useBridgeTxHistoryData from '../../../hooks/bridge/useBridgeTxHistoryData';
+import {
+  useBridgeTxHistoryData,
+  FINAL_NON_CONFIRMED_STATUSES,
+} from '../../../hooks/bridge/useBridgeTxHistoryData';
 import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
 
 function TransactionListItemInner({
@@ -93,14 +96,10 @@ function TransactionListItemInner({
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const {
-    bridgeTitleSuffix,
-    bridgeTxHistoryItem,
-    isBridgeComplete,
-    showBridgeTxDetails,
-  } = useBridgeTxHistoryData({
-    transactionGroup,
-  });
+  const { bridgeTxHistoryItem, isBridgeComplete, showBridgeTxDetails } =
+    useBridgeTxHistoryData({
+      transactionGroup,
+    });
 
   const {
     initialTransaction: { id },
@@ -278,7 +277,7 @@ function TransactionListItemInner({
   ]);
   const currentChain = useSelector(getCurrentNetwork);
   let showCancelButton =
-    !hasCancelled && isPending && !isUnapproved && !isSubmitting;
+    !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   showCancelButton = showCancelButton && !isCustodian;
@@ -309,7 +308,7 @@ function TransactionListItemInner({
             : toggleShowDetails
         }
         className={className}
-        title={`${title}${bridgeTitleSuffix}`}
+        title={title}
         icon={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           isCustodian ? (
@@ -330,7 +329,6 @@ function TransactionListItemInner({
             ///: END:ONLY_INCLUDE_IF
             <BadgeWrapper
               anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-              positionObj={{ top: -4, right: -4 }}
               display={Display.Block}
               badge={
                 <AvatarNetwork
@@ -339,7 +337,6 @@ function TransactionListItemInner({
                   size={AvatarNetworkSize.Xs}
                   name={currentChain?.nickname}
                   src={currentChain?.rpcPrefs?.imageUrl}
-                  borderWidth={1}
                   borderColor={BackgroundColor.backgroundDefault}
                   backgroundColor={testNetworkBackgroundColor}
                 />
@@ -355,7 +352,9 @@ function TransactionListItemInner({
           ///: END:ONLY_INCLUDE_IF
         }
         subtitle={
-          isBridgeTx && isBridgeComplete === false ? (
+          !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
+          isBridgeTx &&
+          !isBridgeComplete ? (
             <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}
               transactionGroup={transactionGroup}
@@ -405,16 +404,21 @@ function TransactionListItemInner({
           )
         }
       >
-        <Box paddingTop={4} className="transaction-list-item__pending-actions">
-          {showCancelButton && (
-            <CancelButton
-              data-testid="cancel-button"
-              transaction={transactionGroup.primaryTransaction}
-              cancelTransaction={cancelTransaction}
-            />
-          )}
-          {speedUpButton}
-        </Box>
+        {Boolean(showCancelButton || speedUpButton) && (
+          <Box
+            paddingTop={4}
+            className="transaction-list-item__pending-actions"
+          >
+            {showCancelButton && (
+              <CancelButton
+                data-testid="cancel-button"
+                transaction={transactionGroup.primaryTransaction}
+                cancelTransaction={cancelTransaction}
+              />
+            )}
+            {speedUpButton}
+          </Box>
+        )}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           <a {...debugTransactionMeta} className="test-transaction-meta" />
@@ -451,7 +455,8 @@ function TransactionListItemInner({
             !isCustodian &&
             ///: END:ONLY_INCLUDE_IF
             isPending &&
-            !hasCancelled
+            !hasCancelled &&
+            !isBridgeTx
           }
           transactionStatus={() => (
             <TransactionStatusLabel

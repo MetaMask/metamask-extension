@@ -35,6 +35,7 @@ jest.mock('../../../store/actions', () => {
   const original = jest.requireActual('../../../store/actions');
   return {
     ...original,
+    addTransaction: jest.fn(),
     addTransactionAndWaitForPublish: jest.fn(),
     addToken: jest.fn().mockImplementation(original.addToken),
     addNetwork: jest.fn().mockImplementation(original.addNetwork),
@@ -132,15 +133,15 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
     it('executes bridge transaction', async () => {
       // Setup
-      const mockAddTransactionAndWaitForPublish = jest.fn(() => {
+      const mockAddTransaction = jest.fn(() => {
         return {
           id: 'txMetaId-01',
         };
       });
 
       // For some reason, setBackgroundConnection does not work, gets hung up on the promise, so mock this way instead
-      (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
-        mockAddTransactionAndWaitForPublish,
+      (actions.addTransaction as jest.Mock).mockImplementation(
+        mockAddTransaction,
       );
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
@@ -153,7 +154,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockAddTransactionAndWaitForPublish).toHaveBeenLastCalledWith(
+      expect(mockAddTransaction).toHaveBeenLastCalledWith(
         {
           chainId: '0x1',
           data: '0x3ce33bff0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000a7d8c000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e58310000000000000000000000000000000000000000000000000000000000a660c6000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000177fa000000000000000000000000e6b738da243e8fa2a0ed5915645789add5de515200000000000000000000000000000000000000000000000000000000000000902340ab8fc3119af1d016a0eec5fe6ef47965741f6f7a4734bf784bf3ae3f2452a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000a660c60000a4b10008df3abdeb853d66fefedfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd00dfeeddeadbeef8932eb23bad9bddb5cf81426f78279a53c6c3b7100000000000000000000000000000000740cfc1bc02079862368cb4eea1332bd9f2dfa925fc757fd51e40919859b87ca031a2a12d67e4ca4ba67d52b59114b3e18c1e8c839ae015112af82e92251db701b',
@@ -167,35 +168,31 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         },
         {
           requireApproval: false,
-          swaps: {
-            hasApproveTx: true,
-            meta: {
-              approvalTxId: 'txMetaId-01',
-              destinationTokenAddress:
-                '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-              destinationTokenDecimals: 6,
-              destinationTokenSymbol: 'USDC',
-              sourceTokenSymbol: 'USDC',
-              swapTokenValue: '11',
-              type: 'bridge',
-            },
-          },
           type: 'bridge',
         },
       );
     });
     it('executes approval transaction if it exists', async () => {
       // Setup
-      const mockAddTransactionAndWaitForPublish = jest.fn(() => {
+      const mockAddTransaction = jest.fn(() => {
         return {
           id: 'txMetaId-01',
         };
       });
+      const mockAddTransactionAndWaitForPublish = jest.fn(() => {
+        return {
+          id: 'txMetaId-02',
+        };
+      });
 
       // For some reason, setBackgroundConnection does not work, gets hung up on the promise, so mock this way instead
+      (actions.addTransaction as jest.Mock).mockImplementation(
+        mockAddTransaction,
+      );
       (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
         mockAddTransactionAndWaitForPublish,
       );
+
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -222,15 +219,11 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         },
         {
           requireApproval: false,
-          swaps: {
-            hasApproveTx: true,
-            meta: { sourceTokenSymbol: 'USDC', type: 'bridgeApproval' },
-          },
           type: 'bridgeApproval',
         },
       );
-      expect(mockAddTransactionAndWaitForPublish).toHaveBeenNthCalledWith(
-        2,
+      expect(mockAddTransaction).toHaveBeenNthCalledWith(
+        1,
         {
           chainId: '0x1',
           data: '0x3ce33bff0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000a7d8c000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e58310000000000000000000000000000000000000000000000000000000000a660c6000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000177fa000000000000000000000000e6b738da243e8fa2a0ed5915645789add5de515200000000000000000000000000000000000000000000000000000000000000902340ab8fc3119af1d016a0eec5fe6ef47965741f6f7a4734bf784bf3ae3f2452a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000a660c60000a4b10008df3abdeb853d66fefedfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd00dfeeddeadbeef8932eb23bad9bddb5cf81426f78279a53c6c3b7100000000000000000000000000000000740cfc1bc02079862368cb4eea1332bd9f2dfa925fc757fd51e40919859b87ca031a2a12d67e4ca4ba67d52b59114b3e18c1e8c839ae015112af82e92251db701b',
@@ -244,19 +237,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         },
         {
           requireApproval: false,
-          swaps: {
-            hasApproveTx: true,
-            meta: {
-              approvalTxId: 'txMetaId-01',
-              destinationTokenAddress:
-                '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-              destinationTokenDecimals: 6,
-              destinationTokenSymbol: 'USDC',
-              sourceTokenSymbol: 'USDC',
-              swapTokenValue: '11',
-              type: 'bridge',
-            },
-          },
           type: 'bridge',
         },
       );
@@ -300,14 +280,14 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const mockAddTransactionAndWaitForPublish = jest.fn(() => {
+      const mockAddTransaction = jest.fn(() => {
         return {
           id: 'txMetaId-01',
         };
       });
       // For some reason, setBackgroundConnection does not work, gets hung up on the promise, so mock this way instead
-      (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
-        mockAddTransactionAndWaitForPublish,
+      (actions.addTransaction as jest.Mock).mockImplementation(
+        mockAddTransaction,
       );
       (actions.addToken as jest.Mock).mockImplementation(
         () => async () => ({}),
@@ -366,14 +346,14 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         wrapper: makeWrapper(store),
       });
 
-      const mockAddTransactionAndWaitForPublish = jest.fn(() => {
+      const mockAddTransaction = jest.fn(() => {
         return {
           id: 'txMetaId-01',
         };
       });
       // For some reason, setBackgroundConnection does not work, gets hung up on the promise, so mock this way instead
-      (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
-        mockAddTransactionAndWaitForPublish,
+      (actions.addTransaction as jest.Mock).mockImplementation(
+        mockAddTransaction,
       );
       (actions.addToken as jest.Mock).mockImplementation(
         () => async () => ({}),
@@ -397,14 +377,14 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       // Setup
       const store = makeMockStore();
 
-      const mockAddTransactionAndWaitForPublish = jest.fn(() => {
+      const mockAddTransaction = jest.fn(() => {
         return {
           id: 'txMetaId-01',
         };
       });
       // For some reason, setBackgroundConnection does not work, gets hung up on the promise, so mock this way instead
-      (actions.addTransactionAndWaitForPublish as jest.Mock).mockImplementation(
-        mockAddTransactionAndWaitForPublish,
+      (actions.addTransaction as jest.Mock).mockImplementation(
+        mockAddTransaction,
       );
       const mockedGetNetworkConfigurationsByChainId =
         // @ts-expect-error this is a jest mock
