@@ -7,7 +7,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { MOCK_REMOTE_FEATURE_FLAGS_RESPONSE } from './mock-data';
 
 describe('Remote feature flag', function (this: Suite) {
-  it.only('should be fetched with threshold value when basic functionality toggle is on', async function () {
+  it('should be fetched with threshold value when basic functionality toggle is on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
