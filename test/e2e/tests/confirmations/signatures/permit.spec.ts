@@ -126,12 +126,12 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         const simulationSection = driver.findElement({
           text: 'Estimated changes',
         });
-        const receiveChange = driver.findElement({ text: 'You receive' });
+        const receiveChange = driver.findElement({ text: 'Lisitng price' });
         const listChange = driver.findElement({ text: 'You list' });
         const listChangeValue = driver.findElement({ text: '#2101' });
 
         assert.ok(await simulationSection, 'Estimated changes');
-        assert.ok(await receiveChange, 'You receive');
+        assert.ok(await receiveChange, 'Lisitng price');
         assert.ok(await listChange, 'You list');
         assert.ok(await listChangeValue, '#2101');
 
