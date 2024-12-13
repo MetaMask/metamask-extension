@@ -62,6 +62,7 @@ export type QuoteMetadata = {
   gasFee: { amount: BigNumber; valueInCurrency: BigNumber | null };
   totalNetworkFee: { amount: BigNumber; valueInCurrency: BigNumber | null }; // estimatedGasFees + relayerFees
   totalMaxNetworkFee: { amount: BigNumber; valueInCurrency: BigNumber | null }; // maxGasFees + relayerFees
+  toTokenAmount: { amount: BigNumber; valueInCurrency: BigNumber | null };
   adjustedReturn: { valueInCurrency: BigNumber | null }; // destTokenAmount - totalNetworkFee
   sentAmount: { amount: BigNumber; valueInCurrency: BigNumber | null }; // srcTokenAmount + metabridgeFee
   swapRate: BigNumber; // destTokenAmount / sentAmount
