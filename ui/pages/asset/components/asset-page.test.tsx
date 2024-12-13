@@ -4,7 +4,10 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import nock from 'nock';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -336,7 +339,7 @@ describe('AssetPage', () => {
     );
     const networkNode = queryByTestId('asset-network');
     expect(networkNode).toBeInTheDocument();
-    expect(networkNode?.textContent).toBe('Ethereum Mainnet');
+    expect(networkNode?.textContent).toBe(MAINNET_DISPLAY_NAME);
   });
 
   it('should render a native asset', () => {
