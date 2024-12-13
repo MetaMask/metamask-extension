@@ -84,16 +84,16 @@ export const BridgeInputGroup = ({
     (text: string) => void,
   ];
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  // const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [isLowReturnTooltipOpen, setIsLowReturnTooltipOpen] = useState(true);
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
-      inputRef.current.focus();
-    }
-  }, [amountFieldProps]);
+  // useEffect(() => {
+  //   if (inputRef.current) {
+  //     inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
+  //     inputRef.current.focus();
+  //   }
+  // }, [amountFieldProps]);
 
   const isAmountReadOnly =
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
@@ -129,7 +129,7 @@ export const BridgeInputGroup = ({
               isAmountReadOnly && amountFieldProps?.value ? 1 : undefined,
           }}
           display={Display.Flex}
-          inputRef={inputRef}
+          // inputRef={inputRef}
           type={TextFieldType.Text}
           className="amount-input"
           placeholder={'0'}
@@ -149,6 +149,7 @@ export const BridgeInputGroup = ({
             const cleanedValue = e.target.value.replace(/[^0-9.]+/gu, '');
             onAmountChange?.(cleanedValue);
           }}
+          autoFocus={true}
           {...amountFieldProps}
         />
         <AssetPicker
@@ -160,7 +161,7 @@ export const BridgeInputGroup = ({
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
-          autoFocus={false}
+          // autoFocus={false}
         >
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (
