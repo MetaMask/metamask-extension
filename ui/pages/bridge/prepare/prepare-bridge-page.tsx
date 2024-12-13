@@ -86,6 +86,9 @@ import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
 import { getCurrentKeyring, getLocale } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
+import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { fetchBridgeTokens } from '../bridge.util';
+import { fetchTopAssetsList } from '../../swaps/swaps.util';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -95,23 +98,60 @@ const PrepareBridgePage = () => {
   const t = useI18nContext();
 
   const fromToken = useSelector(getFromToken);
-  const {
-    fromTokens,
-    fromTopAssets,
-    isLoading: isFromTokensLoading,
-  } = useSelector(getFromTokens);
+  // const {
+  // fromTokens: fromTokens_,
+  // fromTopAssets,
+  // isLoading: isFromTokensLoading,
+  // } = useSelector(getFromTokens);
 
   const toToken = useSelector(getToToken);
-  const {
-    toTokens,
-    toTopAssets,
-    isLoading: isToTokensLoading,
-  } = useSelector(getToTokens);
+  // const {
+  // toTokens,
+  // toTopAssets,
+  // isLoading: isToTokensLoading,
+  // } = useSelector(getToTokens);
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
+
+  // Responses are cached so these fetches are ok
+  const { value: fromTokens_, pending: isFromTokensLoading } =
+    useAsyncResult(async () => {
+      if (fromChain?.chainId) {
+        return await fetchBridgeTokens(fromChain.chainId);
+      }
+      return {};
+    }, [fromChain?.chainId]);
+
+  // Cached every 5 minutes
+  const { value: fromTopAssets_ } = useAsyncResult(async () => {
+    if (fromChain?.chainId) {
+      return await fetchTopAssetsList(fromChain.chainId);
+    }
+    return [];
+  }, [fromChain?.chainId]);
+
+  const { value: toTokens_, pending: isToTokensLoading } =
+    useAsyncResult(async () => {
+      if (toChain?.chainId) {
+        return await fetchBridgeTokens(toChain.chainId);
+      }
+      return {};
+    }, [toChain?.chainId]);
+
+  const { value: toTopAssets_ } = useAsyncResult(async () => {
+    if (toChain?.chainId) {
+      return await fetchTopAssetsList(toChain.chainId);
+    }
+    return [];
+  }, [toChain?.chainId]);
+
+  const fromTokens = fromTokens_ ?? {};
+  const toTokens = toTokens_ ?? {};
+  const fromTopAssets = fromTopAssets_ ?? [];
+  const toTopAssets = toTopAssets_ ?? [];
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInFiat = useSelector(getFromAmountInCurrency);

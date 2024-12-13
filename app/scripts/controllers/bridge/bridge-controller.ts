@@ -379,17 +379,17 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     stateKey: 'srcTopAssets' | 'destTopAssets',
   ) => {
     const { bridgeState } = this.state;
-    const topAssets = await fetchTopAssetsList(chainId);
+    // const topAssets = await fetchTopAssetsList(chainId);
     this.update((_state) => {
-      _state.bridgeState = { ...bridgeState, [stateKey]: topAssets };
+      // _state.bridgeState = { ...bridgeState, [stateKey]: topAssets };
     });
   };
 
   #setTokens = async (chainId: Hex, stateKey: 'srcTokens' | 'destTokens') => {
     const { bridgeState } = this.state;
-    const tokens = await fetchBridgeTokens(chainId);
+    // const tokens = await fetchBridgeTokens(chainId);
     this.update((_state) => {
-      _state.bridgeState = { ...bridgeState, [stateKey]: tokens };
+      // _state.bridgeState = { ...bridgeState, [stateKey]: tokens };
     });
   };
 
