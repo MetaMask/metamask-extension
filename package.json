@@ -255,6 +255,8 @@
     "@metamask/keyring-api@12.0.0": "npm:@metamask-previews/keyring-api@12.0.0-ac29af4",
     "@metamask/keyring-internal-api@1.0.0": "npm:@metamask-previews/keyring-internal-api@1.0.0-ac29af4",
     "@metamask/keyring-internal-api@^1.0.0": "npm:@metamask-previews/keyring-internal-api@1.0.0-ac29af4",
+    "@metamask/keyring-snap-client@1.0.0": "npm:@metamask-previews/keyring-snap-client@1.0.0-ac29af4",
+    "@metamask/keyring-snap-client@^1.0.0": "npm:@metamask-previews/keyring-snap-client@1.0.0-ac29af4",
     "@metamask/eth-snap-keyring@7.0.0": "npm:@metamask-previews/eth-snap-keyring@7.0.0-ac29af4",
     "@metamask/eth-snap-keyring@^7.0.0": "npm:@metamask-previews/eth-snap-keyring@7.0.0-ac29af4",
     "@metamask/accounts-controller@^20.0.2": "npm:@metamask-previews/accounts-controller@20.0.2-preview-28a9753"
