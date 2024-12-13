@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "您手动更新费用后，我们才能继续进行此交易。"
   },
-  "alertMessagePendingTransactions": {
-    "message": "上一笔交易完成后，此交易才能继续进行。了解如何取消或加快交易。"
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "提出请求的网站不是您正在登录的网站。这可能试图窃取您的登录凭据。"
   },
   "alertMessageSignInWrongAccount": {
     "message": "此网站要求您使用错误的账户登录。"
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "您的上一笔交易完成后，此交易才能继续进行。"
   },
   "alertModalAcknowledge": {
     "message": "我已知晓风险并仍想继续"
@@ -1032,9 +1026,6 @@
   },
   "confirmRecoveryPhrase": {
     "message": "确认私钥助记词"
-  },
-  "confirmTitleApproveTransaction": {
-    "message": "许可请求"
   },
   "confirmTitleDeployContract": {
     "message": "部署合约"
@@ -4111,12 +4102,6 @@
   "permissionsPageEmptySubContent": {
     "message": "您可以在此处查看您授予已安装 Snap 或已连接站点的许可。"
   },
-  "permissionsPageTourDescription": {
-    "message": "这是您的控制面板，用于管理授予已连接站点和已安装 Snap 的许可。"
-  },
-  "permissionsPageTourTitle": {
-    "message": "已连接的站点现已获得许可"
-  },
   "permitSimulationDetailInfo": {
     "message": "您将授予该消费者许可从您的账户中支出这些代币。"
   },
@@ -6600,10 +6585,6 @@
   },
   "wrongNetworkName": {
     "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
-  },
-  "xOfYPending": {
-    "message": "$1 / $2 待处理",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "是"

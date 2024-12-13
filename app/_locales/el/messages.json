@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Δεν μπορούμε να συνεχίσουμε με αυτή τη συναλλαγή μέχρι να ενημερώσετε τα τέλη μη αυτόματα."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Αυτή η συναλλαγή δεν θα πραγματοποιηθεί μέχρι να ολοκληρωθεί μια προηγούμενη συναλλαγή. Μάθετε πώς να ακυρώσετε ή να επισπεύσετε μια συναλλαγή."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Ο ιστότοπος που υποβάλλει το αίτημα δεν είναι ο ιστότοπος στον οποίο έχετε συνδεθεί. Αυτό θα μπορούσε να είναι μια απόπειρα κλοπής των στοιχείων σύνδεσής σας."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Αυτός ο ιστότοπος σας ζητάει να συνδεθείτε χρησιμοποιώντας λάθος λογαριασμό."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Αυτή η συναλλαγή θα πραγματοποιηθεί μόνο όταν ολοκληρωθεί η προηγούμενη συναλλαγή σας."
   },
   "alertModalAcknowledge": {
     "message": "Αναγνωρίζω τον κίνδυνο και εξακολουθώ να θέλω να συνεχίσω"
@@ -1032,9 +1026,6 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Επιβεβαιώστε τη Μυστική Φράση Ανάκτησης"
-  },
-  "confirmTitleApproveTransaction": {
-    "message": "Αίτημα χορήγησης άδειας"
   },
   "confirmTitleDeployContract": {
     "message": "Ανάπτυξη συμβολαίου"
@@ -4111,12 +4102,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Εδώ μπορείτε να δείτε τις άδειες χρήσης που έχετε δώσει στα εγκατεστημένα Snaps ή στους συνδεδεμένους ιστότοπους."
   },
-  "permissionsPageTourDescription": {
-    "message": "Αυτός είναι ο πίνακας ελέγχου για τη διαχείριση των αδειών χρήσης που έχετε δώσει στους συνδεδεμένους ιστότοπους και στα εγκατεστημένα Snaps."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Οι συνδεδεμένοι ιστότοποι είναι τώρα με άδειες χρήσης"
-  },
   "permitSimulationDetailInfo": {
     "message": "Δίνετε στον διαθέτη την άδεια να δαπανήσει τα tokens από τον λογαριασμό σας."
   },
@@ -6600,10 +6585,6 @@
   },
   "wrongNetworkName": {
     "message": "Σύμφωνα με τα αρχεία μας, το όνομα του δικτύου ενδέχεται να μην αντιστοιχεί με αυτό το αναγνωριστικό αλυσίδας."
-  },
-  "xOfYPending": {
-    "message": "$1 από $2 σε εκκρεμότητα",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Ναι"

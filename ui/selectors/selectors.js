@@ -51,6 +51,7 @@ import {
   MOONRIVER_DISPLAY_NAME,
   TEST_NETWORK_IDS,
   EVM_ON_FLOW_TESTNET_DISPLAY_NAME,
+  FEATURED_NETWORK_CHAIN_IDS,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -106,7 +107,7 @@ import {
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
@@ -127,7 +128,10 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import {
+  getMultichainBalances,
+  getMultichainNetworkProviders,
+} from './multichain';
 
 export function getNetworkIdentifier(state) {
   const { type, nickname, rpcUrl } = getProviderConfig(state);
@@ -266,13 +270,13 @@ export const getMetaMaskAccounts = createSelector(
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
   getMultichainBalances,
-  getMultichainNetwork,
+  getMultichainNetworkProviders,
   (
     internalAccounts,
     balances,
     cachedBalances,
     multichainBalances,
-    multichainNetwork,
+    multichainNetworkProviders,
   ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
@@ -289,11 +293,14 @@ export const getMetaMaskAccounts = createSelector(
           };
         }
       } else {
+        const multichainNetwork = multichainNetworkProviders.find((network) =>
+          network.isAddressCompatible(internalAccount.address),
+        );
         account = {
           ...account,
           balance:
             multichainBalances?.[internalAccount.id]?.[
-              MultichainNativeAssets[multichainNetwork.chainId]
+              MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
             ]?.amount ?? '0',
         };
       }
@@ -970,6 +977,10 @@ export function getQueuedRequestCount(state) {
   return state.metamask.queuedRequestCount ?? 0;
 }
 
+export function getSlides(state) {
+  return state.metamask.slides || [];
+}
+
 export function getTotalUnapprovedMessagesCount(state) {
   const {
     unapprovedPersonalMsgCount = 0,
@@ -1060,7 +1071,7 @@ export function getIsNonStandardEthChain(state) {
 }
 
 export function getPreferences({ metamask }) {
-  return metamask.preferences;
+  return metamask.preferences ?? {};
 }
 
 export function getSendInputCurrencySwitched({ appState }) {
@@ -1078,8 +1089,7 @@ export function getPetnamesEnabled(state) {
 
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
-  const { tokenNetworkFilter: tokenNetworkFilterValue } = getPreferences(state);
-  const tokenNetworkFilter = tokenNetworkFilterValue || {};
+  const tokenNetworkFilter = getTokenNetworkFilter(state);
   if (
     Object.keys(tokenNetworkFilter).length === 1 &&
     Object.keys(tokenNetworkFilter)[0] === chainId
@@ -1087,6 +1097,37 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
     return true;
   }
   return false;
+}
+
+/**
+ * Returns an object indicating which networks
+ * tokens should be shown on in the portfolio view.
+ *
+ * @param {*} state
+ * @returns {Record<Hex, boolean>}
+ */
+export function getTokenNetworkFilter(state) {
+  const currentChainId = getCurrentChainId(state);
+  const { tokenNetworkFilter } = getPreferences(state);
+
+  // Portfolio view not enabled outside popular networks
+  if (
+    !process.env.PORTFOLIO_VIEW ||
+    !FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)
+  ) {
+    return { [currentChainId]: true };
+  }
+
+  // Portfolio view only enabled on featured networks
+  return Object.entries(tokenNetworkFilter || {}).reduce(
+    (acc, [chainId, value]) => {
+      if (FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
+        acc[chainId] = value;
+      }
+      return acc;
+    },
+    {},
+  );
 }
 
 export function getUseTransactionSimulations(state) {
@@ -1293,7 +1334,7 @@ export const getAnySnapUpdateAvailable = createSelector(
 /**
  * Return if the snap branding should show in the UI.
  */
-export const getHideSnapBranding = createSelector(
+export const getHideSnapBranding = createDeepEqualSelector(
   [selectInstalledSnaps, selectSnapId],
   (installedSnaps, snapId) => {
     return installedSnaps[snapId]?.hideSnapBranding;
@@ -1455,6 +1496,20 @@ export function getUSDConversionRate(state) {
     ?.usdConversionRate;
 }
 
+export const getUSDConversionRateByChainId = (chainId) =>
+  createSelector(
+    getCurrencyRates,
+    (state) => selectNetworkConfigurationByChainId(state, chainId),
+    (currencyRates, networkConfiguration) => {
+      if (!networkConfiguration) {
+        return undefined;
+      }
+
+      const { nativeCurrency } = networkConfiguration;
+      return currencyRates[nativeCurrency]?.usdConversionRate;
+    },
+  );
+
 export function getCurrencyRates(state) {
   return state.metamask.currencyRates;
 }
@@ -1543,7 +1598,8 @@ export const getIsBridgeEnabled = createSelector(
   (bridgeFeatureFlags, shouldUseExternalServices) => {
     return (
       (shouldUseExternalServices &&
-        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_SUPPORT]) ??
+        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
+          ?.support) ??
       false
     );
   },
@@ -2347,7 +2403,9 @@ export const getAllChainsToPoll = createDeepEqualSelector(
     }
 
     return Object.keys(networkConfigurations).filter(
-      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+      (chainId) =>
+        chainId === currentChainId ||
+        FEATURED_NETWORK_CHAIN_IDS.includes(chainId),
     );
   },
 );
@@ -2369,7 +2427,9 @@ export const getChainIdsToPoll = createDeepEqualSelector(
     }
 
     return Object.keys(networkConfigurations).filter(
-      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+      (chainId) =>
+        chainId === currentChainId ||
+        FEATURED_NETWORK_CHAIN_IDS.includes(chainId),
     );
   },
 );
@@ -2397,7 +2457,10 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
 
     return Object.entries(networkConfigurations).reduce(
       (acc, [chainId, network]) => {
-        if (chainId === currentChainId || !TEST_CHAINS.includes(chainId)) {
+        if (
+          chainId === currentChainId ||
+          FEATURED_NETWORK_CHAIN_IDS.includes(chainId)
+        ) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,

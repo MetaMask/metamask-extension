@@ -2,15 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import { Hex } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
-  setDestTokenExchangeRates,
   setFromChain,
   setFromToken,
   setFromTokenInputValue,
-  setSrcTokenExchangeRates,
   setSelectedQuote,
   setToChain,
   setToChainId,
@@ -31,6 +27,7 @@ import {
   getToToken,
   getToTokens,
   getToTopAssets,
+  getWasTxDeclined,
 } from '../../../ducks/bridge/selectors';
 import {
   Box,
@@ -48,16 +45,19 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import { isValidQuoteRequest } from '../utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
-import { getCurrentCurrency } from '../../../selectors';
-import { SECOND } from '../../../../shared/constants/time';
+import {
+  CrossChainSwapsEventProperties,
+  useCrossChainSwapsEventTracker,
+} from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
 
   const t = useI18nContext();
-
-  const currency = useSelector(getCurrentCurrency);
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getFromTokens);
@@ -79,6 +79,8 @@ const PrepareBridgePage = () => {
   const quoteRequest = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
+  const wasTxDeclined = useSelector(getWasTxDeclined);
+
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
     fromTopAssets,
@@ -91,6 +93,9 @@ const PrepareBridgePage = () => {
     TokenBucketPriority.top,
     toChain?.chainId,
   );
+
+  const { flippedRequestProperties } = useRequestProperties();
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -135,18 +140,16 @@ const PrepareBridgePage = () => {
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, Object.values(quoteParams));
 
-  const debouncedFetchFromExchangeRate = debounce(
-    (chainId: Hex, tokenAddress: string) => {
-      dispatch(setSrcTokenExchangeRates({ chainId, tokenAddress, currency }));
+  const trackInputEvent = useCallback(
+    (
+      properties: CrossChainSwapsEventProperties[MetaMetricsEventName.InputChanged],
+    ) => {
+      trackCrossChainSwapsEvent({
+        event: MetaMetricsEventName.InputChanged,
+        properties,
+      });
     },
-    SECOND,
-  );
-
-  const debouncedFetchToExchangeRate = debounce(
-    (chainId: Hex, tokenAddress: string) => {
-      dispatch(setDestTokenExchangeRates({ chainId, tokenAddress, currency }));
-    },
-    SECOND,
+    [],
   );
 
   const { search } = useLocation();
@@ -180,7 +183,6 @@ const PrepareBridgePage = () => {
         // If there is a matching fromToken, set it as the fromToken
         const matchedToken = fromTokens[tokenAddressFromUrl];
         dispatch(setFromToken(matchedToken));
-        debouncedFetchFromExchangeRate(fromChain.chainId, matchedToken.address);
         removeTokenFromUrl();
         break;
       }
@@ -196,33 +198,45 @@ const PrepareBridgePage = () => {
       <Box className="prepare-bridge-page__content">
         <BridgeInputGroup
           className="bridge-box"
-          header={t('bridgeFrom')}
+          header={t('swapSelectToken')}
           token={fromToken}
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
           }}
           onAssetChange={(token) => {
+            token?.address &&
+              trackInputEvent({
+                input: 'token_source',
+                value: token.address,
+              });
             dispatch(setFromToken(token));
             dispatch(setFromTokenInputValue(null));
-            fromChain?.chainId &&
-              token?.address &&
-              debouncedFetchFromExchangeRate(fromChain.chainId, token.address);
           }}
           networkProps={{
             network: fromChain,
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              dispatch(
-                setActiveNetwork(
-                  networkConfig.rpcEndpoints[
-                    networkConfig.defaultRpcEndpointIndex
-                  ].networkClientId,
-                ),
-              );
+              trackInputEvent({
+                input: 'chain_source',
+                value: networkConfig.chainId,
+              });
+              if (networkConfig.chainId === toChain?.chainId) {
+                dispatch(setToChainId(null));
+              }
+              if (isNetworkAdded(networkConfig)) {
+                dispatch(
+                  setActiveNetwork(
+                    networkConfig.rpcEndpoints[
+                      networkConfig.defaultRpcEndpointIndex
+                    ].networkClientId,
+                  ),
+                );
+              }
               dispatch(setFromChain(networkConfig.chainId));
               dispatch(setFromToken(null));
               dispatch(setFromTokenInputValue(null));
             },
+            header: t('bridgeFrom'),
           }}
           customTokenListGenerator={
             fromTokens && fromTopAssets ? fromTokenListGenerator : undefined
@@ -232,6 +246,7 @@ const PrepareBridgePage = () => {
             autoFocus: true,
             value: fromAmount || undefined,
           }}
+          isMultiselectEnabled={true}
         />
 
         <Box className="prepare-bridge-page__switch-tokens">
@@ -248,6 +263,11 @@ const PrepareBridgePage = () => {
             disabled={!isValidQuoteRequest(quoteRequest, false)}
             onClick={() => {
               setRotateSwitchTokens(!rotateSwitchTokens);
+              flippedRequestProperties &&
+                trackCrossChainSwapsEvent({
+                  event: MetaMetricsEventName.InputSourceDestinationFlipped,
+                  properties: flippedRequestProperties,
+                });
               const toChainClientId =
                 toChain?.defaultRpcEndpointIndex !== undefined &&
                 toChain?.rpcEndpoints
@@ -261,40 +281,34 @@ const PrepareBridgePage = () => {
               fromChain?.chainId && dispatch(setToChain(fromChain.chainId));
               fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               dispatch(setToToken(fromToken));
-              fromChain?.chainId &&
-                fromToken?.address &&
-                debouncedFetchToExchangeRate(
-                  fromChain.chainId,
-                  fromToken.address,
-                );
-              toChain?.chainId &&
-                toToken?.address &&
-                toToken.address !== zeroAddress() &&
-                debouncedFetchFromExchangeRate(
-                  toChain.chainId,
-                  toToken.address,
-                );
             }}
           />
         </Box>
 
         <BridgeInputGroup
           className="bridge-box"
-          header={t('bridgeTo')}
+          header={t('swapSelectToken')}
           token={toToken}
           onAssetChange={(token) => {
+            token?.address &&
+              trackInputEvent({
+                input: 'token_destination',
+                value: token.address,
+              });
             dispatch(setToToken(token));
-            toChain?.chainId &&
-              token?.address &&
-              debouncedFetchToExchangeRate(toChain.chainId, token.address);
           }}
           networkProps={{
             network: toChain,
             networks: toChains,
             onNetworkChange: (networkConfig) => {
+              trackInputEvent({
+                input: 'chain_destination',
+                value: networkConfig.chainId,
+              });
               dispatch(setToChainId(networkConfig.chainId));
               dispatch(setToChain(networkConfig.chainId));
             },
+            header: t('bridgeTo'),
           }}
           customTokenListGenerator={
             toChain && toTokens && toTopAssets
@@ -312,7 +326,7 @@ const PrepareBridgePage = () => {
           }}
         />
       </Box>
-      <BridgeQuoteCard />
+      {!wasTxDeclined && <BridgeQuoteCard />}
     </div>
   );
 };

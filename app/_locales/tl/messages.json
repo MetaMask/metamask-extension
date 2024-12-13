@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Hindi tayo makakapagpatuloy sa transaksyong ito hanggang sa manwal mong i-update ang bayad."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Hindi magpapatuloy ang transaksyong ito hanggang makumpleto ang naunang transaksyon. Alamin kung paano kanselahin o pabilisin ang transaksyon."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Ang site na humihiling ay hindi ang site kung saan ka nagsa-signin. Ito ay maaring isang pagtatangka para nakawin ang iyong mga kredensiyal sa pag-login."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Hinihingi sa iyo ng site na ito na mag-sign in gamit ang maling account."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Magpapatuloy lamang ang transaksyong ito kapag nakumpleto mo na ang naunang transaksyon."
   },
   "alertModalAcknowledge": {
     "message": "Kinikilala ko ang panganib at nais ko pa rin magpatuloy"
@@ -1032,9 +1026,6 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
-  },
-  "confirmTitleApproveTransaction": {
-    "message": "Hiling sa allowance"
   },
   "confirmTitleDeployContract": {
     "message": "Mag-deploy ng kontrata"
@@ -4111,12 +4102,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Dito mo makikita ang mga pahintulot na iyong binigay sa mga naka-install na Snap o konektadong site."
   },
-  "permissionsPageTourDescription": {
-    "message": "Ito ang iyong control panel para pamahalaan ang mga permiso na ibinigay sa mga konektadong Snap."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Ang mga konektadong site ay pahintulot na ngayon"
-  },
   "permitSimulationDetailInfo": {
     "message": "Binibigyan mo ang gumagastos ng permiso upang gumastos ng ganito karaming token mula sa iyong account."
   },
@@ -6600,10 +6585,6 @@
   },
   "wrongNetworkName": {
     "message": "Ayon sa aming mga talaan, ang pangalan ng network ay maaaring hindi tumugma nang tama sa ID ng chain na ito."
-  },
-  "xOfYPending": {
-    "message": "$1 ng $2 ang nakabinbin",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Oo"

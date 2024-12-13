@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Nous ne pouvons pas valider cette transaction tant que vous n’avez pas mis à jour manuellement les frais."
   },
-  "alertMessagePendingTransactions": {
-    "message": "La transaction précédente doit être finalisée avant que celle-ci ne soit traitée. Découvrez comment vous pouvez annuler ou accélérer une transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Le site auquel vous êtes en train de vous connecter n’est pas le site à l’origine de la demande. Il pourrait s’agir d’une tentative de vol de vos identifiants de connexion."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Ce site vous demande de vous connecter en utilisant le mauvais compte."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "La transaction précédente doit être finalisée avant que celle-ci ne soit traitée."
   },
   "alertModalAcknowledge": {
     "message": "Je suis conscient du risque et je souhaite quand même continuer"
@@ -1032,9 +1026,6 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Confirmer la phrase secrète de récupération"
-  },
-  "confirmTitleApproveTransaction": {
-    "message": "Demande de provision"
   },
   "confirmTitleDeployContract": {
     "message": "Déployer un contrat"
@@ -4111,12 +4102,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Ici, vous pouvez voir les autorisations que vous avez accordées aux Snaps installés ou aux sites connectés."
   },
-  "permissionsPageTourDescription": {
-    "message": "C’’est votre panneau de configuration pour gérer les autorisations accordées aux sites connectés et aux Snaps installés."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Les sites connectés sont maintenant des autorisations"
-  },
   "permitSimulationDetailInfo": {
     "message": "Vous autorisez la dépenseur à dépenser ce nombre de jetons de votre compte."
   },
@@ -6600,10 +6585,6 @@
   },
   "wrongNetworkName": {
     "message": "Selon nos informations, il se peut que le nom du réseau ne corresponde pas exactement à l’ID de chaîne."
-  },
-  "xOfYPending": {
-    "message": "$1 sur $2 en attente",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Oui"
