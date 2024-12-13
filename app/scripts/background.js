@@ -617,6 +617,14 @@ export async function loadStateFromPersistence() {
   // first from preferred, async API:
   const preMigrationVersionedData = await localStore.get();
 
+  const currentVersionNumber = versionedData.meta?.version;
+
+  // Check if the current version number is out of sync with the last known
+  // successfully applied migration.
+  if (localStore.doesMigrationNumberHaveMismatch(currentVersionNumber)) {
+    sentry?.captureMessage('MetaMask - Migration Version Mismatch');
+  }
+
   // report migration errors to sentry
   migrator.on('error', (err) => {
     // get vault structure without secrets
@@ -1275,6 +1283,7 @@ const addAppInstalledEvent = () => {
     });
     return;
   }
+
   setTimeout(() => {
     // If the controller is not set yet, we wait and try to add the "App Installed" event again.
     addAppInstalledEvent();

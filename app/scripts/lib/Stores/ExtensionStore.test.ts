@@ -3,9 +3,27 @@ import Migrator from '../migrator';
 import { ExtensionStore } from './ExtensionStore';
 import { IntermediaryStateType } from './BaseStore';
 
+const EXPECTED_DEFAULT_DATA = {
+  config: {},
+};
+const EXPECTED_DATA_IF_CORRUPTION = {
+  ...EXPECTED_DEFAULT_DATA,
+  PreferencesController: {
+    initializationFlags: {
+      corruptionDetected: true,
+      vaultBackedUp: false,
+    },
+  },
+};
+
 const DEFAULT_INITIAL_STATE = {
-  data: { config: {} },
+  data: EXPECTED_DEFAULT_DATA,
   meta: { version: 0 },
+};
+
+const EXPECTED_STATE_IF_CORRUPTION = {
+  ...DEFAULT_INITIAL_STATE,
+  data: EXPECTED_DATA_IF_CORRUPTION,
 };
 
 jest.mock('webextension-polyfill', () => ({
@@ -147,7 +165,7 @@ describe('ExtensionStore', () => {
 
       const result = await localStore.get();
 
-      expect(result).toStrictEqual(DEFAULT_INITIAL_STATE);
+      expect(result).toStrictEqual(EXPECTED_STATE_IF_CORRUPTION);
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
       expect(localStore.stateCorruptionDetected).toStrictEqual(true);
@@ -162,7 +180,7 @@ describe('ExtensionStore', () => {
 
       const result = await localStore.get();
 
-      expect(result).toStrictEqual(DEFAULT_INITIAL_STATE);
+      expect(result).toStrictEqual(EXPECTED_STATE_IF_CORRUPTION);
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
       expect(localStore.stateCorruptionDetected).toStrictEqual(true);
@@ -179,7 +197,7 @@ describe('ExtensionStore', () => {
 
       const result = await localStore.get();
 
-      expect(result).toStrictEqual(DEFAULT_INITIAL_STATE);
+      expect(result).toStrictEqual(EXPECTED_STATE_IF_CORRUPTION);
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
       expect(localStore.stateCorruptionDetected).toStrictEqual(true);
@@ -196,7 +214,7 @@ describe('ExtensionStore', () => {
 
       const result = await localStore.get();
 
-      expect(result).toStrictEqual(DEFAULT_INITIAL_STATE);
+      expect(result).toStrictEqual(EXPECTED_STATE_IF_CORRUPTION);
 
       expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
       expect(localStore.stateCorruptionDetected).toStrictEqual(true);
