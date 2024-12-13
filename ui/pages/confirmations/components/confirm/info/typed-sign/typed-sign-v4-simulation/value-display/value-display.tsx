@@ -56,6 +56,9 @@ type PermitSimulationValueDisplayParams = {
 
   /** True if value is being debited to wallet */
   debit?: boolean;
+
+  /** Wether a large amount can be substituted by "Unlimited" */
+  canDisplayValueAsUnlimited?: boolean;
 };
 
 const PermitSimulationValueDisplay: React.FC<
@@ -68,6 +71,7 @@ const PermitSimulationValueDisplay: React.FC<
   value,
   credit,
   debit,
+  canDisplayValueAsUnlimited,
 }) => {
   const t = useI18nContext();
 
@@ -146,7 +150,7 @@ const PermitSimulationValueDisplay: React.FC<
             >
               {credit && '+ '}
               {debit && '- '}
-              {shouldShowUnlimitedValue
+              {canDisplayValueAsUnlimited && shouldShowUnlimitedValue
                 ? t('unlimited')
                 : tokenValue !== null &&
                   shortenString(tokenValue || '', {
