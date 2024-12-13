@@ -53,7 +53,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
       >
         {onViewOnOpensea ? (
           <SelectableListItem
-            data-testid="nft-options__view-on-opensea"
+            testId="nft-options__view-on-opensea"
             onClick={() => {
               setNftOptionsOpen(false);
               onViewOnOpensea();
@@ -68,7 +68,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
           </SelectableListItem>
         ) : null}
         <SelectableListItem
-          data-testid="nft-item-remove"
+          testId="nft-item-remove"
           onClick={() => {
             setNftOptionsOpen(false);
             onRemove();
