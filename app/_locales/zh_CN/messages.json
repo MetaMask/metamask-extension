@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "此网站要求您使用错误的账户登录。"
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "您的上一笔交易完成后，此交易才能继续进行。"
-  },
   "alertModalAcknowledge": {
     "message": "我已知晓风险并仍想继续"
   },

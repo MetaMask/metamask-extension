@@ -411,4 +411,73 @@ describe('Contract Interaction Confirmation Alerts', () => {
       await screen.findByTestId('alert-modal-action-showGasFeeModal'),
     ).toHaveTextContent('Update gas options');
   });
+
+  it('displays the alert for signing and submitting alerts', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+    const unapprovedTransaction = mockedMetaMaskState.transactions[0];
+    const signedTransaction = getUnapprovedApproveTransaction(
+      account.address,
+      randomUUID(),
+      pendingTransactionTime - 1000,
+    );
+    signedTransaction.status = 'signed';
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          gasEstimateType: 'none',
+          pendingApprovalCount: 2,
+          pendingApprovals: {
+            [pendingTransactionId]: {
+              id: pendingTransactionId,
+              origin: 'origin',
+              time: pendingTransactionTime,
+              type: ApprovalType.Transaction,
+              requestData: {
+                txId: pendingTransactionId,
+              },
+              requestState: null,
+              expectsResult: false,
+            },
+            [signedTransaction.id]: {
+              id: signedTransaction.id,
+              origin: 'origin',
+              time: pendingTransactionTime - 1000,
+              type: ApprovalType.Transaction,
+              requestData: {
+                txId: signedTransaction.id,
+              },
+              requestState: null,
+              expectsResult: false,
+            },
+          },
+          transactions: [unapprovedTransaction, signedTransaction],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    const alerts = await screen.findAllByTestId('confirm-banner-alert');
+
+    expect(
+      alerts.some((alert) =>
+        alert.textContent?.includes(
+          'A previous transaction is still being signed or submitted',
+        ),
+      ),
+    ).toBe(true);
+
+    expect(
+      await screen.findByTestId('confirm-footer-button'),
+    ).toBeInTheDocument();
+    expect(await screen.findByTestId('confirm-footer-button')).toBeDisabled();
+  });
 });

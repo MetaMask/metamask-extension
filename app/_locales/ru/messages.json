@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Этот сайт просит вас войти в систему, используя неправильный счет."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Эта транзакция будет выполнена только после завершения вашей предыдущей транзакции."
-  },
   "alertModalAcknowledge": {
     "message": "Я осознал(-а) риск и все еще хочу продолжить"
   },

@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Bu site sizden yanlış hesabı kullanarak giriş yapmanızı istiyor."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Bu işlem sadece önceki işleminiz tamamlandıktan sonra gerçekleşecek."
-  },
   "alertModalAcknowledge": {
     "message": "Riski anlıyor ve yine de ilerlemek istiyorum"
   },
