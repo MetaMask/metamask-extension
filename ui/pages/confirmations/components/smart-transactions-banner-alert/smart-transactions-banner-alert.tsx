@@ -90,7 +90,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
             'swap',
             'deployContract',
             'contractInteraction',
-          ].includes(currentConfirmation?.type);
+          ].includes(currentConfirmation?.type as string);
 
     if (!shouldRender) {
       return null;
