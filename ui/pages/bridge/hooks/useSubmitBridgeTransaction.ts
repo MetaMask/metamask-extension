@@ -19,6 +19,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 
 const debugLog = createProjectLogger('bridge');
 const LINEA_DELAY_MS = 5000;
@@ -73,6 +74,7 @@ export default function useSubmitBridgeTransaction() {
     } catch (e) {
       debugLog('Approve transaction failed', e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
+        dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
         await dispatch(setDefaultHomeActiveTabName('activity'));
@@ -108,6 +110,7 @@ export default function useSubmitBridgeTransaction() {
     } catch (e) {
       debugLog('Bridge transaction failed', e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
+        dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
         await dispatch(setDefaultHomeActiveTabName('activity'));

@@ -38,6 +38,8 @@ import PrepareBridgePage from './prepare/prepare-bridge-page';
 import { BridgeCTAButton } from './prepare/bridge-cta-button';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
+import { getWasTxDeclined } from '../../ducks/bridge/selectors';
+import { BridgeTxDeclinedMessage } from './prepare/bridge-tx-declined-message';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -53,6 +55,7 @@ const CrossChainSwap = () => {
   const providerConfig = useSelector(getProviderConfig);
   const isBridgeChain = useSelector(getIsBridgeChain);
   const currency = useSelector(getCurrentCurrency);
+  const wasTxDeclined = useSelector(getWasTxDeclined);
 
   useEffect(() => {
     if (isBridgeChain && isBridgeEnabled && providerConfig) {
@@ -127,7 +130,11 @@ const CrossChainSwap = () => {
                 <PrepareBridgePage />
               </Content>
               <Footer>
-                <BridgeCTAButton />
+                {wasTxDeclined ? (
+                  <BridgeTxDeclinedMessage />
+                ) : (
+                  <BridgeCTAButton />
+                )}
               </Footer>
             </>
           </FeatureToggledRoute>
