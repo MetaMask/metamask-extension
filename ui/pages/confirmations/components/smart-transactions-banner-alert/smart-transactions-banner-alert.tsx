@@ -56,14 +56,15 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
         state.metamask.preferences?.smartTransactionsOptInStatus === true,
     );
 
+    // modify the shouldRender logic to handle no context differently:
     const shouldRender =
-    (currentConfirmation === null) ? // When not in ConfirmContext
-      (alertEnabled && smartTransactionsOptIn) : // Use original conditions only
-      (alertEnabled && // When in ConfirmContext
-        smartTransactionsOptIn &&
-        ['simpleSend', 'tokenMethodTransfer', 'swap'].includes(
-          currentConfirmation.type as string,
-        ));
+      currentConfirmation === null // When not in ConfirmContext
+        ? alertEnabled && smartTransactionsOptIn // Use original conditions only
+        : alertEnabled && // When in ConfirmContext
+          smartTransactionsOptIn &&
+          ['simpleSend', 'tokenMethodTransfer', 'swap'].includes(
+            currentConfirmation.type as string,
+          );
 
     if (!shouldRender) {
       return null;
