@@ -3434,12 +3434,14 @@ export default class MetamaskController extends EventEmitter {
     const providerNetworkState = await this.getProviderNetworkState(
       this.preferencesController.getUseRequestQueue() ? origin : undefined,
     );
-
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    const { chrome } = globalThis;
+    ///: END:ONLY_INCLUDE_IF
     return {
       isUnlocked: this.isUnlocked(),
       accounts: this.getPermittedAccounts(origin),
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      extensionId: chrome?.runtime?.id,
+      ...(isManifestV3 ? { extensionId: chrome?.runtime?.id } : {}),
       ///: END:ONLY_INCLUDE_IF
       ...providerNetworkState,
     };
