@@ -23,7 +23,7 @@ export const validateResponse = <ExpectedResponse, DataToValidate>(
   if (data === null || data === undefined) {
     return false;
   }
-  return validateData(validators, data, urlUsed);
+  return validateData(validators, data, urlUsed, false);
 };
 
 const assetValidators = [

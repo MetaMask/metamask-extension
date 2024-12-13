@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -47,7 +47,7 @@ export default function OnboardingWelcome() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const [eventEmitter] = useState(new EventEmitter());
+  const eventEmitter = useRef(new EventEmitter());
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const [termsChecked, setTermsChecked] = useState(false);
@@ -151,7 +151,7 @@ export default function OnboardingWelcome() {
             </Text>
             <div className="onboarding-welcome__mascot">
               <Mascot
-                animationEventEmitter={eventEmitter}
+                animationEventEmitter={eventEmitter.current}
                 width="250"
                 height="250"
               />
@@ -223,7 +223,7 @@ export default function OnboardingWelcome() {
           </Text>
           <div className="onboarding-welcome__mascot">
             <Mascot
-              animationEventEmitter={eventEmitter}
+              animationEventEmitter={eventEmitter.current}
               width="250"
               height="250"
             />

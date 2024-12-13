@@ -90,6 +90,6 @@ describe('Bridge', () => {
 
     expect(getByText('Bridge')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
-    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(2);
   });
 });

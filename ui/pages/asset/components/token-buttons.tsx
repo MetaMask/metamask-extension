@@ -336,6 +336,7 @@ const TokenButtons = ({
             }
             label={t('bridge')}
             onClick={() => {
+              // await setCorrectChain();
               openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, {
                 ...token,
                 iconUrl: token.image,
