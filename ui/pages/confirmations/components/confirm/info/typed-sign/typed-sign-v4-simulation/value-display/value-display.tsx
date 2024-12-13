@@ -1,20 +1,11 @@
-import React, { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
-
+import React, { useMemo } from 'react';
 import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
-import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
-import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../../../../simulation-details/formatAmount';
-import { useGetTokenStandardAndDetails } from '../../../../../../hooks/useGetTokenStandardAndDetails';
-import useTrackERC20WithoutDecimalInformation from '../../../../../../hooks/useTrackERC20WithoutDecimalInformation';
-
+import Name from '../../../../../../../../components/app/name/name';
 import {
   Box,
   Text,
@@ -27,11 +18,18 @@ import {
   JustifyContent,
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
-import Name from '../../../../../../../../components/app/name/name';
-import { TokenDetailsERC20 } from '../../../../../../utils/token';
-import { getAmountColors } from '../../../utils';
+import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
+import { useGetTokenStandardAndDetails } from '../../../../../../hooks/useGetTokenStandardAndDetails';
+import useTrackERC20WithoutDecimalInformation from '../../../../../../hooks/useTrackERC20WithoutDecimalInformation';
+import { TokenDetailsERC20 } from '../../../../../../utils/token';
+import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
+import {
+  formatAmount,
+  formatAmountMaxPrecision,
+} from '../../../../../simulation-details/formatAmount';
 import { UNLIMITED_THRESHOLD } from '../../../approve/hooks/use-approve-token-simulation';
+import { getAmountColors } from '../../../utils';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */
