@@ -370,6 +370,7 @@ export function getMultichainIsTestnet(
 export function getMultichainBalances(
   state: MultichainState,
 ): BalancesState['metamask']['balances'] {
+  console.log('state.metamask.balances', state.metamask.balances);
   return state.metamask.balances;
 }
 

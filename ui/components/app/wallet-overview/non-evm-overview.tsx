@@ -24,6 +24,7 @@ type NonEvmOverviewProps = {
 const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const { chainId } = useSelector(getMultichainProviderConfig);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
+  console.log('balance', balance);
   const account = useSelector(getSelectedInternalAccount);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBtcMainnetAccount = useMultichainSelector(
