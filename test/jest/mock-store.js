@@ -868,5 +868,8 @@ export const createBridgeMockStore = (
         ...bridgeStatusStateOverrides,
       },
     },
+    send: {
+      swapsBlockedTokens: [],
+    },
   };
 };
