@@ -1,9 +1,8 @@
-import { errorCodes, rpcErrors, providerErrors } from '@metamask/rpc-errors';
+import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
-  addPermittedEthChainId,
 } from '@metamask/multichain';
 import {
   isPrefixedFormattedHexString,
@@ -11,8 +10,6 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { getValidUrl } from '../../util';
-import { CaveatTypes } from '../../../../../shared/constants/permissions';
-import { PermissionNames } from '../../../controllers/permissions';
 
 export function validateChainId(chainId) {
   const lowercasedChainId =
@@ -176,9 +173,8 @@ export function validateAddEthereumChainParams(params) {
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
  * @param {Function} hooks.endApprovalFlow - The optional callback to end the approval flow when approvalFlowId is provided.
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
- * @param {Function} hooks.requestPermissionApprovalForOrigin - The callback to prompt the user for permission approval.
- * @param {Function} hooks.updateCaveat - The callback to update the CAIP-25 caveat value.
- * @param {Function} hooks.grantPermissions - The callback to grant a CAIP-25 permission when one does not already exist.
+ * @param hooks.requestPermittedChainsPermissionForOrigin
+ * @param hooks.requestPermittedChainsPermissionIncrementalForOrigin
  * @returns a null response on success or an error if user rejects an approval when isAddFlow is false or on unexpected errors.
  */
 export async function switchChain(
@@ -192,9 +188,8 @@ export async function switchChain(
     setActiveNetwork,
     endApprovalFlow,
     getCaveat,
-    requestPermissionApprovalForOrigin,
-    updateCaveat,
-    grantPermissions,
+    requestPermittedChainsPermissionForOrigin,
+    requestPermittedChainsPermissionIncrementalForOrigin,
   },
 ) {
   try {
@@ -207,69 +202,13 @@ export async function switchChain(
       const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
       if (!ethChainIds.includes(chainId)) {
-        if (caip25Caveat.value.isMultichainOrigin) {
-          return end(
-            providerErrors.unauthorized(
-              `Cannot switch to or add permissions for chainId '${chainId}' because permissions were granted over the Multichain API.`,
-            ),
-          );
-        }
-
-        if (!isAddFlow) {
-          await requestPermissionApprovalForOrigin({
-            [PermissionNames.permittedChains]: {
-              caveats: [
-                {
-                  type: CaveatTypes.restrictNetworkSwitching,
-                  value: [chainId],
-                },
-              ],
-            },
-          });
-        }
-
-        const updatedCaveatValue = addPermittedEthChainId(
-          caip25Caveat.value,
+        await requestPermittedChainsPermissionIncrementalForOrigin(
           chainId,
-        );
-
-        updateCaveat(
-          Caip25EndowmentPermissionName,
-          Caip25CaveatType,
-          updatedCaveatValue,
+          isAddFlow,
         );
       }
     } else {
-      if (!isAddFlow) {
-        await requestPermissionApprovalForOrigin({
-          [PermissionNames.permittedChains]: {
-            caveats: [
-              {
-                type: CaveatTypes.restrictNetworkSwitching,
-                value: [chainId],
-              },
-            ],
-          },
-        });
-      }
-
-      let caveatValue = {
-        requiredScopes: {},
-        optionalScopes: {},
-        isMultichainOrigin: false,
-      };
-      caveatValue = addPermittedEthChainId(caveatValue, chainId);
-
-      grantPermissions({
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caveatValue,
-            },
-          ],
-        },
-      });
+      await requestPermittedChainsPermissionForOrigin(chainId, isAddFlow);
     }
 
     await setActiveNetwork(networkClientId);

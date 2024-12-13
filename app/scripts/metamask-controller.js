@@ -169,6 +169,7 @@ import {
   getEthAccounts,
   setPermittedEthChainIds,
   setEthAccounts,
+  addPermittedEthChainId,
 } from '@metamask/multichain';
 import {
   methodsRequiringNetworkSwitch,
@@ -205,6 +206,7 @@ import {
   EndowmentPermissions,
   ExcludedSnapPermissions,
   ExcludedSnapEndowments,
+  CaveatTypes,
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
@@ -5324,10 +5326,135 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Requests CAIP-25 for permissions for the specified origin
+   * Prompts the user with permittedChains approval for given chainId.
    *
-   * @param origin - The origin to request approval for.
+   * @param {string} origin - The origin to request approval for.
+   * @param {Hex} chainId - The chainId to add incrementally.
+   */
+  async requestApprovalPermittedChainsPermission(origin, chainId) {
+    const id = nanoid();
+    await this.approvalController.addAndShowApprovalRequest({
+      id,
+      origin,
+      requestData: {
+        metadata: {
+          id,
+          origin,
+        },
+        permissions: {
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: [chainId],
+              },
+            ],
+          },
+        },
+      },
+      type: MethodNames.RequestPermissions,
+    });
+  }
+
+  /**
+   * Requests permittedChains permission for the specified origin
+   * and replaces any existing CAIP-25 permission with a new one.
+   *
+   * @param {string} origin - The origin to request approval for.
+   * @param {Hex} chainId - The chainId to add incrementally.
+   * @param {boolean} autoApprove - If the chain should be granted without prompting for user approval.
+   */
+  async requestPermittedChainsPermission(origin, chainId, autoApprove) {
+    if (isSnapId(origin)) {
+      throw new Error(
+        `cannot request permittedChains permission for snaps with origin "${origin}"`,
+      );
+    }
+
+    if (!autoApprove) {
+      await this.requestApprovalPermittedChainsPermission(origin, chainId);
+    }
+
+    let caveatValue = {
+      requiredScopes: {},
+      optionalScopes: {},
+      isMultichainOrigin: false,
+    };
+    caveatValue = addPermittedEthChainId(caveatValue, chainId);
+
+    this.permissionController.grantPermissions({
+      subject: { origin },
+      approvedPermissions: {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValue,
+            },
+          ],
+        },
+      },
+    });
+  }
+
+  /**
+   * Requests incremental permittedChains permission for the specified origin.
+   * and updates the existing CAIP-25 permission.
+   *
+   * @param {string} origin - The origin to request approval for.
+   * @param {Hex} chainId - The chainId to add incrementally.
+   * @param {boolean} autoApprove - If the chain should be granted without prompting for user approval.
+   */
+  async requestPermittedChainsPermissionIncremental(
+    origin,
+    chainId,
+    autoApprove,
+  ) {
+    if (isSnapId(origin)) {
+      throw new Error(
+        `cannot request permittedChains permission for snaps with origin "${origin}"`,
+      );
+    }
+
+    const caip25Caveat = this.permissionController.getCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+    );
+
+    if (caip25Caveat.value.isMultichainOrigin) {
+      throw providerErrors.unauthorized(
+        `Cannot switch to or add permissions for chainId '${chainId}' because permissions were granted over the Multichain API.`,
+      );
+    }
+
+    if (!autoApprove) {
+      await this.requestApprovalPermittedChainsPermission(origin, chainId);
+    }
+
+    let updatedCaveatValue = addPermittedEthChainId(
+      caip25Caveat.value,
+      chainId,
+    );
+
+    const ethAccounts = getEthAccounts(caip25Caveat.value);
+    updatedCaveatValue = setEthAccounts(updatedCaveatValue, ethAccounts);
+
+    this.permissionController.updateCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      updatedCaveatValue,
+    );
+  }
+
+  /**
+   * Requests CAIP-25 for permissions for the specified origin
+   * and replaces any existing CAIP-25 permission with a new one.
+   *
+   * @param {string} origin - The origin to request approval for.
    * @param requestedPermissions - The legacy permissions to request approval for.
+   * @returns the granted CAIP-25 Permission.
    */
   async requestCaip25Permission(origin, requestedPermissions = {}) {
     const permissions = pick(requestedPermissions, [
@@ -6183,21 +6310,14 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        requestPermissionApprovalForOrigin:
-          this.requestPermissionApprovalForOrigin.bind(this, origin),
+        requestPermittedChainsPermissionForOrigin:
+          this.requestPermittedChainsPermission.bind(this, origin),
+        requestPermittedChainsPermissionIncrementalForOrigin:
+          this.requestPermittedChainsPermissionIncremental.bind(this, origin),
         requestPermissionsForOrigin: (requestedPermissions) =>
           this.permissionController.requestPermissions(
             { origin },
-            {
-              ...(requestedPermissions[PermissionNames.eth_accounts] &&
-                !isSnapId(origin) && {
-                  [PermissionNames.permittedChains]: {},
-                }),
-              ...(requestedPermissions[PermissionNames.permittedChains] && {
-                [PermissionNames.eth_accounts]: {},
-              }),
-              ...requestedPermissions,
-            },
+            requestedPermissions,
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
