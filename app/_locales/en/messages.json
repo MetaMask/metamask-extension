@@ -854,6 +854,10 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeAllowSwappingOf": {
+    "message": "Allow exact access to $1 $2 on $3 for bridging",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
   "bridgeApproval": {
     "message": "Approve $1 for bridge",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
@@ -861,8 +865,8 @@
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
-  "bridgeDestination": {
-    "message": "Destination"
+  "bridgeConfirmTwoTransactions": {
+    "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
   "bridgeDontSend": {
     "message": "Bridge, don't send"
@@ -876,6 +880,13 @@
   "bridgeFrom": {
     "message": "Bridge from"
   },
+  "bridgeFromTo": {
+    "message": "Bridge $1 $2 to $3",
+    "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
+  },
+  "bridgeGasFeesSplit": {
+    "message": "Any network fee quoted on the previous screen includes both transactions and will be split."
+  },
   "bridgeNetCost": {
     "message": "Net cost"
   },
@@ -887,9 +898,6 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
-  },
-  "bridgeSource": {
-    "message": "Source"
   },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
@@ -923,14 +931,8 @@
   "bridgeTotalFeesTooltipText": {
     "message": "This includes gas fees (paid to crypto miners) and relayer fees (paid to power complex services like bridging).\nFees are based on network traffic and transaction complexity. MetaMask does not profit from either fee."
   },
-  "bridgeTxDetailsBaseFee": {
-    "message": "Base fee (GWEI)"
-  },
-  "bridgeTxDetailsBridgeAmount": {
-    "message": "Bridge amount"
-  },
-  "bridgeTxDetailsBridgeType": {
-    "message": "Bridge type"
+  "bridgeTxDetailsBridging": {
+    "message": "Bridging"
   },
   "bridgeTxDetailsDelayedDescription": {
     "message": "Reach out to"
@@ -941,20 +943,8 @@
   "bridgeTxDetailsDelayedTitle": {
     "message": "Has it been longer than 3 hours?"
   },
-  "bridgeTxDetailsGasLimit": {
-    "message": "Gas limit (units)"
-  },
-  "bridgeTxDetailsGasUsed": {
-    "message": "Gas used (units)"
-  },
-  "bridgeTxDetailsMaxFeePerGas": {
-    "message": "Max fee per gas"
-  },
   "bridgeTxDetailsNonce": {
     "message": "Nonce"
-  },
-  "bridgeTxDetailsPriorityFee": {
-    "message": "Priority fee (GWEI)"
   },
   "bridgeTxDetailsStatus": {
     "message": "Status"
@@ -966,14 +956,18 @@
     "message": "$1 at $2",
     "description": "$1 is the date, $2 is the time"
   },
-  "bridgeTxDetailsTotal": {
-    "message": "Total"
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "$1 $2 on",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
   },
   "bridgeTxDetailsTotalGasFee": {
     "message": "Total gas fee"
   },
-  "bridgeTypeDirectionTo": {
-    "message": "To"
+  "bridgeTxDetailsYouReceived": {
+    "message": "You received"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "You sent"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -4254,12 +4248,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
-  },
-  "permissionsPageTourDescription": {
-    "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Connected sites are now permissions"
   },
   "permitSimulationChange_approve": {
     "message": "Spending cap"

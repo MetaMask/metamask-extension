@@ -4105,12 +4105,6 @@
   "permissionsPageEmptySubContent": {
     "message": "여기에서 설치된 Snap 또는 연결된 사이트의 권한을 확인할 수 있습니다."
   },
-  "permissionsPageTourDescription": {
-    "message": "연결된 사이트 또는 설치된 Snap의 권한을 관리하기 위한 제어판입니다."
-  },
-  "permissionsPageTourTitle": {
-    "message": "이제 연결된 사이트에 권한이 부여됩니다"
-  },
   "permitSimulationDetailInfo": {
     "message": "내 계정에서 이만큼의 토큰을 사용할 수 있도록 승인합니다."
   },

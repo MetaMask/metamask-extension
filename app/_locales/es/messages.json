@@ -4105,12 +4105,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Aquí es donde puedes ver los permisos que has otorgado a los Snaps instalados o a los sitios conectados."
   },
-  "permissionsPageTourDescription": {
-    "message": "Este es su panel de control para administrar los permisos otorgados a los sitios conectados y los Snaps instalados."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Los sitios conectados ahora tienen permisos"
-  },
   "permitSimulationDetailInfo": {
     "message": "Le está dando permiso al gastador para gastar esta cantidad de tokens de su cuenta."
   },
