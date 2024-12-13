@@ -3,10 +3,26 @@ import {
   BaseControllerV1,
   BaseController,
   ControllerMessenger,
+  BaseConfig,
+  BaseState,
+  RestrictedControllerMessengerConstraint,
+  ActionConstraint,
+  EventConstraint,
 } from '@metamask/base-controller';
 import ComposableObservableStore from './ComposableObservableStore';
+import {
+  MemStoreControllers,
+  MemStoreControllersComposedState,
+} from '../../../shared/types/metamask';
 
-class OldExampleController extends BaseControllerV1 {
+type OldExampleControllerState = {
+  baz: string;
+};
+
+class OldExampleController extends BaseControllerV1<
+  BaseConfig & object,
+  BaseState & OldExampleControllerState
+> {
   name = 'OldExampleController';
 
   defaultState = {
@@ -18,11 +34,22 @@ class OldExampleController extends BaseControllerV1 {
     this.initialize();
   }
 
-  updateBaz(contents) {
+  updateBaz(
+    contents: OldExampleControllerState[keyof OldExampleControllerState],
+  ) {
     this.update({ baz: contents });
   }
 }
-class ExampleController extends BaseController {
+
+type ExampleControllerState = {
+  bar: string;
+  baz: string;
+};
+class ExampleController extends BaseController<
+  'ExampleController',
+  ExampleControllerState,
+  RestrictedControllerMessengerConstraint<'ExampleController'>
+> {
   static defaultState = {
     bar: 'bar',
     baz: 'baz',
@@ -33,7 +60,11 @@ class ExampleController extends BaseController {
     baz: { persist: false, anonymous: true },
   };
 
-  constructor({ messenger }) {
+  constructor({
+    messenger,
+  }: {
+    messenger: RestrictedControllerMessengerConstraint<'ExampleController'>;
+  }) {
     super({
       messenger,
       name: 'ExampleController',
@@ -42,7 +73,7 @@ class ExampleController extends BaseController {
     });
   }
 
-  updateBar(contents) {
+  updateBar(contents: ExampleControllerState[keyof ExampleControllerState]) {
     this.update((state) => {
       state.bar = contents;
     });
@@ -51,49 +82,79 @@ class ExampleController extends BaseController {
 
 describe('ComposableObservableStore', () => {
   it('should register initial state', () => {
-    const controllerMessenger = new ControllerMessenger();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
     const store = new ComposableObservableStore({
       controllerMessenger,
+      // @ts-expect-error Intentionally passing in mock value for testing
       state: 'state',
     });
     expect(store.getState()).toStrictEqual('state');
   });
 
   it('should register initial structure', () => {
-    const controllerMessenger = new ControllerMessenger();
-    const testStore = new ObservableStore();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
+    const testStore = { store: new ObservableStore({}) };
     const store = new ComposableObservableStore({
+      // @ts-expect-error Intentionally passing in mock value for testing
       config: { TestStore: testStore },
       controllerMessenger,
     });
-    testStore.putState('state');
+    testStore.store.putState('state');
     expect(store.getState()).toStrictEqual({ TestStore: 'state' });
   });
 
   it('should update structure with observable store', () => {
-    const controllerMessenger = new ControllerMessenger();
-    const testStore = new ObservableStore();
-    const store = new ComposableObservableStore({ controllerMessenger });
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
+    const testStore = { store: new ObservableStore({}) };
+    const store = new ComposableObservableStore({
+      controllerMessenger,
+    });
+    // @ts-expect-error Intentionally passing in mock value for testing
     store.updateStructure({ TestStore: testStore });
-    testStore.putState('state');
+    testStore.store.putState('state');
     expect(store.getState()).toStrictEqual({ TestStore: 'state' });
   });
 
   it('should update structure with BaseControllerV1-based controller', () => {
-    const controllerMessenger = new ControllerMessenger();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
     const oldExampleController = new OldExampleController();
-    const store = new ComposableObservableStore({ controllerMessenger });
+    const store = new ComposableObservableStore({
+      controllerMessenger,
+    });
+    // @ts-expect-error Intentionally passing in mock value for testing
     store.updateStructure({ OldExample: oldExampleController });
     oldExampleController.updateBaz('state');
     expect(store.getState()).toStrictEqual({ OldExample: { baz: 'state' } });
   });
 
   it('should update structure with BaseController-based controller', () => {
-    const controllerMessenger = new ControllerMessenger();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
     const exampleController = new ExampleController({
-      messenger: controllerMessenger,
+      messenger: controllerMessenger.getRestricted({
+        name: 'ExampleController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
     });
-    const store = new ComposableObservableStore({ controllerMessenger });
+    const store = new ComposableObservableStore({
+      controllerMessenger,
+    });
+    // @ts-expect-error Intentionally passing in mock value for testing
     store.updateStructure({ Example: exampleController });
     exampleController.updateBar('state');
     expect(store.getState()).toStrictEqual({
@@ -102,19 +163,29 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should update structure with all three types of stores', () => {
-    const controllerMessenger = new ControllerMessenger();
-    const exampleStore = new ObservableStore();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
+    const exampleStore = { store: new ObservableStore({}) };
     const exampleController = new ExampleController({
-      messenger: controllerMessenger,
+      messenger: controllerMessenger.getRestricted({
+        name: 'ExampleController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
     });
     const oldExampleController = new OldExampleController();
-    const store = new ComposableObservableStore({ controllerMessenger });
+    const store = new ComposableObservableStore({
+      controllerMessenger,
+    });
     store.updateStructure({
+      // @ts-expect-error Intentionally passing in mock value for testing
       Example: exampleController,
       OldExample: oldExampleController,
       Store: exampleStore,
     });
-    exampleStore.putState('state');
+    exampleStore.store.putState('state');
     exampleController.updateBar('state');
     oldExampleController.updateBaz('state');
     expect(store.getState()).toStrictEqual({
@@ -125,18 +196,28 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should initialize state with all three types of stores', () => {
-    const controllerMessenger = new ControllerMessenger();
-    const exampleStore = new ObservableStore();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
+    const exampleStore = { store: new ObservableStore({}) };
     const exampleController = new ExampleController({
-      messenger: controllerMessenger,
+      messenger: controllerMessenger.getRestricted({
+        name: 'ExampleController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
     });
     const oldExampleController = new OldExampleController();
-    exampleStore.putState('state');
+    exampleStore.store.putState('state');
     exampleController.updateBar('state');
     oldExampleController.updateBaz('state');
-    const store = new ComposableObservableStore({ controllerMessenger });
+    const store = new ComposableObservableStore({
+      controllerMessenger,
+    });
 
     store.updateStructure({
+      // @ts-expect-error Intentionally passing in mock value for testing
       Example: exampleController,
       OldExample: oldExampleController,
       Store: exampleStore,
@@ -150,12 +231,18 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should initialize falsy state', () => {
-    const controllerMessenger = new ControllerMessenger();
-    const exampleStore = new ObservableStore();
-    exampleStore.putState(false);
-    const store = new ComposableObservableStore({ controllerMessenger });
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
+    const exampleStore = { store: new ObservableStore({}) };
+    exampleStore.store.putState(false);
+    const store = new ComposableObservableStore({
+      controllerMessenger,
+    });
 
     store.updateStructure({
+      // @ts-expect-error Intentionally passing in mock value for testing
       Example: exampleStore,
     });
 
@@ -165,13 +252,20 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should strip non-persisted state from initial state with all three types of stores', () => {
-    const controllerMessenger = new ControllerMessenger();
-    const exampleStore = new ObservableStore();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
+    const exampleStore = { store: new ObservableStore({}) };
     const exampleController = new ExampleController({
-      messenger: controllerMessenger,
+      messenger: controllerMessenger.getRestricted({
+        name: 'ExampleController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
     });
     const oldExampleController = new OldExampleController();
-    exampleStore.putState('state');
+    exampleStore.store.putState('state');
     exampleController.updateBar('state');
     oldExampleController.updateBaz('state');
     const store = new ComposableObservableStore({
@@ -180,6 +274,7 @@ describe('ComposableObservableStore', () => {
     });
 
     store.updateStructure({
+      // @ts-expect-error Intentionally passing in mock value for testing
       Example: exampleController,
       OldExample: oldExampleController,
       Store: exampleStore,
@@ -192,48 +287,34 @@ describe('ComposableObservableStore', () => {
     });
   });
 
-  it('should return flattened state', () => {
-    const controllerMessenger = new ControllerMessenger();
-    const fooStore = new ObservableStore({ foo: 'foo' });
-    const barController = new ExampleController({
-      messenger: controllerMessenger,
-    });
-    const bazController = new OldExampleController();
+  it('should return empty state when not configured', () => {
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
     const store = new ComposableObservableStore({
-      config: {
-        FooStore: fooStore,
-        BarStore: barController,
-        BazStore: bazController,
-      },
       controllerMessenger,
-      state: {
-        FooStore: fooStore.getState(),
-        BarStore: barController.state,
-        BazStore: bazController.state,
-      },
     });
-    expect(store.getFlatState()).toStrictEqual({
-      foo: 'foo',
-      bar: 'bar',
-      baz: 'baz',
-    });
-  });
-
-  it('should return empty flattened state when not configured', () => {
-    const controllerMessenger = new ControllerMessenger();
-    const store = new ComposableObservableStore({ controllerMessenger });
-    expect(store.getFlatState()).toStrictEqual({});
+    expect(store.getState()).toStrictEqual({});
   });
 
   it('should throw if the controller messenger is omitted and the config includes a BaseControllerV2 controller', () => {
-    const controllerMessenger = new ControllerMessenger();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
     const exampleController = new ExampleController({
-      messenger: controllerMessenger,
+      messenger: controllerMessenger.getRestricted({
+        name: 'ExampleController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
     });
     expect(
       () =>
         new ComposableObservableStore({
           config: {
+            // @ts-expect-error Intentionally passing in mock value for testing
             Example: exampleController,
           },
         }),
@@ -241,22 +322,35 @@ describe('ComposableObservableStore', () => {
   });
 
   it('should throw if the controller messenger is omitted and updateStructure called with a BaseControllerV2 controller', () => {
-    const controllerMessenger = new ControllerMessenger();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
     const exampleController = new ExampleController({
-      messenger: controllerMessenger,
+      messenger: controllerMessenger.getRestricted({
+        name: 'ExampleController',
+        allowedActions: [],
+        allowedEvents: [],
+      }),
     });
+    // @ts-expect-error Intentionally passing in invalid input for testing// @ts-expect-error Intentionally passing in invalid input for testing
     const store = new ComposableObservableStore({});
+    // @ts-expect-error Intentionally passing in mock value for testing
     expect(() => store.updateStructure({ Example: exampleController })).toThrow(
       `Cannot read properties of undefined (reading 'subscribe')`,
     );
   });
 
   it('should throw if initialized with undefined config entry', () => {
-    const controllerMessenger = new ControllerMessenger();
+    const controllerMessenger = new ControllerMessenger<
+      ActionConstraint,
+      EventConstraint
+    >();
     expect(
       () =>
         new ComposableObservableStore({
           config: {
+            // @ts-expect-error Intentionally passing in mock value for testing
             Example: undefined,
           },
           controllerMessenger,
