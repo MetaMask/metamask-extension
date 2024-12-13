@@ -13,12 +13,14 @@ export const useBridgeTokens = () => {
 
   useEffect(() => {
     const tokenAllowlistPromises = Promise.allSettled(
-      allBridgeChains.map(
-        async ({ chainId }) =>
-          await fetchBridgeTokens(chainId).then((tokens) => ({
-            [chainId]: new Set(Object.keys(tokens)),
-          })),
-      ),
+      allBridgeChains
+        .filter((chain) => chain.chainId === '0x1')
+        .map(
+          async ({ chainId }) =>
+            await fetchBridgeTokens(chainId).then((tokens) => ({
+              [chainId]: new Set(Object.keys(tokens)),
+            })),
+        ),
     );
 
     (async () => {
