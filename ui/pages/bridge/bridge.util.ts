@@ -50,7 +50,6 @@ import {
   validateResponse,
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
-  TOKEN_AGGREGATOR_VALIDATORS,
 } from './utils/validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
