@@ -133,7 +133,7 @@ export async function fetchBridgeTokens(
   //     transformedTokens[token.address] = token;
   //   }
   // });
-  return tokens;
+  return tokens.slice(0, 100);
 }
 
 // Returns a list of bridge tx quotes
