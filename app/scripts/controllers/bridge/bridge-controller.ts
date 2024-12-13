@@ -22,14 +22,6 @@ import {
   decimalToHex,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
-import {
-  L1GasFees,
-  QuoteRequest,
-  QuoteResponse,
-  TxData,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/bridge/types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidQuoteRequest } from '../../../../ui/pages/bridge/utils/quote';
@@ -37,6 +29,10 @@ import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/ba
 import {
   BridgeControllerState,
   BridgeFeatureFlagsKey,
+  L1GasFees,
+  QuoteRequest,
+  QuoteResponse,
+  TxData,
 } from '../../../../shared/types/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
@@ -245,7 +241,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
         ...bridgeState,
         quotesLoadingStatus: RequestStatus.LOADING,
         quoteRequest: updatedQuoteRequest,
-        quoteFetchError: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteFetchError,
+        quoteFetchError: DEFAULT_BRIDGE_STATE.quoteFetchError,
       };
     });
 

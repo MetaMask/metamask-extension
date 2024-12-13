@@ -1,6 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { SwapsTokenObject } from '../constants/swaps';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { RequestStatus } from '../../app/scripts/controllers/bridge/constants';
 
 export type ChainConfiguration = {

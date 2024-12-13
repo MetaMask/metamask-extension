@@ -4,6 +4,15 @@ import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
+  BridgeAsset,
+  BridgeFlag,
+  FeatureFlagResponse,
+  FeeData,
+  FeeType,
+  Quote,
+  QuoteRequest,
+  QuoteResponse,
+  TxData,
 } from '../../../shared/types/bridge';
 import {
   BRIDGE_API_BASE_URL,
@@ -29,17 +38,6 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { REFRESH_INTERVAL_MS } from '../../../app/scripts/controllers/bridge/constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  BridgeAsset,
-  BridgeFlag,
-  FeatureFlagResponse,
-  FeeData,
-  FeeType,
-  Quote,
-  QuoteRequest,
-  QuoteResponse,
-  TxData,
-} from './types';
 import {
   FEATURE_FLAG_VALIDATORS,
   QUOTE_VALIDATORS,

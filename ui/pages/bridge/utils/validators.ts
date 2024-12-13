@@ -4,7 +4,10 @@ import {
   truthyDigitString,
   validateData,
 } from '../../../../shared/lib/swaps-utils';
-import { BridgeFlag, FeatureFlagResponse } from '../types';
+import {
+  BridgeFlag,
+  FeatureFlagResponse,
+} from '../../../../shared/types/bridge';
 
 type Validator<ExpectedResponse> = {
   property: keyof ExpectedResponse | string;
