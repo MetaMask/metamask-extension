@@ -621,7 +621,7 @@
     },
     "@metamask/announcement-controller": {
       "packages": {
-        "@metamask/announcement-controller>@metamask/base-controller": true
+        "@metamask/base-controller": true
       }
     },
     "@metamask/announcement-controller>@metamask/base-controller": {
@@ -1640,18 +1640,10 @@
         "fetch": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/name-controller>@metamask/base-controller": true,
         "@metamask/name-controller>@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true
-      }
-    },
-    "@metamask/name-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/name-controller>@metamask/utils": {
@@ -2172,17 +2164,9 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/rate-limit-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/rate-limit-controller>@metamask/rpc-errors": true,
         "@metamask/rate-limit-controller>@metamask/utils": true
-      }
-    },
-    "@metamask/rate-limit-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/rate-limit-controller>@metamask/rpc-errors": {
