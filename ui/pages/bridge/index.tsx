@@ -55,11 +55,11 @@ const CrossChainSwap = () => {
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
   const chainId = useSelector(getCurrentChainId);
 
-  useEffect(() => {
-    if (isBridgeChain && isBridgeEnabled && chainId) {
-      dispatch(setFromChain(chainId));
-    }
-  }, [isBridgeChain, isBridgeEnabled, chainId]);
+  // useEffect(() => {
+  //   if (isBridgeChain && isBridgeEnabled && chainId) {
+  //     dispatch(setFromChain(chainId));
+  //   }
+  // }, [isBridgeChain, isBridgeEnabled, chainId]);
 
   const resetControllerAndInputStates = async () => {
     await dispatch(resetBridgeState());

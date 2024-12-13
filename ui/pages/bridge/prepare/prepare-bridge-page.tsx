@@ -150,19 +150,19 @@ const PrepareBridgePage = () => {
     fromChain?.chainId,
   );
 
-  const tokenAddressAllowlistByChainId = useBridgeTokens();
-  const fromTokenListGenerator = useTokensWithFiltering(
-    fromTokens,
-    fromTopAssets,
-    tokenAddressAllowlistByChainId,
-    fromChain?.chainId,
-  );
-  const toTokenListGenerator = useTokensWithFiltering(
-    toTokens,
-    toTopAssets,
-    tokenAddressAllowlistByChainId,
-    toChain?.chainId,
-  );
+  // const tokenAddressAllowlistByChainId = useBridgeTokens();
+  // const fromTokenListGenerator = useTokensWithFiltering(
+  //   fromTokens,
+  //   fromTopAssets,
+  //   tokenAddressAllowlistByChainId,
+  //   fromChain?.chainId,
+  // );
+  // const toTokenListGenerator = useTokensWithFiltering(
+  //   toTokens,
+  //   toTopAssets,
+  //   tokenAddressAllowlistByChainId,
+  //   toChain?.chainId,
+  // );
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -353,9 +353,7 @@ const PrepareBridgePage = () => {
           header: t('yourNetworks'),
         }}
         isMultiselectEnabled
-        customTokenListGenerator={
-          fromTokens && fromTopAssets ? fromTokenListGenerator : undefined
-        }
+        customTokenListGenerator={fromTokens && fromTopAssets ? [] : undefined}
         onMaxButtonClick={(value: string) => {
           dispatch(setFromTokenInputValue(value));
         }}
@@ -469,9 +467,7 @@ const PrepareBridgePage = () => {
               chainId === fromChain?.chainId,
           }}
           customTokenListGenerator={
-            toChain && toTokens && toTopAssets
-              ? toTokenListGenerator
-              : undefined
+            toChain && toTokens && toTopAssets ? [] : undefined
           }
           amountInFiat={
             activeQuote?.toTokenAmount?.valueInCurrency || undefined
