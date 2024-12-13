@@ -152,6 +152,7 @@ export async function assertSignatureConfirmedMetrics({
   securityAlertResponse,
   decodingChangeTypes,
   decodingResponse,
+  decodingDescription,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -162,6 +163,7 @@ export async function assertSignatureConfirmedMetrics({
     securityAlertResponse,
     decodingChangeTypes,
     decodingResponse,
+    decodingDescription,
   );
 
   assertSignatureRequestedMetrics(
