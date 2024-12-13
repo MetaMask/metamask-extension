@@ -2,7 +2,7 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import HomePage from '../../page-objects/pages/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Add existing token using search', function () {
@@ -56,10 +56,10 @@ describe('Add existing token using search', function () {
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        const homepage = new HomePage(driver);
-        await homepage.check_tokenAmountIsDisplayed('25 BNB');
-        await homepage.importTokenBySearch('BAT');
-        await homepage.check_tokenAmountInTokenDetailsModal(
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.check_tokenAmountIsDisplayed('25 BNB');
+        await assetListPage.importTokenBySearch('BAT');
+        await assetListPage.check_tokenAmountInTokenDetailsModal(
           'Basic Attention Token',
           '0 BAT',
         );

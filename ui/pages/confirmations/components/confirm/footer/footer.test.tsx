@@ -1,15 +1,10 @@
 import React from 'react';
-
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
-import {
-  signatureRequestSIWE,
-  unapprovedPersonalSignMsg,
-} from '../../../../../../test/data/confirmations/personal_sign';
-import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
@@ -17,17 +12,21 @@ import {
   getMockTypedSignConfirmState,
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../test/data/confirmations/helper';
+import {
+  signatureRequestSIWE,
+  unapprovedPersonalSignMsg,
+} from '../../../../../../test/data/confirmations/personal_sign';
+import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { SignatureRequestType } from '../../../types/confirm';
 import * as confirmContext from '../../../context/confirm';
-
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { SignatureRequestType } from '../../../types/confirm';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -107,13 +106,11 @@ describe('ConfirmFooter', () => {
   describe('renders disabled "Confirm" Button', () => {
     it('when isScrollToBottomCompleted is false', () => {
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: unapprovedPersonalSignMsg,
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
       });
-      const mockStateTypedSign = getMockPersonalSignConfirmStateForRequest(
-        unapprovedPersonalSignMsg,
-      );
+      const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
       const confirmButton = getByText('Confirm');

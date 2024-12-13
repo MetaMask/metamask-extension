@@ -969,6 +969,10 @@ export function getQueuedRequestCount(state) {
   return state.metamask.queuedRequestCount ?? 0;
 }
 
+export function getSlides(state) {
+  return state.metamask.slides || [];
+}
+
 export function getTotalUnapprovedMessagesCount(state) {
   const {
     unapprovedPersonalMsgCount = 0,
@@ -1059,7 +1063,7 @@ export function getIsNonStandardEthChain(state) {
 }
 
 export function getPreferences({ metamask }) {
-  return metamask.preferences;
+  return metamask.preferences ?? {};
 }
 
 export function getSendInputCurrencySwitched({ appState }) {
@@ -1484,6 +1488,20 @@ export function getUSDConversionRate(state) {
     ?.usdConversionRate;
 }
 
+export const getUSDConversionRateByChainId = (chainId) =>
+  createSelector(
+    getCurrencyRates,
+    (state) => selectNetworkConfigurationByChainId(state, chainId),
+    (currencyRates, networkConfiguration) => {
+      if (!networkConfiguration) {
+        return undefined;
+      }
+
+      const { nativeCurrency } = networkConfiguration;
+      return currencyRates[nativeCurrency]?.usdConversionRate;
+    },
+  );
+
 export function getCurrencyRates(state) {
   return state.metamask.currencyRates;
 }
@@ -1572,7 +1590,8 @@ export const getIsBridgeEnabled = createSelector(
   (bridgeFeatureFlags, shouldUseExternalServices) => {
     return (
       (shouldUseExternalServices &&
-        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_SUPPORT]) ??
+        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
+          ?.support) ??
       false
     );
   },
@@ -2764,13 +2783,6 @@ export function getBlockExplorerLinkText(
   return blockExplorerLinkText;
 }
 
-export function getIsNetworkUsed(state) {
-  const chainId = getCurrentChainId(state);
-  const { usedNetworks } = state.metamask;
-
-  return Boolean(usedNetworks[chainId]);
-}
-
 export function getAllAccountsOnNetworkAreEmpty(state) {
   const balances = getMetaMaskCachedBalances(state) ?? {};
   const hasNoNativeFundsOnAnyAccounts = Object.values(balances).every(
@@ -2947,6 +2959,10 @@ export function getMetaMetricsDataDeletionTimestamp(state) {
 
 export function getMetaMetricsDataDeletionStatus(state) {
   return state.metamask.metaMetricsDataDeletionStatus;
+}
+
+export function getRemoteFeatureFlags(state) {
+  return state.metamask.remoteFeatureFlags;
 }
 
 /**

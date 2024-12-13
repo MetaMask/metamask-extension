@@ -92,18 +92,6 @@ exports[`Info renders info section for approve request 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
-          data-testid="first-gas-field"
-        >
-          0.0001 ETH
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.08
-        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -117,6 +105,18 @@ exports[`Info renders info section for approve request 1`] = `
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
+        >
+          0.0001 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
+        >
+          $0.08
+        </p>
       </div>
     </div>
     <div
@@ -345,10 +345,11 @@ exports[`Info renders info section for contract interaction request 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 98);"
@@ -438,18 +439,6 @@ exports[`Info renders info section for contract interaction request 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
-          data-testid="first-gas-field"
-        >
-          0.0001 ETH
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.04
-        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -463,6 +452,18 @@ exports[`Info renders info section for contract interaction request 1`] = `
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
+        >
+          0.0001 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
+        >
+          $0.04
+        </p>
       </div>
     </div>
     <div
@@ -809,18 +810,6 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
-          data-testid="first-gas-field"
-        >
-          0.0001 ETH
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.08
-        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -834,6 +823,18 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
+        >
+          0.0001 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
+        >
+          $0.08
+        </p>
       </div>
     </div>
     <div
@@ -954,10 +955,11 @@ exports[`Info renders info section for typed sign request 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
@@ -1200,10 +1202,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
@@ -1276,10 +1279,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 183, 242);"
@@ -1352,10 +1356,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 143, 0);"
@@ -1524,10 +1529,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
@@ -1600,10 +1606,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 54, 0);"
@@ -1676,10 +1683,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 86);"
