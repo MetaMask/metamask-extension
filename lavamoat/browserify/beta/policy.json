@@ -2645,7 +2645,7 @@
         "@zxing/library>ts-custom-error": true
       }
     },
-    "extension-port-stream>readable-stream>abort-controller": {
+    "@lavamoat/lavapack>readable-stream>abort-controller": {
       "globals": {
         "AbortController": true
       }
@@ -4803,7 +4803,7 @@
         "Blob": true
       },
       "packages": {
-        "extension-port-stream>readable-stream>abort-controller": true,
+        "@lavamoat/lavapack>readable-stream>abort-controller": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "process": true,
