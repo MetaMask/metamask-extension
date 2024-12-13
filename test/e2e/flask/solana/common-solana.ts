@@ -64,7 +64,7 @@ export async function withSolanaAccountSnap(
       console.log('Opening account menu');
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.addAccount(ACCOUNT_TYPE.SOLANA, 'Solana 1');
+      await accountListPage.addAccount(ACCOUNT_TYPE.Solana, 'Solana 1');
       console.log('Running test');
       await test(driver, mockServer);
     },

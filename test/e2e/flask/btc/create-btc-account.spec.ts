@@ -97,7 +97,7 @@ describe('Create BTC Account', function (this: Suite) {
         );
         await accountListPage.closeAccountModal();
         await headerNavbar.openAccountMenu();
-        await accountListPage.addAccount(ACCOUNT_TYPE.BITCOIN, '');
+        await accountListPage.addAccount(ACCOUNT_TYPE.Bitcoin, '');
         await headerNavbar.check_accountLabel('Bitcoin Account');
 
         await headerNavbar.openAccountMenu();
@@ -151,7 +151,7 @@ describe('Create BTC Account', function (this: Suite) {
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addAccount(ACCOUNT_TYPE.BITCOIN, '');
+        await accountListPage.addAccount(ACCOUNT_TYPE.Bitcoin, '');
         await headerNavbar.check_accountLabel('Bitcoin Account');
 
         await headerNavbar.openAccountMenu();

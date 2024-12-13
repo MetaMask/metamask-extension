@@ -4,7 +4,7 @@ export type RawLocator =
   | { tag: string; text: string };
 
 export enum ACCOUNT_TYPE {
-  ETHEREUM,
-  BITCOIN,
-  SOLANA,
+  Ethereum,
+  Bitcoin,
+  Solana,
 }

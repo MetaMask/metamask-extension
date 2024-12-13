@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs, regularDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
@@ -169,50 +168,6 @@ class AccountListPage {
     );
   }
 
-  /**
-   * Adds a new BTC account with an optional custom name.
-   *
-   * @param options - Options for adding a new BTC account.
-   * @param [options.btcAccountCreationEnabled] - Indicates if the BTC account creation is expected to be enabled or disabled. Defaults to true.
-   * @param [options.accountName] - The custom name for the BTC account. Defaults to an empty string, which means the default name will be used.
-   */
-  async addNewBtcAccount({
-    btcAccountCreationEnabled = true,
-    accountName = '',
-  }: {
-    btcAccountCreationEnabled?: boolean;
-    accountName?: string;
-  } = {}): Promise<void> {
-    console.log(
-      `Adding new BTC account${
-        accountName ? ` with custom name: ${accountName}` : ' with default name'
-      }`,
-    );
-    await this.driver.clickElement(this.createAccountButton);
-    if (btcAccountCreationEnabled) {
-      await this.driver.clickElement(this.addBtcAccountButton);
-      // needed to mitigate a race condition with the state update
-      // there is no condition we can wait for in the UI
-      await this.driver.delay(largeDelayMs);
-      if (accountName) {
-        await this.driver.fill(this.accountNameInput, accountName);
-      }
-      await this.driver.clickElementAndWaitToDisappear(
-        this.addAccountConfirmButton,
-        // Longer timeout than usual, this reduces the flakiness
-        // around Bitcoin account creation (mainly required for
-        // Firefox)
-        5000,
-      );
-    } else {
-      const createButton = await this.driver.findElement(
-        this.addBtcAccountButton,
-      );
-      assert.equal(await createButton.isEnabled(), false);
-      await this.driver.clickElement(this.closeAccountModalButton);
-    }
-  }
-
   async isBtcAccountCreationButtonEnabled() {
     const createButton = await this.driver.findElement(
       this.addBtcAccountButton,
@@ -252,16 +207,16 @@ class AccountListPage {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let addAccountButton: any;
     switch (accountType) {
-      case ACCOUNT_TYPE.ETHEREUM:
+      case ACCOUNT_TYPE.Ethereum:
         addAccountButton = this.addEthereumAccountButton;
         // await this.driver.clickElement(this.addEthereumAccountButton);
 
         break;
-      case ACCOUNT_TYPE.BITCOIN:
+      case ACCOUNT_TYPE.Bitcoin:
         addAccountButton = this.addBtcAccountButton;
         // await this.driver.clickElement(this.addBtcAccountButton);
         break;
-      case ACCOUNT_TYPE.SOLANA:
+      case ACCOUNT_TYPE.Solana:
         addAccountButton = this.addSolanaAccountButton;
         // await this.driver.clickElement(this.addSolanaAccountButton);
         break;
@@ -279,38 +234,6 @@ class AccountListPage {
       this.addAccountConfirmButton,
       5000,
     );
-  }
-
-  async addNewSolanaAccount({
-    solanaAccountCreationEnabled = true,
-    accountName = '',
-  }: {
-    solanaAccountCreationEnabled?: boolean;
-    accountName?: string;
-  } = {}): Promise<void> {
-    console.log(
-      `Adding new Solana account${
-        accountName ? ` with custom name: ${accountName}` : ' with default name'
-      }`,
-    );
-    if (solanaAccountCreationEnabled) {
-      await this.driver.clickElement(this.addSolanaAccountButton);
-      // needed to mitigate a race condition with the state update
-      // there is no condition we can wait for in the UI
-      if (accountName) {
-        await this.driver.fill(this.accountNameInput, accountName);
-      }
-      await this.driver.clickElementAndWaitToDisappear(
-        this.addAccountConfirmButton,
-        5000,
-      );
-    } else {
-      const createButton = await this.driver.findElement(
-        this.addSolanaAccountButton,
-      );
-      assert.equal(await createButton.isEnabled(), false);
-      await this.driver.clickElement(this.closeAccountModalButton);
-    }
   }
 
   /**

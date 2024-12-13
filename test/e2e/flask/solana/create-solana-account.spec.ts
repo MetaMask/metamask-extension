@@ -59,7 +59,7 @@ describe('Create/Remove Solana Account', function (this: Suite) {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         console.log('Checked account displayed: Account 1');
         console.log('Opened add account modal');
-        await accountListPage.addAccount(ACCOUNT_TYPE.SOLANA, 'Solana 2');
+        await accountListPage.addAccount(ACCOUNT_TYPE.Solana, 'Solana 2');
         console.log('Added new Solana account: Solana 2');
         await headerNavbar.check_accountLabel('Solana 2');
         console.log('Checked account label: Solana 2');

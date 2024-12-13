@@ -218,8 +218,7 @@ export async function withBtcAccountSnap(
       await new HeaderNavbar(driver).openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.check_pageIsLoaded();
-      await accountListPage.addAccount(ACCOUNT_TYPE.BITCOIN, '');
-      // await accountListPage.addNewBtcAccount();
+      await accountListPage.addAccount(ACCOUNT_TYPE.Bitcoin, '');
       await test(driver, mockServer);
     },
   );
