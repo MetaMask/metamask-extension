@@ -35,6 +35,10 @@ export type ManifestFlags = {
      * The number of the pull request that triggered the current run
      */
     prNumber?: number;
+    /**
+     * The number of minutes to allow the E2E tests to run before timing out
+     */
+    timeoutMinutes?: number;
   };
   /**
    * Sentry flags

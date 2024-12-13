@@ -1,5 +1,5 @@
 import { AddressBookEntry } from '@metamask/address-book-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 
 export const buildDuplicateContactMap = (
   addressBook: AddressBookEntry[],

@@ -123,9 +123,7 @@ async function storeGitDiffOutputAndPrBody() {
     // even if we want to skip this step.
     fs.mkdirSync(CHANGED_FILES_DIR, { recursive: true });
 
-    console.log(
-      `Determining whether to run git diff...`,
-    );
+    console.log(`Determining whether to run git diff...`);
     if (!PR_NUMBER) {
       console.log('Not a PR, skipping git diff');
       return;
@@ -141,7 +139,9 @@ async function storeGitDiffOutputAndPrBody() {
       console.log(`This is for a PR targeting '${baseRef}', skipping git diff`);
       writePrBodyToFile(prInfo.body);
       return;
-    } else if (prInfo.labels.some(label => label.name === 'skip-e2e-quality-gate')) {
+    } else if (
+      prInfo.labels.some((label) => label.name === 'skip-e2e-quality-gate')
+    ) {
       console.log('PR has the skip-e2e-quality-gate label, skipping git diff');
       return;
     }
@@ -164,4 +164,7 @@ async function storeGitDiffOutputAndPrBody() {
   }
 }
 
-storeGitDiffOutputAndPrBody();
+// If main module (i.e. this is the TS file that was run directly)
+if (require.main === module) {
+  storeGitDiffOutputAndPrBody();
+}

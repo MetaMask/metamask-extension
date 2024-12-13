@@ -10,7 +10,7 @@ import {
   Token,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { merge } from 'lodash';
