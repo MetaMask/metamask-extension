@@ -931,6 +931,7 @@ async function enableExperimentalMode(driver) {
   const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
   await driver.waitForSelector(globalMenuSettingsSelector);
   await driver.clickElement(globalMenuSettingsSelector);
+
   // Click Experimental tab
   const experimentalTabRawLocator = {
     text: 'Experimental',
