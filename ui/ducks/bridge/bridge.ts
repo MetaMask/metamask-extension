@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Hex } from '@metamask/utils';
-import { swapsSlice } from '../swaps/swaps';
 import {
   BridgeToken,
   QuoteMetadata,
@@ -55,7 +54,6 @@ const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
-    ...swapsSlice.reducer,
     setToChainId: (state, action) => {
       state.toChainId = action.payload;
     },
