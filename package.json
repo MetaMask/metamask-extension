@@ -250,7 +250,14 @@
     "secp256k1@npm:^4.0.0": "4.0.4",
     "secp256k1@npm:^4.0.1": "4.0.4",
     "secp256k1@npm:4.0.2": "4.0.4",
-    "secp256k1@npm:4.0.3": "4.0.4"
+    "secp256k1@npm:4.0.3": "4.0.4",
+    "@metamask/keyring-api@^12.0.0": "npm:@metamask-previews/keyring-api@12.0.0-ac29af4",
+    "@metamask/keyring-api@12.0.0": "npm:@metamask-previews/keyring-api@12.0.0-ac29af4",
+    "@metamask/keyring-internal-api@1.0.0": "npm:@metamask-previews/keyring-internal-api@1.0.0-ac29af4",
+    "@metamask/keyring-internal-api@^1.0.0": "npm:@metamask-previews/keyring-internal-api@1.0.0-ac29af4",
+    "@metamask/eth-snap-keyring@7.0.0": "npm:@metamask-previews/eth-snap-keyring@7.0.0-ac29af4",
+    "@metamask/eth-snap-keyring@^7.0.0": "npm:@metamask-previews/eth-snap-keyring@7.0.0-ac29af4",
+    "@metamask/accounts-controller@^20.0.2": "npm:@metamask-previews/accounts-controller@20.0.2-preview-28a9753"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
