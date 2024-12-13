@@ -554,3 +554,7 @@ export const getValidationErrors = createDeepEqualSelector(
     };
   },
 );
+
+export const getWasTxDeclined = (state: BridgeAppState): boolean => {
+  return state.bridge.wasTxDeclined;
+};
