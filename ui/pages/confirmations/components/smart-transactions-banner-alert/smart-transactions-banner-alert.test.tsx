@@ -212,4 +212,29 @@ describe('SmartTransactionsBannerAlert', () => {
       screen.getByTestId('smart-transactions-banner-alert'),
     ).toBeInTheDocument();
   });
+
+  it('automatically dismisses banner when Smart Transactions is manually disabled', () => {
+    const store = configureStore({
+      metamask: {
+        alertEnabledness: {
+          [AlertTypes.smartTransactionsMigration]: true,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: false,
+        },
+      },
+    });
+
+    // Clear any previous calls to our mock
+    jest.clearAllMocks();
+
+    renderWithConfirmContext(<SmartTransactionsBannerAlert />, store);
+
+    // Verify it was called exactly once and with the right arguments
+    expect(setAlertEnabledness).toHaveBeenCalledTimes(1);
+    expect(setAlertEnabledness).toHaveBeenCalledWith(
+      AlertTypes.smartTransactionsMigration,
+      false,
+    );
+  });
 });

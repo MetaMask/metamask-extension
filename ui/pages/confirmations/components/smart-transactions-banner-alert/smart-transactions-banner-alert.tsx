@@ -11,6 +11,7 @@ import { setAlertEnabledness } from '../../../../store/actions';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
 import { useConfirmContext } from '../../context/confirm';
+import { useCallback } from 'react';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -56,11 +57,30 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
         state.metamask.preferences?.smartTransactionsOptInStatus === true,
     );
 
+    React.useEffect(() => {
+      if (alertEnabled && !smartTransactionsOptIn) {
+        dispatch(
+          setAlertEnabledness(AlertTypes.smartTransactionsMigration, false)
+        );
+      }
+    }, [alertEnabled, smartTransactionsOptIn, dispatch]);
+
+    const handleDismiss = useCallback(() => {
+      dispatch(
+        setAlertEnabledness(AlertTypes.smartTransactionsMigration, false)
+      );
+    }, [dispatch]);
+
+    // // Check for mismatch immediately, not in an effect
+    // if (alertEnabled && !smartTransactionsOptIn) {
+    //   handleDismiss();
+    // }
+
     // modify the shouldRender logic to handle no context differently:
     const shouldRender =
-      currentConfirmation === null // When not in ConfirmContext
-        ? alertEnabled && smartTransactionsOptIn // Use original conditions only
-        : alertEnabled && // When in ConfirmContext
+      currentConfirmation === null
+        ? alertEnabled && smartTransactionsOptIn
+        : alertEnabled &&
           smartTransactionsOptIn &&
           ['simpleSend', 'tokenMethodTransfer', 'swap'].includes(
             currentConfirmation.type as string,
@@ -70,11 +90,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
       return null;
     }
 
-    const handleDismiss = () => {
-      dispatch(
-        setAlertEnabledness(AlertTypes.smartTransactionsMigration, false),
-      );
-    };
+
 
     const getMarginStyle = () => {
       switch (marginType) {
