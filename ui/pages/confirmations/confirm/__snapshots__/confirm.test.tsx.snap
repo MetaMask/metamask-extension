@@ -486,7 +486,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                               data-testid="simulation-token-value"
                               style="padding-top: 1px; padding-bottom: 1px;"
                             >
-                              Unlimited
+                              14,615,016,373,...
                             </p>
                           </div>
                         </div>
@@ -539,7 +539,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                               data-testid="simulation-token-value"
                               style="padding-top: 1px; padding-bottom: 1px;"
                             >
-                              Unlimited
+                              24,615,016,373,...
                             </p>
                           </div>
                         </div>
@@ -1069,7 +1069,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                               data-testid="simulation-token-value"
                               style="padding-top: 1px; padding-bottom: 1px;"
                             >
-                              Unlimited
+                              14,615,016,373,...
                             </p>
                           </div>
                         </div>
