@@ -158,7 +158,7 @@ async function withFixtures(options, testSuite) {
             '..',
             'node_modules',
             '@metamask',
-            'test-dapp',
+            'test-dapp-multichain',
             'dist',
           );
         }
