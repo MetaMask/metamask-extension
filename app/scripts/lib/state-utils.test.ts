@@ -4,7 +4,10 @@ describe('State Utils', () => {
   describe('sanitizeUIState', () => {
     it('removes unsafe properties', () => {
       const state = {
-        test1: 'value1',
+        TestController: {
+          test1: 'value1',
+          test2: false,
+        },
         SnapController: {
           snapStates: true,
           unencryptedSnapStates: true,
@@ -12,22 +15,27 @@ describe('State Utils', () => {
         KeyringController: {
           vault: true,
         },
-        test2: false,
       };
 
-      // @ts-expect-error Intentionally passing in mock value for testing purposes.
-      const sanitizedState = sanitizeUIState(state);
+      // @ts-expect-error Intentionally passing in mock object for testing
+      const sanitizedState = sanitizeUIState<keyof typeof state>(state);
 
       expect(sanitizedState).toStrictEqual({
-        test1: 'value1',
-        test2: false,
+        TestController: {
+          test1: 'value1',
+          test2: false,
+        },
+        SnapController: {},
+        KeyringController: {},
       });
     });
 
     it('strips large properties from snaps state', () => {
       const state = {
-        test1: 'value1',
-        test2: true,
+        TestController: {
+          test1: 'value1',
+          test2: true,
+        },
         SnapController: {
           snaps: {
             snap1: {
@@ -47,11 +55,13 @@ describe('State Utils', () => {
       };
 
       // @ts-expect-error Intentionally passing in mock value for testing purposes.
-      const sanitizedState = sanitizeUIState(state);
+      const sanitizedState = sanitizeUIState<keyof typeof state>(state);
 
       expect(sanitizedState).toStrictEqual({
-        test1: 'value1',
-        test2: true,
+        TestController: {
+          test1: 'value1',
+          test2: true,
+        },
         SnapController: {
           snaps: {
             snap1: {

@@ -1,5 +1,5 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
-import { isSnapId, Snap } from '@metamask/snaps-utils';
+import { Snap } from '@metamask/snaps-utils';
 import { getKnownPropertyNames } from '@metamask/utils';
 import { MemStoreControllersComposedState } from '../../../shared/types/metamask';
 
@@ -48,9 +48,7 @@ function sanitizeSnapData(
   state.SnapController.snaps = Object.values(snapsData).reduce<
     SnapControllerState['snaps']
   >((acc, snap) => {
-    if (isSnapId(snap.id)) {
-      acc[snap.id] = stripLargeSnapData(snap) as Snap;
-    }
+    acc[snap.id] = stripLargeSnapData(snap) as Snap;
     return acc;
   }, {});
 }
