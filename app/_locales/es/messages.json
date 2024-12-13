@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Este sitio le pide que inicie sesión con la cuenta incorrecta."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Esta transacción solo se realizará una vez que se complete la transacción anterior."
-  },
   "alertModalAcknowledge": {
     "message": "Soy consciente del riesgo y aun así deseo continuar"
   },
