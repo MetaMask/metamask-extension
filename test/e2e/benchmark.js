@@ -89,6 +89,7 @@ async function profilePageLoad(pages, numSamples, retries) {
         result = await measurePage(pageName);
       });
       runResults.push(result);
+      console.log(result);
 
       // Log memory usage after each sample
       const used = process.memoryUsage();
@@ -200,5 +201,6 @@ async function main() {
 }
 
 main().catch((error) => {
+  console.error(error);
   exitWithError(error);
 });
