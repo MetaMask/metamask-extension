@@ -2410,6 +2410,7 @@ describe('MetaMaskController', () => {
         methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       };
+      const mockCurrency = 'CAD';
 
       beforeEach(() => {
         jest.spyOn(metamaskController.multichainRatesController, 'start');
@@ -2506,6 +2507,43 @@ describe('MetaMaskController', () => {
         expect(
           localMetamaskController.multichainRatesController.start,
         ).toHaveBeenCalled();
+      });
+
+      it('calls setFiatCurrency when the `currentCurrency` has changed', async () => {
+        jest.spyOn(RatesController.prototype, 'setFiatCurrency');
+        const localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            AccountsController: {
+              internalAccounts: {
+                accounts: {
+                  [mockNonEvmAccount.id]: mockNonEvmAccount,
+                  [mockEvmAccount.id]: mockEvmAccount,
+                },
+                selectedAccount: mockNonEvmAccount.id,
+              },
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        metamaskController.controllerMessenger.publish(
+          'CurrencyRateController:stateChange',
+          { currentCurrency: mockCurrency },
+        );
+
+        expect(
+          localMetamaskController.multichainRatesController.setFiatCurrency,
+        ).toHaveBeenCalledWith(mockCurrency);
       });
     });
 

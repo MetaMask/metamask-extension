@@ -49,7 +49,7 @@
   "price.api.cx.metamask.io",
   "proxy.api.cx.metamask.io",
   "proxy.dev-api.cx.metamask.io",
-  "qtgdj2huxh.execute-api.us-east-2.amazonaws.com",
+  "signature-insights.api.cx.metamask.io",
   "raw.githubusercontent.com",
   "registry.npmjs.org",
   "responsive-rpc.test",
@@ -72,5 +72,6 @@
   "unresponsive-rpc.test",
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "verify.walletconnect.com"
 ]

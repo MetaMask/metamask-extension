@@ -43,6 +43,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
             provider={alert.provider}
             details={alert.alertDetails}
             reportUrl={alert.reportUrl}
+            children={alert.content}
           />
         </Box>
       ))}
@@ -88,7 +89,7 @@ const getTitle = (
       return t('confirmTitleSignature');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
-        return t('confirmTitleApproveTransaction');
+        return t('confirmTitleApproveTransactionNFT');
       }
       if (customSpendingCap === '0') {
         return t('confirmTitleRevokeApproveTransaction');

@@ -703,6 +703,7 @@ const state = {
     useBlockie: false,
     featureFlags: {},
     welcomeScreenSeen: false,
+    slides: [],
     currentLocale: 'en',
     preferences: {
       showNativeTokenAsMainBalance: true,

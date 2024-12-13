@@ -14,7 +14,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { UseBridgeDataProps } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import Segment from './segment';
 
 const getTxIndex = (srcTxStatus: StatusTypes) => {
@@ -35,10 +35,13 @@ const getSrcTxStatus = (initialTransaction: TransactionMeta) => {
     : StatusTypes.PENDING;
 };
 
-const getDestTxStatus = (
-  bridgeTxHistoryItem: BridgeHistoryItem,
-  srcTxStatus: StatusTypes,
-) => {
+const getDestTxStatus = ({
+  bridgeTxHistoryItem,
+  srcTxStatus,
+}: {
+  bridgeTxHistoryItem?: BridgeHistoryItem;
+  srcTxStatus: StatusTypes;
+}) => {
   if (srcTxStatus !== StatusTypes.COMPLETE) {
     return null;
   }
@@ -60,12 +63,12 @@ export default function BridgeActivityItemTxSegments({
   bridgeTxHistoryItem,
   transactionGroup,
 }: {
-  bridgeTxHistoryItem: BridgeHistoryItem;
-  transactionGroup: UseBridgeDataProps['transactionGroup'];
+  bridgeTxHistoryItem?: BridgeHistoryItem;
+  transactionGroup: TransactionGroup;
 }) {
   const { initialTransaction } = transactionGroup;
   const srcTxStatus = getSrcTxStatus(initialTransaction);
-  const destTxStatus = getDestTxStatus(bridgeTxHistoryItem, srcTxStatus);
+  const destTxStatus = getDestTxStatus({ bridgeTxHistoryItem, srcTxStatus });
   const txIndex = getTxIndex(srcTxStatus);
 
   return (

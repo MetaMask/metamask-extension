@@ -2,7 +2,10 @@ import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 import {
   NotificationListItem,
   NotificationDetailInfo,
@@ -93,7 +96,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
         />
       ),
       body: {
-        type: 'body_onchain_notification',
+        type: NotificationComponentType.OnChainBody,
         Account: ({ notification }) => {
           if (!notification.address) {
             return null;
@@ -165,7 +168,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
       },
     },
     footer: {
-      type: 'footer_onchain_notification',
+      type: NotificationComponentType.OnChainFooter,
       ScanLink: ({ notification }) => {
         return (
           <NotificationDetailBlockExplorerButton

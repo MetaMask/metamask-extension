@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrentNetwork, getPreferences } from '../../../../../selectors';
+import {
+  getCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getTokenNetworkFilter,
+} from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,
@@ -23,7 +27,10 @@ import {
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { TEST_CHAINS } from '../../../../../../shared/constants/network';
+import {
+  FEATURED_NETWORK_CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -54,8 +61,11 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
@@ -71,10 +81,6 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
     allOpts[chainId] = true;
   });
 
-  const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
-    Object.keys(allOpts || {}).length;
-
   useEffect(() => {
     if (isTestNetwork) {
       const testnetFilter = { [currentNetwork.chainId]: true };
@@ -88,7 +94,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   useEffect(() => {
     if (
       process.env.PORTFOLIO_VIEW &&
-      Object.keys(tokenNetworkFilter || {}).length === 0
+      Object.keys(tokenNetworkFilter).length === 0
     ) {
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
@@ -172,7 +178,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
-            disabled={isTestNetwork}
+            disabled={
+              isTestNetwork ||
+              !FEATURED_NETWORK_CHAIN_IDS.includes(currentNetwork.chainId)
+            }
             endIconName={IconName.ArrowDown}
             backgroundColor={
               isNetworkFilterPopoverOpen
@@ -183,9 +192,9 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             marginRight={isFullScreen ? 2 : null}
             ellipsis
           >
-            {allNetworksFilterShown
+            {isTokenNetworkFilterEqualCurrentNetwork
               ? currentNetwork?.nickname ?? t('currentNetwork')
-              : t('allNetworks')}
+              : t('popularNetworks')}
           </ButtonBase>
         )}
 
