@@ -59,16 +59,27 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
 
     React.useEffect(() => {
       if (alertEnabled && !smartTransactionsOptIn) {
-        dispatch(
-          setAlertEnabledness(AlertTypes.smartTransactionsMigration, false)
-        );
+        dispatch({
+          type: 'alert/dismiss',
+          payload: {
+            alertId: AlertTypes.smartTransactionsMigration,
+            enabled: false,
+          },
+        });
+        setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
       }
     }, [alertEnabled, smartTransactionsOptIn, dispatch]);
 
+
     const handleDismiss = useCallback(() => {
-      dispatch(
-        setAlertEnabledness(AlertTypes.smartTransactionsMigration, false)
-      );
+      dispatch({
+        type: 'alert/dismiss',
+        payload: {
+          alertId: AlertTypes.smartTransactionsMigration,
+          enabled: false,
+        },
+      });
+      setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
     }, [dispatch]);
 
     // // Check for mismatch immediately, not in an effect
@@ -82,7 +93,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
         ? alertEnabled && smartTransactionsOptIn
         : alertEnabled &&
           smartTransactionsOptIn &&
-          ['simpleSend', 'tokenMethodTransfer', 'swap'].includes(
+          ['simpleSend', 'tokenMethodTransfer', 'swap', 'deployContract'].includes(
             currentConfirmation.type as string,
           );
 
