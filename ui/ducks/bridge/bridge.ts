@@ -19,6 +19,7 @@ export type BridgeState = {
   toTokenExchangeRate: number | null; // Exchange rate from the selected token to the default currency (can be fiat or crypto)
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
+  wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
 };
 
 const initialState: BridgeState = {
@@ -30,6 +31,7 @@ const initialState: BridgeState = {
   toTokenExchangeRate: null,
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
+  wasTxDeclined: false,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -67,6 +69,9 @@ const bridgeSlice = createSlice({
     },
     setSelectedQuote: (state, action) => {
       state.selectedQuote = action.payload;
+    },
+    setWasTxDeclined: (state, action) => {
+      state.wasTxDeclined = action.payload;
     },
   },
   extraReducers: (builder) => {
