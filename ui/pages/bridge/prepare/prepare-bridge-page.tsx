@@ -34,7 +34,6 @@ import {
   getToChains,
   getToToken,
   getToTokens,
-  getToTopAssets,
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,

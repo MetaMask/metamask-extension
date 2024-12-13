@@ -50,7 +50,6 @@ import {
   validateResponse,
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
-  TOKEN_AGGREGATOR_VALIDATORS,
 } from './utils/validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
@@ -125,12 +124,7 @@ export async function fetchBridgeTokens(
 
   tokens.forEach((token: unknown) => {
     if (
-      validateResponse<SwapsTokenObject>(
-        TOKEN_VALIDATORS.concat(TOKEN_AGGREGATOR_VALIDATORS),
-        token,
-        url,
-        false, // Don't log errors for tokens
-      ) &&
+      validateResponse<SwapsTokenObject>(TOKEN_VALIDATORS, token, url) &&
       !(
         isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
         isSwapsDefaultTokenAddress(token.address, chainId)
