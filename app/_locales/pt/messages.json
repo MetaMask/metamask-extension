@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Este site está pedindo que você entre usando a conta incorreta."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Essa transação só será processada quando sua transação anterior for concluída."
-  },
   "alertModalAcknowledge": {
     "message": "Eu reconheço o risco e ainda quero prosseguir"
   },
