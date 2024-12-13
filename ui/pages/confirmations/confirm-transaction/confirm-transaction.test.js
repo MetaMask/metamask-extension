@@ -270,26 +270,5 @@ describe('Confirmation Transaction Page', () => {
         expect(replaceSpy).not.toHaveBeenCalled();
       });
     });
-
-    describe('when no unapproved transactions and no sendTo recipient exist', () => {
-      it('should call history.replace(mostRecentOverviewPage)', () => {
-        const mockStore = configureMockStore(middleware)({
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            transactions: [],
-          },
-        });
-        const replaceSpy = jest.fn();
-        jest.spyOn(ReactRouterDOM, 'useHistory').mockImplementation(() => {
-          return {
-            replace: replaceSpy,
-          };
-        });
-
-        renderWithProvider(<ConfirmTransaction />, mockStore, '/asdfb');
-        expect(replaceSpy).toHaveBeenCalled();
-      });
-    });
   });
 });

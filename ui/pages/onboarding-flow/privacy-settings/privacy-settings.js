@@ -51,8 +51,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPetnamesEnabled,
   getExternalServicesOnboardingToggleState,
-  getNetworkConfigurationsByChainId,
 } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
 import {
   setIpfsGateway,

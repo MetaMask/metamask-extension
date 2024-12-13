@@ -14,7 +14,7 @@ export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   await driver.clickElement('[data-testid="confirm-footer-button"]');
 }
 
-export function withRedesignConfirmationFixtures(
+export function withTransactionEnvelopeTypeFixtures(
   // Default params first is discouraged because it makes it hard to call the function without the
   // optional parameters. But it doesn't apply here because we're always passing in a variable for
   // title. It's optional because it's sometimes unset.
@@ -34,12 +34,6 @@ export function withRedesignConfirmationFixtures(
         .withMetaMetricsController({
           metaMetricsId: 'fake-metrics-id',
           participateInMetaMetrics: true,
-        })
-        .withPreferencesController({
-          preferences: {
-            redesignedConfirmationsEnabled: true,
-            isRedesignedConfirmationsDeveloperEnabled: true,
-          },
         })
         .build(),
       ganacheOptions:

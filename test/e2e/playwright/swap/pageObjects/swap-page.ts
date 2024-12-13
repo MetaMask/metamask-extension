@@ -3,6 +3,8 @@ import { type Locator, type Page } from '@playwright/test';
 export class SwapPage {
   private page: Page;
 
+  private swapQty: string;
+
   readonly toggleSmartSwap: Locator;
 
   readonly updateSettingsButton: Locator;
@@ -27,8 +29,11 @@ export class SwapPage {
 
   readonly closeButton: Locator;
 
+  readonly viewInActivityBtn: Locator;
+
   constructor(page: Page) {
     this.page = page;
+    this.swapQty = '';
     this.toggleSmartSwap = this.page.locator('text="On"');
     this.updateSettingsButton = this.page.getByTestId(
       'update-transaction-settings-button',
@@ -53,44 +58,80 @@ export class SwapPage {
     this.swapTokenButton = this.page.locator('button', { hasText: 'Swap' });
     this.closeButton = this.page.getByText('Close');
     this.backButton = this.page.locator('[title="Cancel"]');
+    this.viewInActivityBtn = this.page.getByTestId(
+      'page-container-footer-next',
+    );
   }
 
-  async fetchQuote(options: { from?: string; to: string; qty: string }) {
-    // Enter Swap Quantity
-    await this.tokenQty.fill(options.qty);
-
+  async enterQuote(options: { from?: string; to: string; qty: string }) {
     // Enter source token
-    if (options.from) {
+    const native = await this.page.$(`text=/${options.from}/`);
+    if (!native && options.from) {
       this.swapFromDropDown.click();
-      await this.tokenSearch.fill(options.from);
       await this.selectTokenFromList(options.from);
     }
 
-    // Enter destionation token
+    const balanceString = await this.page
+      .locator('[class*="balance"]')
+      .first()
+      .textContent();
+    if (balanceString) {
+      if (parseFloat(balanceString.split(' ')[1]) <= parseFloat(options.qty)) {
+        await this.goBack();
+        // not enough balance so cancel out
+        return false;
+      }
+    }
+
+    // Enter Swap Quantity
+    await this.tokenQty.fill(options.qty);
+    this.swapQty = options.qty;
+
+    // Enter destination token
     await this.swapToDropDown.click();
-    await this.tokenSearch.fill(options.to);
     await this.selectTokenFromList(options.to);
+    return true;
+  }
+
+  async waitForQuote() {
+    let quoteFound = false;
+    do {
+      // Clear Swap Anyway button if present
+      const swapAnywayButton = await this.page.$('text=/Swap anyway/');
+      if (swapAnywayButton) {
+        await swapAnywayButton.click();
+      }
+
+      // No quotes available
+      const noQuotes = await this.page.$('text=/No quotes available/');
+      if (noQuotes) {
+        await this.goBack();
+        break;
+      }
+
+      if (await this.page.$('text=/New quotes in/')) {
+        quoteFound = true;
+        break;
+      }
+      await this.page.waitForTimeout(1000);
+    } while (!quoteFound);
+
+    return quoteFound;
   }
 
   async swap() {
     await this.waitForCountDown();
-
-    // Clear Swap Anyway button if present
-    const swapAnywayButton = await this.page.$('text=/Swap anyway/');
-    if (swapAnywayButton) {
-      await swapAnywayButton.click();
-    }
     await this.swapTokenButton.click();
   }
 
-  async switchTokens() {
+  async switchTokenOrder() {
     // Wait for swap button to appear
     await this.swapTokenButton.waitFor();
     await this.switchTokensButton.click();
     await this.waitForCountDown();
   }
 
-  async gotBack() {
+  async goBack() {
     await this.backButton.click();
   }
 
@@ -98,9 +139,25 @@ export class SwapPage {
     await this.page.waitForSelector(`text=/New quotes in 0:${second}/`);
   }
 
-  async waitForTransactionToComplete() {
-    await this.page.waitForSelector('text=/Transaction complete/');
-    await this.closeButton.click(); // Close button
+  async waitForTransactionToComplete(options: { seconds: number }) {
+    let countSecond = options.seconds;
+    let transactionCompleted;
+    do {
+      transactionCompleted = await this.page.$('text=/Transaction complete/');
+      if (transactionCompleted) {
+        await this.closeButton.click();
+        break;
+      }
+
+      await this.page.waitForTimeout(1000);
+      countSecond -= 1;
+    } while (countSecond);
+
+    if (!transactionCompleted && !countSecond) {
+      await this.viewInActivityBtn.click();
+      return false;
+    }
+    return true;
   }
 
   async waitForInsufficentBalance() {
@@ -109,20 +166,10 @@ export class SwapPage {
   }
 
   async selectTokenFromList(symbol: string) {
-    let searchItem;
-    do {
-      searchItem = await this.tokenList.first().textContent();
-    } while (searchItem !== symbol);
-
-    await this.tokenList.first().click();
-  }
-
-  async waitForSearchListToPopulate(symbol: string): Promise<void> {
-    let searchItem;
-    do {
-      searchItem = await this.tokenList.first().textContent();
-    } while (searchItem !== symbol);
-
-    return await this.tokenList.first().click();
+    await this.tokenSearch.waitFor();
+    await this.tokenSearch.fill(symbol);
+    const regex = new RegExp(`^${symbol}$`, 'u');
+    const searchItem = await this.tokenList.filter({ hasText: regex });
+    await searchItem.click({ timeout: 5000 });
   }
 }

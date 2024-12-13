@@ -11,9 +11,9 @@ import { EtherDenomination } from '../../../../../../../../shared/constants/comm
 import {
   getCurrentCurrency,
   checkNetworkAndAccountSupports1559,
-  getCurrentChainId,
   getIsSwapsChain,
 } from '../../../../../../../selectors/selectors';
+import { getCurrentChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import {
   fetchAndSetSwapsGasPriceInfo,
   getUsedSwapsGasPrice,

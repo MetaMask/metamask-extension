@@ -19,7 +19,7 @@ import ItemList from '../searchable-item-list/item-list';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import { fetchToken } from '../swaps.util';
-import { getCurrentChainId } from '../../../selectors/selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 let timeoutIdForSearch;
 

@@ -4,10 +4,18 @@ import {
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetSelectedNetworkClientAction,
+} from '@metamask/network-controller';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { QuoteRequest, QuoteResponse } from '../../../../ui/pages/bridge/types';
+import {
+  L1GasFees,
+  QuoteRequest,
+  QuoteResponse,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../ui/pages/bridge/types';
 import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME, RequestStatus } from './constants';
 
@@ -35,9 +43,10 @@ export type BridgeControllerState = {
   destTokens: Record<string, SwapsTokenObject>;
   destTopAssets: { address: string }[];
   quoteRequest: Partial<QuoteRequest>;
-  quotes: QuoteResponse[];
+  quotes: (QuoteResponse & L1GasFees)[];
   quotesLastFetched?: number;
   quotesLoadingStatus?: RequestStatus;
+  quotesRefreshCount: number;
 };
 
 export enum BridgeUserAction {
@@ -47,6 +56,8 @@ export enum BridgeUserAction {
 }
 export enum BridgeBackgroundAction {
   SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
+  RESET_STATE = 'resetState',
+  GET_BRIDGE_ERC20_ALLOWANCE = 'getBridgeERC20Allowance',
 }
 
 type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
@@ -57,6 +68,8 @@ type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
 // Maps to BridgeController function names
 type BridgeControllerActions =
   | BridgeControllerAction<BridgeBackgroundAction.SET_FEATURE_FLAGS>
+  | BridgeControllerAction<BridgeBackgroundAction.RESET_STATE>
+  | BridgeControllerAction<BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE>
   | BridgeControllerAction<BridgeUserAction.SELECT_SRC_NETWORK>
   | BridgeControllerAction<BridgeUserAction.SELECT_DEST_NETWORK>
   | BridgeControllerAction<BridgeUserAction.UPDATE_QUOTE_PARAMS>;
@@ -66,7 +79,10 @@ type BridgeControllerEvents = ControllerStateChangeEvent<
   BridgeControllerState
 >;
 
-type AllowedActions = AccountsControllerGetSelectedAccountAction['type'];
+type AllowedActions =
+  | AccountsControllerGetSelectedAccountAction['type']
+  | NetworkControllerGetSelectedNetworkClientAction['type']
+  | NetworkControllerFindNetworkClientIdByChainIdAction['type'];
 type AllowedEvents = never;
 
 /**
@@ -74,7 +90,10 @@ type AllowedEvents = never;
  */
 export type BridgeControllerMessenger = RestrictedControllerMessenger<
   typeof BRIDGE_CONTROLLER_NAME,
-  BridgeControllerActions | AccountsControllerGetSelectedAccountAction,
+  | BridgeControllerActions
+  | AccountsControllerGetSelectedAccountAction
+  | NetworkControllerGetSelectedNetworkClientAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction,
   BridgeControllerEvents,
   AllowedActions,
   AllowedEvents

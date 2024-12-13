@@ -1,7 +1,6 @@
 const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
-
 const {
   default: ConfirmationNavigation,
 } = require('../../page-objects/pages/confirmations/legacy/navigation');
@@ -13,6 +12,7 @@ const {
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -32,6 +32,9 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         const navigation = new ConfirmationNavigation(driver);
@@ -73,6 +76,9 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         const navigation = new ConfirmationNavigation(driver);
@@ -107,6 +113,9 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // reject transaction
@@ -131,6 +140,9 @@ describe('Navigate transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // confirm transaction
@@ -155,6 +167,9 @@ describe('Navigate transactions', function () {
       },
       async ({ driver, ganacheServer }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await createMultipleTransactions(driver, TRANSACTION_COUNT);
 
         // reject transactions

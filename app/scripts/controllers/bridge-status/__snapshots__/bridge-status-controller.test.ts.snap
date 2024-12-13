@@ -1,0 +1,213 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BridgeStatusController constructor rehydrates the tx history state 1`] = `
+{
+  "0xsrcTxHash1": {
+    "account": "0xaccount1",
+    "estimatedProcessingTimeInSeconds": 15,
+    "initialDestAssetBalance": undefined,
+    "pricingData": undefined,
+    "quote": {
+      "bridgeId": "lifi",
+      "bridges": [
+        "across",
+      ],
+      "destAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 10,
+        "coinKey": "ETH",
+        "decimals": 18,
+        "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "name": "ETH",
+        "priceUSD": "2478.63",
+        "symbol": "ETH",
+      },
+      "destChainId": 10,
+      "destTokenAmount": "990654755978612",
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000",
+          "asset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 42161,
+            "coinKey": "ETH",
+            "decimals": 18,
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "name": "ETH",
+            "priceUSD": "2478.7",
+            "symbol": "ETH",
+          },
+        },
+      },
+      "requestId": "197c402f-cb96-4096-9f8c-54aed84ca776",
+      "srcAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 42161,
+        "coinKey": "ETH",
+        "decimals": 18,
+        "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "name": "ETH",
+        "priceUSD": "2478.7",
+        "symbol": "ETH",
+      },
+      "srcChainId": 42161,
+      "srcTokenAmount": "991250000000000",
+      "steps": [
+        {
+          "action": "bridge",
+          "destAmount": "990654755978612",
+          "destAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 10,
+            "coinKey": "ETH",
+            "decimals": 18,
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "name": "ETH",
+            "priceUSD": "2478.63",
+            "symbol": "ETH",
+          },
+          "destChainId": 10,
+          "protocol": {
+            "displayName": "Across",
+            "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png",
+            "name": "across",
+          },
+          "srcAmount": "991250000000000",
+          "srcAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 42161,
+            "coinKey": "ETH",
+            "decimals": 18,
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "name": "ETH",
+            "priceUSD": "2478.7",
+            "symbol": "ETH",
+          },
+          "srcChainId": 42161,
+        },
+      ],
+    },
+    "slippagePercentage": 0,
+    "startTime": 1729964825189,
+    "status": {
+      "srcChain": {
+        "chainId": 42161,
+        "txHash": "0xsrcTxHash1",
+      },
+      "status": "PENDING",
+    },
+    "targetContractAddress": "0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC",
+  },
+}
+`;
+
+exports[`BridgeStatusController startPollingForBridgeTxStatus sets the inital tx history state 1`] = `
+{
+  "0xsrcTxHash1": {
+    "account": "0xaccount1",
+    "estimatedProcessingTimeInSeconds": 15,
+    "initialDestAssetBalance": undefined,
+    "pricingData": undefined,
+    "quote": {
+      "bridgeId": "lifi",
+      "bridges": [
+        "across",
+      ],
+      "destAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 10,
+        "coinKey": "ETH",
+        "decimals": 18,
+        "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "name": "ETH",
+        "priceUSD": "2478.63",
+        "symbol": "ETH",
+      },
+      "destChainId": 10,
+      "destTokenAmount": "990654755978612",
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000",
+          "asset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 42161,
+            "coinKey": "ETH",
+            "decimals": 18,
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "name": "ETH",
+            "priceUSD": "2478.7",
+            "symbol": "ETH",
+          },
+        },
+      },
+      "requestId": "197c402f-cb96-4096-9f8c-54aed84ca776",
+      "srcAsset": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "chainId": 42161,
+        "coinKey": "ETH",
+        "decimals": 18,
+        "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+        "name": "ETH",
+        "priceUSD": "2478.7",
+        "symbol": "ETH",
+      },
+      "srcChainId": 42161,
+      "srcTokenAmount": "991250000000000",
+      "steps": [
+        {
+          "action": "bridge",
+          "destAmount": "990654755978612",
+          "destAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 10,
+            "coinKey": "ETH",
+            "decimals": 18,
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "name": "ETH",
+            "priceUSD": "2478.63",
+            "symbol": "ETH",
+          },
+          "destChainId": 10,
+          "protocol": {
+            "displayName": "Across",
+            "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png",
+            "name": "across",
+          },
+          "srcAmount": "991250000000000",
+          "srcAsset": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "chainId": 42161,
+            "coinKey": "ETH",
+            "decimals": 18,
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+            "name": "ETH",
+            "priceUSD": "2478.7",
+            "symbol": "ETH",
+          },
+          "srcChainId": 42161,
+        },
+      ],
+    },
+    "slippagePercentage": 0,
+    "startTime": 1729964825189,
+    "status": {
+      "srcChain": {
+        "chainId": 42161,
+        "txHash": "0xsrcTxHash1",
+      },
+      "status": "PENDING",
+    },
+    "targetContractAddress": "0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC",
+  },
+}
+`;

@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { Ganache } from '../../seeder/ganache';
-import GanacheContractAddressRegistry from '../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import {
   multipleGanacheOptionsForType2Transactions,
   PRIVATE_KEY_TWO,
@@ -42,7 +42,7 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         ganacheServer,
       }: {
         driver: Driver;
-        contractRegistry: GanacheContractAddressRegistry;
+        contractRegistry: ContractAddressRegistry;
         ganacheServer?: Ganache;
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
@@ -62,7 +62,7 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         // Open Dapp with contract
         const testDapp = new TestDapp(driver);
         const contractAddress = await (
-          contractRegistry as GanacheContractAddressRegistry
+          contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
         await testDapp.openTestDappPage({ contractAddress });
         await testDapp.check_pageIsLoaded();

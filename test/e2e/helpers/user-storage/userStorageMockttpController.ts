@@ -1,13 +1,22 @@
 import { CompletedRequest, Mockttp } from 'mockttp';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 
-// TODO: Export user storage schema from @metamask/profile-sync-controller
+const baseUrl =
+  'https://user-storage\\.api\\.cx\\.metamask\\.io\\/api\\/v1\\/userstorage';
+
 export const pathRegexps = {
-  accounts:
-    /https:\/\/user-storage\.api\.cx\.metamask\.io\/api\/v1\/userstorage\/accounts/u,
-  networks:
-    /https:\/\/user-storage\.api\.cx\.metamask\.io\/api\/v1\/userstorage\/networks/u,
-  notifications:
-    /https:\/\/user-storage\.api\.cx\.metamask\.io\/api\/v1\/userstorage\/notifications/u,
+  [USER_STORAGE_FEATURE_NAMES.accounts]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.accounts}`,
+    'u',
+  ),
+  [USER_STORAGE_FEATURE_NAMES.networks]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.networks}`,
+    'u',
+  ),
+  [USER_STORAGE_FEATURE_NAMES.notifications]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.notifications}`,
+    'u',
+  ),
 };
 
 type UserStorageResponseData = { HashedKey: string; Data: string };
@@ -70,50 +79,75 @@ export class UserStorageMockttpController {
     const isFeatureEntry = determineIfFeatureEntryFromURL(request.path);
 
     const data = (await request.body.getJson()) as {
-      data: string | { [key: string]: string };
+      data?: string | Record<string, string>;
+      batch_delete?: string[];
     };
 
-    const newOrUpdatedSingleOrBatchEntries =
-      isFeatureEntry && typeof data?.data === 'string'
-        ? [
-            {
-              HashedKey: request.path.split('/').pop() as string,
-              Data: data?.data,
-            },
-          ]
-        : Object.entries(data?.data).map(([key, value]) => ({
-            HashedKey: key,
-            Data: value,
-          }));
+    // We're handling batch delete inside the PUT method due to API limitations
+    if (data?.batch_delete) {
+      const keysToDelete = data.batch_delete;
 
-    newOrUpdatedSingleOrBatchEntries.forEach((entry) => {
       const internalPathData = this.paths.get(path);
 
       if (!internalPathData) {
-        return;
+        return {
+          statusCode,
+        };
       }
 
-      const doesThisEntryExist = internalPathData.response?.find(
-        (existingEntry) => existingEntry.HashedKey === entry.HashedKey,
-      );
+      this.paths.set(path, {
+        ...internalPathData,
+        response: internalPathData.response.filter(
+          (entry) => !keysToDelete.includes(entry.HashedKey),
+        ),
+      });
+    }
 
-      if (doesThisEntryExist) {
-        this.paths.set(path, {
-          ...internalPathData,
-          response: internalPathData.response.map((existingEntry) =>
-            existingEntry.HashedKey === entry.HashedKey ? entry : existingEntry,
-          ),
-        });
-      } else {
-        this.paths.set(path, {
-          ...internalPathData,
-          response: [
-            ...(internalPathData?.response || []),
-            entry as { HashedKey: string; Data: string },
-          ],
-        });
-      }
-    });
+    if (data?.data) {
+      const newOrUpdatedSingleOrBatchEntries =
+        isFeatureEntry && typeof data?.data === 'string'
+          ? [
+              {
+                HashedKey: request.path.split('/').pop() as string,
+                Data: data?.data,
+              },
+            ]
+          : Object.entries(data?.data).map(([key, value]) => ({
+              HashedKey: key,
+              Data: value,
+            }));
+
+      newOrUpdatedSingleOrBatchEntries.forEach((entry) => {
+        const internalPathData = this.paths.get(path);
+
+        if (!internalPathData) {
+          return;
+        }
+
+        const doesThisEntryExist = internalPathData.response?.find(
+          (existingEntry) => existingEntry.HashedKey === entry.HashedKey,
+        );
+
+        if (doesThisEntryExist) {
+          this.paths.set(path, {
+            ...internalPathData,
+            response: internalPathData.response.map((existingEntry) =>
+              existingEntry.HashedKey === entry.HashedKey
+                ? entry
+                : existingEntry,
+            ),
+          });
+        } else {
+          this.paths.set(path, {
+            ...internalPathData,
+            response: [
+              ...(internalPathData?.response || []),
+              entry as { HashedKey: string; Data: string },
+            ],
+          });
+        }
+      });
+    }
 
     return {
       statusCode,

@@ -900,6 +900,7 @@ describe('Test Snap Metrics', function () {
         testSpecificMock: mockSegment,
         ignoredConsoleErrors: [
           'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/bip32-example-snap": Failed to fetch tarball for package "@metamask/bip32-example-snap"..',
+          'Failed to fetch snap "npm:@metamask/bip32-example-…ball for package "@metamask/bip32-example-snap"..',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

@@ -11,7 +11,7 @@ import HomePage from '../../../page-objects/pages/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';
 
 const TOKEN_RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
@@ -19,7 +19,7 @@ const TOKEN_RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 describe('Confirmation Redesign Native Send @no-mmi', function () {
   describe('Wallet initiated', async function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
-      await withRedesignConfirmationFixtures(
+      await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
         async ({ driver }: TestSuiteArguments) => {
@@ -29,7 +29,7 @@ describe('Confirmation Redesign Native Send @no-mmi', function () {
     });
 
     it('Sends a type 2 transaction (EIP1559)', async function () {
-      await withRedesignConfirmationFixtures(
+      await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
         async ({ driver }: TestSuiteArguments) => {
@@ -41,7 +41,7 @@ describe('Confirmation Redesign Native Send @no-mmi', function () {
 
   describe('dApp initiated', async function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
-      await withRedesignConfirmationFixtures(
+      await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
         async ({ driver }: TestSuiteArguments) => {
@@ -51,7 +51,7 @@ describe('Confirmation Redesign Native Send @no-mmi', function () {
     });
 
     it('Sends a type 2 transaction (EIP1559)', async function () {
-      await withRedesignConfirmationFixtures(
+      await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
         async ({ driver }: TestSuiteArguments) => {

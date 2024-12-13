@@ -69,7 +69,9 @@ export default function OnboardingPinExtension() {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
     } else {
-      dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
+      await dispatch(
+        toggleExternalServices(externalServicesOnboardingToggleState),
+      );
       await dispatch(setCompletedOnboarding());
 
       if (externalServicesOnboardingToggleState) {

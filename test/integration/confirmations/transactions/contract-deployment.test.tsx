@@ -162,25 +162,29 @@ describe('Contract Deployment Confirmation', () => {
       });
     });
 
-    expect(screen.getByTestId('header-account-name')).toHaveTextContent(
+    expect(await screen.findByTestId('header-account-name')).toHaveTextContent(
       accountName,
     );
-    expect(screen.getByTestId('header-network-display-name')).toHaveTextContent(
-      'Sepolia',
-    );
+    expect(
+      await screen.findByTestId('header-network-display-name'),
+    ).toHaveTextContent('Sepolia');
 
-    fireEvent.click(screen.getByTestId('header-info__account-details-button'));
+    fireEvent.click(
+      await screen.findByTestId('header-info__account-details-button'),
+    );
 
     expect(
       await screen.findByTestId(
         'confirmation-account-details-modal__account-name',
       ),
     ).toHaveTextContent(accountName);
-    expect(screen.getByTestId('address-copy-button-text')).toHaveTextContent(
-      '0x0DCD5...3E7bc',
-    );
     expect(
-      screen.getByTestId('confirmation-account-details-modal__account-balance'),
+      await screen.findByTestId('address-copy-button-text'),
+    ).toHaveTextContent('0x0DCD5...3E7bc');
+    expect(
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-balance',
+      ),
     ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
@@ -213,7 +217,9 @@ describe('Contract Deployment Confirmation', () => {
     );
 
     fireEvent.click(
-      screen.getByTestId('confirmation-account-details-modal__close-button'),
+      await screen.findByTestId(
+        'confirmation-account-details-modal__close-button',
+      ),
     );
 
     await waitFor(() => {
@@ -245,10 +251,12 @@ describe('Contract Deployment Confirmation', () => {
     });
 
     expect(
-      screen.getByText(tEn('confirmTitleDeployContract') as string),
+      await screen.findByText(tEn('confirmTitleDeployContract') as string),
     ).toBeInTheDocument();
 
-    const simulationSection = screen.getByTestId('simulation-details-layout');
+    const simulationSection = await screen.findByTestId(
+      'simulation-details-layout',
+    );
     expect(simulationSection).toBeInTheDocument();
     expect(simulationSection).toHaveTextContent(
       tEn('simulationDetailsTitle') as string,
@@ -261,10 +269,10 @@ describe('Contract Deployment Confirmation', () => {
       tEn('simulationDetailsIncomingHeading') as string,
     );
     expect(simulationDetailsRow).toContainElement(
-      screen.getByTestId('simulation-details-amount-pill'),
+      await screen.findByTestId('simulation-details-amount-pill'),
     );
 
-    const transactionDetailsSection = screen.getByTestId(
+    const transactionDetailsSection = await screen.findByTestId(
       'transaction-details-section',
     );
     expect(transactionDetailsSection).toBeInTheDocument();
@@ -275,25 +283,30 @@ describe('Contract Deployment Confirmation', () => {
       tEn('interactingWith') as string,
     );
 
-    const gasFeesSection = screen.getByTestId('gas-fee-section');
+    const gasFeesSection = await screen.findByTestId('gas-fee-section');
     expect(gasFeesSection).toBeInTheDocument();
 
-    const editGasFeesRow =
-      within(gasFeesSection).getByTestId('edit-gas-fees-row');
+    const editGasFeesRow = await within(gasFeesSection).findByTestId(
+      'edit-gas-fees-row',
+    );
     expect(editGasFeesRow).toHaveTextContent(tEn('networkFee') as string);
 
-    const firstGasField = within(editGasFeesRow).getByTestId('first-gas-field');
+    const firstGasField = await within(editGasFeesRow).findByTestId(
+      'first-gas-field',
+    );
     expect(firstGasField).toHaveTextContent('0.0001 SepoliaETH');
     expect(editGasFeesRow).toContainElement(
-      screen.getByTestId('edit-gas-fee-icon'),
+      await screen.findByTestId('edit-gas-fee-icon'),
     );
 
-    const gasFeeSpeed = within(gasFeesSection).getByTestId(
+    const gasFeeSpeed = await within(gasFeesSection).findByTestId(
       'gas-fee-details-speed',
     );
     expect(gasFeeSpeed).toHaveTextContent(tEn('speed') as string);
 
-    const gasTimingTime = within(gasFeeSpeed).getByTestId('gas-timing-time');
+    const gasTimingTime = await within(gasFeeSpeed).findByTestId(
+      'gas-timing-time',
+    );
     expect(gasTimingTime).toHaveTextContent('~0 sec');
   });
 
@@ -321,7 +334,9 @@ describe('Contract Deployment Confirmation', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('header-advanced-details-button'));
+    fireEvent.click(
+      await screen.findByTestId('header-advanced-details-button'),
+    );
 
     await waitFor(() => {
       expect(
@@ -364,28 +379,32 @@ describe('Contract Deployment Confirmation', () => {
       ).toHaveBeenCalledWith('getNextNonce', expect.anything());
     });
 
-    const gasFeesSection = screen.getByTestId('gas-fee-section');
-    const maxFee = screen.getByTestId('gas-fee-details-max-fee');
+    const gasFeesSection = await screen.findByTestId('gas-fee-section');
+    const maxFee = await screen.findByTestId('gas-fee-details-max-fee');
     expect(gasFeesSection).toContainElement(maxFee);
     expect(maxFee).toHaveTextContent(tEn('maxFee') as string);
     expect(maxFee).toHaveTextContent('0.0023 SepoliaETH');
 
-    const nonceSection = screen.getByTestId('advanced-details-nonce-section');
+    const nonceSection = await screen.findByTestId(
+      'advanced-details-nonce-section',
+    );
     expect(nonceSection).toBeInTheDocument();
     expect(nonceSection).toHaveTextContent(
       tEn('advancedDetailsNonceDesc') as string,
     );
     expect(nonceSection).toContainElement(
-      screen.getByTestId('advanced-details-displayed-nonce'),
+      await screen.findByTestId('advanced-details-displayed-nonce'),
     );
     expect(
-      screen.getByTestId('advanced-details-displayed-nonce'),
+      await screen.findByTestId('advanced-details-displayed-nonce'),
     ).toHaveTextContent('9');
 
-    const dataSection = screen.getByTestId('advanced-details-data-section');
+    const dataSection = await screen.findByTestId(
+      'advanced-details-data-section',
+    );
     expect(dataSection).toBeInTheDocument();
 
-    const dataSectionFunction = screen.getByTestId(
+    const dataSectionFunction = await screen.findByTestId(
       'advanced-details-data-function',
     );
     expect(dataSection).toContainElement(dataSectionFunction);
@@ -394,7 +413,7 @@ describe('Contract Deployment Confirmation', () => {
     );
     expect(dataSectionFunction).toHaveTextContent('Deposit');
 
-    const transactionDataParams = screen.getByTestId(
+    const transactionDataParams = await screen.findByTestId(
       'advanced-details-data-param-0',
     );
     expect(dataSection).toContainElement(transactionDataParams);

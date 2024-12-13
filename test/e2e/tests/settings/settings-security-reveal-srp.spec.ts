@@ -29,7 +29,7 @@ describe('Reveal SRP through settings', function () {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.check_pageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz(true);
+        await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(
           wrongTestPassword,
           'Incorrect password',
@@ -58,7 +58,7 @@ describe('Reveal SRP through settings', function () {
 
         // fill password to reveal SRP and check the displayed SRP
         await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz(true);
+        await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(testPassword);
         await privacySettings.check_srpTextIsDisplayed(E2E_SRP);
         await privacySettings.check_displayedSrpCanBeCopied();

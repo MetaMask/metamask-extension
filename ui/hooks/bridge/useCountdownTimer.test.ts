@@ -16,12 +16,19 @@ describe('useCountdownTimer', () => {
   it('returns time remaining', async () => {
     const quotesLastFetched = Date.now();
     const { result } = renderUseCountdownTimer(
-      createBridgeMockStore({}, {}, { quotesLastFetched }),
+      createBridgeMockStore(
+        { extensionConfig: { maxRefreshCount: 5, refreshRate: 40000 } },
+        {},
+        {
+          quotesLastFetched,
+          quotesRefreshCount: 0,
+        },
+      ),
     );
 
     let i = 0;
-    while (i <= 30) {
-      const secondsLeft = Math.min(30, 30 - i + 1);
+    while (i <= 40) {
+      const secondsLeft = Math.min(41, 40 - i + 2);
       expect(result.current).toStrictEqual(
         `0:${secondsLeft < 10 ? '0' : ''}${secondsLeft}`,
       );
