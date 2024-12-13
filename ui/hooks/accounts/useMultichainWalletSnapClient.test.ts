@@ -1,6 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { HandlerType } from '@metamask/snaps-utils';
-import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  BtcMethod,
+  BtcScopes,
+  SolScopes,
+} from '@metamask/keyring-api';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
@@ -36,6 +41,7 @@ describe('useMultichainWalletSnapClient', () => {
         id: '11a33c6b-0d46-43f4-a401-01587d575fd0',
         options: {},
         methods: [BtcMethod.SendBitcoin],
+        scopes: [BtcScopes.Testnet],
         type: BtcAccountType.P2wpkh,
       },
     },
@@ -48,6 +54,7 @@ describe('useMultichainWalletSnapClient', () => {
         id: '22b44d7c-1e57-4b5b-8502-02698e686fd1',
         options: {},
         methods: ['someMethod'],
+        scopes: [SolScopes.Devnet],
         // TODO: Update when keyring-api is published with Solana types
         type: BtcAccountType.P2wpkh,
       },

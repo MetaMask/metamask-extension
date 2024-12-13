@@ -4,6 +4,8 @@ import {
   BtcMethod,
   BtcAccountType,
   isEvmAccountType,
+  EthScopes,
+  BtcScopes,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -201,10 +203,12 @@ export function createMockInternalAccount({
   };
   options?: Record<string, Json>;
 } = {}) {
+  let scopes;
   let methods;
 
   switch (type) {
     case EthAccountType.Eoa:
+      scopes = [EthScopes.Namespace];
       methods = [
         EthMethod.PersonalSign,
         EthMethod.SignTransaction,
@@ -214,6 +218,7 @@ export function createMockInternalAccount({
       ];
       break;
     case EthAccountType.Erc4337:
+      scopes = [EthScopes.Mainnet]; // Restrict this Smart Account for mainnet only.
       methods = [
         EthMethod.PatchUserOperation,
         EthMethod.PrepareUserOperation,
@@ -221,6 +226,7 @@ export function createMockInternalAccount({
       ];
       break;
     case BtcAccountType.P2wpkh:
+      scopes = [BtcScopes.Testnet];
       methods = [BtcMethod.SendBitcoin];
       break;
     default:
@@ -240,6 +246,7 @@ export function createMockInternalAccount({
       lastSelected,
     },
     options: options ?? {},
+    scopes,
     methods,
     type,
   };
