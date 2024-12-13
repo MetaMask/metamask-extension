@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -11,7 +11,6 @@ import { setAlertEnabledness } from '../../../../store/actions';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
 import { useConfirmContext } from '../../context/confirm';
-import { useCallback } from 'react';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -37,13 +36,12 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     const dispatch = useDispatch();
     const t = useI18nContext();
 
-    // Check for ConfirmContext, default to rendering unconditionally if context is absent
     let currentConfirmation;
     try {
       const context = useConfirmContext();
       currentConfirmation = context?.currentConfirmation;
     } catch {
-      currentConfirmation = null; // Not within ConfirmContextProvider
+      currentConfirmation = null;
     }
 
     const alertEnabled = useSelector(
@@ -70,7 +68,6 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
       }
     }, [alertEnabled, smartTransactionsOptIn, dispatch]);
 
-
     const handleDismiss = useCallback(() => {
       dispatch({
         type: 'alert/dismiss',
@@ -82,26 +79,21 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
       setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
     }, [dispatch]);
 
-    // // Check for mismatch immediately, not in an effect
-    // if (alertEnabled && !smartTransactionsOptIn) {
-    //   handleDismiss();
-    // }
-
-    // modify the shouldRender logic to handle no context differently:
     const shouldRender =
       currentConfirmation === null
         ? alertEnabled && smartTransactionsOptIn
         : alertEnabled &&
           smartTransactionsOptIn &&
-          ['simpleSend', 'tokenMethodTransfer', 'swap', 'deployContract'].includes(
-            currentConfirmation.type as string,
-          );
+          [
+            'simpleSend',
+            'tokenMethodTransfer',
+            'swap',
+            'deployContract',
+          ].includes(currentConfirmation.type as string);
 
     if (!shouldRender) {
       return null;
     }
-
-
 
     const getMarginStyle = () => {
       switch (marginType) {
