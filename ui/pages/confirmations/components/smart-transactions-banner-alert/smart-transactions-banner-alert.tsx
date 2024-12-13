@@ -57,8 +57,9 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     );
 
     const shouldRender =
-      !currentConfirmation ||
-      (alertEnabled &&
+    (currentConfirmation === null) ? // When not in ConfirmContext
+      (alertEnabled && smartTransactionsOptIn) : // Use original conditions only
+      (alertEnabled && // When in ConfirmContext
         smartTransactionsOptIn &&
         ['simpleSend', 'tokenMethodTransfer', 'swap'].includes(
           currentConfirmation.type as string,
