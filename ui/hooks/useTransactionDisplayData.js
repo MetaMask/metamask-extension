@@ -393,7 +393,7 @@ export function useTransactionDisplayData(transactionGroup) {
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
     primaryDisplayValue = formatAmount(
       locale,
-      new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent),
+      new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
     );
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else {
