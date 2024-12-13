@@ -32,6 +32,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -62,6 +63,8 @@ export const BridgeQuoteCard = () => {
   const locale = useSelector(getLocale);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
+  const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
+    useState(false);
 
   return (
     <>
@@ -174,32 +177,73 @@ export const BridgeQuoteCard = () => {
                 {t('networkFees')}
               </Text>
               <Row gap={1}>
-                <Text>
-                  {formatCurrencyAmount(
-                    activeQuote.totalNetworkFee?.valueInCurrency,
-                    currency,
-                    2,
-                  ) ??
-                    formatTokenAmount(
-                      locale,
-                      activeQuote.totalNetworkFee?.amount,
-                      ticker,
-                    )}
-                </Text>
-                <Text color={TextColor.textAlternativeSoft}>
-                  {t('bulletpoint')}
-                </Text>
-                <Text>
-                  {activeQuote.totalNetworkFee?.valueInCurrency
-                    ? formatTokenAmount(
-                        locale,
-                        activeQuote.totalNetworkFee?.amount,
-                        ticker,
-                      )
-                    : undefined}
-                </Text>
+                {shouldShowNetworkFeesInGasToken ? (
+                  <>
+                    {/* Network fee in gas token amounts  */}
+                    <Text>
+                      {activeQuote.totalNetworkFee?.valueInCurrency
+                        ? formatTokenAmount(
+                            locale,
+                            activeQuote.totalNetworkFee?.amount,
+                            ticker,
+                          )
+                        : undefined}
+                    </Text>
+                    <Text>-</Text>
+                    <Text>
+                      {activeQuote.totalMaxNetworkFee?.valueInCurrency
+                        ? formatTokenAmount(
+                            locale,
+                            activeQuote.totalMaxNetworkFee?.amount,
+                            ticker,
+                          )
+                        : undefined}
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    {/* Network fee in display currency */}
+                    <Text>
+                      {formatCurrencyAmount(
+                        activeQuote.totalNetworkFee?.valueInCurrency,
+                        currency,
+                        2,
+                      ) ??
+                        formatTokenAmount(
+                          locale,
+                          activeQuote.totalNetworkFee?.amount,
+                          ticker,
+                        )}
+                    </Text>
+                    <Text>-</Text>
+                    <Text>
+                      {formatCurrencyAmount(
+                        activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                        currency,
+                        2,
+                      ) ??
+                        formatTokenAmount(
+                          locale,
+                          activeQuote.totalMaxNetworkFee?.amount,
+                          ticker,
+                        )}
+                    </Text>
+                  </>
+                )}
+                <Icon
+                  style={{ cursor: 'pointer' }}
+                  color={IconColor.iconAlternativeSoft}
+                  name={IconName.SwapVertical}
+                  size={IconSize.Md}
+                  onClick={() =>
+                    setShouldShowNetworkFeesInGasToken(
+                      !shouldShowNetworkFeesInGasToken,
+                    )
+                  }
+                />
               </Row>
             </Row>
+
             <Row>
               <Text
                 variant={TextVariant.bodyMdMedium}
