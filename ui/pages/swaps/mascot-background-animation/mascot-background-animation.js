@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import Mascot from '../../../components/ui/mascot';
 
-export default function MascotBackgroundAnimation({ height, width }) {
+export default function MascotBackgroundAnimation() {
   const animationEventEmitter = useRef(new EventEmitter());
 
   return (
@@ -221,8 +221,8 @@ export default function MascotBackgroundAnimation({ height, width }) {
       >
         <Mascot
           animationEventEmitter={animationEventEmitter.current}
-          width={width ?? '42'}
-          height={height ?? '42'}
+          width="42"
+          height="42"
           followMouse={false}
         />
       </div>
