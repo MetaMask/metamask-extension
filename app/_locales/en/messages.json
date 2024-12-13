@@ -1425,6 +1425,9 @@
   "create": {
     "message": "Create"
   },
+  "createNewSRP": {
+    "message": "Create a new SRP"
+  },
   "createNewWallet": {
     "message": "Create a new wallet"
   },
