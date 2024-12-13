@@ -16,10 +16,10 @@ import { isHardwareWallet } from '../../../selectors';
 import { getQuoteRequest } from '../../../ducks/bridge/selectors';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 
 const debugLog = createProjectLogger('bridge');
 const LINEA_DELAY_MS = 5000;
