@@ -5030,23 +5030,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^6.0.0":
-  version: 6.0.3
-  resolution: "@metamask/base-controller@npm:6.0.3"
-  dependencies:
-    "@metamask/utils": "npm:^9.1.0"
-    immer: "npm:^9.0.6"
-  checksum: 10/43e208627c673094e3b4a7766ef4df34cd5a9ec7f09721cc3e60123b69a22b82c68752b963d17f4ad925a01c6e5dc89f125cac33aeee4e90e0a8346a1d153aae
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^7.0.0, @metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "@metamask/base-controller@npm:7.0.2"
+"@metamask/base-controller@npm:@metamask-previews/base-controller@7.0.2-preview-1d772cc":
+  version: 7.0.2-preview-1d772cc
+  resolution: "@metamask-previews/base-controller@npm:7.0.2-preview-1d772cc"
   dependencies:
     "@metamask/utils": "npm:^10.0.0"
     immer: "npm:^9.0.6"
-  checksum: 10/6f78ec5af840c9947aa8eac6e402df6469600260d613a92196daefd5b072097a176fe5da1c386f2d36853513254b74140d667d817a12880c46f088e18ff3606a
+  checksum: 10/b20484729096f5e7f37b439d2baf85f98e1b59c6d4a48d6d76677c6ad235a874c916a966d56ba95a8fdd7cf7ea1f9eef2dc1673fcb01bd213bbb4c1026bbf71f
   languageName: node
   linkType: hard
 
