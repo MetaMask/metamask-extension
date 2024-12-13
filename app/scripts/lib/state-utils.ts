@@ -10,9 +10,7 @@ const REMOVE_PATHS = {
 
 export function sanitizeUIState<
   ControllerKey extends keyof MemStoreControllersComposedState = keyof MemStoreControllersComposedState,
->(
-  state: Pick<MemStoreControllersComposedState, ControllerKey>,
-): Pick<MemStoreControllersComposedState, ControllerKey> {
+>(state: Pick<MemStoreControllersComposedState, ControllerKey>) {
   const newState = { ...state };
 
   getKnownPropertyNames(REMOVE_PATHS).forEach((controllerName) => {
