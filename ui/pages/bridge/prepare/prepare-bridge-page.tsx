@@ -235,14 +235,13 @@ const PrepareBridgePage = () => {
   const [isSwitchingTemporarilyDisabled, setIsSwitchingTemporarilyDisabled] =
     useState(false);
   useEffect(() => {
-    setIsSwitchingTemporarilyDisabled(true);
-    const switchButtonTimer = setTimeout(() => {
-      setIsSwitchingTemporarilyDisabled(false);
-    }, SECOND);
-
-    return () => {
-      clearTimeout(switchButtonTimer);
-    };
+    // setIsSwitchingTemporarilyDisabled(true);
+    // const switchButtonTimer = setTimeout(() => {
+    // setIsSwitchingTemporarilyDisabled(false);
+    // }, SECOND);
+    // return () => {
+    //   clearTimeout(switchButtonTimer);
+    // };
   }, [rotateSwitchTokens]);
 
   useEffect(() => {
@@ -254,16 +253,16 @@ const PrepareBridgePage = () => {
     };
   }, []);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  // const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (isInsufficientGasForQuote(nativeAssetBalance)) {
-      scrollRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  }, [isInsufficientGasForQuote(nativeAssetBalance)]);
+  // useEffect(() => {
+  //   if (isInsufficientGasForQuote(nativeAssetBalance)) {
+  //     scrollRef.current?.scrollIntoView({
+  //       behavior: 'smooth',
+  //       block: 'start',
+  //     });
+  //   }
+  // }, [isInsufficientGasForQuote(nativeAssetBalance)]);
 
   const quoteParams = useMemo(
     () => ({
@@ -653,7 +652,7 @@ const PrepareBridgePage = () => {
           !isInsufficientBalance(srcTokenBalance) &&
           isInsufficientGasForQuote(nativeAssetBalance) && (
             <BannerAlert
-              ref={scrollRef}
+              // ref={scrollRef}
               marginInline={4}
               marginBottom={3}
               title={t('bridgeValidationInsufficientGasTitle', [ticker])}
