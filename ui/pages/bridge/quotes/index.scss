@@ -23,14 +23,6 @@
     }
   }
 
-  .bridge-box > &__footer {
-    gap: 0;
-
-    p {
-      color: var(--color-text-alternative);
-    }
-  }
-
   &__info-row {
     display: flex;
     flex-direction: row;
