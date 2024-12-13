@@ -247,7 +247,7 @@ class AccountListPage {
     }
   }
 
-  async addAccount(accountType: ACCOUNT_TYPE, accountName: string) {
+  async addAccount(accountType: ACCOUNT_TYPE, accountName?: string) {
     await this.driver.clickElement(this.createAccountButton);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let addAccountButton: any;
