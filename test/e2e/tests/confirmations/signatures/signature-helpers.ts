@@ -41,7 +41,7 @@ type AssertSignatureMetricsOptions = {
   securityAlertResponse?: string;
   decodingChangeTypes?: string[];
   decodingResponse?: string;
-  decodingDescription: string | null;
+  decodingDescription?: string | null;
 };
 
 type SignatureEventProperty = {
