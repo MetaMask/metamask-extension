@@ -46,7 +46,7 @@ const ApproveInfo = () => {
     return null;
   }
 
-  if (pending) {
+  if (pending || (!isNFT && !decimals)) {
     return <ConfirmLoader />;
   }
 
