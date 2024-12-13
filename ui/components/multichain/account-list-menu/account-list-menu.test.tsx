@@ -29,6 +29,7 @@ const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
 const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 const mockBitcoinClientCreateAccount = jest.fn();
+const mockGenerateNewHdKeyring = jest.fn();
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -40,6 +41,7 @@ jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
     getNextAvailableAccountName: () => mockNextAccountName,
+    generateNewHdKeyring: () => mockGenerateNewHdKeyring,
   };
 });
 
@@ -622,6 +624,25 @@ describe('AccountListMenu', () => {
 
       expect(queryByText(mockAccount.metadata.name)).not.toBeInTheDocument();
       expect(queryByText(mockBtcAccount.metadata.name)).toBeInTheDocument();
+    });
+  });
+
+  describe('Create new srp', () => {
+    it('calls generateNewHdKeyring action when clicked.', async () => {
+      const { getByTestId } = render();
+
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
+      );
+      button.click();
+
+      const createNewSRPButton = getByTestId(
+        'multichain-account-menu-popover-create-new-srp',
+      );
+
+      createNewSRPButton.click();
+
+      expect(mockGenerateNewHdKeyring).toHaveBeenCalled();
     });
   });
 });

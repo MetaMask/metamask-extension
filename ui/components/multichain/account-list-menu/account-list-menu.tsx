@@ -76,7 +76,10 @@ import {
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import {
+  generateNewHdKeyring,
+  setSelectedAccount,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -158,6 +161,7 @@ const ACTION_MODES = {
   // Displays the import account form controls
   IMPORT: 'import',
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  CREATE_SRP: 'create-srp',
   IMPORT_SRP: 'import-srp',
   ///: END:ONLY_INCLUDE_IF
 };
@@ -187,6 +191,8 @@ export const getActionTitle = (
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    case ACTION_MODES.CREATE_SRP:
+      return t('createSecretRecoveryPhrase');
     case ACTION_MODES.IMPORT_SRP:
       return t('importSecretRecoveryPhrase');
     ///: END:ONLY_INCLUDE_IF
@@ -580,6 +586,20 @@ export const AccountListMenu = ({
             }
             {
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Import}
+                  onClick={async () => {
+                    await dispatch(generateNewHdKeyring());
+                  }}
+                  data-testid="multichain-account-menu-popover-create-new-srp"
+                >
+                  {t('createNewSRP')}
+                </ButtonLink>
+              </Box>
+            }
+            {
               <Box marginTop={4}>
                 <ButtonLink
                   size={ButtonLinkSize.Sm}
