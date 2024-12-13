@@ -202,6 +202,11 @@ describe('ENS', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
         .withNetworkControllerOnMainnet()
+        .withPreferencesController({
+          preferences: {
+            smartTransactionsOptInStatus: false,
+          }
+        })
         .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -214,8 +219,6 @@ describe('ENS', function (this: Suite) {
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
-
-
 
       async ({ driver }: { driver: Driver }) => {
 
@@ -246,6 +249,7 @@ describe('ENS', function (this: Suite) {
 
          // Enter an amount
          await sendToPage.fillAmount('0.1');
+         await driver.delay (100000000);
 
          // Proceed to the confirmation screen
          await sendToPage.goToNextScreen();
@@ -257,6 +261,7 @@ describe('ENS', function (this: Suite) {
          // Edit gas fee form
          await confirmTxPage.editGasFee('21000', '100');
          await confirmTxPage.check_pageIsLoaded('0.0021');
+         await driver.delay (100000000);
          await confirmTxPage.confirmTx();
 
          await new HomePage(driver).check_pageIsLoaded();
