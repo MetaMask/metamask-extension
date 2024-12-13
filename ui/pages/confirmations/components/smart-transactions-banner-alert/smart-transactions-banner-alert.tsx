@@ -89,7 +89,8 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
             'tokenMethodTransfer',
             'swap',
             'deployContract',
-          ].includes(currentConfirmation.type as string);
+            'contractInteraction',
+          ].includes(currentConfirmation?.type);
 
     if (!shouldRender) {
       return null;
