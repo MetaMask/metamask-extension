@@ -63,9 +63,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getIsBridgeChain,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getDataCollectionForMarketing,
+  getIsBridgeEnabled,
 } from '../../../selectors';
 import {
   getSmartTransactionsEnabled,
@@ -77,7 +75,6 @@ import {
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import { getURLHostName } from '../../../helpers/utils/util';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
@@ -143,6 +140,7 @@ import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import useBridging from '../../../hooks/bridge/useBridging';
 import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
@@ -158,6 +156,7 @@ export default function PrepareSwapPage({
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const { openBridgeExperience } = useBridging();
 
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
     useState(undefined);
@@ -177,6 +176,7 @@ export default function PrepareSwapPage({
   const [prefetchingQuotes, setPrefetchingQuotes] = useState(false);
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
+  const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams, isEqual);
@@ -208,7 +208,6 @@ export default function PrepareSwapPage({
     ? Object.keys(aggregatorMetadata).length
     : 0;
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const metaMetricsId = useSelector(getMetaMetricsId);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -227,8 +226,6 @@ export default function PrepareSwapPage({
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const fetchParamsFromToken = isSwapsDefaultTokenAddress(
     sourceTokenInfo?.address,
@@ -1064,7 +1061,7 @@ export default function PrepareSwapPage({
         </div>
         {showCrossChainSwapsLink && (
           <ButtonLink
-            endIconName={IconName.Export}
+            endIconName={isBridgeSupported ? undefined : IconName.Export}
             endIconProps={{
               size: IconSize.Xs,
             }}
@@ -1072,33 +1069,14 @@ export default function PrepareSwapPage({
             marginTop={2}
             fontWeight={FontWeight.Normal}
             onClick={() => {
-              const portfolioUrl = getPortfolioUrl(
-                'bridge',
-                'ext_bridge_prepare_swap_link',
-                metaMetricsId,
-                isMetaMetricsEnabled,
-                isMarketingEnabled,
-              );
-
-              global.platform.openTab({
-                url: `${portfolioUrl}&token=${fromTokenAddress}`,
-              });
-
-              trackEvent({
-                category: MetaMetricsEventCategory.Swaps,
-                event: MetaMetricsEventName.BridgeLinkClicked,
-                properties: {
-                  location: 'Swaps',
-                  text: 'Swap across networks with MetaMask Portfolio',
-                  chain_id: chainId,
-                  token_symbol: fromTokenSymbol,
-                },
-              });
+              openBridgeExperience('Swaps', fromToken);
             }}
             target="_blank"
             data-testid="prepare-swap-page-cross-chain-swaps-link"
           >
-            {t('crossChainSwapsLink')}
+            {isBridgeSupported
+              ? t('crossChainSwapsLinkNative')
+              : t('crossChainSwapsLink')}
           </ButtonLink>
         )}
         {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (
