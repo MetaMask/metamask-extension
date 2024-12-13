@@ -99,14 +99,14 @@ const ConfirmButton = ({
     useState<boolean>(false);
 
   const {
+    alerts,
     hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
-    fieldAlerts,
     hasUnconfirmedFieldDangerAlerts,
     unconfirmedFieldDangerAlerts,
   } = useAlerts(alertOwnerId);
 
-  const hasDangerBlockingAlerts = fieldAlerts.some(
+  const hasDangerBlockingAlerts = alerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
 
