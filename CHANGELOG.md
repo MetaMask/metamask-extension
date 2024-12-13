@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.10.0]
-### Uncategorized
+### Fixed
 - chore: Master sync PR following v12.8.0 and v12.9.0 ([#28912](https://github.com/MetaMask/metamask-extension/pull/28912))
 - Merge origin/main into master-sync
 - feat: add websocket support for c2 detection ([#29150](https://github.com/MetaMask/metamask-extension/pull/29150))
