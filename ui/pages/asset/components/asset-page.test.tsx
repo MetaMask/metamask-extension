@@ -327,6 +327,18 @@ describe('AssetPage', () => {
     expect(mmiPortfolioButton).toBeInTheDocument();
   });
 
+  it('should render the network name', async () => {
+    const mockedStore = configureMockStore([thunk])(mockStore);
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      mockedStore,
+    );
+    const networkNode = queryByTestId('asset-network');
+    expect(networkNode).toBeInTheDocument();
+    expect(networkNode?.textContent).toBe('Ethereum Mainnet');
+  });
+
   it('should render a native asset', () => {
     const { container } = renderWithProvider(
       <AssetPage asset={native} optionsButton={null} />,
