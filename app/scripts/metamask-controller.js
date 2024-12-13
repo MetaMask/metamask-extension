@@ -6396,13 +6396,6 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
-
-        grantPermissions: (approvedPermissions) => {
-          return this.permissionController.grantPermissions({
-            subject: { origin },
-            approvedPermissions,
-          });
-        },
         updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
           origin,
