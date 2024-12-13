@@ -499,7 +499,7 @@ const PrepareBridgePage = () => {
               >
                 {t('swapFetchingQuotes')}
               </Text>
-              <MascotBackgroundAnimation height="64" width="64" />
+              <MascotBackgroundAnimation />
             </>
           ) : null}
         </Column>
