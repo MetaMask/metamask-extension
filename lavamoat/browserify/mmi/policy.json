@@ -5430,15 +5430,6 @@
         "string.prototype.matchall>call-bind": true
       }
     },
-    "string.prototype.matchall>es-abstract>object-inspect": {
-      "globals": {
-        "HTMLElement": true,
-        "WeakRef": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "string.prototype.matchall>get-intrinsic": {
       "globals": {
         "AggregateError": true,
@@ -5479,8 +5470,17 @@
     "string.prototype.matchall>side-channel": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true,
-        "string.prototype.matchall>get-intrinsic": true
+        "string.prototype.matchall>get-intrinsic": true,
+        "string.prototype.matchall>side-channel>object-inspect": true
+      }
+    },
+    "string.prototype.matchall>side-channel>object-inspect": {
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "terser>source-map-support>buffer-from": {

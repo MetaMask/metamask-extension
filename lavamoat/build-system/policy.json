@@ -49,7 +49,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "gulp-livereload>chalk>supports-color>has-flag": true
+        "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "@babel/core": {
@@ -243,16 +248,7 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
-      }
-    },
-    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true,
-        "eslint>eslint-scope>esrecurse": true
+        "webpack>eslint-scope": true
       }
     },
     "@babel/eslint-parser>semver": {
@@ -2045,8 +2041,8 @@
     },
     "chokidar>anymatch": {
       "packages": {
-        "chokidar>anymatch>normalize-path": true,
-        "chokidar>anymatch>picomatch": true
+        "chokidar>anymatch>picomatch": true,
+        "chokidar>normalize-path": true
       }
     },
     "chokidar>anymatch>picomatch": {
@@ -2450,23 +2446,59 @@
         "del>is-glob": true,
         "depcheck>is-core-module": true,
         "eslint": true,
+        "eslint-plugin-import>array-includes": true,
         "eslint-plugin-import>array.prototype.flat": true,
         "eslint-plugin-import>debug": true,
         "eslint-plugin-import>doctrine": true,
         "eslint-plugin-import>eslint-module-utils": true,
         "eslint-plugin-import>tsconfig-paths": true,
-        "eslint-plugin-react>array-includes": true,
         "eslint-plugin-react>object.values": true,
         "eslint>minimatch": true,
         "typescript": true
       }
     },
-    "eslint-plugin-import>array.prototype.flat": {
+    "eslint-plugin-import>array-includes": {
       "packages": {
-        "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true,
+        "eslint-plugin-import>array-includes>es-abstract": true,
+        "eslint-plugin-react>array-includes>is-string": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract": true
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "eslint-plugin-import>array-includes>es-abstract": {
+      "packages": {
+        "depcheck>is-core-module>hasown": true,
+        "eslint-plugin-import>array-includes>es-abstract>object-inspect": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bind>es-define-property": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-object-atoms": true,
+        "string.prototype.matchall>es-abstract>es-to-primitive": true,
+        "string.prototype.matchall>es-abstract>gopd": true,
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
+        "string.prototype.matchall>es-abstract>has-proto": true,
+        "string.prototype.matchall>es-abstract>is-callable": true,
+        "string.prototype.matchall>es-abstract>safe-regex-test": true,
+        "string.prototype.matchall>es-abstract>string.prototype.trim": true,
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "eslint-plugin-import>array-includes>es-abstract>object-inspect": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
+      }
+    },
+    "eslint-plugin-import>array.prototype.flat": {
+      "packages": {
+        "eslint-plugin-import>array-includes>es-abstract": true,
+        "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true
       }
     },
     "eslint-plugin-import>debug": {
@@ -2817,11 +2849,41 @@
     },
     "eslint-plugin-react>array-includes": {
       "packages": {
+        "eslint-plugin-react>array-includes>es-abstract": true,
         "eslint-plugin-react>array-includes>is-string": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract": true,
         "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "eslint-plugin-react>array-includes>es-abstract": {
+      "packages": {
+        "depcheck>is-core-module>hasown": true,
+        "eslint-plugin-react>array-includes>es-abstract>object-inspect": true,
+        "eslint-plugin-react>array-includes>is-string": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bind>es-define-property": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-object-atoms": true,
+        "string.prototype.matchall>es-abstract>es-to-primitive": true,
+        "string.prototype.matchall>es-abstract>gopd": true,
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
+        "string.prototype.matchall>es-abstract>has-proto": true,
+        "string.prototype.matchall>es-abstract>is-callable": true,
+        "string.prototype.matchall>es-abstract>safe-regex-test": true,
+        "string.prototype.matchall>es-abstract>string.prototype.trim": true,
+        "string.prototype.matchall>get-intrinsic": true,
+        "string.prototype.matchall>has-symbols": true,
+        "string.prototype.matchall>internal-slot": true
+      }
+    },
+    "eslint-plugin-react>array-includes>es-abstract>object-inspect": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
       }
     },
     "eslint-plugin-react>array-includes>is-string": {
@@ -2831,10 +2893,10 @@
     },
     "eslint-plugin-react>array.prototype.flatmap": {
       "packages": {
+        "eslint-plugin-react>array-includes>es-abstract": true,
         "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true,
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract": true
+        "string.prototype.matchall>define-properties": true
       }
     },
     "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": {
@@ -2860,21 +2922,30 @@
     },
     "eslint-plugin-react>object.entries": {
       "packages": {
+        "eslint-plugin-react>array-includes>es-abstract": true,
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract": true
+        "string.prototype.matchall>define-properties": true
       }
     },
     "eslint-plugin-react>object.fromentries": {
       "packages": {
+        "eslint-plugin-react>array-includes>es-abstract": true,
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract": true
+        "string.prototype.matchall>define-properties": true
       }
     },
     "eslint-plugin-react>object.hasown": {
       "packages": {
-        "string.prototype.matchall>es-abstract": true
+        "eslint-plugin-react>object.hasown>es-abstract": true
+      }
+    },
+    "eslint-plugin-react>object.hasown>es-abstract": {
+      "packages": {
+        "depcheck>is-core-module>hasown": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-object-atoms": true,
+        "string.prototype.matchall>es-abstract>es-to-primitive": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "eslint-plugin-react>resolve": {
@@ -3758,8 +3829,8 @@
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map": {
       "packages": {
+        "chokidar>normalize-path": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>acorn": true,
-        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>normalize-path": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>postcss": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>source-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2": true
@@ -3810,8 +3881,13 @@
     },
     "gulp-sourcemaps>@gulp-sourcemaps/map-sources": {
       "packages": {
-        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2": true,
-        "gulp-watch>anymatch>normalize-path": true
+        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>normalize-path": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2": true
+      }
+    },
+    "gulp-sourcemaps>@gulp-sourcemaps/map-sources>normalize-path": {
+      "packages": {
+        "vinyl>remove-trailing-separator": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2": {
@@ -4663,8 +4739,8 @@
         "path.sep": true
       },
       "packages": {
-        "gulp-watch>anymatch>normalize-path": true,
-        "gulp>glob-watcher>anymatch>micromatch": true
+        "gulp>glob-watcher>anymatch>micromatch": true,
+        "gulp>glob-watcher>anymatch>normalize-path": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch": {
@@ -4840,6 +4916,11 @@
     "gulp>glob-watcher>anymatch>micromatch>extglob>extend-shallow": {
       "packages": {
         "gulp-watch>anymatch>micromatch>object.omit>is-extendable": true
+      }
+    },
+    "gulp>glob-watcher>anymatch>normalize-path": {
+      "packages": {
+        "vinyl>remove-trailing-separator": true
       }
     },
     "gulp>glob-watcher>async-done": {
@@ -5974,9 +6055,9 @@
       },
       "packages": {
         "del>graceful-fs": true,
-        "gulp-watch>anymatch>normalize-path": true,
         "gulp>vinyl-fs>remove-bom-buffer": true,
         "gulp>vinyl-fs>vinyl-sourcemap>append-buffer": true,
+        "gulp>vinyl-fs>vinyl-sourcemap>normalize-path": true,
         "gulp>vinyl-fs>vinyl-sourcemap>now-and-later": true,
         "nyc>convert-source-map": true,
         "vinyl": true
@@ -5996,6 +6077,11 @@
     "gulp>vinyl-fs>vinyl-sourcemap>append-buffer>buffer-equal": {
       "builtin": {
         "buffer.Buffer.isBuffer": true
+      }
+    },
+    "gulp>vinyl-fs>vinyl-sourcemap>normalize-path": {
+      "packages": {
+        "vinyl>remove-trailing-separator": true
       }
     },
     "gulp>vinyl-fs>vinyl-sourcemap>now-and-later": {
@@ -6345,12 +6431,7 @@
         "process.platform": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
-      }
-    },
-    "mocha>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "chalk>supports-color>has-flag": true
       }
     },
     "mockttp>portfinder>mkdirp": {
@@ -7747,14 +7828,12 @@
     "string.prototype.matchall>es-abstract": {
       "packages": {
         "depcheck>is-core-module>hasown": true,
-        "eslint-plugin-react>array-includes>is-string": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>call-bind>es-errors": true,
         "string.prototype.matchall>es-abstract>es-object-atoms": true,
         "string.prototype.matchall>es-abstract>es-set-tostringtag": true,
         "string.prototype.matchall>es-abstract>es-to-primitive": true,
-        "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true,
         "string.prototype.matchall>es-abstract>has-proto": true,
         "string.prototype.matchall>es-abstract>is-callable": true,
@@ -7832,8 +7911,14 @@
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract": true,
-        "string.prototype.matchall>es-abstract>es-object-atoms": true
+        "string.prototype.matchall>es-abstract>es-object-atoms": true,
+        "string.prototype.matchall>es-abstract>string.prototype.trim>es-abstract": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>string.prototype.trim>es-abstract": {
+      "packages": {
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "string.prototype.matchall>get-intrinsic": {
@@ -7876,8 +7961,17 @@
     "string.prototype.matchall>side-channel": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true,
-        "string.prototype.matchall>get-intrinsic": true
+        "string.prototype.matchall>get-intrinsic": true,
+        "string.prototype.matchall>side-channel>object-inspect": true
+      }
+    },
+    "string.prototype.matchall>side-channel>object-inspect": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
       }
     },
     "stylelint": {
@@ -9119,6 +9213,15 @@
       "builtin": {
         "assert.equal": true,
         "assert.ok": true
+      }
+    },
+    "webpack>eslint-scope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "eslint>eslint-scope>esrecurse": true,
+        "webpack>eslint-scope>estraverse": true
       }
     },
     "webpack>json-parse-even-better-errors": {
