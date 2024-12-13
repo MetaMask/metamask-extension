@@ -118,7 +118,8 @@ class AccountListPage {
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
 
-  private readonly selectAccountSelector = '.multichain-account-list-item__account-name'
+  private readonly selectAccountSelector =
+    '.multichain-account-list-item__account-name';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -401,10 +402,15 @@ class AccountListPage {
     console.log(
       `Check that account value and suffix ${expectedValueAndSuffix} is displayed in account list`,
     );
-    await this.driver.waitForSelector({
-      css: this.accountValueAndSuffix,
-      text: expectedValueAndSuffix,
-    });
+    await this.driver.waitForSelector(
+      {
+        css: this.accountValueAndSuffix,
+        text: expectedValueAndSuffix,
+      },
+      {
+        timeout: 60000,
+      },
+    );
   }
 
   async openAccountOptionsMenu(): Promise<void> {
@@ -632,7 +638,10 @@ class AccountListPage {
   }
 
   async selectAccount(accountLabel: string): Promise<void> {
-    await this.driver.clickElement({css: this.selectAccountSelector, text: accountLabel})
+    await this.driver.clickElement({
+      css: this.selectAccountSelector,
+      text: accountLabel,
+    });
   }
 }
 

@@ -5,7 +5,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 
-const SOLANA_URL_REGEX = /^https:\/\/.*solana.*/u;
+const SOLANA_URL_REGEX = /^https:\/\/.*solana.rpc.grove.city.*/u;
 
 export enum SendFlowPlaceHolders {
   AMOUNT = 'Enter amount to send',
@@ -13,22 +13,31 @@ export enum SendFlowPlaceHolders {
   LOADING = 'Preparing transaction',
 }
 
+export const SOL_BALANCE = 500;
+
+export const SOL_TO_USD_RATE = 225.88;
+
+export const USD_BALANCE = SOL_BALANCE * SOL_TO_USD_RATE;
+
 export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
-  return await mockServer
+  return mockServer
     .forPost(SOLANA_URL_REGEX)
     .withJsonBodyIncluding({
       method: 'getBalance',
     })
     .thenCallback(() => {
+      console.log('Enbtra aqui? ', SOL_BALANCE * SOL_TO_USD_RATE);
       return {
         statusCode: 200,
         json: {
+          jsonrpc: '2.0',
+          id: '2403',
           result: {
             context: {
               apiVersion: '2.0.15',
               slot: 305352614,
             },
-            value: 5,
+            value: SOL_BALANCE,
           },
         },
       };
