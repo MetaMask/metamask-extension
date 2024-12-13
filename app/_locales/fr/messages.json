@@ -4105,12 +4105,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Ici, vous pouvez voir les autorisations que vous avez accordées aux Snaps installés ou aux sites connectés."
   },
-  "permissionsPageTourDescription": {
-    "message": "C’’est votre panneau de configuration pour gérer les autorisations accordées aux sites connectés et aux Snaps installés."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Les sites connectés sont maintenant des autorisations"
-  },
   "permitSimulationDetailInfo": {
     "message": "Vous autorisez la dépenseur à dépenser ce nombre de jetons de votre compte."
   },

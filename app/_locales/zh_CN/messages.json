@@ -4105,12 +4105,6 @@
   "permissionsPageEmptySubContent": {
     "message": "您可以在此处查看您授予已安装 Snap 或已连接站点的许可。"
   },
-  "permissionsPageTourDescription": {
-    "message": "这是您的控制面板，用于管理授予已连接站点和已安装 Snap 的许可。"
-  },
-  "permissionsPageTourTitle": {
-    "message": "已连接的站点现已获得许可"
-  },
   "permitSimulationDetailInfo": {
     "message": "您将授予该消费者许可从您的账户中支出这些代币。"
   },
