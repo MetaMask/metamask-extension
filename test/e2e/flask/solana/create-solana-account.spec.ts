@@ -19,6 +19,7 @@ describe('Create/Remove Solana Account', function (this: Suite) {
       },
     );
   });
+
   it('Can remove a Solana account', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
