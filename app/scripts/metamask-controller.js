@@ -19,7 +19,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap } from 'lodash';
+import { debounce, throttle, memoize, wrap, pick } from 'lodash';
 import {
   KeyringController,
   keyringBuilderFactory,
@@ -167,6 +167,8 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
+  setPermittedEthChainIds,
+  setEthAccounts,
 } from '@metamask/multichain';
 import {
   methodsRequiringNetworkSwitch,
@@ -5322,25 +5324,80 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Requests approval for permissions for the specified origin
+   * Requests CAIP-25 for permissions for the specified origin
    *
    * @param origin - The origin to request approval for.
-   * @param permissions - The permissions to request approval for.
+   * @param requestedPermissions - The legacy permissions to request approval for.
    */
-  async requestPermissionApprovalForOrigin(origin, permissions) {
+  async requestCaip25Permission(origin, requestedPermissions = {}) {
+    const permissions = pick(requestedPermissions, [
+      RestrictedMethods.eth_accounts,
+      PermissionNames.permittedChains,
+    ]);
+
+    if (!permissions[RestrictedMethods.eth_accounts]) {
+      permissions[RestrictedMethods.eth_accounts] = {};
+    }
+
+    if (!permissions[PermissionNames.permittedChains]) {
+      permissions[PermissionNames.permittedChains] = {};
+    }
+
+    if (isSnapId(origin)) {
+      delete permissions[PermissionNames.permittedChains];
+    }
+
     const id = nanoid();
-    return this.approvalController.addAndShowApprovalRequest({
-      id,
-      origin,
-      requestData: {
-        metadata: {
-          id,
-          origin,
+    const legacyApproval =
+      await this.approvalController.addAndShowApprovalRequest({
+        id,
+        origin,
+        requestData: {
+          metadata: {
+            id,
+            origin,
+          },
+          permissions,
         },
-        permissions,
+        type: MethodNames.RequestPermissions,
+      });
+
+    let caveatValue = {
+      requiredScopes: {},
+      optionalScopes: {},
+      isMultichainOrigin: false,
+    };
+
+    if (isSnapId(origin)) {
+      caveatValue.optionalScopes = {
+        'wallet:eip155': {
+          accounts: [],
+        },
+      };
+    } else {
+      caveatValue = setPermittedEthChainIds(
+        caveatValue,
+        legacyApproval.approvedChainIds,
+      );
+    }
+
+    caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
+
+    const grantedPermissions = this.permissionController.grantPermissions({
+      subject: { origin },
+      approvedPermissions: {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValue,
+            },
+          ],
+        },
       },
-      type: MethodNames.RequestPermissions,
     });
+
+    return grantedPermissions[Caip25EndowmentPermissionName];
   }
 
   // ---------------------------------------------------------------------------
@@ -6118,6 +6175,10 @@ export default class MetamaskController extends EventEmitter {
         ),
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
+        requestCaip25PermissionForOrigin: this.requestCaip25Permission.bind(
+          this,
+          origin,
+        ),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,

@@ -50,6 +50,10 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
 import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../shared/constants/permissions';
+import {
   BalancesController as MultichainBalancesController,
   BTC_BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from './lib/accounts/BalancesController';
@@ -59,6 +63,7 @@ import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController, {
   ONE_KEY_VIA_TREZOR_MINOR_VERSION,
 } from './metamask-controller';
+import { PermissionNames } from './controllers/permissions';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -948,21 +953,77 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#requestPermissionApprovalForOrigin', () => {
-      it('requests permissions for the origin from the ApprovalController', async () => {
+    describe('#requestCaip25Permission', () => {
+      it('requests approval with well formed id and origin', async () => {
         jest
           .spyOn(
             metamaskController.approvalController,
             'addAndShowApprovalRequest',
           )
-          .mockResolvedValue();
+          .mockResolvedValue({
+            approvedAccounts: [],
+            approvedChainIds: [],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
+            },
+          });
 
-        await metamaskController.requestPermissionApprovalForOrigin(
-          'test.com',
-          {
-            eth_accounts: {},
-          },
+        await metamaskController.requestCaip25Permission('test.com', {});
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'test.com',
+            requestData: expect.objectContaining({
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'test.com',
+              },
+            }),
+            type: 'wallet_requestPermissions',
+          }),
         );
+
+        const [params] =
+          metamaskController.approvalController.addAndShowApprovalRequest.mock
+            .calls[0];
+        expect(params.id).toStrictEqual(params.requestData.metadata.id);
+      });
+
+      it('requests approval from the ApprovalController for eth_accounts and permittedChains when only eth_accounts is specified in params and origin is not snapId', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue({
+            approvedAccounts: [],
+            approvedChainIds: [],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
+            },
+          });
+
+        await metamaskController.requestCaip25Permission('test.com', {
+          [PermissionNames.eth_accounts]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['foo'],
+              },
+            ],
+          },
+        });
 
         expect(
           metamaskController.approvalController.addAndShowApprovalRequest,
@@ -976,17 +1037,426 @@ describe('MetaMaskController', () => {
                 origin: 'test.com',
               },
               permissions: {
-                eth_accounts: {},
+                [RestrictedMethods.eth_accounts]: {
+                  caveats: [
+                    {
+                      type: CaveatTypes.restrictReturnedAccounts,
+                      value: ['foo'],
+                    },
+                  ],
+                },
+                [PermissionNames.permittedChains]: {},
               },
             },
             type: 'wallet_requestPermissions',
           }),
         );
+      });
 
-        const [params] =
-          metamaskController.approvalController.addAndShowApprovalRequest.mock
-            .calls[0];
-        expect(params.id).toStrictEqual(params.requestData.metadata.id);
+      it('requests approval from the ApprovalController for eth_accounts and permittedChains when only permittedChains is specified in params and origin is not snapId', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue({
+            approvedAccounts: [],
+            approvedChainIds: [],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
+            },
+          });
+
+        await metamaskController.requestCaip25Permission('test.com', {
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x64'],
+              },
+            ],
+          },
+        });
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'test.com',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'test.com',
+              },
+              permissions: {
+                [RestrictedMethods.eth_accounts]: {},
+                [PermissionNames.permittedChains]: {
+                  caveats: [
+                    {
+                      type: CaveatTypes.restrictNetworkSwitching,
+                      value: ['0x64'],
+                    },
+                  ],
+                },
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+      });
+
+      it('requests approval from the ApprovalController for eth_accounts and permittedChains when both are specified in params and origin is not snapId', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue({
+            approvedAccounts: [],
+            approvedChainIds: [],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
+            },
+          });
+
+        await metamaskController.requestCaip25Permission('test.com', {
+          [PermissionNames.eth_accounts]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['foo'],
+              },
+            ],
+          },
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x64'],
+              },
+            ],
+          },
+        });
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'test.com',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'test.com',
+              },
+              permissions: {
+                [PermissionNames.eth_accounts]: {
+                  caveats: [
+                    {
+                      type: CaveatTypes.restrictReturnedAccounts,
+                      value: ['foo'],
+                    },
+                  ],
+                },
+                [PermissionNames.permittedChains]: {
+                  caveats: [
+                    {
+                      type: CaveatTypes.restrictNetworkSwitching,
+                      value: ['0x64'],
+                    },
+                  ],
+                },
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+      });
+
+      it('requests approval from the ApprovalController for only eth_accounts when only eth_accounts is specified in params and origin is snapId', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue({
+            approvedAccounts: [],
+            approvedChainIds: [],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
+            },
+          });
+
+        await metamaskController.requestCaip25Permission('npm:snap', {
+          [PermissionNames.eth_accounts]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['foo'],
+              },
+            ],
+          },
+        });
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'npm:snap',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'npm:snap',
+              },
+              permissions: {
+                [RestrictedMethods.eth_accounts]: {
+                  caveats: [
+                    {
+                      type: CaveatTypes.restrictReturnedAccounts,
+                      value: ['foo'],
+                    },
+                  ],
+                },
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+      });
+
+      it('requests approval from the ApprovalController for only eth_accounts when only permittedChains is specified in params and origin is snapId', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue({
+            approvedAccounts: [],
+            approvedChainIds: [],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
+            },
+          });
+
+        await metamaskController.requestCaip25Permission('npm:snap', {
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x64'],
+              },
+            ],
+          },
+        });
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'npm:snap',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'npm:snap',
+              },
+              permissions: {
+                [PermissionNames.eth_accounts]: {},
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+      });
+
+      it('requests approval from the ApprovalController for only eth_accounts when both eth_accounts and permittedChains are specified in params and origin is snapId', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue({
+            approvedAccounts: [],
+            approvedChainIds: [],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
+            },
+          });
+
+        await metamaskController.requestCaip25Permission('npm:snap', {
+          [PermissionNames.eth_accounts]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['foo'],
+              },
+            ],
+          },
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x64'],
+              },
+            ],
+          },
+        });
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'npm:snap',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'npm:snap',
+              },
+              permissions: {
+                [PermissionNames.eth_accounts]: {
+                  caveats: [
+                    {
+                      type: CaveatTypes.restrictReturnedAccounts,
+                      value: ['foo'],
+                    },
+                  ],
+                },
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+      });
+
+      it('throws an error if the eth_accounts and permittedChains approval is rejected', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockRejectedValue(new Error('approval rejected'));
+
+        await expect(() =>
+          metamaskController.requestCaip25Permission('test.com', {
+            eth_accounts: {},
+          }),
+        ).rejects.toThrow(new Error('approval rejected'));
+      });
+
+      it('grants the CAIP-25 permission with eth accounts, chainIds, and isMultichainOrigin: false if origin is not snapId', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue({
+            approvedChainIds: ['0x1', '0x5'],
+            approvedAccounts: ['0xdeadbeef'],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
+            },
+          });
+
+        await metamaskController.requestCaip25Permission('test.com', {});
+
+        expect(
+          metamaskController.permissionController.grantPermissions,
+        ).toHaveBeenCalledWith({
+          subject: { origin: 'test.com' },
+          approvedPermissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: ['eip155:1:0xdeadbeef'],
+                      },
+                      'eip155:5': {
+                        accounts: ['eip155:5:0xdeadbeef'],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+        });
+      });
+
+      it('grants the CAIP-25 permission approved accounts for the `wallet:eip155` scope with isMultichainOrigin: false if origin is snapId', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue({
+            approvedChainIds: ['0x1', '0x5'],
+            approvedAccounts: ['0xdeadbeef'],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
+            },
+          });
+
+        await metamaskController.requestCaip25Permission('npm:snap', {});
+
+        expect(
+          metamaskController.permissionController.grantPermissions,
+        ).toHaveBeenCalledWith({
+          subject: { origin: 'npm:snap' },
+          approvedPermissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'wallet:eip155': {
+                        accounts: ['wallet:eip155:0xdeadbeef'],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+        });
       });
 
       it('returns the result from the ApprovalController', async () => {
@@ -995,17 +1465,21 @@ describe('MetaMaskController', () => {
             metamaskController.approvalController,
             'addAndShowApprovalRequest',
           )
-          .mockResolvedValue('approvalResult');
-
-        const result =
-          await metamaskController.requestPermissionApprovalForOrigin(
-            'test.com',
-            {
-              eth_accounts: {},
+          .mockResolvedValue({
+            approvedChainIds: ['0x1', '0x5'],
+            approvedAccounts: ['0xdeadbeef'],
+          });
+        jest
+          .spyOn(metamaskController.permissionController, 'grantPermissions')
+          .mockReturnValue({
+            [Caip25EndowmentPermissionName]: {
+              foo: 'bar',
             },
-          );
+          });
 
-        expect(result).toStrictEqual('approvalResult');
+        expect(
+          await metamaskController.requestCaip25Permission('test.com', {}),
+        ).toStrictEqual({ foo: 'bar' });
       });
     });
 
