@@ -358,6 +358,24 @@ describe('ConfirmFooter', () => {
       expect(getByText('Confirm')).toBeInTheDocument();
     });
 
+    it('renders the "confirm" button disabled when there are blocking dangerous banner alerts', () => {
+      const stateWithBannerDangerAlertMock = createStateWithAlerts(
+        [
+          {
+            ...alertsMock[0],
+            isBlocking: true,
+            field: undefined,
+          },
+        ],
+        {
+          [KEY_ALERT_KEY_MOCK]: false,
+        },
+      );
+      const { getByText } = render(stateWithBannerDangerAlertMock);
+      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText('Confirm')).toBeDisabled();
+    });
+
     it('renders the "confirm" button when there are no alerts', () => {
       const { getByText } = render();
       expect(getByText('Confirm')).toBeInTheDocument();

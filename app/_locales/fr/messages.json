@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Ce site vous demande de vous connecter en utilisant le mauvais compte."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "La transaction précédente doit être finalisée avant que celle-ci ne soit traitée."
-  },
   "alertModalAcknowledge": {
     "message": "Je suis conscient du risque et je souhaite quand même continuer"
   },
