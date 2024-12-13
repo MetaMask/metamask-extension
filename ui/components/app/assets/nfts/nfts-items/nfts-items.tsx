@@ -229,17 +229,17 @@ export default function NftsItems({
       return null;
     }
     const getSource = (isImageHosted: boolean, nft: NFT) => {
-      if (!isImageHosted) {
-        const found = updatedNfts.find(
-          (elm) =>
-            elm.tokenId === nft.tokenId &&
-            isEqualCaseInsensitive(elm.address, nft.address),
-        );
-        if (found) {
-          return found.ipfsImageUpdated;
-        }
+      if (isImageHosted) {
+        return nft.image || undefined;
       }
-      return nft.image;
+
+      const found = updatedNfts.find(
+        (elm) =>
+          elm.tokenId === nft.tokenId &&
+          isEqualCaseInsensitive(elm.address, nft.address),
+      );
+
+      return found?.ipfsImageUpdated || undefined;
     };
 
     const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
