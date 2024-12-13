@@ -237,6 +237,41 @@ describe('AccountListItem', () => {
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
+      it('renders tokens for non-EVM account', () => {
+        const { container } = render(
+          {
+            account: mockNonEvmAccount,
+          },
+          {
+            metamask: {
+              preferences: {
+                showFiatInTestnets: false,
+              },
+            },
+          },
+        );
+
+        const firstCurrencyDisplay = container.querySelector(
+          '[data-testid="first-currency-display"]',
+        );
+        const secondCurrencyDisplay = container.querySelector(
+          '[data-testid="second-currency-display"]',
+        );
+        const avatarGroup = container.querySelector(
+          '[data-testid="avatar-group"]',
+        );
+
+        const expectedBalance = '$100,000.00';
+
+        expect(firstCurrencyDisplay).toBeInTheDocument();
+        expect(firstCurrencyDisplay.firstChild.textContent).toContain(
+          expectedBalance,
+        );
+        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
+        expect(secondCurrencyDisplay.textContent).toContain('BTC');
+        expect(avatarGroup).not.toBeInTheDocument();
+      });
+
       it('renders fiat for EVM account', () => {
         const { container } = render(
           {

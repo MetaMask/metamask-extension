@@ -35,6 +35,7 @@ export const BridgeCTAButton = () => {
   const { maxRefreshCount, refreshRate } = useSelector(getBridgeQuotesConfig);
 
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { isNoQuotesAvailable, isInsufficientBalance } =
     useSelector(getValidationErrors);
@@ -108,21 +109,30 @@ export const BridgeCTAButton = () => {
       data-testid="bridge-cta-button"
       onClick={() => {
         if (activeQuote && isTxSubmittable) {
-          quoteRequestProperties &&
-            requestMetadataProperties &&
-            tradeProperties &&
-            trackCrossChainSwapsEvent({
-              event: MetaMetricsEventName.ActionSubmitted,
-              properties: {
-                ...quoteRequestProperties,
-                ...requestMetadataProperties,
-                ...tradeProperties,
-              },
-            });
-          submitBridgeTransaction(activeQuote);
+          try {
+            // We don't need to worry about setting to false if the tx submission succeeds
+            // because we route immediately to Activity list page
+            setIsSubmitting(true);
+
+            quoteRequestProperties &&
+              requestMetadataProperties &&
+              tradeProperties &&
+              trackCrossChainSwapsEvent({
+                event: MetaMetricsEventName.ActionSubmitted,
+                properties: {
+                  ...quoteRequestProperties,
+                  ...requestMetadataProperties,
+                  ...tradeProperties,
+                },
+              });
+            submitBridgeTransaction(activeQuote);
+          } finally {
+            setIsSubmitting(false);
+          }
         }
       }}
-      disabled={!isTxSubmittable || isQuoteExpired}
+      loading={isSubmitting}
+      disabled={!isTxSubmittable || isQuoteExpired || isSubmitting}
     >
       {label}
     </Button>
