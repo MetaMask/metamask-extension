@@ -1,14 +1,14 @@
-import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import { Hex } from '@metamask/utils';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
 import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import {
   Box,
   Text,
 } from '../../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../../components/ui/tooltip';
 import {
   BlockSize,
   BorderRadius,
@@ -16,16 +16,15 @@ import {
   JustifyContent,
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
+import Tooltip from '../../../../../../../../components/ui/tooltip';
 import { shortenString } from '../../../../../../../../helpers/utils/util';
-import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { selectConversionRateByChainId } from '../../../../../../../../selectors';
 import { AssetPill } from '../../../../../simulation-details/asset-pill';
-import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
 import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { UNLIMITED_THRESHOLD } from '../../../approve/hooks/use-approve-token-simulation';
+import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
 import { getAmountColors } from '../../../utils';
 
 const NATIVE_DECIMALS = 18;
@@ -50,24 +49,13 @@ const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
   credit,
   debit,
 }) => {
-  const t = useI18nContext();
-
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
   );
 
-  const {
-    fiatValue,
-    tokenValue,
-    tokenValueMaxPrecision,
-    shouldShowUnlimitedValue,
-  } = useMemo(() => {
+  const { fiatValue, tokenValue, tokenValueMaxPrecision } = useMemo(() => {
     if (!value) {
-      return {
-        tokenValue: null,
-        tokenValueMaxPrecision: null,
-        shouldShowUnlimitedValue: false,
-      };
+      return { tokenValue: null, tokenValueMaxPrecision: null };
     }
 
     const tokenAmount = calcTokenAmount(value, NATIVE_DECIMALS);
@@ -78,7 +66,6 @@ const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
         : undefined,
       tokenValue: formatAmount('en-US', tokenAmount),
       tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
-      shouldShowUnlimitedValue: Number(value) > UNLIMITED_THRESHOLD,
     };
   }, [conversionRate, value]);
 
@@ -109,15 +96,13 @@ const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
             >
               {credit && '+ '}
               {debit && '- '}
-              {shouldShowUnlimitedValue
-                ? t('unlimited')
-                : tokenValue !== null &&
-                  shortenString(tokenValue || '', {
-                    truncatedCharLimit: 15,
-                    truncatedStartChars: 15,
-                    truncatedEndChars: 0,
-                    skipCharacterInEnd: true,
-                  })}
+              {tokenValue !== null &&
+                shortenString(tokenValue || '', {
+                  truncatedCharLimit: 15,
+                  truncatedStartChars: 15,
+                  truncatedEndChars: 0,
+                  skipCharacterInEnd: true,
+                })}
             </Text>
           </Tooltip>
         </Box>
