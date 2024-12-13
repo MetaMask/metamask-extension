@@ -758,7 +758,8 @@
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
       "level>classic-level": false,
       "jest-preview": false,
-      "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false
+      "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false,
+      "@metamask/test-dapp-multichain>react-scripts>react-app-polyfill>core-js": false
     }
   },
   "packageManager": "yarn@4.5.1"
