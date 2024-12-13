@@ -112,7 +112,10 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted =
     image?.startsWith('https:') || image?.startsWith('http:');
-  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
+  const nftImageURL = useGetAssetImageUrl(
+    imageOriginal ?? image,
+    ipfsGateway,
+  ) as string | undefined;
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
