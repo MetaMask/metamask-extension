@@ -44,10 +44,8 @@ const PermissionNames = {
 } as const;
 
 const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
-  ['goerli', '0x5'],
   ['sepolia', '0xaa36a7'],
   ['mainnet', '0x1'],
-  ['linea-goerli', '0xe704'],
   ['linea-sepolia', '0xe705'],
   ['linea-mainnet', '0xe708'],
 ]);
