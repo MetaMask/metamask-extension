@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Chúng tôi không thể tiếp tục giao dịch này cho đến khi bạn cập nhật phí thủ công."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Giao dịch này sẽ không được thực hiện cho đến khi giao dịch trước đó hoàn tất. Tìm hiểu cách hủy hoặc đẩy nhanh giao dịch."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Trang web đưa ra yêu cầu không phải là trang web bạn đang đăng nhập. Đây có thể là một nỗ lực đánh cắp thông tin đăng nhập của bạn."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Trang web này yêu cầu bạn đăng nhập bằng tài khoản không đúng."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Giao dịch này sẽ chỉ được thực hiện sau khi giao dịch trước đó của bạn hoàn tất."
   },
   "alertModalAcknowledge": {
     "message": "Tôi đã nhận thức được rủi ro và vẫn muốn tiếp tục"
@@ -4107,12 +4101,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "Đây là nơi bạn có thể xem các quyền mà bạn đã cấp cho các Snap đã cài đặt hoặc các trang web đã kết nối."
-  },
-  "permissionsPageTourDescription": {
-    "message": "Đây là bảng điều khiển để bạn quản lý các quyền được cấp cho các trang web đã kết nối và các Snap đã cài đặt."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Các trang web đã kết nối hiện đã được cấp quyền"
   },
   "permitSimulationDetailInfo": {
     "message": "Bạn đang cấp cho người chi tiêu quyền chi tiêu số lượng token này từ tài khoản của bạn."

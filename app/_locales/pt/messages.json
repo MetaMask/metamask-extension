@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Não podemos prosseguir com essa transação até você atualizar manualmente a taxa."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Essa transação não será processada até que a transação anterior seja concluída. Saiba como cancelar ou acelerar uma transação."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "O site solicitante não é o mesmo em que você está entrando. Isso pode se tratar de uma tentativa de roubar suas credenciais de login."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Este site está pedindo que você entre usando a conta incorreta."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Essa transação só será processada quando sua transação anterior for concluída."
   },
   "alertModalAcknowledge": {
     "message": "Eu reconheço o risco e ainda quero prosseguir"
@@ -4107,12 +4101,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "Aqui você pode ver as permissões que deu aos snaps instalados ou sites conectados."
-  },
-  "permissionsPageTourDescription": {
-    "message": "Este é o seu painel de controle para gerenciar as permissões dadas aos sites conectados e snaps instalados."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Sites conectados agora são permissões"
   },
   "permitSimulationDetailInfo": {
     "message": "Você está autorizando o consumidor a gastar esta quantidade de tokens de sua conta."
