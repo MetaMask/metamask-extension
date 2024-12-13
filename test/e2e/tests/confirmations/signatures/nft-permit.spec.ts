@@ -74,6 +74,7 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',
+          decodingDescription: null,
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -117,6 +118,7 @@ describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
           location: 'confirmation',
           decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',
+          decodingDescription: null,
         });
       },
       mockSignatureRejectedWithDecoding,
