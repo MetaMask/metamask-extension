@@ -122,18 +122,18 @@ export async function fetchBridgeTokens(
     transformedTokens[nativeToken.address] = nativeToken;
   }
 
-  tokens.forEach((token: unknown) => {
-    if (
-      validateResponse<SwapsTokenObject>(TOKEN_VALIDATORS, token, url, false) &&
-      !(
-        isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
-        isSwapsDefaultTokenAddress(token.address, chainId)
-      )
-    ) {
-      transformedTokens[token.address] = token;
-    }
-  });
-  return transformedTokens;
+  // tokens.forEach((token: unknown) => {
+  //   if (
+  //     validateResponse<SwapsTokenObject>(TOKEN_VALIDATORS, token, url, false) &&
+  //     !(
+  //       isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
+  //       isSwapsDefaultTokenAddress(token.address, chainId)
+  //     )
+  //   ) {
+  //     transformedTokens[token.address] = token;
+  //   }
+  // });
+  return tokens;
 }
 
 // Returns a list of bridge tx quotes
