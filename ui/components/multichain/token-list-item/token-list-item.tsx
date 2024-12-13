@@ -124,6 +124,7 @@ export const TokenListItem = ({
   const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
 
   const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
+    console.log('=====safeChainDetails.find');
     if (typeof decimalChainId === 'number') {
       return chain.chainId === decimalChainId.toString();
     }

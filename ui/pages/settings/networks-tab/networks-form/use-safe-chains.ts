@@ -5,6 +5,7 @@ import { useSafeChainsListValidationSelector } from '../../../../selectors';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../../../../../shared/constants/network';
 import { DAY } from '../../../../../shared/constants/time';
+import { useAsyncResult } from '../../../../hooks/useAsyncResult';
 
 export type SafeChain = {
   chainId: string;
@@ -18,29 +19,41 @@ export const useSafeChains = () => {
     useSafeChainsListValidationSelector,
   );
 
-  const [safeChains, setSafeChains] = useState<{
-    safeChains?: SafeChain[];
-    error?: Error;
-  }>({ safeChains: [] });
+  // const [safeChains, setSafeChains] = useState<{
+  //   safeChains?: SafeChain[];
+  //   error?: Error;
+  // }>({ safeChains: [] });
 
-  if (useSafeChainsListValidation) {
-    useEffect(() => {
-      fetchWithCache({
+  // if (useSafeChainsListValidation) {
+  //   useEffect(() => {
+  //     fetchWithCache({
+  //       url: CHAIN_SPEC_URL,
+  //       functionName: 'getSafeChainsList',
+  //       allowStale: true,
+  //       cacheOptions: { cacheRefreshTime: DAY },
+  //     })
+  //       .then((response) => {
+  //         setSafeChains({ safeChains: response });
+  //       })
+  //       .catch((error) => {
+  //         setSafeChains({ error });
+  //       });
+  //   }, []);
+  // }
+
+  const { value, error } = useAsyncResult(async () => {
+    if (useSafeChainsListValidation) {
+      return fetchWithCache({
         url: CHAIN_SPEC_URL,
         functionName: 'getSafeChainsList',
         allowStale: true,
         cacheOptions: { cacheRefreshTime: DAY },
-      })
-        .then((response) => {
-          setSafeChains({ safeChains: response });
-        })
-        .catch((error) => {
-          setSafeChains({ error });
-        });
-    }, []);
-  }
+      });
+    }
+    return [];
+  }, []);
 
-  return safeChains;
+  return { safeChains: value ?? [], error };
 };
 
 export const rpcIdentifierUtility = (

@@ -230,6 +230,10 @@ const PrepareBridgePage = () => {
   useEffect(() => {
     // Reset controller and inputs on load
     dispatch(resetBridgeState());
+
+    return () => {
+      dispatch(resetBridgeState());
+    };
   }, []);
 
   const scrollRef = useRef<HTMLDivElement>(null);
