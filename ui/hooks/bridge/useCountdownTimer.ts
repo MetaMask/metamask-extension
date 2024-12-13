@@ -19,18 +19,18 @@ export const useCountdownTimer = () => {
 
   const [timeRemaining, setTimeRemaining] = useState(refreshRate);
 
-  useEffect(() => {
-    if (quotesLastFetchedMs) {
-      setTimeRemaining(refreshRate - (Date.now() - quotesLastFetchedMs) + STEP);
-    }
-  }, [quotesLastFetchedMs]);
+  // useEffect(() => {
+  //   if (quotesLastFetchedMs) {
+  //     setTimeRemaining(refreshRate - (Date.now() - quotesLastFetchedMs) + STEP);
+  //   }
+  // }, [quotesLastFetchedMs]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeRemaining(Math.max(0, timeRemaining - STEP));
-    }, STEP);
-    return () => clearInterval(interval);
-  }, [timeRemaining]);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setTimeRemaining(Math.max(0, timeRemaining - STEP));
+  //   }, STEP);
+  //   return () => clearInterval(interval);
+  // }, [timeRemaining]);
 
   return timeRemaining;
 };
