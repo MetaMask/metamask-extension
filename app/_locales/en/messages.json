@@ -446,9 +446,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "This site is asking you to sign in using the wrong account."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "This transaction will only go through once your previous transaction is complete."
-  },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
   },
@@ -1437,6 +1434,9 @@
   },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
+  },
+  "crossChainSwapsLinkNative": {
+    "message": "Swap across networks with Bridge"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2930,7 +2930,9 @@
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
   },
-  "loadingTokenList": { "message": "Loading token list" },
+  "loadingTokenList": {
+    "message": "Loading token list"
+  },
   "loadingTokens": {
     "message": "Loading tokens..."
   },

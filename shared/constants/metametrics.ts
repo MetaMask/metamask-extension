@@ -1034,3 +1034,8 @@ export enum DeleteRegulationStatus {
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
 }
+
+export enum MetaMetricsEventTransactionEstimateType {
+  DappProposed = 'dapp_proposed',
+  DefaultEstimate = 'default_estimate',
+}

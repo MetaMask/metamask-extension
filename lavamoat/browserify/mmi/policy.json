@@ -1796,10 +1796,10 @@
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/network-controller>reselect": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "eslint>fast-deep-equal": true,
+        "reselect": true,
         "uri-js": true,
         "uuid": true
       }
@@ -1856,13 +1856,6 @@
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true
-      }
-    },
-    "@metamask/network-controller>reselect": {
-      "globals": {
-        "WeakRef": true,
-        "console.warn": true,
-        "unstable_autotrackMemoize": true
       }
     },
     "@metamask/notification-controller>nanoid": {
@@ -5238,6 +5231,13 @@
       },
       "packages": {
         "@babel/runtime": true
+      }
+    },
+    "reselect": {
+      "globals": {
+        "WeakRef": true,
+        "console.warn": true,
+        "unstable_autotrackMemoize": true
       }
     },
     "semver": {

@@ -26850,7 +26850,7 @@ __metadata:
     redux-thunk: "npm:^2.3.0"
     remote-redux-devtools: "npm:^0.5.16"
     remove-trailing-slash: "npm:^0.1.1"
-    reselect: "npm:^3.0.1"
+    reselect: "npm:^5.1.1"
     resolve-url-loader: "npm:^3.1.5"
     sass-embedded: "npm:^1.71.0"
     sass-loader: "npm:^14.1.1"
@@ -32258,13 +32258,6 @@ __metadata:
   version: 1.0.0
   resolution: "requires-port@npm:1.0.0"
   checksum: 10/878880ee78ccdce372784f62f52a272048e2d0827c29ae31e7f99da18b62a2b9463ea03a75f277352f4697c100183debb0532371ad515a2d49d4bfe596dd4c20
-  languageName: node
-  linkType: hard
-
-"reselect@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "reselect@npm:3.0.1"
-  checksum: 10/ebafc7b2d0e907aa1e2e16d37bb1c7c37e9291b3656a7e7bfb9c9523faeaa65ef3db9dec669da250c2b81f59f3231cf3143b0c8e76e7fc8f5a6d79f6ea50e21e
   languageName: node
   linkType: hard
 
