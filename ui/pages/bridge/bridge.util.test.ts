@@ -210,6 +210,11 @@ describe('Bridge utils', () => {
           symbol: 'DEF',
           aggregators: ['lifi'],
         },
+        '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+          address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          decimals: 16,
+          symbol: 'ABC',
+        },
       });
     });
 
