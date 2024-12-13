@@ -1,6 +1,0 @@
-{
-  "externally_connectable": {
-    "matches": ["http://*/*", "https://*/*"],
-    "ids": ["*"]
-  }
-}
