@@ -3521,14 +3521,6 @@
   "notifications": {
     "message": "Mga Abiso"
   },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Hindi na sinusuportahan ng Firefox ang U2F, kaya ang Ledger ay hindi gagana sa MetaMask sa Firefox. Subukan ang MetaMask sa Google Chrome.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Hindi na ipagpapatuloy ang Ledger Support para s Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
-  },
   "notificationsFeatureToggle": {
     "message": "Paganahin ang Mga Wallet Notification",
     "description": "Experimental feature title"
@@ -6572,10 +6564,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
-  },
-  "whatsNew": {
-    "message": "Ano'ng bago",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Ano ito?"

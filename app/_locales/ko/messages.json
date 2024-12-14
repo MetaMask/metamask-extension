@@ -3521,14 +3521,6 @@
   "notifications": {
     "message": "알림"
   },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox에서 더 이상 U2F를 지원하지 않아 Firefox를 이용한 MetaMask에서 Ledger를 이용할 수 없습니다. 대신 Google Chrome에서 MetaMask를 이용해 보세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Firefox의 Ledger 지원 중단",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
-  },
   "notificationsFeatureToggle": {
     "message": "지갑 알림 활성화",
     "description": "Experimental feature title"
@@ -6572,10 +6564,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "수백만 명이 신뢰하는 MetaMask는 모든 사람이 web3의 세계에 접근할 수 있도록 하는 안전한 지갑입니다."
-  },
-  "whatsNew": {
-    "message": "새로운 소식",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"

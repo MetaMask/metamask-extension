@@ -103,7 +103,6 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 // TODO: Remove restricted import
@@ -1616,10 +1615,6 @@ export function getNextSuggestedNonce(state) {
   return Number(state.metamask.nextNonce);
 }
 
-export function getShowWhatsNewPopup(state) {
-  return state.appState.showWhatsNewPopup;
-}
-
 export function getShowPermittedNetworkToastOpen(state) {
   return state.appState.showPermittedNetworkToastOpen;
 }
@@ -1969,53 +1964,6 @@ export const getSnapInsights = createDeepEqualSelector(
   (_, id) => id,
   (insights, id) => insights?.[id],
 );
-
-/**
- * Get an object of announcement IDs and if they are allowed or not.
- *
- * @param {object} state
- * @returns {object}
- */
-function getAllowedAnnouncementIds(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
-  const isFirefox = window.navigator.userAgent.includes('Firefox');
-
-  return {
-    [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
-  };
-}
-
-/**
- * @typedef {object} Announcement
- * @property {number} id - A unique identifier for the announcement
- * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
- */
-
-/**
- * Announcements are managed by the announcement controller and referenced by
- * `state.metamask.announcements`. This function returns a list of announcements
- * the can be shown to the user. This list includes all announcements that do not
- * have a truthy `isShown` property.
- *
- * The returned announcements are sorted by date.
- *
- * @param {object} state - the redux state object
- * @returns {Announcement[]} An array of announcements that can be shown to the user
- */
-
-export function getSortedAnnouncementsToShow(state) {
-  const announcements = Object.values(state.metamask.announcements);
-  const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
-  const announcementsToShow = announcements.filter(
-    (announcement) =>
-      !announcement.isShown && allowedAnnouncementIds[announcement.id],
-  );
-  const announcementsSortedByDate = announcementsToShow.sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
-  return announcementsSortedByDate;
-}
 
 /**
  * @param state

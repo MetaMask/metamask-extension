@@ -3662,14 +3662,6 @@
   "notifications": {
     "message": "Notifications"
   },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox no longer supports U2F, so Ledger won't work with MetaMask on Firefox. Try MetaMask on Google Chrome instead.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Dropping Ledger Support for Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
-  },
   "notificationsFeatureToggle": {
     "message": "Enable Wallet Notifications",
     "description": "Experimental feature title"
@@ -6806,10 +6798,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
-  },
-  "whatsNew": {
-    "message": "What's new",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "What's this?"

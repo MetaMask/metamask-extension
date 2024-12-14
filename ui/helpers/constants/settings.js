@@ -513,16 +513,6 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
     icon: IconName.CodeCircle,
   },
-  // developerOptions settingsRefs[1]
-  {
-    featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
-    tabMessage: (t) => t('developerOptions'),
-    sectionMessage: 'Announcements',
-    descriptionMessage:
-      "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal.",
-    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
-    icon: IconName.CodeCircle,
-  },
   // developerOptions settingsRefs[2]
   {
     featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',

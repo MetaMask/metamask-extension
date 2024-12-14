@@ -807,8 +807,6 @@ export enum MetaMetricsEventName {
   NftScreenOpened = 'NFT Screen Opened',
   NftDetailsOpened = 'NFT Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
-  WhatsNewViewed = `What's New Viewed`,
-  WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
   QuotesRequested = 'Quotes Requested',
   QuotesReceived = 'Quotes Received',

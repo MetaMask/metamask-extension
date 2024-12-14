@@ -3521,14 +3521,6 @@
   "notifications": {
     "message": "Уведомления"
   },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox больше не поддерживает U2F, поэтому Ledger не будет работать с MetaMask в Firefox. Вместо этого попробуйте MetaMask в Google Chrome.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Прекращение поддержки Ledger в Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
-  },
   "notificationsFeatureToggle": {
     "message": "Включить уведомления кошелька",
     "description": "Experimental feature title"
@@ -6572,10 +6564,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "MetaMask, которому доверяют миллионы, — это безопасный кошелек, предоставляющий всем доступ к миру web3."
-  },
-  "whatsNew": {
-    "message": "Что нового",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Что это?"

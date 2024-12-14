@@ -750,8 +750,6 @@
   "ui/components/app/wallet-overview/token-overview.js",
   "ui/components/app/wallet-overview/token-overview.test.js",
   "ui/components/app/wallet-overview/wallet-overview.js",
-  "ui/components/app/whats-new-popup/index.js",
-  "ui/components/app/whats-new-popup/whats-new-popup.js",
   "ui/components/component-library/base-avatar/base-avatar.js",
   "ui/components/component-library/base-avatar/base-avatar.stories.js",
   "ui/components/component-library/base-avatar/base-avatar.test.js",

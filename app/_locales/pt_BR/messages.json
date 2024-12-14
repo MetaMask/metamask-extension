@@ -2368,10 +2368,6 @@
   "welcomeToMetaMaskIntro": {
     "message": "Aprovada por milhões de pessoas, a MetaMask é uma carteira segura que torna o mundo da web3 acessível para todos."
   },
-  "whatsNew": {
-    "message": "Novidades",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
-  },
   "whatsThis": {
     "message": "O que é isso?"
   },

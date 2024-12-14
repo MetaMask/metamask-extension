@@ -31,12 +31,6 @@ const state = {
     bridgeStatusState: {
       txHistory: {},
     },
-    announcements: {
-      22: {
-        id: 22,
-        date: null,
-      },
-    },
     orderedNetworkList: [],
     pinnedAccountList: [],
     hiddenAccountList: [],

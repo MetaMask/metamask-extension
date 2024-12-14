@@ -28,7 +28,6 @@
     },
     "showIpfsModalOpen": false,
     "showKeyringRemovalSnapModal": false,
-    "showWhatsNewPopup": false,
     "warning": null,
     "alertOpen": false
   },

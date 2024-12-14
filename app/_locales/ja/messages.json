@@ -3521,14 +3521,6 @@
   "notifications": {
     "message": "通知"
   },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "FirefoxはU2Fをサポートしなくなったため、LedgerはFirefox版の MetaMaskでは機能しません。代わりにGoogle Chrome版のMetaMaskをお試しください。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "FirefoxでのLedger サポートの停止",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
-  },
   "notificationsFeatureToggle": {
     "message": "ウォレットの通知を有効にする",
     "description": "Experimental feature title"
@@ -6572,10 +6564,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "MetaMaskは何百万人もに信頼されている安全なウォレットで、すべての人々によるWeb3の世界へのアクセスを可能にしています。"
-  },
-  "whatsNew": {
-    "message": "新機能",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "これは何ですか？"

@@ -3521,14 +3521,6 @@
   "notifications": {
     "message": "Notifikasi"
   },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox tidak lagi mendukung U2F, sehingga Ledger tidak akan berfungsi dengan MetaMask di Firefox. Cobalah MetaMask di Google Chrome sebagai gantinya.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Menghapus Dukungan Ledger untuk Firefox",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
-  },
   "notificationsFeatureToggle": {
     "message": "Aktifkan Notifikasi Dompet",
     "description": "Experimental feature title"
@@ -6572,10 +6564,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "MetaMask merupakan dompet aman yang dipercaya oleh jutaan orang, yang membuat dunia web3 dapat diakses oleh semua orang."
-  },
-  "whatsNew": {
-    "message": "Apa yang baru",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Apa ini?"

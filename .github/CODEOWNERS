@@ -115,7 +115,6 @@ ui/hooks/useTransactionInsights.js   @MetaMask/snaps-devs
 
 # Wallet UX
 ui/components/multichain              @MetaMask/wallet-ux
-ui/components/app/whats-new-popup     @MetaMask/wallet-ux
 ui/css                                @MetaMask/wallet-ux
 ui/pages/home                         @MetaMask/wallet-ux
 ui/pages/onboarding-flow              @MetaMask/wallet-ux

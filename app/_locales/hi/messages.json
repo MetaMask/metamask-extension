@@ -3521,14 +3521,6 @@
   "notifications": {
     "message": "सूचनाएं"
   },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox अब U2F का सपोर्ट नहीं करता है, इसलिए Firefox पर MetaMask के साथ Ledger काम नहीं करेगा। इसके बजाय, Google Chrome पर MetaMask इस्तेमाल करके देखें।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Firefox के लिए Ledger को मिलने वाला सपोर्ट खत्म किया जा रहा है",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
-  },
   "notificationsFeatureToggle": {
     "message": "वॉलेट नोटिफिकेशन को चालू करें",
     "description": "Experimental feature title"
@@ -6572,10 +6564,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "लाखों लोगों का भरोसेमंद, MetaMask एक सुरक्षित वॉलेट है जो वेब3 की दुनिया को सबके लिए सुलभ बनाता है।"
-  },
-  "whatsNew": {
-    "message": "नया क्या है",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "यह क्या है?"
