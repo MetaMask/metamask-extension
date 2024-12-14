@@ -305,7 +305,6 @@ describe('NFT Details', () => {
       };
       const sepoliaMockStore = configureMockStore([thunk])(sepoliaState);
 
-      // Spy on global.platform.openTab
       const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
       const { queryByTestId } = renderWithProvider(
@@ -313,15 +312,12 @@ describe('NFT Details', () => {
         sepoliaMockStore,
       );
 
-      // Click the options menu
       const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      // Click the OpenSea button
       const openOpenSea = queryByTestId('nft-options__view-on-opensea__button');
       fireEvent.click(openOpenSea);
 
-      // Wait and assert
       await waitFor(() => {
         expect(openTabSpy).toHaveBeenCalledWith({
           url: `https://testnets.opensea.io/assets/sepolia/${nfts[5].address}/${nfts[5].tokenId}`,
