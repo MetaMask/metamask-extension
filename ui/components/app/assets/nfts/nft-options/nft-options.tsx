@@ -16,9 +16,14 @@ import { SelectableListItem } from '../../asset-list/sort-control/sort-control';
 type NftOptionsProps = {
   onRemove: () => void;
   onViewOnOpensea?: () => void;
+  showOpenSeaLink: boolean;
 };
 
-const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
+const NftOptions = ({
+  onRemove,
+  onViewOnOpensea,
+  showOpenSeaLink,
+}: NftOptionsProps) => {
   const t = useContext(I18nContext);
   const [nftOptionsOpen, setNftOptionsOpen] = useState(false);
   const ref = useRef<HTMLElement | null>(null);
@@ -51,12 +56,12 @@ const NftOptions = ({ onRemove, onViewOnOpensea }: NftOptionsProps) => {
           padding: 0,
         }}
       >
-        {onViewOnOpensea ? (
+        {showOpenSeaLink ? (
           <SelectableListItem
             testId="nft-options__view-on-opensea"
             onClick={() => {
               setNftOptionsOpen(false);
-              onViewOnOpensea();
+              onViewOnOpensea && onViewOnOpensea();
             }}
           >
             <Icon

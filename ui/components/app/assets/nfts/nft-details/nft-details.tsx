@@ -331,11 +331,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             data-testid="nft__back"
           />
           <NftOptions
-            onViewOnOpensea={
-              openSeaLink
-                ? () => global.platform.openTab({ url: openSeaLink })
-                : undefined
-            }
+            showOpenSeaLink={Boolean(openSeaLink)}
+            onViewOnOpensea={() => {
+              if (!openSeaLink) {
+                return null;
+              }
+              return global.platform.openTab({ url: openSeaLink });
+            }}
             onRemove={onRemove}
           />
         </Box>
