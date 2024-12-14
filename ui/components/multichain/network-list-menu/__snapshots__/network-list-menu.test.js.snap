@@ -122,6 +122,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         alt="Ethereum Mainnet logo"
                         class="mm-avatar-network__network-image"
                         src="./images/eth_logo.svg"
+                        title="Ethereum Mainnet"
                       />
                     </div>
                     <div
@@ -184,6 +185,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         alt="Linea Mainnet logo"
                         class="mm-avatar-network__network-image"
                         src="./images/linea-logo-mainnet.svg"
+                        title="Linea Mainnet"
                       />
                     </div>
                     <div
@@ -246,6 +248,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                         alt="BNB Chain logo"
                         class="mm-avatar-network__network-image"
                         src="./images/bnb.svg"
+                        title="BNB Chain"
                       />
                     </div>
                     <div
@@ -387,6 +390,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                           alt="Arbitrum One logo"
                           class="mm-avatar-network__network-image"
                           src="./images/arbitrum.svg"
+                          title="Arbitrum One"
                         />
                       </div>
                       <div
@@ -425,6 +429,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                           alt="Avalanche Network C-Chain logo"
                           class="mm-avatar-network__network-image"
                           src="./images/avax-token.svg"
+                          title="Avalanche Network C-Chain"
                         />
                       </div>
                       <div
@@ -463,6 +468,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                           alt="Base Mainnet logo"
                           class="mm-avatar-network__network-image"
                           src="./images/base.svg"
+                          title="Base Mainnet"
                         />
                       </div>
                       <div
@@ -501,6 +507,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                           alt="OP Mainnet logo"
                           class="mm-avatar-network__network-image"
                           src="./images/optimism.svg"
+                          title="OP Mainnet"
                         />
                       </div>
                       <div
@@ -539,6 +546,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                           alt="Polygon Mainnet logo"
                           class="mm-avatar-network__network-image"
                           src="./images/pol-token.svg"
+                          title="Polygon Mainnet"
                         />
                       </div>
                       <div
@@ -577,6 +585,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                           alt="zkSync Era Mainnet logo"
                           class="mm-avatar-network__network-image"
                           src="./images/zk-sync.svg"
+                          title="zkSync Era Mainnet"
                         />
                       </div>
                       <div

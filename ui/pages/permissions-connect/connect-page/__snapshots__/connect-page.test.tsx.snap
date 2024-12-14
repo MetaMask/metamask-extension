@@ -183,6 +183,7 @@ exports[`ConnectPage should render correctly 1`] = `
                             alt="Custom Mainnet RPC logo"
                             class="mm-avatar-token__token-image"
                             src="./images/eth_logo.svg"
+                            title="Custom Mainnet RPC"
                           />
                         </div>
                       </div>
@@ -423,6 +424,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                             alt="Custom Mainnet RPC logo"
                             class="mm-avatar-token__token-image"
                             src="./images/eth_logo.svg"
+                            title="Custom Mainnet RPC"
                           />
                         </div>
                       </div>

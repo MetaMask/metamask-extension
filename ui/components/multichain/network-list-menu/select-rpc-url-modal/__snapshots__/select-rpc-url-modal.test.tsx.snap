@@ -18,6 +18,7 @@ exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
             alt="Ethereum Mainnet logo"
             class="mm-avatar-network__network-image"
             src="./images/eth_logo.svg"
+            title="Ethereum Mainnet"
           />
         </div>
         <p

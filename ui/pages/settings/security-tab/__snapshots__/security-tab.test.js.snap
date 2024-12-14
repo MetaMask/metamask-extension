@@ -574,6 +574,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 alt="Custom Mainnet RPC logo"
                 class="mm-avatar-network__network-image"
                 src="./images/eth_logo.svg"
+                title="Custom Mainnet RPC"
               />
             </div>
             <div

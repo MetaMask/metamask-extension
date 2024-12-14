@@ -24,6 +24,7 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
               alt="Network3 logo"
               class="mm-avatar-network__network-image"
               src="img2"
+              title="Network3"
             />
           </div>
         </div>
@@ -38,6 +39,7 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
               alt="Network1 logo"
               class="mm-avatar-network__network-image"
               src="img1"
+              title="Network1"
             />
           </div>
         </div>
@@ -86,6 +88,7 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
               alt="Network3 logo"
               class="mm-avatar-network__network-image"
               src="img2"
+              title="Network3"
             />
           </div>
         </div>
@@ -100,6 +103,7 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
               alt="Network1 logo"
               class="mm-avatar-network__network-image"
               src="img1"
+              title="Network1"
             />
           </div>
         </div>
