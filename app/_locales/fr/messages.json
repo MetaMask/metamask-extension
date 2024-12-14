@@ -3156,7 +3156,7 @@
     "message": "Testnet"
   },
   "networkNameZkSyncEra": {
-    "message": "zkSync Era"
+    "message": "ZKsync Era"
   },
   "networkOptions": {
     "message": "Options du réseau"
