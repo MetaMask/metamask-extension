@@ -52,7 +52,6 @@ import {
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
-import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -81,17 +80,16 @@ const PrepareBridgePage = () => {
   const quoteRequest = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
-  const tokenAddressAllowlistByChainId = useBridgeTokens();
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
     fromTopAssets,
-    tokenAddressAllowlistByChainId,
+    TokenBucketPriority.owned,
     fromChain?.chainId,
   );
   const toTokenListGenerator = useTokensWithFiltering(
     toTokens,
     toTopAssets,
-    tokenAddressAllowlistByChainId,
+    TokenBucketPriority.top,
     toChain?.chainId,
   );
 

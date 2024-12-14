@@ -11,8 +11,7 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 
-export const isNativeAddress = (address?: string | null) =>
-  address === zeroAddress() || address === '' || !address;
+export const isNativeAddress = (address?: string) => address === zeroAddress();
 
 export const isValidQuoteRequest = (
   partialRequest: Partial<QuoteRequest>,
