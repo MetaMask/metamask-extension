@@ -1,3 +1,4 @@
+import * as path from 'path';
 import {
   DAPP_URL,
   openDapp,
@@ -5,9 +6,9 @@ import {
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
-import * as path from 'path';
 import { Driver } from '../../webdriver/driver';
-const FixtureBuilder = require('../../fixture-builder');
+
+import FixtureBuilder from '../../fixture-builder';
 
 describe('Multichain Connect', function () {
   it('should connect to the multichain test dapp', async function () {
@@ -28,7 +29,6 @@ describe('Multichain Connect', function () {
           .withNetworkControllerDoubleGanache()
           .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
-
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
