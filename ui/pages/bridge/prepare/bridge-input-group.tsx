@@ -33,6 +33,7 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { TextColor } from '../../../helpers/constants/design-system';
+import { BridgeToken } from '../types';
 
 const generateAssetFromToken = (
   chainId: Hex,
@@ -75,7 +76,7 @@ export const BridgeInputGroup = ({
 }: {
   className: string;
   onAmountChange?: (value: string) => void;
-  token: SwapsTokenObject | SwapsEthToken | null;
+  token: BridgeToken;
   amountFieldProps?: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
@@ -108,7 +109,7 @@ export const BridgeInputGroup = ({
     true,
   );
 
-  const { formattedBalance, balanceAmount } = useLatestBalance(
+  const { balanceAmount } = useLatestBalance(
     token,
     networkProps?.network?.chainId,
   );
@@ -163,7 +164,7 @@ export const BridgeInputGroup = ({
               : TextColor.textAlternative
           }
         >
-          {formattedBalance ? `${t('balance')}: ${formattedBalance}` : ' '}
+          {/* {formattedBalance ? `${t('balance')}: ${formattedBalance}` : ' '} */}
         </Text>
         <CurrencyDisplay
           currency="usd"
