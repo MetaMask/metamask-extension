@@ -7,9 +7,10 @@ describe('NFT Options Component', () => {
   const props = {
     onRemove: jest.fn(),
     onViewOnOpensea: jest.fn(),
+    showOpenSeaLink: true,
   };
 
-  it.skip('should expand NFT options menu`', async () => {
+  it('should expand NFT options menu`', async () => {
     const { queryByTestId } = renderWithProvider(<NftOptions {...props} />);
 
     const openOptionMenuButton = queryByTestId('nft-options__button');
@@ -23,36 +24,34 @@ describe('NFT Options Component', () => {
     });
   });
 
-  it.skip('should expand and close menu options when clicked`', async () => {
+  it('should expand and close menu options when clicked`', async () => {
     const { queryByTestId } = renderWithProvider(<NftOptions {...props} />);
 
-    const openOptionMenuButton = queryByTestId('nft-options__button');
+    const optionMenuToggle = queryByTestId('nft-options__button');
 
-    fireEvent.click(openOptionMenuButton);
+    fireEvent.click(optionMenuToggle);
+    fireEvent.click(optionMenuToggle);
 
-    const closeOptionMenuButton = queryByTestId('close-nft-options-menu');
+    const nftItemRemove = queryByTestId('nft-item-remove');
 
-    fireEvent.click(closeOptionMenuButton);
-
-    expect(closeOptionMenuButton).not.toBeInTheDocument();
+    expect(nftItemRemove).not.toBeInTheDocument();
   });
 
-  it.skip('should click onRemove handler and close option menu', () => {
+  it('should click onRemove handler and close option menu', () => {
     const { queryByTestId } = renderWithProvider(<NftOptions {...props} />);
 
     const openOptionMenuButton = queryByTestId('nft-options__button');
 
     fireEvent.click(openOptionMenuButton);
 
-    const removeNftButton = queryByTestId('nft-item-remove');
-
+    const removeNftButton = queryByTestId('nft-item-remove__button');
     fireEvent.click(removeNftButton);
 
     expect(props.onRemove).toHaveBeenCalled();
     expect(removeNftButton).not.toBeInTheDocument();
   });
 
-  it.skip('should click onViewOnOpensea handler and close option menu', () => {
+  it('should click onViewOnOpensea handler and close option menu', () => {
     const { queryByTestId } = renderWithProvider(<NftOptions {...props} />);
 
     const openOptionMenuButton = queryByTestId('nft-options__button');
@@ -60,10 +59,9 @@ describe('NFT Options Component', () => {
 
     fireEvent.click(openOptionMenuButton);
 
-    const openOpenSea = queryByTestId('nft-options__view-on-opensea');
+    const openOpenSea = queryByTestId('nft-options__view-on-opensea__button');
 
     fireEvent.click(openOpenSea);
-
     expect(props.onViewOnOpensea).toHaveBeenCalled();
     expect(removeNftButton).not.toBeInTheDocument();
   });
