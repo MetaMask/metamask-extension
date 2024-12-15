@@ -36,30 +36,18 @@ describe('Multichain Connect', function () {
 
         await openDapp(driver, undefined, DAPP_URL);
 
-        // TODO need data-testid for input
-
         await driver.fill(
           '[placeholder="Enter extension ID"]',
-          'pmeejofbihagkmnpoeoghmdmpaonndpl',
+          'pmeejofbihagkmnpoeoghmdmpaonndpl', // TODO: this needs to be programmatically fetched
         );
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);
 
-        const mainnetCheckbox = await driver.findElement({
-          text: 'Ethereum Mainnet',
-          // tag: 'label',
-        });
+        await driver.clickElement('input[name="eip155:1"]');
 
-        await driver.scrollToElement(mainnetCheckbox);
-        await driver.delay(largeDelayMs);
+        await driver.clickElement('input[name="eip155:10"]');
 
-        await driver.clickElement(mainnetCheckbox);
-
-        await driver.clickElement({ name: 'OP Mainnet', tag: 'label' });
-        await driver.clickElement({
-          text: 'wallet_createSession',
-          tag: 'button',
-        });
+        await driver.clickElement('#create-session-btn');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
       },
