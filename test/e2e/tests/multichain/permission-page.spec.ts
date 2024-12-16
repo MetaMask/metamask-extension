@@ -17,7 +17,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
