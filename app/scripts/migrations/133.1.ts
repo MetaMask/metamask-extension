@@ -48,32 +48,32 @@ function transformState(state: Record<string, unknown>): void {
 
   // Validate and transform `allTokens`
   if (hasProperty(tokensControllerState, 'allTokens')) {
-    if (!isObject(tokensControllerState.allTokens)) {
+    if (isObject(tokensControllerState.allTokens)) {
+      tokensControllerState.allTokens = transformTokenCollection(
+        tokensControllerState.allTokens,
+        'allTokens',
+      );
+    } else {
       global.sentry?.captureException(
         new Error(
           `Migration ${version}: Invalid allTokens state of type '${typeof tokensControllerState.allTokens}'`,
         ),
-      );
-    } else {
-      tokensControllerState.allTokens = transformTokenCollection(
-        tokensControllerState.allTokens,
-        'allTokens',
       );
     }
   }
 
   // Validate and transform `allDetectedTokens`
   if (hasProperty(tokensControllerState, 'allDetectedTokens')) {
-    if (!isObject(tokensControllerState.allDetectedTokens)) {
+    if (isObject(tokensControllerState.allDetectedTokens)) {
+      tokensControllerState.allDetectedTokens = transformTokenCollection(
+        tokensControllerState.allDetectedTokens,
+        'allDetectedTokens',
+      );
+    } else {
       global.sentry?.captureException(
         new Error(
           `Migration ${version}: Invalid allDetectedTokens state of type '${typeof tokensControllerState.allDetectedTokens}'`,
         ),
-      );
-    } else {
-      tokensControllerState.allDetectedTokens = transformTokenCollection(
-        tokensControllerState.allDetectedTokens,
-        'allDetectedTokens',
       );
     }
   }

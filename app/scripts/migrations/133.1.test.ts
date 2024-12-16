@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
-import { migrate, version } from './133.1';
 import { TokensControllerState } from '@metamask/assets-controllers';
+import { migrate, version } from './133.1';
 
 const sentryCaptureExceptionMock = jest.fn();
 const sentryCaptureMessageMock = jest.fn();
@@ -62,7 +62,7 @@ describe(`migration #${version}`, () => {
 
     const tokensControllerState = newStorage.data
       .TokensController as TokensControllerState;
-    const allTokens = tokensControllerState.allTokens;
+    const { allTokens } = tokensControllerState;
 
     expect(allTokens).toEqual({
       '0x1': {
@@ -78,7 +78,7 @@ describe(`migration #${version}`, () => {
 
     const tokensControllerState = newStorage.data
       .TokensController as TokensControllerState;
-    const allDetectedTokens = tokensControllerState.allDetectedTokens;
+    const { allDetectedTokens } = tokensControllerState;
 
     expect(allDetectedTokens).toEqual({
       '0x1': {
@@ -94,7 +94,7 @@ describe(`migration #${version}`, () => {
 
     const tokensControllerState = newStorage.data
       .TokensController as TokensControllerState;
-    const tokens = tokensControllerState.tokens;
+    const { tokens } = tokensControllerState;
 
     expect(tokens).toEqual([
       { address: '0x8', symbol: 'TOKEN8', decimals: 18 },
@@ -108,7 +108,7 @@ describe(`migration #${version}`, () => {
 
     const tokensControllerState = newStorage.data
       .TokensController as TokensControllerState;
-    const detectedTokens = tokensControllerState.detectedTokens;
+    const { detectedTokens } = tokensControllerState;
 
     expect(detectedTokens).toEqual([
       { address: '0xA', symbol: 'TOKEN10', decimals: 6 },
