@@ -131,9 +131,4 @@ SiteCellConnectionListItem.propTypes = {
    * Components to display in the connection list item
    */
   content: PropTypes.node,
-
-  /**
-   * Test ID for the edit button
-   */
-  editButtonTestId: PropTypes.string,
 };
