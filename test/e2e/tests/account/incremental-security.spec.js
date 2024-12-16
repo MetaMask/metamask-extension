@@ -82,7 +82,7 @@ describe('Incremental Security', function () {
         await driver.findVisibleElement(
           '[data-testid="account-details-modal"]',
         );
-        await driver.clickElement('button[aria-label="Close"]');
+        await driver.clickElement('header button[aria-label="Close"]');
 
         // wait for account modal to be removed from DOM
         await driver.assertElementNotPresent(

@@ -1664,15 +1664,53 @@ export default class MetamaskController extends EventEmitter {
           'NotificationServicesController:selectIsNotificationServicesEnabled',
           'AccountsController:listAccounts',
           'AccountsController:updateAccountMetadata',
+          'NetworkController:getState',
+          'NetworkController:addNetwork',
+          'NetworkController:removeNetwork',
+          'NetworkController:updateNetwork',
         ],
         allowedEvents: [
           'KeyringController:lock',
           'KeyringController:unlock',
           'AccountsController:accountAdded',
           'AccountsController:accountRenamed',
+          'NetworkController:networkRemoved',
         ],
       }),
     });
+
+    this.controllerMessenger.subscribe(
+      'MetaMetricsController:stateChange',
+      previousValueComparator(async (prevState, currState) => {
+        const { participateInMetaMetrics: prevParticipateInMetaMetrics } =
+          prevState;
+        const { participateInMetaMetrics: currParticipateInMetaMetrics } =
+          currState;
+
+        const metaMetricsWasDisabled =
+          prevParticipateInMetaMetrics && !currParticipateInMetaMetrics;
+        const metaMetricsWasEnabled =
+          !prevParticipateInMetaMetrics && currParticipateInMetaMetrics;
+
+        if (!metaMetricsWasDisabled && !metaMetricsWasEnabled) {
+          return;
+        }
+
+        const shouldPerformSignIn =
+          metaMetricsWasEnabled &&
+          !this.authenticationController.state.isSignedIn;
+        const shouldPerformSignOut =
+          metaMetricsWasDisabled &&
+          this.authenticationController.state.isSignedIn &&
+          !this.userStorageController.state.isProfileSyncingEnabled;
+
+        if (shouldPerformSignIn) {
+          await this.authenticationController.performSignIn();
+        } else if (shouldPerformSignOut) {
+          await this.authenticationController.performSignOut();
+        }
+      }, this.metaMetricsController.state),
+    );
 
     const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -3372,6 +3410,17 @@ export default class MetamaskController extends EventEmitter {
     );
     this.multichainBalancesController.start();
     this.multichainBalancesController.updateBalances();
+
+    this.controllerMessenger.subscribe(
+      'CurrencyRateController:stateChange',
+      ({ currentCurrency }) => {
+        if (
+          currentCurrency !== this.multichainRatesController.state.fiatCurrency
+        ) {
+          this.multichainRatesController.setFiatCurrency(currentCurrency);
+        }
+      },
+    );
   }
 
   /**
@@ -3904,6 +3953,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setLastInteractedConfirmationInfo.bind(
           appStateController,
         ),
+      updateSlides: appStateController.updateSlides.bind(appStateController),
+      removeSlide: appStateController.removeSlide.bind(appStateController),
 
       // EnsController
       tryReverseResolveAddress:
@@ -6355,11 +6406,15 @@ export default class MetamaskController extends EventEmitter {
             this.alertController,
           ),
 
-        grantPermissions: this.permissionController.grantPermissions.bind(
-          this.permissionController,
-        ),
+        grantPermissions: (approvedPermissions) => {
+          return this.permissionController.grantPermissions({
+            subject: { origin },
+            approvedPermissions,
+          });
+        },
         updateCaveat: this.permissionController.updateCaveat.bind(
           this.permissionController,
+          origin,
         ),
 
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

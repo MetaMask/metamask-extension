@@ -2188,4 +2188,63 @@ describe('#getConnectedSitesList', () => {
       });
     });
   });
+
+  describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns true when the token network filter is equal to the current network', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        true,
+      );
+    });
+
+    it('returns false when the token network filter is on multiple networks', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+              '0x89': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        false,
+      );
+    });
+  });
 });

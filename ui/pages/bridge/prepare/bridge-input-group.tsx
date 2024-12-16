@@ -44,6 +44,7 @@ const generateAssetFromToken = (
       image: tokenDetails.iconUrl,
       symbol: tokenDetails.symbol,
       address: tokenDetails.address,
+      chainId,
     };
   }
 
@@ -57,6 +58,7 @@ const generateAssetFromToken = (
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
         chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ],
+    chainId,
   };
 };
 
@@ -68,6 +70,7 @@ export const BridgeInputGroup = ({
   onAmountChange,
   networkProps,
   customTokenListGenerator,
+  isMultiselectEnabled,
   amountFieldProps = {},
 }: {
   className: string;
@@ -79,7 +82,11 @@ export const BridgeInputGroup = ({
   >;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
-  'networkProps' | 'header' | 'customTokenListGenerator' | 'onAssetChange'
+  | 'networkProps'
+  | 'header'
+  | 'customTokenListGenerator'
+  | 'onAssetChange'
+  | 'isMultiselectEnabled'
 >) => {
   const t = useI18nContext();
 
@@ -123,6 +130,7 @@ export const BridgeInputGroup = ({
           onAssetChange={onAssetChange}
           networkProps={networkProps}
           customTokenListGenerator={customTokenListGenerator}
+          isMultiselectEnabled={isMultiselectEnabled}
         />
         <Tooltip
           containerClassName="amount-tooltip"

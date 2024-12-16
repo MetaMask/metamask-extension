@@ -260,23 +260,18 @@ describe('requestEthereumAccountsHandler', () => {
 
       await handler(baseRequest);
       expect(grantPermissions).toHaveBeenCalledWith({
-        subject: {
-          origin: 'http://test.com',
-        },
-        approvedPermissions: {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: {
-                  requiredScopes: {},
-                  optionalScopes: {},
-                  sessionProperties: { caveatValueWithEthAccountsSet: true },
-                  isMultichainOrigin: false,
-                },
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {},
+                optionalScopes: {},
+                sessionProperties: { caveatValueWithEthAccountsSet: true },
+                isMultichainOrigin: false,
               },
-            ],
-          },
+            },
+          ],
         },
       });
     });

@@ -224,9 +224,11 @@ workflows:
       - test-api-specs:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-api-specs-multichain:
           requires:
             - prep-build-test
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
