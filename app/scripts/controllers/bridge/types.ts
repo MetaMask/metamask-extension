@@ -9,7 +9,9 @@ import {
 } from '@metamask/network-controller';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 import {
+  BridgeBackgroundAction,
   BridgeFeatureFlags,
+  BridgeUserAction,
   L1GasFees,
   QuoteRequest,
   QuoteResponse,
@@ -34,17 +36,6 @@ export type BridgeControllerState = {
   quoteFetchError?: string;
   quotesRefreshCount: number;
 };
-
-export enum BridgeUserAction {
-  SELECT_SRC_NETWORK = 'selectSrcNetwork',
-  SELECT_DEST_NETWORK = 'selectDestNetwork',
-  UPDATE_QUOTE_PARAMS = 'updateBridgeQuoteRequestParams',
-}
-export enum BridgeBackgroundAction {
-  SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
-  RESET_STATE = 'resetState',
-  GET_BRIDGE_ERC20_ALLOWANCE = 'getBridgeERC20Allowance',
-}
 
 type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
   type: `${typeof BRIDGE_CONTROLLER_NAME}:${FunctionName}`;

@@ -1,15 +1,11 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
+  QuoteRequest,
+} from '../../../shared/types/bridge';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { QuoteRequest } from '../../../shared/types/bridge';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import {
   bridgeSlice,

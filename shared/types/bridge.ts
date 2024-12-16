@@ -173,3 +173,13 @@ export enum RequestStatus {
   FETCHED,
   ERROR,
 }
+export enum BridgeUserAction {
+  SELECT_SRC_NETWORK = 'selectSrcNetwork',
+  SELECT_DEST_NETWORK = 'selectDestNetwork',
+  UPDATE_QUOTE_PARAMS = 'updateBridgeQuoteRequestParams',
+}
+export enum BridgeBackgroundAction {
+  SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
+  RESET_STATE = 'resetState',
+  GET_BRIDGE_ERC20_ALLOWANCE = 'getBridgeERC20Allowance',
+}
