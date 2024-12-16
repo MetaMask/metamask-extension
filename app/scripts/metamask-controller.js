@@ -5392,6 +5392,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Requests permittedChains permission for the specified origin
    * and replaces any existing CAIP-25 permission with a new one.
+   * Allows for granting without prompting for user approval which
+   * would be used as part of flows like `wallet_addEthereumChain`
+   * requests where the addition of the network and the permitting
+   * of the chain are combined into one approval.
    *
    * @param {string} origin - The origin to request approval for.
    * @param {Hex} chainId - The chainId to add incrementally.
@@ -5433,6 +5437,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Requests incremental permittedChains permission for the specified origin.
    * and updates the existing CAIP-25 permission.
+   * Allows for granting without prompting for user approval which
+   * would be used as part of flows like `wallet_addEthereumChain`
+   * requests where the addition of the network and the permitting
+   * of the chain are combined into one approval.
    *
    * @param {string} origin - The origin to request approval for.
    * @param {Hex} chainId - The chainId to add incrementally.
