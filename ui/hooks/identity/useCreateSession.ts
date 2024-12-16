@@ -1,12 +1,10 @@
 import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import log from 'loglevel';
-import {
-  selectIsSignedIn,
-  selectParticipateInMetaMetrics,
-} from '../../selectors/identity/authentication';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
 import { performSignIn, disableProfileSyncing } from '../../store/actions';
+import { getParticipateInMetaMetrics } from '../../selectors';
 
 /**
  * Custom hook to manage the creation of a session based on the user's authentication status,
@@ -26,11 +24,17 @@ export function useCreateSession(): {
 
   const isSignedIn = useSelector(selectIsSignedIn);
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const isParticipateInMetaMetrics = useSelector(
-    selectParticipateInMetaMetrics,
-  );
+  const isParticipateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
   const createSession = useCallback(async () => {
+    const safeDispatchDisableProfileSync = async () => {
+      try {
+        await dispatch(disableProfileSyncing());
+      } catch {
+        // Do Nothing
+      }
+    };
+
     // If the user is already signed in, no need to create a new session
     if (isSignedIn) {
       return;
@@ -47,7 +51,7 @@ export function useCreateSession(): {
         await dispatch(performSignIn());
       } catch (e) {
         // If an error occurs during the sign-in process, disable profile syncing
-        await dispatch(disableProfileSyncing());
+        await safeDispatchDisableProfileSync();
         const errorMessage =
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         log.error(errorMessage);
