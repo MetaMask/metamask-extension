@@ -62,22 +62,6 @@ function transformState(state: Record<string, unknown>): void {
     }
   }
 
-  // Validate and transform `allIgnoredTokens`
-  if (hasProperty(tokensControllerState, 'allIgnoredTokens')) {
-    if (!isObject(tokensControllerState.allIgnoredTokens)) {
-      global.sentry?.captureException(
-        new Error(
-          `Migration ${version}: Invalid allIgnoredTokens state of type '${typeof tokensControllerState.allIgnoredTokens}'`,
-        ),
-      );
-    } else {
-      tokensControllerState.allIgnoredTokens = transformTokenCollection(
-        tokensControllerState.allIgnoredTokens,
-        'allIgnoredTokens',
-      );
-    }
-  }
-
   // Validate and transform `allDetectedTokens`
   if (hasProperty(tokensControllerState, 'allDetectedTokens')) {
     if (!isObject(tokensControllerState.allDetectedTokens)) {
