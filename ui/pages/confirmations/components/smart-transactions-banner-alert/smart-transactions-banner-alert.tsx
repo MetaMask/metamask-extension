@@ -10,6 +10,7 @@ import {
 import { setAlertEnabledness } from '../../../../store/actions';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
+import { FontWeight } from '../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../context/confirm';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
@@ -88,7 +89,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
             'simpleSend',
             'tokenMethodTransfer',
             'swap',
-            'deployContract',
+            'contractDeployment',
             'contractInteraction',
           ].includes(currentConfirmation?.type as string);
 
@@ -116,15 +117,19 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
         data-testid="smart-transactions-banner-alert"
         style={getMarginStyle()}
       >
+        <Text fontWeight={FontWeight.Bold}>
+          {t('smartTransactionsEnabledTitle')}
+        </Text>
         <Text as="p">
-          {t('smartTransactionsEnabled')}
           <ButtonLink
             href={SMART_TRANSACTIONS_LEARN_MORE_URL}
             onClick={handleDismiss}
             externalLink
+            style={{ height: 'unset', verticalAlign: 'unset' }}
           >
-            {t('learnMore')}
+            {t('smartTransactionsEnabledLink')}
           </ButtonLink>
+          {t('smartTransactionsEnabledDescription')}
         </Text>
       </BannerAlert>
     );

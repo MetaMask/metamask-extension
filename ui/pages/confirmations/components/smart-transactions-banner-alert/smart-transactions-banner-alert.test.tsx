@@ -65,8 +65,15 @@ describe('SmartTransactionsBannerAlert', () => {
     expect(
       screen.getByTestId('smart-transactions-banner-alert'),
     ).toBeInTheDocument();
-    expect(screen.getByText('smartTransactionsEnabled')).toBeInTheDocument();
-    expect(screen.getByText('learnMore')).toBeInTheDocument();
+    expect(
+      screen.getByText('smartTransactionsEnabledTitle'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('smartTransactionsEnabledDescription'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('smartTransactionsEnabledLink'),
+    ).toBeInTheDocument();
   });
 
   it('does not render when alert is disabled', () => {
@@ -119,11 +126,11 @@ describe('SmartTransactionsBannerAlert', () => {
     );
   });
 
-  it('calls setAlertEnabledness when learn more link clicked', () => {
+  it('calls setAlertEnabledness when (Higher success rates) link clicked', () => {
     const store = configureStore(mockState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
-    screen.getByText('learnMore').click();
+    screen.getByText('smartTransactionsEnabledLink').click();
 
     expect(setAlertEnabledness).toHaveBeenCalledWith(
       AlertTypes.smartTransactionsMigration,
@@ -138,7 +145,15 @@ describe('SmartTransactionsBannerAlert', () => {
     expect(
       screen.getByTestId('smart-transactions-banner-alert'),
     ).toBeInTheDocument();
-    expect(screen.getByText('smartTransactionsEnabled')).toBeInTheDocument();
+    expect(
+      screen.getByText('smartTransactionsEnabledTitle'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('smartTransactionsEnabledDescription'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('smartTransactionsEnabledLink'),
+    ).toBeInTheDocument();
   });
 
   it('does not render banner for unsupported transaction types', () => {
