@@ -40,27 +40,26 @@ function getPercentageChange(from, to) {
 
 async function start() {
   const {
-    GITHUB_COMMENT_TOKEN,
-    CIRCLE_PULL_REQUEST,
-    CIRCLE_SHA1,
+    GITHUB_TOKEN,
+    PR_NUMBER,
+    HEAD_COMMIT_HASH,
+    BASE_COMMIT_HASH,
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
-    PARENT_COMMIT,
   } = process.env;
 
-  console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST);
-  console.log('CIRCLE_SHA1', CIRCLE_SHA1);
+  console.log('PR_NUMBER', PR_NUMBER);
+  console.log('HEAD_COMMIT_HASH', HEAD_COMMIT_HASH);
+  console.log('BASE_COMMIT_HASH', BASE_COMMIT_HASH);
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
   console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
-  console.log('PARENT_COMMIT', PARENT_COMMIT);
 
-  if (!CIRCLE_PULL_REQUEST) {
-    console.warn(`No pull request detected for commit "${CIRCLE_SHA1}"`);
+  if (!PR_NUMBER) {
+    console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
     return;
   }
 
-  const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop();
-  const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7);
+  const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
   // build the github comment content
 
@@ -328,7 +327,7 @@ async function start() {
     };
 
     const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
-      sizes[part] = devBundleSizeStats[PARENT_COMMIT][part] || 0;
+      sizes[part] = devBundleSizeStats[BASE_COMMIT_HASH][part] || 0;
       return sizes;
     }, {});
 
@@ -379,7 +378,7 @@ async function start() {
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
-  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${CIRCLE_PR_NUMBER}/comments`;
+  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${PR_NUMBER}/comments`;
   console.log(`Announcement:\n${commentBody}`);
   console.log(`Posting to: ${POST_COMMENT_URI}`);
 
@@ -388,7 +387,7 @@ async function start() {
     body: JSON_PAYLOAD,
     headers: {
       'User-Agent': 'metamaskbot',
-      Authorization: `token ${GITHUB_COMMENT_TOKEN}`,
+      Authorization: `token ${GITHUB_TOKEN}`,
     },
   });
   if (!response.ok) {
