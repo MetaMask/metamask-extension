@@ -40,7 +40,7 @@ const mockSnapAccount2 = {
   address: '0x3c4d5e6f78901234567890abcdef123456789abc',
   id: 'f6gccd97-ba4d-4m7e-q3ahj-033fc1f79ae4',
   metadata: {
-    name: 'Snap Account 2',
+    name: 'Snap Account 3',
     keyring: {
       type: 'Snap Keyring',
     },
