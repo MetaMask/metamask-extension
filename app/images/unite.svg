@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 200 200">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #b4ff00;
+      }
+
+      .cls-1, .cls-2 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #000;
+      }
+    </style>
+  </defs>
+  <g id="black_circle" data-name="black circle">
+    <circle class="cls-2" cx="100" cy="100" r="99.06"/>
+  </g>
+  <g id="Unite_green_logo" data-name="Unite green logo">
+    <g>
+      <path class="cls-1" d="M117.69,104.11c0,12.32-2.04,23.63-10.63,29.5-8.12,5.55-14.76,7.08-24.68,7.56v-45.99c0-12.32,2.75-22.96,10.63-29.5,7.03-5.83,14.76-7.16,24.68-7.64v46.07Z"/>
+      <path class="cls-1" d="M158.96,135.01v-39.97c0-12.45-3.85-23.77-10.91-29.58-8.5-7.01-14.69-7.48-24.5-7.43v45.95c0,12.4-1.49,23.31-10.2,31.04h45.61Z"/>
+      <path class="cls-1" d="M40.98,63.5v39.97c0,12.45,3.85,23.77,10.91,29.58,8.5,7.01,14.69,8.16,24.5,8.11v-46.63c0-12.4,1.49-23.31,10.2-31.04h-45.61Z"/>
+    </g>
+  </g>
+</svg>
