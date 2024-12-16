@@ -134,7 +134,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           onClick={handleOpenAccountsModal}
           paddingBottomValue={2}
           paddingTopValue={0}
-          editButtonTestId="edit-accounts"
           content={
             // Why this difference?
             selectedAccounts.length === 1 ? (
@@ -157,7 +156,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           onClick={handleOpenNetworksModal}
           paddingTopValue={2}
           paddingBottomValue={0}
-          editButtonTestId="edit-networks"
           content={<SiteCellTooltip networks={selectedNetworks} />}
         />
       </Box>
