@@ -93,17 +93,9 @@ const useBridging = () => {
             chain_id: providerConfig.chainId,
           },
         });
-        if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(
-            PREPARE_SWAP_ROUTE,
-            null,
-            false,
-          );
-        } else {
-          history.push(
-            `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`,
-          );
-        }
+        history.push(
+          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`,
+        );
       } else {
         const portfolioUrl = getPortfolioUrl(
           'bridge',

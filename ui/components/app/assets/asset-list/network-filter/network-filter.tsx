@@ -203,7 +203,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           </Box>
           <AvatarNetwork
             size={AvatarNetworkSize.Sm}
-            name="Current"
+            name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />
         </Box>
