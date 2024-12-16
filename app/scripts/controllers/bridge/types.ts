@@ -2,7 +2,6 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { Hex } from '@metamask/utils';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -10,26 +9,14 @@ import {
 } from '@metamask/network-controller';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 import {
+  BridgeFeatureFlags,
   L1GasFees,
   QuoteRequest,
   QuoteResponse,
-  ChainConfiguration,
+  RequestStatus,
 } from '../../../../shared/types/bridge';
 import BridgeController from './bridge-controller';
-import { BRIDGE_CONTROLLER_NAME, RequestStatus } from './constants';
-
-export enum BridgeFeatureFlagsKey {
-  EXTENSION_CONFIG = 'extensionConfig',
-}
-
-export type BridgeFeatureFlags = {
-  [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
-    refreshRate: number;
-    maxRefreshCount: number;
-    support: boolean;
-    chains: Record<Hex, ChainConfiguration>;
-  };
-};
+import { BRIDGE_CONTROLLER_NAME } from './constants';
 
 export type BridgeControllerState = {
   bridgeFeatureFlags: BridgeFeatureFlags;

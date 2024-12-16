@@ -25,22 +25,19 @@ import {
   QuoteRequest,
   QuoteResponse,
   TxData,
+  BridgeFeatureFlagsKey,
+  RequestStatus,
 } from '../../../../shared/types/bridge';
 import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { REFRESH_INTERVAL_MS } from '../../../../shared/constants/bridge';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
-  REFRESH_INTERVAL_MS,
-  RequestStatus,
   METABRIDGE_CHAIN_TO_ADDRESS_MAP,
 } from './constants';
-import {
-  BridgeControllerState,
-  BridgeControllerMessenger,
-  BridgeFeatureFlagsKey,
-} from './types';
+import { BridgeControllerState, BridgeControllerMessenger } from './types';
 
 const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
   bridgeState: {

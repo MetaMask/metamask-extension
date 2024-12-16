@@ -2,16 +2,11 @@ import { Contract } from '@ethersproject/contracts';
 import { Hex, add0x } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
-  BridgeFeatureFlagsKey,
-  BridgeFeatureFlags,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
-import {
   BRIDGE_API_BASE_URL,
   BRIDGE_CLIENT_ID,
   ETH_USDT_ADDRESS,
   METABRIDGE_ETHEREUM_ADDRESS,
+  REFRESH_INTERVAL_MS,
 } from '../../constants/bridge';
 import { MINUTE } from '../../constants/time';
 import fetchWithCache from '../../lib/fetch-with-cache';
@@ -24,9 +19,6 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../swaps.utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { REFRESH_INTERVAL_MS } from '../../../app/scripts/controllers/bridge/constants';
 import { CHAIN_IDS } from '../../constants/network';
 import {
   BridgeAsset,
@@ -38,6 +30,8 @@ import {
   QuoteRequest,
   QuoteResponse,
   TxData,
+  BridgeFeatureFlagsKey,
+  BridgeFeatureFlags,
 } from '../../types/bridge';
 import {
   FEATURE_FLAG_VALIDATORS,

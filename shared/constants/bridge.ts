@@ -47,3 +47,5 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [CHAIN_IDS.BASE]: 'Base',
 };
 export const BRIDGE_MM_FEE_RATE = 0.875;
+export const REFRESH_INTERVAL_MS = 30 * 1000;
+export const DEFAULT_MAX_REFRESH_COUNT = 5;

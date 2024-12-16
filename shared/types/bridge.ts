@@ -156,3 +156,20 @@ export type TxData = {
   data: string;
   gasLimit: number | null;
 };
+export enum BridgeFeatureFlagsKey {
+  EXTENSION_CONFIG = 'extensionConfig',
+}
+
+export type BridgeFeatureFlags = {
+  [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
+    refreshRate: number;
+    maxRefreshCount: number;
+    support: boolean;
+    chains: Record<Hex, ChainConfiguration>;
+  };
+};
+export enum RequestStatus {
+  LOADING,
+  FETCHED,
+  ERROR,
+}

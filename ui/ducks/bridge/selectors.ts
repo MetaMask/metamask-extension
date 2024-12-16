@@ -22,7 +22,6 @@ import {
 } from '../../../shared/constants/bridge';
 import {
   BridgeControllerState,
-  BridgeFeatureFlagsKey,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/bridge/types';
@@ -33,15 +32,14 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
 import {
   L1GasFees,
   BridgeToken,
   QuoteMetadata,
   QuoteResponse,
   SortOrder,
+  BridgeFeatureFlagsKey,
+  RequestStatus,
 } from '../../../shared/types/bridge';
 import {
   calcAdjustedReturn,
