@@ -32,14 +32,14 @@ describe('Multichain API', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
+      async ({ driver, extensionId }: { driver: Driver, extensionId: string }) => {
         await unlockWallet(driver);
 
         await openDapp(driver, undefined, DAPP_URL);
 
         await driver.fill(
           '[placeholder="Enter extension ID"]',
-          'pmeejofbihagkmnpoeoghmdmpaonndpl', // TODO: this needs to be programmatically fetched
+          extensionId,
         );
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);
