@@ -6,6 +6,7 @@ import {
   createCaip25Caveat,
   Caip25CaveatType,
   caip25EndowmentBuilder,
+  caip25CaveatBuilder,
 } from '@metamask/multichain';
 import {
   EndowmentTypes,
@@ -38,12 +39,23 @@ export const CaveatFactories = Object.freeze({
 /**
  * Gets the specifications for all caveats that will be recognized by the
  * PermissionController.
+ *
+ * @param options - The options object.
+ * @param options.listAccounts - A function that returns the
+ * `AccountsController` internalAccount objects for all evm accounts.
+ * @param options.findNetworkClientIdByChainId - A function that
+ * returns the networkClientId given a chainId.
+ * @returns the caveat specifications to construct the PermissionController.
  */
-export const getCaveatSpecifications = () => {
+export const getCaveatSpecifications = ({
+  listAccounts,
+  findNetworkClientIdByChainId,
+}) => {
   return {
-    [Caip25CaveatType]: {
-      type: Caip25CaveatType,
-    },
+    [Caip25CaveatType]: caip25CaveatBuilder({
+      listAccounts,
+      findNetworkClientIdByChainId,
+    }),
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,
   };
@@ -53,25 +65,12 @@ export const getCaveatSpecifications = () => {
  * Gets the specifications for all permissions that will be recognized by the
  * PermissionController.
  *
- * @param options - The options object.
- * @param options.listAccounts - A function that returns the
- * `AccountsController` internalAccount objects for all evm accounts.
- * @param options.findNetworkClientIdByChainId - A function that
- * returns the networkClientId given a chainId.
  * @returns the permission specifications to construct the PermissionController.
  */
-export const getPermissionSpecifications = ({
-  listAccounts,
-  findNetworkClientIdByChainId,
-}) => {
+export const getPermissionSpecifications = () => {
   return {
     [caip25EndowmentBuilder.targetName]:
-      caip25EndowmentBuilder.specificationBuilder({
-        methodHooks: {
-          findNetworkClientIdByChainId,
-          listAccounts,
-        },
-      }),
+      caip25EndowmentBuilder.specificationBuilder({}),
   };
 };
 
