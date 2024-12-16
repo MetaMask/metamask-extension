@@ -1645,6 +1645,39 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    this.controllerMessenger.subscribe(
+      'MetaMetricsController:stateChange',
+      previousValueComparator(async (prevState, currState) => {
+        const { participateInMetaMetrics: prevParticipateInMetaMetrics } =
+          prevState;
+        const { participateInMetaMetrics: currParticipateInMetaMetrics } =
+          currState;
+
+        const metaMetricsWasDisabled =
+          prevParticipateInMetaMetrics && !currParticipateInMetaMetrics;
+        const metaMetricsWasEnabled =
+          !prevParticipateInMetaMetrics && currParticipateInMetaMetrics;
+
+        if (!metaMetricsWasDisabled && !metaMetricsWasEnabled) {
+          return;
+        }
+
+        const shouldPerformSignIn =
+          metaMetricsWasEnabled &&
+          !this.authenticationController.state.isSignedIn;
+        const shouldPerformSignOut =
+          metaMetricsWasDisabled &&
+          this.authenticationController.state.isSignedIn &&
+          !this.userStorageController.state.isProfileSyncingEnabled;
+
+        if (shouldPerformSignIn) {
+          await this.authenticationController.performSignIn();
+        } else if (shouldPerformSignOut) {
+          await this.authenticationController.performSignOut();
+        }
+      }, this.metaMetricsController.state),
+    );
+
     const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'NotificationServicesPushController',
