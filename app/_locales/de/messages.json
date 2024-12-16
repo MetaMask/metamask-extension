@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Diese Seite fordert Sie auf, sich mit dem falschen Konto anzumelden."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Diese Transaktion wird erst durchgeführt, wenn Ihre vorherige Transaktion abgeschlossen ist."
-  },
   "alertModalAcknowledge": {
     "message": "Ich habe das Risiko erkannt und möchte trotzdem fortfahren"
   },

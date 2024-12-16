@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "이 사이트에서 잘못된 계정으로 로그인하라고 요청합니다."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "이 트랜잭션은 이전 트랜잭션이 완료된 경우에만 진행됩니다."
-  },
   "alertModalAcknowledge": {
     "message": "위험성을 인지했으며, 계속 진행합니다"
   },

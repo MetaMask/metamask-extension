@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "このサイトは正しくないアカウントでのサインインを求めています。"
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "このトランザクションは、前のトランザクションが完了しないと実行されません。"
-  },
   "alertModalAcknowledge": {
     "message": "リスクを承知したうえで続行します"
   },
