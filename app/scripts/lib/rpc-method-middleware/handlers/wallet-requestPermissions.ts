@@ -130,7 +130,7 @@ async function requestPermissionsImplementation(
 
   const grantedPermissions: GrantedPermissions = {};
 
-  // We cannot derive ethAccounts directly from the CAIP-25 permission
+  // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
   // because the accounts will not be in order of lastSelected
   const ethAccounts = getAccounts();
 
