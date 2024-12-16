@@ -1057,4 +1057,6 @@ module.exports = {
   tempToggleSettingRedesignedTransactionConfirmations,
   openMenuSafe,
   sentryRegEx,
+  createWebSocketConnection,
+  enableExperimentalMode,
 };
