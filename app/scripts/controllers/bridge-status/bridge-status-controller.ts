@@ -235,23 +235,21 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         srcTxHash,
       );
       const status = await fetchBridgeTxStatus(statusRequest);
+      const newBridgeHistoryItem = {
+        ...historyItem,
+        status,
+      };
 
       // No need to purge these on network change or account change, TransactionController does not purge either.
       // TODO In theory we can skip checking status if it's not the current account/network
       // we need to keep track of the account that this is associated with as well so that we don't show it in Activity list for other accounts
       // First stab at this will not stop polling when you are on a different account
       this.update((_state) => {
-        const bridgeHistoryItem =
-          _state.bridgeStatusState.txHistory[bridgeTxMetaId];
-
         _state.bridgeStatusState = {
           ...bridgeStatusState,
           txHistory: {
             ...bridgeStatusState.txHistory,
-            [bridgeTxMetaId]: {
-              ...bridgeHistoryItem,
-              status,
-            },
+            [bridgeTxMetaId]: newBridgeHistoryItem,
           },
         };
       });
@@ -259,6 +257,11 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       const pollingToken = this.#pollingTokensByTxMetaId[bridgeTxMetaId];
       if (status.status === StatusTypes.COMPLETE && pollingToken) {
         this.stopPollingByPollingToken(pollingToken);
+
+        this.messagingSystem.publish(
+          `${BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionComplete`,
+          { bridgeHistoryItem: newBridgeHistoryItem },
+        );
       }
     } catch (e) {
       console.log('Failed to fetch bridge tx status', e);
