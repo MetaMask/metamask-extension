@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Button } from '../../../components/component-library';
+import {
+  ButtonPrimary,
+  ButtonPrimarySize,
+  Text,
+} from '../../../components/component-library';
 import {
   getFromAmount,
   getFromChain,
@@ -9,9 +13,16 @@ import {
   getBridgeQuotes,
   getValidationErrors,
   getBridgeQuotesConfig,
+  getWasTxDeclined,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
+import {
+  BlockSize,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
@@ -19,6 +30,8 @@ import { useRequestProperties } from '../../../hooks/bridge/events/useRequestPro
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 
 export const BridgeCTAButton = () => {
   const t = useI18nContext();
@@ -37,10 +50,24 @@ export const BridgeCTAButton = () => {
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { isNoQuotesAvailable, isInsufficientBalance } =
-    useSelector(getValidationErrors);
+  const {
+    isNoQuotesAvailable,
+    isInsufficientBalance: isInsufficientBalance_,
+    isInsufficientGasBalance: isInsufficientGasBalance_,
+    isInsufficientGasForQuote: isInsufficientGasForQuote_,
+  } = useSelector(getValidationErrors);
+
+  const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
+  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
+    fromChain?.chainId
+      ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+          fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+        ]
+      : null,
+    fromChain?.chainId,
+  );
 
   const isTxSubmittable = useIsTxSubmittable();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -48,7 +75,16 @@ export const BridgeCTAButton = () => {
   const requestMetadataProperties = useRequestMetadataProperties();
   const tradeProperties = useTradeProperties();
 
+  const ticker = useSelector(getNativeCurrency);
   const [isQuoteExpired, setIsQuoteExpired] = useState(false);
+
+  const isInsufficientBalance = isInsufficientBalance_(balanceAmount);
+
+  const isInsufficientGasBalance =
+    isInsufficientGasBalance_(nativeAssetBalance);
+  const isInsufficientGasForQuote =
+    isInsufficientGasForQuote_(nativeAssetBalance);
+
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     // Reset the isQuoteExpired if quote fethching restarts
@@ -66,19 +102,23 @@ export const BridgeCTAButton = () => {
   }, [isQuoteGoingToRefresh, quotesRefreshCount]);
 
   const label = useMemo(() => {
-    if (isQuoteExpired) {
+    if (wasTxDeclined) {
+      return t('youDeclinedTheTransaction');
+    }
+
+    if (isQuoteExpired && !isNoQuotesAvailable) {
       return t('bridgeQuoteExpired');
     }
 
-    if (isLoading && !isTxSubmittable) {
-      return t('swapFetchingQuotes');
+    if (isLoading && !isTxSubmittable && !activeQuote) {
+      return '';
     }
 
-    if (isNoQuotesAvailable) {
-      return t('swapQuotesNotAvailableErrorTitle');
+    if (isInsufficientGasBalance || isNoQuotesAvailable) {
+      return '';
     }
 
-    if (isInsufficientBalance(balanceAmount)) {
+    if (isInsufficientBalance || isInsufficientGasForQuote) {
       return t('alertReasonInsufficientBalance');
     }
 
@@ -90,7 +130,7 @@ export const BridgeCTAButton = () => {
     }
 
     if (isTxSubmittable) {
-      return t('confirm');
+      return t('submit');
     }
 
     return t('swapSelectToken');
@@ -98,17 +138,26 @@ export const BridgeCTAButton = () => {
     isLoading,
     fromAmount,
     toToken,
+    ticker,
     isTxSubmittable,
     balanceAmount,
     isInsufficientBalance,
     isQuoteExpired,
+    isInsufficientGasBalance,
+    isInsufficientGasForQuote,
+    wasTxDeclined,
+    isQuoteExpired,
   ]);
 
-  return (
-    <Button
+  return activeQuote && !wasTxDeclined ? (
+    <ButtonPrimary
+      width={BlockSize.Full}
+      size={activeQuote ? ButtonPrimarySize.Md : ButtonPrimarySize.Lg}
+      variant={TextVariant.bodyMd}
       data-testid="bridge-cta-button"
+      style={{ boxShadow: 'none' }}
       onClick={() => {
-        if (activeQuote && isTxSubmittable) {
+        if (activeQuote && isTxSubmittable && !isSubmitting) {
           try {
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
@@ -135,6 +184,15 @@ export const BridgeCTAButton = () => {
       disabled={!isTxSubmittable || isQuoteExpired || isSubmitting}
     >
       {label}
-    </Button>
+    </ButtonPrimary>
+  ) : (
+    <Text
+      variant={TextVariant.bodyMd}
+      width={BlockSize.Full}
+      textAlign={TextAlign.Center}
+      color={TextColor.textAlternativeSoft}
+    >
+      {label}
+    </Text>
   );
 };

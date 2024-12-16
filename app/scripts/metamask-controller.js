@@ -1272,17 +1272,17 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.PermissionController,
-      caveatSpecifications: getCaveatSpecifications(),
-      permissionSpecifications: {
-        ...getPermissionSpecifications({
-          listAccounts: this.accountsController.listAccounts.bind(
-            this.accountsController,
+      caveatSpecifications: getCaveatSpecifications({
+        listAccounts: this.accountsController.listAccounts.bind(
+          this.accountsController,
+        ),
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
           ),
-          findNetworkClientIdByChainId:
-            this.networkController.findNetworkClientIdByChainId.bind(
-              this.networkController,
-            ),
-        }),
+      }),
+      permissionSpecifications: {
+        ...getPermissionSpecifications(),
         ...this.getSnapPermissionSpecifications(),
       },
       unrestrictedMethods,
