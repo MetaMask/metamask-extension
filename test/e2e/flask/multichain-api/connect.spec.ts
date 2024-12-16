@@ -30,15 +30,18 @@ describe('Multichain API', function () {
         fixtures: new FixtureBuilder().withPopularNetworks().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver, extensionId }: { driver: Driver, extensionId: string }) => {
+      async ({
+        driver,
+        extensionId,
+      }: {
+        driver: Driver;
+        extensionId: string;
+      }) => {
         await unlockWallet(driver);
 
         await openDapp(driver, undefined, DAPP_URL);
 
-        await driver.fill(
-          '[placeholder="Enter extension ID"]',
-          extensionId,
-        );
+        await driver.fill('[placeholder="Enter extension ID"]', extensionId);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);
 
