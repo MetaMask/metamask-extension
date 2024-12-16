@@ -27,9 +27,7 @@ describe('Multichain API', function () {
             'build',
           ),
         ],
-        fixtures: new FixtureBuilder()
-          .withPopularNetworks()
-          .build(),
+        fixtures: new FixtureBuilder().withPopularNetworks().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver, extensionId }: { driver: Driver, extensionId: string }) => {
