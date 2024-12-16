@@ -173,8 +173,8 @@ export function validateAddEthereumChainParams(params) {
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
  * @param {Function} hooks.endApprovalFlow - The optional callback to end the approval flow when approvalFlowId is provided.
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
- * @param hooks.requestPermittedChainsPermissionForOrigin
- * @param hooks.requestPermittedChainsPermissionIncrementalForOrigin
+ * @param {Function} hooks.requestPermittedChainsPermissionForOrigin - The callback to request a new permittedChains-equivalent CAIP-25 permission.
+ * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
  * @returns a null response on success or an error if user rejects an approval when isAddFlow is false or on unexpected errors.
  */
 export async function switchChain(
