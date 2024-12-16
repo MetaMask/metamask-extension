@@ -168,20 +168,14 @@ export default class DecryptMessageController extends BaseController<
 
     this.hub = new EventEmitter();
 
-console.log(111111)
-
     this._decryptMessageManager = new DecryptMessageManager({
       messenger: messenger as unknown as DecryptMessageManagerMessenger,
       additionalFinishStatuses: ['decrypted'],
     });
 
-    console.log(222222)
-
     this._decryptMessageManager.hub.on('updateBadge', () => {
       this.hub.emit('updateBadge');
     });
-
-    console.log(333333)
 
     this._decryptMessageManager.hub.on(
       'unapprovedMessage',
@@ -190,8 +184,6 @@ console.log(111111)
       },
     );
 
-    console.log(444444)
-
     this._subscribeToMessageState(
       messenger as unknown as DecryptMessageManagerMessenger,
       (state, newMessages, messageCount) => {
@@ -199,8 +191,6 @@ console.log(111111)
         state.unapprovedDecryptMsgCount = messageCount;
       },
     );
-
-    console.log(555555)
   }
 
   /**
