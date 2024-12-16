@@ -90,13 +90,12 @@ async function requestPermissionsImplementation(
       requestedPermissions: RequestedPermissions,
     ) => Promise<[GrantedPermissions]>;
     updateCaveat: (
-      origin: string,
       permissionName: string,
       caveatName: string,
       caveatValue: Caip25CaveatValue,
     ) => void;
     grantPermissions: (
-      ...args: Parameters<AbstractPermissionController['grantPermissions']>
+      requestedPermissions: RequestedPermissions,
     ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
     requestPermissionApprovalForOrigin: (
       requestedPermissions: RequestedPermissions,
@@ -210,23 +209,19 @@ async function requestPermissionsImplementation(
       }
 
       updateCaveat(
-        origin,
         Caip25EndowmentPermissionName,
         Caip25CaveatType,
         newCaveatValue,
       );
     } else {
       caip25Endowment = grantPermissions({
-        subject: { origin },
-        approvedPermissions: {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: newCaveatValue,
-              },
-            ],
-          },
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: newCaveatValue,
+            },
+          ],
         },
       })[Caip25EndowmentPermissionName];
     }

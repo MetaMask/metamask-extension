@@ -7,9 +7,6 @@ import {
 } from '@metamask/multichain';
 import {
   Caveat,
-  CaveatSpecificationConstraint,
-  PermissionController,
-  PermissionSpecificationConstraint,
   RequestedPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
@@ -59,11 +56,6 @@ const requestEthereumAccounts = {
 };
 export default requestEthereumAccounts;
 
-type AbstractPermissionController = PermissionController<
-  PermissionSpecificationConstraint,
-  CaveatSpecificationConstraint
->;
-
 // Used to rate-limit pending requests to one per origin
 const locks = new Set();
 
@@ -95,7 +87,7 @@ async function requestEthereumAccountsHandler(
       accounts: Record<string, unknown>;
     };
     grantPermissions: (
-      ...args: Parameters<AbstractPermissionController['grantPermissions']>
+      requestedPermissions: RequestedPermissions,
     ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
   },
 ) {
@@ -159,16 +151,13 @@ async function requestEthereumAccountsHandler(
   caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
 
   grantPermissions({
-    subject: { origin },
-    approvedPermissions: {
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: caveatValue,
-          },
-        ],
-      },
+    [Caip25EndowmentPermissionName]: {
+      caveats: [
+        {
+          type: Caip25CaveatType,
+          value: caveatValue,
+        },
+      ],
     },
   });
 
