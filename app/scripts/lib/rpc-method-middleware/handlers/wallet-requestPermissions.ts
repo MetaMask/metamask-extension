@@ -101,7 +101,7 @@ async function requestPermissionsImplementation(
 
   const hasUnexpectedPermissions =
     Object.keys(requestedPermissions).length > 0;
-  const haveLegacyRequestedPermissions =
+  const hasExpectedRequestedPermissions =
     Object.keys(legacyRequestedPermissions).length > 0;
 
   let caip25Endowment;
