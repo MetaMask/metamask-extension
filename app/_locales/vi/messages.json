@@ -858,15 +858,10 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Chọn token và số tiền"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Đây là thời gian ước tính để hoàn thành cầu nối."
-  },
   "bridgeTo": {
     "message": "Cầu nối đến"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Bao gồm phí gas (trả cho các thợ đào tiền mã hóa) và phí sàn chuyển tiếp (trả để cung cấp các dịch vụ phức tạp như cầu nối).\nPhí được tính dựa trên lưu lượng mạng và độ phức tạp của giao dịch. MetaMask không thu lợi từ bất kỳ khoản phí nào."
-  },
+
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },
@@ -1985,9 +1980,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Số tiền được chi trả để xử lý giao dịch trên mạng."
-  },
-  "estimatedTime": {
-    "message": "Thời gian ước tính"
   },
   "ethGasPriceFetchWarning": {
     "message": "Giá gas dự phòng được cung cấp vì dịch vụ ước tính giá gas chính hiện không hoạt động."
@@ -6108,9 +6100,6 @@
   },
   "total": {
     "message": "Tổng"
-  },
-  "totalFees": {
-    "message": "Tổng phí"
   },
   "totalVolume": {
     "message": "Tổng khối lượng giao dịch"
