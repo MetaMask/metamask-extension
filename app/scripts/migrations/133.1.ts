@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 135;
+export const version = 133.1;
 
 /**
  * Removes tokens with `decimals === null` from `allTokens`, `allDetectedTokens`, `tokens`, and `detectedTokens`.

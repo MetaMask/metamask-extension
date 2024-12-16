@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { migrate, version } from './135';
+import { migrate, version } from './133.1';
 import { TokensControllerState } from '@metamask/assets-controllers';
 
 const sentryCaptureExceptionMock = jest.fn();
@@ -10,7 +10,7 @@ global.sentry = {
   captureMessage: sentryCaptureMessageMock,
 };
 
-const oldVersion = 134;
+const oldVersion = 133;
 
 const mockStateWithNullDecimals = {
   meta: { version: oldVersion },
