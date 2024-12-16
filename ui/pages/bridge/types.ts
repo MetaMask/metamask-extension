@@ -1,10 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { ChainConfiguration } from '../../../shared/types/bridge';
-import {
-  AssetWithDisplayData,
-  ERC20Asset,
-  NativeAsset,
-} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { AssetType } from '../../../shared/constants/transaction';
 
 export type L1GasFees = {
   l1GasFeesInHexWei?: string; // l1 fees for approval and trade in hex wei, appended by controller
@@ -29,11 +25,16 @@ export enum SortOrder {
   ETA_ASC = 'time_descending',
 }
 
-export type BridgeToken = AssetWithDisplayData<NativeAsset | ERC20Asset> | null;
-// & {
-// aggregators?: string[];
-// address: string;
-// }
+export type BridgeToken = {
+  type: AssetType;
+  address: string;
+  symbol: string;
+  image: string;
+  decimals: number;
+  balance: string; // raw balance
+  string: string | undefined; // normalized balance as a stringified number
+  tokenFiatAmount: number | null;
+};
 
 // Types copied from Metabridge API
 export enum BridgeFlag {
