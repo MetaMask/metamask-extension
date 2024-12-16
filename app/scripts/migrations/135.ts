@@ -9,7 +9,7 @@ type VersionedData = {
 export const version = 135;
 
 /**
- * Removes tokens with `decimals === null` from `allTokens`, `allIgnoredTokens`, `allDetectedTokens`, `tokens`, and `detectedTokens`.
+ * Removes tokens with `decimals === null` from `allTokens`, `allDetectedTokens`, `tokens`, and `detectedTokens`.
  * Captures exceptions for invalid states using Sentry and logs tokens with `decimals === null`.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
