@@ -1578,30 +1578,6 @@
         "semver": true
       }
     },
-    "@metamask/keyring-controller>@metamask/keyring-api>@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/keyring-controller>@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": true,
-        "@metamask/utils>@metamask/superstruct": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
-      }
-    },
     "@metamask/keyring-controller>ethereumjs-wallet": {
       "packages": {
         "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": true,
@@ -2162,45 +2138,14 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/network-controller": true,
-        "@metamask/profile-sync-controller>@metamask/keyring-api": true,
         "@metamask/profile-sync-controller>@noble/ciphers": true,
         "@metamask/profile-sync-controller>siwe": true,
         "@noble/hashes": true,
         "browserify>buffer": true,
         "loglevel": true
-      }
-    },
-    "@metamask/profile-sync-controller>@metamask/keyring-api": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/keyring-api>bech32": true,
-        "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": true,
-        "@metamask/profile-sync-controller>@metamask/keyring-api>uuid": true,
-        "@metamask/utils>@metamask/superstruct": true
-      }
-    },
-    "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
-      }
-    },
-    "@metamask/profile-sync-controller>@metamask/keyring-api>uuid": {
-      "globals": {
-        "crypto": true
       }
     },
     "@metamask/profile-sync-controller>@noble/ciphers": {
