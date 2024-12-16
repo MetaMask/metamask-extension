@@ -1,4 +1,4 @@
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/punycode.js';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
