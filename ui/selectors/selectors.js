@@ -1,3 +1,4 @@
+import { toUnicode } from 'punycode';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -731,7 +732,9 @@ export function getAddressBook(state) {
 
 export function getEnsResolutionByAddress(state, address) {
   if (state.metamask.ensResolutionsByAddress[address]) {
-    return state.metamask.ensResolutionsByAddress[address];
+    const ensResolution = state.metamask.ensResolutionsByAddress[address];
+    const normalizedEnsResolution = toUnicode(ensResolution);
+    return normalizedEnsResolution;
   }
 
   const entry =
