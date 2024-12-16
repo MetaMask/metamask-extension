@@ -26,7 +26,11 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getLocale } from '../../../selectors';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
-import { QuoteMetadata, QuoteResponse, SortOrder } from '../types';
+import {
+  QuoteMetadata,
+  QuoteResponse,
+  SortOrder,
+} from '../../../../shared/types/bridge';
 import {
   getBridgeQuotes,
   getBridgeSortOrder,

@@ -64,14 +64,14 @@ import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/sw
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import { QuoteRequest } from '../types';
+import { QuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
 import {
   formatTokenAmount,
   isQuoteExpired as isQuoteExpiredUtil,
-  isValidQuoteRequest,
 } from '../utils/quote';
+import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
   CrossChainSwapsEventProperties,

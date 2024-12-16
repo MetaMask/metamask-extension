@@ -13,10 +13,8 @@ import {
   L1GasFees,
   QuoteRequest,
   QuoteResponse,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/bridge/types';
-import { ChainConfiguration } from '../../../../shared/types/bridge';
+  ChainConfiguration,
+} from '../../../../shared/types/bridge';
 import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME, RequestStatus } from './constants';
 

@@ -5,7 +5,7 @@ import {
   QuoteMetadata,
   QuoteResponse,
   SortOrder,
-} from '../../pages/bridge/types';
+} from '../../../shared/types/bridge';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
 import { getTokenExchangeRate } from './utils';
 

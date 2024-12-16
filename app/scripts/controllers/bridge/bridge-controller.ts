@@ -12,9 +12,7 @@ import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
   fetchBridgeTokens,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/bridge/bridge.util';
+} from '../../../../shared/modules/bridge-utils/bridge.util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
@@ -27,12 +25,8 @@ import {
   QuoteRequest,
   QuoteResponse,
   TxData,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/bridge/types';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { isValidQuoteRequest } from '../../../../ui/pages/bridge/utils/quote';
+} from '../../../../shared/types/bridge';
+import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {

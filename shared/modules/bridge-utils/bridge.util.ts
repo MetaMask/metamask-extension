@@ -12,25 +12,22 @@ import {
   BRIDGE_CLIENT_ID,
   ETH_USDT_ADDRESS,
   METABRIDGE_ETHEREUM_ADDRESS,
-} from '../../../shared/constants/bridge';
-import { MINUTE } from '../../../shared/constants/time';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import {
-  decimalToHex,
-  hexToDecimal,
-} from '../../../shared/modules/conversion.utils';
+} from '../../constants/bridge';
+import { MINUTE } from '../../constants/time';
+import fetchWithCache from '../../lib/fetch-with-cache';
+import { decimalToHex, hexToDecimal } from '../conversion.utils';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
-} from '../../../shared/constants/swaps';
+} from '../../constants/swaps';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
-} from '../../../shared/modules/swaps.utils';
+} from '../swaps.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { REFRESH_INTERVAL_MS } from '../../../app/scripts/controllers/bridge/constants';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../constants/network';
 import {
   BridgeAsset,
   BridgeFlag,
@@ -41,7 +38,7 @@ import {
   QuoteRequest,
   QuoteResponse,
   TxData,
-} from './types';
+} from '../../types/bridge';
 import {
   FEATURE_FLAG_VALIDATORS,
   QUOTE_VALIDATORS,
@@ -50,7 +47,7 @@ import {
   validateResponse,
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
-} from './utils/validators';
+} from './validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;

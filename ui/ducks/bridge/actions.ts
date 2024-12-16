@@ -9,7 +9,7 @@ import {
 } from '../../../app/scripts/controllers/bridge/types';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { QuoteRequest } from '../../pages/bridge/types';
+import { QuoteRequest } from '../../../shared/types/bridge';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import {
   bridgeSlice,
