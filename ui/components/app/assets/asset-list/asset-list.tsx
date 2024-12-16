@@ -7,10 +7,9 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
-  getTokenNetworkFilter,
 } from '../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getMultichainIsEvm,
   getMultichainSelectedAccountCachedBalance,
@@ -79,16 +78,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
-  const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks || {}).forEach((chainId) => {
-    allOpts[chainId] = true;
-  });
-
-  const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter).length !==
-    Object.keys(allOpts || {}).length;
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
   const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
@@ -118,7 +110,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
 
   const totalTokens =
     process.env.PORTFOLIO_VIEW &&
-    !allNetworksFilterShown &&
+    !isTokenNetworkFilterEqualCurrentNetwork &&
     detectedTokensMultichain
       ? (Object.values(detectedTokensMultichain).reduce(
           // @ts-expect-error TS18046: 'tokenArray' is of type 'unknown'

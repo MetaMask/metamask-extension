@@ -2,11 +2,35 @@ import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'ethers/lib/utils';
 import { ContractMarketData } from '@metamask/assets-controllers';
+import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { TxData } from '../../pages/bridge/types';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
+
+type GasFeeEstimate = {
+  suggestedMaxPriorityFeePerGas: string;
+  suggestedMaxFeePerGas: string;
+  minWaitTimeEstimate: number;
+  maxWaitTimeEstimate: number;
+};
+
+type NetworkGasFeeEstimates = {
+  low: GasFeeEstimate;
+  medium: GasFeeEstimate;
+  high: GasFeeEstimate;
+  estimatedBaseFee: string;
+  historicalBaseFeeRange: [string, string];
+  baseFeeTrend: 'up' | 'down';
+  latestPriorityFeeRange: [string, string];
+  historicalPriorityFeeRange: [string, string];
+  priorityFeeTrend: 'up' | 'down';
+  networkCongestion: number;
+};
 
 // We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
 export const getHexMaxGasLimit = (gasLimit: number) => {
@@ -22,14 +46,13 @@ export const getTxGasEstimates = async ({
   hexChainId,
 }: {
   networkAndAccountSupports1559: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  networkGasFeeEstimates: any;
+  networkGasFeeEstimates: NetworkGasFeeEstimates;
   txParams: TxData;
   hexChainId: Hex;
 }) => {
   if (networkAndAccountSupports1559) {
-    const { estimatedBaseFeeGwei = '0' } = networkGasFeeEstimates;
-    const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFeeGwei) as Hex;
+    const { estimatedBaseFee = '0' } = networkGasFeeEstimates;
+    const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee) as Hex;
     const txGasFeeEstimates = await getTransaction1559GasFeeEstimates(
       {
         ...txParams,
@@ -133,3 +156,8 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
         : null,
   };
 };
+
+export const isNetworkAdded = (
+  v: NetworkConfiguration | AddNetworkFields | undefined,
+): v is NetworkConfiguration =>
+  !v || 'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];

@@ -163,7 +163,6 @@ describe('switchEthereumChainHandler', () => {
     expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
       {},
       end,
-      'example.com',
       '0xdeadbeef',
       'mainnet',
       null,

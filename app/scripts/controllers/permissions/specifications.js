@@ -53,18 +53,12 @@ export const getCaveatSpecifications = () => {
  * Gets the specifications for all permissions that will be recognized by the
  * PermissionController.
  *
- * @param {{
- *   getAllAccounts: () => Promise<string[]>,
- *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
- * }} options - Options bag.
- * @param options.getAllAccounts - A function that returns all Ethereum accounts
- * in the current MetaMask instance.
+ * @param options - The options object.
  * @param options.listAccounts - A function that returns the
- * `AccountsController` internalAccount objects for all accounts in the
- * @param options.captureKeyringTypesWithMissingIdentities - A function that
- * captures extra error information about the "Missing identity for address"
- * error.
- * current MetaMask instance.
+ * `AccountsController` internalAccount objects for all evm accounts.
+ * @param options.findNetworkClientIdByChainId - A function that
+ * returns the networkClientId given a chainId.
+ * @returns the permission specifications to construct the PermissionController.
  */
 export const getPermissionSpecifications = ({
   listAccounts,

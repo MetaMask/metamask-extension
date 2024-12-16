@@ -184,7 +184,6 @@ describe('addEthereumChainHandler', () => {
     expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
       {},
       end,
-      'example.com',
       NON_INFURA_CHAIN_ID,
       123,
       'approvalFlowId',
@@ -254,7 +253,6 @@ describe('addEthereumChainHandler', () => {
         expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
           {},
           end,
-          'example.com',
           '0x1',
           123,
           'approvalFlowId',
@@ -304,7 +302,6 @@ describe('addEthereumChainHandler', () => {
         expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
           {},
           end,
-          'example.com',
           '0xa',
           createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
           undefined,
