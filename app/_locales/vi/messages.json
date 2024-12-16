@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Trang web này yêu cầu bạn đăng nhập bằng tài khoản không đúng."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Giao dịch này sẽ chỉ được thực hiện sau khi giao dịch trước đó của bạn hoàn tất."
-  },
   "alertModalAcknowledge": {
     "message": "Tôi đã nhận thức được rủi ro và vẫn muốn tiếp tục"
   },

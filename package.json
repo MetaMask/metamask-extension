@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.7.2",
+  "version": "12.9.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -330,7 +330,7 @@
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.2.0",
-    "@metamask/profile-sync-controller": "^3.0.0",
+    "@metamask/profile-sync-controller": "^3.1.1",
     "@metamask/providers": "^18.2.0",
     "@metamask/queued-request-controller": "^7.0.1",
     "@metamask/rate-limit-controller": "^6.0.0",
@@ -426,7 +426,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "remove-trailing-slash": "^0.1.1",
-    "reselect": "^3.0.1",
+    "reselect": "^5.1.1",
     "ses": "^1.1.0",
     "simple-git": "^3.20.0",
     "single-call-balance-checker-abi": "^1.0.0",

@@ -24,6 +24,7 @@ import {
   updateQuoteRequestParams,
   resetBridgeState,
   setDestTokenExchangeRates,
+  setWasTxDeclined,
 } from './actions';
 
 const middleware = [thunk];
@@ -153,6 +154,7 @@ describe('Ducks - Bridge', () => {
         sortOrder: 'cost_ascending',
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
+        wasTxDeclined: false,
       });
     });
   });
@@ -217,6 +219,7 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         toToken: null,
         toTokenExchangeRate: null,
+        wasTxDeclined: false,
       });
     });
   });
@@ -307,6 +310,17 @@ describe('Ducks - Bridge', () => {
         toTokenExchangeRate: 0.999881,
         sortOrder: 'cost_ascending',
       });
+    });
+  });
+
+  describe('setWasTxDeclined', () => {
+    it('sets the wasTxDeclined flag to true', () => {
+      const state = store.getState().bridge;
+      store.dispatch(setWasTxDeclined(true));
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/setWasTxDeclined');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState.wasTxDeclined).toStrictEqual(true);
     });
   });
 });

@@ -9,12 +9,16 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { GasRecommendations } from '../../../../shared/constants/gas';
+import {
+  GasRecommendations,
+  PriorityLevels,
+} from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
+  MetaMetricsEventTransactionEstimateType,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
@@ -824,12 +828,18 @@ async function buildEventFragmentProperties({
     gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
   } else {
     gasParams.gas_price = gasPrice;
+    gasParams.default_estimate =
+      MetaMetricsEventTransactionEstimateType.DefaultEstimate;
   }
 
   if (defaultGasEstimates) {
     const { estimateType } = defaultGasEstimates;
     if (estimateType) {
-      gasParams.default_estimate = estimateType;
+      gasParams.default_estimate =
+        estimateType === PriorityLevels.dAppSuggested
+          ? MetaMetricsEventTransactionEstimateType.DappProposed
+          : estimateType;
+
       let defaultMaxFeePerGas =
         transactionMeta.defaultGasEstimates?.maxFeePerGas;
       let defaultMaxPriorityFeePerGas =
