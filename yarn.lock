@@ -6022,7 +6022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^3.1.0":
+"@metamask/profile-sync-controller@npm:^3.1.1":
   version: 3.1.1
   resolution: "@metamask/profile-sync-controller@npm:3.1.1"
   dependencies:
@@ -26582,7 +26582,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^15.0.1"
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
-    "@metamask/profile-sync-controller": "npm:^3.1.0"
+    "@metamask/profile-sync-controller": "npm:^3.1.1"
     "@metamask/providers": "npm:^18.2.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
