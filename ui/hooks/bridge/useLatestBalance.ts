@@ -2,14 +2,12 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { DEFAULT_PRECISION } from '../useCurrencyDisplay';
-import {
-  getCurrentChainId,
-  getSelectedInternalAccount,
-  SwapsEthToken,
-} from '../../selectors';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { getSelectedInternalAccount, SwapsEthToken } from '../../selectors';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -60,6 +58,10 @@ const useLatestBalance = (
             .shiftedBy(tokenDecimals)
             .round(DEFAULT_PRECISION)
             .toString()
+        : undefined,
+    balanceAmount:
+      token && latestBalance
+        ? calcTokenAmount(latestBalance.toString(), tokenDecimals)
         : undefined,
   };
 };

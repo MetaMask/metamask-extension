@@ -8,7 +8,11 @@ import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import {
   getIsBridgeEnabled,
+  getMarketData,
   getSwapsDefaultToken,
+  getUSDConversionRate,
+  getUSDConversionRateByChainId,
+  selectConversionRateByChainId,
   SwapsEthToken,
 } from '../../selectors/selectors';
 import {
@@ -46,16 +50,27 @@ import {
   calcSentAmount,
   calcSwapRate,
   calcToAmount,
-  calcTotalGasFee,
+  calcEstimatedAndMaxTotalGasFee,
   isNativeAddress,
 } from '../../pages/bridge/utils/quote';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import {
+  exchangeRatesFromNativeAndCurrencyRates,
+  exchangeRateFromMarketData,
+  tokenPriceInNativeAsset,
+} from './utils';
 import { BridgeState } from './bridge';
 
 type BridgeAppState = {
   metamask: { bridgeState: BridgeControllerState } & NetworkState & {
       useExternalServices: boolean;
-      currencyRates: { [currency: string]: { conversionRate: number } };
+      currencyRates: {
+        [currency: string]: {
+          conversionRate: number;
+          usdConversionRate?: number;
+        };
+      };
     };
   bridge: BridgeState;
 };
@@ -79,10 +94,11 @@ export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   (state: BridgeAppState) => state.metamask.bridgeState?.bridgeFeatureFlags,
   (allBridgeableNetworks, bridgeFeatureFlags) =>
-    allBridgeableNetworks.filter(({ chainId }) =>
-      bridgeFeatureFlags[BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST].includes(
-        chainId,
-      ),
+    allBridgeableNetworks.filter(
+      ({ chainId }) =>
+        bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
+          chainId
+        ]?.isActiveSrc,
     ),
 );
 
@@ -111,9 +127,9 @@ export const getToChains = createDeepEqualSelector(
       ({ chainId }) =>
         fromChain?.chainId &&
         chainId !== fromChain.chainId &&
-        bridgeFeatureFlags[
-          BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST
-        ].includes(chainId),
+        bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
+          chainId
+        ]?.isActiveDest,
     ),
 );
 
@@ -175,6 +191,8 @@ const _getBridgeFeesPerGas = createSelector(
     maxPriorityFeePerGasInDecGwei: (gasFeeEstimates as GasFeeEstimates)?.[
       BRIDGE_PREFERRED_GAS_ESTIMATE
     ]?.suggestedMaxPriorityFeePerGas,
+    maxFeePerGasInDecGwei: (gasFeeEstimates as GasFeeEstimates)?.high
+      ?.suggestedMaxFeePerGas,
     maxFeePerGas: decGWEIToHexWEI(
       (gasFeeEstimates as GasFeeEstimates)?.high?.suggestedMaxFeePerGas,
     ),
@@ -187,27 +205,76 @@ const _getBridgeFeesPerGas = createSelector(
 export const getBridgeSortOrder = (state: BridgeAppState) =>
   state.bridge.sortOrder;
 
+export const getFromTokenConversionRate = createSelector(
+  getFromChain,
+  getMarketData,
+  getFromToken,
+  getUSDConversionRate,
+  getConversionRate,
+  (state) => state.bridge.fromTokenExchangeRate,
+  (
+    fromChain,
+    marketData,
+    fromToken,
+    nativeToUsdRate,
+    nativeToCurrencyRate,
+    fromTokenExchangeRate,
+  ) => {
+    if (fromChain?.chainId && fromToken && marketData) {
+      const tokenToNativeAssetRate =
+        exchangeRateFromMarketData(
+          fromChain.chainId,
+          fromToken.address,
+          marketData,
+        ) ??
+        tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
+
+      return exchangeRatesFromNativeAndCurrencyRates(
+        tokenToNativeAssetRate,
+        nativeToCurrencyRate,
+        nativeToUsdRate,
+      );
+    }
+    return exchangeRatesFromNativeAndCurrencyRates();
+  },
+);
+
 // A dest network can be selected before it's imported
 // The cached exchange rate won't be available so the rate from the bridge state is used
-const _getToTokenExchangeRate = createSelector(
-  (state) => state.metamask.currencyRates,
-  (state: BridgeAppState) => state.bridge.toTokenExchangeRate,
+export const getToTokenConversionRate = createDeepEqualSelector(
   getToChain,
+  getMarketData,
   getToToken,
-  (cachedCurrencyRates, toTokenExchangeRate, toChain, toToken) => {
-    return (
-      toTokenExchangeRate ??
-      (isNativeAddress(toToken?.address) && toChain?.nativeCurrency
-        ? cachedCurrencyRates[toChain.nativeCurrency]?.conversionRate
-        : null)
-    );
+  (state) => ({
+    state,
+    toTokenExchangeRate: state.bridge.toTokenExchangeRate,
+  }),
+  (toChain, marketData, toToken, { state, toTokenExchangeRate }) => {
+    if (toChain?.chainId && toToken && marketData) {
+      const { chainId } = toChain;
+
+      const nativeToCurrencyRate = selectConversionRateByChainId(
+        state,
+        chainId,
+      );
+      const nativeToUsdRate = getUSDConversionRateByChainId(chainId)(state);
+      const tokenToNativeAssetRate =
+        exchangeRateFromMarketData(chainId, toToken.address, marketData) ??
+        tokenPriceInNativeAsset(toTokenExchangeRate, nativeToCurrencyRate);
+      return exchangeRatesFromNativeAndCurrencyRates(
+        tokenToNativeAssetRate,
+        nativeToCurrencyRate,
+        nativeToUsdRate,
+      );
+    }
+    return exchangeRatesFromNativeAndCurrencyRates();
   },
 );
 
 const _getQuotesWithMetadata = createDeepEqualSelector(
   (state) => state.metamask.bridgeState.quotes,
-  _getToTokenExchangeRate,
-  (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
+  getToTokenConversionRate,
+  getFromTokenConversionRate,
   getConversionRate,
   _getBridgeFeesPerGas,
   (
@@ -215,41 +282,60 @@ const _getQuotesWithMetadata = createDeepEqualSelector(
     toTokenExchangeRate,
     fromTokenExchangeRate,
     nativeExchangeRate,
-    { estimatedBaseFeeInDecGwei, maxPriorityFeePerGasInDecGwei },
+    {
+      estimatedBaseFeeInDecGwei,
+      maxPriorityFeePerGasInDecGwei,
+      maxFeePerGasInDecGwei,
+    },
   ): (QuoteResponse & QuoteMetadata)[] => {
     const newQuotes = quotes.map((quote: QuoteResponse) => {
-      const toTokenAmount = calcToAmount(quote.quote, toTokenExchangeRate);
-      const gasFee = calcTotalGasFee(
-        quote,
+      const toTokenAmount = calcToAmount(
+        quote.quote,
+        toTokenExchangeRate.valueInCurrency,
+      );
+      const gasFee = calcEstimatedAndMaxTotalGasFee({
+        bridgeQuote: quote,
         estimatedBaseFeeInDecGwei,
+        maxFeePerGasInDecGwei,
         maxPriorityFeePerGasInDecGwei,
         nativeExchangeRate,
-      );
+      });
       const relayerFee = calcRelayerFee(quote, nativeExchangeRate);
-      const totalNetworkFee = {
+      const totalEstimatedNetworkFee = {
         amount: gasFee.amount.plus(relayerFee.amount),
-        fiat: gasFee.fiat?.plus(relayerFee.fiat || '0') ?? null,
+        valueInCurrency:
+          gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
+          null,
       };
+      const totalMaxNetworkFee = {
+        amount: gasFee.amountMax.plus(relayerFee.amount),
+        valueInCurrency:
+          gasFee.valueInCurrencyMax?.plus(relayerFee.valueInCurrency || '0') ??
+          null,
+      };
+
       const sentAmount = calcSentAmount(
         quote.quote,
-        isNativeAddress(quote.quote.srcAsset.address)
-          ? nativeExchangeRate
-          : fromTokenExchangeRate,
+        fromTokenExchangeRate.valueInCurrency,
       );
       const adjustedReturn = calcAdjustedReturn(
-        toTokenAmount.fiat,
-        totalNetworkFee.fiat,
+        toTokenAmount.valueInCurrency,
+        totalEstimatedNetworkFee.valueInCurrency,
       );
 
       return {
         ...quote,
         toTokenAmount,
         sentAmount,
-        totalNetworkFee,
+        totalNetworkFee: totalEstimatedNetworkFee,
+        totalMaxNetworkFee,
         adjustedReturn,
         gasFee,
         swapRate: calcSwapRate(sentAmount.amount, toTokenAmount.amount),
-        cost: calcCost(adjustedReturn.fiat, sentAmount.fiat),
+        cost: calcCost(
+          adjustedReturn.valueInCurrency,
+          sentAmount.valueInCurrency,
+        ),
       };
     });
 
@@ -270,7 +356,11 @@ const _getSortedQuotesWithMetadata = createDeepEqualSelector(
         );
       case SortOrder.COST_ASC:
       default:
-        return orderBy(quotesWithMetadata, ({ cost }) => cost.fiat, 'asc');
+        return orderBy(
+          quotesWithMetadata,
+          ({ cost }) => cost.valueInCurrency,
+          'asc',
+        );
     }
   },
 );
@@ -285,15 +375,15 @@ const _getRecommendedQuote = createDeepEqualSelector(
 
     const bestReturnValue = BigNumber.max(
       sortedQuotesWithMetadata.map(
-        ({ adjustedReturn }) => adjustedReturn.fiat ?? 0,
+        ({ adjustedReturn }) => adjustedReturn.valueInCurrency ?? 0,
       ),
     );
 
     const isFastestQuoteValueReasonable = (
-      adjustedReturnInFiat: BigNumber | null,
+      adjustedReturnInCurrency: BigNumber | null,
     ) =>
-      adjustedReturnInFiat
-        ? adjustedReturnInFiat
+      adjustedReturnInCurrency
+        ? adjustedReturnInCurrency
             .div(bestReturnValue)
             .gte(BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE)
         : true;
@@ -305,7 +395,7 @@ const _getRecommendedQuote = createDeepEqualSelector(
     return (
       sortedQuotesWithMetadata.find((quote) => {
         return sortOrder === SortOrder.ETA_ASC
-          ? isFastestQuoteValueReasonable(quote.adjustedReturn.fiat)
+          ? isFastestQuoteValueReasonable(quote.adjustedReturn.valueInCurrency)
           : isBestPricedQuoteETAReasonable(
               quote.estimatedProcessingTimeInSeconds,
             );
@@ -342,6 +432,8 @@ export const getBridgeQuotes = createSelector(
   (state) =>
     state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
   (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
+  (state: BridgeAppState) => state.metamask.bridgeState.quotesInitialLoadTime,
+  (state: BridgeAppState) => state.metamask.bridgeState.quoteFetchError,
   getBridgeQuotesConfig,
   getQuoteRequest,
   (
@@ -351,6 +443,8 @@ export const getBridgeQuotes = createSelector(
     quotesLastFetchedMs,
     isLoading,
     quotesRefreshCount,
+    quotesInitialLoadTimeMs,
+    quoteFetchError,
     { maxRefreshCount },
     { insufficientBal },
   ) => ({
@@ -359,7 +453,9 @@ export const getBridgeQuotes = createSelector(
     activeQuote: selectedQuote ?? recommendedQuote,
     quotesLastFetchedMs,
     isLoading,
+    quoteFetchError,
     quotesRefreshCount,
+    quotesInitialLoadTimeMs,
     isQuoteGoingToRefresh: insufficientBal
       ? false
       : quotesRefreshCount < maxRefreshCount,
@@ -375,3 +471,90 @@ export const getIsBridgeTx = createDeepEqualSelector(
       ? fromChain.chainId !== toChain.chainId
       : false,
 );
+
+const _getValidatedSrcAmount = createSelector(
+  getFromToken,
+  (state: BridgeAppState) =>
+    state.metamask.bridgeState.quoteRequest.srcTokenAmount,
+  (fromToken, srcTokenAmount) =>
+    srcTokenAmount && fromToken?.decimals
+      ? calcTokenAmount(srcTokenAmount, Number(fromToken.decimals)).toString()
+      : null,
+);
+
+export const getFromAmountInCurrency = createSelector(
+  getFromToken,
+  getFromChain,
+  _getValidatedSrcAmount,
+  getFromTokenConversionRate,
+  (
+    fromToken,
+    fromChain,
+    validatedSrcAmount,
+    { valueInCurrency: fromTokenToCurrencyExchangeRate },
+  ) => {
+    if (fromToken?.symbol && fromChain?.chainId && validatedSrcAmount) {
+      if (fromTokenToCurrencyExchangeRate) {
+        return new BigNumber(validatedSrcAmount).mul(
+          new BigNumber(fromTokenToCurrencyExchangeRate.toString() ?? 1),
+        );
+      }
+    }
+    return new BigNumber(0);
+  },
+);
+
+export const getValidationErrors = createDeepEqualSelector(
+  getBridgeQuotes,
+  getFromAmount,
+  _getValidatedSrcAmount,
+  getFromToken,
+  (
+    { activeQuote, quotesLastFetchedMs, isLoading },
+    fromAmount,
+    validatedSrcAmount,
+    fromToken,
+  ) => {
+    return {
+      isNoQuotesAvailable: Boolean(
+        !activeQuote && quotesLastFetchedMs && !isLoading,
+      ),
+      // Shown prior to fetching quotes
+      isInsufficientGasBalance: (balance?: BigNumber) => {
+        if (balance && !activeQuote && validatedSrcAmount && fromToken) {
+          return isNativeAddress(fromToken.address)
+            ? balance.eq(validatedSrcAmount)
+            : balance.lte(0);
+        }
+        return false;
+      },
+      // Shown after fetching quotes
+      isInsufficientGasForQuote: (balance?: BigNumber) => {
+        if (balance && activeQuote && fromToken) {
+          return isNativeAddress(fromToken.address)
+            ? balance
+                .sub(activeQuote.totalMaxNetworkFee.amount)
+                .sub(activeQuote.sentAmount.amount)
+                .lte(0)
+            : balance.lte(activeQuote.totalMaxNetworkFee.amount);
+        }
+        return false;
+      },
+      isInsufficientBalance: (balance?: BigNumber) =>
+        fromAmount && balance !== undefined ? balance.lt(fromAmount) : false,
+      isEstimatedReturnLow:
+        activeQuote?.sentAmount?.valueInCurrency &&
+        activeQuote?.adjustedReturn?.valueInCurrency
+          ? activeQuote.adjustedReturn.valueInCurrency.lt(
+              new BigNumber(
+                BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+              ).times(activeQuote.sentAmount.valueInCurrency),
+            )
+          : false,
+    };
+  },
+);
+
+export const getWasTxDeclined = (state: BridgeAppState): boolean => {
+  return state.bridge.wasTxDeclined;
+};

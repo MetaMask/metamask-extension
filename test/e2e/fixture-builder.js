@@ -40,12 +40,6 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
-        usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
-        },
       },
       NetworkController: {
         ...mockNetworkStateOld({
@@ -241,6 +235,12 @@ class FixtureBuilder {
     });
   }
 
+  withUseBasicFunctionalityDisabled() {
+    return this.withPreferencesController({
+      useExternalServices: false,
+    });
+  }
+
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
@@ -295,6 +295,22 @@ class FixtureBuilder {
         networkConfigurationId: {
           chainId: CHAIN_IDS.OPTIMISM,
           nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.infura.io',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnPolygon() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.POLYGON,
+          nickname: 'Polygon Mainnet',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -436,9 +452,10 @@ class FixtureBuilder {
     this.fixture.data.BridgeController = {
       bridgeState: {
         bridgeFeatureFlags: {
-          destNetworkAllowlist: [],
-          extensionSupport: false,
-          srcNetworkAllowlist: [],
+          extensionConfig: {
+            support: false,
+            chains: {},
+          },
         },
         destTokens: {},
         destTopAssets: [],
@@ -666,6 +683,15 @@ class FixtureBuilder {
     return this.withPreferencesController({
       preferences: {
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
+      },
+    });
+  }
+
+  withPreferencesControllerSmartTransactionsOptedOut() {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
         tokenNetworkFilter: {},
       },
     });
@@ -1463,6 +1489,24 @@ class FixtureBuilder {
         },
         selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
       });
+  }
+
+  withIncomingTransactionsPreferences(incomingTransactionsPreferences) {
+    return this.withPreferencesController({
+      featureFlags: {
+        showIncomingTransactions: incomingTransactionsPreferences,
+      },
+    });
+  }
+
+  withIncomingTransactionsCache(cache) {
+    return this.withTransactionController({ lastFetchedBlockNumbers: cache });
+  }
+
+  withTransactions(transactions) {
+    return this.withTransactionController({
+      transactions,
+    });
   }
 
   build() {

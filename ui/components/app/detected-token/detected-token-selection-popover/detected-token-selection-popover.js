@@ -9,14 +9,13 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllDetectedTokensForSelectedAddress,
-  getCurrentChainId,
   getCurrentNetwork,
   getDetectedTokensInCurrentNetwork,
-  getPreferences,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
@@ -38,16 +37,9 @@ const DetectedTokenSelectionPopover = ({
   const chainId = useSelector(getCurrentChainId);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
-  const allOpts = {};
-  Object.keys(allNetworks || {}).forEach((networkId) => {
-    allOpts[networkId] = true;
-  });
-
-  const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
-    Object.keys(allOpts || {}).length;
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
   const currentNetwork = useSelector(getCurrentNetwork);
 
@@ -56,13 +48,18 @@ const DetectedTokenSelectionPopover = ({
   );
 
   const totalTokens = useMemo(() => {
-    return process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+    return process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
       ? Object.values(detectedTokensMultichain).reduce(
           (count, tokenArray) => count + tokenArray.length,
           0,
         )
       : detectedTokens.length;
-  }, [detectedTokensMultichain, detectedTokens, allNetworksFilterShown]);
+  }, [
+    detectedTokensMultichain,
+    detectedTokens,
+    isTokenNetworkFilterEqualCurrentNetwork,
+  ]);
 
   const { selected: selectedTokens = [] } =
     sortingBasedOnTokenSelection(tokensListDetected);
@@ -122,7 +119,8 @@ const DetectedTokenSelectionPopover = ({
       onClose={onClose}
       footer={footer}
     >
-      {process.env.PORTFOLIO_VIEW && !allNetworksFilterShown ? (
+      {process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork ? (
         <Box margin={3}>
           {Object.entries(detectedTokensMultichain).map(
             ([networkId, tokens]) => {

@@ -37,7 +37,9 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": { "0x539": "boolean" },
+      "tokenNetworkFilter": {
+        "0x539": "boolean"
+      },
       "redesignedConfirmationsEnabled": true,
       "redesignedTransactionsEnabled": "boolean"
     },
@@ -86,16 +88,16 @@
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-    "nftsDropdownState": {},
-    "termsOfUseLastAgreed": "number",
-    "qrHardware": {},
-    "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
-    "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
+    "switchedNetworkNeverShowMessage": "boolean",
+    "slides": "object",
+    "qrHardware": {},
+    "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
-    "switchedNetworkNeverShowMessage": "boolean",
     "currentExtensionPopupId": "number",
+    "termsOfUseLastAgreed": "number",
+    "snapsInstallPrivacyWarningShown": true,
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
@@ -174,7 +176,9 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean",
     "tokenList": "object",
-    "tokensChainsCache": { "0x539": "object" },
+    "tokensChainsCache": {
+      "0x539": "object"
+    },
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -209,7 +213,6 @@
     "database": null,
     "lastUpdated": null,
     "databaseUnavailable": "boolean",
-    "notifications": "object",
     "interfaces": "object",
     "insights": "object",
     "names": "object",
@@ -232,6 +235,8 @@
     "isCheckingAccountsPresence": "boolean",
     "queuedRequestCount": 0,
     "fcmToken": "string",
+    "remoteFeatureFlags": { "feature1": true, "feature2": false },
+    "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",
     "marketData": "object",
@@ -274,10 +279,16 @@
     },
     "bridgeState": {
       "bridgeFeatureFlags": {
-        "extensionConfig": "object",
-        "extensionSupport": "boolean",
-        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
-        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
+        "extensionConfig": {
+          "maxRefreshCount": "number",
+          "refreshRate": "number",
+          "support": "boolean",
+          "chains": {
+            "0x1": "object",
+            "0xa4b1": "object",
+            "0xe708": "object"
+          }
+        }
       },
       "srcTokens": {},
       "srcTopAssets": {},

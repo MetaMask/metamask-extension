@@ -64,6 +64,7 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
+      - solana
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -235,10 +236,8 @@ env:
 
   # Used to enable confirmation redesigned pages
   - ENABLE_CONFIRMATION_REDESIGN: ''
-  # Used to enable signature decoding
-  - ENABLE_SIGNATURE_DECODING: ''
   # URL of the decoding API used to provide additional data from signature requests
-  - DECODING_API_URL: null
+  - DECODING_API_URL: 'https://signature-insights.api.cx.metamask.io/v1'
   # Determines if feature flagged Settings Page - Developer Options should be used
   - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: false
   # Used for debugging changes to the phishing warning page.
@@ -278,14 +277,12 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-  # Determines if feature flagged Multichain Transactions should be used
-  - TRANSACTION_MULTICHAIN: ''
   # Determines if Barad Dur features should be used
   - BARAD_DUR: ''
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Determines if Portfolio View UI should be shown
-  - PORTFOLIO_VIEW: ''
+  - PORTFOLIO_VIEW: 'true'
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
   # Temporary mechanism to enable security alerts API prior to release

@@ -15,6 +15,9 @@ import {
 } from '../../../selectors/transactions';
 import {
   getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
@@ -55,7 +58,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 
 const PAGE_INCREMENT = 10;
 
@@ -152,6 +154,7 @@ export default function TransactionList({
   const unfilteredCompletedTransactions = useSelector(
     nonceSortedCompletedTransactionsSelector,
   );
+
   const chainId = useSelector(getCurrentChainId);
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,

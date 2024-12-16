@@ -273,7 +273,7 @@ describe('MMIController', function () {
       appStateController: new AppStateController({
         addUnlockListener: jest.fn(),
         isUnlocked: jest.fn(() => true),
-        initState: {},
+        state: {},
         onInactiveTimeout: jest.fn(),
         showUnlockRequest: jest.fn(),
         messenger: {

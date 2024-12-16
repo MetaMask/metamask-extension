@@ -6,11 +6,13 @@ import classNames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getDetectedTokensInCurrentNetwork,
   getAllDetectedTokensForSelectedAddress,
-  getPreferences,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -26,17 +28,16 @@ export const DetectedTokensBanner = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const allOpts = {};
   Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
-
-  const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
-    Object.keys(allOpts || {}).length;
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
@@ -46,14 +47,14 @@ export const DetectedTokensBanner = ({
   const chainId = useSelector(getCurrentChainId);
 
   const detectedTokensDetails =
-    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+    process.env.PORTFOLIO_VIEW && !isTokenNetworkFilterEqualCurrentNetwork
       ? Object.values(detectedTokensMultichain)
           .flat()
           .map(({ address, symbol }) => `${symbol} - ${address}`)
       : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
 
   const totalTokens =
-    process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+    process.env.PORTFOLIO_VIEW && !isTokenNetworkFilterEqualCurrentNetwork
       ? Object.values(detectedTokensMultichain).reduce(
           (count, tokenArray) => count + tokenArray.length,
           0,

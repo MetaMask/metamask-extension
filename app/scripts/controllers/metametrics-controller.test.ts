@@ -309,6 +309,7 @@ describe('MetaMetricsController', function () {
           });
 
           const expectedFragment = merge(
+            {},
             SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT,
             SAMPLE_PERSISTED_EVENT_NO_ID,
             {
@@ -1668,12 +1669,12 @@ describe('MetaMetricsController', function () {
           },
           ShowNativeTokenAsMainBalance: true,
           allNfts: {},
-          names: {
-            ethereumAddress: {},
-          },
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          names: {
+            ethereumAddress: {},
+          },
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
@@ -1839,6 +1840,40 @@ describe('MetaMetricsController', function () {
           );
         },
       );
+    });
+  });
+  describe('updateExtensionUninstallUrl', function () {
+    it('should include extension version in uninstall URL regardless of MetaMetrics participation', async function () {
+      await withController(({ controller }) => {
+        const setUninstallURLSpy = jest.spyOn(
+          MOCK_EXTENSION.runtime,
+          'setUninstallURL',
+        );
+
+        // Test with MetaMetrics disabled
+        controller.updateExtensionUninstallUrl(false, 'test-id');
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining(`av=${VERSION}`),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.not.stringContaining('mmi='),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.not.stringContaining('env='),
+        );
+
+        // Test with MetaMetrics enabled
+        controller.updateExtensionUninstallUrl(true, 'test-id');
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining(`av=${VERSION}`),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining('mmi='),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining('env='),
+        );
+      });
     });
   });
 });

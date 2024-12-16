@@ -24,6 +24,7 @@ import {
   updateQuoteRequestParams,
   resetBridgeState,
   setDestTokenExchangeRates,
+  setWasTxDeclined,
 } from './actions';
 
 const middleware = [thunk];
@@ -150,9 +151,10 @@ describe('Ducks - Bridge', () => {
         fromToken: null,
         toToken: null,
         fromTokenInputValue: null,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
+        wasTxDeclined: false,
       });
     });
   });
@@ -188,7 +190,9 @@ describe('Ducks - Bridge', () => {
     it('dispatches action to the bridge controller', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore({}, { fromTokenInputValue: '10' }),
+        createBridgeMockStore({
+          bridgeSliceOverrides: { fromTokenInputValue: '10' },
+        }),
       );
       const state = mockStore.getState().bridge;
       const mockResetBridgeState = jest.fn();
@@ -211,10 +215,11 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
         toTokenExchangeRate: null,
+        wasTxDeclined: false,
       });
     });
   });
@@ -258,7 +263,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.356628,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
     });
 
@@ -303,8 +308,19 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.999881,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
+    });
+  });
+
+  describe('setWasTxDeclined', () => {
+    it('sets the wasTxDeclined flag to true', () => {
+      const state = store.getState().bridge;
+      store.dispatch(setWasTxDeclined(true));
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/setWasTxDeclined');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState.wasTxDeclined).toStrictEqual(true);
     });
   });
 });

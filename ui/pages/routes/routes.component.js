@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component, Suspense } from 'react';
-import { matchPath, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
 import Authenticated from '../../helpers/higher-order-components/authenticated';
@@ -61,6 +61,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -75,7 +76,6 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
-import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
@@ -88,8 +88,7 @@ import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/mu
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import { InternalAccountPropType } from '../../selectors/multichain';
-import { isCurrentChainCompatibleWithAccount } from '../../../shared/lib/multichain';
+import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
@@ -154,7 +153,6 @@ export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
     activeTabOrigin: PropTypes.string,
-    account: InternalAccountPropType,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -172,14 +170,9 @@ export default class Routes extends Component {
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
-    isNetworkUsed: PropTypes.bool,
-    allAccountsOnNetworkAreEmpty: PropTypes.bool,
-    isTestNet: PropTypes.bool,
     showExtensionInFullSizeView: PropTypes.bool,
-    currentChainId: PropTypes.string,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
-    isCurrentProviderCustom: PropTypes.bool,
     completedOnboarding: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
     toggleAccountMenu: PropTypes.func,
@@ -195,7 +188,6 @@ export default class Routes extends Component {
     hideImportTokensModal: PropTypes.func.isRequired,
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
-    switchedNetworkDetails: PropTypes.object,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
@@ -328,6 +320,11 @@ export default class Routes extends Component {
           <Authenticated path={SEND_ROUTE} component={SendPage} exact />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
+            path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
+            component={CrossChainSwapTxDetails}
+            exact
+          />
+          <Authenticated
             path={CROSS_CHAIN_SWAP_ROUTE}
             component={CrossChainSwap}
           />
@@ -437,13 +434,7 @@ export default class Routes extends Component {
       isNetworkLoading,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
-      isNetworkUsed,
-      allAccountsOnNetworkAreEmpty,
-      isTestNet,
-      account,
-      currentChainId,
       shouldShowSeedPhraseReminder,
-      isCurrentProviderCustom,
       completedOnboarding,
       isAccountMenuOpen,
       toggleAccountMenu,
@@ -460,7 +451,6 @@ export default class Routes extends Component {
       hideIpfsModal,
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
-      switchedNetworkDetails,
       clearSwitchedNetworkDetails,
       clearEditedNetwork,
       privacyMode,
@@ -478,23 +468,6 @@ export default class Routes extends Component {
       loadingMessage || isNetworkLoading
         ? getConnectingLabel(loadingMessage, this.props, this.context)
         : null;
-
-    // Conditions for displaying the Send route
-    const isSendRoute = matchPath(location.pathname, {
-      path: SEND_ROUTE,
-      exact: false,
-    });
-    const shouldShowNetworkInfo =
-      isUnlocked &&
-      account &&
-      isCurrentChainCompatibleWithAccount(currentChainId, account) &&
-      !isTestNet &&
-      !isSendRoute &&
-      !isNetworkUsed &&
-      !isCurrentProviderCustom &&
-      completedOnboarding &&
-      allAccountsOnNetworkAreEmpty &&
-      switchedNetworkDetails === null;
 
     const windowType = getEnvironmentType();
 
@@ -554,9 +527,6 @@ export default class Routes extends Component {
         }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
-        {location.pathname === DEFAULT_ROUTE && shouldShowNetworkInfo ? (
-          <NewNetworkInfo />
-        ) : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />

@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
@@ -15,8 +16,14 @@ class TestDapp {
   private readonly confirmDialogScrollButton =
     '[data-testid="signature-request-scroll-button"]';
 
+  private readonly confirmScrollToBottomButtonRedesign =
+    '.confirm-scroll-to-bottom__button';
+
   private readonly confirmSignatureButton =
     '[data-testid="page-container-footer-next"]';
+
+  private readonly confirmSignatureButtonRedesign =
+    '[data-testid="confirm-footer-button"]';
 
   private readonly connectAccountButton = '#connectButton';
 
@@ -73,6 +80,9 @@ class TestDapp {
 
   private readonly personalSignVerifyButton = '#personalSignVerify';
 
+  private personalSignSigUtilResultSelector =
+    '#personalSignVerifySigUtilResult';
+
   private readonly revokePermissionButton = '#revokeAccountsPermission';
 
   private readonly signPermitButton = '#signPermit';
@@ -87,6 +97,12 @@ class TestDapp {
   private readonly signPermitVerifyButton = '#signPermitVerify';
 
   private readonly signPermitVerifyResult = '#signPermitVerifyResult';
+
+  private readonly signPermitResultR = '#signPermitResultR';
+
+  private readonly signPermitResultS = '#signPermitResultS';
+
+  private readonly signPermitResultV = '#signPermitResultV';
 
   private readonly signTypedDataButton = '#signTypedData';
 
@@ -106,6 +122,11 @@ class TestDapp {
     tag: 'div',
   };
 
+  private readonly signTypedDataV3V4SignatureRequestMessageRedesign = {
+    text: 'Hello, Bob!',
+    tag: 'p',
+  };
+
   private readonly signTypedDataV3VerifyButton = '#signTypedDataV3Verify';
 
   private readonly signTypedDataV3VerifyResult = '#signTypedDataV3VerifyResult';
@@ -122,14 +143,36 @@ class TestDapp {
 
   private readonly signTypedDataVerifyResult = '#signTypedDataVerifyResult';
 
+  private readonly signSiweButton = '#siwe';
+
+  private readonly signSiweVerifyResult = '#siweResult';
+
+  private readonly signSiweBadDomainButton = '#siweBadDomain';
+
+  private readonly sign721PermitButton = '#sign721Permit';
+
+  private sign721PermitVerifyButton = '#sign721PermitVerify';
+
+  private sign721PermitVerifyResult = '#sign721PermitVerifyResult';
+
+  private sign721PermitResult = '#sign721PermitResult';
+
+  private sign721PermitResultR = '#sign721PermitResultR';
+
+  private sign721PermitResultS = '#sign721PermitResultS';
+
+  private sign721PermitResultV = '#sign721PermitResultV';
+
+  private readonly eip747ContractAddressInput = '#eip747ContractAddress';
+
   private readonly transactionRequestMessage = {
     text: 'Transaction request',
     tag: 'h2',
   };
 
-  private readonly updateNetworkButton = {
-    text: 'Update',
-    tag: 'button',
+  private readonly userRejectedRequestMessage = {
+    tag: 'span',
+    text: 'Error: User rejected the request.',
   };
 
   private erc20TokenTransferButton = '#transferTokens';
@@ -363,6 +406,17 @@ class TestDapp {
     });
   }
 
+  async verifyPersonalSignSigUtilResult(publicKey: string) {
+    const sigUtilResult = await this.driver.waitForSelector({
+      css: this.personalSignSigUtilResultSelector,
+      text: publicKey,
+    });
+    assert.ok(
+      sigUtilResult,
+      `Sig Util result did not match address ${publicKey}`,
+    );
+  }
+
   /**
    * Verify the successful signPermit signature.
    *
@@ -375,6 +429,72 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.signPermitVerifyResult,
       text: publicKey.toLowerCase(),
+    });
+  }
+
+  async verifySignPermitResult(expectedSignature: string) {
+    await this.driver.waitForSelector({
+      css: this.signPermitResult,
+      text: expectedSignature,
+    });
+  }
+
+  async verifySignPermitResultR(expectedR: string) {
+    await this.driver.waitForSelector({
+      css: this.signPermitResultR,
+      text: `r: ${expectedR}`,
+    });
+  }
+
+  async verifySignPermitResultS(expectedS: string) {
+    await this.driver.waitForSelector({
+      css: this.signPermitResultS,
+      text: `s: ${expectedS}`,
+    });
+  }
+
+  async verifySignPermitResultV(expectedV: string) {
+    await this.driver.waitForSelector({
+      css: this.signPermitResultV,
+      text: `v: ${expectedV}`,
+    });
+  }
+
+  async check_successSign721Permit(publicKey: string) {
+    console.log('Verify successful signPermit signature');
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+    await this.driver.clickElement(this.sign721PermitVerifyButton);
+    await this.driver.waitForSelector({
+      css: this.sign721PermitVerifyResult,
+      text: publicKey.toLowerCase(),
+    });
+  }
+
+  async verifySign721PermitResult(expectedSignature: string) {
+    await this.driver.waitForSelector({
+      css: this.sign721PermitResult,
+      text: expectedSignature,
+    });
+  }
+
+  async verifySign721PermitResultR(expectedR: string) {
+    await this.driver.waitForSelector({
+      css: this.sign721PermitResultR,
+      text: `r: ${expectedR}`,
+    });
+  }
+
+  async verifySign721PermitResultS(expectedS: string) {
+    await this.driver.waitForSelector({
+      css: this.sign721PermitResultS,
+      text: `s: ${expectedS}`,
+    });
+  }
+
+  async verifySign721PermitResultV(expectedV: string) {
+    await this.driver.waitForSelector({
+      css: this.sign721PermitResultV,
+      text: `v: ${expectedV}`,
     });
   }
 
@@ -393,6 +513,13 @@ class TestDapp {
     });
   }
 
+  async verify_successSignTypedDataResult(result: string) {
+    await this.driver.waitForSelector({
+      css: this.signTypedDataResult,
+      text: result.toLowerCase(),
+    });
+  }
+
   /**
    * Verify the successful signTypedDataV3 signature.
    *
@@ -405,6 +532,13 @@ class TestDapp {
     await this.driver.waitForSelector({
       css: this.signTypedDataV3VerifyResult,
       text: publicKey.toLowerCase(),
+    });
+  }
+
+  async verify_successSignTypedDataV3Result(result: string) {
+    await this.driver.waitForSelector({
+      css: this.signTypedDataV3Result,
+      text: result.toLowerCase(),
     });
   }
 
@@ -423,12 +557,59 @@ class TestDapp {
     });
   }
 
+  async verify_successSignTypedDataV4Result(result: string) {
+    await this.driver.waitForSelector({
+      css: this.signTypedDataV4Result,
+      text: result.toLowerCase(),
+    });
+  }
+
+  async check_successSiwe(result: string) {
+    console.log('Verify successful SIWE signature');
+    await this.driver.waitForSelector({
+      css: this.signSiweVerifyResult,
+      text: result.toLowerCase(),
+    });
+  }
+
+  async clickPersonalSign() {
+    await this.driver.clickElement(this.personalSignButton);
+  }
+
+  async clickSignTypedData() {
+    await this.driver.clickElement(this.signTypedDataButton);
+  }
+
+  async clickSignTypedDatav3() {
+    await this.driver.clickElement(this.signTypedDataV3Button);
+  }
+
+  async clickSignTypedDatav4() {
+    await this.driver.clickElement(this.signTypedDataV4Button);
+  }
+
+  async clickPermit() {
+    await this.driver.clickElement(this.signPermitButton);
+  }
+
+  async clickSiwe() {
+    await this.driver.clickElement(this.signSiweButton);
+  }
+
+  async clickSwieBadDomain() {
+    await this.driver.clickElement(this.signSiweBadDomainButton);
+  }
+
+  async clickERC721Permit() {
+    await this.driver.clickElement(this.sign721PermitButton);
+  }
+
   /**
    * Sign a message with the personal sign method.
    */
   async personalSign() {
     console.log('Sign message with personal sign');
-    await this.driver.clickElement(this.personalSignButton);
+    await this.clickPersonalSign();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.personalSignSignatureRequestMessage);
     await this.driver.clickElementAndWaitForWindowToClose(
@@ -441,7 +622,7 @@ class TestDapp {
    */
   async signPermit() {
     console.log('Sign message with signPermit');
-    await this.driver.clickElement(this.signPermitButton);
+    await this.clickPermit();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.signPermitSignatureRequestMessage);
     await this.driver.clickElementAndWaitForWindowToClose(
@@ -454,7 +635,7 @@ class TestDapp {
    */
   async signTypedData() {
     console.log('Sign message with signTypedData');
-    await this.driver.clickElement(this.signTypedDataButton);
+    await this.clickSignTypedData();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(
       this.signTypedDataSignatureRequestMessage,
@@ -469,7 +650,7 @@ class TestDapp {
    */
   async signTypedDataV3() {
     console.log('Sign message with signTypedDataV3');
-    await this.driver.clickElement(this.signTypedDataV3Button);
+    await this.clickSignTypedDatav3();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(
       this.signTypedDataV3V4SignatureRequestMessage,
@@ -482,18 +663,51 @@ class TestDapp {
 
   /**
    * Sign a message with the signTypedDataV4 method.
+   *
+   * @param confirmationRedesign - Indicates whether the redesigned signature confirmation flow is used. Defaults to false.
    */
-  async signTypedDataV4() {
+  async signTypedDataV4(confirmationRedesign: boolean = false) {
     console.log('Sign message with signTypedDataV4');
-    await this.driver.clickElement(this.signTypedDataV4Button);
+    await this.clickSignTypedDatav4();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessage,
+    if (confirmationRedesign) {
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessageRedesign,
+      );
+      await this.driver.clickElementSafe(
+        this.confirmScrollToBottomButtonRedesign,
+        200,
+      );
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButtonRedesign,
+      );
+    } else {
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessage,
+      );
+      await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButton,
+      );
+    }
+  }
+
+  async pasteIntoEip747ContractAddressInput() {
+    await this.driver.findElement(this.eip747ContractAddressInput);
+    await this.driver.pasteFromClipboardIntoField(
+      this.eip747ContractAddressInput,
     );
-    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
+  }
+
+  async assertEip747ContractAddressInputValue(expectedValue: string) {
+    const formFieldEl = await this.driver.findElement(
+      this.eip747ContractAddressInput,
     );
+    assert.equal(await formFieldEl.getAttribute('value'), expectedValue);
+  }
+
+  async assertUserRejectedRequest() {
+    await this.driver.waitForSelector(this.userRejectedRequestMessage);
   }
 }
 export default TestDapp;
