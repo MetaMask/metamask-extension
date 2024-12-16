@@ -1,59 +1,80 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { Provider } from 'react-redux';
+import { render, fireEvent } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
-import mockState from '../../../../../../test/data/mock-state.json';
 import { SiteCell } from './site-cell';
 
 describe('SiteCell', () => {
   const store = configureStore({
     metamask: {
-      ...mockState.metamask,
+      useBlockie: false,
     },
   });
-
-  const defaultProps = {
-    nonTestNetworks: [],
-    testNetworks: [],
-    accounts: [],
-    onSelectAccountAddresses: jest.fn(),
-    onSelectChainIds: jest.fn(),
-    selectedAccountAddresses: [],
-    selectedChainIds: [],
-  };
 
   describe('toast handling', () => {
     it('should call hideAllToasts when edit accounts is clicked', () => {
       const hideAllToasts = jest.fn();
-      const { getByTestId } = renderWithProvider(
-        <SiteCell {...defaultProps} hideAllToasts={hideAllToasts} />,
-        store,
+      const { getAllByTestId } = render(
+        <Provider store={store}>
+          <SiteCell
+            nonTestNetworks={[]}
+            testNetworks={[]}
+            accounts={[]}
+            onSelectAccountAddresses={() => undefined}
+            onSelectChainIds={() => undefined}
+            selectedAccountAddresses={[]}
+            selectedChainIds={[]}
+            hideAllToasts={hideAllToasts}
+          />
+        </Provider>,
       );
 
-      fireEvent.click(getByTestId('edit-accounts'));
+      const editButtons = getAllByTestId('edit');
+      fireEvent.click(editButtons[0]);
       expect(hideAllToasts).toHaveBeenCalled();
     });
 
     it('should call hideAllToasts when edit networks is clicked', () => {
       const hideAllToasts = jest.fn();
-      const { getByTestId } = renderWithProvider(
-        <SiteCell {...defaultProps} hideAllToasts={hideAllToasts} />,
-        store,
+      const { getAllByTestId } = render(
+        <Provider store={store}>
+          <SiteCell
+            nonTestNetworks={[]}
+            testNetworks={[]}
+            accounts={[]}
+            onSelectAccountAddresses={() => undefined}
+            onSelectChainIds={() => undefined}
+            selectedAccountAddresses={[]}
+            selectedChainIds={[]}
+            hideAllToasts={hideAllToasts}
+          />
+        </Provider>,
       );
 
-      fireEvent.click(getByTestId('edit-networks'));
+      const editButtons = getAllByTestId('edit');
+      fireEvent.click(editButtons[1]);
       expect(hideAllToasts).toHaveBeenCalled();
     });
 
     it('should not throw if hideAllToasts is not provided', () => {
-      const { getByTestId } = renderWithProvider(
-        <SiteCell {...defaultProps} />,
-        store,
+      const { getAllByTestId } = render(
+        <Provider store={store}>
+          <SiteCell
+            nonTestNetworks={[]}
+            testNetworks={[]}
+            accounts={[]}
+            onSelectAccountAddresses={() => undefined}
+            onSelectChainIds={() => undefined}
+            selectedAccountAddresses={[]}
+            selectedChainIds={[]}
+          />
+        </Provider>,
       );
 
       expect(() => {
-        fireEvent.click(getByTestId('edit-accounts'));
-        fireEvent.click(getByTestId('edit-networks'));
+        const editButtons = getAllByTestId('edit');
+        fireEvent.click(editButtons[0]);
+        fireEvent.click(editButtons[1]);
       }).not.toThrow();
     });
   });

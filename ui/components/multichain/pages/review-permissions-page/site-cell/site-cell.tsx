@@ -38,7 +38,7 @@ type SiteCellProps = {
   selectedAccountAddresses: string[];
   selectedChainIds: string[];
   isConnectFlow?: boolean;
-  hideAllToasts: () => void;
+  hideAllToasts?: () => void;
 };
 
 export const SiteCell: React.FC<SiteCellProps> = ({
