@@ -9,7 +9,7 @@ type VersionedData = {
 export const version = 135;
 
 /**
- * Removes tokens with `decimals === null` from `allTokens`, `allIgnoredTokens`, and `allDetectedTokens`.
+ * Removes tokens with `decimals === null` from `allTokens`, `allIgnoredTokens`, `allDetectedTokens`, `tokens`, and `detectedTokens`.
  * Captures exceptions for invalid states using Sentry and logs tokens with `decimals === null`.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
@@ -77,6 +77,63 @@ function transformState(state: Record<string, unknown>): void {
       );
     }
   }
+
+  // Transform `tokens` array
+  if (
+    hasProperty(tokensControllerState, 'tokens') &&
+    Array.isArray(tokensControllerState.tokens)
+  ) {
+    tokensControllerState.tokens = tokensControllerState.tokens.filter(
+      (token) => {
+        if (
+          isObject(token) &&
+          hasProperty(token, 'decimals') &&
+          token.decimals === null &&
+          hasProperty(token, 'address')
+        ) {
+          global.sentry?.captureMessage(
+            `Migration ${version}: Removed token with decimals === null in tokens. Address: ${token.address}`,
+          );
+          return false;
+        }
+        return true;
+      },
+    );
+  } else if (hasProperty(tokensControllerState, 'tokens')) {
+    global.sentry?.captureException(
+      new Error(
+        `Migration ${version}: Invalid tokens state of type '${typeof tokensControllerState.tokens}'`,
+      ),
+    );
+  }
+
+  // Transform `detectedTokens` array
+  if (
+    hasProperty(tokensControllerState, 'detectedTokens') &&
+    Array.isArray(tokensControllerState.detectedTokens)
+  ) {
+    tokensControllerState.detectedTokens =
+      tokensControllerState.detectedTokens.filter((token) => {
+        if (
+          isObject(token) &&
+          hasProperty(token, 'decimals') &&
+          token.decimals === null &&
+          hasProperty(token, 'address')
+        ) {
+          global.sentry?.captureMessage(
+            `Migration ${version}: Removed token with decimals === null in detectedTokens. Address: ${token.address}`,
+          );
+          return false;
+        }
+        return true;
+      });
+  } else if (hasProperty(tokensControllerState, 'detectedTokens')) {
+    global.sentry?.captureException(
+      new Error(
+        `Migration ${version}: Invalid detectedTokens state of type '${typeof tokensControllerState.detectedTokens}'`,
+      ),
+    );
+  }
 }
 
 /**
@@ -106,11 +163,10 @@ function transformTokenCollection(
               token.decimals === null &&
               hasProperty(token, 'address')
             ) {
-              // Log the token's address and then exclude it
               global.sentry?.captureMessage(
                 `Migration ${version}: Removed token with decimals === null in ${propertyName}. Address: ${token.address}`,
               );
-              return false; // Exclude this token
+              return false; // Exclude token
             }
             return (
               isObject(token) &&

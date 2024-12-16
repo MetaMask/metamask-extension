@@ -1,6 +1,5 @@
 import { cloneDeep } from 'lodash';
 import { migrate, version } from './135';
-import { Hex } from '@metamask/utils';
 import { TokensControllerState } from '@metamask/assets-controllers';
 
 const sentryCaptureExceptionMock = jest.fn();
@@ -11,7 +10,7 @@ global.sentry = {
   captureMessage: sentryCaptureMessageMock,
 };
 
-const oldVersion = 133;
+const oldVersion = 134;
 
 const mockStateWithNullDecimals = {
   meta: { version: oldVersion },
@@ -33,6 +32,14 @@ const mockStateWithNullDecimals = {
           ],
         },
       },
+      tokens: [
+        { address: '0x7', symbol: 'TOKEN7', decimals: null },
+        { address: '0x8', symbol: 'TOKEN8', decimals: 18 },
+      ],
+      detectedTokens: [
+        { address: '0x9', symbol: 'TOKEN9', decimals: null },
+        { address: '0xA', symbol: 'TOKEN10', decimals: 6 },
+      ],
     },
   },
 };
@@ -80,6 +87,54 @@ describe(`migration #${version}`, () => {
     });
   });
 
+  it('removes tokens with null decimals from tokens array', async () => {
+    const oldStorage = cloneDeep(mockStateWithNullDecimals);
+
+    const newStorage = await migrate(oldStorage);
+
+    const tokensControllerState = newStorage.data
+      .TokensController as TokensControllerState;
+    const tokens = tokensControllerState.tokens;
+
+    expect(tokens).toEqual([
+      { address: '0x8', symbol: 'TOKEN8', decimals: 18 },
+    ]);
+  });
+
+  it('removes tokens with null decimals from detectedTokens array', async () => {
+    const oldStorage = cloneDeep(mockStateWithNullDecimals);
+
+    const newStorage = await migrate(oldStorage);
+
+    const tokensControllerState = newStorage.data
+      .TokensController as TokensControllerState;
+    const detectedTokens = tokensControllerState.detectedTokens;
+
+    expect(detectedTokens).toEqual([
+      { address: '0xA', symbol: 'TOKEN10', decimals: 6 },
+    ]);
+  });
+
+  it('logs tokens with null decimals before removing them', async () => {
+    const oldStorage = cloneDeep(mockStateWithNullDecimals);
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureMessageMock).toHaveBeenCalledTimes(4);
+    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+      `Migration ${version}: Removed token with decimals === null in allTokens. Address: 0x1`,
+    );
+    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+      `Migration ${version}: Removed token with decimals === null in allDetectedTokens. Address: 0x5`,
+    );
+    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+      `Migration ${version}: Removed token with decimals === null in tokens. Address: 0x7`,
+    );
+    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+      `Migration ${version}: Removed token with decimals === null in detectedTokens. Address: 0x9`,
+    );
+  });
+
   it('does nothing if all tokens have valid decimals', async () => {
     const validState = {
       meta: { version: oldVersion },
@@ -90,16 +145,13 @@ describe(`migration #${version}`, () => {
               '0x123': [{ address: '0x2', symbol: 'TOKEN2', decimals: 18 }],
             },
           },
-          allIgnoredTokens: {
-            '0x1': {
-              '0x123': [{ address: '0x4', symbol: 'TOKEN4', decimals: 8 }],
-            },
-          },
           allDetectedTokens: {
             '0x1': {
               '0x123': [{ address: '0x6', symbol: 'TOKEN6', decimals: 6 }],
             },
           },
+          tokens: [{ address: '0x8', symbol: 'TOKEN8', decimals: 18 }],
+          detectedTokens: [{ address: '0xA', symbol: 'TOKEN10', decimals: 6 }],
         },
       },
     };
@@ -133,6 +185,16 @@ describe(`migration #${version}`, () => {
       errorMessage: `Migration ${version}: Invalid allDetectedTokens state of type 'string'`,
       label: 'Invalid allDetectedTokens',
       state: { TokensController: { allDetectedTokens: 'invalid' } },
+    },
+    {
+      errorMessage: `Migration ${version}: Invalid tokens state of type 'string'`,
+      label: 'Invalid tokens',
+      state: { TokensController: { tokens: 'invalid' } },
+    },
+    {
+      errorMessage: `Migration ${version}: Invalid detectedTokens state of type 'string'`,
+      label: 'Invalid detectedTokens',
+      state: { TokensController: { detectedTokens: 'invalid' } },
     },
   ];
 
