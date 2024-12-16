@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { By } from 'selenium-webdriver';
 import {
   DAPP_URL,
   largeDelayMs,
@@ -8,12 +9,11 @@ import {
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { By } from 'selenium-webdriver';
 
 import FixtureBuilder from '../../fixture-builder';
 
-describe('Multichain Connect', function () {
-  it('should connect to the multichain test dapp', async function () {
+describe('Multichain API', function () {
+  it('should connect the wallet to the multichain test dapp via `externally_connectable` and successfully create a session with the requested chains', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -28,9 +28,7 @@ describe('Multichain Connect', function () {
           ),
         ],
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
           .withPopularNetworks()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         title: this.test?.fullTitle(),
       },
