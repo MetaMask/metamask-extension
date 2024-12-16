@@ -133,13 +133,25 @@ const TokenButtons = ({
             networkClientId: networkConfigurationId,
           }),
         );
+        return {
+          error: false,
+          message: `Successfully switched chains. Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.`,
+        };
       } catch (err) {
-        console.error(`Failed to switch chains.
+        return {
+          error: true,
+          message: `Failed to switch chains.
         Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
-        ${err}`);
-        throw err;
+        ${err}`,
+        };
       }
     }
+
+    // Add this explicit return for when no switching is needed
+    return {
+      error: false,
+      message: `No chain switch required. Current chainId: ${currentChainId} matches target chainId: ${token.chainId}.`,
+    };
   };
 
   return (
@@ -240,14 +252,16 @@ const TokenButtons = ({
             { excludeMetaMetricsId: false },
           );
           try {
-            await setCorrectChain();
-            await dispatch(
-              startNewDraftTransaction({
-                type: AssetType.token,
-                details: token,
-              }),
-            );
-            history.push(SEND_ROUTE);
+            const switchToCorrectChain = await setCorrectChain();
+            if (!switchToCorrectChain.error) {
+              await dispatch(
+                startNewDraftTransaction({
+                  type: AssetType.token,
+                  details: token,
+                }),
+              );
+              history.push(SEND_ROUTE);
+            }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (err: any) {
             if (!err.message.includes(INVALID_ASSET_TYPE)) {

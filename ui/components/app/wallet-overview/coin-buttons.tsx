@@ -339,13 +339,25 @@ const CoinButtons = ({
             networkClientId: networkConfigurationId,
           }),
         );
+        return {
+          error: false,
+          message: `Successfully switched chains. Target chainId: ${chainId}, Current chainId: ${currentChainId}.`,
+        };
       } catch (err) {
-        console.error(`Failed to switch chains.
+        return {
+          error: true,
+          message: `Failed to switch chains.
         Target chainId: ${chainId}, Current chainId: ${currentChainId}.
-        ${err}`);
-        throw err;
+        ${err}`,
+        };
       }
     }
+
+    // Add this explicit return for when no switching is needed
+    return {
+      error: false,
+      message: `No chain switch required. Current chainId: ${currentChainId} matches target chainId: ${chainId}.`,
+    };
   }, [currentChainId, chainId, networks, dispatch]);
 
   const handleSendOnClick = useCallback(async () => {
@@ -398,41 +410,45 @@ const CoinButtons = ({
     ///: END:ONLY_INCLUDE_IF
 
     // Native Send flow
-    await setCorrectChain();
-    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    history.push(SEND_ROUTE);
+    const switchToCorrectChain = await setCorrectChain();
+    if (!switchToCorrectChain.error) {
+      await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+      history.push(SEND_ROUTE);
+    }
   }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
-    await setCorrectChain();
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    global.platform.openTab({
-      url: `${mmiPortfolioUrl}/swap`,
-    });
-    ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    if (isSwapsChain) {
-      trackEvent({
-        event: MetaMetricsEventName.NavSwapButtonClicked,
-        category: MetaMetricsEventCategory.Swaps,
-        properties: {
-          token_symbol: 'ETH',
-          location: MetaMetricsSwapsEventSource.MainView,
-          text: 'Swap',
-          chain_id: chainId,
-        },
+    const switchToCorrectChain = await setCorrectChain();
+    if (!switchToCorrectChain.error) {
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      global.platform.openTab({
+        url: `${mmiPortfolioUrl}/swap`,
       });
-      dispatch(setSwapsFromToken(defaultSwapsToken));
-      if (usingHardwareWallet) {
-        if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      if (isSwapsChain) {
+        trackEvent({
+          event: MetaMetricsEventName.NavSwapButtonClicked,
+          category: MetaMetricsEventCategory.Swaps,
+          properties: {
+            token_symbol: 'ETH',
+            location: MetaMetricsSwapsEventSource.MainView,
+            text: 'Swap',
+            chain_id: chainId,
+          },
+        });
+        dispatch(setSwapsFromToken(defaultSwapsToken));
+        if (usingHardwareWallet) {
+          if (global.platform.openExtensionInBrowser) {
+            global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
+          }
+        } else {
+          history.push(PREPARE_SWAP_ROUTE);
         }
-      } else {
-        history.push(PREPARE_SWAP_ROUTE);
       }
+      ///: END:ONLY_INCLUDE_IF
     }
-    ///: END:ONLY_INCLUDE_IF
   }, [
     setCorrectChain,
     isSwapsChain,
