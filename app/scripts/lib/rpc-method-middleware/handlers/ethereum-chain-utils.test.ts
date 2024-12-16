@@ -103,7 +103,7 @@ describe('Ethereum Chain Utils', () => {
 
         expect(
           mocks.requestPermittedChainsPermissionForOrigin,
-        ).toHaveBeenCalledWith('0x1', false);
+        ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
       });
 
       it('switches to the chain', async () => {
@@ -144,7 +144,7 @@ describe('Ethereum Chain Utils', () => {
 
         expect(
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
-        ).toHaveBeenCalledWith('0x1', true);
+        ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: true });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
       });
 
@@ -162,7 +162,7 @@ describe('Ethereum Chain Utils', () => {
 
         expect(
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
-        ).toHaveBeenCalledWith('0x1', false);
+        ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith('mainnet');
       });
 
@@ -209,7 +209,7 @@ describe('Ethereum Chain Utils', () => {
 
         expect(
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
-        ).toHaveBeenCalledWith('0x1', false);
+        ).toHaveBeenCalledWith({ chainId: '0x1', autoApprove: false });
       });
 
       it('does not switch the active network', async () => {

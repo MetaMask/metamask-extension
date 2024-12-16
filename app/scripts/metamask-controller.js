@@ -5397,11 +5397,12 @@ export default class MetamaskController extends EventEmitter {
    * requests where the addition of the network and the permitting
    * of the chain are combined into one approval.
    *
-   * @param {string} origin - The origin to request approval for.
-   * @param {Hex} chainId - The chainId to add incrementally.
-   * @param {boolean} autoApprove - If the chain should be granted without prompting for user approval.
+   * @param {object} options - The options object
+   * @param {string} options.origin - The origin to request approval for.
+   * @param {Hex} options.chainId - The chainId to permit.
+   * @param {boolean} options.autoApprove - If the chain should be granted without prompting for user approval.
    */
-  async requestPermittedChainsPermission(origin, chainId, autoApprove) {
+  async requestPermittedChainsPermission({ origin, chainId, autoApprove }) {
     if (isSnapId(origin)) {
       throw new Error(
         `cannot request permittedChains permission for snaps with origin "${origin}"`,
@@ -5442,15 +5443,16 @@ export default class MetamaskController extends EventEmitter {
    * requests where the addition of the network and the permitting
    * of the chain are combined into one approval.
    *
-   * @param {string} origin - The origin to request approval for.
-   * @param {Hex} chainId - The chainId to add incrementally.
-   * @param {boolean} autoApprove - If the chain should be granted without prompting for user approval.
+   * @param {object} options - The options object
+   * @param {string} options.origin - The origin to request approval for.
+   * @param {Hex} options.chainId - The chainId to add to the existing permittedChains.
+   * @param {boolean} options.autoApprove - If the chain should be granted without prompting for user approval.
    */
-  async requestPermittedChainsPermissionIncremental(
+  async requestPermittedChainsPermissionIncremental({
     origin,
     chainId,
     autoApprove,
-  ) {
+  }) {
     if (isSnapId(origin)) {
       throw new Error(
         `cannot request permittedChains permission for snaps with origin "${origin}"`,
@@ -6351,10 +6353,16 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        requestPermittedChainsPermissionForOrigin:
-          this.requestPermittedChainsPermission.bind(this, origin),
-        requestPermittedChainsPermissionIncrementalForOrigin:
-          this.requestPermittedChainsPermissionIncremental.bind(this, origin),
+        requestPermittedChainsPermissionForOrigin: (options) =>
+          this.requestPermittedChainsPermission({
+            ...options,
+            origin,
+          }),
+        requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
+          this.requestPermittedChainsPermissionIncremental({
+            ...options,
+            origin,
+          }),
         requestPermissionsForOrigin: (requestedPermissions) =>
           this.permissionController.requestPermissions(
             { origin },

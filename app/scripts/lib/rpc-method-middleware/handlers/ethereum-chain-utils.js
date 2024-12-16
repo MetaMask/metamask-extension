@@ -202,13 +202,16 @@ export async function switchChain(
       const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
       if (!ethChainIds.includes(chainId)) {
-        await requestPermittedChainsPermissionIncrementalForOrigin(
+        await requestPermittedChainsPermissionIncrementalForOrigin({
           chainId,
-          isAddFlow,
-        );
+          autoApprove: isAddFlow,
+        });
       }
     } else {
-      await requestPermittedChainsPermissionForOrigin(chainId, isAddFlow);
+      await requestPermittedChainsPermissionForOrigin({
+        chainId,
+        autoApprove: isAddFlow,
+      });
     }
 
     await setActiveNetwork(networkClientId);

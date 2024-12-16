@@ -1549,10 +1549,10 @@ describe('MetaMaskController', () => {
     describe('requestPermittedChainsPermission', () => {
       it('throws if the origin is snapId', async () => {
         await expect(() =>
-          metamaskController.requestPermittedChainsPermission(
-            'npm:snap',
-            '0x1',
-          ),
+          metamaskController.requestPermittedChainsPermission({
+            origin: 'npm:snap',
+            chainId: '0x1',
+          }),
         ).rejects.toThrow(
           new Error(
             'cannot request permittedChains permission for snaps with origin "npm:snap"',
@@ -1568,11 +1568,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.permissionController, 'grantPermissions')
           .mockReturnValue();
 
-        await metamaskController.requestPermittedChainsPermission(
-          'test.com',
-          '0x1',
-          false,
-        );
+        await metamaskController.requestPermittedChainsPermission({
+          origin: 'test.com',
+          chainId: '0x1',
+          autoApprove: false,
+        });
 
         expect(
           metamaskController.requestApprovalPermittedChainsPermission,
@@ -1585,11 +1585,11 @@ describe('MetaMaskController', () => {
           .mockRejectedValue(new Error('approval rejected'));
 
         await expect(() =>
-          metamaskController.requestPermittedChainsPermission(
-            'test.com',
-            '0x1',
-            false,
-          ),
+          metamaskController.requestPermittedChainsPermission({
+            origin: 'test.com',
+            chainId: '0x1',
+            autoApprove: false,
+          }),
         ).rejects.toThrow(new Error('approval rejected'));
       });
 
@@ -1601,11 +1601,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.permissionController, 'grantPermissions')
           .mockReturnValue();
 
-        await metamaskController.requestPermittedChainsPermission(
-          'test.com',
-          '0x1',
-          true,
-        );
+        await metamaskController.requestPermittedChainsPermission({
+          origin: 'test.com',
+          chainId: '0x1',
+          autoApprove: true,
+        });
 
         expect(
           metamaskController.requestApprovalPermittedChainsPermission,
@@ -1620,10 +1620,10 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.permissionController, 'grantPermissions')
           .mockReturnValue();
 
-        await metamaskController.requestPermittedChainsPermission(
-          'test.com',
-          '0x1',
-        );
+        await metamaskController.requestPermittedChainsPermission({
+          origin: 'test.com',
+          chainId: '0x1',
+        });
 
         expect(
           metamaskController.permissionController.grantPermissions,
@@ -1661,10 +1661,10 @@ describe('MetaMaskController', () => {
           });
 
         await expect(() =>
-          metamaskController.requestPermittedChainsPermission(
-            'test.com',
-            '0x1',
-          ),
+          metamaskController.requestPermittedChainsPermission({
+            origin: 'test.com',
+            chainId: '0x1',
+          }),
         ).rejects.toThrow(new Error('grant failed'));
       });
     });
@@ -1672,10 +1672,10 @@ describe('MetaMaskController', () => {
     describe('requestPermittedChainsPermissionIncremental', () => {
       it('throws if the origin is snapId', async () => {
         await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental(
-            'npm:snap',
-            '0x1',
-          ),
+          metamaskController.requestPermittedChainsPermissionIncremental({
+            origin: 'npm:snap',
+            chainId: '0x1',
+          }),
         ).rejects.toThrow(
           new Error(
             'cannot request permittedChains permission for snaps with origin "npm:snap"',
@@ -1700,10 +1700,10 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.permissionController, 'updateCaveat')
           .mockReturnValue();
 
-        await metamaskController.requestPermittedChainsPermissionIncremental(
-          'test.com',
-          '0x1',
-        );
+        await metamaskController.requestPermittedChainsPermissionIncremental({
+          origin: 'test.com',
+          chainId: '0x1',
+        });
 
         expect(
           metamaskController.permissionController.getCaveat,
@@ -1731,11 +1731,11 @@ describe('MetaMaskController', () => {
           });
 
         await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental(
-            'test.com',
-            '0x1',
-            false,
-          ),
+          metamaskController.requestPermittedChainsPermissionIncremental({
+            origin: 'test.com',
+            chainId: '0x1',
+            autoApprove: false,
+          }),
         ).rejects.toThrow(new Error('no caveat found'));
       });
 
@@ -1756,11 +1756,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.permissionController, 'updateCaveat')
           .mockReturnValue();
 
-        await metamaskController.requestPermittedChainsPermissionIncremental(
-          'test.com',
-          '0x1',
-          false,
-        );
+        await metamaskController.requestPermittedChainsPermissionIncremental({
+          origin: 'test.com',
+          chainId: '0x1',
+          autoApprove: false,
+        });
 
         expect(
           metamaskController.requestApprovalPermittedChainsPermission,
@@ -1782,11 +1782,11 @@ describe('MetaMaskController', () => {
           .mockRejectedValue(new Error('approval rejected'));
 
         await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental(
-            'test.com',
-            '0x1',
-            false,
-          ),
+          metamaskController.requestPermittedChainsPermissionIncremental({
+            origin: 'test.com',
+            chainId: '0x1',
+            autoApprove: false,
+          }),
         ).rejects.toThrow(new Error('approval rejected'));
       });
 
@@ -1807,11 +1807,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.permissionController, 'updateCaveat')
           .mockReturnValue();
 
-        await metamaskController.requestPermittedChainsPermissionIncremental(
-          'test.com',
-          '0x1',
-          true,
-        );
+        await metamaskController.requestPermittedChainsPermissionIncremental({
+          origin: 'test.com',
+          chainId: '0x1',
+          autoApprove: true,
+        });
 
         expect(
           metamaskController.requestApprovalPermittedChainsPermission,
@@ -1839,10 +1839,10 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.permissionController, 'updateCaveat')
           .mockReturnValue();
 
-        await metamaskController.requestPermittedChainsPermissionIncremental(
-          'test.com',
-          '0x1',
-        );
+        await metamaskController.requestPermittedChainsPermissionIncremental({
+          origin: 'test.com',
+          chainId: '0x1',
+        });
 
         expect(
           metamaskController.permissionController.updateCaveat,
@@ -1885,10 +1885,10 @@ describe('MetaMaskController', () => {
           });
 
         await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental(
-            'test.com',
-            '0x1',
-          ),
+          metamaskController.requestPermittedChainsPermissionIncremental({
+            origin: 'test.com',
+            chainId: '0x1',
+          }),
         ).rejects.toThrow(new Error('grant failed'));
       });
     });
