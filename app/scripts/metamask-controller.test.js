@@ -1560,7 +1560,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests permittedChains approval if autoApprove: false', async () => {
+      it('requests approval for permittedChains permissions from the ApprovalController if autoApprove: false', async () => {
         jest
           .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
           .mockResolvedValue();
