@@ -99,8 +99,7 @@ async function requestPermissionsImplementation(
   delete requestedPermissions[RestrictedMethods.eth_accounts];
   delete requestedPermissions[PermissionNames.permittedChains];
 
-  const hasExpectedPermissions =
-    Object.keys(requestedPermissions).length > 0;
+  const hasExpectedPermissions = Object.keys(requestedPermissions).length > 0;
   const hasUnexpectedRequestedPermissions =
     Object.keys(legacyRequestedPermissions).length > 0;
 
