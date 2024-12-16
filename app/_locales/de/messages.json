@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Wir können mit dieser Transaktion nicht fortfahren, bis Sie die Gebühr manuell aktualisieren."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Diese Transaktion wird erst dann durchgeführt, wenn eine vorherige Transaktion abgeschlossen ist. Erfahren Sie, wie Sie eine Transaktion abbrechen oder beschleunigen können."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Die Website, die die Anfrage stellt, ist nicht die Website, bei der Sie sich anmelden. Dies könnte ein Versuch sein, Ihre Anmeldedaten zu stehlen."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Diese Seite fordert Sie auf, sich mit dem falschen Konto anzumelden."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Diese Transaktion wird erst durchgeführt, wenn Ihre vorherige Transaktion abgeschlossen ist."
   },
   "alertModalAcknowledge": {
     "message": "Ich habe das Risiko erkannt und möchte trotzdem fortfahren"
@@ -4107,12 +4101,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "Hier können Sie die Genehmigungen sehen, die Sie installierten Snaps oder verbundenen Websites gegeben haben."
-  },
-  "permissionsPageTourDescription": {
-    "message": "Dies ist Ihr Kontrollfeld zum Verwalten der Genehmigungen für verbundene Websites und installierte Snaps."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Verbundene Websites sind nun Genehmigungen"
   },
   "permitSimulationDetailInfo": {
     "message": "Sie erteilen dem Spender die Genehmigung, diese Menge an Tokens von Ihrem Konto auszugeben."
