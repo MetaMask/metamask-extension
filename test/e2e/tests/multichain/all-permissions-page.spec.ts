@@ -18,7 +18,7 @@ describe('Permissions Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.connectAccount(DEFAULT_FIXTURE_ACCOUNT);
