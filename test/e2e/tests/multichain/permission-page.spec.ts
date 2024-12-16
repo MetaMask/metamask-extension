@@ -4,7 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Permissions Page', function () {
   it('should redirect users to connections page when users click on connected permission', async function () {

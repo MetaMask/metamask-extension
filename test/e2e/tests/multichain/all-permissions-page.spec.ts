@@ -7,7 +7,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Permissions Page', function () {
   it('should show connected site permissions when a single dapp is connected', async function () {
