@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import { NameType } from '@metamask/name-controller';
+import { toUnicode } from 'punycode';
 import Tooltip from '../tooltip';
 import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -129,11 +130,13 @@ export function RecipientWithAddress({
     );
   }
 
+  const normalizedEnsRecipientName = toUnicode(recipientEns);
+
   const displayName =
     (recipientName ||
       recipientNickname ||
       recipientMetadataName ||
-      recipientEns ||
+      normalizedEnsRecipientName ||
       shortenAddress(checksummedRecipientAddress)) ??
     (!addressOnly && t('newContract'));
 
