@@ -94,7 +94,6 @@ class BitcoinHomepage extends HomePage {
     return true;
   }
 
-
   /**
    * Checks if the swap button is enabled on bitcoin account homepage.
    */
