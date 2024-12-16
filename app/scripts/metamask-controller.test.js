@@ -1414,7 +1414,7 @@ describe('MetaMaskController', () => {
         });
       });
 
-      it('grants the CAIP-25 permission approved accounts for the `wallet:eip155` scope with isMultichainOrigin: false if origin is snapId', async () => {
+      it('grants the CAIP-25 permission approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
         jest
           .spyOn(
             metamaskController.approvalController,
@@ -1560,7 +1560,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('requests permittedChains approval if autoApprove: false', async () => {
+      it('requests approval for permittedChains permissions from the ApprovalController if autoApprove: false', async () => {
         jest
           .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
           .mockResolvedValue();
@@ -1593,7 +1593,7 @@ describe('MetaMaskController', () => {
         ).rejects.toThrow(new Error('approval rejected'));
       });
 
-      it('does not request permittedChains approval if autoApprove: true', async () => {
+      it('does not request approval for permittedChains permissions from the ApprovalController if autoApprove: true', async () => {
         jest
           .spyOn(metamaskController, 'requestApprovalPermittedChainsPermission')
           .mockResolvedValue();

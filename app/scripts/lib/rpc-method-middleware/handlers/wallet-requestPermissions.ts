@@ -99,16 +99,16 @@ async function requestPermissionsImplementation(
   delete requestedPermissions[RestrictedMethods.eth_accounts];
   delete requestedPermissions[PermissionNames.permittedChains];
 
-  const haveUnexpectedPermissions =
+  const hasUnexpectedPermissions =
     Object.keys(requestedPermissions).length > 0;
-  const haveLegacyRequestedPermissions =
+  const hasExpectedRequestedPermissions =
     Object.keys(legacyRequestedPermissions).length > 0;
 
   let caip25Endowment;
   let caip25CaveatValue;
   try {
     if (haveUnexpectedPermissions || !haveLegacyRequestedPermissions) {
-      // This will throw. We making this call purposely to get a proper error
+      // This will throw. We are making this call purposely to get a proper error
       await requestPermissionsForOrigin(requestedPermissions);
     }
 
@@ -130,7 +130,7 @@ async function requestPermissionsImplementation(
 
   const grantedPermissions: GrantedPermissions = {};
 
-  // We cannot derive ethAccounts directly from the CAIP-25 permission
+  // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
   // because the accounts will not be in order of lastSelected
   const ethAccounts = getAccounts();
 
