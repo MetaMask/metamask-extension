@@ -154,7 +154,7 @@ export const BridgeInputGroup = ({
         <AssetPicker
           header={header}
           visibleTabs={[TabName.TOKENS]}
-          asset={token ?? undefined}
+          asset={(token as never) ?? undefined}
           onAssetChange={onAssetChange}
           networkProps={networkProps}
           customTokenListGenerator={customTokenListGenerator}
@@ -178,7 +178,7 @@ export const BridgeInputGroup = ({
               <BridgeAssetPickerButton
                 onClick={onClickHandler}
                 networkImageSrc={networkImageSrc}
-                asset={token ?? undefined}
+                asset={(token as never) ?? undefined}
                 networkProps={networkProps}
               />
             )
