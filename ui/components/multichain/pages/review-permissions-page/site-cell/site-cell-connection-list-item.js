@@ -30,6 +30,7 @@ export const SiteCellConnectionListItem = ({
   content,
   paddingTopValue,
   paddingBottomValue,
+  editButtonTestId,
 }) => {
   const t = useI18nContext();
 
@@ -80,55 +81,24 @@ export const SiteCellConnectionListItem = ({
           {content}
         </Box>
       </Box>
-      <ButtonLink onClick={() => onClick()} data-testid="edit">
+      <ButtonLink
+        onClick={() => onClick()}
+        data-testid={editButtonTestId || 'edit'}
+      >
         {t('edit')}
       </ButtonLink>
     </Box>
   );
 };
 SiteCellConnectionListItem.propTypes = {
-  /**
-   * Title that should be displayed in the connection list item
-   */
   title: PropTypes.string,
-
-  /**
-   * The name of the icon that should be passed to the AvatarIcon component
-   */
   iconName: PropTypes.string,
-
-  /**
-   * The message that should be displayed when there are connected accounts
-   */
   connectedMessage: PropTypes.string,
-
-  /**
-   * Padding Top Value to keep the padding between list items same
-   */
   paddingTopValue: PropTypes.number,
-
-  /**
-   * Padding Bottom Value to keep the padding between list items same
-   */
   paddingBottomValue: PropTypes.number,
-
-  /**
-   * The message that should be displayed when there are no connected accounts
-   */
   unconnectedMessage: PropTypes.string,
-
-  /**
-   * If the component should show context related to adding a connection or editing one
-   */
   isConnectFlow: PropTypes.bool,
-
-  /**
-   * Handler called when the edit button is clicked
-   */
   onClick: PropTypes.func,
-
-  /**
-   * Components to display in the connection list item
-   */
   content: PropTypes.node,
+  editButtonTestId: PropTypes.string,
 };

@@ -175,6 +175,11 @@ export const ReviewPermissions = () => {
     setShowAccountToast(true);
   };
 
+  const hideAllToasts = () => {
+    setShowAccountToast(false);
+    setShowNetworkToast(false);
+  };
+
   return (
     <Page
       data-testid="connections-page"
@@ -195,6 +200,7 @@ export const ReviewPermissions = () => {
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
+              hideAllToasts={hideAllToasts}
             />
           ) : (
             <NoConnectionContent />
