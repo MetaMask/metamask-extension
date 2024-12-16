@@ -114,7 +114,7 @@ exports[`ConnectPage should render correctly 1`] = `
             </div>
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-              data-testid="edit-accounts"
+              data-testid="edit"
             >
               Edit
             </button>
@@ -193,7 +193,7 @@ exports[`ConnectPage should render correctly 1`] = `
             </div>
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-              data-testid="edit-networks"
+              data-testid="edit"
             >
               Edit
             </button>
@@ -364,7 +364,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
             </div>
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-              data-testid="edit-accounts"
+              data-testid="edit"
             >
               Edit
             </button>
@@ -433,7 +433,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
             </div>
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-              data-testid="edit-networks"
+              data-testid="edit"
             >
               Edit
             </button>

@@ -30,7 +30,6 @@ export const SiteCellConnectionListItem = ({
   content,
   paddingTopValue,
   paddingBottomValue,
-  editButtonTestId,
 }) => {
   const t = useI18nContext();
 
