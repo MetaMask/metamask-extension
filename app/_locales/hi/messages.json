@@ -855,14 +855,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "टोकन और रकम का चयन करें"
   },
-  "bridgeTimingTooltipText": {
-    "message": "ब्रिजिंग का काम पूरा होने में यह अनुमानित समय लगेगा।"
-  },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "इसमें गैस शुल्क (क्रिप्टो माइनरों (miners) को भुगतान) और रीलेयर (relayer) शुल्क (ब्रिजिंग जैसी जटिल सेवाओं को मजबूत करने के लिए भुगतान) शामिल हैं।\nशुल्क नेटवर्क ट्रैफ़िक और ट्रांसेक्शन जटिलता पर आधारित हैं। MetaMask को किसी भी शुल्क से लाभ नहीं होता है।"
   },
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
@@ -1982,9 +1976,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "नेटवर्क पर ट्रांसेक्शन को प्रोसेस करने के लिए भुगतान की गई राशि।"
-  },
-  "estimatedTime": {
-    "message": "अनुमानित समय"
   },
   "ethGasPriceFetchWarning": {
     "message": "बैकअप गैस प्राइस दिया गया है क्योंकि मेन गैस एस्टीमेशन सर्विस अभी उपलब्ध नहीं है।"
@@ -6105,9 +6096,6 @@
   },
   "total": {
     "message": "कुलयोग"
-  },
-  "totalFees": {
-    "message": "कुल शुल्क"
   },
   "totalVolume": {
     "message": "टोटल वॉल्यूम"
