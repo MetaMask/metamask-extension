@@ -89,6 +89,7 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     decodedTransferValue,
     displayTransferValue,
     fiatDisplayValue,
+    fiatValue,
     pending: pending || isDecodedTransferValuePending,
   };
 };

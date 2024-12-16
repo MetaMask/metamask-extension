@@ -27,6 +27,7 @@ import {
   getToToken,
   getToTokens,
   getToTopAssets,
+  getWasTxDeclined,
 } from '../../../ducks/bridge/selectors';
 import {
   Box,
@@ -77,6 +78,8 @@ const PrepareBridgePage = () => {
 
   const quoteRequest = useSelector(getQuoteRequest);
   const { activeQuote } = useSelector(getBridgeQuotes);
+
+  const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
@@ -323,7 +326,7 @@ const PrepareBridgePage = () => {
           }}
         />
       </Box>
-      <BridgeQuoteCard />
+      {!wasTxDeclined && <BridgeQuoteCard />}
     </div>
   );
 };

@@ -25,6 +25,7 @@ const {
   resetInputFields,
   setSortOrder,
   setSelectedQuote,
+  setWasTxDeclined,
 } = bridgeSlice.actions;
 
 export {
@@ -37,6 +38,7 @@ export {
   setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,
+  setWasTxDeclined,
 };
 
 const callBridgeControllerMethod = <T>(
