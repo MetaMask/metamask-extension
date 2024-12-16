@@ -61,7 +61,9 @@ const PersonalSignInfo: React.FC = () => {
   }
 
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const messageText = getMessageText(currentConfirmation.msgParams?.data);
+  const messageText = getMessageText(
+    currentConfirmation.msgParams?.data as string,
+  );
 
   let toolTipMessage;
   if (!isSIWE) {
