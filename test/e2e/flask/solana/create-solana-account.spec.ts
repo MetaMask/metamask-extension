@@ -5,16 +5,6 @@ import { ACCOUNT_TYPE } from '../../page-objects/common';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Create/Remove Solana Account', function (this: Suite) {
-  beforeEach(async function () {
-    await withSolanaAccountSnap({ title: 'Setup' }, async (driver) => {
-      // Clear cookies and local storage
-      await driver.driver.manage().deleteAllCookies();
-      await driver.executeScript('window.localStorage.clear();');
-      await driver.executeScript('window.sessionStorage.clear();');
-    });
-  });
-
-  // Teardown hook to run after each test
   it('Creates 2 Solana accounts', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
