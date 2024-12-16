@@ -81,10 +81,7 @@ export const SiteCellConnectionListItem = ({
           {content}
         </Box>
       </Box>
-      <ButtonLink
-        onClick={() => onClick()}
-        data-testid={editButtonTestId || 'edit'}
-      >
+      <ButtonLink onClick={() => onClick()} data-testid="edit">
         {t('edit')}
       </ButtonLink>
     </Box>
