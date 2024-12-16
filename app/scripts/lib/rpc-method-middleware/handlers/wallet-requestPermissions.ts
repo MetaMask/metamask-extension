@@ -108,7 +108,7 @@ async function requestPermissionsImplementation(
   let caip25CaveatValue;
   try {
     if (haveUnexpectedPermissions || !haveLegacyRequestedPermissions) {
-      // This will throw. We making this call purposely to get a proper error
+      // This will throw. We are making this call purposely to get a proper error
       await requestPermissionsForOrigin(requestedPermissions);
     }
 
