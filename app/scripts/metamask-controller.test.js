@@ -1414,7 +1414,7 @@ describe('MetaMaskController', () => {
         });
       });
 
-      it('grants the CAIP-25 permission approved accounts for the `wallet:eip155` scope with isMultichainOrigin: false if origin is snapId', async () => {
+      it('grants the CAIP-25 permission approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
         jest
           .spyOn(
             metamaskController.approvalController,
