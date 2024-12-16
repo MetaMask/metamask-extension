@@ -10,6 +10,7 @@ import {
   AbstractMessageParamsMetamask,
   OriginalRequest,
 } from '@metamask/message-manager';
+import type { EncryptionPublicKeyManagerMessenger } from '@metamask/message-manager';
 import {
   BaseController,
   RestrictedControllerMessenger,
@@ -147,12 +148,10 @@ export default class EncryptionPublicKeyController extends BaseController<
     this._metricsEvent = metricsEvent;
 
     this.hub = new EventEmitter();
-    this._encryptionPublicKeyManager = new EncryptionPublicKeyManager(
-      undefined,
-      undefined,
-      undefined,
-      ['received'],
-    );
+    this._encryptionPublicKeyManager = new EncryptionPublicKeyManager({
+      messenger: messenger as unknown as EncryptionPublicKeyManagerMessenger,
+      additionalFinishStatuses: ['received'],
+    });
 
     this._encryptionPublicKeyManager.hub.on('updateBadge', () => {
       this.hub.emit('updateBadge');
@@ -166,7 +165,7 @@ export default class EncryptionPublicKeyController extends BaseController<
     );
 
     this._subscribeToMessageState(
-      this._encryptionPublicKeyManager,
+      messenger as unknown as EncryptionPublicKeyManagerMessenger,
       (state, newMessages, messageCount) => {
         state.unapprovedEncryptionPublicKeyMsgs = newMessages;
         state.unapprovedEncryptionPublicKeyMsgCount = messageCount;
@@ -313,18 +312,11 @@ export default class EncryptionPublicKeyController extends BaseController<
    * Clears all unapproved messages from memory.
    */
   clearUnapproved() {
-    this._encryptionPublicKeyManager.update({
-      unapprovedMessages: {},
-      unapprovedMessagesCount: 0,
-    });
+    this._encryptionPublicKeyManager.clearUnapprovedMessages();
   }
 
   private _cancelAbstractMessage(
-    messageManager: AbstractMessageManager<
-      AbstractMessage,
-      AbstractMessageParams,
-      AbstractMessageParamsMetamask
-    >,
+    messageManager: EncryptionPublicKeyManager,
     messageId: string,
     reason?: string,
   ) {
@@ -345,27 +337,26 @@ export default class EncryptionPublicKeyController extends BaseController<
   }
 
   private _subscribeToMessageState(
-    messageManager: AbstractMessageManager<
-      AbstractMessage,
-      AbstractMessageParams,
-      AbstractMessageParamsMetamask
-    >,
+    controllerMessenger: EncryptionPublicKeyManagerMessenger,
     updateState: (
       state: EncryptionPublicKeyControllerState,
       newMessages: Record<string, StateMessage>,
       messageCount: number,
     ) => void,
   ) {
-    messageManager.subscribe((state: MessageManagerState<AbstractMessage>) => {
-      const newMessages = this._migrateMessages(
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        state.unapprovedMessages as any,
-      );
-      this.update((draftState) => {
-        updateState(draftState, newMessages, state.unapprovedMessagesCount);
-      });
-    });
+    controllerMessenger.subscribe(
+      'EncryptionPublicKeyManager:stateChange',
+      (state: MessageManagerState<AbstractMessage>) => {
+        const newMessages = this._migrateMessages(
+          // TODO: Replace `any` with type
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          state.unapprovedMessages as any,
+        );
+        this.update((draftState) => {
+          updateState(draftState, newMessages, state.unapprovedMessagesCount);
+        });
+      },
+    );
   }
 
   private _migrateMessages(

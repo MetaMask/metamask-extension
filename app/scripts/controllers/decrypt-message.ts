@@ -2,7 +2,6 @@ import EventEmitter from 'events';
 import log from 'loglevel';
 import {
   AbstractMessage,
-  AbstractMessageManager,
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
   MessageManagerState,
@@ -11,6 +10,7 @@ import {
   DecryptMessageParams,
   DecryptMessageParamsMetamask,
 } from '@metamask/message-manager';
+import type { DecryptMessageManagerMessenger } from '@metamask/message-manager';
 import {
   BaseController,
   RestrictedControllerMessenger,
@@ -168,16 +168,20 @@ export default class DecryptMessageController extends BaseController<
 
     this.hub = new EventEmitter();
 
-    this._decryptMessageManager = new DecryptMessageManager(
-      undefined,
-      undefined,
-      undefined,
-      ['decrypted'],
-    );
+console.log(111111)
+
+    this._decryptMessageManager = new DecryptMessageManager({
+      messenger: messenger as unknown as DecryptMessageManagerMessenger,
+      additionalFinishStatuses: ['decrypted'],
+    });
+
+    console.log(222222)
 
     this._decryptMessageManager.hub.on('updateBadge', () => {
       this.hub.emit('updateBadge');
     });
+
+    console.log(333333)
 
     this._decryptMessageManager.hub.on(
       'unapprovedMessage',
@@ -186,13 +190,17 @@ export default class DecryptMessageController extends BaseController<
       },
     );
 
+    console.log(444444)
+
     this._subscribeToMessageState(
-      this._decryptMessageManager,
+      messenger as unknown as DecryptMessageManagerMessenger,
       (state, newMessages, messageCount) => {
         state.unapprovedDecryptMsgs = newMessages;
         state.unapprovedDecryptMsgCount = messageCount;
       },
     );
+
+    console.log(555555)
   }
 
   /**
@@ -215,10 +223,7 @@ export default class DecryptMessageController extends BaseController<
    * Clears all unapproved messages from memory.
    */
   clearUnapproved() {
-    this._decryptMessageManager.update({
-      unapprovedMessages: {},
-      unapprovedMessagesCount: 0,
-    });
+    this._decryptMessageManager.clearUnapprovedMessages();
   }
 
   /**
@@ -318,7 +323,7 @@ export default class DecryptMessageController extends BaseController<
     Object.keys(this._decryptMessageManager.getUnapprovedMessages()).forEach(
       (messageId) => {
         this._cancelAbstractMessage(
-          this._decryptMessageManager,
+          this._decryptMessageManager as unknown as DecryptMessageManager,
           messageId,
           reason,
         );
@@ -331,11 +336,7 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _cancelAbstractMessage(
-    messageManager: AbstractMessageManager<
-      AbstractMessage,
-      AbstractMessageParams,
-      AbstractMessageParamsMetamask
-    >,
+    messageManager: DecryptMessageManager,
     messageId: string,
     reason?: string,
   ) {
@@ -356,27 +357,26 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _subscribeToMessageState(
-    messageManager: AbstractMessageManager<
-      AbstractMessage,
-      AbstractMessageParams,
-      AbstractMessageParamsMetamask
-    >,
+    controllerMessenger: DecryptMessageManagerMessenger,
     updateState: (
       state: DecryptMessageControllerState,
       newMessages: Record<string, StateMessage>,
       messageCount: number,
     ) => void,
   ) {
-    messageManager.subscribe((state: MessageManagerState<AbstractMessage>) => {
-      const newMessages = this._migrateMessages(
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        state.unapprovedMessages as any,
-      );
-      this.update((draftState) => {
-        updateState(draftState, newMessages, state.unapprovedMessagesCount);
-      });
-    });
+    controllerMessenger.subscribe(
+      'DecryptMessageManager:stateChange',
+      (state: MessageManagerState<AbstractMessage>) => {
+        const newMessages = this._migrateMessages(
+          // TODO: Replace `any` with type
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          state.unapprovedMessages as any,
+        );
+        this.update((draftState) => {
+          updateState(draftState, newMessages, state.unapprovedMessagesCount);
+        });
+      },
+    );
   }
 
   private _migrateMessages(

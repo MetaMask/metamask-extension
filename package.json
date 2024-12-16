@@ -250,7 +250,8 @@
     "secp256k1@npm:^4.0.0": "4.0.4",
     "secp256k1@npm:^4.0.1": "4.0.4",
     "secp256k1@npm:4.0.2": "4.0.4",
-    "secp256k1@npm:4.0.3": "4.0.4"
+    "secp256k1@npm:4.0.3": "4.0.4",
+    "@metamask/message-manager@npm:^11.0.0": "npm:@metamask-previews/message-manager@11.0.3-preview-19e52ec0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
