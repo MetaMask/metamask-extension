@@ -109,15 +109,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
             class="mm-box mm-text mm-text--body-md"
           >
             $2.52
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
             -
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md"
-          >
             $2.52
           </p>
           <span
@@ -273,15 +265,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
             class="mm-box mm-text mm-text--body-md"
           >
             $2.52
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          >
             -
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md"
-          >
             $2.52
           </p>
           <span
