@@ -165,15 +165,17 @@ import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
+  getEthAccounts,
+  getSessionScopes,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   multichainMethodCallValidatorMiddleware,
   MultichainSubscriptionManager,
   MultichainMiddlewareManager,
   walletGetSession,
   walletRevokeSession,
   walletInvokeMethod,
-  getEthAccounts,
   caipPermissionAdapterMiddleware,
-  getSessionScopes,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain';
 import {
   methodsRequiringNetworkSwitch,
@@ -217,7 +219,9 @@ import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   MESSAGE_TYPE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -249,7 +253,9 @@ import {
   getHardwareWalletType,
   getSmartTransactionsPreferenceEnabled,
 } from '../../shared/modules/selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { createCaipStream } from '../../shared/modules/caip-stream';
+///: END:ONLY_INCLUDE_IF
 import { BaseUrl } from '../../shared/constants/urls';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
@@ -310,9 +316,11 @@ import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
-  createMultichainMethodMiddleware,
   createUnsupportedMethodMiddleware,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  createMultichainMethodMiddleware,
   makeMethodMiddlewareMaker,
+  ///: END:ONLY_INCLUDE_IF
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
@@ -341,18 +349,20 @@ import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
 import {
-  getAuthorizedScopesByOrigin,
   getCaveatSpecifications,
-  getChangedAuthorizations,
   diffMap,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
-  getRemovedAuthorizations,
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getRemovedAuthorizations,
+  getChangedAuthorizations,
+  getAuthorizedScopesByOrigin,
+  ///: END:ONLY_INCLUDE_IF
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -394,7 +404,9 @@ import {
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet-createSession';
+///: END:ONLY_INCLUDE_IF
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { rejectAllApprovals } from './lib/approval/utils';
@@ -642,6 +654,8 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.networkController.initializeProvider();
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
@@ -651,8 +665,8 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
     });
-
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
+    ///: END:ONLY_INCLUDE_IF
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -3090,6 +3104,7 @@ export default class MetamaskController extends EventEmitter {
 
     // This handles CAIP-25 authorization changes every time relevant permission state
     // changes, for any reason.
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
@@ -3198,6 +3213,7 @@ export default class MetamaskController extends EventEmitter {
       },
       getAuthorizedScopesByOrigin,
     );
+    ///: END:ONLY_INCLUDE_IF
 
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
@@ -3461,16 +3477,21 @@ export default class MetamaskController extends EventEmitter {
    * Gets relevant state for the provider of an external origin.
    *
    * @param {string} origin - The origin to get the provider state for.
-   * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[] }>} An object with relevant state properties.
+   * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[], extensionId: string | undefined }>} An object with relevant state properties.
    */
   async getProviderState(origin) {
     const providerNetworkState = await this.getProviderNetworkState(
       this.preferencesController.getUseRequestQueue() ? origin : undefined,
     );
-
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    const { chrome } = globalThis;
+    ///: END:ONLY_INCLUDE_IF
     return {
       isUnlocked: this.isUnlocked(),
       accounts: this.getPermittedAccounts(origin),
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ...(isManifestV3 ? { extensionId: chrome?.runtime?.id } : {}),
+      ///: END:ONLY_INCLUDE_IF
       ...providerNetworkState,
     };
   }
@@ -5771,7 +5792,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
     let inputSubjectType;
     if (subjectType) {
@@ -5787,6 +5808,7 @@ export default class MetamaskController extends EventEmitter {
     // messages between subject and background
     this.setupProviderConnectionCaip(caipStream, sender, inputSubjectType);
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Used to create a multiplexed stream for connecting to a trusted context,
@@ -6062,6 +6084,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
    * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   setupProviderConnectionCaip(outStream, sender, subjectType) {
     let origin;
     if (subjectType === SubjectType.Internal) {
@@ -6117,6 +6140,7 @@ export default class MetamaskController extends EventEmitter {
       },
     );
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * For snaps running in workers.
@@ -6228,6 +6252,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS));
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     engine.push((req, res, next, end) =>
       caipPermissionAdapterMiddleware(req, res, next, end, {
         getCaveat: this.permissionController.getCaveat.bind(
@@ -6239,6 +6264,7 @@ export default class MetamaskController extends EventEmitter {
           ),
       }),
     );
+    ///: END:ONLY_INCLUDE_IF
 
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
@@ -6556,6 +6582,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} options.origin - The origin of the sender
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   setupProviderEngineCaip({ origin, tabId }) {
     const engine = new JsonRpcEngine();
 
@@ -6819,6 +6846,7 @@ export default class MetamaskController extends EventEmitter {
 
     return engine;
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * TODO:LegacyProvider: Delete

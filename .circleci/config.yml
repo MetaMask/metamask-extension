@@ -227,7 +227,7 @@ workflows:
             - get-changed-files-with-git-diff
       - test-api-specs-multichain:
           requires:
-            - prep-build-test
+            - prep-build-test-flask
             - get-changed-files-with-git-diff
       - test-e2e-chrome-multiple-providers:
           requires:
@@ -868,7 +868,7 @@ jobs:
           at: .
       - run:
           name: Build extension for testing
-          command: CHAIN_PERMISSIONS=1 BARAD_DUR=1 yarn build:test
+          command: yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test
@@ -1109,10 +1109,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test ./dist
+          command: mv ./dist-test-flask ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test ./builds
+          command: mv ./builds-test-flask ./builds
       - gh/install
       - run:
           name: test:api-specs-multichain
