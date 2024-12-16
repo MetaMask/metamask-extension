@@ -19,7 +19,7 @@ const mockTemporaryAccount = {
   address: '0x3f9658179a5c053bb2faaf7badbb95f6c9be0fa7',
   id: 'a47c9b67-1234-4d58-9321-4aee3b6c8e45',
   metadata: {
-    name: 'Snap Account 3',
+    name: 'Snap Account 2',
     keyring: {
       type: 'Snap Keyring',
     },
