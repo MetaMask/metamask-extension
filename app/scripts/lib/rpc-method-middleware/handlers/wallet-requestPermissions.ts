@@ -99,15 +99,15 @@ async function requestPermissionsImplementation(
   delete requestedPermissions[RestrictedMethods.eth_accounts];
   delete requestedPermissions[PermissionNames.permittedChains];
 
-  const hasUnexpectedPermissions =
+  const hasExpectedPermissions =
     Object.keys(requestedPermissions).length > 0;
-  const hasExpectedRequestedPermissions =
+  const hasUnexpectedRequestedPermissions =
     Object.keys(legacyRequestedPermissions).length > 0;
 
   let caip25Endowment;
   let caip25CaveatValue;
   try {
-    if (haveUnexpectedPermissions || !haveLegacyRequestedPermissions) {
+    if (hasExpectedPermissions || !hasUnexpectedRequestedPermissions) {
       // This will throw. We are making this call purposely to get a proper error
       await requestPermissionsForOrigin(requestedPermissions);
     }
