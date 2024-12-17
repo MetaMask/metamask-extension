@@ -76,8 +76,6 @@
       "srcTokens": {},
       "srcTopAssets": {},
       "destTokens": {},
-      "destTokensLoadingStatus": "undefined",
-      "srcTokensLoadingStatus": "undefined",
       "destTopAssets": {},
       "quoteRequest": {
         "srcTokenAddress": "0x0000000000000000000000000000000000000000",
