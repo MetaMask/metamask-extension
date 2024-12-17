@@ -23,7 +23,7 @@ export const createEip1193MethodMiddleware = makeMethodMiddlewareMaker([
 ]);
 
 // A collection of RPC method implementations that, for legacy reasons, MAY precede
-// our permissioning logic on the in the EIP-1193 JSON-RPC middleware pipeline.
+// our permissioning logic in the EIP-1193 JSON-RPC middleware pipeline.
 export const createEthAccountsMethodMiddleware = makeMethodMiddlewareMaker([
   ethAccountsHandler,
 ]);
