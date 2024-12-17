@@ -25,10 +25,6 @@ executors:
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
-  shellcheck:
-    docker:
-      - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
-    resource_class: small
   playwright:
     docker:
       - image: mcr.microsoft.com/playwright:v1.44.1-focal
@@ -190,7 +186,6 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
-      - test-lint-shellcheck
       - test-lint-lockfile:
           requires:
             - prep-deps
@@ -290,7 +285,6 @@ workflows:
             - validate-lavamoat-policy-build
             - validate-lavamoat-policy-webapp
             - test-lint
-            - test-lint-shellcheck
             - test-lint-lockfile
             - test-lint-changelog
             - validate-source-maps
@@ -985,15 +979,6 @@ jobs:
       - run:
           name: Test Storybook
           command: yarn test-storybook:ci
-
-  test-lint-shellcheck:
-    executor: shellcheck
-    steps:
-      - checkout
-      - run: apk add --no-cache bash jq yarn
-      - run:
-          name: ShellCheck Lint
-          command: ./development/shellcheck.sh
 
   test-lint-lockfile:
     executor: node-browsers-medium-plus

@@ -25,6 +25,10 @@ jobs:
     name: Test yarn dedupe
     uses: ./.github/workflows/test-yarn-dedupe.yml
 
+  test-lint-shellcheck:
+    name: Test lint shellcheck
+    uses: ./.github/workflows/test-lint-shellcheck.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -48,6 +52,8 @@ jobs:
     needs:
       - lint-workflows
       - test-deps-audit
+      - test-yarn-dedupe
+      - test-lint-shellcheck
       - run-tests
       - wait-for-circleci-workflow-status
       - publish-prerelease
