@@ -47,7 +47,7 @@ class HomePage {
     testId: 'refreshList',
   };
 
-protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
   private readonly tokensTab = {
     testId: 'account-overview__asset-tab',
