@@ -13,22 +13,20 @@ export function useSnapSettings({ snapId }: { snapId?: string }) {
 
   useEffect(() => {
     let cancelled = false;
-    async function fetchPage() {
+    async function fetchPage(id: string) {
       try {
         setError(undefined);
         setLoading(true);
 
-        const newData = snapId
-          ? ((await handleSnapRequest({
-              snapId,
-              origin: '',
-              handler: 'onSettingsPage',
-              request: {
-                jsonrpc: '2.0',
-                method: ' ',
-              },
-            })) as { id: string })
-          : undefined;
+        const newData = (await handleSnapRequest({
+          snapId: id,
+          origin: '',
+          handler: 'onSettingsPage',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+          },
+        })) as { id: string };
         if (!cancelled) {
           setData(newData);
           forceUpdateMetamaskState(dispatch);
@@ -43,7 +41,7 @@ export function useSnapSettings({ snapId }: { snapId?: string }) {
         }
       }
     }
-    fetchPage();
+    snapId && fetchPage(snapId);
     return () => {
       cancelled = true;
     };
