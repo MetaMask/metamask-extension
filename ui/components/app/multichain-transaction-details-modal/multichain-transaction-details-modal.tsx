@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
+import { capitalize } from 'lodash';
 import {
   Display,
   FlexDirection,
   AlignItems,
   JustifyContent,
   TextVariant,
-  BlockSize,
   IconColor,
   FontWeight,
   TextColor,
@@ -26,21 +26,17 @@ import {
   Icon,
   IconSize,
   ButtonSize,
-  Label,
   ButtonLink,
   ButtonLinkSize,
 } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
+import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { MultichainNetwork } from '../../../selectors/multichain';
-import { BlockExplorerUrl } from '@metamask/controller-utils';
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import {
   formatDateWithYearContext,
   shortenAddress,
 } from '../../../helpers/utils/util';
-import { capitalize } from 'lodash';
 
 type Asset = {
   fungible: boolean;
@@ -133,9 +129,8 @@ export function MultichainTransactionDetailsModal({
                   transaction.timestamp,
                   'MMM d, y',
                   'MMM d',
-                )}, ${new Date(transaction.timestamp).toLocaleTimeString(
-                  'en-US',
-                  {
+                )}, ${new Date(transaction.timestamp)
+                  .toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: false,

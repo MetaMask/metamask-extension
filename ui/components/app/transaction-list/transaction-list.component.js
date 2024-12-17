@@ -178,8 +178,6 @@ export default function TransactionList({
   const nonEvmTransactions = useSelector(
     getSelectedAccountMultichainTransactions,
   );
-
-  const [showDetails, setShowDetails] = useState(false);
   ///: END:ONLY_INCLUDE_IF
 
   const unfilteredPendingTransactions = useSelector(
@@ -360,115 +358,119 @@ export default function TransactionList({
     const metricsLocation = 'Activity Tab';
     return (
       <>
-                              {selectedTransaction && (
-                          <MultichainTransactionDetailsModal
-                            transaction={selectedTransaction}
-                            onClose={() => toggleShowDetails(null)}
-                            addressLink={addressLink}
-                            multichainNetwork={multichainNetwork}
-                          />
-                        )}
-      <Box className="transaction-list" {...boxProps}>
-        <Box className="transaction-list__transactions">
-          {nonEvmTransactions.data.length > 0 ? (
-            <Box className="transaction-list__completed-transactions">
-              {groupNonEvmTransactionsByDate(nonEvmTransactions).map(
-                (dateGroup) => (
-                  <Fragment key={dateGroup.date}>
-                    <Text
-                      paddingTop={4}
-                      paddingInline={4}
-                      variant={TextVariant.bodyMd}
-                      color={TextColor.textDefault}
-                    >
-                      {dateGroup.date}
-                    </Text>
-                    {dateGroup.transactions.map((transaction, index) => (
-                      <ActivityListItem
-                        key={`${transaction.account}:${index}`}
-                        className="custom-class"
-                        data-testid="activity-list-item"
-                        onClick={() => toggleShowDetails(transaction)}
-                        icon={
-                          <BadgeWrapper
-                            anchorElementShape="circular"
-                            badge={
-                              <AvatarNetwork
-                                borderColor="background-default"
-                                borderWidth={1}
-                                className="activity-tx__network-badge"
-                                data-testid="activity-tx-network-badge"
-                                name="Solana"
-                                size="xs"
-                                src="./images/solana-logo.svg"
-                              />
-                            }
-                            display="block"
-                            positionObj={{ right: -4, top: -4 }}
-                          >
-                            <TransactionIcon
-                              category={transaction.type}
-                              status={transaction.status}
-                            />
-                          </BadgeWrapper>
-                        }
-                        rightContent={
-                          <>
-                            <Text
-                              className="activity-list-item__primary-currency"
-                              color="text-default"
-                              data-testid="transaction-list-item-primary-currency"
-                              ellipsis
-                              fontWeight="medium"
-                              textAlign="right"
-                              title="Primary Currency"
-                              variant="body-lg-medium"
+        {selectedTransaction && (
+          <MultichainTransactionDetailsModal
+            transaction={selectedTransaction}
+            onClose={() => toggleShowDetails(null)}
+            addressLink={addressLink}
+            multichainNetwork={multichainNetwork}
+          />
+        )}
+        <Box className="transaction-list" {...boxProps}>
+          <Box className="transaction-list__transactions">
+            {nonEvmTransactions.data.length > 0 ? (
+              <Box className="transaction-list__completed-transactions">
+                {groupNonEvmTransactionsByDate(nonEvmTransactions).map(
+                  (dateGroup) => (
+                    <Fragment key={dateGroup.date}>
+                      <Text
+                        paddingTop={4}
+                        paddingInline={4}
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
+                      >
+                        {dateGroup.date}
+                      </Text>
+                      {dateGroup.transactions.map((transaction, index) => (
+                        <ActivityListItem
+                          key={`${transaction.account}:${index}`}
+                          className="custom-class"
+                          data-testid="activity-list-item"
+                          onClick={() => toggleShowDetails(transaction)}
+                          icon={
+                            <BadgeWrapper
+                              anchorElementShape="circular"
+                              badge={
+                                <AvatarNetwork
+                                  borderColor="background-default"
+                                  borderWidth={1}
+                                  className="activity-tx__network-badge"
+                                  data-testid="activity-tx-network-badge"
+                                  name="Solana"
+                                  size="xs"
+                                  src="./images/solana-logo.svg"
+                                />
+                              }
+                              display="block"
+                              positionObj={{ right: -4, top: -4 }}
                             >
-                              {`${transaction.from[0]?.asset?.amount} ${transaction.from[0]?.asset?.unit}`}
-                            </Text>
-                          </>
-                        }
-                        subtitle={
-                          <TransactionStatusLabel
-                            date={formatDateWithYearContext(
-                              transaction.timestamp,
-                              'MMM d, y',
-                              'MMM d',
-                            )}
-                            error={{}}
-                            status={transaction.status}
-                            statusOnly
-                          />
-                        }
-                        title={capitalize(transaction.type)}
+                              <TransactionIcon
+                                category={transaction.type}
+                                status={transaction.status}
+                              />
+                            </BadgeWrapper>
+                          }
+                          rightContent={
+                            <>
+                              <Text
+                                className="activity-list-item__primary-currency"
+                                color="text-default"
+                                data-testid="transaction-list-item-primary-currency"
+                                ellipsis
+                                fontWeight="medium"
+                                textAlign="right"
+                                title="Primary Currency"
+                                variant="body-lg-medium"
+                              >
+                                {`${transaction.from[0]?.asset?.amount} ${transaction.from[0]?.asset?.unit}`}
+                              </Text>
+                            </>
+                          }
+                          subtitle={
+                            <TransactionStatusLabel
+                              date={formatDateWithYearContext(
+                                transaction.timestamp,
+                                'MMM d, y',
+                                'MMM d',
+                              )}
+                              error={{}}
+                              status={transaction.status}
+                              statusOnly
+                            />
+                          }
+                          title={capitalize(transaction.type)}
                         />
-                    ))}
-                  </Fragment>
-                ),
-              )}
-              <Box className="transaction-list__view-on-block-explorer">
-                <Button
-                  display={Display.Flex}
-                  variant={ButtonVariant.Primary}
-                  size={ButtonSize.Sm}
-                  endIconName={IconName.Export}
-                  onClick={() =>
-                    openBlockExplorer(addressLink, metricsLocation, trackEvent)
-                  }
-                >
-                  {t('viewOnBlockExplorer')}
-                </Button>
+                      ))}
+                    </Fragment>
+                  ),
+                )}
+                <Box className="transaction-list__view-on-block-explorer">
+                  <Button
+                    display={Display.Flex}
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Sm}
+                    endIconName={IconName.Export}
+                    onClick={() =>
+                      openBlockExplorer(
+                        addressLink,
+                        metricsLocation,
+                        trackEvent,
+                      )
+                    }
+                  >
+                    {t('viewOnBlockExplorer')}
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          ) : (
-            <Box className="transaction-list__empty">
-              <Box className="transaction-list__empty-text">
-                {t('noTransactions')}
+            ) : (
+              <Box className="transaction-list__empty">
+                <Box className="transaction-list__empty-text">
+                  {t('noTransactions')}
+                </Box>
               </Box>
-            </Box>
-          )}
+            )}
+          </Box>
         </Box>
-      </Box>
       </>
     );
   }
