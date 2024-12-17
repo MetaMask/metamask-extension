@@ -68,7 +68,6 @@ const createMockedHandler = () => {
     getNetworkConfigurationByChainId: jest.fn(),
     setActiveNetwork: jest.fn(),
     requestUserApproval: jest.fn().mockResolvedValue(123),
-    requestPermissionApprovalForOrigin: jest.fn(),
     getCaveat: jest.fn(),
     startApprovalFlow: () => ({ id: 'approvalFlowId' }),
     endApprovalFlow: jest.fn(),
@@ -80,8 +79,8 @@ const createMockedHandler = () => {
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [{ networkClientId: 123 }],
     }),
-    updateCaveat: jest.fn(),
-    grantPermissions: jest.fn(),
+    requestPermittedChainsPermissionForOrigin: jest.fn(),
+    requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -191,11 +190,11 @@ describe('addEthereumChainHandler', () => {
         isAddFlow: true,
         endApprovalFlow: mocks.endApprovalFlow,
         getCaveat: mocks.getCaveat,
-        requestPermissionApprovalForOrigin:
-          mocks.requestPermissionApprovalForOrigin,
         setActiveNetwork: mocks.setActiveNetwork,
-        updateCaveat: mocks.updateCaveat,
-        grantPermissions: mocks.grantPermissions,
+        requestPermittedChainsPermissionForOrigin:
+          mocks.requestPermittedChainsPermissionForOrigin,
+        requestPermittedChainsPermissionIncrementalForOrigin:
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
       },
     );
   });
@@ -260,11 +259,11 @@ describe('addEthereumChainHandler', () => {
             isAddFlow: true,
             endApprovalFlow: mocks.endApprovalFlow,
             getCaveat: mocks.getCaveat,
-            requestPermissionApprovalForOrigin:
-              mocks.requestPermissionApprovalForOrigin,
             setActiveNetwork: mocks.setActiveNetwork,
-            updateCaveat: mocks.updateCaveat,
-            grantPermissions: mocks.grantPermissions,
+            requestPermittedChainsPermissionForOrigin:
+              mocks.requestPermittedChainsPermissionForOrigin,
+            requestPermittedChainsPermissionIncrementalForOrigin:
+              mocks.requestPermittedChainsPermissionIncrementalForOrigin,
           },
         );
       });
@@ -309,11 +308,11 @@ describe('addEthereumChainHandler', () => {
             isAddFlow: true,
             endApprovalFlow: mocks.endApprovalFlow,
             getCaveat: mocks.getCaveat,
-            requestPermissionApprovalForOrigin:
-              mocks.requestPermissionApprovalForOrigin,
             setActiveNetwork: mocks.setActiveNetwork,
-            updateCaveat: mocks.updateCaveat,
-            grantPermissions: mocks.grantPermissions,
+            requestPermittedChainsPermissionForOrigin:
+              mocks.requestPermittedChainsPermissionForOrigin,
+            requestPermittedChainsPermissionIncrementalForOrigin:
+              mocks.requestPermittedChainsPermissionIncrementalForOrigin,
           },
         );
       });

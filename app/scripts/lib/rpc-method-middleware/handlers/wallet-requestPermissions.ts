@@ -14,15 +14,9 @@ import {
   Caip25CaveatType,
   Caip25CaveatValue,
   Caip25EndowmentPermissionName,
-  setEthAccounts,
-  setPermittedEthChainIds,
+  getPermittedEthChainIds,
 } from '@metamask/multichain';
-import {
-  Hex,
-  Json,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
@@ -32,19 +26,14 @@ import {
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
-// eslint-disable-next-line import/no-restricted-paths
-import { isSnapId } from '../../../../../ui/helpers/utils/snaps';
 
 export const requestPermissionsHandler = {
   methodNames: [MethodNames.RequestPermissions],
   implementation: requestPermissionsImplementation,
   hookNames: {
-    requestPermissionsForOrigin: true,
-    getPermissionsForOrigin: true,
-    updateCaveat: true,
-    grantPermissions: true,
-    requestPermissionApprovalForOrigin: true,
     getAccounts: true,
+    requestPermissionsForOrigin: true,
+    requestCaip25PermissionForOrigin: true,
   },
 };
 
@@ -65,12 +54,9 @@ type GrantedPermissions = Awaited<
  * @param _next - JsonRpcEngine next() callback - unused
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
- * @param options.requestPermissionsForOrigin - The specific method hook needed for this method implementation
- * @param options.getPermissionsForOrigin
- * @param options.updateCaveat
- * @param options.grantPermissions
- * @param options.requestPermissionApprovalForOrigin
  * @param options.getAccounts
+ * @param options.requestCaip25PermissionForOrigin
+ * @param options.requestPermissionsForOrigin
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
@@ -79,43 +65,31 @@ async function requestPermissionsImplementation(
   _next: AsyncJsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   {
-    requestPermissionsForOrigin,
-    getPermissionsForOrigin,
-    updateCaveat,
-    grantPermissions,
-    requestPermissionApprovalForOrigin,
     getAccounts,
+    requestPermissionsForOrigin,
+    requestCaip25PermissionForOrigin,
   }: {
+    getAccounts: () => string[];
     requestPermissionsForOrigin: (
       requestedPermissions: RequestedPermissions,
     ) => Promise<[GrantedPermissions]>;
-    updateCaveat: (
-      permissionName: string,
-      caveatName: string,
-      caveatValue: Caip25CaveatValue,
-    ) => void;
-    grantPermissions: (
-      requestedPermissions: RequestedPermissions,
-    ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
-    requestPermissionApprovalForOrigin: (
-      requestedPermissions: RequestedPermissions,
-    ) => Promise<{ approvedAccounts: Hex[]; approvedChainIds: Hex[] }>;
-
-    getPermissionsForOrigin: () => ReturnType<
-      AbstractPermissionController['getPermissions']
+    requestCaip25PermissionForOrigin: (
+      requestedPermissions?: RequestedPermissions,
+    ) => Promise<
+      ValidPermission<
+        typeof Caip25EndowmentPermissionName,
+        Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
+      >
     >;
-    getAccounts: () => string[];
   },
 ) {
-  const { origin, params } = req;
+  const { params } = req;
 
   if (!Array.isArray(params) || !isPlainObject(params[0])) {
     return end(invalidParams({ data: { request: req } }));
   }
 
   const [requestedPermissions] = params;
-  delete requestedPermissions[Caip25EndowmentPermissionName];
-
   const legacyRequestedPermissions: Partial<
     Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
   > = pick(requestedPermissions, [
@@ -125,134 +99,63 @@ async function requestPermissionsImplementation(
   delete requestedPermissions[RestrictedMethods.eth_accounts];
   delete requestedPermissions[PermissionNames.permittedChains];
 
-  // We manually handle eth_accounts and permittedChains permissions
-  // by calling the ApprovalController rather than the PermissionController
-  // because these two permissions do not actually exist in the Permssion
-  // Specifications. Calling the PermissionController with them will
-  // cause an error to be thrown. Instead, we will use the approval result
-  // from the ApprovalController to form a CAIP-25 permission later.
-  let legacyApproval;
-  const haveLegacyPermissions =
+  const hasExpectedPermissions = Object.keys(requestedPermissions).length > 0;
+  const hasUnexpectedRequestedPermissions =
     Object.keys(legacyRequestedPermissions).length > 0;
-  if (haveLegacyPermissions) {
-    if (!legacyRequestedPermissions[RestrictedMethods.eth_accounts]) {
-      legacyRequestedPermissions[RestrictedMethods.eth_accounts] = {};
+
+  let caip25Endowment;
+  let caip25CaveatValue;
+  try {
+    if (hasExpectedPermissions || !hasUnexpectedRequestedPermissions) {
+      // This will throw. We are making this call purposely to get a proper error
+      await requestPermissionsForOrigin(requestedPermissions);
     }
 
-    if (!legacyRequestedPermissions[PermissionNames.permittedChains]) {
-      legacyRequestedPermissions[PermissionNames.permittedChains] = {};
-    }
-
-    if (isSnapId(origin)) {
-      delete legacyRequestedPermissions[PermissionNames.permittedChains];
-    }
-
-    legacyApproval = await requestPermissionApprovalForOrigin(
+    caip25Endowment = await requestCaip25PermissionForOrigin(
       legacyRequestedPermissions,
     );
-  }
-
-  let grantedPermissions: GrantedPermissions = {};
-  // Request permissions from the PermissionController for any permissions other
-  // than eth_accounts and permittedChains in the params. If no permissions
-  // are in the params, then request empty permissions from the PermissionController
-  // to get an appropriate error to be returned to the dapp.
-  if (
-    (Object.keys(requestedPermissions).length === 0 &&
-      !haveLegacyPermissions) ||
-    Object.keys(requestedPermissions).length > 0
-  ) {
-    const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
-      requestedPermissions,
-    );
-    // permissions are frozen and must be cloned before modified
-    grantedPermissions = { ...frozenGrantedPermissions };
-  }
-
-  if (legacyApproval) {
-    let newCaveatValue = {
-      requiredScopes: {},
-      optionalScopes: {},
-      isMultichainOrigin: false,
-    };
-
-    if (isSnapId(origin)) {
-      newCaveatValue.optionalScopes = {
-        'wallet:eip155': {
-          accounts: [],
-        },
-      };
-    } else {
-      newCaveatValue = setPermittedEthChainIds(
-        newCaveatValue,
-        legacyApproval.approvedChainIds,
-      );
-    }
-
-    newCaveatValue = setEthAccounts(
-      newCaveatValue,
-      legacyApproval.approvedAccounts,
-    );
-
-    const permissions = getPermissionsForOrigin() || {};
-    let caip25Endowment = permissions[Caip25EndowmentPermissionName];
-    const existingCaveatValue = caip25Endowment?.caveats?.find(
+    caip25CaveatValue = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
     )?.value as Caip25CaveatValue | undefined;
-    if (existingCaveatValue) {
-      if (existingCaveatValue.isMultichainOrigin) {
-        return end(
-          new Error(
-            'Cannot modify permission granted via the Multichain API. Either modify the permission using the Multichain API or revoke permissions and request again.',
-          ),
-        );
-      }
 
-      updateCaveat(
-        Caip25EndowmentPermissionName,
-        Caip25CaveatType,
-        newCaveatValue,
+    if (!caip25CaveatValue) {
+      throw new Error(
+        `could not find ${Caip25CaveatType} in granted ${Caip25EndowmentPermissionName} permission.`,
       );
-    } else {
-      caip25Endowment = grantPermissions({
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: newCaveatValue,
-            },
-          ],
-        },
-      })[Caip25EndowmentPermissionName];
     }
+  } catch (error) {
+    return end(error as unknown as Error);
+  }
 
-    // We cannot derive ethAccounts directly from the CAIP-25 permission
-    // because the accounts will not be in order of lastSelected
-    const ethAccounts = getAccounts();
+  const grantedPermissions: GrantedPermissions = {};
 
-    grantedPermissions[RestrictedMethods.eth_accounts] = {
+  // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
+  // because the accounts will not be in order of lastSelected
+  const ethAccounts = getAccounts();
+
+  grantedPermissions[RestrictedMethods.eth_accounts] = {
+    ...caip25Endowment,
+    parentCapability: RestrictedMethods.eth_accounts,
+    caveats: [
+      {
+        type: CaveatTypes.restrictReturnedAccounts,
+        value: ethAccounts,
+      },
+    ],
+  };
+
+  const ethChainIds = getPermittedEthChainIds(caip25CaveatValue);
+  if (ethChainIds.length > 0) {
+    grantedPermissions[PermissionNames.permittedChains] = {
       ...caip25Endowment,
-      parentCapability: RestrictedMethods.eth_accounts,
+      parentCapability: PermissionNames.permittedChains,
       caveats: [
         {
-          type: CaveatTypes.restrictReturnedAccounts,
-          value: ethAccounts,
+          type: CaveatTypes.restrictNetworkSwitching,
+          value: ethChainIds,
         },
       ],
     };
-
-    if (!isSnapId(origin)) {
-      grantedPermissions[PermissionNames.permittedChains] = {
-        ...caip25Endowment,
-        parentCapability: PermissionNames.permittedChains,
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: legacyApproval.approvedChainIds,
-          },
-        ],
-      };
-    }
   }
 
   res.result = Object.values(grantedPermissions).filter(
