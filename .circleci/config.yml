@@ -243,7 +243,7 @@ workflows:
       - validate-source-maps-mv2:
           requires:
             - prep-build-mv2
-      - validate-source-maps-beta:
+      - validate-source-maps-beta
       - validate-source-maps-mmi:
           requires:
             - prep-build-mmi
