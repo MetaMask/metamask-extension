@@ -43,6 +43,7 @@
 
       &__title {
         @include design-system.H4;
+
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
