@@ -102,6 +102,7 @@ import {
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Toast } from '../../multichain';
+import { logErrorWithMessage } from '../../../../shared/modules/error';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -415,7 +416,9 @@ const CoinButtons = ({
 
     // Native Send flow
     const switchToCorrectChain = await setCorrectChain();
-    if (!switchToCorrectChain.error) {
+    if (switchToCorrectChain.error) {
+      logErrorWithMessage(switchToCorrectChain.message);
+    } else {
       await dispatch(startNewDraftTransaction({ type: AssetType.native }));
       history.push(SEND_ROUTE);
     }
@@ -423,7 +426,9 @@ const CoinButtons = ({
 
   const handleSwapOnClick = useCallback(async () => {
     const switchToCorrectChain = await setCorrectChain();
-    if (!switchToCorrectChain.error) {
+    if (switchToCorrectChain.error) {
+      logErrorWithMessage(switchToCorrectChain.message);
+    } else {
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       global.platform.openTab({
         url: `${mmiPortfolioUrl}/swap`,

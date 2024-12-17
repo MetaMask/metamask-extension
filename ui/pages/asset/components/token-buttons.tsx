@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -63,6 +63,7 @@ import {
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import { Toast } from '../../../components/multichain';
+import { logErrorWithMessage } from '../../../../shared/modules/error';
 import { Asset } from './asset-page';
 
 const TokenButtons = ({
@@ -125,7 +126,7 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
-  const setCorrectChain = async () => {
+  const setCorrectChain = useCallback(async () => {
     // If we aren't presently on the chain of the asset, change to it
     if (currentChainId !== token.chainId) {
       try {
@@ -155,6 +156,85 @@ const TokenButtons = ({
       error: false,
       message: `No chain switch required. Current chainId: ${currentChainId} matches target chainId: ${token.chainId}.`,
     };
+  }, [currentChainId, token, networks, dispatch]);
+
+  const handleSendClick = async () => {
+    trackEvent(
+      {
+        event: MetaMetricsEventName.NavSendButtonClicked,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          token_symbol: token.symbol,
+          location: MetaMetricsSwapsEventSource.TokenView,
+          text: 'Send',
+          chain_id: token.chainId,
+        },
+      },
+      { excludeMetaMetricsId: false },
+    );
+    try {
+      const switchToCorrectChain = await setCorrectChain();
+      if (switchToCorrectChain.error) {
+        logErrorWithMessage(switchToCorrectChain.message);
+      } else {
+        await dispatch(
+          startNewDraftTransaction({
+            type: AssetType.token,
+            details: token,
+          }),
+        );
+        history.push(SEND_ROUTE);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      if (!err.message.includes(INVALID_ASSET_TYPE)) {
+        throw err;
+      }
+    }
+  };
+
+  const handleSwapClick = async () => {
+    const switchToCorrectChain = await setCorrectChain();
+    if (switchToCorrectChain.error) {
+      logErrorWithMessage(switchToCorrectChain.message);
+    } else {
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      global.platform.openTab({
+        url: `${mmiPortfolioUrl}/swap`,
+      });
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      trackEvent({
+        event: MetaMetricsEventName.NavSwapButtonClicked,
+        category: MetaMetricsEventCategory.Swaps,
+        properties: {
+          token_symbol: token.symbol,
+          location: MetaMetricsSwapsEventSource.TokenView,
+          text: 'Swap',
+          chain_id: currentChainId,
+        },
+      });
+      dispatch(
+        setSwapsFromToken({
+          ...token,
+          address: token.address?.toLowerCase(),
+          iconUrl: token.image,
+          balance: token?.balance?.value,
+          string: token?.balance?.display,
+        }),
+      );
+      if (usingHardwareWallet) {
+        global.platform.openExtensionInBrowser?.(
+          PREPARE_SWAP_ROUTE,
+          undefined,
+          false,
+        );
+      } else {
+        history.push(PREPARE_SWAP_ROUTE);
+      }
+      ///: END:ONLY_INCLUDE_IF
+    }
   };
 
   return (
@@ -240,38 +320,7 @@ const TokenButtons = ({
 
       <IconButton
         className="token-overview__button"
-        onClick={async () => {
-          trackEvent(
-            {
-              event: MetaMetricsEventName.NavSendButtonClicked,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                token_symbol: token.symbol,
-                location: MetaMetricsSwapsEventSource.TokenView,
-                text: 'Send',
-                chain_id: token.chainId,
-              },
-            },
-            { excludeMetaMetricsId: false },
-          );
-          try {
-            const switchToCorrectChain = await setCorrectChain();
-            if (!switchToCorrectChain.error) {
-              await dispatch(
-                startNewDraftTransaction({
-                  type: AssetType.token,
-                  details: token,
-                }),
-              );
-              history.push(SEND_ROUTE);
-            }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (err: any) {
-            if (!err.message.includes(INVALID_ASSET_TYPE)) {
-              throw err;
-            }
-          }
-        }}
+        onClick={handleSendClick}
         Icon={
           <Icon
             name={IconName.Arrow2UpRight}
@@ -294,45 +343,7 @@ const TokenButtons = ({
               size={IconSize.Sm}
             />
           }
-          onClick={async () => {
-            await setCorrectChain();
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            global.platform.openTab({
-              url: `${mmiPortfolioUrl}/swap`,
-            });
-            ///: END:ONLY_INCLUDE_IF
-
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            trackEvent({
-              event: MetaMetricsEventName.NavSwapButtonClicked,
-              category: MetaMetricsEventCategory.Swaps,
-              properties: {
-                token_symbol: token.symbol,
-                location: MetaMetricsSwapsEventSource.TokenView,
-                text: 'Swap',
-                chain_id: currentChainId,
-              },
-            });
-            dispatch(
-              setSwapsFromToken({
-                ...token,
-                address: token.address?.toLowerCase(),
-                iconUrl: token.image,
-                balance: token?.balance?.value,
-                string: token?.balance?.display,
-              }),
-            );
-            if (usingHardwareWallet) {
-              global.platform.openExtensionInBrowser?.(
-                PREPARE_SWAP_ROUTE,
-                undefined,
-                false,
-              );
-            } else {
-              history.push(PREPARE_SWAP_ROUTE);
-            }
-            ///: END:ONLY_INCLUDE_IF
-          }}
+          onClick={handleSwapClick}
           label={t('swap')}
           tooltipRender={null}
         />
