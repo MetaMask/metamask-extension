@@ -547,11 +547,9 @@ class AccountListPage {
     });
   }
 
-
   /**
-   * Verifies that all occurrences of the account balance are displayed as private.
+   * Verifies that all occurrences of the account balance value and symbol are displayed as private.
    *
-   * This function checks that the account balance is hidden in all places.
    */
   async check_balanceIsPrivateEverywhere(): Promise<void> {
     console.log(`Verify all account balance occurrences are private`);
