@@ -10,6 +10,10 @@ import {
 import AssetListControlBar from './asset-list-control-bar';
 
 describe('AssetListControlBar', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should fire metrics event when refresh button is clicked', async () => {
     const store = configureMockStore([thunk])({
       metamask: {
