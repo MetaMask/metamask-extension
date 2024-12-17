@@ -27,14 +27,6 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
 
-/**
- * This method attempts to retrieve the Ethereum accounts available to the
- * requester, or initiate a request for account access if none are currently
- * available. It is essentially a wrapper of wallet_requestPermissions that
- * only errors if the user rejects the request. We maintain the method for
- * backwards compatibility reasons.
- */
-
 const requestEthereumAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS],
   implementation: requestEthereumAccountsHandler,
@@ -51,6 +43,13 @@ export default requestEthereumAccounts;
 // Used to rate-limit pending requests to one per origin
 const locks = new Set();
 
+/**
+ * This method attempts to retrieve the Ethereum accounts available to the
+ * requester, or initiate a request for account access if none are currently
+ * available. It is essentially a wrapper of wallet_requestPermissions that
+ * only errors if the user rejects the request. We maintain the method for
+ * backwards compatibility reasons.
+ */
 async function requestEthereumAccountsHandler(
   req: JsonRpcRequest<JsonRpcParams> & { origin: string },
   res: PendingJsonRpcResponse<string[]>,
