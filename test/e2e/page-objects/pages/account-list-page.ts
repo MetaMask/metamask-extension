@@ -374,6 +374,22 @@ class AccountListPage {
     });
   }
 
+  async check_addBitcoinAccountAvailable(
+    expectedAvailability: boolean,
+  ): Promise<void> {
+    console.log(
+      `Check add bitcoin account button is ${
+        expectedAvailability ? 'displayed ' : 'not displayed'
+      }`,
+    );
+    await this.openAddAccountModal();
+    if (expectedAvailability) {
+      await this.driver.waitForSelector(this.addBtcAccountButton);
+    } else {
+      await this.driver.assertElementNotPresent(this.addBtcAccountButton);
+    }
+  }
+
   async openAccountOptionsMenu(): Promise<void> {
     console.log(`Open account option menu`);
     await this.driver.waitForSelector(this.accountListItem);
