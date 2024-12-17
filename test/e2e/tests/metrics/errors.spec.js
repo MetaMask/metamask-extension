@@ -874,6 +874,8 @@ describe('Sentry errors', function () {
           srcTokenAmount: true,
           walletAddress: false,
         },
+        destTokensLoadingStatus: false,
+        srcTokensLoadingStatus: false,
         quotesLastFetched: true,
         quotesLoadingStatus: true,
         quotesRefreshCount: true,

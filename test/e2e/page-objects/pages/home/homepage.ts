@@ -8,8 +8,9 @@ class HomePage {
 
   public headerNavbar: HeaderNavbar;
 
-  private readonly activityTab =
-    '[data-testid="account-overview__activity-tab"]';
+  private readonly activityTab = {
+    testId: 'account-overview__activity-tab',
+  };
 
   private readonly balance = '[data-testid="eth-overview__primary-currency"]';
 
@@ -23,15 +24,35 @@ class HomePage {
     tag: 'h6',
   };
 
-  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
+  private readonly erc20TokenDropdown = {
+    testId: 'import-token-button',
+  };
+
+  private readonly nftTab = {
+    testId: 'account-overview__nfts-tab',
+  };
 
   private readonly popoverBackground = '.popover-bg';
 
-  private readonly popoverCloseButton = '[data-testid="popover-close"]';
+  private readonly popoverCloseButton = {
+    testId: 'popover-close',
+  };
 
-  private readonly sendButton = '[data-testid="eth-overview-send"]';
+  private readonly privacyBalanceToggle = {
+    testId: 'sensitive-toggle',
+  };
 
-  private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
+  private readonly refreshErc20Tokens = {
+    testId: 'refreshList',
+  };
+
+  private readonly sendButton = {
+    testId: 'eth-overview-send',
+  };
+
+  private readonly tokensTab = {
+    testId: 'account-overview__asset-tab',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -79,8 +100,18 @@ class HomePage {
     await this.driver.clickElement(this.nftTab);
   }
 
+  async refreshErc20TokenList(): Promise<void> {
+    console.log(`Refresh the ERC20 token list`);
+    await this.driver.clickElement(this.erc20TokenDropdown);
+    await this.driver.clickElement(this.refreshErc20Tokens);
+  }
+
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
+  }
+
+  async togglePrivacyBalance(): Promise<void> {
+    await this.driver.clickElement(this.privacyBalanceToggle);
   }
 
   /**
