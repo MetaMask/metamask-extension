@@ -50,6 +50,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
+import { MultichainTransactionDetailsModal } from '../multichain-transaction-details-modal';
 ///: END:ONLY_INCLUDE_IF
 
 import {
@@ -172,9 +173,13 @@ export default function TransactionList({
   const t = useI18nContext();
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+
   const nonEvmTransactions = useSelector(
     getSelectedAccountMultichainTransactions,
   );
+
+  const [showDetails, setShowDetails] = useState(false);
   ///: END:ONLY_INCLUDE_IF
 
   const unfilteredPendingTransactions = useSelector(
@@ -305,6 +310,10 @@ export default function TransactionList({
   }, []);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const toggleShowDetails = useCallback((transaction = null) => {
+    setSelectedTransaction(transaction);
+  }, []);
+
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,
@@ -350,6 +359,15 @@ export default function TransactionList({
 
     const metricsLocation = 'Activity Tab';
     return (
+      <>
+                              {selectedTransaction && (
+                          <MultichainTransactionDetailsModal
+                            transaction={selectedTransaction}
+                            onClose={() => toggleShowDetails(null)}
+                            addressLink={addressLink}
+                            multichainNetwork={multichainNetwork}
+                          />
+                        )}
       <Box className="transaction-list" {...boxProps}>
         <Box className="transaction-list__transactions">
           {nonEvmTransactions.data.length > 0 ? (
@@ -370,6 +388,7 @@ export default function TransactionList({
                         key={`${transaction.account}:${index}`}
                         className="custom-class"
                         data-testid="activity-list-item"
+                        onClick={() => toggleShowDetails(transaction)}
                         icon={
                           <BadgeWrapper
                             anchorElementShape="circular"
@@ -422,7 +441,7 @@ export default function TransactionList({
                           />
                         }
                         title={capitalize(transaction.type)}
-                      ></ActivityListItem>
+                        />
                     ))}
                   </Fragment>
                 ),
@@ -450,6 +469,7 @@ export default function TransactionList({
           )}
         </Box>
       </Box>
+      </>
     );
   }
   ///: END:ONLY_INCLUDE_IF
