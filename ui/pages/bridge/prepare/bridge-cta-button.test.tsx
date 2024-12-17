@@ -23,7 +23,7 @@ describe('BridgeCTAButton', () => {
       bridgeSliceOverrides: { fromTokenInputValue: 1 },
     });
     const { container, getByText } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -54,7 +54,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -83,7 +83,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, container } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -118,7 +118,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, getByRole } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -159,7 +159,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { container } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
@@ -199,7 +199,7 @@ describe('BridgeCTAButton', () => {
       },
     });
     const { getByText, getByRole, container } = renderWithProvider(
-      <BridgeCTAButton />,
+      <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 

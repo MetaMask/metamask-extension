@@ -1,9 +1,8 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
+  Caip25CaveatValue,
   Caip25EndowmentPermissionName,
-  setEthAccounts,
-  setPermittedEthChainIds,
 } from '@metamask/multichain';
 import {
   Caveat,
@@ -11,8 +10,6 @@ import {
   ValidPermission,
 } from '@metamask/permission-controller';
 import {
-  Hex,
-  Json,
   JsonRpcParams,
   JsonRpcRequest,
   PendingJsonRpcResponse,
@@ -29,18 +26,6 @@ import {
   MetaMetricsEventOptions,
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
-import { RestrictedMethods } from '../../../../../shared/constants/permissions';
-import { PermissionNames } from '../../../controllers/permissions';
-// eslint-disable-next-line import/no-restricted-paths
-import { isSnapId } from '../../../../../ui/helpers/utils/snaps';
-
-/**
- * This method attempts to retrieve the Ethereum accounts available to the
- * requester, or initiate a request for account access if none are currently
- * available. It is essentially a wrapper of wallet_requestPermissions that
- * only errors if the user rejects the request. We maintain the method for
- * backwards compatibility reasons.
- */
 
 const requestEthereumAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS],
@@ -48,10 +33,9 @@ const requestEthereumAccounts = {
   hookNames: {
     getAccounts: true,
     getUnlockPromise: true,
-    requestPermissionApprovalForOrigin: true,
     sendMetrics: true,
     metamaskState: true,
-    grantPermissions: true,
+    requestCaip25PermissionForOrigin: true,
   },
 };
 export default requestEthereumAccounts;
@@ -59,6 +43,28 @@ export default requestEthereumAccounts;
 // Used to rate-limit pending requests to one per origin
 const locks = new Set();
 
+/**
+ * This method attempts to retrieve the Ethereum accounts available to the
+ * requester, or initiate a request for account access if none are currently
+ * available. It is essentially a wrapper of wallet_requestPermissions that
+ * only errors if the user rejects the request. We maintain the method for
+ * backwards compatibility reasons.
+ *
+ * @param req - The JsonRpcEngine request
+ * @param res - The JsonRpcEngine result object
+ * @param _next - JsonRpcEngine next() callback - unused
+ * @param end - JsonRpcEngine end() callback
+ * @param options - Method hooks passed to the method implementation
+ * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
+ * @param options.getUnlockPromise - A hook that resolves when the wallet is unlocked.
+ * @param options.sendMetrics - A hook that helps track metric events.
+ * @param options.metamaskState - The MetaMask app state.
+ * @param options.requestCaip25PermissionForOrigin - A hook that requests the CAIP-25 permission for the origin.
+ * @param options.metamaskState.metaMetricsId
+ * @param options.metamaskState.permissionHistory
+ * @param options.metamaskState.accounts
+ * @returns A promise that resolves to nothing
+ */
 async function requestEthereumAccountsHandler(
   req: JsonRpcRequest<JsonRpcParams> & { origin: string },
   res: PendingJsonRpcResponse<string[]>,
@@ -67,16 +73,12 @@ async function requestEthereumAccountsHandler(
   {
     getAccounts,
     getUnlockPromise,
-    requestPermissionApprovalForOrigin,
     sendMetrics,
     metamaskState,
-    grantPermissions,
+    requestCaip25PermissionForOrigin,
   }: {
     getAccounts: (ignoreLock?: boolean) => string[];
     getUnlockPromise: (shouldShowUnlockRequest: true) => Promise<void>;
-    requestPermissionApprovalForOrigin: (
-      requestedPermissions: RequestedPermissions,
-    ) => Promise<{ approvedAccounts: Hex[]; approvedChainIds: Hex[] }>;
     sendMetrics: (
       payload: MetaMetricsEventPayload,
       options?: MetaMetricsEventOptions,
@@ -86,9 +88,14 @@ async function requestEthereumAccountsHandler(
       permissionHistory: Record<string, unknown>;
       accounts: Record<string, unknown>;
     };
-    grantPermissions: (
-      requestedPermissions: RequestedPermissions,
-    ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
+    requestCaip25PermissionForOrigin: (
+      requestedPermissions?: RequestedPermissions,
+    ) => Promise<
+      ValidPermission<
+        typeof Caip25EndowmentPermissionName,
+        Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
+      >
+    >;
   },
 ) {
   const { origin } = req;
@@ -117,49 +124,11 @@ async function requestEthereumAccountsHandler(
     return undefined;
   }
 
-  let legacyApproval;
   try {
-    legacyApproval = await requestPermissionApprovalForOrigin({
-      [RestrictedMethods.eth_accounts]: {},
-      ...(!isSnapId(origin) && {
-        [PermissionNames.permittedChains]: {},
-      }),
-    });
+    await requestCaip25PermissionForOrigin();
   } catch (error) {
     return end(error as unknown as Error);
   }
-
-  let caveatValue = {
-    requiredScopes: {},
-    optionalScopes: {},
-    isMultichainOrigin: false,
-  };
-
-  if (isSnapId(origin)) {
-    caveatValue.optionalScopes = {
-      'wallet:eip155': {
-        accounts: [],
-      },
-    };
-  } else {
-    caveatValue = setPermittedEthChainIds(
-      caveatValue,
-      legacyApproval.approvedChainIds,
-    );
-  }
-
-  caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
-
-  grantPermissions({
-    [Caip25EndowmentPermissionName]: {
-      caveats: [
-        {
-          type: Caip25CaveatType,
-          value: caveatValue,
-        },
-      ],
-    },
-  });
 
   ethAccounts = getAccounts(true);
   // first time connection to dapp will lead to no log in the permissionHistory
