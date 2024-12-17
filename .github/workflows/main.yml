@@ -51,6 +51,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     needs:
       - wait-for-circleci-workflow-status
@@ -74,6 +75,25 @@ jobs:
           echo 'CIRCLE_BUILD_NUM='"$build_num" >> "$GITHUB_OUTPUT"
           job_id=$(echo "$job_details" | jq -r '.id')
           echo 'CIRCLE_WORKFLOW_JOB_ID='"$job_id" >> "$GITHUB_OUTPUT"
+
+      - name: Get CircleCI job artifacts
+        env:
+          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
+        run: |
+          for platform in chrome firefox; do
+            pageload=$(curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/${platform}/benchmark/pageload.json")
+            mkdir -p "test-artifacts/${platform}/benchmark"
+            echo "${pageload}" > "test-artifacts/${platform}/benchmark/pageload.json"
+          done
+
+          bundle_size=$(curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json")
+          mkdir -p "test-artifacts/chrome"
+          echo "${bundle_size}" > "test-artifacts/chrome/bundle_size.json"
+
+          stories=$(curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/storybook/stories.json")
+          mkdir "storybook-build"
+          echo "${stories}" > "storybook-build/stories.json"
+
 
       - name: Publish prerelease
         env:
