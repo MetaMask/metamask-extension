@@ -204,6 +204,24 @@ class AssetListPage {
     });
   }
 
+   /**
+   * This function checks if the specified token is displayed in the token list by its name.
+   *
+   * @param tokenName - The name of the token to check for.
+   * @returns A promise that resolves if the specified token is displayed.
+   */
+   async check_tokenIsDisplayed(tokenName: string): Promise<void> {
+    console.log(`Waiting for token ${tokenName} to be displayed`);
+    await this.driver.wait(async () => {
+      const tokenIsDisplayed = await this.driver.findElement({
+        text: tokenName,
+        tag: 'p',
+      });
+      return tokenIsDisplayed !== null;
+    }, 10000);
+    console.log(`Token ${tokenName} is displayed.`);
+  }
+
   /**
    * This function checks if the specified number of token items is displayed in the token list.
    *

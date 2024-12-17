@@ -8,6 +8,11 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 class TestDapp {
   private driver: Driver;
 
+  private readonly addTokensToWalletButton = {
+    text: 'Add Token(s) to Wallet',
+    tag: 'button',
+  };
+
   private readonly confirmDepositButton =
     '[data-testid="confirm-footer-button"]';
 
@@ -37,6 +42,8 @@ class TestDapp {
   private readonly depositPiggyBankContractButton = '#depositButton';
 
   private readonly simpleSendButton = '#sendButton';
+
+  private readonly erc20TokenAddresses = '#erc20TokenAddresses';
 
   private readonly erc721MintButton = '#mintButton';
 
@@ -177,6 +184,11 @@ class TestDapp {
 
   private erc20TokenTransferButton = '#transferTokens';
 
+  private createTokenButton = {
+    text: 'Create Token',
+    tag: 'button',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -219,6 +231,10 @@ class TestDapp {
         params,
       )}`,
     });
+  }
+
+  public async clickAddTokenToWallet() {
+    await this.driver.clickElement(this.addTokensToWalletButton);
   }
 
   async clickSimpleSendButton() {
@@ -319,6 +335,15 @@ class TestDapp {
       css: this.connectedAccount,
       text: publicAddress.toLowerCase(),
     });
+  }
+
+   /**
+   * Scrolls to the create token button and clicks it.
+   */
+  public async findAndClickCreateToken() {
+    const createTokenElement = await this.driver.findElement(this.createTokenButton);
+    await this.driver.scrollToElement(createTokenElement);
+    await this.driver.clickElement(this.createTokenButton);
   }
 
   /**
@@ -575,6 +600,24 @@ class TestDapp {
       css: this.signTypedDataV4VerifyResult,
       text: publicKey.toLowerCase(),
     });
+  }
+
+  /**
+   * Checks the count of token addresses.
+   *
+   * @param expectedCount - The expected count of token addresses.
+   */
+  async check_TokenAddressesCount(expectedCount: number) {
+    console.log(`checking token addresses count: ${expectedCount}`);
+    await this.driver.wait(async () => {
+      const tokenAddressesElement = await this.driver.findElement(
+        this.erc20TokenAddresses,
+      );
+      const tokenAddresses = await tokenAddressesElement.getText();
+      const addresses = tokenAddresses.split(',').filter(Boolean);
+
+      return addresses.length === expectedCount;
+    }, 10000);
   }
 
   async verify_successSignTypedDataV4Result(result: string) {
