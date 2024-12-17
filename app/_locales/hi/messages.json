@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "जब तक आप शुल्क को मैन्युअल रूप से अपडेट नहीं करते, हम इस ट्रांसेक्शन को आगे नहीं बढ़ा सकते।"
   },
-  "alertMessagePendingTransactions": {
-    "message": "यह ट्रांसेक्शन तब तक नहीं होगा जब तक पिछला ट्रांसेक्शन पूरा न हो जाए। किसी ट्रांसेक्शन को रद्द करने या तेज़ करने का तरीका जानें।"
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "अनुरोध करने वाली साइट वह साइट नहीं है जिस पर आप साइन इन कर रहे हैं। यह आपके लॉगिन क्रेडेंशियल चुराने का प्रयास हो सकता है।"
   },
   "alertMessageSignInWrongAccount": {
     "message": "यह साइट आपसे गलत अकाउंट का उपयोग करके साइन इन करने के लिए कह रही है।"
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "यह ट्रांसेक्शन तभी पूरा होगा जब आपका पिछला ट्रांसेक्शन पूरा हो जाएगा।"
   },
   "alertModalAcknowledge": {
     "message": "मैंने जोखिम को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
@@ -861,14 +855,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "टोकन और रकम का चयन करें"
   },
-  "bridgeTimingTooltipText": {
-    "message": "ब्रिजिंग का काम पूरा होने में यह अनुमानित समय लगेगा।"
-  },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "इसमें गैस शुल्क (क्रिप्टो माइनरों (miners) को भुगतान) और रीलेयर (relayer) शुल्क (ब्रिजिंग जैसी जटिल सेवाओं को मजबूत करने के लिए भुगतान) शामिल हैं।\nशुल्क नेटवर्क ट्रैफ़िक और ट्रांसेक्शन जटिलता पर आधारित हैं। MetaMask को किसी भी शुल्क से लाभ नहीं होता है।"
   },
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
@@ -1988,9 +1976,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "नेटवर्क पर ट्रांसेक्शन को प्रोसेस करने के लिए भुगतान की गई राशि।"
-  },
-  "estimatedTime": {
-    "message": "अनुमानित समय"
   },
   "ethGasPriceFetchWarning": {
     "message": "बैकअप गैस प्राइस दिया गया है क्योंकि मेन गैस एस्टीमेशन सर्विस अभी उपलब्ध नहीं है।"
@@ -4108,12 +4093,6 @@
   "permissionsPageEmptySubContent": {
     "message": "यहां पर आप इंस्टॉल किए गए Snaps या कनेक्टेड साइटों को दी गई अनुमतियां देख सकते हैं।"
   },
-  "permissionsPageTourDescription": {
-    "message": "कनेक्टेड साइटों और इंस्टॉल किए गए Snaps को दी गई अनुमतियों को मैनेज करने के लिए यह आपका कंट्रोल पैनल है।"
-  },
-  "permissionsPageTourTitle": {
-    "message": "कनेक्टेड साइटें अब अनुमतियां हैं"
-  },
   "permitSimulationDetailInfo": {
     "message": "आप खर्च करने वाले को अपने अकाउंट से इतने सारे टोकन खर्च करने की अनुमति दे रहे हैं।"
   },
@@ -6117,9 +6096,6 @@
   },
   "total": {
     "message": "कुलयोग"
-  },
-  "totalFees": {
-    "message": "कुल शुल्क"
   },
   "totalVolume": {
     "message": "टोटल वॉल्यूम"

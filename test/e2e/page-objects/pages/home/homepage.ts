@@ -23,6 +23,8 @@ class HomePage {
     tag: 'h6',
   };
 
+  private readonly erc20TokenDropdown = '[data-testid="import-token-button"]';
+
   private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
 
   private readonly popoverBackground = '.popover-bg';
@@ -30,6 +32,8 @@ class HomePage {
   private readonly popoverCloseButton = '[data-testid="popover-close"]';
 
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
+
+  private readonly refreshErc20Tokens = '[data-testid="refreshList"]';
 
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
@@ -84,6 +88,12 @@ class HomePage {
   async openPortfolioPage(): Promise<void> {
     console.log(`Open portfolio page on homepage`);
     await this.driver.clickElement(this.portfolioLink);
+  }
+
+  async refreshErc20TokenList(): Promise<void> {
+    console.log(`Refresh the ERC20 token list`);
+    await this.driver.clickElement(this.erc20TokenDropdown);
+    await this.driver.clickElement(this.refreshErc20Tokens);
   }
 
   async startSendFlow(): Promise<void> {

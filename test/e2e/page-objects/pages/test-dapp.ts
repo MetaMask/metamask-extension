@@ -16,8 +16,14 @@ class TestDapp {
   private readonly confirmDialogScrollButton =
     '[data-testid="signature-request-scroll-button"]';
 
+  private readonly confirmScrollToBottomButtonRedesign =
+    '.confirm-scroll-to-bottom__button';
+
   private readonly confirmSignatureButton =
     '[data-testid="page-container-footer-next"]';
+
+  private readonly confirmSignatureButtonRedesign =
+    '[data-testid="confirm-footer-button"]';
 
   private readonly connectAccountButton = '#connectButton';
 
@@ -116,6 +122,11 @@ class TestDapp {
     tag: 'div',
   };
 
+  private readonly signTypedDataV3V4SignatureRequestMessageRedesign = {
+    text: 'Hello, Bob!',
+    tag: 'p',
+  };
+
   private readonly signTypedDataV3VerifyButton = '#signTypedDataV3Verify';
 
   private readonly signTypedDataV3VerifyResult = '#signTypedDataV3VerifyResult';
@@ -157,11 +168,6 @@ class TestDapp {
   private readonly transactionRequestMessage = {
     text: 'Transaction request',
     tag: 'h2',
-  };
-
-  private readonly updateNetworkButton = {
-    text: 'Update',
-    tag: 'button',
   };
 
   private readonly userRejectedRequestMessage = {
@@ -678,18 +684,33 @@ class TestDapp {
 
   /**
    * Sign a message with the signTypedDataV4 method.
+   *
+   * @param confirmationRedesign - Indicates whether the redesigned signature confirmation flow is used. Defaults to false.
    */
-  async signTypedDataV4() {
+  async signTypedDataV4(confirmationRedesign: boolean = false) {
     console.log('Sign message with signTypedDataV4');
     await this.clickSignTypedDatav4();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessage,
-    );
-    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
-    );
+    if (confirmationRedesign) {
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessageRedesign,
+      );
+      await this.driver.clickElementSafe(
+        this.confirmScrollToBottomButtonRedesign,
+        200,
+      );
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButtonRedesign,
+      );
+    } else {
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessage,
+      );
+      await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButton,
+      );
+    }
   }
 
   async pasteIntoEip747ContractAddressInput() {

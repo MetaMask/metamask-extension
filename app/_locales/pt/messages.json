@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Não podemos prosseguir com essa transação até você atualizar manualmente a taxa."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Essa transação não será processada até que a transação anterior seja concluída. Saiba como cancelar ou acelerar uma transação."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "O site solicitante não é o mesmo em que você está entrando. Isso pode se tratar de uma tentativa de roubar suas credenciais de login."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Este site está pedindo que você entre usando a conta incorreta."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Essa transação só será processada quando sua transação anterior for concluída."
   },
   "alertModalAcknowledge": {
     "message": "Eu reconheço o risco e ainda quero prosseguir"
@@ -861,15 +855,10 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Selecionar token e valor"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Este é o tempo estimado para a conclusão da ponte."
-  },
   "bridgeTo": {
     "message": "Ponte para"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Isso inclui as taxas de gás (pagas aos mineradores de criptmoedas) e taxas de retransmissão (pagas para promover serviços complexos como pontes).\nAs taxas são baseadas no tráfego da rede e na complexidade da transação. A MetaMask não lucra com nenhuma dessas taxas."
-  },
+
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
@@ -1988,9 +1977,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Valor pago para processar a transação na rede."
-  },
-  "estimatedTime": {
-    "message": "Tempo estimado"
   },
   "ethGasPriceFetchWarning": {
     "message": "O preço de backup do gás é fornecido porque a estimativa de gás principal está indisponível no momento."
@@ -4108,12 +4094,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Aqui você pode ver as permissões que deu aos snaps instalados ou sites conectados."
   },
-  "permissionsPageTourDescription": {
-    "message": "Este é o seu painel de controle para gerenciar as permissões dadas aos sites conectados e snaps instalados."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Sites conectados agora são permissões"
-  },
   "permitSimulationDetailInfo": {
     "message": "Você está autorizando o consumidor a gastar esta quantidade de tokens de sua conta."
   },
@@ -6117,9 +6097,6 @@
   },
   "total": {
     "message": "Total"
-  },
-  "totalFees": {
-    "message": "Taxas totais"
   },
   "totalVolume": {
     "message": "Volume total"

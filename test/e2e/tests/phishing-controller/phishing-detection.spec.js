@@ -2,6 +2,7 @@ const { strict: assert } = require('assert');
 const { createServer } = require('node:http');
 const { createDeferredPromise } = require('@metamask/utils');
 const { until } = require('selenium-webdriver');
+
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -307,10 +308,9 @@ describe('Phishing Detection', function () {
           text: 'Back to safety',
         });
 
-        const currentUrl = await driver.getCurrentUrl();
-        const expectedPortfolioUrl = `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`;
-
-        assert.equal(currentUrl, expectedPortfolioUrl);
+        await driver.waitForUrl({
+          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+        });
       },
     );
   });
@@ -350,10 +350,9 @@ describe('Phishing Detection', function () {
           text: 'Back to safety',
         });
 
-        const currentUrl = await driver.getCurrentUrl();
-        const expectedPortfolioUrl = `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`;
-
-        assert.equal(currentUrl, expectedPortfolioUrl);
+        await driver.waitForUrl({
+          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+        });
       },
     );
   });

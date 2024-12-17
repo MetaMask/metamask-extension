@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Önceki bir işlem tamamlanana dek bu işlem gerçekleşmeyecektir. Bir işlemi nasıl iptal edeceğinizi veya hızlandıracağınızı öğrenin."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Talepte bulunan site giriş yaptığınız site değil. Bu durum oturum açma bilgilerinizi çalma teşebbüsü olabilir."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Bu site sizden yanlış hesabı kullanarak giriş yapmanızı istiyor."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Bu işlem sadece önceki işleminiz tamamlandıktan sonra gerçekleşecek."
   },
   "alertModalAcknowledge": {
     "message": "Riski anlıyor ve yine de ilerlemek istiyorum"
@@ -861,15 +855,10 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Token ve miktar seçin"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Bu, köprü işleminin tamamlanacağı tahmini süredir."
-  },
   "bridgeTo": {
     "message": "Şuraya köprü:"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Buna, gaz ücretleri (kripto madencilerine ödenen) ve düzenleyici ücretleri (köprü gibi güç kompleksi hizmetlerine ödenen) dahildir. Ücretler ağ trafiğine ve işlemin karmaşıklığına dayanır. MetaMask iki ücretten de kazanç sağlamaz."
-  },
+
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
@@ -1988,9 +1977,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Ağda işlemi gerçekleştirmek için ödenen tutar."
-  },
-  "estimatedTime": {
-    "message": "Tahmini süre"
   },
   "ethGasPriceFetchWarning": {
     "message": "Ana gaz tahmini hizmeti olarak sunulan yedek gaz fiyatı şu anda kullanılamıyor."
@@ -4108,12 +4094,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Burada, yüklü Snap'lere veya bağlı sitelere verdiğiniz izinleri görebilirsiniz."
   },
-  "permissionsPageTourDescription": {
-    "message": "Burası, bağlı sitelere ve yüklü Snap'lere verilen izinleri yönetebileceğiniz kontrol panelinizdir."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Bağlı siteler şimdi izinler oldu"
-  },
   "permitSimulationDetailInfo": {
     "message": "Harcama yapan tarafa hesabınızdan bu kadar çok token'i harcama izni veriyorsunuz."
   },
@@ -6117,9 +6097,6 @@
   },
   "total": {
     "message": "Toplam"
-  },
-  "totalFees": {
-    "message": "Toplam ücretler"
   },
   "totalVolume": {
     "message": "Toplam hacim"
