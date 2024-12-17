@@ -56,6 +56,7 @@ export enum BackgroundColor {
   backgroundDefault = 'background-default',
   backgroundAlternative = 'background-alternative',
   backgroundMuted = 'background-muted',
+  backgroundAlternativeSoft = 'background-alternative-soft',
   backgroundHover = 'background-hover',
   backgroundPressed = 'background-pressed',
   iconDefault = 'icon-default',
@@ -114,6 +115,7 @@ export enum BorderColor {
 export enum TextColor {
   textDefault = 'text-default',
   textAlternative = 'text-alternative',
+  textAlternativeSoft = 'text-alternative-soft',
   textMuted = 'text-muted',
   overlayInverse = 'overlay-inverse',
   primaryDefault = 'primary-default',
@@ -144,6 +146,7 @@ export enum TextColor {
 export enum IconColor {
   iconDefault = 'icon-default',
   iconAlternative = 'icon-alternative',
+  iconAlternativeSoft = 'icon-alternative-soft',
   iconMuted = 'icon-muted',
   overlayInverse = 'overlay-inverse',
   primaryDefault = 'primary-default',
