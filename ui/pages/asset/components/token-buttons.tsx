@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -62,6 +62,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
+import { Toast } from '../../../components/multichain';
 import { Asset } from './asset-page';
 
 const TokenButtons = ({
@@ -110,6 +111,8 @@ const TokenButtons = ({
     });
   };
   ///: END:ONLY_INCLUDE_IF
+
+  const [isToastOpen, setIsToastOpen] = useState(false);
 
   useEffect(() => {
     if (token.isERC721) {
@@ -363,6 +366,17 @@ const TokenButtons = ({
         )
         ///: END:ONLY_INCLUDE_IF
       }
+      {isToastOpen && (
+        <Box className="coin-buttons-toast">
+          <Toast
+            startAdornment={<></>}
+            text="Failed to switch networks"
+            onClose={() => setIsToastOpen(false)}
+            autoHideTime={2000}
+            onAutoHideToast={() => setIsToastOpen(false)}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

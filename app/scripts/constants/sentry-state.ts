@@ -84,7 +84,6 @@ export const SENTRY_BACKGROUND_STATE = {
     showAccountBanner: true,
     switchedNetworkDetails: false,
     switchedNetworkNeverShowMessage: false,
-    switchedNetworkError: false,
     showTestnetMessageInDropdown: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
@@ -444,7 +443,6 @@ export const SENTRY_UI_STATE = {
     ///: END:ONLY_INCLUDE_IF
     switchedNetworkDetails: false,
     switchedNetworkNeverShowMessage: false,
-    switchedNetworkError: false,
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
   },

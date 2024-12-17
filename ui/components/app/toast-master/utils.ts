@@ -53,11 +53,6 @@ export function setSwitchedNetworkNeverShowMessage() {
   ]);
 }
 
-export function setSwitchedNetworkError() {
-  console.log('bar');
-  submitRequestToBackgroundAndCatch('setSwitchedNetworkError');
-}
-
 export function setSurveyLinkLastClickedOrClosed(time: number) {
   submitRequestToBackgroundAndCatch('setSurveyLinkLastClickedOrClosed', [time]);
 }
