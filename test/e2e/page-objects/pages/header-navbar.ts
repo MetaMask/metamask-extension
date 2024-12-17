@@ -6,6 +6,9 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
+  private readonly allPermissionsButton =
+    '[data-testid="global-menu-connected-sites"]';
+
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
 
@@ -55,6 +58,12 @@ class HeaderNavbar {
     if (process.env.MMI) {
       await this.driver.waitForSelector(this.mmiPortfolioButton);
     }
+  }
+
+  async openPermissionsPage(): Promise<void> {
+    console.log('Open permissions page in header navbar');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.allPermissionsButton);
   }
 
   async openSnapListPage(): Promise<void> {
