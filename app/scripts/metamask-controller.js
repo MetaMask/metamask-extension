@@ -6974,14 +6974,16 @@ export default class MetamaskController extends EventEmitter {
             this.alertController,
           ),
 
-        requestPermissionApprovalForOrigin:
-          this.requestPermissionApprovalForOrigin.bind(this, origin),
-        updateCaveat: this.permissionController.updateCaveat.bind(
-          this.permissionController,
-        ),
-        grantPermissions: this.permissionController.grantPermissions.bind(
-          this.permissionController,
-        ),
+        requestPermittedChainsPermissionForOrigin: (options) =>
+          this.requestPermittedChainsPermission({
+            ...options,
+            origin,
+          }),
+        requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
+          this.requestPermittedChainsPermissionIncremental({
+            ...options,
+            origin,
+          }),
       }),
     );
 
