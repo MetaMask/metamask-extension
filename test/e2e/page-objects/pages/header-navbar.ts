@@ -71,13 +71,6 @@ class HeaderNavbar {
     await this.driver.clickElement(this.switchNetworkDropDown);
   }
 
-  async check_currentSelectedNetwork(networkName: string): Promise<void> {
-    console.log(`Validate the Switch network to ${networkName}`);
-    await this.driver.waitForSelector(
-      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
-    );
-  }
-
   /**
    * Verifies that the displayed account label in header matches the expected label.
    *
@@ -91,6 +84,59 @@ class HeaderNavbar {
       css: this.accountMenuButton,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Verifies that the displayed account balance in modal is correct.
+   *
+   * @param params - An object containing the balance and currency.
+   * @param params.balance - The expected balance of the account.
+   * @param params.currency - The expected currency of the account balance.
+   */
+  async check_accountBalance({
+    balance,
+    currency,
+  }: {
+    balance: string;
+    currency: string;
+  }): Promise<void> {
+    console.log(
+      `Verify the displayed account balance in the modal is: ${balance} ${currency}`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'span',
+      text: balance,
+    });
+    await this.driver.waitForSelector({
+      tag: 'span',
+      text: currency,
+    });
+  }
+
+  /**
+   * Validates that the currently selected network matches the expected network name.
+   *
+   * @param networkName - The expected name of the currently selected network.
+   */
+  async check_currentSelectedNetwork(networkName: string): Promise<void> {
+    console.log(`Validate the Switch network to ${networkName}`);
+    await this.driver.waitForSelector(
+      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
+  }
+
+  /**
+   * Verifies that all occurrences of the account balance are displayed as private.
+   *
+   * This function checks that the account balance is hidden in all places.
+   */
+  async check_balanceIsPrivateEverywhere(): Promise<void> {
+    console.log(`Verify all account balance occurrences are private`);
+    const balanceSelectors = {
+      tag: 'span',
+      text: '••••••',
+    };
+    await this.driver.elementCountBecomesN(balanceSelectors, 6);
   }
 }
 

@@ -29,6 +29,8 @@ class HomePage {
 
   private readonly popoverCloseButton = '[data-testid="popover-close"]';
 
+  private readonly privacyBalanceToggle = '[data-testid="sensitive-toggle"]';
+
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
   private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
@@ -81,6 +83,10 @@ class HomePage {
 
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
+  }
+
+  async togglePrivacyBalance(): Promise<void> {
+    await this.driver.clickElement(this.privacyBalanceToggle);
   }
 
   /**
