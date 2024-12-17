@@ -14,7 +14,8 @@ import {
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency, getLocale } from '../../../selectors';
+import { getLocale } from '../../../selectors';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { Column, Row, Tooltip } from '../layout';
 import {
