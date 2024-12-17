@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
 class HeaderNavbar {
@@ -18,6 +19,8 @@ class HeaderNavbar {
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
   private readonly switchNetworkDropDown = '[data-testid="network-display"]';
+
+  private readonly networkPicker = '.mm-picker-network';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -76,6 +79,14 @@ class HeaderNavbar {
     console.log(`Validate the Switch network to ${networkName}`);
     await this.driver.waitForSelector(
       `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
+  }
+
+  async check_ifNetworkPickerClickable(clickable: boolean): Promise<void> {
+    console.log('Check whether the network picker is clickable or not');
+    assert.equal(
+      await (await this.driver.findElement(this.networkPicker)).isEnabled(),
+      clickable,
     );
   }
 
