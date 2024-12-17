@@ -49,6 +49,21 @@ const locks = new Set();
  * available. It is essentially a wrapper of wallet_requestPermissions that
  * only errors if the user rejects the request. We maintain the method for
  * backwards compatibility reasons.
+ *
+ * @param req - The JsonRpcEngine request
+ * @param res - The JsonRpcEngine result object
+ * @param _next - JsonRpcEngine next() callback - unused
+ * @param end - JsonRpcEngine end() callback
+ * @param options - Method hooks passed to the method implementation
+ * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
+ * @param options.getUnlockPromise - A hook that resolves when the wallet is unlocked.
+ * @param options.sendMetrics - A hook that helps track metric events.
+ * @param options.metamaskState - The MetaMask app state.
+ * @param options.requestCaip25PermissionForOrigin - A hook that requests the CAIP-25 permission for the origin.
+ * @param options.metamaskState.metaMetricsId
+ * @param options.metamaskState.permissionHistory
+ * @param options.metamaskState.accounts
+ * @returns A promise that resolves to nothing
  */
 async function requestEthereumAccountsHandler(
   req: JsonRpcRequest<JsonRpcParams> & { origin: string },
