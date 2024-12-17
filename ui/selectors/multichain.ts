@@ -16,6 +16,7 @@ import {
   getCompletedOnboarding,
   getConversionRate,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -34,7 +35,6 @@ import {
 } from '../../shared/modules/selectors/networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
-  getCurrentCurrency,
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,

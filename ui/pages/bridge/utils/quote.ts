@@ -12,6 +12,17 @@ import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 
+export const isQuoteExpired = (
+  isQuoteGoingToRefresh: boolean,
+  refreshRate: number,
+  quotesLastFetchedMs?: number,
+) =>
+  Boolean(
+    !isQuoteGoingToRefresh &&
+      quotesLastFetchedMs &&
+      Date.now() - quotesLastFetchedMs > refreshRate,
+  );
+
 export const isNativeAddress = (address?: string | null) =>
   address === zeroAddress() || address === '' || !address;
 

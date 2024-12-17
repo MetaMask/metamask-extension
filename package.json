@@ -400,7 +400,7 @@
     "loglevel": "^1.8.1",
     "lottie-web": "^5.12.2",
     "luxon": "^3.2.1",
-    "nanoid": "^2.1.6",
+    "nanoid": "^3.3.8",
     "pify": "^5.0.0",
     "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",
