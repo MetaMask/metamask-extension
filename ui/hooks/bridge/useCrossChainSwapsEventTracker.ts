@@ -104,6 +104,7 @@ export const useCrossChainSwapsEventTracker = () => {
           action_type: ActionType.CROSSCHAIN_V1,
           ...properties,
         },
+        value: 'value' in properties ? (properties.value as never) : undefined,
       });
     },
     [trackEvent],
