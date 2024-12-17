@@ -41,7 +41,11 @@ export function useSnapSettings({ snapId }: { snapId?: string }) {
         }
       }
     }
-    snapId && fetchPage(snapId);
+
+    if (snapId) {
+      fetchPage(snapId);
+    }
+
     return () => {
       cancelled = true;
     };
