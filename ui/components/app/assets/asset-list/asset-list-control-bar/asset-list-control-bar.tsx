@@ -154,6 +154,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const handleRefresh = () => {
     dispatch(detectTokens());
     closePopover();
+    trackEvent({
+      category: MetaMetricsEventCategory.Tokens,
+      event: MetaMetricsEventName.TokenListRefreshed,
+    });
   };
 
   return (
