@@ -97,7 +97,7 @@ jobs:
 
       - name: Publish prerelease
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           BASE_COMMIT_HASH: ${{ github.event.pull_request.base.sha }}

@@ -40,7 +40,7 @@ function getPercentageChange(from, to) {
 
 async function start() {
   const {
-    GITHUB_TOKEN,
+    PR_COMMENT_TOKEN,
     PR_NUMBER,
     HEAD_COMMIT_HASH,
     BASE_COMMIT_HASH,
@@ -387,7 +387,7 @@ async function start() {
     body: JSON_PAYLOAD,
     headers: {
       'User-Agent': 'metamaskbot',
-      Authorization: `token ${GITHUB_TOKEN}`,
+      Authorization: `token ${PR_COMMENT_TOKEN}`,
     },
   });
   if (!response.ok) {
