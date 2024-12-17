@@ -447,10 +447,8 @@ const CoinButtons = ({
           },
         });
         dispatch(setSwapsFromToken(defaultSwapsToken));
-        if (usingHardwareWallet) {
-          if (global.platform.openExtensionInBrowser) {
-            global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
-          }
+        if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
+          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
         } else {
           history.push(PREPARE_SWAP_ROUTE);
         }
