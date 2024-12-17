@@ -48,7 +48,7 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
         // Open the Test Dapp and connect
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.connectAccount(newPublicKey);
+        await testDapp.connectAccount({ publicAddress: newPublicKey });
 
         // SignedTypedDataV3 with Test Dapp
         await signTypedDataV3WithSnapAccount(driver, newPublicKey, false, true);
