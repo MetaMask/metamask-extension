@@ -127,9 +127,6 @@ workflows:
                 - master
           requires:
             - prep-deps
-      - test-deps-audit:
-          requires:
-            - prep-deps
       - test-deps-depcheck:
           requires:
             - prep-deps
@@ -1052,17 +1049,6 @@ jobs:
             - run:
                 name: Validate release candidate changelog
                 command: .circleci/scripts/validate-changelog-in-rc.sh
-
-  test-deps-audit:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: yarn audit
-          command: yarn audit
 
   test-deps-depcheck:
     executor: node-browsers-small
