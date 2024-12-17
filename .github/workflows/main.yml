@@ -29,6 +29,10 @@ jobs:
     name: Test lint shellcheck
     uses: ./.github/workflows/test-lint-shellcheck.yml
 
+  test-deps-depcheck:
+    name: Test deps depcheck
+    uses: ./.github/workflows/test-deps-depcheck.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -54,6 +58,7 @@ jobs:
       - test-deps-audit
       - test-yarn-dedupe
       - test-lint-shellcheck
+      - test-deps-depcheck
       - run-tests
       - wait-for-circleci-workflow-status
       - publish-prerelease

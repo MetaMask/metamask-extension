@@ -123,9 +123,6 @@ workflows:
                 - master
           requires:
             - prep-deps
-      - test-deps-depcheck:
-          requires:
-            - prep-deps
       - validate-lavamoat-allow-scripts:
           requires:
             - prep-deps
@@ -280,7 +277,6 @@ workflows:
             - prep-build-flask-mv2
       - all-tests-pass:
           requires:
-            - test-deps-depcheck
             - validate-lavamoat-allow-scripts
             - validate-lavamoat-policy-build
             - validate-lavamoat-policy-webapp
@@ -1020,17 +1016,6 @@ jobs:
             - run:
                 name: Validate release candidate changelog
                 command: .circleci/scripts/validate-changelog-in-rc.sh
-
-  test-deps-depcheck:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: depcheck
-          command: yarn depcheck
 
   test-e2e-chrome-webpack:
     executor: node-browsers-medium-plus
