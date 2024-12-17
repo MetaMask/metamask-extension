@@ -21,6 +21,10 @@ jobs:
     name: Test deps audit
     uses: ./.github/workflows/test-deps-audit.yml
 
+  test-yarn-dedupe:
+    name: Test yarn dedupe
+    uses: ./.github/workflows/test-yarn-dedupe.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
