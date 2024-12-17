@@ -225,7 +225,10 @@ export const formatCurrencyAmount = (
   return formatCurrency(amount.toString(), currency, precision);
 };
 
-export const formatProviderLabel = (
-  quote?: QuoteResponse,
-): `${string}_${string}` =>
-  `${quote?.quote.bridgeId}_${quote?.quote.bridges[0]}`;
+export const formatProviderLabel = ({
+  bridgeId,
+  bridges,
+}: {
+  bridgeId: QuoteResponse['quote']['bridgeId'];
+  bridges: QuoteResponse['quote']['bridges'];
+}): `${string}_${string}` => `${bridgeId}_${bridges[0]}`;
