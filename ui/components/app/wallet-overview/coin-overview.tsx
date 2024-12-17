@@ -281,162 +281,164 @@ export const CoinOverview = ({
   };
 
   return (
-    <WalletOverview
-      balance={
-        <Tooltip
-          position="top"
-          title={t('balanceOutdated')}
-          disabled={!balanceIsCached}
-        >
-          <div className={`${classPrefix}-overview__balance`}>
-            <div
-              className={`${classPrefix}-overview__primary-container`}
-              onMouseEnter={handleMouseEnter}
-              ref={setBoxRef}
-            >
-              {balanceToDisplay ? (
-                <>
-                  <UserPreferencedCurrencyDisplay
-                    style={{ display: 'contents' }}
-                    account={account}
-                    className={classnames(
-                      `${classPrefix}-overview__primary-balance`,
-                      {
-                        [`${classPrefix}-overview__cached-balance`]:
-                          balanceIsCached,
-                      },
-                    )}
-                    data-testid={`${classPrefix}-overview__primary-currency`}
-                    value={balanceToDisplay}
-                    type={PRIMARY}
-                    ethNumberOfDecimals={4}
-                    hideTitle
-                    shouldCheckShowNativeToken
-                    isAggregatedFiatOverviewBalance={
-                      !showNativeTokenAsMainBalance &&
-                      !isTestnet &&
-                      shouldShowFiat
-                    }
-                    privacyMode={privacyMode}
-                  />
-                  <ButtonIcon
-                    color={IconColor.iconAlternative}
-                    marginLeft={2}
-                    size={ButtonIconSize.Md}
-                    onClick={handleSensitiveToggle}
-                    iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-                    justifyContent={JustifyContent.center}
-                    ariaLabel="Sensitive toggle"
-                    data-testid="sensitive-toggle"
-                  />
-                </>
-              ) : (
-                <Spinner className="loading-overlay__spinner" />
-              )}
-              {balanceIsCached && (
-                <span className={`${classPrefix}-overview__cached-star`}>
-                  *
-                </span>
-              )}
-            </div>
-            {shouldShowPopover &&
-            (!isTestnet || (isTestnet && showFiatInTestnets)) &&
-            !showNativeTokenAsMainBalance ? (
-              <Popover
-                referenceElement={referenceElement}
-                isOpen={isOpen}
-                position={PopoverPosition.BottomStart}
-                hasArrow
-                flip
-                data-theme={theme === 'light' ? 'dark' : 'light'}
-                className="balance-popover__container"
-                padding={3}
-                onClickOutside={handleClick}
-                onPressEscKey={handleClick}
-                preventOverflow
+    <>
+      <WalletOverview
+        balance={
+          <Tooltip
+            position="top"
+            title={t('balanceOutdated')}
+            disabled={!balanceIsCached}
+          >
+            <div className={`${classPrefix}-overview__balance`}>
+              <div
+                className={`${classPrefix}-overview__primary-container`}
+                onMouseEnter={handleMouseEnter}
+                ref={setBoxRef}
               >
-                <Box>
-                  <Box
-                    display={Display.Flex}
-                    justifyContent={JustifyContent.spaceBetween}
-                  >
-                    <Text
-                      variant={TextVariant.bodySmBold}
-                      textAlign={TextAlign.Left}
-                      alignItems={AlignItems.flexStart}
-                    >
-                      {t('yourBalanceIsAggregated')}
-                    </Text>
-                    <ButtonIcon
-                      size={ButtonIconSize.Sm}
-                      onClick={handleClick}
-                      iconName={IconName.Close}
-                      justifyContent={JustifyContent.center}
-                      ariaLabel="close"
-                      data-testid="popover-close"
+                {balanceToDisplay ? (
+                  <>
+                    <UserPreferencedCurrencyDisplay
+                      style={{ display: 'contents' }}
+                      account={account}
+                      className={classnames(
+                        `${classPrefix}-overview__primary-balance`,
+                        {
+                          [`${classPrefix}-overview__cached-balance`]:
+                            balanceIsCached,
+                        },
+                      )}
+                      data-testid={`${classPrefix}-overview__primary-currency`}
+                      value={balanceToDisplay}
+                      type={PRIMARY}
+                      ethNumberOfDecimals={4}
+                      hideTitle
+                      shouldCheckShowNativeToken
+                      isAggregatedFiatOverviewBalance={
+                        !showNativeTokenAsMainBalance &&
+                        !isTestnet &&
+                        shouldShowFiat
+                      }
+                      privacyMode={privacyMode}
                     />
+                    <ButtonIcon
+                      color={IconColor.iconAlternative}
+                      marginLeft={2}
+                      size={ButtonIconSize.Md}
+                      onClick={handleSensitiveToggle}
+                      iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
+                      justifyContent={JustifyContent.center}
+                      ariaLabel="Sensitive toggle"
+                      data-testid="sensitive-toggle"
+                    />
+                  </>
+                ) : (
+                  <Spinner className="loading-overlay__spinner" />
+                )}
+                {balanceIsCached && (
+                  <span className={`${classPrefix}-overview__cached-star`}>
+                    *
+                  </span>
+                )}
+              </div>
+              {shouldShowPopover &&
+              (!isTestnet || (isTestnet && showFiatInTestnets)) &&
+              !showNativeTokenAsMainBalance ? (
+                <Popover
+                  referenceElement={referenceElement}
+                  isOpen={isOpen}
+                  position={PopoverPosition.BottomStart}
+                  hasArrow
+                  flip
+                  data-theme={theme === 'light' ? 'dark' : 'light'}
+                  className="balance-popover__container"
+                  padding={3}
+                  onClickOutside={handleClick}
+                  onPressEscKey={handleClick}
+                  preventOverflow
+                >
+                  <Box>
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                    >
+                      <Text
+                        variant={TextVariant.bodySmBold}
+                        textAlign={TextAlign.Left}
+                        alignItems={AlignItems.flexStart}
+                      >
+                        {t('yourBalanceIsAggregated')}
+                      </Text>
+                      <ButtonIcon
+                        size={ButtonIconSize.Sm}
+                        onClick={handleClick}
+                        iconName={IconName.Close}
+                        justifyContent={JustifyContent.center}
+                        ariaLabel="close"
+                        data-testid="popover-close"
+                      />
+                    </Box>
+
+                    <Text variant={TextVariant.bodySm}>
+                      {process.env.PORTFOLIO_VIEW
+                        ? t('crossChainAggregatedBalancePopover', [
+                            <ButtonLink
+                              size={ButtonLinkSize.Inherit}
+                              textProps={{
+                                variant: TextVariant.bodyMd,
+                                alignItems: AlignItems.flexStart,
+                              }}
+                              as="a"
+                              href={`#${showNativeTokenAsMainBalanceRoute.route}`}
+                              rel="noopener noreferrer"
+                              onClick={handleClick}
+                            >
+                              {t('settings')}
+                            </ButtonLink>,
+                          ])
+                        : t('aggregatedBalancePopover', [
+                            <ButtonLink
+                              size={ButtonLinkSize.Inherit}
+                              textProps={{
+                                variant: TextVariant.bodyMd,
+                                alignItems: AlignItems.flexStart,
+                              }}
+                              as="a"
+                              href={`#${showNativeTokenAsMainBalanceRoute.route}`}
+                              rel="noopener noreferrer"
+                              onClick={handleClick}
+                            >
+                              {t('settings')}
+                            </ButtonLink>,
+                          ])}
+                    </Text>
                   </Box>
+                </Popover>
+              ) : null}
 
-                  <Text variant={TextVariant.bodySm}>
-                    {process.env.PORTFOLIO_VIEW
-                      ? t('crossChainAggregatedBalancePopover', [
-                          <ButtonLink
-                            size={ButtonLinkSize.Inherit}
-                            textProps={{
-                              variant: TextVariant.bodyMd,
-                              alignItems: AlignItems.flexStart,
-                            }}
-                            as="a"
-                            href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                            rel="noopener noreferrer"
-                            onClick={handleClick}
-                          >
-                            {t('settings')}
-                          </ButtonLink>,
-                        ])
-                      : t('aggregatedBalancePopover', [
-                          <ButtonLink
-                            size={ButtonLinkSize.Inherit}
-                            textProps={{
-                              variant: TextVariant.bodyMd,
-                              alignItems: AlignItems.flexStart,
-                            }}
-                            as="a"
-                            href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                            rel="noopener noreferrer"
-                            onClick={handleClick}
-                          >
-                            {t('settings')}
-                          </ButtonLink>,
-                        ])}
-                  </Text>
-                </Box>
-              </Popover>
-            ) : null}
-
-            {renderPercentageAndAmountChange()}
-          </div>
-        </Tooltip>
-      }
-      buttons={
-        <CoinButtons
-          {...{
-            account,
-            trackingLocation: 'home',
-            chainId,
-            isSwapsChain,
-            isSigningEnabled,
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            isBridgeChain,
-            isBuyableChain,
-            defaultSwapsToken,
-            ///: END:ONLY_INCLUDE_IF
-            classPrefix,
-            iconButtonClassName: `${classPrefix}-overview__icon-button`,
-          }}
-        />
-      }
-      className={className}
-    />
+              {renderPercentageAndAmountChange()}
+            </div>
+          </Tooltip>
+        }
+        buttons={
+          <CoinButtons
+            {...{
+              account,
+              trackingLocation: 'home',
+              chainId,
+              isSwapsChain,
+              isSigningEnabled,
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+              isBridgeChain,
+              isBuyableChain,
+              defaultSwapsToken,
+              ///: END:ONLY_INCLUDE_IF
+              classPrefix,
+              iconButtonClassName: `${classPrefix}-overview__icon-button`,
+            }}
+          />
+        }
+        className={className}
+      />
+    </>
   );
 };

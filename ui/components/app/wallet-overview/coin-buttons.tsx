@@ -101,7 +101,7 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { setSwitchedNetworkError } from '../toast-master/utils';
+import { Toast } from '../../multichain';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -137,6 +137,7 @@ const CoinButtons = ({
 
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [isToastOpen, setIsToastOpen] = useState(false);
 
   const { address: selectedAddress } = account;
   const history = useHistory();
@@ -346,8 +347,7 @@ const CoinButtons = ({
           message: `Successfully switched chains. Target chainId: ${chainId}, Current chainId: ${currentChainId}.`,
         };
       } catch (err) {
-        console.log('foo');
-        setSwitchedNetworkError();
+        setIsToastOpen(true);
         return {
           error: true,
           message: `Failed to switch chains.
@@ -620,6 +620,17 @@ const CoinButtons = ({
           />
         </>
       }
+      {isToastOpen && (
+        <Box className="coin-buttons-toast">
+          <Toast
+            startAdornment={<></>}
+            text="Failed to switch networks"
+            onClose={() => setIsToastOpen(false)}
+            autoHideTime={2000}
+            onAutoHideToast={() => setIsToastOpen(false)}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

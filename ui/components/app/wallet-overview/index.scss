@@ -172,3 +172,14 @@
     margin-top: -4px;
   }
 }
+
+.coin-buttons-toast {
+  position: absolute;
+  bottom: 16px;
+  width: 90%;
+  margin-inline-start: 16px;
+  margin-inline-end: 16px;
+  z-index: 200;
+  gap: 10px;
+  flex-direction: column;
+}
