@@ -14,23 +14,25 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
 
-      - name: Beta build
+      - name: Make beta build
         env:
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: .circleci/scripts/trigger-beta-build.sh
 
-      - name: Move beta build to 'dist-beta' to avoid conflict with production build
+      - name: Move 'dist' to 'dist-beta' to avoid conflict with production build
         run: mv ./dist ./dist-beta
 
-      - name: Move beta zips to 'builds-beta' to avoid conflict with production build
-        run: mv ./builds ./builds-beta
-
-      - uses: actions/upload-artifact@v4
+      - name: Upload 'dist-beta'
+        uses: actions/upload-artifact@v4
         with:
           name: dist-beta
           path: dist-beta
 
-      - uses: actions/upload-artifact@v4
+      - name: Move 'builds' to 'builds-beta' to avoid conflict with production build
+        run: mv ./builds ./builds-beta
+
+      - name: Upload 'builds-beta'
+        uses: actions/upload-artifact@v4
         with:
           name: builds-beta
           path: builds-beta
