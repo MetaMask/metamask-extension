@@ -290,8 +290,6 @@
           }
         }
       },
-      "destTokensLoadingStatus": "undefined",
-      "srcTokensLoadingStatus": "undefined",
       "srcTokens": {},
       "srcTopAssets": {},
       "destTokens": {},
