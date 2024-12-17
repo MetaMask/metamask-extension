@@ -481,12 +481,11 @@ export function importNewAccount(
   };
 }
 
-export function addNewAccount(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function addNewAccount(
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  keyringId?: string,
+  ///: END:ONLY_INCLUDE_IF(multi-srp)
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
     let oldAccounts = getInternalAccounts(getState()).filter(
@@ -494,26 +493,14 @@ export function addNewAccount(): ThunkAction<
         internalAccount.metadata.keyring.type === KeyringTypes.hd,
     );
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-    // We are trying to obtain the HD keyring ID by first determining the keyring type of the currently selected account. If the account belongs to an HD keyring, we can retrieve its keyring ID, which will be used to create a new account. If the selected account is not part of an HD keyring, we will assume that the user intends to create the new account within the primary HD keyring.
-    const selectedAccount = getSelectedInternalAccount(getState());
     const keyrings = getMetaMaskKeyrings(getState());
-    // find keyring containing selected account
-    oldAccounts = [];
-    let keyringId: string;
-    for (const keyring of keyrings) {
-      // Already found old accounts
-      if (oldAccounts?.length) {
-        break;
-      }
-      if (keyring.type === KeyringTypes.hd) {
-        const keyringAccounts = keyring.accounts;
-        if (keyringAccounts.includes(selectedAccount.address)) {
-          oldAccounts = keyringAccounts;
-          keyringId = keyring.id;
-          break;
-        }
-      }
-    }
+    const primaryKeyring = keyrings.find(
+      (keyring) => keyring.type === KeyringTypes.hd,
+    );
+    const selectedKeyring = keyrings.find(
+      (keyring) => keyring.id === keyringId,
+    );
+    oldAccounts = selectedKeyring?.accounts || primaryKeyring?.accounts;
     ///: END:ONLY_INCLUDE_IF
 
     dispatch(showLoadingIndication());
@@ -523,7 +510,7 @@ export function addNewAccount(): ThunkAction<
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        keyringId,
+        keyringId || primaryKeyring?.id,
         ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {
