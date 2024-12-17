@@ -44,9 +44,8 @@ const createMockedHandler = () => {
     setActiveNetwork: jest.fn(),
     getCaveat: jest.fn(),
     getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
-    requestPermissionApprovalForOrigin: jest.fn(),
-    updateCaveat: jest.fn(),
-    grantPermissions: jest.fn(),
+    requestPermittedChainsPermissionForOrigin: jest.fn(),
+    requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -169,10 +168,10 @@ describe('switchEthereumChainHandler', () => {
       {
         setActiveNetwork: mocks.setActiveNetwork,
         getCaveat: mocks.getCaveat,
-        updateCaveat: mocks.updateCaveat,
-        requestPermissionApprovalForOrigin:
-          mocks.requestPermissionApprovalForOrigin,
-        grantPermissions: mocks.grantPermissions,
+        requestPermittedChainsPermissionForOrigin:
+          mocks.requestPermittedChainsPermissionForOrigin,
+        requestPermittedChainsPermissionIncrementalForOrigin:
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
       },
     );
   });
