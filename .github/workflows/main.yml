@@ -41,6 +41,10 @@ jobs:
     name: Test lint changelog
     uses: ./.github/workflows/test-lint-changelog.yml
 
+  test-lint-lockfile:
+    name: Test lint lockfile
+    uses: ./.github/workflows/test-lint-lockfile.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -69,6 +73,7 @@ jobs:
       - test-deps-depcheck
       - test-lint
       - test-lint-changelog
+      - test-lint-lockfile
       - run-tests
       - wait-for-circleci-workflow-status
       - publish-prerelease

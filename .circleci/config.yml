@@ -180,9 +180,6 @@ workflows:
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
-      - test-lint-lockfile:
-          requires:
-            - prep-deps
       - test-e2e-chrome-webpack:
           <<: *main_master_rc_only
           requires:
@@ -274,7 +271,6 @@ workflows:
             - validate-lavamoat-allow-scripts
             - validate-lavamoat-policy-build
             - validate-lavamoat-policy-webapp
-            - test-lint-lockfile
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -949,20 +945,6 @@ jobs:
       - run:
           name: Test Storybook
           command: yarn test-storybook:ci
-
-  test-lint-lockfile:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: lockfile-lint
-          command: yarn lint:lockfile
-      - run:
-          name: check yarn resolutions
-          command: yarn --check-resolutions
 
   test-e2e-chrome-webpack:
     executor: node-browsers-medium-plus
