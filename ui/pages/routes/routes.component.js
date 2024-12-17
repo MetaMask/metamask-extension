@@ -490,13 +490,15 @@ export default class Routes extends Component {
       transactionsMetadata[confirmationId]?.type,
     );
 
-    let isLoadingShown =
-      isLoading &&
-      completedOnboarding &&
-      // In the redesigned screens, we hide the general loading spinner and the
-      // loading states are on a component by component basis.
+    // In the redesigned screens, we hide the general loading spinner and the
+    // loading states are on a component by component basis.
+    const isRedesignedScreen =
       !isCorrectApprovalType &&
-      !isCorrectTransactionType;
+      !isCorrectTransactionType &&
+      transactionsMetadata[confirmationId]?.type !== undefined &&
+      pendingApproval?.type !== undefined;
+
+    let isLoadingShown = isLoading && completedOnboarding && isRedesignedScreen;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
@@ -507,10 +509,7 @@ export default class Routes extends Component {
           confirmation.type ===
           SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
       ) &&
-      // In the redesigned screens, we hide the general loading spinner and the
-      // loading states are on a component by component basis.
-      !isCorrectApprovalType &&
-      !isCorrectTransactionType;
+      isRedesignedScreen;
     ///: END:ONLY_INCLUDE_IF
 
     return (
