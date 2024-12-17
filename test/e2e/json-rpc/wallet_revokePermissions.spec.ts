@@ -18,7 +18,7 @@ describe('Revoke Dapp Permissions', function () {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_ifAccountIsConnected(ACCOUNT_1);
+        await testDapp.check_connectedAccounts(ACCOUNT_1);
 
         // wallet_revokePermissions request
         const revokePermissionsRequest = JSON.stringify({
@@ -37,7 +37,7 @@ describe('Revoke Dapp Permissions', function () {
         // Response of method call
         assert.deepEqual(result, null);
 
-        await testDapp.check_ifAccountIsConnected(ACCOUNT_1, false);
+        await testDapp.check_connectedAccounts(ACCOUNT_1, false);
       },
     );
   });

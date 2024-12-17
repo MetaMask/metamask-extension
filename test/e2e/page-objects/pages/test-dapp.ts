@@ -292,7 +292,7 @@ class TestDapp {
     console.log('Connect account to test dapp');
     await this.driver.clickElement(this.connectAccountButton);
     await this.confirmConnectAccountModal();
-    await this.check_ifAccountIsConnected(publicAddress);
+    await this.check_connectedAccounts(publicAddress);
     await this.driver.waitForSelector(this.localhostNetworkMessage);
   }
 
@@ -316,48 +316,30 @@ class TestDapp {
     await this.driver.clickElement(this.revokePermissionButton);
     await this.driver.refresh();
     await this.check_pageIsLoaded();
-    await this.check_ifAccountIsConnected(publicAddress, false);
+    await this.check_connectedAccounts(publicAddress, false);
   }
 
   /**
-   * Check if the account is connected to the test dapp.
+   * Check if the accounts connected to the test dapp.
    *
-   * @param publicAddress - The public address to check if the account is connected to the test dapp.
-   * @param shouldBeConnected - Whether the account should be connected to the test dapp. Defaults to true.
+   * @param connectedAccounts - Account addresses to check if connected to test dapp, separated by a comma.
+   * @param shouldBeConnected - Whether the accounts should be connected to test dapp. Defaults to true.
    */
-  async check_ifAccountIsConnected(
-    publicAddress: string,
+  async check_connectedAccounts(
+    connectedAccounts: string,
     shouldBeConnected: boolean = true,
   ) {
     if (shouldBeConnected) {
+      console.log('Verify connected accounts:', connectedAccounts);
       await this.driver.waitForSelector({
         css: this.connectedAccount,
-        text: publicAddress.toLowerCase(),
+        text: connectedAccounts.toLowerCase(),
       });
     } else {
+      console.log('Verify accounts not connected:', connectedAccounts);
       await this.driver.assertElementNotPresent({
         css: this.connectedAccount,
-        text: publicAddress.toLowerCase(),
-      });
-    }
-  }
-
-  /**
-   * Verifies the accounts connected to the test dapp.
-   *
-   * @param connectedAccounts - The expected connected accounts separated by a comma. If no accounts are connected we can omit the param.
-   */
-  async check_connectedAccounts(connectedAccounts: string = '') {
-    console.log('Verify connected accounts');
-    if (connectedAccounts) {
-      await this.driver.waitForSelector({
-        css: this.connectedAccount,
-        text: connectedAccounts,
-      });
-    } else {
-      await this.driver.waitForSelector({
-        css: this.connectedAccount,
-        text: ' ',
+        text: connectedAccounts.toLowerCase(),
       });
     }
   }
