@@ -1,7 +1,12 @@
 import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 import classnames from 'classnames';
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
-import { ButtonLinkProps, Text } from '../../../component-library';
+import {
+  ButtonLinkProps,
+  Icon,
+  IconName,
+  Text,
+} from '../../../component-library';
 import {
   FontWeight,
   TextColor,
@@ -11,6 +16,7 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 export type SnapUIButtonProps = {
   name?: string;
   textVariant: ButtonLinkProps<'button'>['variant'];
+  loading?: boolean;
 };
 
 const COLORS = {
@@ -27,6 +33,7 @@ export const SnapUIButton: FunctionComponent<
   type = ButtonType.Button,
   variant = 'primary',
   disabled = false,
+  loading = false,
   className = '',
   textVariant,
   ...props
@@ -63,7 +70,14 @@ export const SnapUIButton: FunctionComponent<
       variant={textVariant}
       {...props}
     >
-      {children}
+      {loading ? (
+        <Icon
+          name={IconName.Loading}
+          style={{ animation: 'spin 1.2s linear infinite' }}
+        />
+      ) : (
+        children
+      )}
     </Text>
   );
 };
