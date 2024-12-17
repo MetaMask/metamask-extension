@@ -435,7 +435,7 @@ const CoinButtons = ({
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      if (isSwapsChain) {
+      isSwapsChain &&
         trackEvent({
           event: MetaMetricsEventName.NavSwapButtonClicked,
           category: MetaMetricsEventCategory.Swaps,
@@ -446,12 +446,11 @@ const CoinButtons = ({
             chain_id: chainId,
           },
         });
-        dispatch(setSwapsFromToken(defaultSwapsToken));
-        if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
-        } else {
-          history.push(PREPARE_SWAP_ROUTE);
-        }
+      isSwapsChain && dispatch(setSwapsFromToken(defaultSwapsToken));
+      if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
+        global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
+      } else {
+        history.push(PREPARE_SWAP_ROUTE);
       }
       ///: END:ONLY_INCLUDE_IF
     }
