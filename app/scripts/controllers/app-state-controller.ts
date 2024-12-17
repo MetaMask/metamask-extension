@@ -72,6 +72,7 @@ export type AppStateControllerState = {
   // States used for displaying the changed network toast
   switchedNetworkDetails: Record<string, string> | null;
   switchedNetworkNeverShowMessage: boolean;
+  switchedNetworkError: boolean;
   currentExtensionPopupId: number;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   termsOfUseLastAgreed?: number;
@@ -190,6 +191,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
+  switchedNetworkError: false,
   slides: [],
   ...getInitialStateOverrides(),
 });
@@ -318,6 +320,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   switchedNetworkNeverShowMessage: {
+    persist: true,
+    anonymous: true,
+  },
+  switchedNetworkError: {
     persist: true,
     anonymous: true,
   },
@@ -904,6 +910,14 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.switchedNetworkDetails = null;
       state.switchedNetworkNeverShowMessage = switchedNetworkNeverShowMessage;
+    });
+  }
+
+  setSwitchedNetworkError(): void {
+    console.log('foobar');
+    this.update((state) => {
+      state.switchedNetworkDetails = null;
+      state.switchedNetworkError = true;
     });
   }
 

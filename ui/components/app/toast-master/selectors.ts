@@ -22,6 +22,7 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
     showNftDetectionEnablementToast?: boolean;
     surveyLinkLastClickedOrClosed?: number;
     switchedNetworkNeverShowMessage?: boolean;
+    switchedNetworkError?: boolean;
   };
 };
 

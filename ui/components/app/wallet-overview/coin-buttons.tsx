@@ -101,6 +101,7 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { setSwitchedNetworkError } from '../toast-master/utils';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -332,6 +333,7 @@ const CoinButtons = ({
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId) {
       try {
+        throw new Error('test error for setCorrectChain');
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
         await dispatch(
@@ -344,6 +346,8 @@ const CoinButtons = ({
           message: `Successfully switched chains. Target chainId: ${chainId}, Current chainId: ${currentChainId}.`,
         };
       } catch (err) {
+        console.log('foo');
+        setSwitchedNetworkError();
         return {
           error: true,
           message: `Failed to switch chains.

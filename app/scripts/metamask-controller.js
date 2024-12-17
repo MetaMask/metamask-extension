@@ -3838,6 +3838,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSwitchedNetworkNeverShowMessage.bind(
           appStateController,
         ),
+      setSwitchedNetworkError:
+        appStateController.setSwitchedNetworkError.bind(appStateController),
       getLastInteractedConfirmationInfo:
         appStateController.getLastInteractedConfirmationInfo.bind(
           appStateController,
