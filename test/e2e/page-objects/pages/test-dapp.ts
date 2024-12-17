@@ -330,12 +330,12 @@ class TestDapp {
     console.log('Verify connected accounts');
     if (connectedAccounts) {
       await this.driver.waitForSelector({
-        css: '#accounts',
+        css: this.connectedAccount,
         text: connectedAccounts,
       });
     } else {
       await this.driver.waitForSelector({
-        css: '#accounts',
+        css: this.connectedAccount,
         text: ' ',
       });
     }
