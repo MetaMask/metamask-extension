@@ -1,70 +1,22 @@
 import { BigNumber } from 'bignumber.js';
 import { QuoteMetadata, QuoteResponse } from '../../../ui/pages/bridge/types';
-import { tokenAmountToCurrency } from '../../../ui/ducks/bridge/utils';
-
-const USD_CURRENCY_CODE = 'usd';
-
-type ConversionRate = {
-  valueInCurrency: number | null;
-  usd: number | null;
-};
 
 export const getConvertedUsdAmounts = ({
   activeQuote,
-  fromTokenAddress,
-  toTokenAddress,
-  fromAmountInputValueInCurrency,
-  fromAmountInputValue,
-  currency,
-  nativeToUsdRate,
-  fromTokenConversionRate,
-  toTokenConversionRate,
+  fromAmountInputValueInUsd,
 }: {
   activeQuote: (QuoteResponse & QuoteMetadata) | undefined;
-  fromTokenAddress: string | undefined;
-  toTokenAddress: string | undefined;
-  fromAmountInputValueInCurrency: BigNumber;
-  fromAmountInputValue: string | null;
-  currency: string;
-  nativeToUsdRate: number;
-  fromTokenConversionRate: ConversionRate;
-  toTokenConversionRate: ConversionRate;
+  fromAmountInputValueInUsd: BigNumber;
 }) => {
-  const fromAmountInCurrency =
-    activeQuote?.sentAmount?.valueInCurrency ?? fromAmountInputValueInCurrency;
-  const fromAmount = fromAmountInputValue ?? activeQuote?.sentAmount.amount;
-
-  const isCurrencyUsd = currency.toLowerCase() === USD_CURRENCY_CODE;
+  // If a quote is passed in, derive the usd amount source from the quote
+  // otherwise use input field values
+  // Use values from activeQuote if available, otherwise use validated input field values
+  const fromAmountInUsd =
+    activeQuote?.sentAmount?.usd ?? fromAmountInputValueInUsd;
 
   return {
-    // If a quote is passed in, derive the usd amount source from the quote
-    // otherwise use input field values
-    usd_amount_source: isCurrencyUsd
-      ? fromAmountInCurrency.toNumber()
-      : (fromTokenConversionRate?.usd &&
-          fromAmount &&
-          fromTokenAddress &&
-          tokenAmountToCurrency(fromAmount, fromTokenConversionRate.usd)) ||
-        0,
-    // If user's selected currency is not usd, use usd exchange rates for
-    // the gas token and convert the quoted gas amount to usd
-    usd_quoted_gas:
-      (isCurrencyUsd
-        ? activeQuote?.gasFee.valueInCurrency?.toNumber()
-        : activeQuote?.gasFee.amount &&
-          tokenAmountToCurrency(activeQuote.gasFee.amount, nativeToUsdRate)) ||
-      0,
-    // If user's selected currency is not usd, use usd exchange rates for
-    // the dest asset and convert the dest amount to usd
-    usd_quoted_return:
-      (isCurrencyUsd
-        ? activeQuote?.toTokenAmount?.valueInCurrency?.toNumber()
-        : activeQuote?.toTokenAmount?.amount &&
-          toTokenAddress &&
-          toTokenConversionRate.usd &&
-          tokenAmountToCurrency(
-            activeQuote.toTokenAmount.amount,
-            toTokenConversionRate.usd,
-          )) || 0,
+    usd_amount_source: fromAmountInUsd.toNumber(),
+    usd_quoted_gas: activeQuote?.gasFee.usd?.toNumber() ?? 0,
+    usd_quoted_return: activeQuote?.toTokenAmount?.usd ?? 0,
   };
 };

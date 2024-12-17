@@ -492,16 +492,27 @@ export const getFromAmountInCurrency = createSelector(
     fromToken,
     fromChain,
     validatedSrcAmount,
-    { valueInCurrency: fromTokenToCurrencyExchangeRate },
+    {
+      valueInCurrency: fromTokenToCurrencyExchangeRate,
+      usd: fromTokenToUsdExchangeRate,
+    },
   ) => {
     if (fromToken?.symbol && fromChain?.chainId && validatedSrcAmount) {
-      if (fromTokenToCurrencyExchangeRate) {
-        return new BigNumber(validatedSrcAmount).mul(
-          new BigNumber(fromTokenToCurrencyExchangeRate.toString() ?? 1),
-        );
+      if (fromTokenToCurrencyExchangeRate && fromTokenToUsdExchangeRate) {
+        return {
+          valueInCurrency: new BigNumber(validatedSrcAmount).mul(
+            new BigNumber(fromTokenToCurrencyExchangeRate.toString() ?? 1),
+          ),
+          usd: new BigNumber(validatedSrcAmount).mul(
+            new BigNumber(fromTokenToUsdExchangeRate.toString() ?? 1),
+          ),
+        };
       }
     }
-    return new BigNumber(0);
+    return {
+      valueInCurrency: new BigNumber(0),
+      usd: new BigNumber(0),
+    };
   },
 );
 

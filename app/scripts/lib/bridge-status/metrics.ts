@@ -31,15 +31,8 @@ export const handleBridgeTransactionComplete = async (
 
   // const { usd_amount_source, usd_quoted_gas, usd_quoted_return } =
   //   getConvertedUsdAmounts({
-  //     activeQuote: bridgeHistoryItem.quote,
-  //     fromTokenAddress: bridgeHistoryItem.quote.srcAsset.address,
-  //     toTokenAddress: bridgeHistoryItem.quote.destAsset.address,
-  //     fromAmountInputValueInCurrency:
-  //       bridgeHistoryItem.quote.sentAmount.valueInCurrency,
-  //     fromAmountInputValue: bridgeHistoryItem.quote.sentAmount.amount,
-  //     currency: 'usd',
-  //     fromTokenConversionRate: bridgeHistoryItem.quote.srcAsset.conversionRate,
-  //     toTokenConversionRate: bridgeHistoryItem.quote.destAsset.conversionRate,
+  //     activeQuoteSentAmountUsd: bridgeHistoryItem.quote.sentAmount.usd,
+  //     fromAmountInputValueInUsd: bridgeHistoryItem.quote.sentAmount.usd,
   //   });
 
   const properties = {
