@@ -95,10 +95,11 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined row-with-warning mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
+          style="white-space: nowrap;"
         >
           Network fees
         </p>
@@ -107,10 +108,9 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
         >
           <p
             class="mm-box mm-text mm-text--body-md"
+            style="white-space: nowrap; overflow: visible;"
           >
-            $2.52
-            -
-            $2.52
+            $2.52 - $2.52
           </p>
           <span
             class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative-soft"
@@ -251,10 +251,11 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
         </div>
       </div>
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined row-with-warning mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative-soft"
+          style="white-space: nowrap;"
         >
           Network fees
         </p>
@@ -263,10 +264,9 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
         >
           <p
             class="mm-box mm-text mm-text--body-md"
+            style="white-space: nowrap; overflow: visible;"
           >
-            $2.52
-            -
-            $2.52
+            $2.52 - $2.52
           </p>
           <span
             class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative-soft"
