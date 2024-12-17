@@ -354,15 +354,7 @@ async function start() {
   }
 
   try {
-    const { stories } = await (
-      await fetch(
-        `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/storybook/stories.json`,
-      )
-    ).json();
-    const highlights = await getHighlights({
-      artifactBase: BUILD_LINK_BASE,
-      stories,
-    });
+    const highlights = await getHighlights({ artifactBase: BUILD_LINK_BASE });
     if (highlights) {
       const highlightsBody = `### highlights:\n${highlights}\n`;
       commentBody += highlightsBody;

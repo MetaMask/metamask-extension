@@ -4,22 +4,19 @@ const storybook = require('./storybook');
 
 module.exports = { getHighlights };
 
-async function getHighlights({ artifactBase, stories }) {
+async function getHighlights({ artifactBase }) {
   let highlights = '';
-  const target = process.env.BASE_BRANCH;
-  if (!target) {
-    console.log(`BASE_BRANCH is not set, skipping highlights`);
-    return highlights;
-  }
-  const changedFiles = await getChangedFiles({ target });
-  console.log(`detected changed files vs target:`);
+  // here we assume the PR base branch ("target") is `main` in lieu of doing
+  // a query against the github api which requires an access token
+  // see https://discuss.circleci.com/t/how-to-retrieve-a-pull-requests-base-branch-name-github/36911
+  const changedFiles = await getChangedFiles({ target: 'main' });
+  console.log(`detected changed files vs main:`);
   for (const filename of changedFiles) {
     console.log(`  ${filename}`);
   }
   const announcement = await storybook.getHighlightAnnouncement({
     changedFiles,
     artifactBase,
-    stories,
   });
   if (announcement) {
     highlights += announcement;

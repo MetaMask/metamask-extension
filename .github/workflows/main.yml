@@ -51,7 +51,6 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     needs:
       - wait-for-circleci-workflow-status
@@ -82,7 +81,6 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           BASE_COMMIT_HASH: ${{ github.event.pull_request.base.sha }}
-          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
           CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
         run: ./development/metamaskbot-build-announce.js

@@ -1,7 +1,13 @@
 const path = require('path');
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
+const fs = require('fs');
 const dependencyTree = require('dependency-tree');
+
+const stories = fs.readFileSync(
+  path.join(__dirname, '..', '..', 'storybook-build', 'stories.json'),
+  'utf8',
+);
 
 const cwd = process.cwd();
 const resolutionCache = {};
@@ -13,21 +19,13 @@ module.exports = {
   getHighlightAnnouncement,
 };
 
-async function getHighlightAnnouncement({
-  changedFiles,
-  artifactBase,
-  stories,
-}) {
+async function getHighlightAnnouncement({ changedFiles, artifactBase }) {
   const highlights = await getHighlights({ changedFiles });
   if (!highlights.length) {
     return null;
   }
-  const storiesArray = Object.values(stories);
   const highlightsBody = highlights
-    .map(
-      (entry) =>
-        `\n- [${entry}](${urlForStoryFile(entry, artifactBase, storiesArray)})`,
-    )
+    .map((entry) => `\n- [${entry}](${urlForStoryFile(entry, artifactBase)})`)
     .join('');
   const announcement = `<details>
     <summary>storybook</summary>
@@ -71,24 +69,25 @@ async function getLocalDependencyList(filename) {
   return list;
 }
 
-function urlForStoryFile(filename, artifactBase, storiesArray) {
-  const storyId = getStoryId(filename, storiesArray);
+function urlForStoryFile(filename, artifactBase) {
+  const storyId = getStoryId(filename);
   return `${artifactBase}/storybook/index.html?path=/story/${storyId}`;
 }
 
 /**
  * Get the ID for a story file.
  *
- * @param {filename} string - The filename to get the story id.
+ * @param {fileName} string - The fileName to get the story id.
  * @returns The id of the story.
  */
 
-function getStoryId(filename, storiesArray) {
+function getStoryId(fileName) {
+  const storiesArray = Object.values(stories.stories);
   const foundStory = storiesArray.find((story) => {
-    return story.importPath.includes(filename);
+    return story.importPath.includes(fileName);
   });
   if (!foundStory) {
-    throw new Error(`story for ${filename} not found`);
+    throw new Error(`story for ${fileName} not found`);
   }
   return foundStory.id;
 }
