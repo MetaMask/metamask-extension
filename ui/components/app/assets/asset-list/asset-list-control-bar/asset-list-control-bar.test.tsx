@@ -29,6 +29,12 @@ describe('AssetListControlBar', () => {
             ],
           },
         },
+        internalAccounts: {
+          selectedAccount: 'selectedAccount',
+          accounts: {
+            selectedAccount: {},
+          },
+        },
       },
     });
 
