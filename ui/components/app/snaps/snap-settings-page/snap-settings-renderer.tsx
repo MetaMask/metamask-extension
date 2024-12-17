@@ -35,10 +35,6 @@ export const SnapSettingsRenderer: FunctionComponent<
     getSnapMetadata(state, snapId),
   );
 
-  if (!snapId) {
-    return null;
-  }
-
   const { data, error, loading } = useSnapSettings({
     snapId,
   });
@@ -50,6 +46,10 @@ export const SnapSettingsRenderer: FunctionComponent<
       interfaceId && dispatch(deleteInterface(interfaceId));
     };
   }, [interfaceId]);
+
+  if (!snapId) {
+    return null;
+  }
 
   return (
     <Box

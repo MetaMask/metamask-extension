@@ -5,7 +5,7 @@ import {
   handleSnapRequest,
 } from '../../store/actions';
 
-export function useSnapSettings({ snapId }: { snapId: string }) {
+export function useSnapSettings({ snapId }: { snapId?: string }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<{ id: string } | undefined>(undefined);
@@ -18,15 +18,17 @@ export function useSnapSettings({ snapId }: { snapId: string }) {
         setError(undefined);
         setLoading(true);
 
-        const newData = (await handleSnapRequest({
-          snapId,
-          origin: '',
-          handler: 'onSettingsPage',
-          request: {
-            jsonrpc: '2.0',
-            method: ' ',
-          },
-        })) as { id: string };
+        const newData = snapId
+          ? ((await handleSnapRequest({
+              snapId,
+              origin: '',
+              handler: 'onSettingsPage',
+              request: {
+                jsonrpc: '2.0',
+                method: ' ',
+              },
+            })) as { id: string })
+          : undefined;
         if (!cancelled) {
           setData(newData);
           forceUpdateMetamaskState(dispatch);

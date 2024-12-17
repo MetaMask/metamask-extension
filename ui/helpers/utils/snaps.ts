@@ -1,3 +1,4 @@
+import { SnapId } from '@metamask/snaps-sdk';
 import { isProduction } from '../../../shared/modules/environment';
 
 /**
@@ -8,7 +9,7 @@ import { isProduction } from '../../../shared/modules/environment';
  * @param value - The value to check.
  * @returns `true` if the value is a valid snap ID, and `false` otherwise.
  */
-export function isSnapId(value: unknown): value is string {
+export function isSnapId(value: unknown): value is SnapId {
   return (
     (typeof value === 'string' || value instanceof String) &&
     (value.startsWith('local:') || value.startsWith('npm:'))
@@ -23,9 +24,7 @@ export function isSnapId(value: unknown): value is string {
  */
 export const decodeSnapIdFromPathname = (pathname: string) => {
   const snapIdURI = pathname?.match(/[^/]+$/u)?.[0];
-  const decoded = snapIdURI && decodeURIComponent(snapIdURI);
-
-  return decoded;
+  return snapIdURI && decodeURIComponent(snapIdURI);
 };
 
 const IGNORED_EXAMPLE_SNAPS = ['npm:@metamask/preinstalled-example-snap'];
