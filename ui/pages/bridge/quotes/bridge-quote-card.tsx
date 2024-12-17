@@ -36,7 +36,6 @@ import {
   BackgroundColor,
   BlockSize,
   IconColor,
-  BorderRadius,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -176,12 +175,13 @@ export const BridgeQuoteCard = () => {
             </Row>
 
             <Row
+              className="row-with-warning"
               backgroundColor={
                 isEstimatedReturnLow ? BackgroundColor.warningMuted : undefined
               }
-              borderRadius={isEstimatedReturnLow ? BorderRadius.LG : undefined}
             >
               <Text
+                style={{ whiteSpace: 'nowrap' }}
                 variant={TextVariant.bodyMdMedium}
                 color={
                   isEstimatedReturnLow
@@ -192,67 +192,63 @@ export const BridgeQuoteCard = () => {
                 {t('networkFees')}
               </Text>
               <Row gap={1}>
-                {shouldShowNetworkFeesInGasToken ? (
-                  <>
-                    {/* Network fee in gas token amounts  */}
-                    <Text
-                      color={
-                        isEstimatedReturnLow
-                          ? TextColor.warningDefault
+                <Text
+                  style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'visible',
+                  }}
+                  color={
+                    isEstimatedReturnLow ? TextColor.warningDefault : undefined
+                  }
+                >
+                  {shouldShowNetworkFeesInGasToken
+                    ? //  Network fee in gas token amounts
+                      `${
+                        activeQuote.totalNetworkFee?.valueInCurrency
+                          ? formatTokenAmount(
+                              locale,
+                              activeQuote.totalNetworkFee?.amount,
+                              ticker,
+                            )
                           : undefined
                       }
-                    >
-                      {activeQuote.totalNetworkFee?.valueInCurrency
-                        ? formatTokenAmount(
-                            locale,
-                            activeQuote.totalNetworkFee?.amount,
-                            ticker,
-                          )
-                        : undefined}
                       -
-                      {activeQuote.totalMaxNetworkFee?.valueInCurrency
-                        ? formatTokenAmount(
-                            locale,
-                            activeQuote.totalMaxNetworkFee?.amount,
-                            ticker,
-                          )
-                        : undefined}
-                    </Text>
-                  </>
-                ) : (
-                  <>
-                    {/* Network fee in display currency */}
-                    <Text
-                      color={
-                        isEstimatedReturnLow
-                          ? TextColor.warningDefault
+                      ${
+                        activeQuote.totalMaxNetworkFee?.valueInCurrency
+                          ? formatTokenAmount(
+                              locale,
+                              activeQuote.totalMaxNetworkFee?.amount,
+                              ticker,
+                            )
                           : undefined
-                      }
-                    >
-                      {formatCurrencyAmount(
-                        activeQuote.totalNetworkFee?.valueInCurrency,
-                        currency,
-                        2,
-                      ) ??
+                      }`
+                    : // Network fee in display currency
+                      `${
+                        formatCurrencyAmount(
+                          activeQuote.totalNetworkFee?.valueInCurrency,
+                          currency,
+                          2,
+                        ) ??
                         formatTokenAmount(
                           locale,
                           activeQuote.totalNetworkFee?.amount,
                           ticker,
-                        )}
+                        )
+                      }
                       -
-                      {formatCurrencyAmount(
-                        activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                        currency,
-                        2,
-                      ) ??
+                      ${
+                        formatCurrencyAmount(
+                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                          currency,
+                          2,
+                        ) ??
                         formatTokenAmount(
                           locale,
                           activeQuote.totalMaxNetworkFee?.amount,
                           ticker,
-                        )}
-                    </Text>
-                  </>
-                )}
+                        )
+                      }`}
+                </Text>
                 <Icon
                   style={{ cursor: 'pointer' }}
                   color={
