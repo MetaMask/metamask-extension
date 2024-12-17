@@ -855,15 +855,10 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Piliin ang token at halaga"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Ito ang tinatayang tagal para makumpleto ang pag-bridge."
-  },
   "bridgeTo": {
     "message": "I-bridge papunta sa"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Kasama rito ang mga bayad sa gas (binabayaran sa mga crypto miner) at mga bayad sa tagapaghatid (binabayaran sa mga serbisyo ng power complex gaya ng pag-bridge).\nNakabatay ang mga bayad sa trapiko sa network at kung paano kakumplikado ang transaksyon. Hindi kumikita ang MetaMask sa anumang bayad."
-  },
+
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong browser..."
   },
@@ -1982,9 +1977,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Halaga na binayaran para iproseso ang transaksyon sa network."
-  },
-  "estimatedTime": {
-    "message": "Tinatayang oras"
   },
   "ethGasPriceFetchWarning": {
     "message": "Ang backup na presyo ng gas ay ibinigay dahil ang pangunahing serbisyo ng pagtantya ng gas ay hindi available sa ngayon."
@@ -6105,9 +6097,6 @@
   },
   "total": {
     "message": "Kabuuan"
-  },
-  "totalFees": {
-    "message": "Kabuuang bayad"
   },
   "totalVolume": {
     "message": "Kabuuang volume"

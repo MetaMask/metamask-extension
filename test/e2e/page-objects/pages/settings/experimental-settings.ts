@@ -15,6 +15,9 @@ class ExperimentalSettings {
   private readonly redesignedSignatureToggle =
     '[data-testid="toggle-redesigned-confirmations-container"]';
 
+  private readonly requestQueueToggle =
+    '[data-testid="experimental-setting-toggle-request-queue"] label';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -40,6 +43,11 @@ class ExperimentalSettings {
   async toggleRedesignedSignature(): Promise<void> {
     console.log('Toggle Redesigned Signature on experimental setting page');
     await this.driver.clickElement(this.redesignedSignatureToggle);
+  }
+
+  async toggleRequestQueue(): Promise<void> {
+    console.log('Toggle Request Queue on experimental setting page');
+    await this.driver.clickElement(this.requestQueueToggle);
   }
 }
 
