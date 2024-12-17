@@ -226,58 +226,57 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const renderPercentageAndAmountChange = () => {
-    if (isEvm) {
-      if (showNativeTokenAsMainBalance) {
-        return (
-          <Box className="wallet-overview__currency-wrapper">
-            <PercentageAndAmountChange
-              value={
-                tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
-                  ?.pricePercentChange1d
-              }
-            />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              <ButtonLink
-                endIconName={IconName.Export}
-                onClick={handlePortfolioOnClick}
-                as="a"
-                data-testid="portfolio-link"
-                textProps={{ variant: TextVariant.bodyMdMedium }}
-              >
-                {t('portfolio')}
-              </ButtonLink>
-              ///: END:ONLY_INCLUDE_IF
-            }
-          </Box>
-        );
-      }
-      return (
-        <Box className="wallet-overview__currency-wrapper">
-          {isTokenNetworkFilterEqualCurrentNetwork ||
-          !process.env.PORTFOLIO_VIEW ? (
-            <AggregatedPercentageOverview />
-          ) : (
-            <AggregatedPercentageOverviewCrossChains />
-          )}
+    const renderPortfolioButton = () => (
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      <ButtonLink
+        endIconName={IconName.Export}
+        onClick={handlePortfolioOnClick}
+        as="a"
+        data-testid="portfolio-link"
+        textProps={{ variant: TextVariant.bodyMdMedium }}
+      >
+        {t('portfolio')}
+      </ButtonLink>
+      ///: END:ONLY_INCLUDE_IF
+    );
 
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            <ButtonLink
-              endIconName={IconName.Export}
-              onClick={handlePortfolioOnClick}
-              as="a"
-              data-testid="portfolio-link"
-              textProps={{ variant: TextVariant.bodyMdMedium }}
-            >
-              {t('portfolio')}
-            </ButtonLink>
-            ///: END:ONLY_INCLUDE_IF
+    const renderNativeTokenView = () => (
+      <Box className="wallet-overview__currency-wrapper">
+        <PercentageAndAmountChange
+          value={
+            tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
+              ?.pricePercentChange1d
           }
-        </Box>
-      );
+        />
+        {renderPortfolioButton()}
+      </Box>
+    );
+
+    const renderAggregatedView = () => (
+      <Box className="wallet-overview__currency-wrapper">
+        {isTokenNetworkFilterEqualCurrentNetwork ||
+        !process.env.PORTFOLIO_VIEW ? (
+          <AggregatedPercentageOverview />
+        ) : (
+          <AggregatedPercentageOverviewCrossChains />
+        )}
+        {renderPortfolioButton()}
+      </Box>
+    );
+
+    const renderNonEvmView = () => (
+      <Box className="wallet-overview__currency-wrapper">
+        {renderPortfolioButton()}
+      </Box>
+    );
+
+    if (!isEvm) {
+      return renderNonEvmView();
     }
-    return null;
+
+    return showNativeTokenAsMainBalance
+      ? renderNativeTokenView()
+      : renderAggregatedView();
   };
 
   return (
