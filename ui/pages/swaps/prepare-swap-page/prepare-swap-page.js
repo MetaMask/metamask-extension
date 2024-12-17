@@ -893,6 +893,7 @@ export default function PrepareSwapPage({
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
+            gap={4}
           >
             <SelectedToken
               onClick={onSwapFromOpen}
