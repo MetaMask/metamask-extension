@@ -61,11 +61,9 @@ export async function withSolanaAccountSnap(
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await unlockWallet(driver);
       const headerComponen = new HeaderNavbar(driver);
-      console.log('Opening account menu');
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.addAccount(ACCOUNT_TYPE.Solana, 'Solana 1');
-      console.log('Running test');
       await test(driver, mockServer);
     },
   );

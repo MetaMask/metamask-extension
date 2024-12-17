@@ -981,26 +981,6 @@ async function openMenuSafe(driver) {
   }
 }
 
-async function enableExperimentalMode(driver) {
-  // Open settings menu button
-  const accountOptionsMenuSelector =
-    '[data-testid="account-options-menu-button"]';
-  await driver.waitForSelector(accountOptionsMenuSelector);
-  await driver.clickElement(accountOptionsMenuSelector);
-
-  // Click settings from dropdown menu
-  const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
-  await driver.waitForSelector(globalMenuSettingsSelector);
-  await driver.clickElement(globalMenuSettingsSelector);
-
-  // Click Experimental tab
-  const experimentalTabRawLocator = {
-    text: 'Experimental',
-    tag: 'div',
-  };
-  await driver.clickElement(experimentalTabRawLocator);
-}
-
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 module.exports = {
@@ -1058,5 +1038,4 @@ module.exports = {
   openMenuSafe,
   sentryRegEx,
   createWebSocketConnection,
-  enableExperimentalMode,
 };

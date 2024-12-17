@@ -209,16 +209,12 @@ class AccountListPage {
     switch (accountType) {
       case ACCOUNT_TYPE.Ethereum:
         addAccountButton = this.addEthereumAccountButton;
-        // await this.driver.clickElement(this.addEthereumAccountButton);
-
         break;
       case ACCOUNT_TYPE.Bitcoin:
         addAccountButton = this.addBtcAccountButton;
-        // await this.driver.clickElement(this.addBtcAccountButton);
         break;
       case ACCOUNT_TYPE.Solana:
         addAccountButton = this.addSolanaAccountButton;
-        // await this.driver.clickElement(this.addSolanaAccountButton);
         break;
       default:
         console.log('Account type does not match with any of the options');
@@ -494,18 +490,6 @@ class AccountListPage {
     });
   }
 
-  async check_accountNotDisplayedInAccountList(
-    expectedLabel: string = 'Account',
-  ): Promise<void> {
-    console.log(
-      `Check that account label ${expectedLabel} is not displayed in account list`,
-    );
-    await this.driver.assertElementNotPresent({
-      css: this.accountListItem,
-      text: expectedLabel,
-    });
-  }
-
   /**
    * Checks that the account with the specified label is not displayed in the account list.
    *
@@ -589,7 +573,6 @@ class AccountListPage {
     await this.driver.waitForSelector(this.accountListItem);
     await this.driver.wait(
       async () => {
-        await this.driver.delay(500);
         const internalAccounts = await this.driver.findElements(
           this.accountListItem,
         );
