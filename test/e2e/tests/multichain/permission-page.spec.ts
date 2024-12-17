@@ -24,9 +24,7 @@ describe('Permissions Page', function () {
         await permissionListPage.check_pageIsLoaded();
 
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        await new SitePermissionPage(driver).check_pageIsLoaded(
-          DAPP_HOST_ADDRESS,
-        );
+        await new SitePermissionPage(driver).check_pageIsLoaded(DAPP_HOST_ADDRESS);
       },
     );
   });

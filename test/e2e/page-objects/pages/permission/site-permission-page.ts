@@ -7,7 +7,15 @@ import { Driver } from '../../../webdriver/driver';
 class SitePermissionPage {
   private driver: Driver;
 
-  private readonly permissionPage = '[data-testid ="connections-page"]';
+  private readonly enabledNetworksInfo = {
+    text: 'Use your enabled networks',
+    tag: 'p',
+  };
+
+  private readonly connectedAccountsInfo = {
+    text: 'See your accounts and suggest transactions',
+    tag: 'p',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -20,7 +28,8 @@ class SitePermissionPage {
    */
   async check_pageIsLoaded(site: string): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.permissionPage);
+      await this.driver.waitForSelector(this.connectedAccountsInfo);
+      await this.driver.waitForSelector(this.enabledNetworksInfo);
       await this.driver.waitForSelector({ text: site, tag: 'span' });
     } catch (e) {
       console.log(

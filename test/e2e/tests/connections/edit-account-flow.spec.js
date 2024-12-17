@@ -23,7 +23,7 @@ describe('Edit Accounts Flow', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
         await connectToDapp(driver);
-
+        throw new Error('test');
         // It should render connected status for button if dapp is connected
         const getConnectedStatus = await driver.waitForSelector({
           css: '#connectButton',
