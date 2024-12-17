@@ -3,7 +3,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { Ganache } from '../../seeder/ganache';
 import { Driver } from '../../webdriver/driver';
-
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import {
   withFixtures,
@@ -41,6 +41,9 @@ describe('Request Queuing', function () {
         // Open test dapp
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
+        await testDapp.check_connectedAccounts(
+          DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+        );
 
         // Trigger a tx
         await testDapp.clickSimpleSendButton();
@@ -68,7 +71,7 @@ describe('Request Queuing', function () {
         await driver.waitUntilXWindowHandles(2);
 
         // Cleared eth_accounts account label
-        await driver.findElement({ xpath: '//span[@id="accounts"][.=""]' });
+        await testDapp.check_connectedAccounts();
       },
     );
   });
