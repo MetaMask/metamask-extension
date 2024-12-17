@@ -29,7 +29,6 @@ import {
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
-  getCurrentChainId,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
