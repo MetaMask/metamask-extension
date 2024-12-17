@@ -21,10 +21,10 @@ import {
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
 import {
-  L1GasFees,
-  QuoteRequest,
-  QuoteResponse,
-  TxData,
+  type L1GasFees,
+  type QuoteRequest,
+  type QuoteResponse,
+  type TxData,
   BridgeFeatureFlagsKey,
   RequestStatus,
 } from '../../../../shared/types/bridge';

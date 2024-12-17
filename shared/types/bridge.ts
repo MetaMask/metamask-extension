@@ -1,5 +1,5 @@
-import { Hex } from '@metamask/utils';
-import { BigNumber } from 'bignumber.js';
+import type { Hex } from '@metamask/utils';
+import type { BigNumber } from 'bignumber.js';
 import type { AssetType } from '../constants/transaction';
 
 export type ChainConfiguration = {

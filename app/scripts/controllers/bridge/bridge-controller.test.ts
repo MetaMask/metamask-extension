@@ -10,7 +10,10 @@ import * as balanceUtils from '../../../../shared/modules/bridge-utils/balance';
 import mockBridgeQuotesErc20Native from '../../../../test/data/bridge/mock-quotes-erc20-native.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import mockBridgeQuotesNativeErc20Eth from '../../../../test/data/bridge/mock-quotes-native-erc20-eth.json';
-import { QuoteResponse, RequestStatus } from '../../../../shared/types/bridge';
+import {
+  type QuoteResponse,
+  RequestStatus,
+} from '../../../../shared/types/bridge';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import BridgeController from './bridge-controller';
 import { BridgeControllerMessenger } from './types';

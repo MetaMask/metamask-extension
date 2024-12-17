@@ -11,8 +11,8 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
 import {
-  QuoteMetadata,
-  QuoteResponse,
+  type QuoteMetadata,
+  type QuoteResponse,
   SortOrder,
 } from '../../../shared/types/bridge';
 import {

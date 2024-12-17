@@ -1,14 +1,14 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { getAddress } from 'ethers/lib/utils';
-import { ContractMarketData } from '@metamask/assets-controllers';
+import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { TxData } from '../../../shared/types/bridge';
+import type { TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 

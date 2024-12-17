@@ -8,7 +8,7 @@ import {
   StatusRequestWithSrcTxHash,
   StatusRequestDto,
 } from '../../../../shared/types/bridge-status';
-import { Quote } from '../../../../shared/types/bridge';
+import type { Quote } from '../../../../shared/types/bridge';
 import { validateResponse, validators } from './validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };

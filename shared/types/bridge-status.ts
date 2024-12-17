@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { ChainId, Quote, QuoteMetadata, QuoteResponse } from './bridge';
+import type { ChainId, Quote, QuoteMetadata, QuoteResponse } from './bridge';
 
 // All fields need to be types not interfaces, same with their children fields
 // o/w you get a type error

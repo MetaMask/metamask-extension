@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Hex } from '@metamask/utils';
 import {
-  BridgeToken,
-  QuoteMetadata,
-  QuoteResponse,
+  type BridgeToken,
+  type QuoteMetadata,
+  type QuoteResponse,
   SortOrder,
 } from '../../../shared/types/bridge';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';

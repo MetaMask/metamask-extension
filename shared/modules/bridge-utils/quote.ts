@@ -1,4 +1,4 @@
-import { QuoteRequest } from '../../types/bridge';
+import type { QuoteRequest } from '../../types/bridge';
 
 export const isValidQuoteRequest = (
   partialRequest: Partial<QuoteRequest>,

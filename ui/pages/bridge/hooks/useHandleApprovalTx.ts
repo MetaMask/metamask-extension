@@ -1,9 +1,9 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import {
-  TxData,
-  QuoteResponse,
+  type TxData,
+  type QuoteResponse,
   FeeType,
 } from '../../../../shared/types/bridge';
 import {

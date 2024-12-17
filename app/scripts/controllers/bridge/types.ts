@@ -8,7 +8,7 @@ import {
   NetworkControllerGetSelectedNetworkClientAction,
 } from '@metamask/network-controller';
 import { SwapsTokenObject } from '../../../../shared/constants/swaps';
-import {
+import type {
   BridgeBackgroundAction,
   BridgeFeatureFlags,
   BridgeUserAction,

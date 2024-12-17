@@ -34,7 +34,7 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
-import { BridgeToken } from '../../../../shared/types/bridge';
+import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';

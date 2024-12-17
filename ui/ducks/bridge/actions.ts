@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -6,7 +6,7 @@ import {
 } from '../../../shared/types/bridge';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
   bridgeSlice,
   setDestTokenExchangeRates,

@@ -1,11 +1,11 @@
-import {
+import type {
   AddNetworkFields,
   NetworkConfiguration,
   NetworkState,
 } from '@metamask/network-controller';
 import { orderBy, uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
-import { GasFeeEstimates } from '@metamask/gas-fee-controller';
+import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import {
@@ -22,7 +22,7 @@ import {
 } from '../../../shared/constants/bridge';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { BridgeControllerState } from '../../../app/scripts/controllers/bridge/types';
+import type { BridgeControllerState } from '../../../app/scripts/controllers/bridge/types';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import {
@@ -31,10 +31,10 @@ import {
 } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 import {
-  L1GasFees,
-  BridgeToken,
-  QuoteMetadata,
-  QuoteResponse,
+  type L1GasFees,
+  type BridgeToken,
+  type QuoteMetadata,
+  type QuoteResponse,
   SortOrder,
   BridgeFeatureFlagsKey,
   RequestStatus,
@@ -60,7 +60,7 @@ import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
 } from './utils';
-import { BridgeState } from './bridge';
+import type { BridgeState } from './bridge';
 
 type BridgeAppState = {
   metamask: { bridgeState: BridgeControllerState } & NetworkState & {
