@@ -35,6 +35,10 @@ const STATE_MOCK = {
     ...mockNetworkState({
       chainId: CHAIN_ID_MOCK,
     }),
+    preferences: {
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: true,
+    },
   },
   [AlertTypes.smartTransactionsMigration]: {
     state: ALERT_STATE.OPEN,
@@ -45,12 +49,13 @@ function render({
   componentProps = {},
   useGasFeeContextValue = {},
   submittedPendingTransactionsSelectorValue = null,
+  state = STATE_MOCK,
 }) {
   useGasFeeContext.mockReturnValue(useGasFeeContextValue);
   submittedPendingTransactionsSelector.mockReturnValue(
     submittedPendingTransactionsSelectorValue,
   );
-  const store = configureStore(STATE_MOCK);
+  const store = configureStore(state);
   return renderWithProvider(<TransactionAlerts {...componentProps} />, store);
 }
 
@@ -565,12 +570,31 @@ describe('TransactionAlerts', () => {
 });
 
 describe('Smart Transactions Migration Alert', () => {
-  it('shows when alert is enabled and opted in', () => {
+  it('shows when alert is enabled, opted in, and migration applied', () => {
     const { getByTestId } = render({
       componentProps: {
         txData: {
           chainId: CHAIN_ID_MOCK,
           txParams: { value: '0x1' },
+        },
+      },
+      state: {
+        ...STATE_MOCK, // Keep existing mock state
+        metamask: {
+          ...STATE_MOCK.metamask,
+          networkConfigurationsByChainId: {
+            [CHAIN_ID_MOCK]: {
+              chainId: CHAIN_ID_MOCK,
+              // other required network properties
+            },
+          },
+          alertEnabledness: {
+            [AlertTypes.smartTransactionsMigration]: true,
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+            smartTransactionsMigrationApplied: true,
+          },
         },
       },
     });
@@ -587,6 +611,7 @@ describe('Smart Transactions Migration Alert', () => {
         },
         preferences: {
           smartTransactionsOptInStatus: true,
+          smartTransactionsMigrationApplied: true,
         },
       },
     };

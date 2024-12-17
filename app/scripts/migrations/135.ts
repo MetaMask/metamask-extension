@@ -11,6 +11,7 @@ export type VersionedData = {
     PreferencesController?: {
       preferences?: {
         smartTransactionsOptInStatus?: boolean | null;
+        smartTransactionsMigrationApplied?: boolean;
       };
       smartTransactionsOptInStatus?: boolean | null;
     };
@@ -54,6 +55,7 @@ function transformState(state: VersionedData['data']) {
 
   const { preferences } = state.PreferencesController;
   preferences.smartTransactionsOptInStatus = true;
+  preferences.smartTransactionsMigrationApplied = true;
 
   return state;
 }

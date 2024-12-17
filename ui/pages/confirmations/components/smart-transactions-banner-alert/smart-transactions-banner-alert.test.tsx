@@ -32,7 +32,7 @@ const renderWithConfirmContext = (
   confirmationValue: TestConfirmContextValue = {
     currentConfirmation: {
       type: TransactionType.simpleSend,
-      id: '1', // Required by SignatureRequestType
+      id: '1',
     } as SignatureRequestType,
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: () => undefined,
@@ -54,11 +54,12 @@ describe('SmartTransactionsBannerAlert', () => {
       },
       preferences: {
         smartTransactionsOptInStatus: true,
+        smartTransactionsMigrationApplied: true,
       },
     },
   };
 
-  it('renders banner when alert is enabled and STX is opted in', () => {
+  it('renders banner when alert is enabled, STX is opted in, and migration is applied', () => {
     const store = configureStore(mockState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
@@ -84,6 +85,7 @@ describe('SmartTransactionsBannerAlert', () => {
         },
         preferences: {
           smartTransactionsOptInStatus: true,
+          smartTransactionsMigrationApplied: true,
         },
       },
     };
@@ -103,10 +105,31 @@ describe('SmartTransactionsBannerAlert', () => {
         },
         preferences: {
           smartTransactionsOptInStatus: false,
+          smartTransactionsMigrationApplied: true,
         },
       },
     };
     const store = configureStore(notOptedInState);
+    renderWithProvider(<SmartTransactionsBannerAlert />, store);
+
+    expect(
+      screen.queryByTestId('smart-transactions-banner-alert'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render when migration has not been applied', () => {
+    const noMigrationState = {
+      metamask: {
+        alertEnabledness: {
+          [AlertTypes.smartTransactionsMigration]: true,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
+          smartTransactionsMigrationApplied: false,
+        },
+      },
+    };
+    const store = configureStore(noMigrationState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -160,7 +183,7 @@ describe('SmartTransactionsBannerAlert', () => {
     const store = configureStore(mockState);
     const unsupportedConfirmation: TestConfirmContextValue = {
       currentConfirmation: {
-        type: TransactionType.signTypedData, // Using an unsupported type
+        type: TransactionType.signTypedData,
         id: '2',
       } as SignatureRequestType,
       isScrollToBottomCompleted: true,
@@ -219,10 +242,8 @@ describe('SmartTransactionsBannerAlert', () => {
   it('handles being outside of ConfirmContext correctly', () => {
     const store = configureStore(mockState);
 
-    // Render without wrapping in ConfirmContext
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
-    // Should still render if alertEnabled and smartTransactionsOptIn are true
     expect(
       screen.getByTestId('smart-transactions-banner-alert'),
     ).toBeInTheDocument();
@@ -236,16 +257,15 @@ describe('SmartTransactionsBannerAlert', () => {
         },
         preferences: {
           smartTransactionsOptInStatus: false,
+          smartTransactionsMigrationApplied: true,
         },
       },
     });
 
-    // Clear any previous calls to our mock
     jest.clearAllMocks();
 
     renderWithConfirmContext(<SmartTransactionsBannerAlert />, store);
 
-    // Verify it was called exactly once and with the right arguments
     expect(setAlertEnabledness).toHaveBeenCalledTimes(1);
     expect(setAlertEnabledness).toHaveBeenCalledWith(
       AlertTypes.smartTransactionsMigration,

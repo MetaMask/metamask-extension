@@ -25,6 +25,7 @@ type MetaMaskState = {
   };
   preferences: {
     smartTransactionsOptInStatus: boolean;
+    smartTransactionsMigrationApplied: boolean;
   };
 };
 
@@ -51,9 +52,15 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
           AlertTypes.smartTransactionsMigration
         ] !== false,
     );
+
     const smartTransactionsOptIn = useSelector(
       (state: RootState) =>
         state.metamask.preferences?.smartTransactionsOptInStatus === true,
+    );
+
+    const smartTransactionsMigrationApplied = useSelector(
+      (state: RootState) =>
+        state.metamask.preferences?.smartTransactionsMigrationApplied === true,
     );
 
     React.useEffect(() => {
@@ -82,9 +89,12 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
 
     const shouldRender =
       currentConfirmation === null
-        ? alertEnabled && smartTransactionsOptIn
+        ? alertEnabled &&
+          smartTransactionsOptIn &&
+          smartTransactionsMigrationApplied
         : alertEnabled &&
           smartTransactionsOptIn &&
+          smartTransactionsMigrationApplied &&
           [
             'simpleSend',
             'tokenMethodTransfer',
