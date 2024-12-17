@@ -50,6 +50,10 @@ export function AssetBalanceText({
   const balanceString =
     hexToDecimal(asset.balance) || tokensWithBalances[0]?.string;
 
+  const showFixedBalanceString = balanceString?.includes('.')
+    ? balanceString.slice(0, balanceString.indexOf('.') + 5) // Include 4 digits after the decimal
+    : balanceString;
+
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
 
   const nativeTokenFiatBalance = useCurrencyDisplay(balanceValue, {
@@ -135,7 +139,7 @@ export function AssetBalanceText({
     return (
       <UserPreferencedCurrencyDisplay
         {...commonProps}
-        displayValue={`${balanceString || ''}${errorText}`}
+        displayValue={`${showFixedBalanceString || ''}${errorText}`}
       />
     );
   }
