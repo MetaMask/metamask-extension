@@ -74,8 +74,7 @@ class SettingsPage extends PureComponent {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
     remoteFeatureFlags: PropTypes.object.isRequired,
-    settingsPageSnapsIds: PropTypes.array,
-    snapNameGetter: PropTypes.func,
+    settingsPageSnaps: PropTypes.array,
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
@@ -305,27 +304,21 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs() {
-    const {
-      history,
-      currentPath,
-      useExternalServices,
-      settingsPageSnapsIds,
-      snapNameGetter,
-    } = this.props;
+    const { history, currentPath, useExternalServices, settingsPageSnaps } =
+      this.props;
     const { t } = this.context;
 
-    const snapsSettings = settingsPageSnapsIds.map((snapId) => {
-      const snapName = snapNameGetter(snapId);
+    const snapsSettings = settingsPageSnaps.map(({ id, name }) => {
       return {
-        content: snapName,
+        content: name,
         icon: (
           <SnapIcon
-            snapId={snapId}
+            snapId={id}
             avatarSize={IconSize.Md}
             style={{ '--size': '20px' }}
           />
         ),
-        key: `${SNAP_SETTINGS_ROUTE}/${encodeURIComponent(snapId)}`,
+        key: `${SNAP_SETTINGS_ROUTE}/${encodeURIComponent(id)}`,
       };
     });
 

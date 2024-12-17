@@ -113,6 +113,7 @@ import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/type
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -1927,7 +1928,9 @@ export const getSettingsPageSnaps = createDeepEqualSelector(
   (snaps, subjects) => {
     return Object.values(snaps).filter(
       ({ id, preinstalled }) =>
-        subjects[id]?.permissions[SnapEndowments.SettingsPage],
+        subjects[id]?.permissions[SnapEndowments.SettingsPage] &&
+        preinstalled &&
+        !isSnapIgnoredInProd(id),
     );
   },
 );

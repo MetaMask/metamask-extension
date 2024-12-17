@@ -113,9 +113,14 @@ const mapStateToProps = (state, ownProps) => {
 
   const snapNameGetter = getSnapName(snapsMetadata);
 
+  const settingsPageSnaps = settingsPageSnapsIds.map((snapId) => ({
+    id: snapId,
+    name: snapNameGetter(snapId),
+  }));
+
   const snapSettingsTitle =
     isSnapSettingsRoute && snapNameGetter(decodeSnapIdFromPathname(pathname));
-  console.log('snapSettingsTitle', snapSettingsTitle);
+
   return {
     addNewNetwork,
     addressName,
@@ -129,8 +134,7 @@ const mapStateToProps = (state, ownProps) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
     remoteFeatureFlags,
-    settingsPageSnapsIds,
-    snapNameGetter,
+    settingsPageSnaps,
     snapSettingsTitle,
     useExternalServices,
   };

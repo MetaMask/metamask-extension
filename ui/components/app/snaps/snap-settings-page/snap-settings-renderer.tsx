@@ -32,7 +32,6 @@ export const SnapSettingsRenderer: FunctionComponent<
   const snapId = useMemo(() => decodeSnapIdFromPathname(pathname), [pathname]);
 
   const { name: snapName } = useSelector((state) =>
-    // @ts-expect-error - snapId is a string
     getSnapMetadata(state, snapId),
   );
 
