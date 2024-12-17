@@ -2,9 +2,9 @@ name: Trigger MetaMask Institutional E2E CI
 
 on:
   push:
-    branches: [ Version-v*, master ]
+    branches: [ Version-v*, stable ]
   pull_request:
-    branches: [ Version-v*, master ]
+    branches: [ Version-v*, stable ]
     types:
       - opened
       - reopened
@@ -14,7 +14,7 @@ on:
 jobs:
   trigger-mmi-e2e-ci:
     runs-on: ubuntu-latest
-    if: ${{ (!github.event.pull_request.draft && (startsWith(github.head_ref, 'Version-v') || github.head_ref == 'master')) || (!github.event.pull_request) }}
+    if: ${{ (!github.event.pull_request.draft && (startsWith(github.head_ref, 'Version-v') || github.head_ref == 'stable')) || (!github.event.pull_request) }}
     steps:
       - name: Trigger MetaMask Institutional E2E CI
         env:
