@@ -23,13 +23,21 @@ export const useConvertedUsdAmounts = () => {
   const fromAmountInputValue = useSelector(getFromAmount);
   const fromTokenConversionRate = useSelector(getFromTokenConversionRate);
   const toTokenConversionRate = useSelector(getToTokenConversionRate);
-  const currency = useSelector(getCurrentCurrency);
+  const currency = useSelector(getCurrentCurrency) as string;
   const nativeToUsdRate = useSelector(getUSDConversionRate) as number;
+
+  // Use values from activeQuote if available, otherwise use validated input field values
+  const fromTokenAddress = (
+    activeQuote ? activeQuote.quote.srcAsset.address : srcTokenAddress
+  )?.toLowerCase();
+  const toTokenAddress = (
+    activeQuote ? activeQuote.quote.destAsset.address : destTokenAddress
+  )?.toLowerCase();
 
   return getConvertedUsdAmounts({
     activeQuote,
-    srcTokenAddress,
-    destTokenAddress,
+    fromTokenAddress,
+    toTokenAddress,
     fromAmountInputValueInCurrency,
     fromAmountInputValue,
     currency,

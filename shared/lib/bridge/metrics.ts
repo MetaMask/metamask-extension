@@ -11,8 +11,8 @@ type ConversionRate = {
 
 export const getConvertedUsdAmounts = ({
   activeQuote,
-  srcTokenAddress,
-  destTokenAddress,
+  fromTokenAddress,
+  toTokenAddress,
   fromAmountInputValueInCurrency,
   fromAmountInputValue,
   currency,
@@ -21,8 +21,8 @@ export const getConvertedUsdAmounts = ({
   toTokenConversionRate,
 }: {
   activeQuote: (QuoteResponse & QuoteMetadata) | undefined;
-  srcTokenAddress: string | undefined;
-  destTokenAddress: string | undefined;
+  fromTokenAddress: string | undefined;
+  toTokenAddress: string | undefined;
   fromAmountInputValueInCurrency: BigNumber;
   fromAmountInputValue: string | null;
   currency: string;
@@ -30,14 +30,6 @@ export const getConvertedUsdAmounts = ({
   fromTokenConversionRate: ConversionRate;
   toTokenConversionRate: ConversionRate;
 }) => {
-  // Use values from activeQuote if available, otherwise use validated input field values
-  const fromTokenAddress = (
-    activeQuote ? activeQuote.quote.srcAsset.address : srcTokenAddress
-  )?.toLowerCase();
-  const toTokenAddress = (
-    activeQuote ? activeQuote.quote.destAsset.address : destTokenAddress
-  )?.toLowerCase();
-
   const fromAmountInCurrency =
     activeQuote?.sentAmount?.valueInCurrency ?? fromAmountInputValueInCurrency;
   const fromAmount = fromAmountInputValue ?? activeQuote?.sentAmount.amount;
