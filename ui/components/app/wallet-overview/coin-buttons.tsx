@@ -332,7 +332,6 @@ const CoinButtons = ({
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId) {
       try {
-        throw new Error('test error');
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
         await dispatch(
