@@ -7,10 +7,9 @@ import { useSelector } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { UNLIMITED_THRESHOLD } from '../../constants';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { useIsNFT } from './use-is-nft';
-
-export const UNLIMITED_THRESHOLD = 10 ** 15;
 
 function isSpendingCapUnlimited(decodedSpendingCap: number) {
   return decodedSpendingCap >= UNLIMITED_THRESHOLD;
