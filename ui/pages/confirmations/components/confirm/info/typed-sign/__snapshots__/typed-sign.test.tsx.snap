@@ -339,7 +339,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -350,7 +350,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         aria-label="collapse-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
-        style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 8px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -714,7 +714,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -725,7 +725,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
         aria-label="collapse-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
-        style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 8px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -888,7 +888,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1754,7 +1754,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -2243,7 +2243,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
