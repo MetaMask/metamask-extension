@@ -10,6 +10,7 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUIButtonProps = {
   name?: string;
+  textVariant: ButtonLinkProps<'button'>['variant'];
 };
 
 const COLORS = {
@@ -27,6 +28,7 @@ export const SnapUIButton: FunctionComponent<
   variant = 'primary',
   disabled = false,
   className = '',
+  textVariant,
   ...props
 }) => {
   const { handleEvent } = useSnapInterfaceContext();
@@ -58,6 +60,7 @@ export const SnapUIButton: FunctionComponent<
       onClick={handleClick}
       color={color}
       disabled={disabled}
+      variant={textVariant}
       {...props}
     >
       {children}
