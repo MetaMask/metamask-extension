@@ -25,10 +25,7 @@ import {
 import { getMetaMaskKeyrings } from '../../../../selectors/selectors';
 import { getInternalAccounts } from '../../../../selectors/accounts';
 
-export const SRPList = () => {
-  const onClick = () => {
-    console.log('clicked');
-  };
+export const SRPList = ({ onActionComplete }: { onActionComplete: (id: string) => void }) => {
 
   const keyrings: (EthKeyring<Json> & {
     id: string;
@@ -56,21 +53,27 @@ export const SRPList = () => {
     [keyrings],
   );
 
+  const showAccountsInitState = useMemo(
+    () =>
+      nonEmptyHDKeyrings.reduce(
+        (acc: Record<string, boolean>, keyring) => ({
+          ...acc,
+          [keyring.id]: false,
+        }),
+        {},
+      ),
+    [nonEmptyHDKeyrings],
+  );
+
   const [showAccounts, setShowAccounts] = useState<Record<string, boolean>>(
-    nonEmptyHDKeyrings.reduce(
-      (acc: Record<string, boolean>, keyring) => ({
-        ...acc,
-        [keyring.id]: false,
-      }),
-      {},
-    ),
+    showAccountsInitState,
   );
 
   return (
     <Box padding={4}>
       {nonEmptyHDKeyrings.map((keyring) => (
         <Card
-          onClick={onClick}
+          onClick={() => onActionComplete(keyring.id)}
           className="select-srp-container"
           marginBottom={3}
         >
@@ -87,12 +90,13 @@ export const SRPList = () => {
                 variant={TextVariant.bodySm}
                 color={TextColor.primaryDefault}
                 className="srp-list-show-accounts"
-                onClick={() =>
+                onClick={(e) => {
+                  e.stopPropagation();
                   setShowAccounts({
                     ...showAccounts,
                     [keyring.id]: !showAccounts[keyring.id],
-                  })
-                }
+                  });
+                }}
               >
                 {showAccounts[keyring.id] ? 'Hide' : 'Show'}{' '}
                 {keyring.accounts.length} account

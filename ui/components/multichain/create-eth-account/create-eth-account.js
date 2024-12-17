@@ -13,12 +13,13 @@ export const CreateEthAccount = ({
   onActionComplete,
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   onSelectSRP,
+  selectedKeyringId,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 }) => {
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name) => {
-    const newAccountAddress = await dispatch(addNewAccount());
+    const newAccountAddress = await dispatch(addNewAccount(selectedKeyringId));
     if (name) {
       dispatch(setAccountLabel(newAccountAddress, name));
     }
@@ -36,6 +37,7 @@ export const CreateEthAccount = ({
       getNextAvailableAccountName={getNextAvailableAccountName}
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       onSelectSRP={onSelectSRP}
+      selectedKeyringId={selectedKeyringId}
       ///: END:ONLY_INCLUDE_IF(multi-srp)
     ></CreateAccount>
   );
@@ -51,5 +53,6 @@ CreateEthAccount.propTypes = {
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   onSelectSRP: PropTypes.func.isRequired,
+  selectedKeyringId: PropTypes.string.isRequired,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 };

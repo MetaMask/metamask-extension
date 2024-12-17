@@ -23,6 +23,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { KeyringObject } from '@metamask/keyring-controller';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
@@ -73,6 +74,9 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -136,6 +140,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSRP } from '../multi-srp/import-srp';
 import { SRPList } from '../multi-srp/srp-list';
+import { KeyringType } from '../../../../shared/constants/keyring';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
@@ -310,6 +315,15 @@ export const AccountListMenu = ({
   );
 
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const keyrings = useSelector(getMetaMaskKeyrings);
+  const primaryKeyring = keyrings.find(
+    (keyring: KeyringObject) => keyring.type === KeyringType.hdKeyTree,
+  );
+  const [selectedKeyringId, setSelectedKeyringId] = useState(
+    primaryKeyring?.id,
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
@@ -398,6 +412,7 @@ export const AccountListMenu = ({
                 }
               }}
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              selectedKeyringId={selectedKeyringId}
               onSelectSRP={() => setActionMode(ACTION_MODES.SELECT_SRP)}
               ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
@@ -445,7 +460,14 @@ export const AccountListMenu = ({
         }
         {
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          actionMode === ACTION_MODES.SELECT_SRP && <SRPList />
+          actionMode === ACTION_MODES.SELECT_SRP && (
+            <SRPList
+              onActionComplete={(keyringId: string) => {
+                setSelectedKeyringId(keyringId);
+                setActionMode(ACTION_MODES.ADD);
+              }}
+            />
+          )
           ///: END:ONLY_INCLUDE_IF
         }
 

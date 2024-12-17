@@ -4,11 +4,13 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import {
   Box,
   ButtonPrimary,
@@ -20,7 +22,10 @@ import {
 import { FormTextField } from '../../component-library/form-text-field/form-text-field';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import { getMetaMaskAccountsOrdered } from '../../../selectors';
+import {
+  getMetaMaskAccountsOrdered,
+  getMetaMaskKeyrings,
+} from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   MetaMetricsEventAccountType,
@@ -53,6 +58,7 @@ type Props = {
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   onSelectSRP: () => void;
+  selectedKeyringId: string;
   ///: END:ONLY_INCLUDE_IF
 };
 
@@ -71,6 +77,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         onCreateAccount,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         onSelectSRP,
+        selectedKeyringId,
         ///: END:ONLY_INCLUDE_IF
         onActionComplete,
       }: CreateAccountProps<C>,
@@ -103,6 +110,20 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         trimmedAccountName || defaultAccountName,
         defaultAccountName,
       );
+
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      const keyrings = useSelector(getMetaMaskKeyrings);
+      const hdKeyrings = useMemo(
+        () =>
+          keyrings.filter(
+            (keyring: KeyringObject) => keyring.type === KeyringTypes.hd,
+          ),
+        [keyrings],
+      );
+      const selectedKeyring = hdKeyrings.find(
+        (keyring: KeyringObject) => keyring.id === selectedKeyringId,
+      );
+      ///: END:ONLY_INCLUDE_IF(multi-srp)
 
       const onSubmit = useCallback(
         async (event: KeyboardEvent<HTMLFormElement>) => {
@@ -138,7 +159,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           <FormTextField
             ref={ref}
             size={FormTextFieldSize.Lg}
-            gap={2}
+            gap={1}
             autoFocus
             id="account-name"
             label={t('accountName')}
@@ -156,13 +177,15 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-            <Box marginBottom={3}>
-              <SelectSRP
-                onClick={onSelectSRP}
-                srpName="Secret Phrase 1"
-                srpAccounts={3}
-              />
-            </Box>
+            hdKeyrings.length > 1 ? (
+              <Box marginBottom={3}>
+                <SelectSRP
+                  onClick={onSelectSRP}
+                  srpName={`Secret Phrase ${selectedKeyring.typeIndex || 1}`}
+                  srpAccounts={selectedKeyring.accounts.length}
+                />
+              </Box>
+            ) : null
             ///: END:ONLY_INCLUDE_IF
           }
           <Box display={Display.Flex} marginTop={1} gap={2}>
