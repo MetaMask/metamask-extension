@@ -322,6 +322,26 @@ class TestDapp {
   }
 
   /**
+   * Verifies the accounts connected to the test dapp.
+   *
+   * @param connectedAccounts - The expected connected accounts separated by a comma. If no accounts are connected we can omit the param.
+   */
+  async check_connectedAccounts(connectedAccounts: string = '') {
+    console.log('Verify connected accounts');
+    if (connectedAccounts) {
+      await this.driver.waitForSelector({
+        css: this.connectedAccount,
+        text: connectedAccounts,
+      });
+    } else {
+      await this.driver.waitForSelector({
+        css: this.connectedAccount,
+        text: ' ',
+      });
+    }
+  }
+
+  /**
    * Verify the failed personal sign signature.
    *
    * @param expectedFailedMessage - The expected failed message.

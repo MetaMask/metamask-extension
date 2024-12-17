@@ -5,6 +5,9 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
+  private readonly allPermissionsButton =
+    '[data-testid="global-menu-connected-sites"]';
+
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
 
@@ -54,6 +57,12 @@ class HeaderNavbar {
     }
   }
 
+  async openPermissionsPage(): Promise<void> {
+    console.log('Open permissions page in header navbar');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.allPermissionsButton);
+  }
+
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
     await this.openThreeDotMenu();
@@ -71,13 +80,6 @@ class HeaderNavbar {
     await this.driver.clickElement(this.switchNetworkDropDown);
   }
 
-  async check_currentSelectedNetwork(networkName: string): Promise<void> {
-    console.log(`Validate the Switch network to ${networkName}`);
-    await this.driver.waitForSelector(
-      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
-    );
-  }
-
   /**
    * Verifies that the displayed account label in header matches the expected label.
    *
@@ -91,6 +93,18 @@ class HeaderNavbar {
       css: this.accountMenuButton,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Validates that the currently selected network matches the expected network name.
+   *
+   * @param networkName - The expected name of the currently selected network.
+   */
+  async check_currentSelectedNetwork(networkName: string): Promise<void> {
+    console.log(`Validate the Switch network to ${networkName}`);
+    await this.driver.waitForSelector(
+      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
   }
 }
 
