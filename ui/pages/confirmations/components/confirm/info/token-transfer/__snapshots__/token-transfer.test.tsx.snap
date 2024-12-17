@@ -22,8 +22,8 @@ exports[`TokenTransferInfo renders correctly 1`] = `
       <mask
         height="16"
         id="mask0"
-        mask-type="alpha"
         maskUnits="userSpaceOnUse"
+        style="mask-type: alpha;"
         width="16"
         x="0"
         y="0"
@@ -108,8 +108,8 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             <mask
               height="16"
               id="mask0"
-              mask-type="alpha"
               maskUnits="userSpaceOnUse"
+              style="mask-type: alpha;"
               width="16"
               x="0"
               y="0"
