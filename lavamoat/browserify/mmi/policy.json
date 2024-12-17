@@ -721,9 +721,9 @@
         "console.info": true
       },
       "packages": {
-        "@metamask/approval-controller>nanoid": true,
         "@metamask/base-controller": true,
-        "@metamask/rpc-errors": true
+        "@metamask/rpc-errors": true,
+        "nanoid": true
       }
     },
     "@metamask/approval-controller>nanoid": {
@@ -2136,11 +2136,11 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/json-rpc-engine": true,
-        "@metamask/permission-controller>nanoid": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
-        "immer": true
+        "immer": true,
+        "nanoid": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -2598,7 +2598,6 @@
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
-        "@metamask/snaps-controllers>nanoid": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-rpc-methods": true,
@@ -2609,6 +2608,7 @@
         "browserify>browserify-zlib": true,
         "eslint>fast-deep-equal": true,
         "immer": true,
+        "nanoid": true,
         "readable-stream": true,
         "semver": true
       }
@@ -4693,9 +4693,7 @@
     },
     "nanoid": {
       "globals": {
-        "crypto": true,
-        "msCrypto": true,
-        "navigator": true
+        "crypto.getRandomValues": true
       }
     },
     "nock>debug": {
