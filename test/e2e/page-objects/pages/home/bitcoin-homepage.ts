@@ -83,7 +83,7 @@ class BitcoinHomepage extends HomePage {
   /**
    * Checks if the receive button is enabled on bitcoin account homepage.
    */
-  async check_ifReceiveButtonIsEnabled(): Promise<boolean> {
+  async check_isReceiveButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.receiveButton, 1000);
     } catch (e) {
