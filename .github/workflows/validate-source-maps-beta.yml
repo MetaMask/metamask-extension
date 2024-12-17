@@ -1,0 +1,30 @@
+name: Validate source maps beta
+
+on:
+  workflow_call:
+
+jobs:
+  validate-source-maps-beta:
+    name: Validate source maps beta
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Download 'dist-beta'
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-beta
+          path: dist-beta
+
+      - name: Download 'builds-beta'
+        uses: actions/download-artifact@v4
+        with:
+          name: builds-beta
+          path: builds-beta
+
+      - name: Validate source maps
+        run: .circleci/scripts/validate-source-maps-beta.sh

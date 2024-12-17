@@ -243,7 +243,6 @@ workflows:
       - validate-source-maps-mv2:
           requires:
             - prep-build-mv2
-      - validate-source-maps-beta
       - validate-source-maps-mmi:
           requires:
             - prep-build-mmi
@@ -267,7 +266,6 @@ workflows:
             - validate-lavamoat-policy-build
             - validate-lavamoat-policy-webapp
             - validate-source-maps
-            - validate-source-maps-beta
             - validate-source-maps-flask
             - validate-source-maps-mmi
             - test-mozilla-lint-mv2
@@ -1458,17 +1456,6 @@ jobs:
       - run:
           name: Validate source maps
           command: yarn validate-source-maps
-
-  validate-source-maps-beta:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate source maps
-          command: .circleci/scripts/validate-source-maps-beta.sh
 
   validate-source-maps-mmi:
     executor: node-browsers-small

@@ -58,12 +58,19 @@ jobs:
     if: ${{ (github.head_ref || github.ref_name) != 'master' }}
     uses: ./.github/workflows/trigger-beta-build.yml
 
+  validate-source-maps-beta:
+    name: Validate source maps beta
+    needs:
+      - trigger-beta-build
+    uses: ./.github/workflows/trigger-beta-build.yml
+
   publish-prerelease:
     name: Publish prerelease
     if: ${{ github.event_name == 'pull_request' }}
     needs:
       - wait-for-circleci-workflow-status
       - trigger-beta-build
+      - validate-source-maps-beta
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -83,6 +90,7 @@ jobs:
       - run-tests
       - wait-for-circleci-workflow-status
       - trigger-beta-build
+      - validate-source-maps-beta
       - publish-prerelease
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
