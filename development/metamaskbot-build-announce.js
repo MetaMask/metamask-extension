@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const { promises: fs } = require('fs');
+const path = require('path');
 // Fetch is part of node js in future versions, thus triggering no-shadow
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
@@ -197,12 +199,14 @@ async function start() {
 
   const benchmarkResults = {};
   for (const platform of platforms) {
+    const benchmarkPath = path.resolve(
+      __dirname,
+      '..',
+      path.join('test-artifacts', platform, 'benchmark', 'pageload.json'),
+    );
     try {
-      const benchmark = await (
-        await fetch(
-          `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/${platform}/benchmark/pageload.json`,
-        )
-      ).json();
+      const data = await fs.readFile(benchmarkPath, 'utf8');
+      const benchmark = JSON.parse(data);
       benchmarkResults[platform] = benchmark;
     } catch (error) {
       if (error.code === 'ENOENT') {
@@ -299,12 +303,22 @@ async function start() {
   }
 
   try {
-    const prBundleSizeStats = await (
-      await fetch(
-        `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json`,
-      )
+    const prBundleSizeStats = JSON.parse(
+      await fs.readFile(
+        path.resolve(
+          __dirname,
+          '..',
+          path.join('test-artifacts', 'chrome', 'bundle_size.json'),
+        ),
+        'utf-8',
+      ),
+    );
+
+    const devBundleSizeStats = await (
+      await fetch(bundleSizeDataUrl, {
+        method: 'GET',
+      })
     ).json();
-    const devBundleSizeStats = await (await fetch(bundleSizeDataUrl)).json();
 
     const prSizes = {
       background: prBundleSizeStats.background.size,
