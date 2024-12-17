@@ -2197,6 +2197,9 @@
   "failedToFetchChainId": {
     "message": "Could not fetch chain ID. Is your RPC URL correct?"
   },
+  "failedToSwitchNetworks": {
+    "message": "Failed to switch networks"
+  },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
   },

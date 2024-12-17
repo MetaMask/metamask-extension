@@ -626,7 +626,7 @@ const CoinButtons = ({
         <Box className="coin-buttons-toast">
           <Toast
             startAdornment={<></>}
-            text="Failed to switch networks"
+            text={t('failedToSwitchNetworks')}
             onClose={() => setIsToastOpen(false)}
             autoHideTime={2000}
             onAutoHideToast={() => setIsToastOpen(false)}
