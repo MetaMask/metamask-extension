@@ -73,7 +73,7 @@ export const SnapUIButton: FunctionComponent<
       {loading ? (
         <Icon
           name={IconName.Loading}
-          style={{ animation: 'spin 2s linear infinite' }}
+          style={{ animation: 'spin 1.2s linear infinite' }}
         />
       ) : (
         children
