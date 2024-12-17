@@ -146,15 +146,29 @@ export enum BridgeStatusAction {
 }
 
 // The BigNumber values are serialized to strings when QuoteMetadata sent to the background
+export type TokenAmountValuesSerialized = {
+  amount: string;
+  valueInCurrency: string | null;
+  usd: string | null;
+};
+
 export type QuoteMetadataSerialized = {
-  gasFee: { amount: string; valueInCurrency: string | null };
-  totalNetworkFee: { amount: string; valueInCurrency: string | null }; // estimatedGasFees + relayerFees
-  totalMaxNetworkFee: { amount: string; valueInCurrency: string | null }; // maxGasFees + relayerFees
-  toTokenAmount: { amount: string; valueInCurrency: string | null };
-  adjustedReturn: { valueInCurrency: string | null }; // destTokenAmount - totalNetworkFee
-  sentAmount: { amount: string; valueInCurrency: string | null }; // srcTokenAmount + metabridgeFee
+  gasFee: TokenAmountValuesSerialized;
+  // estimatedGasFees + relayerFees
+  totalNetworkFee: TokenAmountValuesSerialized;
+  // maxGasFees + relayerFees
+  totalMaxNetworkFee: TokenAmountValuesSerialized;
+  toTokenAmount: TokenAmountValuesSerialized;
+  // destTokenAmount - totalNetworkFee
+  adjustedReturn: TokenAmountValuesSerialized;
+  // srcTokenAmount + metabridgeFee
+  sentAmount: TokenAmountValuesSerialized;
   swapRate: string; // destTokenAmount / sentAmount
-  cost: { valueInCurrency: string | null }; // sentAmount - adjustedReturn
+  // sentAmount - adjustedReturn
+  cost: {
+    valueInCurrency: string | null;
+    usd: string | null;
+  };
 };
 
 export type StartPollingForBridgeTxStatusArgs = {
