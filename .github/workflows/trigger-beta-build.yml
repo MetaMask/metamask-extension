@@ -14,7 +14,7 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
 
-      - name: Build beta prod
+      - name: Beta build
         env:
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: .circleci/scripts/trigger-beta-build.sh
