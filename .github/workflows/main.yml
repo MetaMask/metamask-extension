@@ -37,6 +37,10 @@ jobs:
     name: Test lint
     uses: ./.github/workflows/test-lint.yml
 
+  test-lint-changelog:
+    name: Test lint changelog
+    uses: ./.github/workflows/test-lint-changelog.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -64,6 +68,7 @@ jobs:
       - test-lint-shellcheck
       - test-deps-depcheck
       - test-lint
+      - test-lint-changelog
       - run-tests
       - wait-for-circleci-workflow-status
       - publish-prerelease
