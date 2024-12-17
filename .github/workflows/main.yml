@@ -53,11 +53,17 @@ jobs:
     name: Wait for CircleCI workflow status
     uses: ./.github/workflows/wait-for-circleci-workflow-status.yml
 
+  trigger-beta-build:
+    name: Trigger beta build
+    if: ${{ (github.head_ref || github.ref_name) != 'master' }}
+    uses: ./.github/workflows/trigger-beta-build.yml
+
   publish-prerelease:
     name: Publish prerelease
     if: ${{ github.event_name == 'pull_request' }}
     needs:
       - wait-for-circleci-workflow-status
+      - trigger-beta-build
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -76,6 +82,7 @@ jobs:
       - test-lint-lockfile
       - run-tests
       - wait-for-circleci-workflow-status
+      - trigger-beta-build
       - publish-prerelease
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
