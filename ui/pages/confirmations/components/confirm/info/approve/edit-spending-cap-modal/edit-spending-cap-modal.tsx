@@ -64,7 +64,7 @@ export const EditSpendingCapModal = ({
 
   const { formattedSpendingCap, spendingCap } = useApproveTokenSimulation(
     transactionMeta,
-    decimals || '0',
+    decimals,
   );
 
   const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =

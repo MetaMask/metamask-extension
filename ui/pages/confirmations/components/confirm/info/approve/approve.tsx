@@ -35,7 +35,7 @@ const ApproveInfo = () => {
 
   const { spendingCap, pending } = useApproveTokenSimulation(
     transactionMeta,
-    decimals || '0',
+    decimals,
   );
 
   const showRevokeVariant =
