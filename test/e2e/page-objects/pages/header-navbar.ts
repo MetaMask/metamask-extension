@@ -80,13 +80,6 @@ class HeaderNavbar {
     await this.driver.clickElement(this.switchNetworkDropDown);
   }
 
-  async check_currentSelectedNetwork(networkName: string): Promise<void> {
-    console.log(`Validate the Switch network to ${networkName}`);
-    await this.driver.waitForSelector(
-      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
-    );
-  }
-
   /**
    * Verifies that the displayed account label in header matches the expected label.
    *
@@ -100,6 +93,18 @@ class HeaderNavbar {
       css: this.accountMenuButton,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Validates that the currently selected network matches the expected network name.
+   *
+   * @param networkName - The expected name of the currently selected network.
+   */
+  async check_currentSelectedNetwork(networkName: string): Promise<void> {
+    console.log(`Validate the Switch network to ${networkName}`);
+    await this.driver.waitForSelector(
+      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
+    );
   }
 }
 
