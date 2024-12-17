@@ -240,7 +240,7 @@ async function withAccountSnap(
 
       const testDapp = new TestDapp(driver);
       await testDapp.openTestDappPage();
-      await testDapp.connectAccount(ERC_4337_ACCOUNT);
+      await testDapp.connectAccount({ publicAddress: ERC_4337_ACCOUNT });
 
       await driver.switchToWindowWithTitle(
         WINDOW_TITLES.ExtensionInFullScreenView,
