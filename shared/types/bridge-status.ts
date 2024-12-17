@@ -125,7 +125,7 @@ export type BridgeHistoryItem = {
   startTime?: number; // timestamp in ms
   estimatedProcessingTimeInSeconds: number;
   slippagePercentage: number;
-  completionTime?: number;
+  completionTime?: number; // timestamp in ms
   pricingData?: {
     amountSent: string; // This is from QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
 
