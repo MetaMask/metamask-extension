@@ -25,6 +25,7 @@ import {
   type QuoteRequest,
   type QuoteResponse,
   type TxData,
+  type BridgeControllerState,
   BridgeFeatureFlagsKey,
   RequestStatus,
 } from '../../../../shared/types/bridge';
@@ -37,7 +38,7 @@ import {
   DEFAULT_BRIDGE_CONTROLLER_STATE,
   METABRIDGE_CHAIN_TO_ADDRESS_MAP,
 } from './constants';
-import { BridgeControllerState, BridgeControllerMessenger } from './types';
+import type { BridgeControllerMessenger } from './types';
 
 const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
   bridgeState: {

@@ -20,9 +20,7 @@ import {
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/bridge';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import type { BridgeControllerState } from '../../../app/scripts/controllers/bridge/types';
+import type { BridgeControllerState } from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import {

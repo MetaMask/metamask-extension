@@ -8,7 +8,7 @@ import {
 } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { BridgeFeatureFlagsKey } from '../../../../shared/types/bridge';
-import type { BridgeControllerState } from './types';
+import type { BridgeControllerState } from '../../../../shared/types/bridge';
 
 export const BRIDGE_CONTROLLER_NAME = 'BridgeController';
 export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {

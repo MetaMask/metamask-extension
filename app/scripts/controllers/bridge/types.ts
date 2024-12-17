@@ -7,35 +7,13 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
 } from '@metamask/network-controller';
-import { SwapsTokenObject } from '../../../../shared/constants/swaps';
 import type {
   BridgeBackgroundAction,
-  BridgeFeatureFlags,
+  BridgeControllerState,
   BridgeUserAction,
-  L1GasFees,
-  QuoteRequest,
-  QuoteResponse,
-  RequestStatus,
 } from '../../../../shared/types/bridge';
 import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './constants';
-
-export type BridgeControllerState = {
-  bridgeFeatureFlags: BridgeFeatureFlags;
-  srcTokens: Record<string, SwapsTokenObject>;
-  srcTopAssets: { address: string }[];
-  srcTokensLoadingStatus?: RequestStatus;
-  destTokensLoadingStatus?: RequestStatus;
-  destTokens: Record<string, SwapsTokenObject>;
-  destTopAssets: { address: string }[];
-  quoteRequest: Partial<QuoteRequest>;
-  quotes: (QuoteResponse & L1GasFees)[];
-  quotesInitialLoadTime?: number;
-  quotesLastFetched?: number;
-  quotesLoadingStatus?: RequestStatus;
-  quoteFetchError?: string;
-  quotesRefreshCount: number;
-};
 
 type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
   type: `${typeof BRIDGE_CONTROLLER_NAME}:${FunctionName}`;
