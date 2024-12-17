@@ -69,7 +69,7 @@ class BitcoinHomepage extends HomePage {
   /**
    * Checks if the buy/sell button is enabled on bitcoin account homepage.
    */
-  async check_ifBuySellButtonIsEnabled(): Promise<boolean> {
+  async check_isBuySellButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.buySellButton, 1000);
     } catch (e) {
