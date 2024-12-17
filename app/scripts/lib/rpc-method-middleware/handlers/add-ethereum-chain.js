@@ -22,9 +22,8 @@ const addEthereumChain = {
     endApprovalFlow: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
-    requestPermissionApprovalForOrigin: true,
-    updateCaveat: true,
-    grantPermissions: true,
+    requestPermittedChainsPermissionForOrigin: true,
+    requestPermittedChainsPermissionIncrementalForOrigin: true,
   },
 };
 
@@ -45,9 +44,8 @@ async function addEthereumChainHandler(
     endApprovalFlow,
     getCurrentChainIdForDomain,
     getCaveat,
-    requestPermissionApprovalForOrigin,
-    updateCaveat,
-    grantPermissions,
+    requestPermittedChainsPermissionForOrigin,
+    requestPermittedChainsPermissionIncrementalForOrigin,
   },
 ) {
   let validParams;
@@ -199,10 +197,9 @@ async function addEthereumChainHandler(
       isAddFlow: true,
       setActiveNetwork,
       getCaveat,
-      requestPermissionApprovalForOrigin,
-      updateCaveat,
       endApprovalFlow,
-      grantPermissions,
+      requestPermittedChainsPermissionForOrigin,
+      requestPermittedChainsPermissionIncrementalForOrigin,
     });
   } else if (approvalFlowId) {
     endApprovalFlow({ id: approvalFlowId });
