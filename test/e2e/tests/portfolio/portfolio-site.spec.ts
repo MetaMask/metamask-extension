@@ -1,3 +1,4 @@
+import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { EMPTY_E2E_TEST_PAGE_TITLE } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
@@ -6,7 +7,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Portfolio site', function () {
-  async function mockPortfolioSite(mockServer: any) {
+  async function mockPortfolioSite(mockServer: MockttpServer) {
     return await mockServer
       .forGet('https://portfolio.metamask.io/')
       .withQuery({

@@ -9,11 +9,10 @@ describe('wallet_requestPermissions', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.title,
       },
-      async ({ driver }: { driver: any }) => {
+      async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
