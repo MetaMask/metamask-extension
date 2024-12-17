@@ -62,7 +62,7 @@ jobs:
     name: Validate source maps beta
     needs:
       - trigger-beta-build
-    uses: ./.github/workflows/trigger-beta-build.yml
+    uses: ./.github/workflows/validate-source-maps-beta.yml
 
   publish-prerelease:
     name: Publish prerelease
