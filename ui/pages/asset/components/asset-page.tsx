@@ -172,7 +172,7 @@ const AssetPage = ({
   const tokenExchangeRate =
     type === AssetType.native
       ? currencyRates[symbol]?.conversionRate
-      : currencyRates[baseCurrency]?.conversionRate || undefined;
+      : currencyRates[baseCurrency]?.conversionRate || 0;
 
   // Calculate fiat amount
   const tokenFiatAmount =
