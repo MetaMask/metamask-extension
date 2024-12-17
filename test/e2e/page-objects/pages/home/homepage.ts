@@ -8,10 +8,13 @@ class HomePage {
 
   public headerNavbar: HeaderNavbar;
 
-  private readonly activityTab =
-    '[data-testid="account-overview__activity-tab"]';
+  private readonly activityTab = {
+    testId: 'account-overview__activity-tab',
+  };
 
-  private readonly balance = '[data-testid="eth-overview__primary-currency"]';
+  private readonly balance = {
+    testId: 'eth-overview__primary-currency',
+  };
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
@@ -23,21 +26,35 @@ class HomePage {
     tag: 'h6',
   };
 
-  private readonly erc20TokenDropdown = '[data-testid="import-token-button"]';
+  private readonly erc20TokenDropdown = {
+    testId: 'import-token-button',
+  };
 
-  private readonly nftTab = '[data-testid="account-overview__nfts-tab"]';
+  private readonly nftTab = {
+    testId: 'account-overview__nfts-tab',
+  };
 
   private readonly popoverBackground = '.popover-bg';
 
-  private readonly popoverCloseButton = '[data-testid="popover-close"]';
+  private readonly popoverCloseButton = {
+    testId: 'popover-close',
+  };
 
-  private readonly privacyBalanceToggle = '[data-testid="sensitive-toggle"]';
+  private readonly privacyBalanceToggle = {
+    testId: 'sensitive-toggle',
+  };
 
-  private readonly refreshErc20Tokens = '[data-testid="refreshList"]';
+  private readonly refreshErc20Tokens = {
+    testId: 'refreshList',
+  };
 
-  private readonly sendButton = '[data-testid="eth-overview-send"]';
+  private readonly sendButton = {
+    testId: 'eth-overview-send',
+  };
 
-  private readonly tokensTab = '[data-testid="account-overview__asset-tab"]';
+  private readonly tokensTab = {
+    testId: 'account-overview__asset-tab',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;

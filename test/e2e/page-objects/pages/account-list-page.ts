@@ -547,6 +547,21 @@ class AccountListPage {
     });
   }
 
+
+  /**
+   * Verifies that all occurrences of the account balance are displayed as private.
+   *
+   * This function checks that the account balance is hidden in all places.
+   */
+  async check_balanceIsPrivateEverywhere(): Promise<void> {
+    console.log(`Verify all account balance occurrences are private`);
+    const balanceSelectors = {
+      tag: 'span',
+      text: '••••••',
+    };
+    await this.driver.elementCountBecomesN(balanceSelectors, 6);
+  }
+
   async check_currentAccountIsImported(): Promise<void> {
     console.log(`Check that current account is an imported account`);
     await this.driver.waitForSelector({

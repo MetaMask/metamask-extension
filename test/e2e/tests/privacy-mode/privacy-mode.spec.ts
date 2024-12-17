@@ -1,14 +1,14 @@
 import { Driver } from '../../webdriver/driver';
-import {
-  withFixtures,
-  unlockWallet,
-  defaultGanacheOptions,
-} from '../../helpers';
+import { defaultGanacheOptions, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { Ganache } from '../../seeder/ganache';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
+import { Ganache } from '../../seeder/ganache';
 
 describe('Privacy Mode', function () {
   it('should hide fiat balance and token balance when privacy mode is activated', async function () {
@@ -33,7 +33,10 @@ describe('Privacy Mode', function () {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
-        await headerNavbar.check_balanceIsPrivateEverywhere();
+
+        const accountList = new AccountListPage(driver);
+        await accountList.check_pageIsLoaded();
+        await accountList.check_balanceIsPrivateEverywhere();
       },
     );
   });
@@ -52,7 +55,7 @@ describe('Privacy Mode', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
@@ -61,10 +64,10 @@ describe('Privacy Mode', function () {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
-        await headerNavbar.check_accountBalance({
-          balance: '25',
-          currency: 'ETH',
-        });
+
+        const accountList = new AccountListPage(driver);
+        await accountList.check_pageIsLoaded();
+        await accountList.check_accountBalanceDisplayed('25');
       },
     );
   });
