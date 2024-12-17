@@ -208,12 +208,9 @@ export const BridgeQuoteCard = () => {
                           ? formatTokenAmount(
                               locale,
                               activeQuote.totalNetworkFee?.amount,
-                              ticker,
                             )
                           : undefined
-                      }
-                      -
-                      ${
+                      } - ${
                         activeQuote.totalMaxNetworkFee?.valueInCurrency
                           ? formatTokenAmount(
                               locale,
@@ -232,11 +229,8 @@ export const BridgeQuoteCard = () => {
                         formatTokenAmount(
                           locale,
                           activeQuote.totalNetworkFee?.amount,
-                          ticker,
                         )
-                      }
-                      -
-                      ${
+                      } - ${
                         formatCurrencyAmount(
                           activeQuote.totalMaxNetworkFee?.valueInCurrency,
                           currency,
