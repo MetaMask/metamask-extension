@@ -323,6 +323,7 @@ const _getQuotesWithMetadata = createSelector(
       const toTokenAmount = calcToAmount(
         quote.quote,
         toTokenExchangeRate.valueInCurrency,
+        toTokenExchangeRate.usd,
       );
       const gasFee = calcEstimatedAndMaxTotalGasFee({
         bridgeQuote: quote,
@@ -356,6 +357,8 @@ const _getQuotesWithMetadata = createSelector(
 
       return {
         ...quote,
+
+        // QuoteMetadata fields
         toTokenAmount,
         sentAmount,
         totalNetworkFee: totalEstimatedNetworkFee,
