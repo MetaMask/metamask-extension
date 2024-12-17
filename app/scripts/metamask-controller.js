@@ -5556,6 +5556,28 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Requests approval for permissions for the specified origin
+   *
+   * @param origin - The origin to request approval for.
+   * @param permissions - The permissions to request approval for.
+   */
+  async requestPermissionApprovalForOrigin(origin, permissions) {
+    const id = nanoid();
+    return this.approvalController.addAndShowApprovalRequest({
+      id,
+      origin,
+      requestData: {
+        metadata: {
+          id,
+          origin,
+        },
+        permissions,
+      },
+      type: MethodNames.RequestPermissions,
+    });
+  }
+
+  /**
    * Requests permittedChains permission for the specified origin
    * and replaces any existing CAIP-25 permission with a new one.
    * Allows for granting without prompting for user approval which
