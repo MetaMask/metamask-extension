@@ -38,7 +38,7 @@ class BitcoinHomepage extends HomePage {
    * Checks if the bridge button is enabled on bitcoin account homepage.
    *
    */
-  async check_ifBridgeButtonIsEnabled(): Promise<boolean> {
+  async check_isBridgeButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.bridgeButton, 1000);
     } catch (e) {
@@ -47,23 +47,6 @@ class BitcoinHomepage extends HomePage {
     }
     console.log('Bridge button is enabled');
     return true;
-  }
-
-  /**
-   * Checks if the expected bitcoin balance is displayed on homepage.
-   *
-   * @param expectedBalance - The expected bitcoin balance to be displayed. Defaults to '0'.
-   */
-  async check_expectedBitcoinBalanceIsDisplayed(
-    expectedBalance: number = 0,
-  ): Promise<void> {
-    console.log(
-      `Check if expected bitcoin balance is displayed: ${expectedBalance} BTC`,
-    );
-    await this.driver.waitForSelector({
-      css: this.balance,
-      text: `${expectedBalance}BTC`,
-    });
   }
 
   /**
@@ -78,6 +61,23 @@ class BitcoinHomepage extends HomePage {
     }
     console.log('Buy/Sell button is enabled');
     return true;
+  }
+
+  /**
+   * Checks if the expected bitcoin balance is displayed on homepage.
+   *
+   * @param expectedBalance - The expected bitcoin balance to be displayed. Defaults to '0'.
+   */
+  async check_isExpectedBitcoinBalanceDisplayed(
+    expectedBalance: number = 0,
+  ): Promise<void> {
+    console.log(
+      `Check if expected bitcoin balance is displayed: ${expectedBalance} BTC`,
+    );
+    await this.driver.waitForSelector({
+      css: this.balance,
+      text: `${expectedBalance}BTC`,
+    });
   }
 
   /**
@@ -97,7 +97,7 @@ class BitcoinHomepage extends HomePage {
   /**
    * Checks if the swap button is enabled on bitcoin account homepage.
    */
-  async check_ifSwapButtonIsEnabled(): Promise<boolean> {
+  async check_isSwapButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.swapButton, 1000);
     } catch (e) {

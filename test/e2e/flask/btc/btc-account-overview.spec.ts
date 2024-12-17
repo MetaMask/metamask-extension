@@ -12,13 +12,13 @@ describe('BTC Account - Overview', function (this: Suite) {
         const homePage = new BitcoinHomepage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.headerNavbar.check_accountLabel('Bitcoin Account');
-        await homePage.check_expectedBitcoinBalanceIsDisplayed(
+        await homePage.check_isExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
         );
-        assert.equal(await homePage.check_ifBridgeButtonIsEnabled(), false);
-        assert.equal(await homePage.check_ifSwapButtonIsEnabled(), false);
-        assert.equal(await homePage.check_ifBuySellButtonIsEnabled(), true);
-        assert.equal(await homePage.check_ifReceiveButtonIsEnabled(), true);
+        assert.equal(await homePage.check_isBridgeButtonEnabled(), false);
+        assert.equal(await homePage.check_isSwapButtonEnabled(), false);
+        assert.equal(await homePage.check_isBuySellButtonEnabled(), true);
+        assert.equal(await homePage.check_isReceiveButtonEnabled(), true);
       },
     );
   });
