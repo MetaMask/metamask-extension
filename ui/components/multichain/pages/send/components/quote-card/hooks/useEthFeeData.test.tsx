@@ -4,10 +4,10 @@ import {
   getNativeCurrency,
   getConversionRate,
   getGasFeeEstimates,
+  getCurrentCurrency,
 } from '../../../../../../../ducks/metamask/metamask';
 import { getUsedSwapsGasPrice } from '../../../../../../../ducks/swaps/swaps';
 import {
-  getCurrentCurrency,
   checkNetworkAndAccountSupports1559,
   getIsSwapsChain,
 } from '../../../../../../../selectors';

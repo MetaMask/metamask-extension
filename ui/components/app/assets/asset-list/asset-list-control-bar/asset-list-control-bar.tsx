@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
+  getSelectedInternalAccount,
   getTokenNetworkFilter,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
@@ -49,6 +50,8 @@ import {
   showImportTokensModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
+import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
+import { getMultichainNetwork } from '../../../../../selectors/multichain';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -71,6 +74,9 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
     useState(false);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
+
+  const account = useSelector(getSelectedInternalAccount);
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
@@ -166,12 +172,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       <Box
         display={Display.Flex}
         justifyContent={
-          process.env.PORTFOLIO_VIEW
+          process.env.PORTFOLIO_VIEW && isEvmNetwork
             ? JustifyContent.spaceBetween
             : JustifyContent.flexEnd
         }
       >
-        {process.env.PORTFOLIO_VIEW && (
+        {/* TODO: Remove isEvmNetwork check when we are ready to show the network filter in all networks including non-EVM */}
+        {process.env.PORTFOLIO_VIEW && isEvmNetwork ? (
           <ButtonBase
             data-testid="sort-by-networks"
             variant={TextVariant.bodyMdMedium}
@@ -196,7 +203,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
               ? currentNetwork?.nickname ?? t('currentNetwork')
               : t('popularNetworks')}
           </ButtonBase>
-        )}
+        ) : null}
 
         <Box
           className="asset-list-control-bar__buttons"

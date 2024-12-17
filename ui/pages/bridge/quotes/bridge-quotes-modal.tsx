@@ -24,7 +24,7 @@ import {
   formatTokenAmount,
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency, getLocale } from '../../../selectors';
+import { getLocale } from '../../../selectors';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
 import { QuoteMetadata, QuoteResponse, SortOrder } from '../types';
 import {
@@ -32,7 +32,10 @@ import {
   getBridgeSortOrder,
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
 import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
