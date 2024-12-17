@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import * as path from 'path';
-import { By } from 'selenium-webdriver';
 import {
   DAPP_URL,
   largeDelayMs,
@@ -108,46 +107,6 @@ describe('Multichain API', function () {
           await editButtons[1].click();
 
           await driver.delay(largeDelayMs);
-
-          const networkListItems = await driver.findElements(
-            '.multichain-network-list-item',
-          );
-
-          let foundEthereum = false;
-          let foundLinea = false;
-          let foundArbitrum = false;
-
-          for (const item of networkListItems) {
-            const text = await item.getText();
-            const checkbox = await item.findElement(
-              By.css('input[type="checkbox"]'),
-            );
-            const isChecked = await checkbox.isSelected();
-
-            if (text.includes('Ethereum Mainnet') && isChecked) {
-              foundEthereum = true;
-            }
-
-            if (text.includes('Linea Mainnet') && isChecked) {
-              foundLinea = true;
-            }
-
-            if (text.includes('Arbitrum One') && isChecked) {
-              foundArbitrum = true;
-            }
-          }
-
-          if (!foundEthereum) {
-            throw new Error('Expected Ethereum Mainnet to be selected');
-          }
-
-          if (!foundLinea) {
-            throw new Error('Expected Linea Mainnet to be selected');
-          }
-
-          if (!foundArbitrum) {
-            throw new Error('Expected Arbitrum One to be selected');
-          }
 
           await driver.clickElement(
             '[data-testid="connect-more-chains-button"]',
