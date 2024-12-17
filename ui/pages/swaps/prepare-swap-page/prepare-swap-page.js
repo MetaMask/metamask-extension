@@ -132,7 +132,6 @@ import {
   Text,
   TextField,
   TextFieldSize,
-  Box,
 } from '../../../components/component-library';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
