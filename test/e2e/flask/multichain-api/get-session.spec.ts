@@ -120,17 +120,15 @@ describe('Multichain API', function () {
 
           await driver.clickElement('#get-session-btn');
 
-          const notificationList = await driver.findElements(
-            '.notification-container',
-          );
+          const completeResultSummary = await driver.findElements('.result-summary');
 
-          const sessionResultSummary = notificationList[0];
-          await sessionResultSummary.click();
+          const getSessionResultSummary = completeResultSummary[0];
+          await getSessionResultSummary.click();
 
-          const completeRawResult = await driver.findElement(
+          const getSessionRawResult = await driver.findElement(
             '#session-method-result-0',
           );
-          const parsedResult = JSON.parse(await completeRawResult.getText());
+          const parsedResult = JSON.parse(await getSessionRawResult.getText());
 
           for (const scope of sessionScopes) {
             if (!parsedResult.sessionScopes[scope]) {
