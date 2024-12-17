@@ -12,9 +12,7 @@ class HomePage {
     testId: 'account-overview__activity-tab',
   };
 
-  private readonly balance = {
-    testId: 'eth-overview__primary-currency',
-  };
+  private readonly balance = '[data-testid="eth-overview__primary-currency"]';
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
