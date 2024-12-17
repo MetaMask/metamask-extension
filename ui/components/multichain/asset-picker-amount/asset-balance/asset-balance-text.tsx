@@ -84,16 +84,18 @@ export function AssetBalanceText({
       variant: TextVariant.bodySm,
     },
   };
-
   const errorText = error ? `. ${t(error)}` : '';
 
   if (asset.type === AssetType.NFT) {
     const numberOfTokens = hexToDecimal(asset.balance || '0x0');
     return (
-      <Text {...commonProps.textProps}>
-        {`${numberOfTokens} ${t(
-          numberOfTokens === '1' ? 'token' : 'tokens',
-        )?.toLowerCase()}${errorText}`}
+      <Text {...commonProps.textProps} data-testid="asset-balance-nft-display">
+        {`${t(
+          numberOfTokens === '1'
+            ? 'assetSingleNFTBalance'
+            : 'assetMultipleNFTsBalance',
+          [numberOfTokens],
+        )}${errorText}`}
       </Text>
     );
   }
