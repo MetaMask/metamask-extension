@@ -196,6 +196,7 @@ const baseStore = {
     completedOnboarding: true,
     useCurrencyRateCheck: true,
     ticker: 'ETH',
+    snaps: {},
   },
   activeTab: {
     origin: 'https://uniswap.org/',
