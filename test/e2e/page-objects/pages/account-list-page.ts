@@ -113,17 +113,17 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly watchAccountModalTitle = {
-    text: 'Watch any Ethereum account',
-    tag: 'h4',
-  };
-
   private readonly watchAccountAddressInput =
     'input#address-input[type="text"]';
 
   private readonly watchAccountConfirmButton = {
     text: 'Watch account',
     tag: 'button',
+  };
+
+  private readonly watchAccountModalTitle = {
+    text: 'Watch any Ethereum account',
+    tag: 'h4',
   };
 
   constructor(driver: Driver) {
