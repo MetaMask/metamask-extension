@@ -61,6 +61,10 @@ jobs:
     name: Build ts migration dashboard
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
 
+  build-storybook:
+    name: Build storybook
+    uses: ./.github/workflows/build-storybook.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -80,6 +84,7 @@ jobs:
     needs:
       - wait-for-circleci-workflow-status
       - build-ts-migration-dashboard
+      - build-storybook
       - trigger-beta-build
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
@@ -101,6 +106,7 @@ jobs:
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
       - build-ts-migration-dashboard
+      - build-storybook
       - run-tests
       - wait-for-circleci-workflow-status
       - trigger-beta-build

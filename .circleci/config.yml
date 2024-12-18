@@ -159,9 +159,6 @@ workflows:
           requires:
             - prep-deps
             - check-mmi-trigger
-      - prep-build-storybook:
-          requires:
-            - prep-deps
       - test-e2e-chrome-webpack:
           <<: *main_master_rc_only
           requires:
@@ -221,7 +218,6 @@ workflows:
       - test-storybook:
           requires:
             - prep-deps
-            - prep-build-storybook
       - validate-source-maps:
           requires:
             - prep-build
@@ -279,7 +275,6 @@ workflows:
             - prep-build-mmi
             - prep-build-flask
             - prep-build-flask-mv2
-            - prep-build-storybook
             - benchmark
             - user-actions-benchmark
             - stats-module-load-init
@@ -296,12 +291,6 @@ workflows:
             - prep-build-flask
             - prep-build-flask-mv2
             - all-tests-pass
-      - job-publish-storybook:
-          filters:
-            branches:
-              only: main
-          requires:
-            - prep-build-storybook
 
   rerun-from-failed:
     when:
@@ -783,21 +772,6 @@ jobs:
           root: .
           paths:
             - dist-test-webpack
-
-  prep-build-storybook:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build Storybook
-          command: yarn storybook:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - storybook-build
 
   rerun-workflows-from-failed:
     executor: node-browsers-small
@@ -1326,22 +1300,6 @@ jobs:
       - run:
           name: Create GitHub release
           command: .circleci/scripts/release-create-gh-release.sh
-
-  job-publish-storybook:
-    executor: node-browsers-small
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: storybook:deploy
-          command: |
-            git remote add storybook git@github.com:MetaMask/metamask-storybook.git
-            yarn storybook:deploy
 
   validate-source-maps:
     executor: node-browsers-small
