@@ -19,8 +19,9 @@ export const validateResponse = <ExpectedResponse>(
   validators: Validator<ExpectedResponse>[],
   data: unknown,
   urlUsed: string,
+  logError = true,
 ): data is ExpectedResponse => {
-  return validateData(validators, data, urlUsed);
+  return validateData(validators, data, urlUsed, logError);
 };
 
 export const isValidNumber = (v: unknown): v is number => typeof v === 'number';
@@ -53,6 +54,15 @@ export const FEATURE_FLAG_VALIDATORS = [
           typeof chain.isActiveSrc === 'boolean' &&
           typeof chain.isActiveDest === 'boolean',
       ),
+  },
+];
+
+export const TOKEN_AGGREGATOR_VALIDATORS = [
+  {
+    property: 'aggregators',
+    type: 'object',
+    validator: (v: unknown): v is number[] =>
+      isValidObject(v) && Object.values(v).every(isValidString),
   },
 ];
 

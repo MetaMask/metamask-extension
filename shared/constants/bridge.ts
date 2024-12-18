@@ -41,7 +41,7 @@ export const METABRIDGE_CHAIN_TO_ADDRESS_MAP: Record<Hex, string> = {
 export const BRIDGE_QUOTE_MAX_ETA_SECONDS = 60 * 60; // 1 hour
 export const BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = 0.8; // if a quote returns in x times less return than the best quote, ignore it
 
-export const BRIDGE_PREFERRED_GAS_ESTIMATE = 'medium';
+export const BRIDGE_PREFERRED_GAS_ESTIMATE = 'high';
 export const BRIDGE_DEFAULT_SLIPPAGE = 0.5;
 
 export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
@@ -58,3 +58,4 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [CHAIN_IDS.ZKSYNC_ERA]: 'ZkSync Era',
   [CHAIN_IDS.BASE]: 'Base',
 };
+export const BRIDGE_MM_FEE_RATE = 0.875;

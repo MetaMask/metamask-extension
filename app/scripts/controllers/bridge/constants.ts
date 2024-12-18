@@ -20,6 +20,8 @@ export const DEFAULT_BRIDGE_STATE: BridgeState = {
     },
   },
   srcTokens: {},
+  srcTokensLoadingStatus: undefined,
+  destTokensLoadingStatus: undefined,
   srcTopAssets: [],
   destTokens: {},
   destTopAssets: [],

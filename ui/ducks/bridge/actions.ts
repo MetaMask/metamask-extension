@@ -12,6 +12,7 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 import {
   bridgeSlice,
   setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
 } from './bridge';
 
@@ -24,6 +25,7 @@ const {
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
+  setSlippage,
 } = bridgeSlice.actions;
 
 export {
@@ -33,10 +35,12 @@ export {
   setFromToken,
   setFromTokenInputValue,
   setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
+  setSlippage,
 };
 
 const callBridgeControllerMethod = <T>(

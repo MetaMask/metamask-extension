@@ -120,7 +120,7 @@ export async function fetchBridgeTokens(
 
   tokens.forEach((token: unknown) => {
     if (
-      validateResponse<SwapsTokenObject>(TOKEN_VALIDATORS, token, url) &&
+      validateResponse<SwapsTokenObject>(TOKEN_VALIDATORS, token, url, false) &&
       !(
         isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
         isSwapsDefaultTokenAddress(token.address, chainId)

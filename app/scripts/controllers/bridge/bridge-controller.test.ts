@@ -1,7 +1,10 @@
 import nock from 'nock';
 import { BigNumber } from 'bignumber.js';
 import { add0x } from '@metamask/utils';
-import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
+import {
+  BRIDGE_API_BASE_URL,
+  RequestStatus,
+} from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
@@ -104,6 +107,7 @@ describe('BridgeController', function () {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           symbol: 'ABC',
           decimals: 16,
+          aggregators: ['lifl', 'socket'],
         },
         {
           address: '0x1291478912',
@@ -168,6 +172,12 @@ describe('BridgeController', function () {
   it('selectDestNetwork should set the bridge dest tokens and top assets', async function () {
     await bridgeController.selectDestNetwork('0xa');
     expect(bridgeController.state.bridgeState.destTokens).toStrictEqual({
+      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        symbol: 'ABC',
+        decimals: 16,
+        aggregators: ['lifl', 'socket'],
+      },
       '0x0000000000000000000000000000000000000000': {
         address: '0x0000000000000000000000000000000000000000',
         decimals: 18,
@@ -175,12 +185,10 @@ describe('BridgeController', function () {
         name: 'Ether',
         symbol: 'ETH',
       },
-      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'ABC',
-        decimals: 16,
-      },
     });
+    expect(
+      bridgeController.state.bridgeState.destTokensLoadingStatus,
+    ).toStrictEqual(RequestStatus.FETCHED);
     expect(bridgeController.state.bridgeState.destTopAssets).toStrictEqual([
       { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', symbol: 'ABC' },
     ]);
@@ -205,8 +213,12 @@ describe('BridgeController', function () {
         address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
         symbol: 'ABC',
         decimals: 16,
+        aggregators: ['lifl', 'socket'],
       },
     });
+    expect(
+      bridgeController.state.bridgeState.srcTokensLoadingStatus,
+    ).toStrictEqual(RequestStatus.FETCHED);
     expect(bridgeController.state.bridgeState.srcTopAssets).toStrictEqual([
       {
         address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',

@@ -12,7 +12,6 @@ import {
   BridgeControllerState,
   BridgeUserAction,
 } from '../../../../shared/types/bridge';
-import BridgeController from './bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './constants';
 
 type BridgeControllerAction<FunctionName extends keyof BridgeController> = {

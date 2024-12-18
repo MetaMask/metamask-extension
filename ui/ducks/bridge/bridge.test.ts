@@ -9,6 +9,7 @@ import {
   BridgeUserAction,
 } from '../../../shared/types/bridge';
 import * as util from '../../helpers/utils/util';
+import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
 import bridgeReducer from './bridge';
 import {
   setBridgeFeatureFlags,
@@ -23,6 +24,7 @@ import {
   resetBridgeState,
   setDestTokenExchangeRates,
   setWasTxDeclined,
+  setSlippage,
 } from './actions';
 
 const middleware = [thunk];
@@ -33,6 +35,21 @@ describe('Ducks - Bridge', () => {
 
   beforeEach(() => {
     store.clearActions();
+  });
+
+  describe('setSlippage', () => {
+    it('calls the "bridge/setSlippage" action', () => {
+      const state = store.getState().bridge;
+      const actionPayload = 0.1;
+
+      store.dispatch(setSlippage(actionPayload as never) as never);
+
+      // Check redux state
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/setSlippage');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState.slippage).toStrictEqual(actionPayload);
+    });
   });
 
   describe('setToChainId', () => {
@@ -148,11 +165,13 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         fromToken: null,
         toToken: null,
+        slippage: BRIDGE_DEFAULT_SLIPPAGE,
         fromTokenInputValue: null,
         sortOrder: 'cost_ascending',
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
         wasTxDeclined: false,
+        toTokenUsdExchangeRate: null,
       });
     });
   });
@@ -213,14 +232,17 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
+        slippage: BRIDGE_DEFAULT_SLIPPAGE,
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
         toTokenExchangeRate: null,
         wasTxDeclined: false,
+        toTokenUsdExchangeRate: null,
       });
     });
   });
+
   describe('setDestTokenExchangeRates', () => {
     it('fetches token prices and updates dest exchange rates in state, native dest token', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -5640,9 +5640,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^19.0.0, @metamask/keyring-controller@npm:^19.0.1":
-  version: 19.0.1
-  resolution: "@metamask/keyring-controller@npm:19.0.1"
+"@metamask/keyring-api@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/keyring-api@npm:12.0.0"
+  dependencies:
+    "@metamask/keyring-utils": "npm:^1.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.3.0"
+    bech32: "npm:^2.0.0"
+  checksum: 10/ba8b75c55d3fcb9f8b52c58ff141cba81f7c416c3fa684e089965717ea129d50e8df7a73e7ab1c96eaf59d70b6e2dd8a618434939b75ef0d3402b547b5196877
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-controller@npm:^19.0.0, @metamask/keyring-controller@npm:^19.0.2":
+  version: 19.0.2
+  resolution: "@metamask/keyring-controller@npm:19.0.2"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5651,16 +5663,36 @@ __metadata:
     "@metamask/eth-hd-keyring": "npm:^7.0.4"
     "@metamask/eth-sig-util": "npm:^8.0.0"
     "@metamask/eth-simple-keyring": "npm:^6.0.5"
-    "@metamask/keyring-api": "npm:^10.1.0"
-    "@metamask/message-manager": "npm:^11.0.2"
+    "@metamask/keyring-api": "npm:^12.0.0"
+    "@metamask/keyring-internal-api": "npm:^1.0.0"
+    "@metamask/message-manager": "npm:^11.0.3"
     "@metamask/utils": "npm:^10.0.0"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  peerDependencies:
-    "@metamask/providers": ^18.1.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/09aa13bbb7d85b155122763d12a8fd409d4ebe9612093b2c303da8077ecdbeb32d93acc32db2f29911e8dcbc35fb17463b0e467cf5795f019798b9466de009a2
+  checksum: 10/bbc140db91902dc8a9b8e1220d3c07e91858d68b9888d26df74fe300b1baf1331c5df62dde4ea71be77b485a0bca314bfc899358375490c7dbce594810bc74b6
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-internal-api@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/keyring-internal-api@npm:1.0.0"
+  dependencies:
+    "@metamask/keyring-api": "npm:^12.0.0"
+    "@metamask/keyring-utils": "npm:^1.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.3.0"
+  checksum: 10/dd0fff93ddfdce008f1db82d404bd040d09840413723c831819d3a7f4c2819a4303657e4acd7578cfd22bd05ad9c7aa563fc88f13f2f06999e2325ada71b824c
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-utils@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/keyring-utils@npm:1.0.0"
+  dependencies:
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.3.0"
+  checksum: 10/f74f7343a7154b029e0fa4c25735c589eba4dc25a9e323d43b7c733ce5dbb23ce603a4f02aac455163993649ceeaf714b8b843985ba7a9cb00b926b3b8dc6b51
   languageName: node
   linkType: hard
 
@@ -5685,7 +5717,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^11.0.0, @metamask/message-manager@npm:^11.0.2":
+"@metamask/message-manager@npm:^11.0.0, @metamask/message-manager@npm:^11.0.3":
   version: 11.0.3
   resolution: "@metamask/message-manager@npm:11.0.3"
   dependencies:
@@ -5752,7 +5784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^22.1.0":
+"@metamask/network-controller@npm:^22.1.1":
   version: 22.1.1
   resolution: "@metamask/network-controller@npm:22.1.1"
   dependencies:
@@ -5990,14 +6022,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/profile-sync-controller@npm:3.0.0"
+"@metamask/profile-sync-controller@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "@metamask/profile-sync-controller@npm:3.1.1"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/keyring-api": "npm:^10.1.0"
-    "@metamask/keyring-controller": "npm:^19.0.1"
-    "@metamask/network-controller": "npm:^22.1.0"
+    "@metamask/keyring-api": "npm:^12.0.0"
+    "@metamask/keyring-controller": "npm:^19.0.2"
+    "@metamask/network-controller": "npm:^22.1.1"
     "@metamask/snaps-sdk": "npm:^6.7.0"
     "@metamask/snaps-utils": "npm:^8.3.0"
     "@noble/ciphers": "npm:^0.5.2"
@@ -6012,7 +6044,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.10.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/5329492b4fd92801807e1c657c8ec9e8822d9ab32feba8d23714f8f0e88dffddc860c600a2c5f7a48f6ee358cdf536e2f39a6659f6ab68a8fee579ccf24da57a
+  checksum: 10/42dd1ea0f9595eca6bd1a179681f7d16dfc6cc5090494131c8999a15caa02866f133febe1a95fca7cc74b4f3dafa7ef740f27b08eadbbf3049ebc087a739fb1b
   languageName: node
   linkType: hard
 
@@ -6458,7 +6490,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^9.0.0, @metamask/utils@npm:^9.1.0, @metamask/utils@npm:^9.2.1":
+"@metamask/utils@npm:^9.0.0, @metamask/utils@npm:^9.1.0, @metamask/utils@npm:^9.2.1, @metamask/utils@npm:^9.3.0":
   version: 9.3.0
   resolution: "@metamask/utils@npm:9.3.0"
   dependencies:
@@ -26550,7 +26582,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^15.0.1"
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
-    "@metamask/profile-sync-controller": "npm:^3.0.0"
+    "@metamask/profile-sync-controller": "npm:^3.1.1"
     "@metamask/providers": "npm:^18.2.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
@@ -26769,7 +26801,7 @@ __metadata:
     mocha: "npm:^10.2.0"
     mocha-junit-reporter: "npm:^2.2.1"
     mockttp: "npm:^3.10.1"
-    nanoid: "npm:^2.1.6"
+    nanoid: "npm:^3.3.8"
     nock: "patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch"
     node-fetch: "npm:^2.6.1"
     nyc: "npm:^15.1.0"
@@ -27921,19 +27953,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^2.0.0, nanoid@npm:^2.1.6":
+"nanoid@npm:^2.0.0":
   version: 2.1.11
   resolution: "nanoid@npm:2.1.11"
   checksum: 10/cf2a2eedcf9d8893a4687f11743ccf8381f047bc2b3d3887a23721bbef8fe64c5759b9cba6eb945e40efeb4a7e7379b3417e4dc5f6cc03050322d2c24a7ff69b
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.1.31, nanoid@npm:^3.3.7":
-  version: 3.3.7
-  resolution: "nanoid@npm:3.3.7"
+"nanoid@npm:^3.1.31, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
+  version: 3.3.8
+  resolution: "nanoid@npm:3.3.8"
   bin:
     nanoid: bin/nanoid.cjs
-  checksum: 10/ac1eb60f615b272bccb0e2b9cd933720dad30bf9708424f691b8113826bb91aca7e9d14ef5d9415a6ba15c266b37817256f58d8ce980c82b0ba3185352565679
+  checksum: 10/2d1766606cf0d6f47b6f0fdab91761bb81609b2e3d367027aff45e6ee7006f660fb7e7781f4a34799fe6734f1268eeed2e37a5fdee809ade0c2d4eb11b0f9c40
   languageName: node
   linkType: hard
 

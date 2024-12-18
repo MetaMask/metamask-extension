@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { SwapsTokenObject } from '../constants/swaps';
 import { RequestStatus } from '../constants/bridge';
+import type { AssetType } from '../../../shared/constants/transaction';
 
 export type ChainConfiguration = {
   isActiveSrc: boolean;
@@ -29,6 +30,8 @@ export type BridgeState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
   srcTokens: Record<string, SwapsTokenObject>;
   srcTopAssets: { address: string }[];
+  srcTokensLoadingStatus?: RequestStatus;
+  destTokensLoadingStatus?: RequestStatus;
   destTokens: Record<string, SwapsTokenObject>;
   destTopAssets: { address: string }[];
   quoteRequest: Partial<QuoteRequest>;
@@ -74,6 +77,18 @@ export enum SortOrder {
   COST_ASC = 'cost_ascending',
   ETA_ASC = 'time_descending',
 }
+
+export type BridgeToken = {
+  type: AssetType.native | AssetType.token;
+  address: string;
+  symbol: string;
+  image: string;
+  decimals: number;
+  chainId: Hex;
+  balance: string; // raw balance
+  string: string | undefined; // normalized balance as a stringified number
+  tokenFiatAmount?: number | null;
+} | null;
 
 // Types copied from Metabridge API
 export enum BridgeFlag {
