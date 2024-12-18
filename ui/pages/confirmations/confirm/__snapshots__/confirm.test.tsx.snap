@@ -190,7 +190,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               <button
                 aria-label="copy-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-                style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -201,7 +201,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                 aria-label="collapse-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
-                style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -783,7 +783,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               <button
                 aria-label="copy-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-                style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -794,7 +794,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 aria-label="collapse-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
-                style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1313,7 +1313,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               <button
                 aria-label="copy-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-                style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1324,7 +1324,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 aria-label="collapse-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
-                style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1638,7 +1638,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               <button
                 aria-label="copy-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-                style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -2858,7 +2858,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               <button
                 aria-label="copy-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-                style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -2869,7 +2869,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 aria-label="collapse-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
-                style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -3181,7 +3181,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               <button
                 aria-label="copy-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-                style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -3192,7 +3192,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 aria-label="collapse-button"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
-                style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+                style="cursor: pointer; position: absolute; right: 8px;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"

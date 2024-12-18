@@ -6,7 +6,6 @@ import { isEqual } from 'lodash';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import {
-  getCurrentCurrency,
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsSwapsChain,
@@ -45,7 +44,10 @@ import TokenCell from '../../../components/app/assets/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
 import { getPricePrecision, localizeLargeNumber } from '../util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
@@ -73,7 +75,7 @@ export type Asset = (
       /** The number of decimal places to move left when displaying balances */
       decimals: number;
       /** An array of token list sources the asset appears in, e.g. [1inch,Sushiswap]  */
-      aggregators?: [];
+      aggregators?: string[];
     }
 ) & {
   /** The hexadecimal chain id */
@@ -330,7 +332,13 @@ const AssetPage = ({
                           >
                             {t('tokenList')}
                           </Text>
-                          <Text>{asset.aggregators.join(', ')}</Text>
+                          <Text>
+                            {asset.aggregators
+                              .map((agg) =>
+                                agg.replace(/^metamask$/iu, 'MetaMask'),
+                              )
+                              .join(', ')}
+                          </Text>
                         </Box>
                       )}
                     </Box>

@@ -7,11 +7,13 @@ import {
 } from '@metamask/network-controller';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
-  getCurrentCurrency,
   getCurrentNetwork,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
