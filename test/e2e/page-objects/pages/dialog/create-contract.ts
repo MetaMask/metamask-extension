@@ -28,11 +28,11 @@ class CreateContractModal {
   }
 
   async clickConfirm() {
-    await this.driver.clickElement(this.confirmButtton);
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButtton);
   }
 
   async clickCancel() {
-    await this.driver.clickElement(this.cancelButton);
+    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 }
 
