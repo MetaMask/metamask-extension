@@ -6046,9 +6046,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "@metamask/profile-sync-controller@npm:3.1.1"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@3.1.1-preview-e218ba33":
+  version: 3.1.1-preview-e218ba33
+  resolution: "@metamask-previews/profile-sync-controller@npm:3.1.1-preview-e218ba33"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/keyring-api": "npm:^12.0.0"
@@ -6068,7 +6068,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.10.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/42dd1ea0f9595eca6bd1a179681f7d16dfc6cc5090494131c8999a15caa02866f133febe1a95fca7cc74b4f3dafa7ef740f27b08eadbbf3049ebc087a739fb1b
+  checksum: 10/b58a997a48d56afb41d275b98de08d91d7fa485f27af306ae1ad0593dc8b8c23eb83f8552acb9a849a9363f49fc814b5c0932065f60e1c8f91e5e1b7b2616bc1
   languageName: node
   linkType: hard
 
@@ -26608,7 +26608,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^15.0.1"
     "@metamask/preinstalled-example-snap": "npm:^0.2.0"
-    "@metamask/profile-sync-controller": "npm:^3.1.1"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@3.1.1-preview-e218ba33"
     "@metamask/providers": "npm:^18.2.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
