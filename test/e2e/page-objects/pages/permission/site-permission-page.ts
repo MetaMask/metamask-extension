@@ -7,6 +7,13 @@ import { Driver } from '../../../webdriver/driver';
 class SitePermissionPage {
   private driver: Driver;
 
+  private readonly editAccountsModalTitle = {
+    text: 'Edit accounts',
+    tag: 'h4',
+  };
+
+  private readonly editButton = '[data-testid="edit"]';
+
   private readonly enabledNetworksInfo = {
     text: 'Use your enabled networks',
     tag: 'p',
@@ -16,6 +23,8 @@ class SitePermissionPage {
     text: 'See your accounts and suggest transactions',
     tag: 'p',
   };
+
+  private readonly confirmEditAccountsButton = '[data-testid="connect-more-accounts-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -40,6 +49,19 @@ class SitePermissionPage {
     }
     console.log('Site permission page is loaded');
   }
+
+  async editPermissionsForAccount(accountLabels: string[]): Promise<void> {
+    const editButtons = await this.driver.findElements(this.editButton);
+    await editButtons[0].click();
+    await this.driver.waitForSelector(this.editAccountsModalTitle);
+    for (const accountLabel of accountLabels) {
+      await this.driver.clickElement({ text: accountLabel, tag: 'button' });
+    }
+    await this.driver.clickElementAndWaitToDisappear(this.confirmEditAccountsButton);
+  }
+
+
+
 }
 
 export default SitePermissionPage;
