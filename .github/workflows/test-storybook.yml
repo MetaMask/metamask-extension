@@ -1,0 +1,21 @@
+name: Test storybook
+
+on:
+  workflow_call:
+
+jobs:
+  test-storybook:
+    name: Test storybook
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Install Playwright browsers
+        run: yarn exec playwright install chromium
+
+      - name: Test Storybook
+        run: yarn test-storybook:ci

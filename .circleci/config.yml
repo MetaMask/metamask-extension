@@ -215,9 +215,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-      - test-storybook:
-          requires:
-            - prep-deps
       - validate-source-maps:
           requires:
             - prep-build
@@ -257,7 +254,6 @@ workflows:
             - test-e2e-chrome-rpc-mmi
             - test-e2e-chrome-vault-decryption
             - test-e2e-chrome-webpack
-            - test-storybook
       - benchmark:
           requires:
             - prep-build-test
@@ -783,20 +779,6 @@ jobs:
       - run:
           name: Rerun workflows from failed
           command: yarn ci-rerun-from-failed
-
-  test-storybook:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Playwright browsers
-          command: yarn exec playwright install chromium
-      - run:
-          name: Test Storybook
-          command: yarn test-storybook:ci
 
   test-e2e-chrome-webpack:
     executor: node-browsers-medium-plus

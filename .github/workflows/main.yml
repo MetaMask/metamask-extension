@@ -65,6 +65,10 @@ jobs:
     name: Build storybook
     uses: ./.github/workflows/build-storybook.yml
 
+  test-storybook:
+    name: Test storybook
+    uses: ./.github/workflows/test-storybook.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -107,6 +111,7 @@ jobs:
       - validate-lavamoat-policy-webapp
       - build-ts-migration-dashboard
       - build-storybook
+      - test-storybook
       - run-tests
       - wait-for-circleci-workflow-status
       - trigger-beta-build
