@@ -173,6 +173,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       slippagePercentage,
       pricingData: {
         amountSent: quoteResponse.sentAmount.amount,
+        amountSentInUsd: quoteResponse.sentAmount.usd ?? undefined,
+        quotedGasInUsd: quoteResponse.gasFee.usd ?? undefined,
+        quotedReturnInUsd: quoteResponse.toTokenAmount.usd ?? undefined,
       },
       initialDestAssetBalance,
       targetContractAddress,

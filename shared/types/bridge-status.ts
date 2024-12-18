@@ -127,10 +127,10 @@ export type BridgeHistoryItem = {
   slippagePercentage: number;
   completionTime?: number; // timestamp in ms
   pricingData?: {
-    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
+    amountSent: string; // from QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
     amountSentInUsd?: string;
-    quotedGasInUsd?: string;
-    quotedReturnInUsd?: string;
+    quotedGasInUsd?: string; // from QuoteMetadata.gasFee.usd
+    quotedReturnInUsd?: string; // from QuoteMetadata.toTokenAmount.usd
     quotedRefuelSrcAmountInUsd?: string;
     quotedRefuelDestAmountInUsd?: string;
   };

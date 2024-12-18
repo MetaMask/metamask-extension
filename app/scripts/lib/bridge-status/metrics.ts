@@ -8,7 +8,7 @@ import {
 import { NetworkState } from '../../../../shared/modules/selectors/networks';
 import { ActionType } from '../../../../ui/hooks/bridge/events/types';
 import { formatProviderLabel } from '../../../../ui/pages/bridge/utils/quote';
-import { getCurrentKeyring } from '../../../../ui/selectors';
+import { getCurrentKeyring, getMarketData } from '../../../../ui/selectors';
 import { BridgeStatusControllerBridgeTransactionCompleteEvent } from '../../controllers/bridge-status/types';
 
 export const handleBridgeTransactionComplete = async (
@@ -29,11 +29,8 @@ export const handleBridgeTransactionComplete = async (
   const isBridgeTx =
     bridgeHistoryItem.quote.srcChainId !== bridgeHistoryItem.quote.destChainId;
 
-  // const { usd_amount_source, usd_quoted_gas, usd_quoted_return } =
-  //   getConvertedUsdAmounts({
-  //     activeQuoteSentAmountUsd: bridgeHistoryItem.quote.sentAmount.usd,
-  //     fromAmountInputValueInUsd: bridgeHistoryItem.quote.sentAmount.usd,
-  //   });
+  const destChainAmount = bridgeHistoryItem.status.destChain?.amount;
+  const marketData = getMarketData(state);
 
   const properties = {
     action_type: ActionType.CROSSCHAIN_V1,
@@ -56,8 +53,16 @@ export const handleBridgeTransactionComplete = async (
     quoted_time_minutes: bridgeHistoryItem.estimatedProcessingTimeInSeconds
       ? bridgeHistoryItem.estimatedProcessingTimeInSeconds / 60
       : 0,
-    actual_time: bridgeHistoryItem.completionTime, // TODO make this more accurate by looking up dest txHash block time
+    actual_time_minutes:
+      bridgeHistoryItem.completionTime && bridgeHistoryItem.startTime
+        ? (bridgeHistoryItem.completionTime - bridgeHistoryItem.startTime) /
+          1000 /
+          60
+        : 0, // TODO make this more accurate by looking up dest txHash block time
     swap_type: isBridgeTx ? ActionType.CROSSCHAIN_V1 : ActionType.SWAPBRIDGE_V1,
+    usd_amount_source: bridgeHistoryItem.pricingData?.amountSentInUsd,
+    usd_quoted_return: bridgeHistoryItem.pricingData?.quotedReturnInUsd,
+    usd_quoted_gas: bridgeHistoryItem.pricingData?.quotedGasInUsd,
   };
 
   console.log('properties', properties);
@@ -75,13 +80,13 @@ export const handleBridgeTransactionComplete = async (
   // provider:
   // quoted_time_minutes:
   // swap_type: crosschain or single chain
-  // actual_time:
-
-  // TODO
+  // actual_time_minutes:
   // usd_amount_source:
   // usd_quoted_return:
-  // usd_actual_return:
   // usd_quoted_gas:
+
+  // TODO
+  // usd_actual_return:
   // usd_actual_gas:
   // quote_vs_execution_ratio
   // quoted_vs_used_gas_ratio

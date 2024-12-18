@@ -17,6 +17,6 @@ export const getConvertedUsdAmounts = ({
   return {
     usd_amount_source: fromAmountInUsd.toNumber(),
     usd_quoted_gas: activeQuote?.gasFee.usd?.toNumber() ?? 0,
-    usd_quoted_return: activeQuote?.toTokenAmount?.usd ?? 0,
+    usd_quoted_return: activeQuote?.toTokenAmount?.usd?.toNumber() ?? 0,
   };
 };
