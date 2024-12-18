@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BannerAlert,
@@ -12,6 +13,7 @@ import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
 import { FontWeight } from '../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../context/confirm';
+import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -95,13 +97,9 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
         : alertEnabled &&
           smartTransactionsOptIn &&
           smartTransactionsMigrationApplied &&
-          [
-            'simpleSend',
-            'tokenMethodTransfer',
-            'swap',
-            'contractDeployment',
-            'contractInteraction',
-          ].includes(currentConfirmation?.type as string);
+          isCorrectDeveloperTransactionType(
+            currentConfirmation?.type as TransactionType,
+          );
 
     if (!shouldRender) {
       return null;
