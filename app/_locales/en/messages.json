@@ -633,8 +633,14 @@
   "asset": {
     "message": "Asset"
   },
+  "assetMultipleNFTsBalance": {
+    "message": "$1 NFTs"
+  },
   "assetOptions": {
     "message": "Asset options"
+  },
+  "assetSingleNFTBalance": {
+    "message": "$1 NFT"
   },
   "assets": {
     "message": "Assets"
@@ -6828,7 +6834,7 @@
     "message": "Welcome back!"
   },
   "welcomeExploreDescription": {
-    "message": "Store, send and spend crypto currencies and assets."
+    "message": "Store, send, and spend crypto currencies and assets."
   },
   "welcomeExploreTitle": {
     "message": "Explore decentralized apps"
