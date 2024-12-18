@@ -12,6 +12,22 @@ class AddTokensModal {
     this.driver = driver;
   }
 
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.tokenListItem,
+        this.addTokenButton,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Add tokens dialog to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Add tokens dialog was loaded');
+  }
+
   /**
    * Checks the count of suggested tokens.
    *

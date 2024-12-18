@@ -1,6 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
-class CreateContractDialog {
+class CreateContractModal {
   protected driver: Driver;
 
   private readonly confirmButtton = { text: 'Confirm', tag: 'button' };
@@ -11,6 +11,23 @@ class CreateContractDialog {
     this.driver = driver;
   }
 
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.confirmButtton,
+        this.cancelButton,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for create contract dialog to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Create contract dialog was loaded');
+  }
+
+
   async clickConfirm() {
     await this.driver.clickElement(this.confirmButtton);
   }
@@ -20,4 +37,4 @@ class CreateContractDialog {
   }
 }
 
-export default CreateContractDialog;
+export default CreateContractModal;

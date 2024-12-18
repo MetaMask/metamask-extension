@@ -11,7 +11,7 @@ import {
   unlockWallet,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import CreateContractDialog from '../../page-objects/pages/dialog/create-contract';
+import CreateContractModal from '../../page-objects/pages/dialog/create-contract';
 
 describe('Multiple ERC20 Watch Asset', function () {
   it('should show multiple erc20 watchAsset token list, only confirms one bug', async function () {
@@ -36,8 +36,9 @@ describe('Multiple ERC20 Watch Asset', function () {
 
           // Confirm token creation
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const createContractDialog = new CreateContractDialog(driver);
-          await createContractDialog.clickConfirm();
+          const createContractModal = new CreateContractModal(driver);
+          await createContractModal.check_pageIsLoaded()
+          await createContractModal.clickConfirm();
 
           // Wait for token address to populate in dapp
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -50,6 +51,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         await testDapp.clickAddTokenToWallet();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addTokensPopupModal = new AddTokensModal(driver);
+        addTokensPopupModal.check_pageIsLoaded()
         await addTokensPopupModal.check_SuggestedTokensCount(3);
         await addTokensPopupModal.confirmAddTokens();
 
