@@ -1,5 +1,11 @@
 import * as path from 'path';
-import { DAPP_URL, largeDelayMs, openDapp, unlockWallet, WINDOW_TITLES } from '../../helpers';
+import {
+  DAPP_URL,
+  largeDelayMs,
+  openDapp,
+  unlockWallet,
+  WINDOW_TITLES,
+} from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
 
@@ -23,7 +29,7 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
 /**
  * Unlocks a wallet and provides extension id for dapp to connect to wallet extension.
  *
- * @param {Driver} driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
+ * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
  * @param extensionId - Extension identifier for web dapp to interact with wallet extension.
  */
 export async function openMultichainDappAndConnectWalletWithExternallyConnectable(
@@ -41,8 +47,8 @@ export async function openMultichainDappAndConnectWalletWithExternallyConnectabl
 /**
  * Sends a request to wallet extension to create session for the passed scopes.
  *
- * @param {Driver} driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
- * @param {string[]} scopes - scopes to create session for.
+ * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
+ * @param scopes - scopes to create session for.
  */
 export async function createSessionScopes(
   driver: Driver,
@@ -68,7 +74,7 @@ export async function createSessionScopes(
 /**
  * Retrieves permitted session scopes by using test driver to interact with web dapp.
  *
- * @param {Driver} driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
+ * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
  * @returns result containing sessions scopes.
  */
 export async function getSessionScopes(
@@ -90,8 +96,8 @@ export async function getSessionScopes(
 /**
  * Retrieves the expected session scope for a given set of addresses.
  *
- * @param {string} scope - The session scope.
- * @param {string[]} accounts - The addresses to get session scope for.
+ * @param scope - The session scope.
+ * @param accounts - The addresses to get session scope for.
  * @returns the expected session scope.
  */
 export const getExpectedSessionScope = (scope: string, accounts: string[]) => ({
