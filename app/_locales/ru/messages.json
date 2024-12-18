@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Добавление сети"
   },
-  "addingTokens": {
-    "message": "Добавление токенов"
-  },
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
   },
-  "attemptSendingAssets": {
-    "message": "Вы можете потерять свои активы, если попытаетесь отправить их из другой сети. Безопасно переводите средства между сетями с помощью моста."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост, такой как $1"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Бесплатная попытка отменить своп"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Расчет..."
   },
-  "bridgeDontSend": {
-    "message": "Мост, не отправлять"
-  },
   "bridgeEnterAmount": {
     "message": "Введите сумму"
   },
@@ -953,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Нажмите здесь, чтобы подключить свой Ledger через WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Вы также можете добавлять токены вручную."
   },
   "close": {
     "message": "Закрыть"
@@ -2138,9 +2123,6 @@
   "gasFee": {
     "message": "Плата за газ"
   },
-  "gasIsETH": {
-    "message": "Газ стоит $1 "
-  },
   "gasLimit": {
     "message": "Лимит газа"
   },
@@ -2702,9 +2684,6 @@
   "learnScamRisk": {
     "message": "мошенничество и угрозы безопасности."
   },
-  "learnToBridge": {
-    "message": "Научитесь создавать мост для"
-  },
   "leaveMetaMask": {
     "message": "Выйти из MetaMask?"
   },
@@ -2900,9 +2879,6 @@
   "metamaskNotificationsAreOff": {
     "message": "Уведомления кошелька в настоящее время неактивны."
   },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
-  },
   "metamaskSwapsOfflineDescription": {
     "message": "Сервис свопов MetaMask на техобслуживании. Зайдите позже."
   },
@@ -3046,10 +3022,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 запрашивает ваше одобрение на:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Нативный токен этой сети — $1. Этот токен используется для внесения платы за газ. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Изменить сведения о сети"
@@ -5940,9 +5912,6 @@
     "message": "$1 теперь активен в $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Сейчас вы используете"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "В случае смены сетей все ожидающие подтверждения будут отменены"
   },
@@ -5978,9 +5947,6 @@
   },
   "themeDescription": {
     "message": "Выберите предпочитаемую тему MetaMask."
-  },
-  "thingsToKeep": {
-    "message": "Что нужно помнить:"
   },
   "thirdPartySoftware": {
     "message": "Уведомление о стороннем ПО",
@@ -6062,9 +6028,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "мошенничество с токенами и угрозы безопасности"
-  },
-  "tokenShowUp": {
-    "message": "Ваши токены могут не отображаться автоматически в вашем кошельке. "
   },
   "tokenStandard": {
     "message": "Стандарт токена"
