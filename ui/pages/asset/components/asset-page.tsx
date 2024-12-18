@@ -75,7 +75,7 @@ export type Asset = (
       /** The number of decimal places to move left when displaying balances */
       decimals: number;
       /** An array of token list sources the asset appears in, e.g. [1inch,Sushiswap]  */
-      aggregators?: [];
+      aggregators?: string[];
     }
 ) & {
   /** The hexadecimal chain id */
@@ -168,7 +168,7 @@ const AssetPage = ({
 
   // Market and conversion rate data
   const baseCurrency = marketData[chainId]?.[address]?.currency;
-  const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
+  const tokenMarketPrice = marketData[chainId]?.[address]?.price || undefined;
   const tokenExchangeRate =
     type === AssetType.native
       ? currencyRates[symbol]?.conversionRate
@@ -284,7 +284,9 @@ const AssetPage = ({
           chainId={chainId}
           symbol={symbol}
           image={image}
-          tokenFiatAmount={showFiat ? tokenFiatAmount : null}
+          tokenFiatAmount={
+            showFiat && tokenMarketPrice ? tokenFiatAmount : null
+          }
           string={balance?.toString()}
         />
         <Box
@@ -332,7 +334,13 @@ const AssetPage = ({
                           >
                             {t('tokenList')}
                           </Text>
-                          <Text>{asset.aggregators.join(', ')}</Text>
+                          <Text>
+                            {asset.aggregators
+                              .map((agg) =>
+                                agg.replace(/^metamask$/iu, 'MetaMask'),
+                              )
+                              .join(', ')}
+                          </Text>
                         </Box>
                       )}
                     </Box>
