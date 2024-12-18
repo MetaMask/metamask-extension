@@ -5,6 +5,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../page-objects/common';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const SOLANA_URL_REGEX = /^https:\/\/.*\.solana.*/u;
 
@@ -59,7 +60,7 @@ export async function withSolanaAccountSnap(
       },
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
-      await unlockWallet(driver);
+      await loginWithBalanceValidation(driver);
       const headerComponen = new HeaderNavbar(driver);
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
