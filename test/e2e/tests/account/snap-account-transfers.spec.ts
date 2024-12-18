@@ -10,9 +10,10 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { Ganache } from '../../seeder/ganache';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import FixtureBuilder from '../../fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -172,9 +173,10 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
           });
 
           // check the transaction is failed in MetaMask activity list
-          const homepage = new HomePage(driver);
-          await homepage.check_pageIsLoaded();
-          await homepage.check_failedTxNumberDisplayedInActivity();
+          await new HomePage(driver).check_pageIsLoaded();
+          await new ActivityListPage(
+            driver,
+          ).check_failedTxNumberDisplayedInActivity();
         },
       );
     });
@@ -316,9 +318,10 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
           });
 
           // check the transaction is failed in MetaMask activity list
-          const homepage = new HomePage(driver);
-          await homepage.check_pageIsLoaded();
-          await homepage.check_failedTxNumberDisplayedInActivity();
+          await new HomePage(driver).check_pageIsLoaded();
+          await new ActivityListPage(
+            driver,
+          ).check_failedTxNumberDisplayedInActivity();
         },
       );
     });

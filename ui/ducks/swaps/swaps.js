@@ -589,6 +589,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
         await dispatch(fetchSmartTransactionsLiveness());
         const transactions = await getTransactions({
           searchCriteria: {
+            chainId,
             from: getSelectedInternalAccount(state)?.address,
           },
         });

@@ -107,6 +107,15 @@ export async function mockSignatureApproved(
     await createMockSegmentEvent(mockServer, 'Account Details Opened'),
     ...anonEvents,
     await createMockSegmentEvent(mockServer, 'Signature Approved'),
+  ];
+}
+
+export async function mockSignatureApprovedWithDecoding(
+  mockServer: Mockttp,
+  withAnonEvents = false,
+) {
+  return [
+    ...(await mockSignatureApproved(mockServer, withAnonEvents)),
     await createMockSignatureDecodingEvent(mockServer),
   ];
 }
@@ -125,8 +134,17 @@ export async function mockSignatureRejected(
   return [
     await createMockSegmentEvent(mockServer, 'Signature Requested'),
     await createMockSegmentEvent(mockServer, 'Signature Rejected'),
-    await createMockSignatureDecodingEvent(mockServer),
     ...anonEvents,
+  ];
+}
+
+export async function mockSignatureRejectedWithDecoding(
+  mockServer: Mockttp,
+  withAnonEvents = false,
+) {
+  return [
+    ...(await mockSignatureRejected(mockServer, withAnonEvents)),
+    await createMockSignatureDecodingEvent(mockServer),
   ];
 }
 

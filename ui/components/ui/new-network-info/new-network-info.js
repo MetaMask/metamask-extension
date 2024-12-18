@@ -24,7 +24,6 @@ import {
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
 } from '../../../selectors';
-import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import {
   PickerNetwork,
   Text,
@@ -56,7 +55,6 @@ export default function NewNetworkInfo() {
 
   const onCloseClick = () => {
     setShowPopup(false);
-    setFirstTimeUsedNetwork(providerConfig.chainId);
   };
 
   const checkTokenDetection = useCallback(async () => {

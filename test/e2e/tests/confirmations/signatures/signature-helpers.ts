@@ -295,6 +295,12 @@ function compareDecodingAPIResponse(
   eventName: string,
 ) {
   if (
+    !expectedProperties.decoding_response &&
+    !actualProperties.decoding_response
+  ) {
+    return;
+  }
+  if (
     eventName === 'Signature Rejected' ||
     eventName === 'Signature Approved'
   ) {

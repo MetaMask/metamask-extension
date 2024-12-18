@@ -185,7 +185,7 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    setManifestFlags(manifestFlags);
+    await setManifestFlags(manifestFlags);
 
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
@@ -729,6 +729,29 @@ async function clickSignOnSignatureConfirmation({
 }
 
 /**
+ * This method handles clicking the sign button on signature confirmation
+ * screen.
+ *
+ * @param {object} options - Options for the function.
+ * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
+ * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
+ */
+async function clickSignOnRedesignedSignatureConfirmation({
+  driver,
+  snapSigInsights = false,
+}) {
+  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
+
+  if (snapSigInsights) {
+    // there is no condition we can wait for to know the snap is ready,
+    // so we have to add a small delay as the last alternative to avoid flakiness.
+    await driver.delay(regularDelayMs);
+  }
+
+  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+}
+
+/**
  * Some signing methods have extra security that requires the user to click a
  * button to validate that they have verified the details. This method handles
  * performing the necessary steps to click that button.
@@ -1000,6 +1023,7 @@ module.exports = {
   roundToXDecimalPlaces,
   generateRandNumBetween,
   clickSignOnSignatureConfirmation,
+  clickSignOnRedesignedSignatureConfirmation,
   validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,

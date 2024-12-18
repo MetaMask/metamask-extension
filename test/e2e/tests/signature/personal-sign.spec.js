@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -11,99 +12,204 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Personal sign', function () {
-  it('can initiate and confirm a personal sign', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, ganacheServer }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses[0];
-        await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
+  describe('Old confirmation screens', function () {
+    it('can initiate and confirm a personal sign', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          const addresses = await ganacheServer.getAccounts();
+          const publicAddress = addresses[0];
+          await unlockWallet(driver);
+          await tempToggleSettingRedesignedConfirmations(driver);
 
-        await openDapp(driver);
-        await driver.clickElement('#personalSign');
+          await openDapp(driver);
+          await driver.clickElement('#personalSign');
 
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+          await driver.waitUntilXWindowHandles(3);
+          const windowHandles = await driver.getAllWindowHandles();
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Dialog,
+            windowHandles,
+          );
 
-        const personalMessageRow = await driver.findElement(
-          '.request-signature__row-value',
-        );
-        const personalMessage = await personalMessageRow.getText();
-        assert.equal(personalMessage, 'Example `personal_sign` message');
+          const personalMessageRow = await driver.findElement(
+            '.request-signature__row-value',
+          );
+          const personalMessage = await personalMessageRow.getText();
+          assert.equal(personalMessage, 'Example `personal_sign` message');
 
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+          await driver.clickElement(
+            '[data-testid="page-container-footer-next"]',
+          );
 
-        await verifyAndAssertPersonalMessage(driver, publicAddress);
-      },
-    );
+          await verifyAndAssertPersonalMessage(driver, publicAddress);
+        },
+      );
+    });
+
+    it('can queue multiple personal signs and confirm', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          const addresses = await ganacheServer.getAccounts();
+          const publicAddress = addresses[0];
+          await unlockWallet(driver);
+          await tempToggleSettingRedesignedConfirmations(driver);
+
+          await openDapp(driver);
+          // Create personal sign
+          await driver.clickElement('#personalSign');
+
+          await driver.waitUntilXWindowHandles(3);
+          const windowHandles = await driver.getAllWindowHandles();
+
+          // Switch to Dapp
+          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+          // Create second personal sign
+          await driver.clickElement('#personalSign');
+
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Dialog,
+            windowHandles,
+          );
+
+          await driver.waitForSelector({
+            text: 'Reject 2 requests',
+            tag: 'button',
+          });
+
+          const personalMessageRow = await driver.findElement(
+            '.request-signature__row-value',
+          );
+          const personalMessage = await personalMessageRow.getText();
+          assert.equal(personalMessage, 'Example `personal_sign` message');
+
+          // Confirm first personal sign
+          await driver.clickElement(
+            '[data-testid="page-container-footer-next"]',
+          );
+          await driver.delay(regularDelayMs);
+          // Confirm second personal sign
+          await driver.clickElement(
+            '[data-testid="page-container-footer-next"]',
+          );
+
+          await verifyAndAssertPersonalMessage(driver, publicAddress);
+        },
+      );
+    });
   });
 
-  it('can queue multiple personal signs and confirm', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, ganacheServer }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses[0];
-        await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
+  describe('Redesigned confirmation screens', function () {
+    it('can initiate and confirm a personal sign', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          const addresses = await ganacheServer.getAccounts();
+          const publicAddress = addresses[0];
+          await unlockWallet(driver);
 
-        await openDapp(driver);
-        // Create personal sign
-        await driver.clickElement('#personalSign');
+          await openDapp(driver);
+          await driver.clickElement('#personalSign');
 
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
+          await driver.waitUntilXWindowHandles(3);
+          const windowHandles = await driver.getAllWindowHandles();
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Dialog,
+            windowHandles,
+          );
 
-        // Switch to Dapp
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+          await driver.findElement({
+            css: 'p',
+            text: 'Example `personal_sign` message',
+          });
 
-        // Create second personal sign
-        await driver.clickElement('#personalSign');
+          await driver.clickElement('[data-testid="confirm-footer-button"]');
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+          await verifyAndAssertPersonalMessage(driver, publicAddress);
+        },
+      );
+    });
 
-        await driver.waitForSelector({
-          text: 'Reject 2 requests',
-          tag: 'button',
-        });
+    it('can queue multiple personal signs and confirm', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          const addresses = await ganacheServer.getAccounts();
+          const publicAddress = addresses[0];
+          await unlockWallet(driver);
 
-        const personalMessageRow = await driver.findElement(
-          '.request-signature__row-value',
-        );
-        const personalMessage = await personalMessageRow.getText();
-        assert.equal(personalMessage, 'Example `personal_sign` message');
+          await openDapp(driver);
+          // Create personal sign
+          await driver.clickElement('#personalSign');
 
-        // Confirm first personal sign
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
-        await driver.delay(regularDelayMs);
-        // Confirm second personal sign
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+          await driver.waitUntilXWindowHandles(3);
+          const windowHandles = await driver.getAllWindowHandles();
 
-        await verifyAndAssertPersonalMessage(driver, publicAddress);
-      },
-    );
+          // Switch to Dapp
+          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+          // Create second personal sign
+          await driver.clickElement('#personalSign');
+
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Dialog,
+            windowHandles,
+          );
+
+          await driver.waitForSelector(
+            By.xpath("//p[normalize-space(.)='1 of 2']"),
+          );
+
+          await driver.waitForSelector({
+            text: 'Reject all',
+            tag: 'button',
+          });
+
+          await driver.findElement({
+            css: 'p',
+            text: 'Example `personal_sign` message',
+          });
+
+          // Confirm first personal sign
+          await driver.clickElement('[data-testid="confirm-footer-button"]');
+          await driver.delay(regularDelayMs);
+          // Confirm second personal sign
+          await driver.clickElement('[data-testid="confirm-footer-button"]');
+
+          await verifyAndAssertPersonalMessage(driver, publicAddress);
+        },
+      );
+    });
   });
 });
 

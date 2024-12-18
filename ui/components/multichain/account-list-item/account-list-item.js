@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu, AvatarGroup } from '..';
+import { AccountListItemMenu } from '../account-list-item-menu';
+import { AvatarGroup } from '../avatar-group';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
@@ -366,8 +367,7 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {/* For non-EVM networks we always want to show tokens */}
-          {mappedOrderedTokenList.length > 1 || !isEvmNetwork ? (
+          {mappedOrderedTokenList.length > 1 ? (
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
             <Box
@@ -392,7 +392,7 @@ const AccountListItem = ({
                 <UserPreferencedCurrencyDisplay
                   account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={account.balance}
+                  value={isEvmNetwork ? account.balance : balanceToTranslate}
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"

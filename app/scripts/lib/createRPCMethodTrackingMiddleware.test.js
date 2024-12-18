@@ -36,20 +36,16 @@ const expectedMetametricsEventUndefinedProps = {
 };
 
 const appStateController = {
-  store: {
-    getState: () => ({
-      signatureSecurityAlertResponses: {
-        1: {
-          result_type: BlockaidResultType.Malicious,
-          reason: BlockaidReason.maliciousDomain,
-        },
+  state: {
+    signatureSecurityAlertResponses: {
+      1: {
+        result_type: BlockaidResultType.Malicious,
+        reason: BlockaidReason.maliciousDomain,
       },
-    }),
+    },
   },
   getSignatureSecurityAlertResponse: (id) => {
-    return appStateController.store.getState().signatureSecurityAlertResponses[
-      id
-    ];
+    return appStateController.state.signatureSecurityAlertResponses[id];
   },
 };
 

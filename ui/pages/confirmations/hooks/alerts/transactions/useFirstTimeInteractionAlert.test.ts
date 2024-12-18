@@ -17,6 +17,7 @@ const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_META_MOCK = {
   id: TRANSACTION_ID_MOCK,
   chainId: '0x5',
+  networkClientId: 'testNetworkClientId',
   status: TransactionStatus.unapproved,
   type: TransactionType.contractInteraction,
   txParams: {
