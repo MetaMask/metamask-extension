@@ -52,19 +52,16 @@ export async function createSessionScopes(
     await driver.clickElement(`input[name="${scope}"]`);
   }
 
-  await driver.clickElement('#create-session-btn');
+  await driver.clickElement({ text: 'wallet_createSession', tag: 'span' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.delay(largeDelayMs);
 
   const editButtons = await driver.findElements('[data-testid="edit"]');
   await editButtons[1].click();
-
   await driver.delay(largeDelayMs);
 
   await driver.clickElement('[data-testid="connect-more-chains-button"]');
-
   await driver.clickElement({ text: 'Connect', tag: 'button' });
-
   await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 }
 
