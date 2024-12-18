@@ -14,10 +14,7 @@ import { getValidUrl } from '../../util';
 export function validateChainId(chainId) {
   const lowercasedChainId =
     typeof chainId === 'string' ? chainId.toLowerCase() : null;
-  if (
-    lowercasedChainId !== null &&
-    !isPrefixedFormattedHexString(lowercasedChainId)
-  ) {
+  if (!isPrefixedFormattedHexString(lowercasedChainId)) {
     throw rpcErrors.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
