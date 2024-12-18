@@ -109,11 +109,11 @@ export const AccountOverviewLayout = ({
     });
   };
 
-  const handleRemoveSlide = (id: string) => {
+  const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
     if (id === 'fund' && hasZeroBalance) {
       return;
     }
-    if (slides.length === 1) {
+    if (isLastSlide) {
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
         category: MetaMetricsEventCategory.Banner,

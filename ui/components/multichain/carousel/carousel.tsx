@@ -77,7 +77,7 @@ export const Carousel = React.forwardRef(
       setSelectedIndex(newSelectedIndex);
 
       if (onClose) {
-        onClose(slideId);
+        onClose(visibleSlides.length === 1, slideId);
       }
     };
 
