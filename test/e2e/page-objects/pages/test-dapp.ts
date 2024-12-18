@@ -286,9 +286,17 @@ class TestDapp {
   /**
    * Connect account to test dapp.
    *
-   * @param publicAddress - The public address to connect to test dapp.
+   * @param options - Options for connecting account to test dapp.
+   * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
+   * @param options.publicAddress - The public address to connect to test dapp.
    */
-  async connectAccount(publicAddress: string) {
+  async connectAccount({
+    connectAccountButtonEnabled = true,
+    publicAddress,
+  }: {
+    connectAccountButtonEnabled?: boolean;
+    publicAddress?: string;
+  }) {
     console.log('Connect account to test dapp');
     await this.driver.clickElement(this.connectAccountButton);
     await this.confirmConnectAccountModal();

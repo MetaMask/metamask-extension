@@ -4,7 +4,7 @@ import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
 
 class HomePage {
-  private driver: Driver;
+  protected driver: Driver;
 
   public headerNavbar: HeaderNavbar;
 
@@ -12,7 +12,8 @@ class HomePage {
     testId: 'account-overview__activity-tab',
   };
 
-  private readonly balance = '[data-testid="eth-overview__primary-currency"]';
+  protected readonly balance: string =
+    '[data-testid="eth-overview__primary-currency"]';
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
@@ -48,9 +49,7 @@ class HomePage {
     testId: 'refreshList',
   };
 
-  private readonly sendButton = {
-    testId: 'eth-overview-send',
-  };
+  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
   private readonly tokensTab = {
     testId: 'account-overview__asset-tab',
