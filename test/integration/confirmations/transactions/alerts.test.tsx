@@ -470,7 +470,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       alerts.some((alert) =>
         alert.textContent?.includes(
-          'This transaction will only go through once your previous transaction is complete.',
+          'A previous transaction is still being signed or submitted',
         ),
       ),
     ).toBe(true);
@@ -478,6 +478,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       await screen.findByTestId('confirm-footer-button'),
     ).toBeInTheDocument();
-    expect(await screen.findByTestId('confirm-footer-button')).toBeEnabled();
+    expect(await screen.findByTestId('confirm-footer-button')).toBeDisabled();
   });
 });

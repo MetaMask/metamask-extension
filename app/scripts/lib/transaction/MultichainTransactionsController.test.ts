@@ -1,9 +1,6 @@
 import { ControllerMessenger } from '@metamask/base-controller';
-import type {
-  Transaction,
-  CaipAssetType,
-  InternalAccount,
-} from '@metamask/keyring-api';
+import type { Transaction, CaipAssetType } from '@metamask/keyring-api';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
 import {
   BtcAccountType,
   BtcMethod,

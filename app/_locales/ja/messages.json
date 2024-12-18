@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "このサイトは正しくないアカウントでのサインインを求めています。"
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "このトランザクションは、前のトランザクションが完了しないと実行されません。"
-  },
   "alertModalAcknowledge": {
     "message": "リスクを承知したうえで続行します"
   },
@@ -855,15 +852,10 @@
   "bridgeSelectTokenAndAmount": {
     "message": "トークンと金額を選択"
   },
-  "bridgeTimingTooltipText": {
-    "message": "これは、ブリッジが完了するまでの推定時間です。"
-  },
   "bridgeTo": {
     "message": "ブリッジ先:"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "これには、(仮想通貨マイナーに支払われる) ガス代と (ブリッジなどの複雑なサービスを供給するために支払われる) リレイヤー手数料が含まれます。\n手数料はネットワークトラフィックとトランザクションの複雑性に基づいています。MetaMaskはどちらの手数料からも利益を得ることはありません。"
-  },
+
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
   },
@@ -1982,9 +1974,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "ネットワーク上のトランザクションの処理に支払われる金額"
-  },
-  "estimatedTime": {
-    "message": "推定所要時間"
   },
   "ethGasPriceFetchWarning": {
     "message": "現在メインのガスの見積もりサービスが利用できないため、バックアップのガス価格が提供されています。"
@@ -6105,9 +6094,6 @@
   },
   "total": {
     "message": "合計"
-  },
-  "totalFees": {
-    "message": "合計手数料"
   },
   "totalVolume": {
     "message": "合計量"

@@ -4,6 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import BigNumber from 'bignumber.js';
 import {
   getDetectedTokensInCurrentNetwork,
   getKnownMethodData,
@@ -37,6 +38,8 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
+import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
+import { getIntlLocale } from '../ducks/locale/locale';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -103,6 +106,7 @@ export function useTransactionDisplayData(transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
   const dispatch = useDispatch();
+  const locale = useSelector(getIntlLocale);
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getTokens);
   const knownNfts = useSelector(getNfts);
@@ -387,7 +391,10 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('bridgeToChain', [destChainName || '']);
     category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
-    primaryDisplayValue = bridgeTokenDisplayData.sourceTokenAmountSent;
+    primaryDisplayValue = formatAmount(
+      locale,
+      new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
+    );
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else {
     dispatch(

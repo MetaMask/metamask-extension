@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Diese Seite fordert Sie auf, sich mit dem falschen Konto anzumelden."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Diese Transaktion wird erst durchgeführt, wenn Ihre vorherige Transaktion abgeschlossen ist."
-  },
   "alertModalAcknowledge": {
     "message": "Ich habe das Risiko erkannt und möchte trotzdem fortfahren"
   },
@@ -855,14 +852,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Token und Betrag auswählen"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Dies ist die voraussichtliche Dauer, bis das Bridging abgeschlossen ist."
-  },
   "bridgeTo": {
     "message": "Bridge nach"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Dazu gehören Gas-Gebühren (die an Krypto-Miner gezahlt werden) und Relayer-Gebühren (die für die Bereitstellung komplexer Dienste wie Bridging entrichtet werden).\nDie Gebühren richten sich nach dem Netzwerk-Traffic und der Komplexität der Transaktionen. MetaMask profitiert von keiner der Gebühren."
   },
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
@@ -1982,9 +1973,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Betrag, der für die Bearbeitung der Transaktion im Netzwerk gezahlt wurde."
-  },
-  "estimatedTime": {
-    "message": "Geschätzte Dauer"
   },
   "ethGasPriceFetchWarning": {
     "message": "Der Gas-Preis, der sich aus der Gas-Hauptschätzungsdienst ergibt, ist derzeit nicht verfügbar."
@@ -6105,9 +6093,6 @@
   },
   "total": {
     "message": "Gesamt"
-  },
-  "totalFees": {
-    "message": "Gesamtgebühren"
   },
   "totalVolume": {
     "message": "Gesamtvolumen"
