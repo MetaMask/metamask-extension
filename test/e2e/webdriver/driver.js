@@ -499,14 +499,13 @@ class Driver {
    * and returns a reference to the first matching element.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found element.
    */
-  async findElement(rawLocator, timeout = this.timeout) {
+  async findElement(rawLocator) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.driver.wait(
       until.elementLocated(locator),
-      timeout,
+      this.timeout,
     );
     return wrapElementWithAPI(element, this);
   }
@@ -541,14 +540,13 @@ class Driver {
    * Finds a clickable element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
-  async findClickableElement(rawLocator, timeout = this.timeout) {
-    const element = await this.findElement(rawLocator, timeout);
+  async findClickableElement(rawLocator) {
+    const element = await this.findElement(rawLocator);
     await Promise.all([
-      this.driver.wait(until.elementIsVisible(element), timeout),
-      this.driver.wait(until.elementIsEnabled(element), timeout),
+      this.driver.wait(until.elementIsVisible(element), this.timeout),
+      this.driver.wait(until.elementIsEnabled(element), this.timeout),
     ]);
     return wrapElementWithAPI(element, this);
   }
@@ -881,7 +879,7 @@ class Driver {
   async waitForControllersLoaded() {
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.controller-loaded')),
-      20 * 1000,
+      10 * 1000,
     );
   }
 
