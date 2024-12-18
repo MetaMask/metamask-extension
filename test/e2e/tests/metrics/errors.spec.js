@@ -890,6 +890,7 @@ describe('Sentry errors', function () {
         autoLockTimeLimit: true, // Initialized as undefined
         showConfirmationAdvancedDetails: true,
         privacyMode: false,
+        smartTransactionsMigrationApplied: true,
       },
       smartTransactionsState: {
         fees: {
