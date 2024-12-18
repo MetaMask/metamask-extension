@@ -202,6 +202,19 @@ class AccountListPage {
     }
   }
 
+  /**
+   * Adds a new account of the specified type with an optional custom name.
+   *
+   * @param accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
+   * @param accountName - Optional custom name for the new account
+   * @throws {Error} If the specified account type is not supported
+   * @example
+   * // Add a new Ethereum account with default name
+   * await accountListPage.addAccount(ACCOUNT_TYPE.Ethereum);
+   *
+   * // Add a new Bitcoin account with custom name
+   * await accountListPage.addAccount(ACCOUNT_TYPE.Bitcoin, 'My BTC Wallet');
+   */
   async addAccount(accountType: ACCOUNT_TYPE, accountName?: string) {
     await this.driver.clickElement(this.createAccountButton);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
