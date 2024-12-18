@@ -1,13 +1,14 @@
+import { strict as assert } from 'assert';
 import _ from 'lodash';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import {
-  DEFAULT_OPTIONS,
+  DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
   getSessionScopes,
-  openDappAndConnectWallet,
+  openMultichainDappAndConnectWalletWithExternallyConnectable,
 } from './testHelpers';
 
 describe('Multichain API', function () {
@@ -17,7 +18,7 @@ describe('Multichain API', function () {
         {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder().withPopularNetworks().build(),
-          ...DEFAULT_OPTIONS,
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({
           driver,
@@ -26,12 +27,14 @@ describe('Multichain API', function () {
           driver: Driver;
           extensionId: string;
         }) => {
-          await openDappAndConnectWallet(driver, extensionId);
+          await openMultichainDappAndConnectWalletWithExternallyConnectable(driver, extensionId);
           const parsedResult = await getSessionScopes(driver);
 
-          if (!_.isEqual(parsedResult.sessionScopes, {})) {
-            throw new Error('Should receive empty session scopes');
-          }
+          assert.deepStrictEqual(
+            parsedResult.sessionScopes,
+            {},
+            'Should receive empty session scopes',
+          );
         },
       );
     });
@@ -46,7 +49,7 @@ describe('Multichain API', function () {
             .withPopularNetworks()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ...DEFAULT_OPTIONS,
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({
           driver,
@@ -60,7 +63,7 @@ describe('Multichain API', function () {
            */
           const DEFAULT_SCOPE = 'eip155:1337';
 
-          await openDappAndConnectWallet(driver, extensionId);
+          await openMultichainDappAndConnectWalletWithExternallyConnectable(driver, extensionId);
           const parsedResult = await getSessionScopes(driver);
 
           const sessionScope = parsedResult.sessionScopes[DEFAULT_SCOPE];
@@ -68,11 +71,11 @@ describe('Multichain API', function () {
             DEFAULT_FIXTURE_ACCOUNT,
           ]);
 
-          if (!_.isEqual(sessionScope, expectedSessionScope)) {
-            throw new Error(
-              `Should receive result that specifies expected session scopes for ${DEFAULT_SCOPE}`,
-            );
-          }
+          assert.deepStrictEqual(
+            sessionScope,
+            expectedSessionScope,
+            `Should receive result that specifies expected session scopes for ${DEFAULT_SCOPE}`,
+          );
         },
       );
     });
