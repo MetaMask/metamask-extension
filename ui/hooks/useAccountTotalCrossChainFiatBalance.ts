@@ -17,7 +17,7 @@ import { TokenWithBalance } from '../components/app/assets/asset-list/asset-list
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 
 type AddressBalances = {
-  [address: string]: number;
+  [address: string]: string | number;
 };
 
 export type Balances = {
@@ -63,9 +63,9 @@ export const useAccountTotalCrossChainFiatBalance = (
           ];
         const totalFiatValue = getTokenFiatAmount(
           tokenExchangeRate,
-          conversionRate,
+          conversionRate ?? 0,
           currentCurrency,
-          token.string,
+          token.string ?? '',
           token.symbol,
           false,
           false,
@@ -81,7 +81,7 @@ export const useAccountTotalCrossChainFiatBalance = (
       const nativeFiatValue = getValueFromWeiHex({
         value: balanceCached,
         toCurrency: currentCurrency,
-        conversionRate,
+        conversionRate: conversionRate ?? 0,
         numberOfDecimals: 2,
       });
       return {
