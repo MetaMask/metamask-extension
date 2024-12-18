@@ -46,7 +46,8 @@ describe('Carousel', () => {
     expect(closeButtons).toHaveLength(2);
 
     fireEvent.click(closeButtons[0]);
-    expect(mockOnClose).toHaveBeenCalledWith('1');
+    const isNotLastSlide = false;
+    expect(mockOnClose).toHaveBeenCalledWith(isNotLastSlide, '1');
 
     const remainingSlides = mockSlides.filter((slide) => slide.id !== '1');
     rerender(<Carousel slides={remainingSlides} onClose={mockOnClose} />);
