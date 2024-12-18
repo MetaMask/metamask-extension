@@ -241,6 +241,9 @@ describe('Sentry errors', function () {
                 metaMetricsId: null,
                 participateInMetaMetrics: false,
               })
+              .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
@@ -275,7 +278,10 @@ describe('Sentry errors', function () {
               metaMetricsId: null,
               participateInMetaMetrics: false,
             })
-            .build(),
+            .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
@@ -312,6 +318,9 @@ describe('Sentry errors', function () {
               .withMetaMetricsController({
                 metaMetricsId: 'fake-metrics-id',
                 participateInMetaMetrics: true,
+              })
+              .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -358,6 +367,9 @@ describe('Sentry errors', function () {
               .withMetaMetricsController({
                 metaMetricsId: 'fake-metrics-id',
                 participateInMetaMetrics: true,
+              })
+              .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -422,6 +434,9 @@ describe('Sentry errors', function () {
                 participateInMetaMetrics: true,
               })
               .withBadPreferencesControllerState()
+              .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
               .build(),
           },
           ganacheOptions,
@@ -471,7 +486,10 @@ describe('Sentry errors', function () {
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
             })
-            .build(),
+            .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
@@ -517,7 +535,10 @@ describe('Sentry errors', function () {
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
             })
-            .build(),
+            .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
@@ -582,7 +603,10 @@ describe('Sentry errors', function () {
               metaMetricsId: null,
               participateInMetaMetrics: false,
             })
-            .build(),
+            .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
@@ -617,7 +641,10 @@ describe('Sentry errors', function () {
               metaMetricsId: null,
               participateInMetaMetrics: false,
             })
-            .build(),
+            .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
@@ -653,7 +680,10 @@ describe('Sentry errors', function () {
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
             })
-            .build(),
+            .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
@@ -699,7 +729,10 @@ describe('Sentry errors', function () {
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
             })
-            .build(),
+            .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
@@ -762,7 +795,10 @@ describe('Sentry errors', function () {
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
             })
-            .build(),
+            .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
@@ -806,7 +842,10 @@ describe('Sentry errors', function () {
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
             })
-            .build(),
+            .withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
@@ -890,7 +929,6 @@ describe('Sentry errors', function () {
         autoLockTimeLimit: true, // Initialized as undefined
         showConfirmationAdvancedDetails: true,
         privacyMode: false,
-        smartTransactionsMigrationApplied: true,
       },
       smartTransactionsState: {
         fees: {
@@ -916,7 +954,10 @@ describe('Sentry errors', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withPreferencesController({
+                preferences: { smartTransactionsMigrationApplied: false },
+              })
+              .build(),
         ganacheOptions,
         title: this.test.fullTitle(),
         manifestFlags: {
