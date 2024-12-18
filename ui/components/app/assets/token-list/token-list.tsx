@@ -28,7 +28,6 @@ import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances } from '../../../../hooks/useTokenBalances';
 import { setTokenNetworkFilter } from '../../../../store/actions';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getMultichainShouldShowFiat } from '../../../../selectors/multichain';
 
@@ -85,7 +84,6 @@ export default function TokenList({
   onTokenClick,
   nativeToken,
 }: TokenListProps) {
-  const t = useI18nContext();
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
