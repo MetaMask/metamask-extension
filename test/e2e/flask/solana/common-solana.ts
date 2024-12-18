@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import { withFixtures, unlockWallet } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
