@@ -1083,11 +1083,6 @@ describe('Selectors', () => {
     );
   });
 
-  it('#getCurrentCurrency', () => {
-    const currentCurrency = selectors.getCurrentCurrency(mockState);
-    expect(currentCurrency).toStrictEqual('usd');
-  });
-
   it('#getTotalUnapprovedCount', () => {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);

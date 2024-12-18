@@ -545,3 +545,7 @@ export function doesUserHaveALedgerAccount(state) {
     return kr.type === KeyringType.ledger;
   });
 }
+
+export function getCurrentCurrency(state) {
+  return state.metamask.currentCurrency;
+}

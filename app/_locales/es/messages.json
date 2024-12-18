@@ -437,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "No podemos seguir adelante con esta transacción hasta que actualice manualmente la tarifa."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Esta transacción no se realizará hasta que se complete una transacción anterior. Aprenda cómo cancelar o acelerar una transacción."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "El sitio que realiza la solicitud no es el sitio en el que está iniciando sesión. Esto podría ser un intento de robar sus credenciales de inicio de sesión."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Este sitio le pide que inicie sesión con la cuenta incorrecta."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Esta transacción solo se realizará una vez que se complete la transacción anterior."
   },
   "alertModalAcknowledge": {
     "message": "Soy consciente del riesgo y aun así deseo continuar"
@@ -861,14 +855,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Seleccione token y monto"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Este es el tiempo estimado que tardará en completarse el puenteo."
-  },
   "bridgeTo": {
     "message": "Puentear hacia"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Esto incluye las tarifas de gas (pagadas a los mineros de criptomonedas) y las tarifas de repetidores (pagadas para alimentar servicios complejos como el puenteo).\nLas tarifas se basan en el tráfico de la red y la complejidad de las transacciones. MetaMask no lucra con ninguna de las dos tarifas."
   },
   "browserNotSupported": {
     "message": "Su explorador no es compatible..."
@@ -1988,9 +1976,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Monto pagado para procesar la transacción en la red."
-  },
-  "estimatedTime": {
-    "message": "Tiempo estimado"
   },
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
@@ -4108,12 +4093,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Aquí es donde puedes ver los permisos que has otorgado a los Snaps instalados o a los sitios conectados."
   },
-  "permissionsPageTourDescription": {
-    "message": "Este es su panel de control para administrar los permisos otorgados a los sitios conectados y los Snaps instalados."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Los sitios conectados ahora tienen permisos"
-  },
   "permitSimulationDetailInfo": {
     "message": "Le está dando permiso al gastador para gastar esta cantidad de tokens de su cuenta."
   },
@@ -6117,9 +6096,6 @@
   },
   "total": {
     "message": "Total"
-  },
-  "totalFees": {
-    "message": "Tarifas totales"
   },
   "totalVolume": {
     "message": "Volúmen total"

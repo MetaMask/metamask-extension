@@ -36,7 +36,6 @@ import {
 } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllTokens,
-  getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
@@ -46,6 +45,7 @@ import {
 } from '../../../../selectors';
 import {
   getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
@@ -102,6 +102,7 @@ type AssetPickerModalProps = {
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
   isTokenListLoading?: boolean;
+  autoFocus: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -129,6 +130,7 @@ export function AssetPickerModal({
   isTokenListLoading = false,
   isMultiselectEnabled,
   selectedChainIds,
+  autoFocus,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -477,7 +479,7 @@ export function AssetPickerModal({
               <Search
                 searchQuery={searchQuery}
                 onChange={(value) => setSearchQuery(value)}
-                autoFocus={!isMultiselectEnabled}
+                autoFocus={autoFocus}
               />
               <AssetList
                 network={network}

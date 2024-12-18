@@ -294,13 +294,13 @@ describe('AssetPage', () => {
     expect(bridgeButton).not.toBeDisabled();
 
     fireEvent.click(bridgeButton as HTMLElement);
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
 
-    await waitFor(() =>
+    await waitFor(() => {
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
       expect(openTabSpy).toHaveBeenCalledWith({
         url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
-      }),
-    );
+      });
+    });
   });
 
   it('should not show the Bridge button if chain id is not supported', async () => {
