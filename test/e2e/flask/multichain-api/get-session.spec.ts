@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import _ from 'lodash';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';

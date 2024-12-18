@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { DAPP_URL, largeDelayMs, openDapp, unlockWallet } from '../../helpers';
+import { DAPP_URL, largeDelayMs, openDapp, unlockWallet, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
 
@@ -36,6 +36,33 @@ export async function openMultichainDappAndConnectWalletWithExternallyConnectabl
   await driver.fill('[placeholder="Enter extension ID"]', extensionId);
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.delay(largeDelayMs);
+}
+
+/**
+ * Sends a request to wallet extension to create session for the passed scopes.
+ *
+ * @param {Driver} driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
+ * @param {string[]} scopes - scopes to create session for.
+ */
+export async function createSessionScopes(
+  driver: Driver,
+  scopes: string[],
+): Promise<void> {
+  for (const scope of scopes) {
+    await driver.clickElement(`input[name="${scope}"]`);
+  }
+
+  await driver.clickElement({ text: 'wallet_createSession', tag: 'span' });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.delay(largeDelayMs);
+
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[1].click();
+  await driver.delay(largeDelayMs);
+
+  await driver.clickElement('[data-testid="connect-more-chains-button"]');
+  await driver.clickElement({ text: 'Connect', tag: 'button' });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 }
 
 /**
