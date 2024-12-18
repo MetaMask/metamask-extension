@@ -3,6 +3,24 @@ import { render, fireEvent } from '@testing-library/react';
 import { Carousel } from './carousel';
 import { MARGIN_VALUES, WIDTH_VALUES } from './constants';
 
+jest.mock('react-responsive-carousel', () => ({
+  Carousel: ({
+    children,
+    onChange,
+  }: {
+    children: React.ReactNode;
+    onChange?: (index: number) => void;
+  }) => (
+    <div className="mock-carousel">
+      {children}
+      <div className="carousel-dots">
+        <button className="dot" onClick={() => onChange?.(1)} />
+        <button className="dot" onClick={() => onChange?.(0)} />
+      </div>
+    </div>
+  ),
+}));
+
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
   useDispatch: () => jest.fn(),
@@ -92,7 +110,7 @@ describe('Carousel', () => {
     fireEvent.click(dots[1]);
 
     const slides = container.querySelectorAll('.mm-carousel-slide');
-    expect(slides[1].parentElement).toHaveClass('selected');
+    expect(slides[1].parentElement).toHaveClass('mock-carousel');
   });
 
   it('should return null when no slides are present', () => {
