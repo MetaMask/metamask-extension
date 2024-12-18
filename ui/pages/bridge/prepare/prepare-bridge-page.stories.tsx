@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { RequestStatus } from '../../../../app/scripts/controllers/bridge/constants';
+import { RequestStatus } from '../../../../shared/constants/bridge';
 import CrossChainSwap from '../index';
 import { MemoryRouter } from 'react-router-dom';
 import {
