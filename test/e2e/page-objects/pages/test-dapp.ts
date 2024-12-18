@@ -299,9 +299,20 @@ class TestDapp {
   }) {
     console.log('Connect account to test dapp');
     await this.driver.clickElement(this.connectAccountButton);
-    await this.confirmConnectAccountModal();
-    await this.check_connectedAccounts(publicAddress);
-    await this.driver.waitForSelector(this.localhostNetworkMessage);
+    if (connectAccountButtonEnabled) {
+      await this.confirmConnectAccountModal();
+    } else {
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await this.driver.waitForSelector(this.connectMetaMaskMessage);
+      const confirmConnectDialogButton = await this.driver.findElement(
+        this.confirmDialogButton,
+      );
+      assert.equal(await confirmConnectDialogButton.isEnabled(), false);
+    }
+    if (publicAddress) {
+      await this.check_connectedAccounts(publicAddress);
+      await this.driver.waitForSelector(this.localhostNetworkMessage);
+    }
   }
 
   async createDepositTransaction() {
