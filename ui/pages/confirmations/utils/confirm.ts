@@ -82,7 +82,8 @@ export const toPunycodeURL = (urlString: string) => {
   try {
     const url = new URL(urlString);
     const { protocol, hostname, port, search, hash } = url;
-    const pathname = url.pathname === '/' ? '' : url.pathname;
+    const pathname =
+      url.pathname === '/' && !urlString.endsWith('/') ? '' : url.pathname;
 
     return `${protocol}//${hostname}${port}${pathname}${search}${hash}`;
   } catch (err: unknown) {
