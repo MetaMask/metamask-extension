@@ -90,7 +90,7 @@ export const ConnectedSiteMenu = ({
                   ? BorderColor.successDefault
                   : BackgroundColor.backgroundDefault
               }
-              borderWidth={isConnectedtoOtherAccountOrSnap ? 2 : 3}
+              borderWidth={2}
             />
           }
         >
