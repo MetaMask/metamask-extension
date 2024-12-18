@@ -469,7 +469,6 @@
         "console.warn": true
       },
       "packages": {
-        "@babel/code-frame>@babel/helper-validator-identifier": true,
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
@@ -1655,20 +1654,6 @@
         "watchify>xtend": true
       }
     },
-    "browserify>util>which-typed-array": {
-      "packages": {
-        "browserify>util>which-typed-array>for-each": true,
-        "koa>is-generator-function>has-tostringtag": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract>available-typed-arrays": true,
-        "string.prototype.matchall>gopd": true
-      }
-    },
-    "browserify>util>which-typed-array>for-each": {
-      "packages": {
-        "string.prototype.matchall>es-abstract>is-callable": true
-      }
-    },
     "browserslist": {
       "builtin": {
         "fs.existsSync": true,
@@ -2798,23 +2783,20 @@
       "globals": {
         "console.error": true,
         "console.log": true,
-        "console.warn": true,
         "process.argv.join": true,
         "process.cwd": true
       },
       "packages": {
         "eslint-plugin-react>array-includes": true,
-        "eslint-plugin-react>array.prototype.findlast": true,
         "eslint-plugin-react>array.prototype.flatmap": true,
-        "eslint-plugin-react>array.prototype.tosorted": true,
         "eslint-plugin-react>doctrine": true,
         "eslint": true,
         "eslint-plugin-react>estraverse": true,
-        "eslint-plugin-react>hasown": true,
         "eslint-plugin-react>jsx-ast-utils": true,
         "eslint>minimatch": true,
         "eslint-plugin-react>object.entries": true,
         "eslint-plugin-react>object.fromentries": true,
+        "eslint-plugin-react>object.hasown": true,
         "eslint-plugin-react>object.values": true,
         "prop-types": true,
         "eslint-plugin-react>resolve": true,
@@ -7923,29 +7905,16 @@
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>es-object-atoms": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "string.prototype.matchall>regexp.prototype.flags": true,
-        "string.prototype.matchall>set-function-name": true
+        "string.prototype.matchall>regexp.prototype.flags": true
       }
     },
     "string.prototype.matchall>es-abstract>string.prototype.trim": {
       "packages": {
-        "eslint-plugin-import>string.prototype.trimend>call-bound": true,
-        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>define-properties>define-data-property": true,
         "string.prototype.matchall>es-abstract": true,
-        "string.prototype.matchall>es-object-atoms": true
-      }
-    },
-    "string.prototype.matchall>es-object-atoms": {
-      "packages": {
-        "string.prototype.matchall>es-errors": true
+        "string.prototype.matchall>es-abstract>es-object-atoms": true
       }
     },
     "browserify>string_decoder": {
@@ -8134,15 +8103,6 @@
       },
       "packages": {
         "gulp>vinyl-fs>remove-bom-buffer>is-utf8": true
-      }
-    },
-    "string.prototype.matchall>side-channel>side-channel-weakmap": {
-      "packages": {
-        "eslint-plugin-import>string.prototype.trimend>call-bound": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>side-channel>side-channel-map": true
       }
     },
     "stylelint": {
