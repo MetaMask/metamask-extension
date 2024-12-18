@@ -19,6 +19,7 @@ import {
   BannerAlert,
 } from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
+import OriginPill from '../../ui/origin-pill/origin-pill';
 import { AccountListItem } from '../../multichain';
 import {
   ConfirmInfoRow,
@@ -86,6 +87,7 @@ export const safeComponentList = {
   Typography,
   SmartTransactionStatusPage,
   UrlIcon,
+  OriginPill,
   Copyable,
   SnapDelineator,
   SnapUIMarkdown,
