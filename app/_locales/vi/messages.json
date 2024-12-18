@@ -2775,9 +2775,6 @@
   "loadingScreenSnapMessage": {
     "message": "Vui lòng hoàn tất giao dịch trên Snap."
   },
-  "loadingTokens": {
-    "message": "Đang tải token..."
-  },
   "localhost": {
     "message": "Máy chủ cục bộ 8545"
   },

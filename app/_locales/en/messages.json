@@ -2948,9 +2948,6 @@
   "loadingTokenList": {
     "message": "Loading token list"
   },
-  "loadingTokens": {
-    "message": "Loading tokens..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },

@@ -234,12 +234,6 @@ export default function TokenList({
     return React.cloneElement(nativeToken as React.ReactElement);
   }
 
-  // TODO: We can remove this string. However it will result in a huge file 50+ file diff
-  // Lets remove it in a separate PR
-  if (sortedFilteredTokens === undefined) {
-    console.log(t('loadingTokens'));
-  }
-
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
     selectedAccount,
