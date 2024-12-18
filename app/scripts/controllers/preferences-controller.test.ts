@@ -733,7 +733,7 @@ describe('preferences controller', () => {
         privacyMode: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        smartTransactionsMigrationApplied: false, // Add this line
+        smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
@@ -763,7 +763,7 @@ describe('preferences controller', () => {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        smartTransactionsMigrationApplied: false, // Add this line
+        smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
