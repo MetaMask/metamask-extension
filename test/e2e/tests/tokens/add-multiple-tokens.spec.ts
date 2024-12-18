@@ -1,5 +1,4 @@
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
-import GenericConfirmCancelDialog from '../../page-objects/pages/dialog/create-contract';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import {
@@ -37,7 +36,7 @@ describe('Multiple ERC20 Watch Asset', function () {
           // Confirm token creation
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const createContractModal = new CreateContractModal(driver);
-          await createContractModal.check_pageIsLoaded()
+          await createContractModal.check_pageIsLoaded();
           await createContractModal.clickConfirm();
 
           // Wait for token address to populate in dapp
@@ -51,7 +50,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         await testDapp.clickAddTokenToWallet();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addTokensPopupModal = new AddTokensModal(driver);
-        addTokensPopupModal.check_pageIsLoaded()
+        addTokensPopupModal.check_pageIsLoaded();
         await addTokensPopupModal.check_SuggestedTokensCount(3);
         await addTokensPopupModal.confirmAddTokens();
 

@@ -1,5 +1,5 @@
-import { Driver } from '../../../webdriver/driver';
 import { strict as assert } from 'assert';
+import { Driver } from '../../../webdriver/driver';
 
 class AddTokensModal {
   protected driver: Driver;

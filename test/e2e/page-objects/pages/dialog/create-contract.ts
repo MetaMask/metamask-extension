@@ -27,7 +27,6 @@ class CreateContractModal {
     console.log('Create contract dialog was loaded');
   }
 
-
   async clickConfirm() {
     await this.driver.clickElement(this.confirmButtton);
   }

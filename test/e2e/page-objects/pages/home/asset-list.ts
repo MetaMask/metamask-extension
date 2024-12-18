@@ -212,7 +212,7 @@ class AssetListPage {
    */
   async check_tokenIsDisplayed(tokenName: string): Promise<void> {
     console.log(`Waiting for token ${tokenName} to be displayed`);
-    const tokenIsDisplayed = await this.driver.waitForSelector({
+    await this.driver.waitForSelector({
       text: tokenName,
       tag: 'p',
     });
