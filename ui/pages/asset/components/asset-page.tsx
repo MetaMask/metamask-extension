@@ -168,7 +168,7 @@ const AssetPage = ({
 
   // Market and conversion rate data
   const baseCurrency = marketData[chainId]?.[address]?.currency;
-  const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
+  const tokenMarketPrice = marketData[chainId]?.[address]?.price || undefined;
   const tokenExchangeRate =
     type === AssetType.native
       ? currencyRates[symbol]?.conversionRate
@@ -284,7 +284,9 @@ const AssetPage = ({
           chainId={chainId}
           symbol={symbol}
           image={image}
-          tokenFiatAmount={showFiat ? tokenFiatAmount : null}
+          tokenFiatAmount={
+            showFiat && tokenMarketPrice ? tokenFiatAmount : null
+          }
           string={balance?.toString()}
         />
         <Box
