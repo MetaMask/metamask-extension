@@ -119,6 +119,7 @@ import {
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
+import { BackgroundStateProxy } from '../../shared/types/metamask';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
@@ -1604,7 +1605,12 @@ export function unlockSucceeded(message?: string) {
 
 export function updateMetamaskState(
   patches: Patch[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<
+  void,
+  Omit<MetaMaskReduxState, 'metamask'> & { metamask: BackgroundStateProxy },
+  unknown,
+  AnyAction
+> {
   return (dispatch, getState) => {
     const state = getState();
     const providerConfig = getProviderConfig(state);
@@ -1614,11 +1620,15 @@ export function updateMetamaskState(
       return currentState;
     }
 
-    const newState = applyPatches(currentState, patches);
-    const { currentLocale } = currentState;
+    const newState = applyPatches<BackgroundStateProxy>(currentState, patches);
+    const {
+      PreferencesController: { currentLocale },
+    } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;
-    const { currentLocale: newLocale } = newState;
+    const {
+      PreferencesController: { currentLocale: newLocale },
+    } = newState;
     const newProviderConfig = getProviderConfig({ metamask: newState });
     const newInternalAccount = getSelectedInternalAccount({
       metamask: newState,
@@ -1634,17 +1644,15 @@ export function updateMetamaskState(
     }
 
     const newAddressBook =
-      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
+      newState.AddressBookController.addressBook?.[
+        newProviderConfig?.chainId
+      ] ?? {};
     const oldAddressBook =
-      currentState.addressBook?.[providerConfig?.chainId] ?? {};
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const newAccounts: { [address: string]: Record<string, any> } =
-      getMetaMaskAccounts({ metamask: newState });
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const oldAccounts: { [address: string]: Record<string, any> } =
-      getMetaMaskAccounts({ metamask: currentState });
+      currentState.AddressBookController.addressBook?.[
+        providerConfig?.chainId
+      ] ?? {};
+    const newAccounts = getMetaMaskAccounts({ metamask: newState });
+    const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
     const newSelectedAccount = newAccounts[newSelectedAddress];
     const oldSelectedAccount = newAccounts[selectedAddress];
     // dispatch an ACCOUNT_CHANGED for any account whose balance or other
@@ -1676,7 +1684,10 @@ export function updateMetamaskState(
 
     // track when gasFeeEstimates change
     if (
-      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
+      isEqual(
+        currentState.GasFeeController.gasFeeEstimates,
+        newState.GasFeeController.gasFeeEstimates,
+      ) === false
     ) {
       dispatch({
         type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
@@ -6089,20 +6100,29 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
  *
  * @param oldState - The current state.
  * @param patches - The patches to apply.
- * Only supports 'replace' operations with a single path element.
+ * Only supports 'replace' operations with at most 2 path elements.
+ * Properties that are nested at deeper levels cannot be updated in isolation.
  * @returns The new state.
  */
-function applyPatches(
-  oldState: Record<string, unknown>,
+function applyPatches<State extends Record<string, unknown>>(
+  oldState: State,
   patches: Patch[],
-): Record<string, unknown> {
+): State {
   const newState = { ...oldState };
 
   for (const patch of patches) {
     const { op, path, value } = patch;
 
     if (op === 'replace') {
-      newState[path[0]] = value;
+      if (path.length === 2) {
+        const [controllerKey, key] = path;
+        if (!(controllerKey in newState)) {
+          newState[controllerKey] = {};
+        }
+        newState[controllerKey][key] = value;
+      } else if (path.length === 1) {
+        newState[path[0]] = value;
+      }
     } else {
       throw new Error(`Unsupported patch operation: ${op}`);
     }

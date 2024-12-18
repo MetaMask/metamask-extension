@@ -1,12 +1,15 @@
-import { createProjectLogger } from '@metamask/utils';
+import { createProjectLogger, getKnownPropertyNames } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
+import { MemStoreControllersComposedState } from '../../../shared/types/metamask';
 import ComposableObservableStore from './ComposableObservableStore';
 import { sanitizeUIState } from './state-utils';
 
 const log = createProjectLogger('patch-store');
 
-export class PatchStore {
+export class PatchStore<
+  ControllerKey extends keyof MemStoreControllersComposedState,
+> {
   private id: string;
 
   private observableStore: ComposableObservableStore;
@@ -14,9 +17,9 @@ export class PatchStore {
   private pendingPatches: Map<string, Patch> = new Map();
 
   private listener: (request: {
-    controllerKey: string;
-    oldState: Record<string, unknown>;
-    newState: Record<string, unknown>;
+    controllerKey: ControllerKey;
+    oldState: MemStoreControllersComposedState[ControllerKey];
+    newState: MemStoreControllersComposedState[ControllerKey];
   }) => void;
 
   constructor(observableStore: ComposableObservableStore) {
@@ -47,16 +50,23 @@ export class PatchStore {
   }
 
   private _onStateChange({
+    controllerKey,
     oldState,
     newState,
   }: {
-    controllerKey: string;
-    oldState: Record<string, unknown>;
-    newState: Record<string, unknown>;
+    controllerKey: ControllerKey;
+    oldState: MemStoreControllersComposedState[ControllerKey];
+    newState: MemStoreControllersComposedState[ControllerKey];
   }) {
-    const sanitizedNewState = sanitizeUIState(newState);
-    const patches = this._generatePatches(oldState, sanitizedNewState);
-    const isInitialized = Boolean(newState.vault);
+    const sanitizedNewState = sanitizeUIState<ControllerKey>({
+      [controllerKey]: newState,
+    } as Pick<MemStoreControllersComposedState, ControllerKey>);
+    const patches = this._generatePatches({
+      controllerKey,
+      oldState,
+      newState: sanitizedNewState[controllerKey],
+    });
+    const isInitialized = 'vault' in newState && Boolean(newState.vault);
 
     if (isInitialized) {
       patches.push({
@@ -79,25 +89,27 @@ export class PatchStore {
     }
   }
 
-  private _generatePatches(
-    oldState: Record<string, unknown>,
-    newState: Record<string, unknown>,
-  ): Patch[] {
-    return Object.keys(newState)
-      .map((key) => {
-        const oldData = oldState[key];
-        const newData = newState[key];
+  private _generatePatches({
+    controllerKey,
+    oldState,
+    newState,
+  }: {
+    controllerKey: ControllerKey;
+    oldState: MemStoreControllersComposedState[ControllerKey];
+    newState: MemStoreControllersComposedState[ControllerKey];
+  }): Patch[] {
+    return getKnownPropertyNames(newState).reduce<Patch[]>((patches, key) => {
+      const oldData = oldState[key as keyof typeof oldState];
+      const newData = newState[key as keyof typeof newState];
 
-        if (oldData === newData) {
-          return null;
-        }
-
-        return {
-          op: 'replace',
-          path: [key],
+      if (oldData !== newData) {
+        patches.push({
+          op: 'replace' as const,
+          path: [controllerKey, key],
           value: newData,
-        };
-      })
-      .filter(Boolean) as Patch[];
+        });
+      }
+      return patches;
+    }, []);
   }
 }

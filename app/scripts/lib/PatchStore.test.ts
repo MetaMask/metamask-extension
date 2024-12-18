@@ -53,12 +53,12 @@ describe('PatchStore', () => {
       expect(patches).toEqual([
         {
           op: 'replace',
-          path: ['test1'],
+          path: ['test-controller', 'test1'],
           value: 'value2',
         },
         {
           op: 'replace',
-          path: ['test2'],
+          path: ['test-controller', 'test2'],
           value: false,
         },
       ]);
@@ -92,7 +92,7 @@ describe('PatchStore', () => {
       expect(patches).toEqual([
         {
           op: 'replace',
-          path: ['test3'],
+          path: ['test-controller', 'test3'],
           value: { test: 'value' },
         },
       ]);
@@ -128,7 +128,10 @@ describe('PatchStore', () => {
       const composableStoreMock = createComposableStoreMock();
       const patchStore = new PatchStore(composableStoreMock);
 
-      sanitizeUIStateMock.mockReturnValueOnce({ test2: 'value' });
+      sanitizeUIStateMock.mockReturnValueOnce({
+        // @ts-expect-error Intentionally passing in a mock value for testing purposes.
+        'test-controller': { test2: 'value' },
+      });
 
       triggerStateChange(
         composableStoreMock,
@@ -141,7 +144,7 @@ describe('PatchStore', () => {
       expect(patches).toEqual([
         {
           op: 'replace',
-          path: ['test2'],
+          path: ['test-controller', 'test2'],
           value: 'value',
         },
       ]);
@@ -158,7 +161,7 @@ describe('PatchStore', () => {
       expect(patches).toEqual([
         {
           op: 'replace',
-          path: ['vault'],
+          path: ['test-controller', 'vault'],
           value: 123,
         },
         {
