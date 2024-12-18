@@ -61,7 +61,6 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
         ).toFixed(),
         isDecodedTransferValuePending: false,
       };
-      // };
     }, [value, decimals]);
 
   const [exchangeRate, setExchangeRate] = useState<Numeric | undefined>();
@@ -90,6 +89,7 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     decodedTransferValue,
     displayTransferValue,
     fiatDisplayValue,
+    fiatValue,
     pending: pending || isDecodedTransferValuePending,
   };
 };

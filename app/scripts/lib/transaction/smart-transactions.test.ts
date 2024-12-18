@@ -150,6 +150,7 @@ function withRequest<ReturnValue>(
       },
       type: TransactionType.simpleSend,
       chainId: CHAIN_IDS.MAINNET,
+      networkClientId: 'testNetworkClientId',
       time: 1624408066355,
       defaultGasEstimates: {
         gas: '0x7b0d',

@@ -16,8 +16,9 @@ export const validateResponse = <ExpectedResponse>(
   validators: Validator<ExpectedResponse>[],
   data: unknown,
   urlUsed: string,
+  logError = true,
 ): data is ExpectedResponse => {
-  return validateData(validators, data, urlUsed);
+  return validateData(validators, data, urlUsed, logError);
 };
 
 export const isValidNumber = (v: unknown): v is number => typeof v === 'number';
@@ -39,20 +40,26 @@ export const FEATURE_FLAG_VALIDATORS = [
       'refreshRate' in v &&
       isValidNumber(v.refreshRate) &&
       'maxRefreshCount' in v &&
-      isValidNumber(v.maxRefreshCount),
+      isValidNumber(v.maxRefreshCount) &&
+      'chains' in v &&
+      isValidObject(v.chains) &&
+      Object.values(v.chains).every((chain) => isValidObject(chain)) &&
+      Object.values(v.chains).every(
+        (chain) =>
+          'isActiveSrc' in chain &&
+          'isActiveDest' in chain &&
+          typeof chain.isActiveSrc === 'boolean' &&
+          typeof chain.isActiveDest === 'boolean',
+      ),
   },
-  { property: BridgeFlag.EXTENSION_SUPPORT, type: 'boolean' },
+];
+
+export const TOKEN_AGGREGATOR_VALIDATORS = [
   {
-    property: BridgeFlag.NETWORK_SRC_ALLOWLIST,
+    property: 'aggregators',
     type: 'object',
     validator: (v: unknown): v is number[] =>
-      isValidObject(v) && Object.values(v).every(isValidNumber),
-  },
-  {
-    property: BridgeFlag.NETWORK_DEST_ALLOWLIST,
-    type: 'object',
-    validator: (v: unknown): v is number[] =>
-      isValidObject(v) && Object.values(v).every(isValidNumber),
+      isValidObject(v) && Object.values(v).every(isValidString),
   },
 ];
 

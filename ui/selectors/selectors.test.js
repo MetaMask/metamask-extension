@@ -1088,11 +1088,6 @@ describe('Selectors', () => {
     expect(gasIsLoading).toStrictEqual(false);
   });
 
-  it('#getCurrentCurrency', () => {
-    const currentCurrency = selectors.getCurrentCurrency(mockState);
-    expect(currentCurrency).toStrictEqual('usd');
-  });
-
   it('#getTotalUnapprovedCount', () => {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);
@@ -2161,6 +2156,21 @@ describe('#getConnectedSitesList', () => {
 
       expect(result).toBe(true);
       expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('#getRemoteFeatureFlags', () => {
+    it('returns remoteFeatureFlags in state', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            existingFlag: true,
+          },
+        },
+      };
+      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
+        existingFlag: true,
+      });
     });
   });
 

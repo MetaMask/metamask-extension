@@ -105,7 +105,7 @@ import {
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
@@ -126,7 +126,10 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import {
+  getMultichainBalances,
+  getMultichainNetworkProviders,
+} from './multichain';
 
 export function getNetworkIdentifier(state) {
   const { type, nickname, rpcUrl } = getProviderConfig(state);
@@ -265,13 +268,13 @@ export const getMetaMaskAccounts = createSelector(
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
   getMultichainBalances,
-  getMultichainNetwork,
+  getMultichainNetworkProviders,
   (
     internalAccounts,
     balances,
     cachedBalances,
     multichainBalances,
-    multichainNetwork,
+    multichainNetworkProviders,
   ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
@@ -288,11 +291,14 @@ export const getMetaMaskAccounts = createSelector(
           };
         }
       } else {
+        const multichainNetwork = multichainNetworkProviders.find((network) =>
+          network.isAddressCompatible(internalAccount.address),
+        );
         account = {
           ...account,
           balance:
             multichainBalances?.[internalAccount.id]?.[
-              MultichainNativeAssets[multichainNetwork.chainId]
+              MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
             ]?.amount ?? '0',
         };
       }
@@ -957,16 +963,16 @@ export function getNftIsStillFetchingIndication(state) {
   return state.appState.isNftStillFetchingIndication;
 }
 
-export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
-}
-
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
 }
 
 export function getQueuedRequestCount(state) {
   return state.metamask.queuedRequestCount ?? 0;
+}
+
+export function getSlides(state) {
+  return state.metamask.slides || [];
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -1059,7 +1065,7 @@ export function getIsNonStandardEthChain(state) {
 }
 
 export function getPreferences({ metamask }) {
-  return metamask.preferences;
+  return metamask.preferences ?? {};
 }
 
 export function getSendInputCurrencySwitched({ appState }) {
@@ -1322,7 +1328,7 @@ export const getAnySnapUpdateAvailable = createSelector(
 /**
  * Return if the snap branding should show in the UI.
  */
-export const getHideSnapBranding = createSelector(
+export const getHideSnapBranding = createDeepEqualSelector(
   [selectInstalledSnaps, selectSnapId],
   (installedSnaps, snapId) => {
     return installedSnaps[snapId]?.hideSnapBranding;
@@ -1484,6 +1490,20 @@ export function getUSDConversionRate(state) {
     ?.usdConversionRate;
 }
 
+export const getUSDConversionRateByChainId = (chainId) =>
+  createSelector(
+    getCurrencyRates,
+    (state) => selectNetworkConfigurationByChainId(state, chainId),
+    (currencyRates, networkConfiguration) => {
+      if (!networkConfiguration) {
+        return undefined;
+      }
+
+      const { nativeCurrency } = networkConfiguration;
+      return currencyRates[nativeCurrency]?.usdConversionRate;
+    },
+  );
+
 export function getCurrencyRates(state) {
   return state.metamask.currencyRates;
 }
@@ -1572,7 +1592,8 @@ export const getIsBridgeEnabled = createSelector(
   (bridgeFeatureFlags, shouldUseExternalServices) => {
     return (
       (shouldUseExternalServices &&
-        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_SUPPORT]) ??
+        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
+          ?.support) ??
       false
     );
   },
@@ -2764,13 +2785,6 @@ export function getBlockExplorerLinkText(
   return blockExplorerLinkText;
 }
 
-export function getIsNetworkUsed(state) {
-  const chainId = getCurrentChainId(state);
-  const { usedNetworks } = state.metamask;
-
-  return Boolean(usedNetworks[chainId]);
-}
-
 export function getAllAccountsOnNetworkAreEmpty(state) {
   const balances = getMetaMaskCachedBalances(state) ?? {};
   const hasNoNativeFundsOnAnyAccounts = Object.values(balances).every(
@@ -2947,6 +2961,10 @@ export function getMetaMetricsDataDeletionTimestamp(state) {
 
 export function getMetaMetricsDataDeletionStatus(state) {
   return state.metamask.metaMetricsDataDeletionStatus;
+}
+
+export function getRemoteFeatureFlags(state) {
+  return state.metamask.remoteFeatureFlags;
 }
 
 /**

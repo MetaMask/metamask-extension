@@ -3,7 +3,7 @@ name: Main
 on:
   push:
     branches:
-      - develop
+      - main
       - master
   pull_request:
     types:
@@ -32,12 +32,17 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
 
+  wait-for-circleci-workflow-status:
+    name: Wait for CircleCI workflow status
+    uses: ./.github/workflows/wait-for-circleci-workflow-status.yml
+
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
     needs:
       - check-workflows
       - run-tests
+      - wait-for-circleci-workflow-status
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
@@ -58,3 +63,16 @@ jobs:
           if [[ $passed != "true" ]]; then
             exit 1
           fi
+
+  log-merge-group-failure:
+    name: Log merge group failure
+    # Only run this job if the merge group event fails, skip on forks
+    if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
+    needs:
+      - all-jobs-pass
+    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@6bbad335a01fce1a9ec1eabd9515542c225d46c0
+    secrets:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+      SPREADSHEET_ID: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
+      SHEET_NAME: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}

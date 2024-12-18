@@ -1,15 +1,15 @@
 import path from 'path';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 
 describe('Import flow @no-mmi', function () {
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
-    const testAddress = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -33,7 +33,7 @@ describe('Import flow @no-mmi', function () {
         await accountListPage.check_pageIsLoaded();
         await accountListPage.openAccountDetailsModal('Account 1');
         await accountListPage.check_addressInAccountDetailsModal(
-          testAddress.toLowerCase(),
+          DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
         );
       },
     );

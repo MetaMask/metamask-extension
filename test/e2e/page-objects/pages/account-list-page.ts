@@ -1,12 +1,15 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
-import { largeDelayMs } from '../../helpers';
+import { largeDelayMs, regularDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 
 class AccountListPage {
   private readonly driver: Driver;
 
   private readonly accountAddressText = '.qr-code__address-segments';
+
+  private readonly accountListAddressItem =
+    '[data-testid="account-list-address"]';
 
   private readonly accountListBalance =
     '[data-testid="second-currency-display"]';
@@ -40,6 +43,11 @@ class AccountListPage {
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
 
+  private readonly addHardwareWalletButton = {
+    text: 'Add hardware wallet',
+    tag: 'button',
+  };
+
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
 
@@ -48,7 +56,8 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly closeAccountModalButton = 'button[aria-label="Close"]';
+  private readonly closeAccountModalButton =
+    'header button[aria-label="Close"]';
 
   private readonly createAccountButton =
     '[data-testid="multichain-account-menu-popover-action-button"]';
@@ -365,6 +374,22 @@ class AccountListPage {
     });
   }
 
+  async check_addBitcoinAccountAvailable(
+    expectedAvailability: boolean,
+  ): Promise<void> {
+    console.log(
+      `Check add bitcoin account button is ${
+        expectedAvailability ? 'displayed ' : 'not displayed'
+      }`,
+    );
+    await this.openAddAccountModal();
+    if (expectedAvailability) {
+      await this.driver.waitForSelector(this.addBtcAccountButton);
+    } else {
+      await this.driver.assertElementNotPresent(this.addBtcAccountButton);
+    }
+  }
+
   async openAccountOptionsMenu(): Promise<void> {
     console.log(`Open account option menu`);
     await this.driver.waitForSelector(this.accountListItem);
@@ -375,6 +400,15 @@ class AccountListPage {
     console.log(`Open add account modal in account list`);
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.waitForSelector(this.addEthereumAccountButton);
+  }
+
+  async openConnectHardwareWalletModal(): Promise<void> {
+    console.log(`Open connect hardware wallet modal`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addHardwareWalletButton);
+    // This delay is needed to mitigate an existing bug in FF
+    // See https://github.com/metamask/metamask-extension/issues/25851
+    await this.driver.delay(regularDelayMs);
   }
 
   async openHiddenAccountOptions(): Promise<void> {
@@ -433,6 +467,18 @@ class AccountListPage {
   async unpinAccount(): Promise<void> {
     console.log(`Unpin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
+  }
+
+  async check_accountAddressDisplayedInAccountList(
+    expectedAddress: string,
+  ): Promise<void> {
+    console.log(
+      `Check that account address ${expectedAddress} is displayed in account list`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountListAddressItem,
+      text: expectedAddress,
+    });
   }
 
   /**
@@ -515,6 +561,19 @@ class AccountListPage {
       css: this.accountQrCodeAddress,
       text: expectedAddress,
     });
+  }
+
+  /**
+   * Verifies that all occurrences of the account balance value and symbol are displayed as private.
+   *
+   */
+  async check_balanceIsPrivateEverywhere(): Promise<void> {
+    console.log(`Verify all account balance occurrences are private`);
+    const balanceSelectors = {
+      tag: 'span',
+      text: '••••••',
+    };
+    await this.driver.elementCountBecomesN(balanceSelectors, 6);
   }
 
   async check_currentAccountIsImported(): Promise<void> {

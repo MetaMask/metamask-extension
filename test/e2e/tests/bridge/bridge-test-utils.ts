@@ -112,6 +112,10 @@ const mockServer =
               json: {
                 ...DEFAULT_FEATURE_FLAGS_RESPONSE,
                 ...featureFlagOverrides,
+                'extension-config': {
+                  ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+                  ...featureFlagOverrides['extension-config'],
+                },
               },
             };
           }),
