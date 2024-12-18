@@ -75,7 +75,7 @@ export type Asset = (
       /** The number of decimal places to move left when displaying balances */
       decimals: number;
       /** An array of token list sources the asset appears in, e.g. [1inch,Sushiswap]  */
-      aggregators?: [];
+      aggregators?: string[];
     }
 ) & {
   /** The hexadecimal chain id */
@@ -332,7 +332,13 @@ const AssetPage = ({
                           >
                             {t('tokenList')}
                           </Text>
-                          <Text>{asset.aggregators.join(', ')}</Text>
+                          <Text>
+                            {asset.aggregators
+                              .map((agg) =>
+                                agg.replace(/^metamask$/iu, 'MetaMask'),
+                              )
+                              .join(', ')}
+                          </Text>
                         </Box>
                       )}
                     </Box>
