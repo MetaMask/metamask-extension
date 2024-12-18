@@ -17,7 +17,7 @@ jobs:
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           version="${BRANCH/Version-v/}"
-          commit_message="Version v1.0.0-beta.1"
+          commit_message=$(git show -s --format='%s' HEAD)
           beta_version_regex="Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+"
 
           if [[ "$commit_message" =~ $beta_version_regex ]]; then
