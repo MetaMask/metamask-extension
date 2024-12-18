@@ -30,6 +30,16 @@ eslintrc.overrides = eslintrc.overrides.filter((override) => {
   );
 });
 
+// If we try to use the eslint-plugin-rulesdir plugin to lint the transformed fenced code, we will get the following error:
+//
+// > Error: Failed to load plugin 'rulesdir' declared in 'BaseConfig': To use eslint-plugin-rulesdir, you must load it
+// > beforehand and set the `RULES_DIR` property on the module to a string or an array of strings.
+//
+// So we disable the plugin here.
+eslintrc.plugins = eslintrc.plugins.filter(
+  (pluginName) => pluginName !== 'rulesdir',
+);
+
 /**
  * The singleton ESLint instance.
  *
