@@ -640,6 +640,7 @@ export enum MetaMetricsEventName {
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
+  AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
   AppLocked = 'App Locked',
@@ -1036,4 +1037,9 @@ export enum DeleteRegulationStatus {
   PartialSuccess = 'PARTIAL_SUCCESS',
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
+}
+
+export enum MetaMetricsEventTransactionEstimateType {
+  DappProposed = 'dapp_proposed',
+  DefaultEstimate = 'default_estimate',
 }

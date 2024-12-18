@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "이 사이트에서 잘못된 계정으로 로그인하라고 요청합니다."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "이 트랜잭션은 이전 트랜잭션이 완료된 경우에만 진행됩니다."
-  },
   "alertModalAcknowledge": {
     "message": "위험성을 인지했으며, 계속 진행합니다"
   },
@@ -858,15 +855,10 @@
   "bridgeSelectTokenAndAmount": {
     "message": "토큰 및 금액 선택"
   },
-  "bridgeTimingTooltipText": {
-    "message": "브릿지가 완료되는 데 걸리는 예상 시간입니다."
-  },
   "bridgeTo": {
     "message": "브릿지 대상"
   },
-  "bridgeTotalFeesTooltipText": {
-    "message": "가스비(암호화폐 채굴자에게 지급)와 릴레이어 수수료(브릿지와 같은 복잡한 서비스 제공에 지급)가 포함됩니다.\n수수료는 네트워크 트래픽과 트랜잭션 복잡성에 따라 달라집니다. MetaMask는 어떤 수수료에서도 수익을 얻지 않습니다."
-  },
+
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
@@ -1985,9 +1977,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "네트워크에서 트랜잭션을 처리하기 위해 지불한 금액입니다."
-  },
-  "estimatedTime": {
-    "message": "예상 시간"
   },
   "ethGasPriceFetchWarning": {
     "message": "현재 주요 가스 견적 서비스를 사용할 수 없으므로 백업 가스 가격을 제공합니다."
@@ -4105,12 +4094,6 @@
   "permissionsPageEmptySubContent": {
     "message": "여기에서 설치된 Snap 또는 연결된 사이트의 권한을 확인할 수 있습니다."
   },
-  "permissionsPageTourDescription": {
-    "message": "연결된 사이트 또는 설치된 Snap의 권한을 관리하기 위한 제어판입니다."
-  },
-  "permissionsPageTourTitle": {
-    "message": "이제 연결된 사이트에 권한이 부여됩니다"
-  },
   "permitSimulationDetailInfo": {
     "message": "내 계정에서 이만큼의 토큰을 사용할 수 있도록 승인합니다."
   },
@@ -6114,9 +6097,6 @@
   },
   "total": {
     "message": "합계"
-  },
-  "totalFees": {
-    "message": "총 수수료"
   },
   "totalVolume": {
     "message": "총 거래량"

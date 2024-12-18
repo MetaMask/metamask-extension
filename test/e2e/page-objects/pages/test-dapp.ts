@@ -16,8 +16,14 @@ class TestDapp {
   private readonly confirmDialogScrollButton =
     '[data-testid="signature-request-scroll-button"]';
 
+  private readonly confirmScrollToBottomButtonRedesign =
+    '.confirm-scroll-to-bottom__button';
+
   private readonly confirmSignatureButton =
     '[data-testid="page-container-footer-next"]';
+
+  private readonly confirmSignatureButtonRedesign =
+    '[data-testid="confirm-footer-button"]';
 
   private readonly connectAccountButton = '#connectButton';
 
@@ -116,6 +122,11 @@ class TestDapp {
     tag: 'div',
   };
 
+  private readonly signTypedDataV3V4SignatureRequestMessageRedesign = {
+    text: 'Hello, Bob!',
+    tag: 'p',
+  };
+
   private readonly signTypedDataV3VerifyButton = '#signTypedDataV3Verify';
 
   private readonly signTypedDataV3VerifyResult = '#signTypedDataV3VerifyResult';
@@ -157,11 +168,6 @@ class TestDapp {
   private readonly transactionRequestMessage = {
     text: 'Transaction request',
     tag: 'h2',
-  };
-
-  private readonly updateNetworkButton = {
-    text: 'Update',
-    tag: 'button',
   };
 
   private readonly userRejectedRequestMessage = {
@@ -270,23 +276,40 @@ class TestDapp {
   /**
    * Connect account to test dapp.
    *
-   * @param publicAddress - The public address to connect to test dapp.
+   * @param options - Options for connecting account to test dapp.
+   * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
+   * @param options.publicAddress - The public address to connect to test dapp.
    */
-  async connectAccount(publicAddress: string) {
+  async connectAccount({
+    connectAccountButtonEnabled = true,
+    publicAddress,
+  }: {
+    connectAccountButtonEnabled?: boolean;
+    publicAddress?: string;
+  }) {
     console.log('Connect account to test dapp');
     await this.driver.clickElement(this.connectAccountButton);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.connectMetaMaskMessage);
+    if (connectAccountButtonEnabled) {
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmDialogButton,
+      );
+    } else {
+      const confirmConnectDialogButton = await this.driver.findElement(
+        this.confirmDialogButton,
+      );
+      assert.equal(await confirmConnectDialogButton.isEnabled(), false);
+    }
 
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmDialogButton,
-    );
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-    await this.driver.waitForSelector({
-      css: this.connectedAccount,
-      text: publicAddress.toLowerCase(),
-    });
-    await this.driver.waitForSelector(this.localhostNetworkMessage);
+    if (publicAddress) {
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+      await this.driver.waitForSelector({
+        css: this.connectedAccount,
+        text: publicAddress.toLowerCase(),
+      });
+      await this.driver.waitForSelector(this.localhostNetworkMessage);
+    }
   }
 
   async createDepositTransaction() {
@@ -313,6 +336,26 @@ class TestDapp {
       css: this.connectedAccount,
       text: publicAddress.toLowerCase(),
     });
+  }
+
+  /**
+   * Verifies the accounts connected to the test dapp.
+   *
+   * @param connectedAccounts - The expected connected accounts separated by a comma. If no accounts are connected we can omit the param.
+   */
+  async check_connectedAccounts(connectedAccounts: string = '') {
+    console.log('Verify connected accounts');
+    if (connectedAccounts) {
+      await this.driver.waitForSelector({
+        css: this.connectedAccount,
+        text: connectedAccounts,
+      });
+    } else {
+      await this.driver.waitForSelector({
+        css: this.connectedAccount,
+        text: ' ',
+      });
+    }
   }
 
   /**
@@ -657,18 +700,33 @@ class TestDapp {
 
   /**
    * Sign a message with the signTypedDataV4 method.
+   *
+   * @param confirmationRedesign - Indicates whether the redesigned signature confirmation flow is used. Defaults to false.
    */
-  async signTypedDataV4() {
+  async signTypedDataV4(confirmationRedesign: boolean = false) {
     console.log('Sign message with signTypedDataV4');
     await this.clickSignTypedDatav4();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessage,
-    );
-    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
-    );
+    if (confirmationRedesign) {
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessageRedesign,
+      );
+      await this.driver.clickElementSafe(
+        this.confirmScrollToBottomButtonRedesign,
+        200,
+      );
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButtonRedesign,
+      );
+    } else {
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessage,
+      );
+      await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButton,
+      );
+    }
   }
 
   async pasteIntoEip747ContractAddressInput() {
