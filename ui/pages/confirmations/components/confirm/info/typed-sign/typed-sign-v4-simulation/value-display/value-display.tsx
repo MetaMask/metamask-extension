@@ -86,7 +86,7 @@ const PermitSimulationValueDisplay: React.FC<
       return exchangeRate.times(tokenAmount).toNumber();
     }
     return undefined;
-  }, [exchangeRate, tokenDecimals, value]);
+  }, [exchangeRate, tokenDecimals, tokenId, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
     if (!value || tokenId) {
@@ -99,7 +99,7 @@ const PermitSimulationValueDisplay: React.FC<
       tokenValue: formatAmount('en-US', tokenAmount),
       tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
     };
-  }, [tokenDecimals, value]);
+  }, [tokenDecimals, tokenId, value]);
 
   /** Temporary error capturing as we are building out Permit Simulations */
   if (!tokenContract) {
