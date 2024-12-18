@@ -49,6 +49,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
  * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
+ * @property {string} extensionId - the ID that the extension can be found at via externally_connectable.
  */
 
 /**
@@ -97,9 +98,11 @@ async function withFixtures(options, testSuite) {
     getServerMochaToBackground();
   }
 
-  let webDriver;
   let driver;
+  let webDriver;
+  let extensionId;
   let failed = false;
+
   try {
     if (!disableGanache) {
       await ganacheServer.start(ganacheOptions);
@@ -187,7 +190,9 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    driver = (await buildWebDriver(driverOptions)).driver;
+    const wd = await buildWebDriver(driverOptions);
+    driver = wd.driver;
+    extensionId = wd.extensionId;
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -225,6 +230,7 @@ async function withFixtures(options, testSuite) {
       mockedEndpoint,
       bundlerServer,
       mockServer,
+      extensionId,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
