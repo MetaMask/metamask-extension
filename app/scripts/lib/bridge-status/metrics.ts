@@ -123,17 +123,16 @@ export const handleBridgeTransactionComplete = async (
     bridgeHistoryItem.quote.srcChainId,
   );
 
+  const quotedReturnInUsd = bridgeHistoryItem.pricingData?.quotedReturnInUsd;
+  const quotedGasInUsd = bridgeHistoryItem.pricingData?.quotedGasInUsd;
+
   const quoteVsExecutionRatio =
-    bridgeHistoryItem.pricingData?.quotedReturnInUsd &&
-    bridgeHistoryItem.pricingData?.quotedGasInUsd
-      ? Number(bridgeHistoryItem.pricingData.quotedReturnInUsd) /
-        Number(bridgeHistoryItem.pricingData.quotedGasInUsd)
+    quotedReturnInUsd && quotedGasInUsd
+      ? Number(quotedReturnInUsd) / Number(quotedGasInUsd)
       : null;
 
   const quotedVsUsedGasRatio =
-    bridgeHistoryItem.pricingData?.quotedGasInUsd && gasTotalUsd
-      ? Number(bridgeHistoryItem.pricingData.quotedGasInUsd) / gasTotalUsd
-      : null;
+    quotedGasInUsd && gasTotalUsd ? Number(quotedGasInUsd) / gasTotalUsd : null;
 
   const properties = {
     action_type: ActionType.CROSSCHAIN_V1,
@@ -158,8 +157,8 @@ export const handleBridgeTransactionComplete = async (
         : 0, // TODO make this more accurate by looking up dest txHash block time
     swap_type: isBridgeTx ? ActionType.CROSSCHAIN_V1 : ActionType.SWAPBRIDGE_V1,
     usd_amount_source: bridgeHistoryItem.pricingData?.amountSentInUsd,
-    usd_quoted_return: bridgeHistoryItem.pricingData?.quotedReturnInUsd,
-    usd_quoted_gas: bridgeHistoryItem.pricingData?.quotedGasInUsd,
+    usd_quoted_return: quotedReturnInUsd,
+    usd_quoted_gas: quotedGasInUsd,
     usd_actual_return: destTokenUsdValue,
     usd_actual_gas: gasTotalUsd,
     quote_vs_execution_ratio: quoteVsExecutionRatio,
