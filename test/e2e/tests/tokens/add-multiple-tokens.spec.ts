@@ -50,7 +50,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         await testDapp.clickAddTokenToWallet();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addTokensPopupModal = new AddTokensModal(driver);
-        addTokensPopupModal.check_pageIsLoaded();
+        await addTokensPopupModal.check_pageIsLoaded();
         await addTokensPopupModal.check_SuggestedTokensCount(3);
         await addTokensPopupModal.confirmAddTokens();
 
