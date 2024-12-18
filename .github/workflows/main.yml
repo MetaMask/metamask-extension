@@ -53,6 +53,10 @@ jobs:
     name: Validate lavamoat policy build
     uses: ./.github/workflows/validate-lavamoat-policy-build.yml
 
+  validate-lavamoat-policy-webapp:
+    name: Validate lavamoat policy webapp
+    uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -90,6 +94,7 @@ jobs:
       - test-lint-lockfile
       - validate-lavamoat-allow-scripts
       - validate-lavamoat-policy-build
+      - validate-lavamoat-policy-webapp
       - run-tests
       - wait-for-circleci-workflow-status
       - trigger-beta-build
