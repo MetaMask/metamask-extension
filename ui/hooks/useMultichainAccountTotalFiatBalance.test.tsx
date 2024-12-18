@@ -1,7 +1,8 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
-import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
+import { BtcAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
