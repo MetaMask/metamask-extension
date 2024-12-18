@@ -1,5 +1,5 @@
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
-import GenericConfirmCancelDialog from '../../page-objects/pages/dialog/dialog';
+import GenericConfirmCancelDialog from '../../page-objects/pages/dialog/create-contract';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import {
@@ -11,6 +11,7 @@ import {
   unlockWallet,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import CreateContractDialog from '../../page-objects/pages/dialog/create-contract';
 
 describe('Multiple ERC20 Watch Asset', function () {
   it('should show multiple erc20 watchAsset token list, only confirms one bug', async function () {
@@ -35,8 +36,8 @@ describe('Multiple ERC20 Watch Asset', function () {
 
           // Confirm token creation
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const confirmModal = new GenericConfirmCancelDialog(driver);
-          await confirmModal.clickConfirm();
+          const createContractDialog = new CreateContractDialog(driver);
+          await createContractDialog.clickConfirm();
 
           // Wait for token address to populate in dapp
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -60,7 +61,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         // Check all three tokens have been added to the token list.
         const tokenList = new AssetListPage(driver);
         await tokenList.check_tokenItemNumber(4); // 3 tokens plus ETH
-        await tokenList.check_tokenIsDisplayed('Ethererum');
+        await tokenList.check_tokenIsDisplayed('Ethereum');
         await tokenList.check_tokenIsDisplayed('TST');
       },
     );

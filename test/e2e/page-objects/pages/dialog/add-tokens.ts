@@ -1,7 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { strict as assert } from 'assert';
 
-
 class AddTokensModal {
   protected driver: Driver;
 
@@ -28,7 +27,6 @@ class AddTokensModal {
   }
 
   async confirmAddTokens() {
-    await this.driver.findClickableElement(this.addTokenButton);
     await this.driver.clickElement(this.addTokenButton);
   }
 }
