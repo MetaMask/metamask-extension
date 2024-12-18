@@ -1078,19 +1078,6 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker>@metamask/utils": true,
-        "@metamask/eth-query>json-rpc-random-id": true,
-        "pify": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-block-tracker": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker>@metamask/utils": true,
         "@metamask/eth-query>json-rpc-random-id": true
       }
     },
@@ -1518,7 +1505,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker": true,
+        "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
@@ -1693,6 +1680,35 @@
         "browserify>buffer": true,
         "loglevel": true,
         "@metamask/profile-sync-controller>siwe": true
+      }
+    },
+    "@metamask/providers": {
+      "globals": {
+        "CustomEvent": true,
+        "Event": true,
+        "addEventListener": true,
+        "chrome.runtime.connect": true,
+        "console": true,
+        "dispatchEvent": true,
+        "document.createElement": true,
+        "document.readyState": true,
+        "ethereum": "write",
+        "location.hostname": true,
+        "removeEventListener": true,
+        "web3": true
+      },
+      "packages": {
+        "@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-middleware-stream": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "@metamask/providers>detect-browser": true,
+        "@metamask/providers>extension-port-stream": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/providers>is-stream": true,
+        "readable-stream": true
       }
     },
     "@metamask/queued-request-controller": {
@@ -2049,21 +2065,6 @@
       }
     },
     "@metamask/eth-token-tracker>@metamask/eth-block-tracker>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-block-tracker>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -3575,6 +3576,15 @@
         "@metamask/ppom-validator>elliptic>minimalistic-assert": true
       }
     },
+    "@metamask/providers>detect-browser": {
+      "globals": {
+        "document": true,
+        "navigator": true
+      },
+      "packages": {
+        "process": true
+      }
+    },
     "crypto-browserify>diffie-hellman": {
       "packages": {
         "bn.js": true,
@@ -3862,6 +3872,12 @@
       "packages": {
         "browserify>buffer": true,
         "extension-port-stream>readable-stream": true
+      }
+    },
+    "@metamask/providers>extension-port-stream": {
+      "packages": {
+        "browserify>buffer": true,
+        "@metamask/providers>extension-port-stream>readable-stream": true
       }
     },
     "fast-json-patch": {
@@ -5141,6 +5157,23 @@
         "browserify>string_decoder": true
       }
     },
+    "@metamask/providers>extension-port-stream>readable-stream": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "AggregateError": true,
+        "Blob": true,
+        "ERR_INVALID_ARG_TYPE": true,
+        "queueMicrotask": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>readable-stream>abort-controller": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "process": true,
+        "browserify>string_decoder": true
+      }
+    },
     "@metamask/snaps-controllers>readable-web-to-node-stream": {
       "packages": {
         "readable-stream": true
@@ -5562,11 +5595,6 @@
         "crypto": true
       }
     },
-    "web3-stream-provider>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
     "@metamask/snaps-utils>validate-npm-package-name": {
       "packages": {
         "@metamask/snaps-utils>validate-npm-package-name>builtins": true
@@ -5610,16 +5638,6 @@
     "web3": {
       "globals": {
         "XMLHttpRequest": true
-      }
-    },
-    "web3-stream-provider": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "readable-stream": true,
-        "browserify>util": true,
-        "web3-stream-provider>uuid": true
       }
     },
     "@metamask/controllers>web3": {
