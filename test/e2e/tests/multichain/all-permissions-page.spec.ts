@@ -21,7 +21,9 @@ describe('Permissions Page', function () {
         await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.connectAccount(DEFAULT_FIXTURE_ACCOUNT);
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
+        });
 
         // switch to extension window and check the site permissions
         await driver.switchToWindowWithTitle(
