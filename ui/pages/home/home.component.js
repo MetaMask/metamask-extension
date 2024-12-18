@@ -11,7 +11,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
@@ -143,9 +142,6 @@ export default class Home extends PureComponent {
     },
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     showMultiRpcModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
@@ -902,11 +898,8 @@ export default class Home extends PureComponent {
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      showWhatsNewPopup,
-      hideWhatsNewPopup,
       completedOnboarding,
       onboardedInThisUISession,
-      announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
@@ -927,11 +920,7 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    const showWhatsNew =
-      canSeeModals && announcementsToShow && showWhatsNewPopup;
-
-    const showMultiRpcEditModal =
-      canSeeModals && showMultiRpcModal && !showWhatsNew;
+    const showMultiRpcEditModal = canSeeModals && showMultiRpcModal;
 
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
@@ -954,8 +943,7 @@ export default class Home extends PureComponent {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
           {showMultiRpcEditModal && <MultiRpcEditModal />}
-          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew && showRecoveryPhraseReminder ? (
+          {showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
               onConfirm={this.onRecoveryPhraseReminderClose}

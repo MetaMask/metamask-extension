@@ -1584,10 +1584,6 @@
   "welcomeBack": {
     "message": "Welcome back!"
   },
-  "whatsNew": {
-    "message": "Ano'ng bago",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
-  },
   "whatsThis": {
     "message": "Ano ito?"
   },

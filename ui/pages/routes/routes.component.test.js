@@ -164,7 +164,6 @@ describe('Routes Component', () => {
           accountsByChainId: {},
           pendingApprovals: {},
           approvalFlows: [],
-          announcements: {},
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
           preferences: {
@@ -240,7 +239,6 @@ describe('Routes Component', () => {
           },
           tokens: [],
           swapsState: { swapsFeatureIsLive: false },
-          announcements: {},
           pendingApprovals: {},
           termsOfUseLastAgreed: new Date('2999-03-25'),
           shouldShowSeedPhraseReminder: false,
@@ -254,7 +252,6 @@ describe('Routes Component', () => {
         },
         appState: {
           ...mockSendState.appState,
-          showWhatsNewPopup: false,
           onboardedInThisUISession: false,
         },
       };
@@ -303,7 +300,6 @@ describe('toast display', () => {
     metamask: {
       ...mockState.metamask,
       allTokens: {},
-      announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
       pendingApprovals: {},
@@ -331,7 +327,6 @@ describe('toast display', () => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
       pendingApprovals: {},

@@ -23,8 +23,6 @@ import {
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
   getWeb3ShimUsageStateForOrigin,
-  getShowWhatsNewPopup,
-  getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
   getShowTermsOfUse,
   getShowOutdatedBrowserWarning,
@@ -65,10 +63,7 @@ import {
   setDataCollectionForMarketing,
   setEditedNetwork,
 } from '../../store/actions';
-import {
-  hideWhatsNewPopup,
-  openBasicFunctionalityModal,
-} from '../../ducks/app/app';
+import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
@@ -135,11 +130,6 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  const TEMPORARY_DISABLE_WHATS_NEW = true;
-  const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
-    ? false
-    : getShowWhatsNewPopup(state);
-
   return {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
@@ -166,8 +156,6 @@ const mapStateToProps = (state) => {
     shouldShowWeb3ShimUsageNotification,
     pendingApprovals,
     infuraBlocked: getInfuraBlocked(state),
-    announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    showWhatsNewPopup,
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
     showOutdatedBrowserWarning:
@@ -189,7 +177,6 @@ const mapStateToProps = (state) => {
     modalOpen: state.appState.modal.open,
     mmiPortfolioUrl: getMmiPortfolioUrl(state),
     mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
-    notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
@@ -213,7 +200,6 @@ const mapDispatchToProps = (dispatch) => {
       setWeb3ShimUsageAlertDismissed(origin),
     disableWeb3ShimUsageAlert: () =>
       setAlertEnabledness(AlertTypes.web3ShimUsage, false),
-    hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
     setRecoveryPhraseReminderHasBeenShown: () =>
       dispatch(setRecoveryPhraseReminderHasBeenShown()),
     setRecoveryPhraseReminderLastShown: (lastShown) =>

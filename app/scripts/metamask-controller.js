@@ -57,7 +57,6 @@ import {
 import { ControllerMessenger } from '@metamask/base-controller';
 import { EnsController } from '@metamask/ens-controller';
 import { PhishingController } from '@metamask/phishing-controller';
-import { AnnouncementController } from '@metamask/announcement-controller';
 import {
   NetworkController,
   getDefaultNetworkControllerState,
@@ -201,7 +200,6 @@ import {
   ExcludedSnapPermissions,
   ExcludedSnapEndowments,
 } from '../../shared/constants/permissions';
-import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -976,16 +974,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
       blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
-    });
-
-    const announcementMessenger = this.controllerMessenger.getRestricted({
-      name: 'AnnouncementController',
-    });
-
-    this.announcementController = new AnnouncementController({
-      messenger: announcementMessenger,
-      allAnnouncements: UI_NOTIFICATIONS,
-      state: initState.AnnouncementController,
     });
 
     const networkOrderMessenger = this.controllerMessenger.getRestricted({
@@ -2576,7 +2564,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
       SubjectMetadataController: this.subjectMetadataController,
-      AnnouncementController: this.announcementController,
       NetworkOrderController: this.networkOrderController,
       AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
@@ -2632,7 +2619,6 @@ export default class MetamaskController extends EventEmitter {
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
         SubjectMetadataController: this.subjectMetadataController,
-        AnnouncementController: this.announcementController,
         NetworkOrderController: this.networkOrderController,
         AccountOrderController: this.accountOrderController,
         GasFeeController: this.gasFeeController,
@@ -3455,7 +3441,6 @@ export default class MetamaskController extends EventEmitter {
       gasFeeController,
       metaMetricsController,
       networkController,
-      announcementController,
       onboardingController,
       permissionController,
       preferencesController,
@@ -4239,14 +4224,6 @@ export default class MetamaskController extends EventEmitter {
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
-
-      // Notifications
-      resetViewedNotifications: announcementController.resetViewed.bind(
-        announcementController,
-      ),
-      updateViewedNotifications: announcementController.updateViewed.bind(
-        announcementController,
-      ),
 
       // CurrencyRateController
       currencyRateStartPolling: currencyRateController.startPolling.bind(
