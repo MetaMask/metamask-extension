@@ -132,7 +132,7 @@ export const AppHeader = ({ location }) => {
                 ? 'multichain-app-header__contents'
                 : 'multichain-app-header__lock-contents',
               {
-                'multichain-app-header-shadow': isUnlocked && !popupStatus,
+                'multichain-app-header-border': isUnlocked && !popupStatus,
               },
             )}
             {...(isUnlocked ? unlockedStyling : lockStyling)}
