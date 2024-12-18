@@ -201,9 +201,14 @@ export const useTransactionFunctions = ({
 
   const updateTransactionUsingEstimate = useCallback(
     (gasFeeEstimateToUse) => {
+      if (!gasFeeEstimates) {
+        return;
+      }
+
       if (!gasFeeEstimates[gasFeeEstimateToUse]) {
         return;
       }
+
       const { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas } =
         gasFeeEstimates[gasFeeEstimateToUse];
       updateTransaction({
