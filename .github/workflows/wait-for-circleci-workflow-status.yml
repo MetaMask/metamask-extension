@@ -13,8 +13,12 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           REPOSITORY: ${{ github.event.repository.name }}
           BRANCH: ${{ github.head_ref || github.ref_name }}
+          # For a `push` event, the HEAD commit hash is `github.sha`.
+          # For a `pull_request` event, `github.sha` is instead the base branch commit hash. The
+          # HEAD commit hash is `pull_request.head.sha`.
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq -r ".items[0].id")
+          pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq -r ".items[] | select(.vcs.revision == \"${HEAD_COMMIT_HASH}\" ) | .id")
           workflow_status=$(curl --silent "https://circleci.com/api/v2/pipeline/$pipeline_id/workflow" | jq -r ".items[0].status")
 
           if [ "$workflow_status" == "running" ]; then
