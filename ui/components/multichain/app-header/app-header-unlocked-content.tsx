@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import browser from 'webextension-polyfill';
 
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
