@@ -1465,8 +1465,8 @@
     },
     "@metamask/multichain": {
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/multichain>@metamask/api-specs": true,
+        "@metamask/controller-utils": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
