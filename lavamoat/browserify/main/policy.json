@@ -1558,9 +1558,9 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/network-controller": true,
-        "@metamask/profile-sync-controller>@metamask/keyring-api": true,
         "@metamask/profile-sync-controller>@noble/ciphers": true,
         "@noble/hashes": true,
         "browserify>buffer": true,
