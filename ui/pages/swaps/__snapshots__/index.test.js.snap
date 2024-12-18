@@ -9,11 +9,11 @@ exports[`Swap renders the component with initial props 1`] = `
       class="swaps__container"
     >
       <div
-        class="swaps__header"
+        class="mm-box mm-header-base multichain-page-header swaps__header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
       >
         <div
-          class="box box--margin-left-4 box--display-flex box--flex-direction-row box--justify-content-center box--width-1/12"
-          tabindex="0"
+          class="mm-box"
+          style="min-width: 0px;"
         >
           <span
             class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -22,13 +22,17 @@ exports[`Swap renders the component with initial props 1`] = `
           />
         </div>
         <div
-          class="swaps__title"
+          class="mm-box"
         >
-          Swap
+          <h4
+            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          >
+            Swap
+          </h4>
         </div>
         <div
-          class="box box--margin-right-4 box--display-flex box--flex-direction-row box--justify-content-center box--width-1/12"
-          tabindex="0"
+          class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+          style="min-width: 0px;"
         >
           <span
             class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"

@@ -76,37 +76,6 @@
     }
   }
 
-  &__title {
-    @include design-system.H5;
-
-    font-weight: bold;
-    color: var(--color-text-default);
-    margin-top: -5px;
-    flex: 1;
-    text-align: center;
-  }
-
-  &__header {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    background: var(--color-background-alternative);
-    width: 100%;
-    flex-direction: row;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-
-    @include design-system.screen-sm-min {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      height: 66px;
-    }
-  }
-
   .actionable-message__message &__notification-close-button {
     background-color: transparent;
     position: absolute;
