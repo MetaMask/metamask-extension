@@ -74,7 +74,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
               backgroundColor={badgeBackgroundColor}
               borderRadius={BorderRadius.full}
               borderColor={badgeBorderColor}
-              borderWidth={2}
+              borderWidth={isConnectedAndNotActive ? 2 : 4}
             />
           }
         >

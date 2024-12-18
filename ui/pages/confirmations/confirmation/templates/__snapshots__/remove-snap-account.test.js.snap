@@ -208,7 +208,11 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                               style="bottom: -1px; right: 2px;"
                             >
                               <div
+<<<<<<< HEAD
                                 class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+=======
+                                class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+>>>>>>> parent of 4568f2af3f (fix(28081): design tweak for network badge)
                               />
                             </div>
                           </div>

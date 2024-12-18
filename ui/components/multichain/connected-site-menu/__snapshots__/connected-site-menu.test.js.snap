@@ -32,7 +32,7 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
             style="bottom: -1px; right: -4px; z-index: 1;"
           >
             <div
-              class="mm-box multichain-connected-site-menu__badge mm-box--background-color-success-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+              class="mm-box multichain-connected-site-menu__badge mm-box--background-color-success-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-3 box--border-style-solid"
             />
           </div>
         </div>
@@ -74,7 +74,7 @@ exports[`Connected Site Menu should render the site menu in not connected state 
             style="bottom: -1px; right: -4px; z-index: 1;"
           >
             <div
-              class="mm-box multichain-connected-site-menu__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+              class="mm-box multichain-connected-site-menu__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-3 box--border-style-solid"
             />
           </div>
         </div>

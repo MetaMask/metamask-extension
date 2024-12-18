@@ -62,7 +62,7 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
-import { ConnectedStatus } from '../connected-status';
+import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 import { useTheme } from '../../../hooks/useTheme';
