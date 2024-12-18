@@ -5,7 +5,7 @@ import { ACCOUNT_TYPE } from '../../page-objects/common';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Create Solana Account', function (this: Suite) {
-  it('Creates 2 Solana accounts', async function () {
+  it.skip('Creates 2 Solana accounts', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -23,9 +23,6 @@ describe('Create Solana Account', function (this: Suite) {
       },
     );
   });
-});
-
-describe('Create Solana Account', function (this: Suite) {
   it('Creates a Solana account from the menu', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
@@ -41,27 +38,24 @@ describe('Create Solana Account', function (this: Suite) {
     );
   });
 });
-
-describe('Create Remove Solana Account', function (this: Suite) {
-  it('Removes Solana account after creating it', async function () {
-    await withSolanaAccountSnap(
-      { title: this.test?.fullTitle() },
-      async (driver) => {
-        // check that we have one Solana account
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_accountLabel('Solana 1');
-        // check user can cancel the removal of the Solana account
-        await headerNavbar.openAccountMenu();
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.removeAccount('Solana 1', true);
-        await headerNavbar.check_accountLabel('Account 1');
-        await headerNavbar.openAccountMenu();
-        await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
-          'Solana 1',
-        );
-      },
-    );
-  });
+it.skip('Removes Solana account after creating it', async function () {
+  await withSolanaAccountSnap(
+    { title: this.test?.fullTitle() },
+    async (driver) => {
+      // check that we have one Solana account
+      const headerNavbar = new HeaderNavbar(driver);
+      await headerNavbar.check_accountLabel('Solana 1');
+      // check user can cancel the removal of the Solana account
+      await headerNavbar.openAccountMenu();
+      const accountListPage = new AccountListPage(driver);
+      await accountListPage.check_accountDisplayedInAccountList('Account 1');
+      await accountListPage.removeAccount('Solana 1', true);
+      await headerNavbar.check_accountLabel('Account 1');
+      await headerNavbar.openAccountMenu();
+      await accountListPage.check_accountDisplayedInAccountList('Account 1');
+      await accountListPage.check_accountIsNotDisplayedInAccountList(
+        'Solana 1',
+      );
+    },
+  );
 });

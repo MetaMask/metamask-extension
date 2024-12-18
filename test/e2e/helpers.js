@@ -228,10 +228,7 @@ async function withFixtures(options, testSuite) {
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
-    if (
-      errorsAndExceptions &&
-      !errorsAndExceptions.includes(`SES_UNHANDLED_REJECTION`) // Adding this since Chrome driver throws this error randomly
-    ) {
+    if (errorsAndExceptions) {
       throw new Error(errorsAndExceptions);
     }
 
