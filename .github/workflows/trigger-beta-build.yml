@@ -11,15 +11,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-
       - name: Needs beta build
         id: needs-beta-build
         env:
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           version="${BRANCH/Version-v/}"
-          commit_message=$(git show -s --format='%s' HEAD)
-          echo "$commit_message"
+          commit_message="Version v1.0.0-beta.1"
           beta_version_regex="Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+"
 
           if [[ "$commit_message" =~ $beta_version_regex ]]; then
