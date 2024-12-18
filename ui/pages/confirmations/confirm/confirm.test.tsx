@@ -182,4 +182,44 @@ describe('Confirm', () => {
       expect(container).toMatchSnapshot();
     });
   });
+
+  it('should render SmartTransactionsBannerAlert for transaction types but not signature types', async () => {
+    // Test with a transaction type
+    const mockStateTransaction = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        alertEnabledness: {
+          smartTransactionsMigration: true,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
+          smartTransactionsMigrationApplied: true,
+        },
+      },
+    };
+
+    const mockStoreTransaction =
+      configureMockStore(middleware)(mockStateTransaction);
+
+    await act(async () => {
+      const { container } = renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStoreTransaction,
+      );
+      expect(container).toMatchSnapshot();
+    });
+
+    // Test with a signature type (reuse existing mock)
+    const mockStateTypedSign = getMockTypedSignConfirmState();
+    const mockStoreSign = configureMockStore(middleware)(mockStateTypedSign);
+
+    await act(async () => {
+      const { container } = renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStoreSign,
+      );
+      expect(container).toMatchSnapshot();
+    });
+  });
 });
