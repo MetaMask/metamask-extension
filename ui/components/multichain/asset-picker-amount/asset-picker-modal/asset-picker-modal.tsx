@@ -36,7 +36,6 @@ import {
 } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllTokens,
-  getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
@@ -46,6 +45,7 @@ import {
 } from '../../../../selectors';
 import {
   getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
