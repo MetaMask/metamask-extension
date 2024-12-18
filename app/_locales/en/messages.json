@@ -3376,7 +3376,7 @@
     "message": "The URL used to access this network."
   },
   "networkUrlErrorWarning": {
-    "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. We replaced the original version with its punycode encoded form. Original version: $1",
+    "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. We replaced the original version with its Punycode encoded form. Original version: $1",
     "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
