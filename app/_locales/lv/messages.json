@@ -446,9 +446,6 @@
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
   },
-  "noTransactions": {
-    "message": "Jums nav neviena darījuma."
-  },
   "noWebcamFound": {
     "message": "Jūsu datora tīmekļa kamera netika atrasta. Lūdzu, mēģiniet vēlreiz."
   },

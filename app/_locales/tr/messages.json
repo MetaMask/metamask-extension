@@ -3336,9 +3336,6 @@
   "noThanks": {
     "message": "Hayır, istemiyorum"
   },
-  "noTransactions": {
-    "message": "İşleminiz yok"
-  },
   "noWebcamFound": {
     "message": "Bilgisayarınızın web kamerası bulunamadı. Lütfen tekrar deneyin."
   },

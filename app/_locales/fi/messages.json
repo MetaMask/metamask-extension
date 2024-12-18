@@ -446,9 +446,6 @@
   "noConversionRateAvailable": {
     "message": "Vaihtokurssi ei saatavilla"
   },
-  "noTransactions": {
-    "message": "Sinulla ei ole tapahtumia"
-  },
   "noWebcamFound": {
     "message": "Tietokoneesi verkkokameraa ei löytynyt. Ole hyvä ja yritä uudestaan."
   },
