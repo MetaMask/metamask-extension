@@ -4,6 +4,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../page-objects/common';
 import { withSolanaAccountSnap } from './common-solana';
 
+// Scenarios skipped due to https://consensyssoftware.atlassian.net/browse/SOL-87
 describe('Create Solana Account', function (this: Suite) {
   it.skip('Creates 2 Solana accounts', async function () {
     await withSolanaAccountSnap(
