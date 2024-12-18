@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
 import {
   DAPP_URL,
   largeDelayMs,
@@ -7,7 +8,6 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
 
 /**
  * Default options for setting up Multichain E2E test environment
