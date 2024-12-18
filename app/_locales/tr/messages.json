@@ -416,6 +416,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Saldırganlar bazen site adresinde küçük değişiklikler yaparak siteleri taklit edebilir. Devam etmeden önce planladığınız site ile etkileşim kurduğunuzdan emin olun."
   },
+  "alertMessageChangeInSimulationResults": {
+    "message": "Bu işlem için tahmin edilen değişiklikler güncellendi. Devam etmeden önce dikkatle inceleyin."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "Kesin bir ücret sunamıyoruz ve bu tahmin yüksek olabilir. Özel bir gaz limiti girmenizi öneririz ancak işlemin yine de başarısız olma riski vardır."
   },
@@ -434,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Önceki bir işlem tamamlanana dek bu işlem gerçekleşmeyecektir. Bir işlemi nasıl iptal edeceğinizi veya hızlandıracağınızı öğrenin."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Talepte bulunan site giriş yaptığınız site değil. Bu durum oturum açma bilgilerinizi çalma teşebbüsü olabilir."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Bu site sizden yanlış hesabı kullanarak giriş yapmanızı istiyor."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Bu işlem sadece önceki işleminiz tamamlandıktan sonra gerçekleşecek."
   },
   "alertModalAcknowledge": {
     "message": "Riski anlıyor ve yine de ilerlemek istiyorum"
@@ -454,6 +451,9 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Tüm uyarıları incele"
+  },
+  "alertReasonChangeInSimulationResults": {
+    "message": "Sonuçlar değişti"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Ücret yanlış"
@@ -837,8 +837,14 @@
   "bridge": {
     "message": "Köprü"
   },
+  "bridgeCalculatingAmount": {
+    "message": "Hesaplanıyor..."
+  },
   "bridgeDontSend": {
     "message": "Köprü yap, gönderme"
+  },
+  "bridgeEnterAmount": {
+    "message": "Miktar girin"
   },
   "bridgeFrom": {
     "message": "Şuradan köprü:"
@@ -846,9 +852,13 @@
   "bridgeSelectNetwork": {
     "message": "Ağ seç"
   },
+  "bridgeSelectTokenAndAmount": {
+    "message": "Token ve miktar seçin"
+  },
   "bridgeTo": {
     "message": "Şuraya köprü:"
   },
+
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
@@ -1012,9 +1022,6 @@
   "confirmRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini Onayla"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Ödenek talebi"
-  },
   "confirmTitleDeployContract": {
     "message": "Bir sözleşme kurulumu gerçekleştirin"
   },
@@ -1159,6 +1166,14 @@
   "connectedWithAccountName": {
     "message": "$1 ile bağlandı",
     "description": "$1 represents account name"
+  },
+  "connectedWithNetwork": {
+    "message": "$1 ağ bağlandı",
+    "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "$1 ile bağlandı",
+    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Bağlanıyor"
@@ -1493,6 +1508,9 @@
   "dcent": {
     "message": "D'Cent"
   },
+  "debitCreditPurchaseOptions": {
+    "message": "Banka kartı veya kredi kartı ile satın alma seçenekleri"
+  },
   "decimal": {
     "message": "Token Ondalığı"
   },
@@ -1802,6 +1820,9 @@
   "editSpendingCapError": {
     "message": "Harcama üst limiti $1 ondalık haneyi geçemez. Devam etmek için ondalık haneleri kaldırın."
   },
+  "editSpendingCapSpecialCharError": {
+    "message": "Sadece rakam girin"
+  },
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
   },
@@ -1904,9 +1925,41 @@
     "message": "Kod: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
+  "errorPageContactSupport": {
+    "message": "Destek bölümüne ulaşın",
+    "description": "Button for contact MM support"
+  },
+  "errorPageDescribeUsWhatHappened": {
+    "message": "Ne olduğunu açıklayın",
+    "description": "Button for submitting report to sentry"
+  },
+  "errorPageInfo": {
+    "message": "Bilgileriniz gösterilemiyor. Endişelenmeyin, cüzdanınız ve paranız güvende.",
+    "description": "Information banner shown in the error page"
+  },
+  "errorPageMessageTitle": {
+    "message": "Hata mesajı",
+    "description": "Title for description, which is displayed for debugging purposes"
+  },
+  "errorPageSentryFormTitle": {
+    "message": "Ne olduğunu açıklayın",
+    "description": "In sentry feedback form, The title at the top of the feedback form."
+  },
+  "errorPageSentryMessagePlaceholder": {
+    "message": "Hatayı nasıl tekrarlayabileceğimiz gibi ayrıntıların paylaşılması sorunu çözmemize yardımcı olacaktır.",
+    "description": "In sentry feedback form, The placeholder for the feedback description input field."
+  },
+  "errorPageSentrySuccessMessageText": {
+    "message": "Teşekkürler! En kısa sürede ele alacağız.",
+    "description": "In sentry feedback form, The message displayed after a successful feedback submission."
+  },
   "errorPageTitle": {
     "message": "MetaMask bir hata ile karşılaştı",
     "description": "Title of generic error page"
+  },
+  "errorPageTryAgain": {
+    "message": "Tekrar deneyin",
+    "description": "Button for try again"
   },
   "errorStack": {
     "message": "Yığın:",
@@ -2069,6 +2122,9 @@
   },
   "functionType": {
     "message": "İşlev türü"
+  },
+  "fundingMethod": {
+    "message": "Para yatırma yöntemi"
   },
   "gas": {
     "message": "Gaz"
@@ -3724,6 +3780,12 @@
   "outdatedBrowserNotification": {
     "message": "Tarayıcınız güncel değil. Tarayıcınızı güncellemezseniz MetaMask'ten güvenlik yamalarını ve yeni özellikleri alamayacaksınız."
   },
+  "overrideContentSecurityPolicyHeader": {
+    "message": "İçerik-Güvenlik-Politika başlığını geçersiz kıl"
+  },
+  "overrideContentSecurityPolicyHeaderDescription": {
+    "message": "Bu seçenek, Firefox'ta merkeziyetsiz bir uygulamanın İçerik-Güvenlik-Politika başlığının uzantının düzgün bir şekilde yüklenmesini önleyebildiği bilinen bir sorunun anlık çözümüdür. Belirli web sayfası uyumluluğu için gerekli olmadığı sürece bu seçeneğin devre dışı bırakılması önerilmez."
+  },
   "padlock": {
     "message": "Asma Kilit"
   },
@@ -4031,12 +4093,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "Burada, yüklü Snap'lere veya bağlı sitelere verdiğiniz izinleri görebilirsiniz."
-  },
-  "permissionsPageTourDescription": {
-    "message": "Burası, bağlı sitelere ve yüklü Snap'lere verilen izinleri yönetebileceğiniz kontrol panelinizdir."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Bağlı siteler şimdi izinler oldu"
   },
   "permitSimulationDetailInfo": {
     "message": "Harcama yapan tarafa hesabınızdan bu kadar çok token'i harcama izni veriyorsunuz."
@@ -4395,6 +4451,9 @@
   "requestFromInfo": {
     "message": "İmzanızı isteyen site budur."
   },
+  "requestFromInfoSnap": {
+    "message": "İmzanızı isteyen Snap budur."
+  },
   "requestFromTransactionDescription": {
     "message": "Bu site tarafından onayınız isteniyor."
   },
@@ -4416,6 +4475,10 @@
   "requestingForAccount": {
     "message": "$1 için talep ediliyor",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "$1 için talep ediliyor",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "onaylanmayı bekleyen talepler"
@@ -4895,6 +4958,9 @@
   "simulationDetailsIncomingHeading": {
     "message": "Aldığınız"
   },
+  "simulationDetailsNoChanges": {
+    "message": "Değişiklik yok"
+  },
   "simulationDetailsOutgoingHeading": {
     "message": "Gönderdiğiniz"
   },
@@ -4916,6 +4982,9 @@
   },
   "simulationDetailsTransactionReverted": {
     "message": "Bu işlemin başarısız olması muhtemel"
+  },
+  "simulationDetailsUnavailable": {
+    "message": "Mevcut değil"
   },
   "simulationErrorMessageV2": {
     "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
@@ -5142,6 +5211,15 @@
   "snapsUIError": {
     "message": "Daha fazla destek için $1 oluşturucuları ile iletişime geçin.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaSupportSectionTitle": {
+    "message": "Solana"
+  },
+  "solanaSupportToggleDescription": {
+    "message": "Bu özelliği açtığınızda mevcut Gizli Kurtarma İfadenizden türetilen MetaMask Uzantınıza bir Solana Hesabı ekleme seçeneğiniz olacaktır. Bu, deneysel bir Beta özelliğidir, bu yüzden riski kendinize ait olarak kullanmalısınız."
+  },
+  "solanaSupportToggleTitle": {
+    "message": "\"Yeni bir Solana hesabı ekle (Beta)\" seçeneğini etkinleştir"
   },
   "somethingDoesntLookRight": {
     "message": "Doğru görünmeyen bir şeyler mi var? $1",
@@ -5801,6 +5879,10 @@
   "swapTokenVerifiedOn1SourceTitle": {
     "message": "Sahte token olma potansiyeli var"
   },
+  "swapTokenVerifiedSources": {
+    "message": "$1 kaynakları tarafından onaylandı. $2 üzerinde doğrulayın.",
+    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
+  },
   "swapTooManyDecimalsError": {
     "message": "$1, en fazla $2 ondalık basamağına izin verir",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -5918,6 +6000,12 @@
   "tips": {
     "message": "İpuçları"
   },
+  "tipsForUsingAWallet": {
+    "message": "Cüzdan kullanma ipuçları"
+  },
+  "tipsForUsingAWalletDescription": {
+    "message": "Token eklemek web3'ü kullanmanın daha fazla yolunun kilidini açar."
+  },
   "to": {
     "message": "Kime"
   },
@@ -5969,6 +6057,9 @@
   },
   "tokenList": {
     "message": "Token listeleri:"
+  },
+  "tokenMarketplace": {
+    "message": "Token pazar yeri"
   },
   "tokenScamSecurityRisk": {
     "message": "token dolandırıcılıkları ve güvenlik riskleri"
@@ -6483,10 +6574,6 @@
   },
   "wrongNetworkName": {
     "message": "Kayıtlarımıza göre ağ adı bu zincir kimliği ile doğru şekilde eşleşmiyor olabilir."
-  },
-  "xOfYPending": {
-    "message": "$1 / $2 bekliyor",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Evet"

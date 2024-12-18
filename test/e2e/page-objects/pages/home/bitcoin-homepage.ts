@@ -4,13 +4,21 @@ class BitcoinHomepage extends HomePage {
   protected readonly balance =
     '[data-testid="coin-overview__primary-currency"]';
 
-  protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
+  private readonly bridgeButton = {
+    text: 'Bridge',
+    tag: 'button',
+  };
 
   private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
   private readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
   protected readonly sendButton = '[data-testid="coin-overview-send"]';
+
+  private readonly swapButton = {
+    text: 'Swap',
+    tag: 'button',
+  };
 
   async check_pageIsLoaded(): Promise<void> {
     try {
@@ -26,14 +34,32 @@ class BitcoinHomepage extends HomePage {
     console.log('Bitcoin homepage is loaded');
   }
 
-  async check_ifBridgeButtonIsClickable(): Promise<boolean> {
+  /**
+   * Checks if the bridge button is enabled on bitcoin account homepage.
+   *
+   */
+  async check_isBridgeButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.bridgeButton, 1000);
     } catch (e) {
-      console.log('Bridge button not clickable', e);
+      console.log('Bridge button not enabled', e);
       return false;
     }
-    console.log('Bridge button is clickable');
+    console.log('Bridge button is enabled');
+    return true;
+  }
+
+  /**
+   * Checks if the buy/sell button is enabled on bitcoin account homepage.
+   */
+  async check_isBuySellButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.buySellButton, 1000);
+    } catch (e) {
+      console.log('Buy/Sell button not enabled', e);
+      return false;
+    }
+    console.log('Buy/Sell button is enabled');
     return true;
   }
 
@@ -42,7 +68,7 @@ class BitcoinHomepage extends HomePage {
    *
    * @param expectedBalance - The expected bitcoin balance to be displayed. Defaults to '0'.
    */
-  async check_expectedBitcoinBalanceIsDisplayed(
+  async check_isExpectedBitcoinBalanceDisplayed(
     expectedBalance: number = 0,
   ): Promise<void> {
     console.log(
@@ -54,47 +80,31 @@ class BitcoinHomepage extends HomePage {
     });
   }
 
-  async check_ifBuySellButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.buySellButton, 1000);
-    } catch (e) {
-      console.log('Buy/Sell button not clickable', e);
-      return false;
-    }
-    console.log('Buy/Sell button is clickable');
-    return true;
-  }
-
-  async check_ifReceiveButtonIsClickable(): Promise<boolean> {
+  /**
+   * Checks if the receive button is enabled on bitcoin account homepage.
+   */
+  async check_isReceiveButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.receiveButton, 1000);
     } catch (e) {
-      console.log('Receive button not clickable', e);
+      console.log('Receive button not enabled', e);
       return false;
     }
-    console.log('Receive button is clickable');
+    console.log('Receive button is enabled');
     return true;
   }
 
-  async check_ifSendButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.sendButton, 1000);
-    } catch (e) {
-      console.log('Send button not clickable', e);
-      return false;
-    }
-    console.log('Send button is clickable');
-    return true;
-  }
-
-  async check_ifSwapButtonIsClickable(): Promise<boolean> {
+  /**
+   * Checks if the swap button is enabled on bitcoin account homepage.
+   */
+  async check_isSwapButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.swapButton, 1000);
     } catch (e) {
-      console.log('Swap button not clickable', e);
+      console.log('Swap button not enabled', e);
       return false;
     }
-    console.log('Swap button is clickable');
+    console.log('Swap button is enabled');
     return true;
   }
 }

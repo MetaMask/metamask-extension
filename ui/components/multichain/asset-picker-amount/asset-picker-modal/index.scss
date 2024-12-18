@@ -1,10 +1,12 @@
 @use "design-system";
 
 .multichain-asset-picker__network-modal {
-  overflow-y: auto;
-
   .mm-modal-content__dialog {
-    overflow-y: scroll;
+    overflow: hidden;
+  }
+
+  .multichain-asset-picker__network-list {
+    overflow-y: auto;
   }
 }
 
@@ -30,6 +32,7 @@
     cursor: pointer;
     overflow-y: auto;
     max-height: 50vh;
+    white-space: nowrap;
 
     &:not(.multichain-asset-picker-list-item--selected) {
       &:hover,
@@ -66,9 +69,10 @@
 
   .network-picker {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     padding-top: 4px;
+    padding-left: 16px;
 
     button: {
       background: var(--color-background-alternative);

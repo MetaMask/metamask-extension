@@ -9,12 +9,16 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { GasRecommendations } from '../../../../shared/constants/gas';
+import {
+  GasRecommendations,
+  PriorityLevels,
+} from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
+  MetaMetricsEventTransactionEstimateType,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
@@ -793,9 +797,13 @@ async function buildEventFragmentProperties({
     securityProviderResponse,
     simulationFails,
     id,
+    userFeeLevel,
   } = transactionMeta;
   const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
+
+  const gasFeeSelected =
+    userFeeLevel === 'dappSuggested' ? 'dapp_proposed' : userFeeLevel;
 
   const { assetType, tokenStandard } = await determineTransactionAssetType(
     transactionMeta,
@@ -820,12 +828,18 @@ async function buildEventFragmentProperties({
     gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
   } else {
     gasParams.gas_price = gasPrice;
+    gasParams.default_estimate =
+      MetaMetricsEventTransactionEstimateType.DefaultEstimate;
   }
 
   if (defaultGasEstimates) {
     const { estimateType } = defaultGasEstimates;
     if (estimateType) {
-      gasParams.default_estimate = estimateType;
+      gasParams.default_estimate =
+        estimateType === PriorityLevels.dAppSuggested
+          ? MetaMetricsEventTransactionEstimateType.DappProposed
+          : estimateType;
+
       let defaultMaxFeePerGas =
         transactionMeta.defaultGasEstimates?.maxFeePerGas;
       let defaultMaxPriorityFeePerGas =
@@ -1045,6 +1059,7 @@ async function buildEventFragmentProperties({
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
     transaction_internal_id: id,
+    gas_fee_selected: gasFeeSelected,
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,

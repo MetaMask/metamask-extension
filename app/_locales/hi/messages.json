@@ -416,6 +416,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "हमला करने वाले कभी-कभी साइट के एड्रेस में छोटे-छोटे बदलाव करके साइटों की नकल करते हैं। जारी रखने से पहले सुनिश्चित करें कि आप इच्छित साइट के साथ इंटरैक्ट कर रहे हैं।"
   },
+  "alertMessageChangeInSimulationResults": {
+    "message": "इस ट्रांसेक्शन के लिए अनुमानित परिवर्तन अपडेट कर दिए गए हैं। आगे बढ़ने से पहले उनकी बारीकी से समीक्षा करें।"
+  },
   "alertMessageGasEstimateFailed": {
     "message": "हम सटीक शुल्क प्रदान करने में असमर्थ हैं और यह अनुमान अधिक हो सकता है। हम आपको एक कस्टम गैस लिमिट दर्ज करने का सुझाव देते हैं, लेकिन जोखिम है कि ट्रांसेक्शन अभी भी विफल हो जाएगा।"
   },
@@ -434,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "जब तक आप शुल्क को मैन्युअल रूप से अपडेट नहीं करते, हम इस ट्रांसेक्शन को आगे नहीं बढ़ा सकते।"
   },
-  "alertMessagePendingTransactions": {
-    "message": "यह ट्रांसेक्शन तब तक नहीं होगा जब तक पिछला ट्रांसेक्शन पूरा न हो जाए। किसी ट्रांसेक्शन को रद्द करने या तेज़ करने का तरीका जानें।"
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "अनुरोध करने वाली साइट वह साइट नहीं है जिस पर आप साइन इन कर रहे हैं। यह आपके लॉगिन क्रेडेंशियल चुराने का प्रयास हो सकता है।"
   },
   "alertMessageSignInWrongAccount": {
     "message": "यह साइट आपसे गलत अकाउंट का उपयोग करके साइन इन करने के लिए कह रही है।"
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "यह ट्रांसेक्शन तभी पूरा होगा जब आपका पिछला ट्रांसेक्शन पूरा हो जाएगा।"
   },
   "alertModalAcknowledge": {
     "message": "मैंने जोखिम को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
@@ -454,6 +451,9 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "सभी एलर्ट की समीक्षा करें"
+  },
+  "alertReasonChangeInSimulationResults": {
+    "message": "परिणाम बदल गए हैं"
   },
   "alertReasonGasEstimateFailed": {
     "message": "गलत शुल्क"
@@ -837,14 +837,23 @@
   "bridge": {
     "message": "ब्रिज"
   },
+  "bridgeCalculatingAmount": {
+    "message": "कैलकुलेट किया जा रहा है..."
+  },
   "bridgeDontSend": {
     "message": "ब्रिज, न भेजें"
+  },
+  "bridgeEnterAmount": {
+    "message": "रकम डालें"
   },
   "bridgeFrom": {
     "message": "इससे ब्रिज करें"
   },
   "bridgeSelectNetwork": {
     "message": "नेटवर्क को चुनें"
+  },
+  "bridgeSelectTokenAndAmount": {
+    "message": "टोकन और रकम का चयन करें"
   },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
@@ -1012,9 +1021,6 @@
   "confirmRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज कन्फर्म करें"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "भत्ता का अनुरोध"
-  },
   "confirmTitleDeployContract": {
     "message": "एक कॉन्ट्रैक्ट करें"
   },
@@ -1159,6 +1165,14 @@
   "connectedWithAccountName": {
     "message": "$1 से कनेक्ट किए गए",
     "description": "$1 represents account name"
+  },
+  "connectedWithNetwork": {
+    "message": "$1 नेटवर्क कनेक्ट किए गए",
+    "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "$1 से कनेक्ट किए गए",
+    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "कनेक्ट किया जा रहा है"
@@ -1493,6 +1507,9 @@
   "dcent": {
     "message": "D'Cent"
   },
+  "debitCreditPurchaseOptions": {
+    "message": "डेबिट या क्रेडिट कार्ड से खरीदारी के विकल्प"
+  },
   "decimal": {
     "message": "टोकन डेसीमल"
   },
@@ -1802,6 +1819,9 @@
   "editSpendingCapError": {
     "message": "खर्च करने की सीमा $1 दशमलव अंक से अधिक नहीं हो सकती। जारी रखने के लिए दशमलव अंक हटाएं।"
   },
+  "editSpendingCapSpecialCharError": {
+    "message": "केवल संख्या डालें"
+  },
   "enableAutoDetect": {
     "message": " ऑटो डिटेक्ट इनेबल करें"
   },
@@ -1904,9 +1924,41 @@
     "message": "कोड: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
+  "errorPageContactSupport": {
+    "message": "सपोर्ट से कॉन्टेक्ट करें",
+    "description": "Button for contact MM support"
+  },
+  "errorPageDescribeUsWhatHappened": {
+    "message": "वर्णन करें कि क्या हुआ",
+    "description": "Button for submitting report to sentry"
+  },
+  "errorPageInfo": {
+    "message": "आपकी जानकारी नहीं दिखाई जा सकती। चिंता न करें, आपके वॉलेट और फंड सुरक्षित हैं।",
+    "description": "Information banner shown in the error page"
+  },
+  "errorPageMessageTitle": {
+    "message": "गड़बड़ी संबंधी संदेश",
+    "description": "Title for description, which is displayed for debugging purposes"
+  },
+  "errorPageSentryFormTitle": {
+    "message": "वर्णन करें कि क्या हुआ",
+    "description": "In sentry feedback form, The title at the top of the feedback form."
+  },
+  "errorPageSentryMessagePlaceholder": {
+    "message": "हम बग को कैसे फिर से उत्पन्न कर सकते हैं जैसे विवरण साझा करने से हमें समस्या को ठीक करने में मदद मिलेगी।",
+    "description": "In sentry feedback form, The placeholder for the feedback description input field."
+  },
+  "errorPageSentrySuccessMessageText": {
+    "message": "धन्यवाद! हम जल्द ही इस पर गौर करेंगे।",
+    "description": "In sentry feedback form, The message displayed after a successful feedback submission."
+  },
   "errorPageTitle": {
     "message": "MetaMask में कोई गड़बड़ी हुई",
     "description": "Title of generic error page"
+  },
+  "errorPageTryAgain": {
+    "message": "फिर से कोशिश करें",
+    "description": "Button for try again"
   },
   "errorStack": {
     "message": "स्टैक:",
@@ -2069,6 +2121,9 @@
   },
   "functionType": {
     "message": "फ़ंक्शन का प्रकार"
+  },
+  "fundingMethod": {
+    "message": "फंड करने की विधि"
   },
   "gas": {
     "message": "गैस"
@@ -3724,6 +3779,12 @@
   "outdatedBrowserNotification": {
     "message": "आपका ब्राउज़़र पुराना हो चुका है। यदि आप अपने ब्राउज़़र को अपडेट नहीं करते हैं, तो आप MetaMask से सुरक्षा पैच और नई फीचर्स प्राप्त नहीं कर पाएंगे।"
   },
+  "overrideContentSecurityPolicyHeader": {
+    "message": "कंटेंट-सिक्योरिटी-पॉलिसी हेडर को ओवरराइड करें"
+  },
+  "overrideContentSecurityPolicyHeaderDescription": {
+    "message": "यह विकल्प Firefox में एक ज्ञात समस्या के लिए एक समाधान है, जहां एक dapp का कंटेंट-सिक्योरिटी-पॉलिसी हेडर एक्सटेंशन को ठीक से लोड होने से रोक सकता है। जब तक विशिष्ट वेब पेज अनुकूलता के लिए आवश्यक न हो, इस विकल्प को बंद करने की सलाह नहीं दी जाती है।"
+  },
   "padlock": {
     "message": "पैडलॉक"
   },
@@ -4031,12 +4092,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "यहां पर आप इंस्टॉल किए गए Snaps या कनेक्टेड साइटों को दी गई अनुमतियां देख सकते हैं।"
-  },
-  "permissionsPageTourDescription": {
-    "message": "कनेक्टेड साइटों और इंस्टॉल किए गए Snaps को दी गई अनुमतियों को मैनेज करने के लिए यह आपका कंट्रोल पैनल है।"
-  },
-  "permissionsPageTourTitle": {
-    "message": "कनेक्टेड साइटें अब अनुमतियां हैं"
   },
   "permitSimulationDetailInfo": {
     "message": "आप खर्च करने वाले को अपने अकाउंट से इतने सारे टोकन खर्च करने की अनुमति दे रहे हैं।"
@@ -4395,6 +4450,9 @@
   "requestFromInfo": {
     "message": "यह वह साइट है जो आपका सिग्नेचर मांग रही है।"
   },
+  "requestFromInfoSnap": {
+    "message": "यह वह Snap है जो आपका सिग्नेचर मांग रहा है।"
+  },
   "requestFromTransactionDescription": {
     "message": "यह वही साइट है जो आपका कन्फर्मेशन मांग रही है।"
   },
@@ -4416,6 +4474,10 @@
   "requestingForAccount": {
     "message": "$1 के लिए अनुरोध कर रहे हैं",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "$1 के लिए अनुरोध कर रहे हैं",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "रिक्वेस्ट्स के स्वीकार किए जाने की प्रतीक्षा की जा रही है"
@@ -4895,6 +4957,9 @@
   "simulationDetailsIncomingHeading": {
     "message": "आप पाते हैं"
   },
+  "simulationDetailsNoChanges": {
+    "message": "कोई बदलाव नहीं"
+  },
   "simulationDetailsOutgoingHeading": {
     "message": "आप भेजते हैं"
   },
@@ -4916,6 +4981,9 @@
   },
   "simulationDetailsTransactionReverted": {
     "message": "ये ट्रांसेक्शन विफल हो सकता है"
+  },
+  "simulationDetailsUnavailable": {
+    "message": "अनुपलब्ध"
   },
   "simulationErrorMessageV2": {
     "message": "हम गैस का अनुमान नहीं लगा पाए। कॉन्ट्रैक्ट में कोई गड़बड़ी हो सकती है और यह ट्रांसेक्शन विफल हो सकता है।"
@@ -5142,6 +5210,15 @@
   "snapsUIError": {
     "message": "अधिक सहायता के लिए $1 के निर्माताओं से कॉन्टेक्ट करें।",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaSupportSectionTitle": {
+    "message": "सोलाना"
+  },
+  "solanaSupportToggleDescription": {
+    "message": "इस फीचर को चालू करने से आपको अपने मौजूदा सीक्रेट रिकवरी फ्रेज़ से प्राप्त MetaMask एक्सटेंशन में एक सोलाना अकाउंट जोड़ने का विकल्प मिलेगा। यह एक प्रायोगिक बीटा फीचर है, इसलिए आपको इसका उपयोग अपने जोखिम पर करना होगा।"
+  },
+  "solanaSupportToggleTitle": {
+    "message": "\"एक नया सोलाना अकाउंट जोड़ें (बीटा)\" को चालू करें"
   },
   "somethingDoesntLookRight": {
     "message": "कुछ तो गड़बड़ है? $1",
@@ -5801,6 +5878,10 @@
   "swapTokenVerifiedOn1SourceTitle": {
     "message": "संभावित रूप से अप्रामाणिक टोकन"
   },
+  "swapTokenVerifiedSources": {
+    "message": "$1 स्रोतों द्वारा कन्फर्म की गई। $2 पर वेरीफ़ाई करें।",
+    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
+  },
   "swapTooManyDecimalsError": {
     "message": "$1अनुमति देता है डेसीमल $2 तक की",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -5918,6 +5999,12 @@
   "tips": {
     "message": "युक्तियां"
   },
+  "tipsForUsingAWallet": {
+    "message": "वॉलेट का उपयोग करने के लिए टिप्स"
+  },
+  "tipsForUsingAWalletDescription": {
+    "message": "टोकन जोड़ने से Web3 का उपयोग करने के और अधिक तरीके अनलॉक हो जाते हैं।"
+  },
   "to": {
     "message": "प्रति"
   },
@@ -5969,6 +6056,9 @@
   },
   "tokenList": {
     "message": "टोकन की सूचियां"
+  },
+  "tokenMarketplace": {
+    "message": "टोकन मार्केटप्लेस"
   },
   "tokenScamSecurityRisk": {
     "message": "टोकन घोटाले और सुरक्षा जोखिम"
@@ -6483,10 +6573,6 @@
   },
   "wrongNetworkName": {
     "message": "हमारे रिकॉर्ड के अनुसार, नेटवर्क का नाम इस चेन ID से ठीक से मेल नहीं खा सकता है।"
-  },
-  "xOfYPending": {
-    "message": "$2 में से $1 लंबित",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "हां"

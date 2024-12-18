@@ -59,7 +59,9 @@
   "approvalFlows": [],
   "bridgeState": {
     "bridgeFeatureFlags": {
-      "extensionSupport": false
+      "extensionConfig": {
+        "support": false
+      }
     }
   },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
@@ -285,6 +287,7 @@
   "showPermissionsTour": true,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
+  "slides": [],
   "smartTransactionsState": {
     "smartTransactions": { "0x1": [] },
     "fees": {},

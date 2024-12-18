@@ -416,6 +416,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Οι εισβολείς μερικές φορές αντιγράφουν ιστότοπους κάνοντας μικρές αλλαγές στη διεύθυνση του ιστότοπου. Βεβαιωθείτε ότι αλληλεπιδράτε με τον ιστότοπο που θέλετε πριν συνεχίσετε."
   },
+  "alertMessageChangeInSimulationResults": {
+    "message": "Οι εκτιμώμενες αλλαγές για αυτή τη συναλλαγή έχουν ενημερωθεί. Ελέγξτε τις προσεκτικά πριν προχωρήσετε."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "Δεν μπορούμε να παράσχουμε τα τέλη με ακρίβεια και αυτή η εκτίμηση μπορεί να είναι υψηλή. Σας προτείνουμε να εισάγετε ένα προσαρμοσμένο όριο τελών συναλλαγών, αλλά υπάρχει κίνδυνος η συναλλαγή να αποτύχει και πάλι."
   },
@@ -434,17 +437,11 @@
   "alertMessageNoGasPrice": {
     "message": "Δεν μπορούμε να συνεχίσουμε με αυτή τη συναλλαγή μέχρι να ενημερώσετε τα τέλη μη αυτόματα."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Αυτή η συναλλαγή δεν θα πραγματοποιηθεί μέχρι να ολοκληρωθεί μια προηγούμενη συναλλαγή. Μάθετε πώς να ακυρώσετε ή να επισπεύσετε μια συναλλαγή."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Ο ιστότοπος που υποβάλλει το αίτημα δεν είναι ο ιστότοπος στον οποίο έχετε συνδεθεί. Αυτό θα μπορούσε να είναι μια απόπειρα κλοπής των στοιχείων σύνδεσής σας."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Αυτός ο ιστότοπος σας ζητάει να συνδεθείτε χρησιμοποιώντας λάθος λογαριασμό."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Αυτή η συναλλαγή θα πραγματοποιηθεί μόνο όταν ολοκληρωθεί η προηγούμενη συναλλαγή σας."
   },
   "alertModalAcknowledge": {
     "message": "Αναγνωρίζω τον κίνδυνο και εξακολουθώ να θέλω να συνεχίσω"
@@ -454,6 +451,9 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Έλεγχος όλων των ειδοποιήσεων"
+  },
+  "alertReasonChangeInSimulationResults": {
+    "message": "Τα αποτελέσματα έχουν αλλάξει"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Ανακριβή τέλη"
@@ -837,14 +837,23 @@
   "bridge": {
     "message": "Διασύνδεση"
   },
+  "bridgeCalculatingAmount": {
+    "message": "Υπολογισμός..."
+  },
   "bridgeDontSend": {
     "message": "Μην στείλετε χωρίς διασύνδεση"
+  },
+  "bridgeEnterAmount": {
+    "message": "Πληκτρολογήστε το ποσό"
   },
   "bridgeFrom": {
     "message": "Γέφυρα από"
   },
   "bridgeSelectNetwork": {
     "message": "Επιλέξτε δίκτυο"
+  },
+  "bridgeSelectTokenAndAmount": {
+    "message": "Επιλέξτε token και ποσό"
   },
   "bridgeTo": {
     "message": "Γέφυρα σε"
@@ -1012,9 +1021,6 @@
   "confirmRecoveryPhrase": {
     "message": "Επιβεβαιώστε τη Μυστική Φράση Ανάκτησης"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Αίτημα χορήγησης άδειας"
-  },
   "confirmTitleDeployContract": {
     "message": "Ανάπτυξη συμβολαίου"
   },
@@ -1159,6 +1165,14 @@
   "connectedWithAccountName": {
     "message": "Συνδέεται με $1",
     "description": "$1 represents account name"
+  },
+  "connectedWithNetwork": {
+    "message": "$1 δίκτυα συνδεδεμένα",
+    "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "Συνδέθηκε με το $1",
+    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Σύνδεση"
@@ -1493,6 +1507,9 @@
   "dcent": {
     "message": "D'Cent"
   },
+  "debitCreditPurchaseOptions": {
+    "message": "Επιλογές αγοράς με χρεωστική ή πιστωτική κάρτα"
+  },
   "decimal": {
     "message": "Δεκαδικά ψηφία του token"
   },
@@ -1802,6 +1819,9 @@
   "editSpendingCapError": {
     "message": "Το ανώτατο όριο δαπανών δεν μπορεί να υπερβαίνει τα $1 δεκαδικά ψηφία. Αφαιρέστε τα δεκαδικά ψηφία για να συνεχίσετε."
   },
+  "editSpendingCapSpecialCharError": {
+    "message": "Πληκτρολογήστε μόνο αριθμούς"
+  },
   "enableAutoDetect": {
     "message": " Ενεργοποίηση αυτόματου εντοπισμού"
   },
@@ -1904,9 +1924,41 @@
     "message": "Κωδικός: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
+  "errorPageContactSupport": {
+    "message": "Επικοινωνήστε με την υποστήριξη",
+    "description": "Button for contact MM support"
+  },
+  "errorPageDescribeUsWhatHappened": {
+    "message": "Περιγράψτε τι έχει συμβεί",
+    "description": "Button for submitting report to sentry"
+  },
+  "errorPageInfo": {
+    "message": "Οι πληροφορίες σας δεν μπορούν να εμφανιστούν. Μην ανησυχείτε, το πορτοφόλι και τα κεφάλαιά σας είναι ασφαλή.",
+    "description": "Information banner shown in the error page"
+  },
+  "errorPageMessageTitle": {
+    "message": "Μήνυμα σφάλματος",
+    "description": "Title for description, which is displayed for debugging purposes"
+  },
+  "errorPageSentryFormTitle": {
+    "message": "Περιγράψτε τι έχει συμβεί",
+    "description": "In sentry feedback form, The title at the top of the feedback form."
+  },
+  "errorPageSentryMessagePlaceholder": {
+    "message": "Η παροχή λεπτομερειών, όπως ο τρόπος με τον οποίο μπορούμε να επαναλαμβάνουμε το σφάλμα, θα μας βοηθήσει να διορθώσουμε το πρόβλημα.",
+    "description": "In sentry feedback form, The placeholder for the feedback description input field."
+  },
+  "errorPageSentrySuccessMessageText": {
+    "message": "Ευχαριστούμε! Θα ρίξουμε μια ματιά σύντομα.",
+    "description": "In sentry feedback form, The message displayed after a successful feedback submission."
+  },
   "errorPageTitle": {
     "message": "Το MetaMask αντιμετώπισε ένα σφάλμα",
     "description": "Title of generic error page"
+  },
+  "errorPageTryAgain": {
+    "message": "Προσπαθήστε ξανά",
+    "description": "Button for try again"
   },
   "errorStack": {
     "message": "Στοίβα:",
@@ -2069,6 +2121,9 @@
   },
   "functionType": {
     "message": "Τύπος λειτουργίας"
+  },
+  "fundingMethod": {
+    "message": "Μέθοδος χρηματοδότησης"
   },
   "gas": {
     "message": "Τέλος συναλλαγής"
@@ -3724,6 +3779,12 @@
   "outdatedBrowserNotification": {
     "message": "Το πρόγραμμα περιήγησής σας δεν είναι ενημερωμένο. Εάν δεν ενημερώσετε το πρόγραμμα περιήγησής σας, δεν θα μπορείτε να λαμβάνετε διορθώσεις ασφαλείας και νέες λειτουργίες από το MetaMask."
   },
+  "overrideContentSecurityPolicyHeader": {
+    "message": "Επικεφαλίδα Παράκαμψης Περιεχομένου-Ασφάλεια-Πολιτική"
+  },
+  "overrideContentSecurityPolicyHeaderDescription": {
+    "message": "Αυτή η επιλογή είναι μια λύση για ένα γνωστό πρόβλημα στον Firefox, όπου η επικεφαλίδα Παράκαμψης Περιεχομένου-Ασφάλεια-Πολιτική μιας αποκεντρωμένης εφαρμογής μπορεί να εμποδίσει τη σωστή λειτουργία μιας επέκτασης. Η απενεργοποίηση αυτής της επιλογής δεν συνιστάται, εκτός αν απαιτείται για συγκεκριμένη συμβατότητα ιστοσελίδας."
+  },
   "padlock": {
     "message": "Padlock"
   },
@@ -4031,12 +4092,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "Εδώ μπορείτε να δείτε τις άδειες χρήσης που έχετε δώσει στα εγκατεστημένα Snaps ή στους συνδεδεμένους ιστότοπους."
-  },
-  "permissionsPageTourDescription": {
-    "message": "Αυτός είναι ο πίνακας ελέγχου για τη διαχείριση των αδειών χρήσης που έχετε δώσει στους συνδεδεμένους ιστότοπους και στα εγκατεστημένα Snaps."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Οι συνδεδεμένοι ιστότοποι είναι τώρα με άδειες χρήσης"
   },
   "permitSimulationDetailInfo": {
     "message": "Δίνετε στον διαθέτη την άδεια να δαπανήσει τα tokens από τον λογαριασμό σας."
@@ -4395,6 +4450,9 @@
   "requestFromInfo": {
     "message": "Αυτός είναι ο ιστότοπος που ζητά την υπογραφή σας."
   },
+  "requestFromInfoSnap": {
+    "message": "Αυτό είναι το Snap που ζητάει την υπογραφή σας."
+  },
   "requestFromTransactionDescription": {
     "message": "Αυτός είναι ο ιστότοπος που ζητά την επιβεβαίωσή σας."
   },
@@ -4416,6 +4474,10 @@
   "requestingForAccount": {
     "message": "Ζητήθηκε για $1",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "Ζητάει για το $1",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "αιτήματα που περιμένουν να επιβεβαιωθούν"
@@ -4895,6 +4957,9 @@
   "simulationDetailsIncomingHeading": {
     "message": "Λαμβάνετε"
   },
+  "simulationDetailsNoChanges": {
+    "message": "Δεν υπάρχουν αλλαγές"
+  },
   "simulationDetailsOutgoingHeading": {
     "message": "Στέλνετε"
   },
@@ -4916,6 +4981,9 @@
   },
   "simulationDetailsTransactionReverted": {
     "message": "Αυτή η συναλλαγή είναι πιθανό να αποτύχει"
+  },
+  "simulationDetailsUnavailable": {
+    "message": "Μη διαθέσιμο"
   },
   "simulationErrorMessageV2": {
     "message": "Δεν ήμασταν σε θέση να εκτιμήσουμε το τέλος συναλλαγής. Μπορεί να υπάρχει σφάλμα στο συμβόλαιο και η συναλλαγή αυτή να αποτύχει."
@@ -5142,6 +5210,15 @@
   "snapsUIError": {
     "message": "Επικοινωνήστε με τους διαχειριστές του $1 για περαιτέρω υποστήριξη.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaSupportSectionTitle": {
+    "message": "Solana"
+  },
+  "solanaSupportToggleDescription": {
+    "message": "Η ενεργοποίηση αυτής της λειτουργίας θα σας δώσει τη δυνατότητα να προσθέσετε έναν λογαριασμό Solana στην επέκταση του MetaMask που προέρχεται από την υπάρχουσα Μυστική Φράση Ανάκτησης. Πρόκειται για μια πειραματική λειτουργία Beta, οπότε θα πρέπει να τη χρησιμοποιήσετε με δική σας ευθύνη."
+  },
+  "solanaSupportToggleTitle": {
+    "message": "Ενεργοποίηση της λειτουργίας \"Προσθήκη νέου λογαριασμού Solana (Beta)\""
   },
   "somethingDoesntLookRight": {
     "message": "Κάτι δεν φαίνεται σωστό; $1",
@@ -5801,6 +5878,10 @@
   "swapTokenVerifiedOn1SourceTitle": {
     "message": "Ενδεχομένως μη αυθεντικό token"
   },
+  "swapTokenVerifiedSources": {
+    "message": "Επιβεβαιώνεται από $1 πηγές. Επαληθεύστε στο $2.",
+    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
+  },
   "swapTooManyDecimalsError": {
     "message": "Το $1 επιτρέπει έως και $2 δεκαδικά ψηφία",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -5918,6 +5999,12 @@
   "tips": {
     "message": "Συμβουλές"
   },
+  "tipsForUsingAWallet": {
+    "message": "Συμβουλές για τη χρήση πορτοφολιού"
+  },
+  "tipsForUsingAWalletDescription": {
+    "message": "Η προσθήκη tokens ξεκλειδώνει περισσότερους τρόπους χρήσης του web3."
+  },
   "to": {
     "message": "Προς"
   },
@@ -5969,6 +6056,9 @@
   },
   "tokenList": {
     "message": "Λίστες με tokens"
+  },
+  "tokenMarketplace": {
+    "message": "Αγορά tokens"
   },
   "tokenScamSecurityRisk": {
     "message": "απάτες με token και κίνδυνοι ασφάλειας"
@@ -6483,10 +6573,6 @@
   },
   "wrongNetworkName": {
     "message": "Σύμφωνα με τα αρχεία μας, το όνομα του δικτύου ενδέχεται να μην αντιστοιχεί με αυτό το αναγνωριστικό αλυσίδας."
-  },
-  "xOfYPending": {
-    "message": "$1 από $2 σε εκκρεμότητα",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Ναι"

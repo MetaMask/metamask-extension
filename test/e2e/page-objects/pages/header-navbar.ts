@@ -5,6 +5,9 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
+  private readonly allPermissionsButton =
+    '[data-testid="global-menu-connected-sites"]';
+
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
   private readonly threeDotMenuButton =
@@ -65,6 +68,12 @@ class HeaderNavbar {
     }
   }
 
+  async openPermissionsPage(): Promise<void> {
+    console.log('Open permissions page in header navbar');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.allPermissionsButton);
+  }
+
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
     await this.openThreeDotMenu();
@@ -112,6 +121,11 @@ class HeaderNavbar {
     });
   }
 
+  /**
+   * Validates that the currently selected network matches the expected network name.
+   *
+   * @param networkName - The expected name of the currently selected network.
+   */
   async check_currentSelectedNetwork(networkName: string): Promise<void> {
     console.log(`Validate the Switch network to ${networkName}`);
     await this.driver.waitForSelector(
