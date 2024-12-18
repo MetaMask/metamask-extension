@@ -55,8 +55,9 @@ export const Header = ({
       {...props}
     >
       <Text
+        as="h2"
         display={Display.Block}
-        variant={TextVariant.bodyMdBold}
+        variant={TextVariant.headingSm}
         textAlign={TextAlign.Center}
         paddingInlineStart={8}
         paddingInlineEnd={8}

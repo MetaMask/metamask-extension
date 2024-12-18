@@ -29,8 +29,8 @@ exports[`Connections Content should render correctly 1`] = `
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <h2
+            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box connections-header__title mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
@@ -45,7 +45,7 @@ exports[`Connections Content should render correctly 1`] = `
                 metamask.github.io
               </span>
             </div>
-          </p>
+          </h2>
         </div>
       </div>
       <div
