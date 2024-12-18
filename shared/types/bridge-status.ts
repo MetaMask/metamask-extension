@@ -46,7 +46,14 @@ export type Asset = {
 
 export type SrcChainStatus = {
   chainId: ChainId;
-  txHash?: string; // might be undefined if this is a smart transaction (STX)
+  /**
+   * The txHash of the transaction on the source chain.
+   * This might be undefined for smart transactions (STX)
+   */
+  txHash?: string;
+  /**
+   * The atomic amount of the token sent minus fees on the source chain
+   */
   amount?: string;
   token?: Asset;
 };
@@ -54,6 +61,9 @@ export type SrcChainStatus = {
 export type DestChainStatus = {
   chainId: ChainId;
   txHash?: string;
+  /**
+   * The atomic amount of the token received on the destination chain
+   */
   amount?: string;
   token?: Record<string, never> | Asset;
 };
@@ -127,7 +137,10 @@ export type BridgeHistoryItem = {
   slippagePercentage: number;
   completionTime?: number; // timestamp in ms
   pricingData?: {
-    amountSent: string; // from QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
+    /**
+     * From QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
+     */
+    amountSent: string;
     amountSentInUsd?: string;
     quotedGasInUsd?: string; // from QuoteMetadata.gasFee.usd
     quotedReturnInUsd?: string; // from QuoteMetadata.toTokenAmount.usd
@@ -154,17 +167,32 @@ export type TokenAmountValuesSerialized = {
 
 export type QuoteMetadataSerialized = {
   gasFee: TokenAmountValuesSerialized;
-  // estimatedGasFees + relayerFees
+  /**
+   * The total network fee for the bridge transaction
+   * estimatedGasFees + relayerFees
+   */
   totalNetworkFee: TokenAmountValuesSerialized;
-  // maxGasFees + relayerFees
+  /**
+   * The total max network fee for the bridge transaction
+   * maxGasFees + relayerFees
+   */
   totalMaxNetworkFee: TokenAmountValuesSerialized;
   toTokenAmount: TokenAmountValuesSerialized;
-  // destTokenAmount - totalNetworkFee
+  /**
+   * The adjusted return for the bridge transaction
+   * destTokenAmount - totalNetworkFee
+   */
   adjustedReturn: TokenAmountValuesSerialized;
-  // srcTokenAmount + metabridgeFee
+  /**
+   * The actual amount sent by user in non-atomic decimal form
+   * srcTokenAmount + metabridgeFee
+   */
   sentAmount: TokenAmountValuesSerialized;
   swapRate: string; // destTokenAmount / sentAmount
-  // sentAmount - adjustedReturn
+  /**
+   * The cost of the bridge transaction
+   * sentAmount - adjustedReturn
+   */
   cost: {
     valueInCurrency: string | null;
     usd: string | null;
