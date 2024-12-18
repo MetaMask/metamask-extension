@@ -217,8 +217,7 @@ class AccountListPage {
         addAccountButton = this.addSolanaAccountButton;
         break;
       default:
-        console.log('Account type does not match with any of the options');
-        return;
+        throw new Error('Account type not supported');
     }
 
     await this.driver.clickElement(addAccountButton);
@@ -605,14 +604,10 @@ class AccountListPage {
         const internalAccounts = await this.driver.findElements(
           this.accountListItem,
         );
+        const isValid = internalAccounts.length === expectedNumberOfAccounts;
         console.log(
-          `Number of accounts: ${
-            internalAccounts.length
-          } is equal to ${expectedNumberOfAccounts}? ${
-            internalAccounts.length === expectedNumberOfAccounts
-          }`,
+          `Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${isValid}`,
         );
-        return internalAccounts.length === expectedNumberOfAccounts;
       },
       20000,
       true,
