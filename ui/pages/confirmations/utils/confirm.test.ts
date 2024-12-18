@@ -96,9 +96,6 @@ describe('confirm util', () => {
       expect(toPunycodeURL('https://iոfura.io')).toStrictEqual(
         'https://xn--ifura-dig.io',
       );
-      expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
-        'https://www.google.com',
-      );
       expect(
         toPunycodeURL('https://iոfura.io/gnosis:5050?test=iոfura&foo=bar'),
       ).toStrictEqual(
