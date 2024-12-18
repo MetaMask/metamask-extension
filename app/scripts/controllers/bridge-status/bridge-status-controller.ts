@@ -241,7 +241,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       const newBridgeHistoryItem = {
         ...historyItem,
         status,
-        completionTime: Date.now(),
+        completionTime: Date.now(), // TODO make this more accurate by looking up dest txHash block time
       };
 
       // No need to purge these on network change or account change, TransactionController does not purge either.
