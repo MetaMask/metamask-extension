@@ -443,9 +443,6 @@
   "alertMessageSignInWrongAccount": {
     "message": "Situs ini meminta Anda masuk menggunakan akun yang salah."
   },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Transaksi ini hanya akan dilanjutkan setelah transaksi Anda sebelumnya selesai."
-  },
   "alertModalAcknowledge": {
     "message": "Saya telah mengetahui risikonya dan tetap ingin melanjutkan"
   },
@@ -858,14 +855,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Pilih token dan jumlah"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Ini merupakan estimasi waktu yang diperlukan untuk menyelesaikan bridge."
-  },
   "bridgeTo": {
     "message": "Bridge ke"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Ini termasuk biaya gas (dibayarkan kepada penambang kripto) dan biaya relayer (dibayarkan untuk menjalankan layanan kompleks seperti bridge).\nBiaya didasarkan pada lalu lintas jaringan dan kompleksitas transaksi. MetaMask tidak mendapat keuntungan dari kedua biaya tersebut."
   },
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
@@ -1985,9 +1976,6 @@
   },
   "estimatedFeeTooltip": {
     "message": "Jumlah yang dibayarkan untuk memproses transaksi di jaringan."
-  },
-  "estimatedTime": {
-    "message": "Estimasi waktu"
   },
   "ethGasPriceFetchWarning": {
     "message": "Biaya gas cadangan diberikan karena layanan estimasi gas utama saat ini tidak tersedia."
@@ -4105,12 +4093,6 @@
   "permissionsPageEmptySubContent": {
     "message": "Di sinilah Anda dapat melihat izin yang Anda berikan untuk Snap yang terinstal atau situs yang terhubung."
   },
-  "permissionsPageTourDescription": {
-    "message": "Ini merupakan panel kontrol Anda untuk mengelola izin yang diberikan ke situs yang terhubung dan Snap yang terinstal."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Situs yang terhubung kini memiliki izin"
-  },
   "permitSimulationDetailInfo": {
     "message": "Anda memberikan izin kepada pengguna untuk menggunakan token sebanyak ini dari akun."
   },
@@ -6114,9 +6096,6 @@
   },
   "total": {
     "message": "Total"
-  },
-  "totalFees": {
-    "message": "Total biaya"
   },
   "totalVolume": {
     "message": "Volume total"

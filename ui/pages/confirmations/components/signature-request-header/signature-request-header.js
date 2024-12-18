@@ -5,9 +5,9 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { NetworkType } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   accountsWithSendEtherInfoSelector,
-  getCurrentCurrency,
   selectDefaultRpcEndpointByChainId,
   selectNetworkConfigurationByChainId,
 } from '../../../../selectors';

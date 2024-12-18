@@ -158,14 +158,10 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           // check token amount is correct after transaction
           await clickNestedButton(driver, 'Tokens');
-          const tokenAmount = await driver.findElement(
-            {
-              css: '[data-testid="multichain-token-list-item-value"]',
-              text: '8.5 TST',
-            },
-            { timeout: 10000 },
-          );
-          assert.ok(tokenAmount, 'Token amount is not correct');
+          await driver.waitForSelector({
+            css: '[data-testid="multichain-token-list-item-value"]',
+            text: '8.5 TST',
+          });
         },
       );
     });
@@ -223,14 +219,10 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           // check token amount is correct after transaction
           await clickNestedButton(driver, 'Tokens');
-          const tokenAmount = await driver.findElement(
-            {
-              css: '[data-testid="multichain-token-list-item-value"]',
-              text: '8.5 TST',
-            },
-            { timeout: 10000 },
-          );
-          assert.ok(tokenAmount, 'Token amount is not correct');
+          await driver.waitForSelector({
+            css: '[data-testid="multichain-token-list-item-value"]',
+            text: '8.5 TST',
+          });
         },
       );
     });
@@ -346,14 +338,10 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           // check token amount is correct after transaction
           await clickNestedButton(driver, 'Tokens');
-          const tokenAmount = await driver.findElement(
-            {
-              css: '[data-testid="multichain-token-list-item-value"]',
-              text: '8.5 TST',
-            },
-            { timeout: 10000 },
-          );
-          assert.ok(tokenAmount, 'Token amount is not correct');
+          await driver.waitForSelector({
+            css: '[data-testid="multichain-token-list-item-value"]',
+            text: '8.5 TST',
+          });
         },
       );
     });
@@ -410,14 +398,10 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           // check token amount is correct after transaction
           await clickNestedButton(driver, 'Tokens');
-          const tokenAmount = await driver.findElement(
-            {
-              css: '[data-testid="multichain-token-list-item-value"]',
-              text: '8.5 TST',
-            },
-            { timeout: 10000 },
-          );
-          assert.ok(tokenAmount, 'Token amount is not correct');
+          await driver.waitForSelector({
+            css: '[data-testid="multichain-token-list-item-value"]',
+            text: '8.5 TST',
+          });
         },
       );
     });
