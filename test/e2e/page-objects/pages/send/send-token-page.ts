@@ -40,6 +40,9 @@ class SendTokenPage {
 
   private readonly toastText = '.toast-text';
 
+  private readonly warning =
+    '[data-testid="send-warning"] .mm-box--min-width-0 span';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -195,6 +198,25 @@ class SendTokenPage {
     await this.driver.waitForSelector({
       text: address,
     });
+  }
+
+  /**
+   * Verifies that a specific warning message is displayed on the send token screen.
+   *
+   * @param warningText - The expected warning text to validate against.
+   * @returns A promise that resolves if the warning message matches the expected text.
+   * @throws Assertion error if the warning message does not match the expected text.
+   */
+  async check_warningMessage(warningText: string): Promise<void> {
+    console.log(`Checking if warning message "${warningText}" is displayed`);
+    const warning = await this.driver.findElement(this.warning);
+    const text = await warning.getText();
+    assert.equal(
+      text,
+      warningText,
+      `Expected warning message to be "${warningText}", got "${text}"`,
+    );
+    console.log('Warning message validation successful');
   }
 }
 
