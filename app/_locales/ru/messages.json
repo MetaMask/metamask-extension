@@ -3186,10 +3186,6 @@
   "networkURLDefinition": {
     "message": "URL, используемый для доступа к этой сети."
   },
-  "networkUrlErrorWarning": {
-    "message": "Злоумышленники иногда имитируют сайты, внося небольшие изменения в адрес сайта. Прежде чем продолжить, убедитесь, что вы взаимодействуете с нужным сайтом. Версия пьюникода: $1",
-    "description": "$1 replaced by RPC URL for network"
-  },
   "networks": {
     "message": "Сети"
   },

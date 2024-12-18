@@ -3187,10 +3187,6 @@
   "networkURLDefinition": {
     "message": "用于访问此网络的 URL。"
   },
-  "networkUrlErrorWarning": {
-    "message": "攻击者有时会通过对网站地址进行细微更改来模仿网站。在继续操作之前，请确保您是与目标网站进行交互。Punycode 版本：$1",
-    "description": "$1 replaced by RPC URL for network"
-  },
   "networks": {
     "message": "网络"
   },

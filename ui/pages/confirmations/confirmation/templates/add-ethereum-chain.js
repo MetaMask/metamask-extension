@@ -224,7 +224,7 @@ function getValues(pendingApproval, t, actions, history, data) {
 
   const warningNetworkUrlMsg = isValidASCIIURL(customRpcUrl)
     ? undefined
-    : t('networkUrlErrorWarning', [normalizedRpcUrl]);
+    : t('networkUrlErrorWarning', [customRpcUrl]);
 
   let title;
   if (originIsMetaMask) {

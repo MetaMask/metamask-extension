@@ -3187,10 +3187,6 @@
   "networkURLDefinition": {
     "message": "Ang URL ay ginamit upang ma-access ang network na ito."
   },
-  "networkUrlErrorWarning": {
-    "message": "Minsan ginagaya ng mga umaatake ang mga site sa pamamagitan ng paggawa ng maliliit na pagbabago sa address ng site. Tiyaking nakikipag-ugnayan ka sa nilalayong site bago ka magpatuloy. Bersyon ng Punycode: $1",
-    "description": "$1 replaced by RPC URL for network"
-  },
   "networks": {
     "message": "Mga Network"
   },

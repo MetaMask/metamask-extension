@@ -3187,10 +3187,6 @@
   "networkURLDefinition": {
     "message": "このネットワークへのアクセスに使用されるURLです。"
   },
-  "networkUrlErrorWarning": {
-    "message": "攻撃者は、サイトのアドレスに若干の変更を加えてサイトを模倣することがあります。続行する前に、意図したサイトとやり取りしていることを確認してください。Punycodeバージョン: $1",
-    "description": "$1 replaced by RPC URL for network"
-  },
   "networks": {
     "message": "ネットワーク"
   },

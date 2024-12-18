@@ -3186,10 +3186,6 @@
   "networkURLDefinition": {
     "message": "Die URL, die für den Zugriff auf dieses Netzwerk verwendet wird."
   },
-  "networkUrlErrorWarning": {
-    "message": "Angreifer imitieren manchmal Websites, indem sie kleine Änderungen an der Adresse der Website vornehmen. Vergewissern Sie sich, dass Sie mit der beabsichtigten Website interagieren, bevor Sie fortfahren. Punycode-Version: $1",
-    "description": "$1 replaced by RPC URL for network"
-  },
   "networks": {
     "message": "Netzwerke"
   },

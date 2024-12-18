@@ -3187,10 +3187,6 @@
   "networkURLDefinition": {
     "message": "Bu ağa erişim sağlamak için kullanılan URL adresi."
   },
-  "networkUrlErrorWarning": {
-    "message": "Saldırganlar bazen site adresinde küçük değişiklikler yaparak siteleri taklit edebilir. Devam etmeden önce planladığınız site ile etkileşim kurduğunuzdan emin olun. Punycode sürümü: $1",
-    "description": "$1 replaced by RPC URL for network"
-  },
   "networks": {
     "message": "Ağlar"
   },

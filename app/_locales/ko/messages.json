@@ -3187,10 +3187,6 @@
   "networkURLDefinition": {
     "message": "이 네트워크에 액세스하는 데 사용되는 URL입니다."
   },
-  "networkUrlErrorWarning": {
-    "message": "공격자는 사이트 주소를 약간 변경하여 유사 사이트를 만들기도 합니다. 계속하기 전에 정상적인 사이트와 상호 작용하고 있는지 확인하세요. Punycode 버전: $1",
-    "description": "$1 replaced by RPC URL for network"
-  },
   "networks": {
     "message": "네트워크"
   },

@@ -3186,10 +3186,6 @@
   "networkURLDefinition": {
     "message": "URL yang digunakan untuk mengakses jaringan ini."
   },
-  "networkUrlErrorWarning": {
-    "message": "Penyerang terkadang meniru situs dengan membuat perubahan kecil pada alamat situs. Pastikan Anda berinteraksi dengan situs yang dituju sebelum melanjutkan. Versi Punycode: $1",
-    "description": "$1 replaced by RPC URL for network"
-  },
   "networks": {
     "message": "Jaringan"
   },

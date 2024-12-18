@@ -3187,10 +3187,6 @@
   "networkURLDefinition": {
     "message": "URL dùng để truy cập vào mạng này."
   },
-  "networkUrlErrorWarning": {
-    "message": "Kẻ tấn công đôi khi bắt chước các trang web bằng cách thực hiện những thay đổi nhỏ trong địa chỉ trang web. Đảm bảo bạn đang tương tác với trang web dự định trước khi tiếp tục. Phiên bản Punycode: $1",
-    "description": "$1 replaced by RPC URL for network"
-  },
   "networks": {
     "message": "Mạng"
   },
