@@ -13,6 +13,7 @@ import {
   RatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
+  MultichainBalancesController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -250,7 +251,6 @@ import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -1007,7 +1007,7 @@ export default class MetamaskController extends EventEmitter {
 
     const multichainBalancesControllerMessenger =
       this.controllerMessenger.getRestricted({
-        name: 'BalancesController',
+        name: 'MultichainBalancesController',
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',

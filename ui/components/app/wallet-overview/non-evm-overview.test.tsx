@@ -92,7 +92,7 @@ const mockMetamaskStore = {
     },
     selectedAccount: mockNonEvmAccount.id,
   },
-  // (Multichain) BalancesController
+  // MultichainBalancesController
   balances: {
     [mockNonEvmAccount.id]: {
       [MultichainNativeAssets.BITCOIN]: {
