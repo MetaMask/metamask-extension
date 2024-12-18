@@ -18,9 +18,8 @@ jobs:
           # HEAD commit hash is `pull_request.head.sha`.
           HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          echo "Looking for pipeline for commit ${HEAD_COMMIT_HASH}"
           pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq -r ".items | map(select(.vcs.revision == \"${HEAD_COMMIT_HASH}\" )) | first | .id")
-          echo "Found pipeline ID ${pipeline_id}"
+          echo "Waiting for pipeline '${pipeline_id}' for commit hash '${HEAD_COMMIT_HASH}'"
           workflow_status=$(curl --silent "https://circleci.com/api/v2/pipeline/$pipeline_id/workflow" | jq -r ".items[0].status")
 
           if [ "$workflow_status" == "running" ]; then
