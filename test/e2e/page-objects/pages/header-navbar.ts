@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
 class HeaderNavbar {
-  private driver: Driver;
+  protected driver: Driver;
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
