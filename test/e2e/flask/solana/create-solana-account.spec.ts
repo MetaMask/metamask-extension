@@ -43,7 +43,7 @@ describe('Create Solana Account', function (this: Suite) {
 });
 
 describe('Create Remove Solana Account', function (this: Suite) {
-  it.only('Removes Solana account after creating it', async function () {
+  it('Removes Solana account after creating it', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
