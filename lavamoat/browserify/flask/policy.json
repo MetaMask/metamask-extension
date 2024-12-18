@@ -2693,7 +2693,7 @@
         "@zxing/library>ts-custom-error": true
       }
     },
-    "extension-port-stream>readable-stream>abort-controller": {
+    "@lavamoat/lavapack>readable-stream>abort-controller": {
       "globals": {
         "AbortController": true
       }
@@ -4889,11 +4889,14 @@
     "extension-port-stream>readable-stream": {
       "globals": {
         "AbortController": true,
+        "AbortSignal": true,
         "AggregateError": true,
-        "Blob": true
+        "Blob": true,
+        "ERR_INVALID_ARG_TYPE": true,
+        "queueMicrotask": true
       },
       "packages": {
-        "extension-port-stream>readable-stream>abort-controller": true,
+        "@lavamoat/lavapack>readable-stream>abort-controller": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "process": true,
