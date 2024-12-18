@@ -295,7 +295,6 @@
     "@metamask/design-tokens": "^4.2.0",
     "@metamask/ens-controller": "^15.0.0",
     "@metamask/ens-resolver-snap": "^0.1.2",
-    "@metamask/eth-block-tracker": "^11.0.3",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^15.0.1",
     "@metamask/eth-ledger-bridge-keyring": "^5.0.1",
