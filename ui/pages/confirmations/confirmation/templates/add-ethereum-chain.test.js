@@ -135,7 +135,7 @@ describe('add-ethereum-chain confirmation', () => {
     });
   });
 
-  it('should show warning if RPC URL has special characters', async () => {
+  it('should show warning if RPC URL has special characters and display punycode encoding', async () => {
     const testStore = {
       metamask: {
         ...mockBaseStore.metamask,
@@ -159,6 +159,7 @@ describe('add-ethereum-chain confirmation', () => {
           "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: https://xn--ifura-dig.io/gnosis",
         ),
       ).toBeInTheDocument();
+      expect(getByText('https://xn--ifura-dig.io/gnosis')).toBeInTheDocument();
     });
   });
 });

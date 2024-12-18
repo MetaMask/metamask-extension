@@ -220,6 +220,11 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
+  const normalizedRpcUrl = toPunycodeURL(customRpcUrl);
+
+  const warningNetworkUrlMsg = isValidASCIIURL(customRpcUrl)
+    ? undefined
+    : t('networkUrlErrorWarning', [normalizedRpcUrl]);
 
   let title;
   if (originIsMetaMask) {
@@ -281,18 +286,18 @@ function getValues(pendingApproval, t, actions, history, data) {
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
           },
           warnings: {
-            [t('networkURL')]: isValidASCIIURL(customRpcUrl)
-              ? undefined
-              : t('networkUrlErrorWarning', [toPunycodeURL(customRpcUrl)]),
+            [t('networkURL')]: warningNetworkUrlMsg,
             [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
-            [t('networkURL')]: customRpcUrl
+            [t('networkURL')]: normalizedRpcUrl
               .toLowerCase()
               ?.includes(`/v3/${infuraProjectId}`)
-              ? customRpcUrl.replace(`/v3/${infuraProjectId}`, '').toLowerCase()
-              : customRpcUrl.toLowerCase(),
+              ? normalizedRpcUrl
+                  .replace(`/v3/${infuraProjectId}`, '')
+                  .toLowerCase()
+              : normalizedRpcUrl.toLowerCase(),
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('networkName')]: pendingApproval.requestData.chainName,
             [t('blockExplorerUrl')]:
