@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Ajout de réseau"
   },
-  "addingTokens": {
-    "message": "Ajouter des jetons"
-  },
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "Détection automatique des jetons dans votre portefeuille, affichage des NFT et mise à jour du solde de plusieurs comptes"
   },
-  "attemptSendingAssets": {
-    "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, vous pourriez les perdre définitivement. Utilisez une passerelle comme $1 pour transférer en toute sécurité des fonds d’un réseau à un autre"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Tentative d’annuler gratuitement le swap"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Calcul en cours…"
   },
-  "bridgeDontSend": {
-    "message": "Passerelle, ne pas envoyer"
-  },
   "bridgeEnterAmount": {
     "message": "Saisissez le montant"
   },
@@ -953,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Cliquez ici pour connecter votre Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Vous pouvez ajouter des jetons manuellement."
   },
   "close": {
     "message": "Fermer"
@@ -2138,9 +2123,6 @@
   "gasFee": {
     "message": "Frais de gaz"
   },
-  "gasIsETH": {
-    "message": "Le gaz est $1 "
-  },
   "gasLimit": {
     "message": "Montant maximal des frais de transaction"
   },
@@ -2702,9 +2684,6 @@
   "learnScamRisk": {
     "message": "hameçonnages et risques de sécurité."
   },
-  "learnToBridge": {
-    "message": "Apprenez à établir une passerelle"
-  },
   "leaveMetaMask": {
     "message": "Voulez-vous quitter MetaMask ?"
   },
@@ -2900,9 +2879,6 @@
   "metamaskNotificationsAreOff": {
     "message": "Les notifications du portefeuille ne sont actuellement pas activées."
   },
-  "metamaskPortfolio": {
-    "message": "Portfolio MetaMask."
-  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps est en cours de maintenance. Nous vous invitons à revenir plus tard."
   },
@@ -3046,10 +3022,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 vous demande votre approbation pour :",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Le jeton natif de ce réseau est $1. C’est le jeton utilisé pour les frais de gaz. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Modifier les détails du réseau"
@@ -5937,9 +5909,6 @@
     "message": "$1 est maintenant actif sur $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Vous êtes en train d’utiliser"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Le changement de réseau annulera toutes les confirmations en attente"
   },
@@ -5975,9 +5944,6 @@
   },
   "themeDescription": {
     "message": "Choisissez votre thème MetaMask préféré."
-  },
-  "thingsToKeep": {
-    "message": "Les choses que vous devez garder à l’esprit :"
   },
   "thirdPartySoftware": {
     "message": "Avis sur les logiciels développés par des tiers",
@@ -6059,9 +6025,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "les arnaques et les risques de piratage informatique"
-  },
-  "tokenShowUp": {
-    "message": "Il se peut que vos jetons n’apparaissent pas automatiquement dans votre portefeuille. "
   },
   "tokenStandard": {
     "message": "Jeton standard"

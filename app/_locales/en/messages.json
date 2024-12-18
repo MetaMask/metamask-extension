@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Adding Network"
   },
-  "addingTokens": {
-    "message": "Adding tokens"
-  },
   "additionalNetworks": {
     "message": "Additional networks"
   },
@@ -648,12 +645,6 @@
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
-  "attemptSendingAssets": {
-    "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge, like $1"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
@@ -880,9 +871,6 @@
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
-  "bridgeDontSend": {
-    "message": "Bridge, don't send"
-  },
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
@@ -1088,9 +1076,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "You can always add tokens manually."
   },
   "close": {
     "message": "Close"
@@ -2299,9 +2284,6 @@
   "gasFee": {
     "message": "Gas fee"
   },
-  "gasIsETH": {
-    "message": "Gas is $1 "
-  },
   "gasLimit": {
     "message": "Gas limit"
   },
@@ -2387,7 +2369,9 @@
   "gotIt": {
     "message": "Got it"
   },
-  "grantExactAccess": { "message": "Grant exact access" },
+  "grantExactAccess": {
+    "message": "Grant exact access"
+  },
   "grantedToWithColon": {
     "message": "Granted to:"
   },
@@ -2870,9 +2854,6 @@
   "learnScamRisk": {
     "message": "scams and security risks."
   },
-  "learnToBridge": {
-    "message": "Learn to bridge"
-  },
   "leaveMetaMask": {
     "message": "Leave MetaMask?"
   },
@@ -3077,9 +3058,6 @@
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
-  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
   },
@@ -3229,10 +3207,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 is asking for your approval to:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "The native token on this network is $1. It is the token used for gas fees. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Edit network details"
@@ -4517,7 +4491,9 @@
   "quotedReceiveAmount": {
     "message": "$1 receive amount"
   },
-  "quotedTotalCost": { "message": "$1 total cost" },
+  "quotedTotalCost": {
+    "message": "$1 total cost"
+  },
   "rank": {
     "message": "Rank"
   },
@@ -6220,9 +6196,6 @@
     "message": "You're now using $1",
     "description": "$1 represents the network name"
   },
-  "switchedTo": {
-    "message": "You're now using"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
@@ -6258,9 +6231,6 @@
   },
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
-  },
-  "thingsToKeep": {
-    "message": "Keep in mind:"
   },
   "thirdPartySoftware": {
     "message": "Third-party software notice",
@@ -6342,9 +6312,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
-  },
-  "tokenShowUp": {
-    "message": "Your tokens may not automatically show up in your wallet. "
   },
   "tokenStandard": {
     "message": "Token standard"
@@ -6866,7 +6833,9 @@
   "you": {
     "message": "You"
   },
-  "youDeclinedTheTransaction": { "message": "You declined the transaction." },
+  "youDeclinedTheTransaction": {
+    "message": "You declined the transaction."
+  },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."
   },

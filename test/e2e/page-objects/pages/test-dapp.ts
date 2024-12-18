@@ -273,6 +273,16 @@ class TestDapp {
     await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
+  async confirmConnectAccountModal() {
+    console.log('Confirm connect account modal in notification window');
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(this.connectMetaMaskMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmDialogButton,
+    );
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  }
+
   /**
    * Connect account to test dapp.
    *
@@ -289,25 +299,18 @@ class TestDapp {
   }) {
     console.log('Connect account to test dapp');
     await this.driver.clickElement(this.connectAccountButton);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(this.connectMetaMaskMessage);
     if (connectAccountButtonEnabled) {
-      await this.driver.clickElementAndWaitForWindowToClose(
-        this.confirmDialogButton,
-      );
+      await this.confirmConnectAccountModal();
     } else {
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await this.driver.waitForSelector(this.connectMetaMaskMessage);
       const confirmConnectDialogButton = await this.driver.findElement(
         this.confirmDialogButton,
       );
       assert.equal(await confirmConnectDialogButton.isEnabled(), false);
     }
-
     if (publicAddress) {
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-      await this.driver.waitForSelector({
-        css: this.connectedAccount,
-        text: publicAddress.toLowerCase(),
-      });
+      await this.check_connectedAccounts(publicAddress);
       await this.driver.waitForSelector(this.localhostNetworkMessage);
     }
   }
@@ -332,28 +335,30 @@ class TestDapp {
     await this.driver.clickElement(this.revokePermissionButton);
     await this.driver.refresh();
     await this.check_pageIsLoaded();
-    await this.driver.assertElementNotPresent({
-      css: this.connectedAccount,
-      text: publicAddress.toLowerCase(),
-    });
+    await this.check_connectedAccounts(publicAddress, false);
   }
 
   /**
-   * Verifies the accounts connected to the test dapp.
+   * Check if the accounts connected to the test dapp.
    *
-   * @param connectedAccounts - The expected connected accounts separated by a comma. If no accounts are connected we can omit the param.
+   * @param connectedAccounts - Account addresses to check if connected to test dapp, separated by a comma.
+   * @param shouldBeConnected - Whether the accounts should be connected to test dapp. Defaults to true.
    */
-  async check_connectedAccounts(connectedAccounts: string = '') {
-    console.log('Verify connected accounts');
-    if (connectedAccounts) {
+  async check_connectedAccounts(
+    connectedAccounts: string,
+    shouldBeConnected: boolean = true,
+  ) {
+    if (shouldBeConnected) {
+      console.log('Verify connected accounts:', connectedAccounts);
       await this.driver.waitForSelector({
         css: this.connectedAccount,
-        text: connectedAccounts,
+        text: connectedAccounts.toLowerCase(),
       });
     } else {
-      await this.driver.waitForSelector({
+      console.log('Verify accounts not connected:', connectedAccounts);
+      await this.driver.assertElementNotPresent({
         css: this.connectedAccount,
-        text: ' ',
+        text: connectedAccounts.toLowerCase(),
       });
     }
   }
