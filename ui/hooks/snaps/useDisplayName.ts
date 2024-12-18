@@ -5,10 +5,10 @@ import {
   getMemoizedAccountName,
   getAddressBookEntryByNetwork,
   AddressBookMetaMaskState,
-  AccountsMetaMaskState,
 } from '../../selectors/snaps';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { MetaMaskReduxState } from '../../store/store';
 
 export type UseDisplayNameParams = {
   chain: {
@@ -38,7 +38,7 @@ export const useDisplayName = (
 
   const parsedAddress = isEip155 ? toChecksumHexAddress(address) : address;
 
-  const accountName = useSelector((state: AccountsMetaMaskState) =>
+  const accountName = useSelector((state: MetaMaskReduxState) =>
     getMemoizedAccountName(state, parsedAddress),
   );
 

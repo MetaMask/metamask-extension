@@ -1,3 +1,4 @@
+import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { BN } from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
@@ -22,14 +23,14 @@ export const useGetFormattedTokensPerChain = (
   account: { address: string },
   shouldHideZeroBalanceTokens: boolean,
   shouldGetTokensPerCurrentChain: boolean,
-  allChainIDs: string[],
+  allChainIDs: Hex[],
 ) => {
   const currentChainId = useSelector(getCurrentChainId);
 
   const importedTokens = useSelector(getAllTokens); // returns the tokens only when they are imported
   const currentTokenBalances: { tokenBalances: TokenBalancesMapping } =
     useTokenBalances({
-      chainIds: allChainIDs as `0x${string}`[],
+      chainIds: allChainIDs,
     });
 
   // We will calculate aggregated balance only after the user imports the tokens to the wallet

@@ -96,7 +96,7 @@ describe('useGetFormattedTokensPerChain', () => {
   it('should tokensWithBalances for an array of chainIds', async () => {
     (stringifyBalance as jest.Mock).mockReturnValueOnce(10.5);
     (stringifyBalance as jest.Mock).mockReturnValueOnce(13);
-    const allChainIDs = ['0x1'];
+    const allChainIDs = ['0x1' as const];
     const isTokenNetworkFilterEqualCurrentNetwork = true;
     const shouldHideZeroBalanceTokens = true;
     const testAccount = {
