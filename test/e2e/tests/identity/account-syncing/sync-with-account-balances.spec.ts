@@ -159,6 +159,9 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
 
           // Rename Account 6 to verify update to user storage
           await accountListPage.switchToAccount('Account 6');
+          await header.check_accountLabel('Account 6');
+          await header.openAccountMenu();
+          await accountListPage.check_pageIsLoaded();
           await accountListPage.openAccountDetailsModal('Account 6');
           const accountDetailsModal = new AccountDetailsModal(driver);
           await accountDetailsModal.check_pageIsLoaded();

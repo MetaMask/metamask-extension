@@ -9,7 +9,8 @@ class AccountDetailsModal {
 
   private readonly accountQrCodeImage = '.qr-code__wrapper';
 
-  private readonly closeAccountModalButton = 'header button[aria-label="Close"]';
+  private readonly closeAccountModalButton =
+    'header button[aria-label="Close"]';
 
   private readonly copyAddressButton =
     '[data-testid="address-copy-button-text"]';
