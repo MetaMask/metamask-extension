@@ -56,7 +56,9 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
 
         // Disconnect from Test Dapp and reconnect to Test Dapp
         await testDapp.disconnectAccount(newPublicKey);
-        await testDapp.connectAccount(newPublicKey);
+        await testDapp.connectAccount({
+          publicAddress: newPublicKey,
+        });
 
         // SignTypedDataV4 with Test Dapp
         await signTypedDataV4WithSnapAccount(driver, newPublicKey, false, true);
