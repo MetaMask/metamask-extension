@@ -57,7 +57,7 @@ export function decEthToConvertedCurrency(
     numeric = numeric.applyConversionRate(conversionRate);
   }
 
-  return numeric.round(2);
+  return String(numeric.round(2));
 }
 
 export function getWeiHexFromDecimalValue({

@@ -1,7 +1,6 @@
 import {
+  NetworkState as InternalNetworkState,
   RpcEndpointType,
-  type NetworkConfiguration,
-  type NetworkState as InternalNetworkState,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { NetworkStatus } from '../../constants/network';
@@ -14,7 +13,7 @@ export type NetworkState = {
 export type NetworkConfigurationsState = {
   metamask: {
     NetworkController: {
-      networkConfigurations: Record<string, NetworkConfiguration>;
+      networkConfigurations: Record<string, NetworkConfigurationsState>;
     };
   };
 };
@@ -102,7 +101,9 @@ export const getProviderConfig = createSelector(
  *
  * @param state - Redux state object.
  */
-export function isNetworkLoading(state: NetworkState) {
+export function isNetworkLoading(
+  state: SelectedNetworkClientIdState & NetworksMetadataState,
+) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
     selectedNetworkClientId &&

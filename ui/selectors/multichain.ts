@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
@@ -20,7 +19,6 @@ import {
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -29,11 +27,11 @@ import {
 } from '../../shared/constants/network';
 import {
   getProviderConfig,
-  NetworkState,
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
-import { AccountsState, getSelectedInternalAccount } from './accounts';
+import { BackgroundStateProxy } from '../../shared/types/metamask';
+import { getSelectedInternalAccount } from './accounts';
 import {
   getIsMainnet,
   getMaybeSelectedInternalAccount,
@@ -44,17 +42,19 @@ import {
 } from './selectors';
 
 export type RatesState = {
-  metamask: RatesControllerState;
+  metamask: Pick<BackgroundStateProxy, 'MultichainRatesController'>;
 };
 
 export type BalancesState = {
-  metamask: BalancesControllerState;
+  metamask: Pick<BackgroundStateProxy, 'MultichainBalancesController'>;
 };
 
-export type MultichainState = AccountsState &
+export type MultichainState = Pick<
+  BackgroundStateProxy,
+  'AccountsController' | 'NetworkController'
+> &
   RatesState &
-  BalancesState &
-  NetworkState;
+  BalancesState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -329,7 +329,7 @@ export function getMultichainIsMainnet(
   const mainnet = (
     MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
   )[selectedAccount.type];
-  return providerConfig.chainId === mainnet ?? false;
+  return providerConfig.chainId === mainnet;
 }
 
 export function getMultichainIsTestnet(
@@ -352,14 +352,12 @@ export function getMultichainIsTestnet(
         MultichainNetworks.BITCOIN_TESTNET;
 }
 
-export function getMultichainBalances(
-  state: MultichainState,
-): BalancesState['metamask']['balances'] {
-  return state.metamask.balances;
+export function getMultichainBalances(state: MultichainState) {
+  return state.metamask.MultichainBalancesController.balances;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
-  return state.metamask.rates;
+  return state.metamask.MultichainRatesController.rates;
 };
 
 function getNonEvmCachedBalance(

@@ -1,6 +1,6 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getAccountType } from '../selectors';
-import { AccountsState, getSelectedInternalAccount } from '../accounts';
+import { getSelectedInternalAccount } from '../accounts';
 import {
   ProviderConfigState,
   getProviderConfig,
@@ -10,31 +10,28 @@ import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { AccountType } from '../../../shared/constants/custody';
-import { BackgroundStateProxy } from '../../../shared/types/metamask';
 import { MetaMaskReduxState } from '../../store/store';
 
-export function getWaitForConfirmDeepLinkDialog(state: {
-  metamask: Pick<BackgroundStateProxy, 'CustodyController'>;
-}) {
+export function getWaitForConfirmDeepLinkDialog(
+  state: MetaMaskSliceControllerState<'CustodyController'>,
+) {
   return state.metamask.CustodyController.waitForConfirmDeepLinkDialog;
 }
 
-export function getTransactionStatusMap(state: {
-  metamask: Pick<BackgroundStateProxy, 'CustodyController'>;
-}) {
+export function getTransactionStatusMap(
+  state: MetaMaskSliceControllerState<'CustodyController'>,
+) {
   return state.metamask.CustodyController.custodyStatusMaps;
 }
 
-export function getCustodyAccountDetails(state: {
-  metamask: Pick<BackgroundStateProxy, 'CustodyController'>;
-}) {
+export function getCustodyAccountDetails(
+  state: MetaMaskSliceControllerState<'CustodyController'>,
+) {
   return state.metamask.CustodyController.custodyAccountDetails;
 }
 
 export function getCustodyAccountSupportedChains(
-  state: {
-    metamask: Pick<BackgroundStateProxy, 'CustodyController'>;
-  },
+  state: MetaMaskSliceControllerState<'CustodyController'>,
   address: string,
 ): { supportedChains: string[] } | undefined {
   const chains = state.metamask.CustodyController.custodianSupportedChains
@@ -42,17 +39,15 @@ export function getCustodyAccountSupportedChains(
         toChecksumAddress(address)
       ]
     : undefined;
-
   if (chains && 'supportedChains' in chains) {
     return chains;
   }
-
   return undefined;
 }
 
-export function getMmiPortfolioEnabled(state: {
-  metamask: Pick<BackgroundStateProxy, 'MmiConfigurationController'>;
-}) {
+export function getMmiPortfolioEnabled(
+  state: MetaMaskSliceControllerState<'MmiConfigurationController'>,
+) {
   if (process.env.IN_TEST) {
     return true;
   }
@@ -61,30 +56,27 @@ export function getMmiPortfolioEnabled(state: {
     ?.enabled;
 }
 
-export function getMmiPortfolioUrl(state: {
-  metamask: Pick<BackgroundStateProxy, 'MmiConfigurationController'>;
-}) {
+export function getMmiPortfolioUrl(
+  state: MetaMaskSliceControllerState<'MmiConfigurationController'>,
+) {
   return (
     state.metamask.MmiConfigurationController.mmiConfiguration?.portfolio
-      ?.url || ''
+      ?.url ?? ''
   );
 }
 
-export function getConfiguredCustodians(state: {
-  metamask: Pick<BackgroundStateProxy, 'MmiConfigurationController'>;
-}) {
+export function getConfiguredCustodians(
+  state: MetaMaskSliceControllerState<'MmiConfigurationController'>,
+) {
   return (
     state.metamask.MmiConfigurationController.mmiConfiguration?.custodians || []
   );
 }
 
 export function getCustodianIconForAddress(
-  state: {
-    metamask: Pick<
-      BackgroundStateProxy,
-      'CustodyController' | 'MmiConfigurationController'
-    >;
-  },
+  state: MetaMaskSliceControllerState<
+    'CustodyController' | 'MmiConfigurationController'
+  >,
   address: string,
 ) {
   let custodianIcon;
@@ -108,9 +100,8 @@ export function getCustodianIconForAddress(
 }
 
 export function getIsCustodianSupportedChain(
-  state: {
-    metamask: Pick<BackgroundStateProxy, 'CustodyController'>;
-  } & AccountsState &
+  state: MetaMaskSliceControllerState<'CustodyController'> &
+    Parameters<typeof getSelectedInternalAccount>[0] &
     ProviderConfigState,
 ) {
   try {
@@ -155,9 +146,8 @@ export function getIsCustodianSupportedChain(
 }
 
 export function getMMIAddressFromModalOrAddress(
-  state: {
-    metamask: Pick<BackgroundStateProxy, 'MmiConfigurationController'>;
-  } & AccountsState &
+  state: MetaMaskSliceControllerState<'MmiConfigurationController'> &
+    Parameters<typeof getSelectedInternalAccount>[0] &
     Pick<MetaMaskReduxState, 'appState'>,
 ) {
   const modalAddress = state?.appState?.modal?.modalState?.props?.address;
@@ -166,31 +156,28 @@ export function getMMIAddressFromModalOrAddress(
   return modalAddress || selectedAddress;
 }
 
-export function getMMIConfiguration(state: {
-  metamask: Pick<BackgroundStateProxy, 'MmiConfigurationController'>;
-}) {
+export function getMMIConfiguration(
+  state: MetaMaskSliceControllerState<'MmiConfigurationController'>,
+) {
   return state.metamask.MmiConfigurationController.mmiConfiguration ?? {};
 }
 
-export function getInteractiveReplacementToken(state: {
-  metamask: Pick<BackgroundStateProxy, 'AppStateController'>;
-}) {
+export function getInteractiveReplacementToken(
+  state: MetaMaskSliceControllerState<'AppStateController'>,
+) {
   return state.metamask.AppStateController.interactiveReplacementToken ?? {};
 }
 
-export function getCustodianDeepLink(state: {
-  metamask: Pick<BackgroundStateProxy, 'AppStateController'>;
-}) {
+export function getCustodianDeepLink(
+  state: MetaMaskSliceControllerState<'AppStateController'>,
+) {
   return state.metamask.AppStateController.custodianDeepLink ?? {};
 }
 
 export function getIsNoteToTraderSupported(
-  state: {
-    metamask: Pick<
-      BackgroundStateProxy,
-      'CustodyController' | 'MmiConfigurationController'
-    >;
-  },
+  state: MetaMaskSliceControllerState<
+    'CustodyController' | 'MmiConfigurationController'
+  >,
   fromChecksumHexAddress: string,
 ) {
   const {
@@ -211,12 +198,9 @@ export function getIsNoteToTraderSupported(
 }
 
 export function getIsCustodianPublishesTransactionSupported(
-  state: {
-    metamask: Pick<
-      BackgroundStateProxy,
-      'CustodyController' | 'MmiConfigurationController'
-    >;
-  },
+  state: MetaMaskSliceControllerState<
+    'CustodyController' | 'MmiConfigurationController'
+  >,
   fromChecksumHexAddress: string,
 ) {
   const {
@@ -236,8 +220,8 @@ export function getIsCustodianPublishesTransactionSupported(
   return foundCustodian ? foundCustodian.custodianPublishesTransaction : false;
 }
 
-export function getNoteToTraderMessage(state: {
-  metamask: Pick<BackgroundStateProxy, 'AppStateController'>;
-}) {
+export function getNoteToTraderMessage(
+  state: MetaMaskSliceControllerState<'AppStateController'>,
+) {
   return state.metamask.AppStateController.noteToTraderMessage ?? '';
 }

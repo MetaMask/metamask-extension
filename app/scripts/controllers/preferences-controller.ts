@@ -151,7 +151,7 @@ export type PreferencesControllerState = Omit<
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
   addSnapAccountEnabled?: boolean;
-  advancedGasFee: Record<string, Record<string, string>>;
+  advancedGasFee: Record<Hex, { maxBaseFee: string; priorityFee: string }>;
   incomingTransactionsPreferences: Record<number, boolean>;
   knownMethodData: Record<string, string>;
   currentLocale: string;

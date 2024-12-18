@@ -30,8 +30,8 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { MetaMaskReduxState } from '../../store/store';
 import type { BackgroundStateProxy } from '../../../shared/types/metamask';
+import { MetaMaskReduxState } from '../../store/store';
 import { initialMetamaskState } from './constants';
 
 export type MetaMaskSliceState = {
@@ -266,7 +266,10 @@ export const getNfts = (state: MetaMaskSliceState) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
-export const getNFTsByChainId = (state: MetaMaskSliceState, chainId: Hex) => {
+export const getNFTsByChainId = (state: MetaMaskSliceState, chainId?: Hex) => {
+  if (!chainId) {
+    return [];
+  }
   const {
     metamask: {
       NftController: { allNfts },
@@ -337,7 +340,7 @@ export function isNotEIP1559Network(state: MetaMaskSliceState) {
  */
 export function isEIP1559Network(
   state: MetaMaskSliceState,
-  networkClientId: string,
+  networkClientId?: string,
 ) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
 

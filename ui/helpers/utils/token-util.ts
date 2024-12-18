@@ -8,10 +8,16 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 import { Numeric } from '../../../shared/modules/Numeric';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
+import { Nft, NftContract, Token } from '@metamask/assets-controllers';
+import { TransactionDescription } from '@ethersproject/abi';
 
 const DEFAULT_SYMBOL = '';
 
-async function getSymbolFromContract(tokenAddress) {
+type TokenMap = {
+  [address: string]: Pick<Token, 'symbol' | 'decimals' | 'name'>;
+};
+
+async function getSymbolFromContract(tokenAddress: string) {
   const token = util.getContractAtAddress(tokenAddress);
   try {
     const result = await token.symbol();
@@ -25,7 +31,7 @@ async function getSymbolFromContract(tokenAddress) {
   }
 }
 
-async function getNameFromContract(tokenAddress) {
+async function getNameFromContract(tokenAddress: string) {
   const token = util.getContractAtAddress(tokenAddress);
   try {
     const [name] = await token.name();
@@ -39,7 +45,7 @@ async function getNameFromContract(tokenAddress) {
   }
 }
 
-async function getDecimalsFromContract(tokenAddress) {
+async function getDecimalsFromContract(tokenAddress: string) {
   const token = util.getContractAtAddress(tokenAddress);
 
   try {
@@ -55,11 +61,11 @@ async function getDecimalsFromContract(tokenAddress) {
   }
 }
 
-export function getTokenMetadata(tokenAddress, tokenList) {
+export function getTokenMetadata(tokenAddress: string, tokenList: TokenMap) {
   return tokenAddress && tokenList[tokenAddress.toLowerCase()];
 }
 
-async function getSymbol(tokenAddress, tokenList) {
+async function getSymbol(tokenAddress: string, tokenList: TokenMap) {
   let symbol = await getSymbolFromContract(tokenAddress);
 
   if (!symbol) {
@@ -73,7 +79,7 @@ async function getSymbol(tokenAddress, tokenList) {
   return symbol;
 }
 
-async function getName(tokenAddress, tokenList) {
+async function getName(tokenAddress: string, tokenList: TokenMap) {
   let name = await getNameFromContract(tokenAddress);
 
   if (!name) {
@@ -87,7 +93,7 @@ async function getName(tokenAddress, tokenList) {
   return name;
 }
 
-async function getDecimals(tokenAddress, tokenList) {
+async function getDecimals(tokenAddress: string, tokenList: TokenMap) {
   let decimals = await getDecimalsFromContract(tokenAddress);
 
   if (!decimals || decimals === '0') {
@@ -101,7 +107,10 @@ async function getDecimals(tokenAddress, tokenList) {
   return decimals;
 }
 
-export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
+export async function getSymbolAndDecimalsAndName(
+  tokenAddress: string,
+  tokenList: TokenMap,
+) {
   let symbol, decimals, name;
 
   try {
@@ -130,9 +139,14 @@ export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
 }
 
 export function tokenInfoGetter() {
-  const tokens = {};
+  const tokens: TokenMap = {};
 
-  return async (address, tokenList) => {
+  return async (
+    address: string,
+    tokenList: {
+      [address: string]: Pick<Token, 'symbol' | 'decimals' | 'name'>;
+    },
+  ) => {
     if (tokens[address]) {
       return tokens[address];
     }
@@ -152,7 +166,9 @@ export function tokenInfoGetter() {
  * @param {object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A lowercase address string.
  */
-export function getTokenAddressParam(tokenData = {}) {
+export function getTokenAddressParam(
+  tokenData: Partial<TransactionDescription> = {},
+) {
   const value =
     tokenData?.args?._to || tokenData?.args?.to || tokenData?.args?.[0];
   return value?.toString().toLowerCase();
@@ -173,7 +189,9 @@ export function getTokenAddressParam(tokenData = {}) {
  * @param {object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A decimal string value.
  */
-export function getTokenIdParam(tokenData = {}) {
+export function getTokenIdParam(
+  tokenData: Partial<TransactionDescription> = {},
+) {
   return (
     tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
   );
@@ -186,14 +204,16 @@ export function getTokenIdParam(tokenData = {}) {
  * @param {object} tokenData - ethers Interface token data.
  * @returns {boolean | undefined} A boolean indicating whether the function is being called to approve or revoke access.
  */
-export function getTokenApprovedParam(tokenData = {}) {
+export function getTokenApprovedParam(
+  tokenData: Partial<TransactionDescription> = {},
+) {
   return tokenData?.args?._approved;
 }
 
 /**
  * Get the token balance converted to fiat and optionally formatted for display
  *
- * @param {number} [contractExchangeRate] - The exchange rate between the current token and the native currency
+ * @param {number | string} [contractExchangeRate] - The exchange rate between the current token and the native currency
  * @param {number} conversionRate - The exchange rate between the current fiat currency and the native currency
  * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
  * @param {string} [tokenAmount] - The current token balance
@@ -203,11 +223,11 @@ export function getTokenApprovedParam(tokenData = {}) {
  * @returns {string|undefined} The token amount in the user's chosen fiat currency, optionally formatted and localize
  */
 export function getTokenFiatAmount(
-  contractExchangeRate,
-  conversionRate,
-  currentCurrency,
-  tokenAmount,
-  tokenSymbol,
+  contractExchangeRate: number | string,
+  conversionRate: number,
+  currentCurrency: string,
+  tokenAmount: string,
+  tokenSymbol: string,
   formatted = true,
   hideCurrencySymbol = false,
 ) {
@@ -217,21 +237,20 @@ export function getTokenFiatAmount(
   if (
     conversionRate <= 0 ||
     !contractExchangeRate ||
-    tokenAmount === undefined ||
-    tokenAmount === false
+    tokenAmount === undefined
   ) {
     return undefined;
   }
 
-  const currentTokenToFiatRate = new Numeric(contractExchangeRate, 10)
-    .times(new Numeric(conversionRate, 10))
-    .toString();
+  const currentTokenToFiatRate = new Numeric(contractExchangeRate, 10).times(
+    new Numeric(conversionRate, 10),
+  );
 
-  let currentTokenInFiat = new Numeric(tokenAmount, 10);
+  let currentTokenInFiat: Numeric | string = new Numeric(tokenAmount, 10);
 
   if (tokenSymbol !== currentCurrency.toUpperCase() && currentTokenToFiatRate) {
     currentTokenInFiat = currentTokenInFiat.applyConversionRate(
-      currentTokenToFiatRate,
+      currentTokenToFiatRate.toNumber(),
     );
   }
 
@@ -247,14 +266,14 @@ export function getTokenFiatAmount(
   } else {
     result = currentTokenInFiat;
   }
-  return result;
+  return result.toString();
 }
 
 export async function getAssetDetails(
-  tokenAddress,
-  currentUserAddress,
-  transactionData,
-  existingNfts,
+  tokenAddress: string,
+  currentUserAddress: string,
+  transactionData: string,
+  existingNfts: (Nft & NftContract)[],
 ) {
   const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
@@ -306,7 +325,7 @@ export async function getAssetDetails(
     tokenDecimals &&
     calcTokenAmount(tokenValue, tokenDecimals).toString(10);
 
-  const decimals = tokenDecimals && Number(tokenDecimals?.toString(10));
+  const decimals = tokenDecimals && Number(tokenDecimals);
 
   if (tokenDetails?.standard === TokenStandard.ERC20) {
     tokenId = undefined;
