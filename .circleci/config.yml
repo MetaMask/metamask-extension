@@ -120,9 +120,6 @@ workflows:
                 - master
           requires:
             - prep-deps
-      - validate-lavamoat-policy-build:
-          requires:
-            - prep-deps
       - validate-lavamoat-policy-webapp:
           matrix:
             parameters:
@@ -259,7 +256,6 @@ workflows:
             - prep-build-flask-mv2
       - all-tests-pass:
           requires:
-            - validate-lavamoat-policy-build
             - validate-lavamoat-policy-webapp
             - validate-source-maps
             - validate-source-maps-flask
@@ -435,20 +431,6 @@ jobs:
       - attach_workspace:
           at: .
       - run: yarn tsx .circleci/scripts/validate-locales-only.ts
-
-  validate-lavamoat-policy-build:
-    executor: node-browsers-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate LavaMoat build policy
-          command: yarn lavamoat:build:auto
-      - run:
-          name: Check working tree
-          command: .circleci/scripts/check-working-tree.sh
 
   validate-lavamoat-policy-webapp:
     executor: node-browsers-medium-plus
