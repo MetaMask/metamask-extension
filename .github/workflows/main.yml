@@ -45,6 +45,10 @@ jobs:
     name: Test lint lockfile
     uses: ./.github/workflows/test-lint-lockfile.yml
 
+  validate-lavamoat-allow-scripts:
+    name: Validate lavamoat allow scripts
+    uses: ./.github/workflows/validate-lavamoat-allow-scripts.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -80,6 +84,7 @@ jobs:
       - test-lint
       - test-lint-changelog
       - test-lint-lockfile
+      - validate-lavamoat-allow-scripts
       - run-tests
       - wait-for-circleci-workflow-status
       - trigger-beta-build
