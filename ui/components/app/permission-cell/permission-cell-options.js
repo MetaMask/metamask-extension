@@ -73,7 +73,8 @@ export const PermissionCellOptions = ({
               >
                 {t('details')}
               </Text>
-            </MenuItem>)}
+            </MenuItem>
+          )}
           {isRevokable && (
             <MenuItem onClick={handleRevokePermission}>
               <Text
