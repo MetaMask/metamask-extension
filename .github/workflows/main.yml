@@ -57,6 +57,10 @@ jobs:
     name: Validate lavamoat policy webapp
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
+  build-ts-migration-dashboard:
+    name: Build ts migration dashboard
+    uses: ./.github/workflows/build-ts-migration-dashboard.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -75,6 +79,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     needs:
       - wait-for-circleci-workflow-status
+      - build-ts-migration-dashboard
       - trigger-beta-build
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
@@ -95,6 +100,7 @@ jobs:
       - validate-lavamoat-allow-scripts
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
+      - build-ts-migration-dashboard
       - run-tests
       - wait-for-circleci-workflow-status
       - trigger-beta-build

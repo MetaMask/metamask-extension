@@ -162,9 +162,6 @@ workflows:
       - prep-build-storybook:
           requires:
             - prep-deps
-      - prep-build-ts-migration-dashboard:
-          requires:
-            - prep-deps
       - test-e2e-chrome-webpack:
           <<: *main_master_rc_only
           requires:
@@ -283,7 +280,6 @@ workflows:
             - prep-build-flask
             - prep-build-flask-mv2
             - prep-build-storybook
-            - prep-build-ts-migration-dashboard
             - benchmark
             - user-actions-benchmark
             - stats-module-load-init
@@ -306,12 +302,6 @@ workflows:
               only: main
           requires:
             - prep-build-storybook
-      - job-publish-ts-migration-dashboard:
-          filters:
-            branches:
-              only: main
-          requires:
-            - prep-build-ts-migration-dashboard
 
   rerun-from-failed:
     when:
@@ -808,21 +798,6 @@ jobs:
           root: .
           paths:
             - storybook-build
-
-  prep-build-ts-migration-dashboard:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build TypeScript migration dashboard
-          command: yarn ts-migration:dashboard:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - development/ts-migration-dashboard/build/final
 
   rerun-workflows-from-failed:
     executor: node-browsers-small
@@ -1367,24 +1342,6 @@ jobs:
           command: |
             git remote add storybook git@github.com:MetaMask/metamask-storybook.git
             yarn storybook:deploy
-
-  job-publish-ts-migration-dashboard:
-    executor: node-browsers-small
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: ts-migration-dashboard:deploy
-          command: |
-            git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
-            git config user.name "MetaMask Bot"
-            git config user.email metamaskbot@users.noreply.github.com
-            yarn ts-migration:dashboard:deploy
 
   validate-source-maps:
     executor: node-browsers-small
