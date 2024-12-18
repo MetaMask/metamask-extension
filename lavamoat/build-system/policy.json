@@ -15,7 +15,8 @@
         "process": true
       },
       "packages": {
-        "lavamoat>@babel/highlight": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true,
+        "loose-envify>js-tokens": true,
         "postcss>picocolors": true
       }
     },
@@ -200,7 +201,7 @@
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -246,17 +247,6 @@
       "packages": {
         "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true
-      }
-    },
-    "lavamoat>@babel/highlight": {
-      "globals": {
-        "process": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>@babel/highlight>chalk": true,
-        "loose-envify>js-tokens": true,
-        "postcss>picocolors": true
       }
     },
     "@babel/preset-env>@babel/plugin-bugfix-firefox-class-in-computed-class-key": {
@@ -482,7 +472,7 @@
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -812,7 +802,7 @@
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
+        "@babel/code-frame>@babel/helper-validator-identifier": true
       }
     },
     "sass-embedded>@bufbuild/protobuf": {
@@ -1306,19 +1296,14 @@
         "chalk>ansi-styles>color-convert": true
       }
     },
-    "lavamoat>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert": true
-      }
-    },
     "gulp-livereload>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "gulp-livereload>chalk>ansi-styles>color-convert": true
       }
     },
     "stylelint>table>slice-ansi>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "stylelint>table>slice-ansi>ansi-styles>color-convert": true
       }
     },
     "chokidar>anymatch": {
@@ -1747,17 +1732,6 @@
         "chalk>supports-color": true
       }
     },
-    "lavamoat>@babel/highlight>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true
-      }
-    },
     "gulp-livereload>chalk": {
       "globals": {
         "process.env.TERM": true,
@@ -1960,9 +1934,14 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "@metamask/jazzicon>color>color-convert": {
+    "gulp-livereload>chalk>ansi-styles>color-convert": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert>color-name": true
+        "gulp-livereload>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "stylelint>table>slice-ansi>ansi-styles>color-convert": {
+      "packages": {
+        "stylelint>table>slice-ansi>ansi-styles>color-convert>color-name": true
       }
     },
     "fancy-log>color-support": {
@@ -3777,11 +3756,6 @@
         "process.argv": true
       }
     },
-    "mocha>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
     "postcss-discard-font-face>postcss>supports-color>has-flag": {
       "globals": {
         "process.argv": true
@@ -4374,7 +4348,7 @@
         "console.log": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "@babel/core>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -8227,21 +8201,6 @@
         "chalk>supports-color>has-flag": true
       }
     },
-    "lavamoat>@babel/highlight>chalk>supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "gulp-livereload>chalk>supports-color>has-flag": true
-      }
-    },
     "gulp-livereload>chalk>supports-color": {
       "builtin": {
         "os.release": true
@@ -8275,7 +8234,7 @@
         "process.platform": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "chalk>supports-color>has-flag": true
       }
     },
     "postcss-discard-font-face>postcss>supports-color": {
