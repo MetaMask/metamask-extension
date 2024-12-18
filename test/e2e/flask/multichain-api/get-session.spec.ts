@@ -26,7 +26,10 @@ describe('Multichain API', function () {
           driver: Driver;
           extensionId: string;
         }) => {
-          await openMultichainDappAndConnectWalletWithExternallyConnectable(driver, extensionId);
+          await openMultichainDappAndConnectWalletWithExternallyConnectable(
+            driver,
+            extensionId,
+          );
           const parsedResult = await getSessionScopes(driver);
 
           assert.deepStrictEqual(
@@ -62,7 +65,10 @@ describe('Multichain API', function () {
            */
           const DEFAULT_SCOPE = 'eip155:1337';
 
-          await openMultichainDappAndConnectWalletWithExternallyConnectable(driver, extensionId);
+          await openMultichainDappAndConnectWalletWithExternallyConnectable(
+            driver,
+            extensionId,
+          );
           const parsedResult = await getSessionScopes(driver);
 
           const sessionScope = parsedResult.sessionScopes[DEFAULT_SCOPE];
