@@ -164,7 +164,7 @@ export const handleBridgeTransactionComplete = async (
     usd_actual_gas: gasTotalUsd,
     quote_vs_execution_ratio: quoteVsExecutionRatio,
     quoted_vs_used_gas_ratio: quotedVsUsedGasRatio,
-    gas_included: false,
+    gas_included: false, // TODO check if trade has gas included
   };
 
   console.log('properties', properties);
