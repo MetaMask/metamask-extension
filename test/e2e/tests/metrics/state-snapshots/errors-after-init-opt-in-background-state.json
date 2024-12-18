@@ -355,6 +355,7 @@
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingReadyToBeDispatched": "boolean"
+    "isAccountSyncingReadyToBeDispatched": "boolean",
+    "isAccountSyncingInProgress": "boolean"
   }
 }
