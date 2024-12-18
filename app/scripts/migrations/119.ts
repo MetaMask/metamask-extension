@@ -1,7 +1,7 @@
 import { cloneDeep, isObject } from 'lodash';
 import { hasProperty } from '@metamask/utils';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 
 type VersionedData = {
   meta: { version: number };
