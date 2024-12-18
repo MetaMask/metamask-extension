@@ -241,9 +241,6 @@ describe('Sentry errors', function () {
                 metaMetricsId: null,
                 participateInMetaMetrics: false,
               })
-              .withPreferencesController({
-                preferences: { smartTransactionsMigrationApplied: false },
-              })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
@@ -277,9 +274,6 @@ describe('Sentry errors', function () {
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
-            })
-            .withPreferencesController({
-              preferences: { smartTransactionsMigrationApplied: false },
             })
             .build(),
           ganacheOptions,
@@ -318,9 +312,6 @@ describe('Sentry errors', function () {
               .withMetaMetricsController({
                 metaMetricsId: 'fake-metrics-id',
                 participateInMetaMetrics: true,
-              })
-              .withPreferencesController({
-                preferences: { smartTransactionsMigrationApplied: false },
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -367,9 +358,6 @@ describe('Sentry errors', function () {
               .withMetaMetricsController({
                 metaMetricsId: 'fake-metrics-id',
                 participateInMetaMetrics: true,
-              })
-              .withPreferencesController({
-                preferences: { smartTransactionsMigrationApplied: false },
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
@@ -434,9 +422,6 @@ describe('Sentry errors', function () {
                 participateInMetaMetrics: true,
               })
               .withBadPreferencesControllerState()
-              .withPreferencesController({
-                preferences: { smartTransactionsMigrationApplied: false },
-              })
               .build(),
           },
           ganacheOptions,
@@ -486,9 +471,6 @@ describe('Sentry errors', function () {
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
             })
-            .withPreferencesController({
-              preferences: { smartTransactionsMigrationApplied: false },
-            })
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
@@ -534,9 +516,6 @@ describe('Sentry errors', function () {
             .withMetaMetricsController({
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
-            })
-            .withPreferencesController({
-              preferences: { smartTransactionsMigrationApplied: false },
             })
             .build(),
           ganacheOptions,
@@ -603,9 +582,6 @@ describe('Sentry errors', function () {
               metaMetricsId: null,
               participateInMetaMetrics: false,
             })
-            .withPreferencesController({
-              preferences: { smartTransactionsMigrationApplied: false },
-            })
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
@@ -640,9 +616,6 @@ describe('Sentry errors', function () {
             .withMetaMetricsController({
               metaMetricsId: null,
               participateInMetaMetrics: false,
-            })
-            .withPreferencesController({
-              preferences: { smartTransactionsMigrationApplied: false },
             })
             .build(),
           ganacheOptions,
@@ -679,9 +652,6 @@ describe('Sentry errors', function () {
             .withMetaMetricsController({
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
-            })
-            .withPreferencesController({
-              preferences: { smartTransactionsMigrationApplied: false },
             })
             .build(),
           ganacheOptions,
@@ -728,9 +698,6 @@ describe('Sentry errors', function () {
             .withMetaMetricsController({
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
-            })
-            .withPreferencesController({
-              preferences: { smartTransactionsMigrationApplied: false },
             })
             .build(),
           ganacheOptions,
@@ -795,9 +762,6 @@ describe('Sentry errors', function () {
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
             })
-            .withPreferencesController({
-              preferences: { smartTransactionsMigrationApplied: false },
-            })
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
@@ -841,9 +805,6 @@ describe('Sentry errors', function () {
             .withMetaMetricsController({
               metaMetricsId: 'fake-metrics-id',
               participateInMetaMetrics: true,
-            })
-            .withPreferencesController({
-              preferences: { smartTransactionsMigrationApplied: false },
             })
             .build(),
           ganacheOptions,
@@ -954,13 +915,7 @@ describe('Sentry errors', function () {
     };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: {
-              smartTransactionsMigrationApplied: false,
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.fullTitle(),
         manifestFlags: {
