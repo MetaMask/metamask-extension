@@ -36,7 +36,7 @@ describe('Import flow @no-mmi', function () {
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
         await accountDetailsModal.check_addressInAccountDetailsModal(
-          testAddress.toLowerCase(),
+          DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
         );
       },
     );

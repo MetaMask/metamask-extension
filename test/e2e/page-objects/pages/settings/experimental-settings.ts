@@ -28,7 +28,6 @@ class ExperimentalSettings {
   private readonly watchAccountToggle =
     '[data-testid="watch-account-toggle-div"]';
 
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
