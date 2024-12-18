@@ -67,6 +67,7 @@ export function updateCustodyState(
   }
 
   const newCurrentNetworkTxList = getCurrentNetworkTransactions({
+    ...state,
     metamask: newState,
   });
 
@@ -99,7 +100,7 @@ export function updateCustodyState(
       return (
         tx.custodyId === state.appState.modal.modalState.props?.custodyId &&
         tx.custodyStatus &&
-        (state.metamask.CustodyController.custodyStatusMaps[custody][
+        (state.metamask.CustodyController.custodyStatusMaps?.[custody][
           tx.custodyStatus
         ]?.mmStatus !== 'approved' ||
           tx.custodyStatus === CustodyStatus.CREATED)

@@ -1,24 +1,14 @@
 import { createSelector } from 'reselect';
 import { Hex } from '@metamask/utils';
-import {
-  BridgeStatusControllerState,
-  BridgeHistoryItem,
-} from '../../../shared/types/bridge-status';
+import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 import { getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
-import {
-  getCurrentChainId,
-  ProviderConfigState,
-} from '../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
-export type BridgeStatusAppState = ProviderConfigState & {
-  metamask: {
-    bridgeStatusState: BridgeStatusControllerState;
-  };
-};
-
-export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
-  state.metamask.bridgeStatusState;
+export const selectBridgeStatusState = (state: {
+  metamask: Pick<BackgroundStateProxy, 'BridgeStatusController'>;
+}) => state.metamask.BridgeStatusController.bridgeStatusState;
 
 /**
  * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address

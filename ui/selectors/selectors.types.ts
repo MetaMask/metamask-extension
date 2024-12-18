@@ -14,7 +14,7 @@ export type InternalAccountWithPinnedHiddenActiveLastSelected =
     pinned: boolean;
     hidden: boolean;
     lastSelected: number;
-    active: number;
+    active: number | boolean;
   };
 
 export type MergedInternalAccount =
@@ -30,3 +30,8 @@ export type AccountConnections = {
     metadata: SubjectMetadata;
   }[];
 };
+
+export type ConnectedSubject = Pick<
+  SubjectMetadata,
+  'extensionId' | 'name' | 'iconUrl'
+> & { origin: string };
