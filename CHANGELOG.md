@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.9.3]
+
 ## [12.9.2]
 ### Changed
 - Display the "Amount" row within the advanced view of contract interaction confirmations, and whenever the amount being sent differs from the "You Send" row of the transaction simulation information by more than 5% ([#29131](https://github.com/MetaMask/metamask-extension/pull/29131))
@@ -5487,7 +5489,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.9.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.9.3...HEAD
+[12.9.3]: https://github.com/MetaMask/metamask-extension/compare/v12.9.2...v12.9.3
 [12.9.2]: https://github.com/MetaMask/metamask-extension/compare/v12.9.1...v12.9.2
 [12.9.1]: https://github.com/MetaMask/metamask-extension/compare/v12.9.0...v12.9.1
 [12.9.0]: https://github.com/MetaMask/metamask-extension/compare/v12.8.1...v12.9.0
