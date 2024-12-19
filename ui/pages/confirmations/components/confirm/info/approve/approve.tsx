@@ -62,7 +62,11 @@ const ApproveInfo = () => {
 
   return (
     <>
-      <ApproveStaticSimulation />
+      {showRevokeVariant ? (
+        <RevokeStaticSimulation />
+      ) : (
+        <ApproveStaticSimulation />
+      )}
       {showRevokeVariant ? <RevokeDetails /> : <ApproveDetails />}
       {!isNFT && !showRevokeVariant && (
         <SpendingCap
