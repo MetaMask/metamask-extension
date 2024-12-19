@@ -21,6 +21,7 @@ import {
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
+  AlignItems,
   Display,
   FlexDirection,
   IconColor,
@@ -29,6 +30,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -54,7 +57,11 @@ import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
+import {
+  getImageForChainId,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetChart from './chart/asset-chart';
@@ -214,6 +221,12 @@ const AssetPage = ({
     [account.address, isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId],
   );
 
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+  const networkName = networkConfigurationsByChainId[chainId]?.name;
+  const tokenChainImage = getImageForChainId(chainId);
+
   return (
     <Box
       marginLeft="auto"
@@ -310,6 +323,22 @@ const AssetPage = ({
                 flexDirection={FlexDirection.Column}
                 gap={2}
               >
+                {renderRow(
+                  t('network'),
+                  <Text
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    gap={1}
+                    data-testid="asset-network"
+                  >
+                    <AvatarNetwork
+                      src={tokenChainImage}
+                      name={networkName}
+                      size={AvatarNetworkSize.Sm}
+                    />
+                    {networkName}
+                  </Text>,
+                )}
                 {type === AssetType.token && (
                   <Box>
                     {renderRow(
