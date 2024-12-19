@@ -7,6 +7,7 @@ import {
   checkActivityTransaction,
   changeExchangeRate,
   mockEthDaiTrade,
+  closeSmartTransactionsMigrationNotification,
 } from './shared';
 
 // TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
@@ -25,6 +26,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
           amount: 0.001,
           swapTo: 'USDC',
         });
+        await closeSmartTransactionsMigrationNotification(driver);
         await reviewQuote(driver, {
           amount: 0.001,
           swapFrom: 'TESTETH',
