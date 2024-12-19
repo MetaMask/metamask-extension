@@ -201,11 +201,7 @@ export const useTransactionFunctions = ({
 
   const updateTransactionUsingEstimate = useCallback(
     (gasFeeEstimateToUse) => {
-      if (!gasFeeEstimates) {
-        return;
-      }
-
-      if (!gasFeeEstimates[gasFeeEstimateToUse]) {
+      if (!gasFeeEstimates?.[gasFeeEstimateToUse]) {
         return;
       }
 
