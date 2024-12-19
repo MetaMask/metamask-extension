@@ -90,10 +90,7 @@ export const SpendingCap = ({
     Number(decimals ?? '0'),
   ).toFixed();
 
-  const { pending } = useApproveTokenSimulation(
-    transactionMeta,
-    decimals || '0',
-  );
+  const { pending } = useApproveTokenSimulation(transactionMeta, decimals);
 
   return (
     <ConfirmInfoSection data-testid="confirmation__approve-spending-cap-section">

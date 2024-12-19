@@ -36,7 +36,7 @@ const ApproveInfo = () => {
 
   const { spendingCap, pending } = useApproveTokenSimulation(
     transactionMeta,
-    decimals || '0',
+    decimals,
   );
 
   // initialPending is introduced so that entire component does not go into loading state
@@ -56,7 +56,7 @@ const ApproveInfo = () => {
     return null;
   }
 
-  if (initialPending) {
+  if (initialPending || (!isNFT && !decimals)) {
     return <ConfirmLoader />;
   }
 
