@@ -1,5 +1,13 @@
 @use "design-system";
 
+.multichain-asset-picker__network-modal {
+  overflow-y: auto;
+
+  .mm-modal-content__dialog {
+    overflow-y: scroll;
+  }
+}
+
 .asset-picker-modal {
   $self: &;
 
@@ -54,6 +62,17 @@
 
   .tokens-main-view-modal {
     max-height: 100%;
+  }
+
+  .network-picker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 4px;
+
+    button: {
+      background: var(--color-background-alternative);
+    }
   }
 
   .modal-tab {

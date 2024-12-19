@@ -35,9 +35,7 @@ const render = async ({ contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
       gasFeeEstimatesByChainId: {

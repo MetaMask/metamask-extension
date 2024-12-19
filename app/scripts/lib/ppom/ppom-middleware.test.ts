@@ -1,6 +1,6 @@
 import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
-
 import { detectSIWE, SIWEMessage } from '@metamask/controller-utils';
+
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
@@ -19,7 +19,10 @@ import {
 import { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
-jest.mock('@metamask/controller-utils');
+jest.mock('@metamask/controller-utils', () => ({
+  ...jest.requireActual('@metamask/controller-utils'),
+  detectSIWE: jest.fn(),
+}));
 
 const SECURITY_ALERT_ID_MOCK = '123';
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
@@ -54,17 +57,17 @@ const createMiddleware = (
   const ppomController = {};
 
   const preferenceController = {
-    store: {
-      getState: () => ({
-        securityAlertsEnabled: securityAlertsEnabled ?? true,
-      }),
+    state: {
+      securityAlertsEnabled: securityAlertsEnabled ?? true,
     },
   };
 
   if (error) {
-    preferenceController.store.getState = () => {
-      throw error;
-    };
+    Object.defineProperty(preferenceController, 'state', {
+      get() {
+        throw error;
+      },
+    });
   }
 
   const networkController = {
@@ -115,6 +118,7 @@ describe('PPOMMiddleware', () => {
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
     isChainSupportedMock.mockResolvedValue(true);
+    detectSIWEMock.mockReturnValue({ isSIWEMessage: false } as SIWEMessage);
 
     globalThis.sentry = {
       withIsolationScope: jest

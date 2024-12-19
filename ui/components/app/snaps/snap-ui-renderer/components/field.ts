@@ -14,6 +14,7 @@ import { radioGroup as radioGroupFn } from './radioGroup';
 import { checkbox as checkboxFn } from './checkbox';
 import { selector as selectorFn } from './selector';
 import { UIComponentFactory, UIComponentParams } from './types';
+import { constructInputProps } from './input';
 
 export const field: UIComponentFactory<FieldElement> = ({
   element,
@@ -79,9 +80,7 @@ export const field: UIComponentFactory<FieldElement> = ({
           id: input.props.name,
           placeholder: input.props.placeholder,
           label: element.props.label,
-          textFieldProps: {
-            type: input.props.type,
-          },
+          ...constructInputProps(input.props),
           name: input.props.name,
           form,
           error: element.props.error !== undefined,

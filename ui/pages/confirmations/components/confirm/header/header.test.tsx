@@ -4,6 +4,7 @@ import { DefaultRootState } from 'react-redux';
 
 import {
   getMockContractInteractionConfirmState,
+  getMockTokenTransferConfirmState,
   getMockTypedSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -24,6 +25,26 @@ describe('Header', () => {
 
   it('should match snapshot with transaction confirmation', () => {
     const { container } = render(getMockContractInteractionConfirmState());
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot with token transfer confirmation initiated in a dApp', () => {
+    const { container } = render(
+      getMockTokenTransferConfirmState({
+        isWalletInitiatedConfirmation: false,
+      }),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot with token transfer confirmation initiated in the wallet', () => {
+    const { container } = render(
+      getMockTokenTransferConfirmState({
+        isWalletInitiatedConfirmation: true,
+      }),
+    );
 
     expect(container).toMatchSnapshot();
   });

@@ -304,6 +304,25 @@ export function getAccountByAddress(accounts = [], targetAddress) {
 }
 
 /**
+ * Sort the given list of account their selecting order (descending). Meaning the
+ * first account of the sorted list will be the last selected account.
+ *
+ * @param {import('@metamask/keyring-api').InternalAccount[]} accounts - The internal accounts list.
+ * @returns {import('@metamask/keyring-api').InternalAccount[]} The sorted internal account list.
+ */
+export function sortSelectedInternalAccounts(accounts) {
+  // This logic comes from the `AccountsController`:
+  // TODO: Expose a free function from this controller and use it here
+  return accounts.sort((accountA, accountB) => {
+    // Sort by `.lastSelected` in descending order
+    return (
+      (accountB.metadata.lastSelected ?? 0) -
+      (accountA.metadata.lastSelected ?? 0)
+    );
+  });
+}
+
+/**
  * Strips the following schemes from URL strings:
  * - http
  * - https
@@ -822,4 +841,19 @@ export const getFilteredSnapPermissions = (
   }
 
   return filteredPermissions;
+};
+/**
+ * Helper function to calculate the token amount 1dAgo using price percentage a day ago.
+ *
+ * @param {*} tokenFiatBalance - current token fiat balance
+ * @param {*} tokenPricePercentChange1dAgo - price percentage 1day ago
+ * @returns token amount 1day ago
+ */
+export const getCalculatedTokenAmount1dAgo = (
+  tokenFiatBalance,
+  tokenPricePercentChange1dAgo,
+) => {
+  return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
+    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+    : tokenFiatBalance ?? 0;
 };

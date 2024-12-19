@@ -3,7 +3,7 @@
   transition: background-color background 0.2s;
 
   & .show-more__button {
-    background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
+    background: linear-gradient(90deg, transparent 0%, var(--color-primary-muted) 33%);
   }
 
   &:hover {
@@ -11,7 +11,7 @@
     color: var(--color-primary-default) !important;
 
     & .show-more__button {
-      background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
+      background: linear-gradient(90deg, transparent 0%, var(--color-primary-muted) 33%);
     }
 
     p,
@@ -31,14 +31,14 @@
     opacity: 0.75;
 
     & .show-more__button {
-      background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
+      background: linear-gradient(90deg, transparent 0%, var(--color-primary-muted) 33%);
     }
 
     &:hover {
       background-color: var(--color-primary-muted);
 
       & .show-more__button {
-        background: linear-gradient(90deg, transparent 0%, var(--color-background-primary-muted) 33%);
+        background: linear-gradient(90deg, transparent 0%, var(--color-primary-muted) 33%);
       }
     }
   }

@@ -48,6 +48,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 
+// This function is no longer used in codebase, to be deleted.
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -61,8 +62,7 @@ export default function GasDisplay({ gasError }) {
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
-    useSelector(getPreferences);
+  const { showFiatInTestnets } = useSelector(getPreferences);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const nativeCurrency = useSelector(getNativeCurrency);
   const { chainId } = providerConfig;
@@ -132,7 +132,6 @@ export default function GasDisplay({ gasError }) {
           type={PRIMARY}
           key="total-detail-value"
           value={hexTransactionTotal}
-          hideLabel={!useNativeCurrencyAsPrimaryCurrency}
         />
       </Box>
     );
@@ -144,10 +143,9 @@ export default function GasDisplay({ gasError }) {
           draftTransaction.amount.value,
           hexMaximumTransactionFee,
         )}
-        hideLabel={!useNativeCurrencyAsPrimaryCurrency}
       />
     );
-  } else if (useNativeCurrencyAsPrimaryCurrency) {
+  } else {
     detailTotal = primaryTotalTextOverrideMaxAmount;
     maxAmount = primaryTotalTextOverrideMaxAmount;
   }
@@ -177,7 +175,7 @@ export default function GasDisplay({ gasError }) {
                         type={SECONDARY}
                         key="total-detail-text"
                         value={hexTransactionTotal}
-                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                        hideLabel
                       />
                     </Box>
                   )

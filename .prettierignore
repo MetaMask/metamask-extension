@@ -1,6 +1,8 @@
 *.scss
 .nyc_output/**/*
 node_modules/**/*
+# Exclude lottie json files
+/app/images/animations/**/*.json
 /app/vendor/**
 /builds/**/*
 /coverage/**/*

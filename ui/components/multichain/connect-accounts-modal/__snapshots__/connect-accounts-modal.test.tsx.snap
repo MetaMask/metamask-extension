@@ -442,11 +442,3 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
   </div>
 </body>
 `;
-
-exports[`Connect More Accounts Modal should render correctly 2`] = `
-<body>
-  <div
-    id="popover-content"
-  />
-</body>
-`;

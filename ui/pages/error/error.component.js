@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { getErrorMessage } from '../../../shared/modules/error';
 import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
 import {
   MetaMetricsContextProp,
@@ -72,6 +73,7 @@ class ErrorPage extends PureComponent {
     const message = isPopup
       ? t('errorPagePopupMessage', [supportLink])
       : t('errorPageMessage', [supportLink]);
+    const errorMessage = getErrorMessage(error);
 
     return (
       <section className="error-page">
@@ -81,8 +83,8 @@ class ErrorPage extends PureComponent {
           <details>
             <summary>{t('errorDetails')}</summary>
             <ul>
-              {error.message
-                ? this.renderErrorDetail(t('errorMessage', [error.message]))
+              {errorMessage
+                ? this.renderErrorDetail(t('errorMessage', [errorMessage]))
                 : null}
               {error.code
                 ? this.renderErrorDetail(t('errorCode', [error.code]))

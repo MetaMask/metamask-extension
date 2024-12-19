@@ -1,7 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
-import { ConfirmInfoRowVariant } from '../../../../../../../components/app/confirm/info/row';
 import { Box } from '../../../../../../../components/component-library';
 import {
   AlignItems,
@@ -85,7 +84,6 @@ export const GasFeesDetails = ({
           alertKey={RowAlertKey.Speed}
           data-testid="gas-fee-details-speed"
           label={t('speed')}
-          variant={ConfirmInfoRowVariant.Default}
           ownerId={transactionMeta.id}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>

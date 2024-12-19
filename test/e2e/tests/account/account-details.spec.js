@@ -60,8 +60,7 @@ describe('Show account details', function () {
         );
         await driver.clickElement('[data-testid="account-list-menu-details"');
 
-        const qrCode = await driver.findElement('.qr-code__wrapper');
-        assert.equal(await qrCode.isDisplayed(), true);
+        await driver.waitForSelector('.qr-code__wrapper');
       },
     );
   });
@@ -198,11 +197,10 @@ describe('Show account details', function () {
         await driver.press('#account-details-authenticate', driver.Key.ENTER);
 
         // Display error when password is incorrect
-        const passwordErrorIsDisplayed = await driver.isElementPresent({
+        await driver.waitForSelector({
           css: '.mm-help-text',
           text: 'Incorrect Password.',
         });
-        assert.equal(passwordErrorIsDisplayed, true);
       },
     );
   });

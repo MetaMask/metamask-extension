@@ -82,9 +82,6 @@ describe('PrepareSwapPage', () => {
       store,
     );
     expect(getByText('Select token')).toBeInTheDocument();
-    expect(
-      document.querySelector('.slippage-buttons__button-group'),
-    ).toMatchSnapshot();
   });
 
   it('switches swap from and to tokens', () => {

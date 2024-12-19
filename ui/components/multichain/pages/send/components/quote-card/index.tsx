@@ -87,7 +87,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     if (bestQuote) {
       trackEvent(
         {
-          event: MetaMetricsEventName.sendSwapQuoteFetched,
+          event: MetaMetricsEventName.sendSwapQuoteReceived,
           category: MetaMetricsEventCategory.Send,
           properties: {
             is_first_fetch: isQuoteJustLoaded,
@@ -117,6 +117,33 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     // eslint-disable-next-line consistent-return
     return () => clearTimeout(timeout);
   }, [timeLeft]);
+
+  // use to track when a quote is requested and received
+  useEffect(() => {
+    if (isSwapQuoteLoading) {
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteRequested,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
+    } else if (bestQuote) {
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteReceived,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
+    }
+  }, [isSwapQuoteLoading]);
 
   const infoText = useMemo(() => {
     if (isSwapQuoteLoading) {

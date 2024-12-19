@@ -1,8 +1,9 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  withFixtures,
+  openMenuSafe,
   unlockWallet,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -18,9 +19,8 @@ describe('Settings', function () {
         await unlockWallet(driver);
 
         // goes to the settings screen
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
 
         // finds the jazzicon toggle turned on

@@ -29,7 +29,7 @@ class SettingsPage {
   }
 
   async goToExperimentalSettings(): Promise<void> {
-    console.log('Navigating to Experimental Settings');
+    console.log('Navigating to Experimental Settings page');
     await this.driver.clickElement(this.experimentalSettingsButton);
   }
 }

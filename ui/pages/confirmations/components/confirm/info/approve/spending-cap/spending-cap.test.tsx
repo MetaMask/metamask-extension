@@ -13,6 +13,14 @@ jest.mock('../hooks/use-approve-token-simulation', () => ({
   })),
 }));
 
+jest.mock('../hooks/use-approve-token-simulation', () => ({
+  useApproveTokenSimulation: jest.fn(() => ({
+    spendingCap: '1000',
+    formattedSpendingCap: '1000',
+    value: '1000',
+  })),
+}));
+
 describe('<SpendingCap />', () => {
   const middleware = [thunk];
 

@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TransactionFlowSection /> renders correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__transaction-flow"
+  >
+    <div
+      class="mm-box mm-box--padding-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <div
+          class="name name__missing"
+        >
+          <span
+            class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/question.svg');"
+          />
+          <p
+            class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+          >
+            0x2e0D7...5d09B
+          </p>
+        </div>
+      </div>
+      <span
+        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-muted"
+        style="mask-image: url('./images/icons/arrow-right.svg');"
+      />
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <div
+          class="name name__missing"
+        >
+          <span
+            class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/question.svg');"
+          />
+          <p
+            class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+          >
+            0x6B175...71d0F
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

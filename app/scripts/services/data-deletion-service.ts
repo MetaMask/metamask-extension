@@ -12,11 +12,17 @@ import {
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import { DeleteRegulationStatus } from '../../../shared/constants/metametrics';
 
-const DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID =
-  process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? 'test';
-const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT =
-  process.env.ANALYTICS_DATA_DELETION_ENDPOINT ??
-  'https://metametrics.metamask.test';
+const inTest = process.env.IN_TEST;
+const fallbackSourceId = 'test';
+const fallbackDataDeletionEndpoint = 'https://metametrics.metamask.test';
+
+const DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID = inTest
+  ? fallbackSourceId
+  : process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? fallbackSourceId;
+const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT = inTest
+  ? fallbackDataDeletionEndpoint
+  : process.env.ANALYTICS_DATA_DELETION_ENDPOINT ??
+    fallbackDataDeletionEndpoint;
 
 /**
  * The number of times we retry a specific failed request to the data deletion API.

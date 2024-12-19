@@ -1,12 +1,10 @@
 module.exports = {
   collectCoverageFrom: [
-    '<rootDir>/app/**/*.(js|ts|tsx)',
-    '<rootDir>/development/**/*.(js|ts|tsx)',
-    '<rootDir>/offscreen/**/*.(js|ts|tsx)',
+    '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
-    '<rootDir>/test/**/*.(js|ts|tsx)',
-    '<rootDir>/types/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
+    '<rootDir>/development/build/transforms/**/*.js',
+    '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
@@ -24,7 +22,11 @@ module.exports = {
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
-  setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
+  setupFiles: [
+    'jest-canvas-mock',
+    '<rootDir>/test/setup.js',
+    '<rootDir>/test/env.js',
+  ],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',

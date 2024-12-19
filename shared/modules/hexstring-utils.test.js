@@ -1,5 +1,5 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import { isValidHexAddress, isPossibleAddress } from './hexstring-utils';
+import { isPossibleAddress, isValidHexAddress } from './hexstring-utils';
 
 describe('hexstring utils', function () {
   describe('isPossibleAddress', function () {

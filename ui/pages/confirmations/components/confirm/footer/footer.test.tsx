@@ -342,15 +342,31 @@ describe('ConfirmFooter', () => {
       expect(getByText('Review alerts')).toBeDisabled();
     });
 
-    it('sets the alert modal visible when the review alerts button is clicked', () => {
-      const { getByTestId } = render(stateWithAlertsMock);
-      fireEvent.click(getByTestId('confirm-footer-button'));
-      expect(getByTestId('confirm-alert-modal-submit-button')).toBeDefined();
+    it('renders the "review alert" button when there are unconfirmed alerts', () => {
+      const { getByText } = render(stateWithAlertsMock);
+      expect(getByText('Review alert')).toBeInTheDocument();
+    });
+
+    it('renders the "confirm" button when there are confirmed danger alerts', () => {
+      const stateWithConfirmedDangerAlertMock = createStateWithAlerts(
+        alertsMock,
+        {
+          [KEY_ALERT_KEY_MOCK]: true,
+        },
+      );
+      const { getByText } = render(stateWithConfirmedDangerAlertMock);
+      expect(getByText('Confirm')).toBeInTheDocument();
     });
 
     it('renders the "confirm" button when there are no alerts', () => {
       const { getByText } = render();
       expect(getByText('Confirm')).toBeInTheDocument();
+    });
+
+    it('sets the alert modal visible when the review alerts button is clicked', () => {
+      const { getByTestId } = render(stateWithAlertsMock);
+      fireEvent.click(getByTestId('confirm-footer-button'));
+      expect(getByTestId('alert-modal-button')).toBeDefined();
     });
   });
 });

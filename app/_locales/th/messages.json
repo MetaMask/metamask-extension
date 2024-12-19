@@ -120,10 +120,6 @@
   "fast": {
     "message": "เร็ว"
   },
-  "fiat": {
-    "message": "เงินตรา",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
     "description": "Helps user import their account from a JSON file"
@@ -370,9 +366,6 @@
   },
   "unlock": {
     "message": "ปลดล็อก"
-  },
-  "updatedWithDate": {
-    "message": "อัปเดต $1 แล้ว"
   },
   "urlErrorMsg": {
     "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"

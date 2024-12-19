@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 import { PageContainerFooter } from '../../components/ui/page-container';
@@ -125,7 +125,7 @@ const ConfirmAddSuggestedNFT = () => {
         return dispatch(
           rejectPendingApproval(
             id,
-            serializeError(ethErrors.provider.userRejectedRequest()),
+            serializeError(providerErrors.userRejectedRequest()),
           ),
         );
       }),
@@ -421,7 +421,7 @@ const ConfirmAddSuggestedNFT = () => {
                           rejectPendingApproval(
                             id,
                             serializeError(
-                              ethErrors.provider.userRejectedRequest(),
+                              providerErrors.userRejectedRequest(),
                             ),
                           ),
                         );

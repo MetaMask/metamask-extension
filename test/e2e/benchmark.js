@@ -17,6 +17,16 @@ const FixtureBuilder = require('./fixture-builder');
 const DEFAULT_NUM_SAMPLES = 20;
 const ALL_PAGES = Object.values(PAGES);
 
+const CUSTOM_TRACES = {
+  backgroundConnect: 'Background Connect',
+  firstReactRender: 'First Render',
+  getState: 'Get State',
+  initialActions: 'Initial Actions',
+  loadScripts: 'Load Scripts',
+  setupStore: 'Setup Store',
+  uiStartup: 'UI Startup',
+};
+
 async function measurePage(pageName) {
   let metrics;
   await withFixtures(
@@ -32,6 +42,7 @@ async function measurePage(pageName) {
       await driver.findElement('[data-testid="account-menu-icon"]');
       await driver.navigate(pageName);
       await driver.delay(1000);
+
       metrics = await driver.collectMetrics();
     },
   );
@@ -79,7 +90,7 @@ async function profilePageLoad(pages, numSamples, retries) {
       runResults.push(result);
     }
 
-    if (runResults.some((result) => result.navigation.lenth > 1)) {
+    if (runResults.some((result) => result.navigation.length > 1)) {
       throw new Error(`Multiple navigations not supported`);
     } else if (
       runResults.some((result) => result.navigation[0].type !== 'navigate')
@@ -106,6 +117,10 @@ async function profilePageLoad(pages, numSamples, retries) {
           metrics.navigation[0] && metrics.navigation[0].domInteractive,
       ),
     };
+
+    for (const [key, name] of Object.entries(CUSTOM_TRACES)) {
+      result[key] = runResults.map((metrics) => metrics[name]);
+    }
 
     results[pageName] = {
       min: minResult(result),

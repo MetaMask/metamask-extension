@@ -1,5 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { isHexString } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+import { isBoolean } from 'lodash';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
@@ -13,6 +15,15 @@ function isSpendingCapUnlimited(decodedSpendingCap: number) {
   return decodedSpendingCap >= UNLIMITED_THRESHOLD;
 }
 
+function toNonScientificString(num: number): string {
+  if (num >= 10e-18) {
+    return num.toFixed(18).replace(/\.?0+$/u, '');
+  }
+
+  // keep in scientific notation
+  return num.toString();
+}
+
 export const useApproveTokenSimulation = (
   transactionMeta: TransactionMeta,
   decimals: string,
@@ -23,16 +34,30 @@ export const useApproveTokenSimulation = (
   const { value, pending } = decodedResponse;
 
   const decodedSpendingCap = useMemo(() => {
-    return value
-      ? new BigNumber(value.data[0].params[1].value)
-          .dividedBy(new BigNumber(10).pow(Number(decimals)))
-          .toNumber()
-      : 0;
+    if (!value) {
+      return 0;
+    }
+
+    const paramIndex = value.data[0].params.findIndex(
+      (param) =>
+        param.value !== undefined &&
+        !isHexString(param.value) &&
+        param.value.length === undefined &&
+        !isBoolean(param.value),
+    );
+    if (paramIndex === -1) {
+      return 0;
+    }
+
+    return new BigNumber(value.data[0].params[paramIndex].value.toString())
+      .dividedBy(new BigNumber(10).pow(Number(decimals)))
+      .toNumber();
   }, [value, decimals]);
 
   const formattedSpendingCap = useMemo(() => {
-    return isNFT
-      ? decodedSpendingCap
+    // formatting coerces small numbers to 0
+    return isNFT || decodedSpendingCap < 1
+      ? toNonScientificString(decodedSpendingCap)
       : new Intl.NumberFormat(locale).format(decodedSpendingCap);
   }, [decodedSpendingCap, isNFT, locale]);
 

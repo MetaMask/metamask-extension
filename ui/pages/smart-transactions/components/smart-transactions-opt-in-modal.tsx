@@ -28,7 +28,7 @@ import {
   Icon,
   IconName,
 } from '../../../components/component-library';
-import { setSmartTransactionsOptInStatus } from '../../../store/actions';
+import { setSmartTransactionsPreferenceEnabled } from '../../../store/actions';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 
 export type SmartTransactionsOptInModalProps = {
@@ -166,12 +166,12 @@ export default function SmartTransactionsOptInModal({
   const dispatch = useDispatch();
 
   const handleEnableButtonClick = useCallback(() => {
-    dispatch(setSmartTransactionsOptInStatus(true));
+    dispatch(setSmartTransactionsPreferenceEnabled(true));
   }, [dispatch]);
 
   const handleNoThanksLinkClick = useCallback(() => {
     // Set the Smart Transactions opt-in status to false, so the opt-in modal is not shown again.
-    dispatch(setSmartTransactionsOptInStatus(false));
+    dispatch(setSmartTransactionsPreferenceEnabled(false));
   }, [dispatch]);
 
   useEffect(() => {

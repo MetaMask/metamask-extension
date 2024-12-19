@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import jazzicon from '@metamask/jazzicon';
-import { stringToBytes } from '@metamask/utils';
+import { KnownCaipNamespace, stringToBytes } from '@metamask/utils';
 import iconFactoryGenerator, {
   IconFactory,
 } from '../../../helpers/utils/icon-factory';
+import { getCaipNamespaceFromAddress } from '../../../../shared/lib/multichain';
 
 /**
  * Generates a seed for Jazzicon based on the provided address.
@@ -43,7 +44,7 @@ function Jazzicon({
   diameter = 46,
   style,
   tokenList = {},
-  namespace = 'eip155',
+  namespace: namespace_,
 }: {
   address: string;
   className?: string;
@@ -60,8 +61,12 @@ function Jazzicon({
       return;
     }
 
+    // If the address is unknown, `getCaipNamespaceFromAddress` will defaults to "eip155".
+    const namespace = namespace_ ?? getCaipNamespaceFromAddress(address);
     const iconFactory =
-      namespace === 'eip155' ? ethereumIconFactory : multichainIconFactory;
+      namespace === KnownCaipNamespace.Eip155
+        ? ethereumIconFactory
+        : multichainIconFactory;
 
     const imageNode = iconFactory.iconForAddress(
       address,

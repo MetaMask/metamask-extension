@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowVariant,
@@ -13,7 +12,6 @@ import {
   TextAlign,
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
-import { getPreferences } from '../../../../../../../selectors';
 
 export const GasFeesRow = ({
   label,
@@ -28,9 +26,6 @@ export const GasFeesRow = ({
   nativeFee: string;
   'data-testid'?: string;
 }) => {
-  const { useNativeCurrencyAsPrimaryCurrency: isNativeCurrencyUsed } =
-    useSelector(getPreferences);
-
   return (
     <ConfirmInfoRow
       data-testid={dataTestId}
@@ -47,11 +42,9 @@ export const GasFeesRow = ({
         marginLeft={8}
       >
         <Text marginRight={1} color={TextColor.textDefault}>
-          {isNativeCurrencyUsed ? nativeFee : fiatFee}
+          {nativeFee}
         </Text>
-        <Text color={TextColor.textAlternative}>
-          {isNativeCurrencyUsed ? fiatFee : nativeFee}
-        </Text>
+        <Text color={TextColor.textAlternative}>{fiatFee}</Text>
       </Box>
     </ConfirmInfoRow>
   );

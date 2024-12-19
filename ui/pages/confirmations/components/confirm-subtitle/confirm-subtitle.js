@@ -29,7 +29,6 @@ const ConfirmSubTitle = ({
   if (subtitleComponent) {
     return subtitleComponent;
   }
-
   return (
     <Text
       as="h5"

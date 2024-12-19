@@ -46,7 +46,7 @@ export function ConfirmStoryTemplate(
           }`,
         ]}
       >
-        <Route path="/confirmation/:id" render={() => <ConfirmPage />} />
+        <Route path="/confirmation/:id" element={<ConfirmPage />} />
       </MemoryRouter>
     </Provider>
   );

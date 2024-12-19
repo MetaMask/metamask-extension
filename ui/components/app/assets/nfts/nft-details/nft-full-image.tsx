@@ -30,6 +30,7 @@ export default function NftFullImage() {
   const nfts = useSelector(getNfts);
   const nft = nfts.find(
     ({ address, tokenId }: { address: string; tokenId: string }) =>
+      // @ts-expect-error TODO: Fix this type error by handling undefined parameters
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 

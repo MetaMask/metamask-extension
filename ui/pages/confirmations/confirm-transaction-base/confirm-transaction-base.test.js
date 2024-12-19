@@ -108,9 +108,7 @@ const baseStore = {
       chainId: CHAIN_IDS.GOERLI,
     }),
     tokens: [],
-    preferences: {
-      useNativeCurrencyAsPrimaryCurrency: false,
-    },
+    preferences: {},
     currentCurrency: 'USD',
     currencyRates: {},
     featureFlags: {

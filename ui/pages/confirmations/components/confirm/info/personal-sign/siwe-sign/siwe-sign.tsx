@@ -26,12 +26,12 @@ const SIWESignInfo: React.FC = () => {
   const {
     address,
     chainId,
-    domain,
     issuedAt,
     nonce,
     requestId,
     statement,
     resources,
+    uri,
     version,
   } = siweMessage;
   const hexChainId = toHex(chainId);
@@ -44,7 +44,7 @@ const SIWESignInfo: React.FC = () => {
         <ConfirmInfoRowText text={statement || ''} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweURI')}>
-        <ConfirmInfoRowText text={domain} />
+        <ConfirmInfoRowText text={uri} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweNetwork')}>
         <ConfirmInfoRowText text={network} />

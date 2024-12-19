@@ -9,10 +9,8 @@ import {
 } from '../../../../ducks/metamask/metamask';
 import {
   accountsWithSendEtherInfoSelector,
-  conversionRateSelector,
   getCurrentChainId,
   getCurrentCurrency,
-  getPreferences,
 } from '../../../../selectors';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import {
@@ -38,11 +36,8 @@ const SignatureRequestHeader = ({ txData }) => {
 
   const providerConfig = useSelector(getProviderConfig);
   const networkName = getNetworkNameFromProviderType(providerConfig.type);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const conversionRateFromSelector = useSelector(conversionRateSelector);
-  const conversionRate = useNativeCurrencyAsPrimaryCurrency
-    ? null
-    : conversionRateFromSelector;
+
+  const conversionRate = null; // setting conversion rate to null by default to display balance in native
 
   const currentNetwork =
     networkName === ''

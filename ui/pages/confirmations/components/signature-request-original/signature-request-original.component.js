@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
@@ -275,7 +275,7 @@ export default class SignatureRequestOriginal extends Component {
 
     await rejectPendingApproval(
       id,
-      serializeError(ethErrors.provider.userRejectedRequest()),
+      serializeError(providerErrors.userRejectedRequest()),
     );
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
@@ -304,7 +304,7 @@ export default class SignatureRequestOriginal extends Component {
         onCancel={async () => {
           await rejectPendingApproval(
             txData.id,
-            serializeError(ethErrors.provider.userRejectedRequest()),
+            serializeError(providerErrors.userRejectedRequest()),
           );
           clearConfirmTransaction();
           history.push(mostRecentOverviewPage);

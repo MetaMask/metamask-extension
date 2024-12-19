@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { Text } from '@metamask/snaps-sdk/jsx';
-import { fireEvent } from '@testing-library/react';
 
 import {
   getMockPersonalSignConfirmState,
@@ -58,8 +57,6 @@ describe('SnapsSection', () => {
       mockStore,
     );
 
-    fireEvent.click(getByText('Insights from'));
-
     expect(container).toMatchSnapshot();
     expect(getByText('Hello world!')).toBeDefined();
   });
@@ -78,8 +75,6 @@ describe('SnapsSection', () => {
       <SnapsSection />,
       mockStore,
     );
-
-    fireEvent.click(getByText('Insights from'));
 
     expect(container).toMatchSnapshot();
     expect(getByText('Hello world again!')).toBeDefined();

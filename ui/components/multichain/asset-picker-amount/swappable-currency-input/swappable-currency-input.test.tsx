@@ -6,15 +6,11 @@ import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
 import { SwappableCurrencyInput } from './swappable-currency-input';
 
-const createStore = ({
-  useNativeCurrencyAsPrimaryCurrency,
-  sendInputCurrencySwitched,
-}: Record<string, boolean>) =>
+const createStore = ({ sendInputCurrencySwitched }: Record<string, boolean>) =>
   configureStore({
     ...mockSendState,
     metamask: {
       ...mockSendState.metamask,
-      preferences: { useNativeCurrencyAsPrimaryCurrency },
       marketData: {
         ...mockSendState.metamask.marketData,
         '0x5': {
@@ -37,7 +33,6 @@ describe('SwappableCurrencyInput', () => {
     const { asFragment, getByText } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >
@@ -68,7 +63,6 @@ describe('SwappableCurrencyInput', () => {
     const { asFragment, getByText } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >
@@ -101,7 +95,6 @@ describe('SwappableCurrencyInput', () => {
     const { asFragment } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >
@@ -134,7 +127,6 @@ describe('SwappableCurrencyInput', () => {
     const { asFragment } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >

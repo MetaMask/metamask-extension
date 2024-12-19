@@ -498,12 +498,6 @@
   "prev": {
     "message": "Eelm"
   },
-  "primaryCurrencySetting": {
-    "message": "Põhivaluuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Valige omavääring, et prioriseerida vääringu kuvamist ahela omavääringus (nt ETH). Valige Fiat, et prioriseerida vääringu kuvamist valitud fiat-vääringus."
-  },
   "privacyMsg": {
     "message": "privaatsuspoliitika"
   },
@@ -754,9 +748,6 @@
   },
   "unlockMessage": {
     "message": "Detsentraliseeritud veeb ootab"
-  },
-  "updatedWithDate": {
-    "message": "Värskendatud $1"
   },
   "urlErrorMsg": {
     "message": "URI-d nõuavad sobivat HTTP/HTTPS-i prefiksit."

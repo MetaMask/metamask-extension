@@ -34,7 +34,7 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
   const [value, setValue] = useState(initialValue ?? '');
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue !== undefined && initialValue !== null) {
       setValue(initialValue);
     }
   }, [initialValue]);

@@ -81,6 +81,7 @@ type TokenListItemProps = {
   isStakeable?: boolean;
   address?: string | null;
   showPercentage?: boolean;
+  isPrimaryTokenSymbolHidden?: boolean;
 };
 
 export const TokenListItem = ({
@@ -93,6 +94,7 @@ export const TokenListItem = ({
   title,
   tooltipText,
   isOriginalTokenSymbol,
+  isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
   address = null,
@@ -116,9 +118,13 @@ export const TokenListItem = ({
     return undefined;
   });
 
+  // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
+  // we only use this option for EVM here:
+  const shouldShowPercentage = isEvm && showPercentage;
+
   // Scam warning
   const showScamWarning =
-    isNativeCurrency && !isOriginalTokenSymbol && showPercentage;
+    isNativeCurrency && !isOriginalTokenSymbol && shouldShowPercentage;
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
@@ -146,7 +152,9 @@ export const TokenListItem = ({
     : null;
 
   const tokenTitle = getTokenTitle();
-  const tokenMainTitleToDisplay = showPercentage ? tokenTitle : tokenSymbol;
+  const tokenMainTitleToDisplay = shouldShowPercentage
+    ? tokenTitle
+    : tokenSymbol;
 
   const stakeableTitle = (
     <Box
@@ -319,16 +327,7 @@ export const TokenListItem = ({
                 </Text>
               )}
 
-              {isEvm && !showPercentage ? (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                  data-testid="multichain-token-list-item-token-name"
-                  ellipsis
-                >
-                  {tokenTitle}
-                </Text>
-              ) : (
+              {shouldShowPercentage ? (
                 <PercentageChange
                   value={
                     isNativeCurrency
@@ -341,6 +340,15 @@ export const TokenListItem = ({
                       : (address as `0x${string}`)
                   }
                 />
+              ) : (
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                  data-testid="multichain-token-list-item-token-name"
+                  ellipsis
+                >
+                  {tokenTitle}
+                </Text>
               )}
             </Box>
 
@@ -373,7 +381,10 @@ export const TokenListItem = ({
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
+                  {primary}{' '}
+                  {isNativeCurrency || isPrimaryTokenSymbolHidden
+                    ? ''
+                    : tokenSymbol}
                 </Text>
               </Box>
             ) : (
@@ -396,10 +407,13 @@ export const TokenListItem = ({
                 <Text
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
-                  variant={TextVariant.bodyMd}
+                  variant={TextVariant.bodySmMedium}
                   textAlign={TextAlign.End}
                 >
-                  {primary} {isNativeCurrency ? '' : tokenSymbol}
+                  {primary}{' '}
+                  {isNativeCurrency || isPrimaryTokenSymbolHidden
+                    ? ''
+                    : tokenSymbol}
                 </Text>
               </Box>
             )}

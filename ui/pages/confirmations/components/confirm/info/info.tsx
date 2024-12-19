@@ -6,6 +6,7 @@ import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import PersonalSignInfo from './personal-sign/personal-sign';
 import SetApprovalForAllInfo from './set-approval-for-all-info/set-approval-for-all-info';
+import TokenTransferInfo from './token-transfer/token-transfer';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
 
@@ -29,6 +30,7 @@ const Info = () => {
       [TransactionType.tokenMethodIncreaseAllowance]: () => ApproveInfo,
       [TransactionType.tokenMethodSetApprovalForAll]: () =>
         SetApprovalForAllInfo,
+      [TransactionType.tokenMethodTransfer]: () => TokenTransferInfo,
     }),
     [currentConfirmation],
   );

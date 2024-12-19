@@ -34,6 +34,7 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
+  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
@@ -99,12 +100,14 @@ type AppState = {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
+  showDeleteMetaMetricsDataModal: boolean;
+  showDataDeletionErrorModal: boolean;
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
 };
 
-type AppSliceState = {
+export type AppSliceState = {
   appState: AppState;
 };
 
@@ -127,6 +130,7 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
+  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
@@ -183,6 +187,8 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
+  showDeleteMetaMetricsDataModal: false,
+  showDataDeletionErrorModal: false,
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
@@ -261,6 +267,18 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: true,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: false,
       };
 
     case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
@@ -594,6 +612,26 @@ export default function reduceApp(
         isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
         isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
       };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: true,
+      };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: false,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_OPEN:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: true,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: false,
+      };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
@@ -702,4 +740,28 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function openDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
+  };
+}
+
+export function hideDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+  };
+}
+
+export function openDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_OPEN,
+  };
+}
+
+export function hideDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
+  };
 }

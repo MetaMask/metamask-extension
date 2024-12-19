@@ -55,7 +55,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'insufficientBalance',
-        message: t('alertMessageInsufficientBalance'),
+        message: t('alertMessageInsufficientBalance2'),
         reason: t('alertReasonInsufficientBalance'),
         severity: Severity.Danger,
       },

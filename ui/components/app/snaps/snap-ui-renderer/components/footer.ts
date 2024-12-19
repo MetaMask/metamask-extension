@@ -45,6 +45,7 @@ const getDefaultButtons = (
       key: 'default-button',
       props: {
         onCancel,
+        variant: ButtonVariant.Secondary,
         isSnapAction: false,
       },
       children: t('cancel'),
@@ -62,8 +63,9 @@ export const footer: UIComponentFactory<FooterElement> = ({
 }) => {
   const defaultButtons = getDefaultButtons(element, t, onCancel);
 
+  const providedChildren = getJsxChildren(element);
   const footerChildren: UIComponent[] = (
-    getJsxChildren(element) as ButtonElement[]
+    providedChildren as ButtonElement[]
   ).map((children, index) => {
     const buttonMapped = buttonFn({
       ...params,
@@ -74,7 +76,10 @@ export const footer: UIComponentFactory<FooterElement> = ({
       key: `snap-footer-button-${buttonMapped.props?.name ?? index}`,
       props: {
         ...buttonMapped.props,
-        variant: index === 0 ? ButtonVariant.Secondary : ButtonVariant.Primary,
+        variant:
+          providedChildren.length === 2 && index === 0
+            ? ButtonVariant.Secondary
+            : ButtonVariant.Primary,
         isSnapAction: true,
       },
       children: buttonMapped.children,

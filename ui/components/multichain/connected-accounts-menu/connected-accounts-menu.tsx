@@ -34,7 +34,6 @@ export const ConnectedAccountsMenu = ({
   anchorElement,
   disableAccountSwitcher = false,
   onClose,
-  closeMenu,
   onActionClick,
   activeTabOrigin,
 }: {
@@ -43,7 +42,6 @@ export const ConnectedAccountsMenu = ({
   anchorElement: HTMLElement | null;
   disableAccountSwitcher: boolean;
   onClose: () => void;
-  closeMenu: () => void;
   onActionClick: (message: string) => void;
   activeTabOrigin: string;
 }) => {
@@ -123,7 +121,6 @@ export const ConnectedAccountsMenu = ({
                 onClick={() => {
                   dispatch(setSelectedAccount(account.address));
                   onClose();
-                  closeMenu();
                 }}
               >
                 <Text variant={TextVariant.bodyMd}>

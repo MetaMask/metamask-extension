@@ -1,11 +1,11 @@
 const { strict: assert } = require('assert');
 const {
   createInternalTransaction,
+  createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
 const {
   withFixtures,
-  openDapp,
   unlockWallet,
   generateGanacheOptions,
   WINDOW_TITLES,
@@ -172,11 +172,9 @@ describe('Editing Confirm Transaction', function () {
         // login to extension
         await unlockWallet(driver);
 
-        // open dapp and connect
-        await openDapp(driver);
-        await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
-          tag: 'button',
+        await createDappTransaction(driver, {
+          maxFeePerGas: '0x2000000000',
+          maxPriorityFeePerGas: '0x1000000000',
         });
 
         // check transaction in extension popup
@@ -198,12 +196,12 @@ describe('Editing Confirm Transaction', function () {
           '.currency-display-component__text',
         );
         const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '0');
+        assert.equal(await transactionAmount.getText(), '0.001');
 
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
           css: '.currency-display-component__text',
-          text: '0.00021',
+          text: '0.00185144',
         });
 
         // confirms the transaction
@@ -227,7 +225,7 @@ describe('Editing Confirm Transaction', function () {
           '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
-        assert.ok(/-0\s*ETH/u.test(await txValues[0].getText()));
+        assert.ok(/-0.001\s*ETH/u.test(await txValues[0].getText()));
       },
     );
   });

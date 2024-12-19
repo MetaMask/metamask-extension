@@ -9,7 +9,7 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
-import { fetchErc20Decimals } from '../../utils/token';
+import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
 import { useBalanceChanges } from './useBalanceChanges';
 import { FIAT_UNAVAILABLE } from './types';
 
@@ -92,7 +92,7 @@ describe('useBalanceChanges', () => {
 
   afterEach(() => {
     /** Reset memoized function for each test */
-    fetchErc20Decimals?.cache?.clear?.();
+    memoizedGetTokenStandardAndDetails?.cache?.clear?.();
   });
 
   describe('pending states', () => {

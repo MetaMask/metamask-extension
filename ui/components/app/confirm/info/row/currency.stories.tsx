@@ -12,7 +12,7 @@ const store = configureStore({
     ...mockState.metamask,
     preferences: {
       ...mockState.metamask.preferences,
-      useNativeCurrencyAsPrimaryCurrency: false,
+      showNativeTokenAsMainBalance: false,
     },
   },
 });
@@ -29,7 +29,7 @@ const ConfirmInfoRowCurrencyStory = {
       control: 'text',
     },
   },
-  decorators: [(story: any) => <Provider store={store}>{story()}</Provider>]
+  decorators: [(story: any) => <Provider store={store}>{story()}</Provider>],
 };
 
 export const DefaultStory = ({ variant, value }) => (

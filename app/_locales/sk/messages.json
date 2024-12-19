@@ -238,10 +238,6 @@
   "fast": {
     "message": "Rýchle"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Import souboru nefunguje? Klikněte sem!",
     "description": "Helps user import their account from a JSON file"
@@ -479,12 +475,6 @@
   },
   "prev": {
     "message": "Predchádzajúce"
-  },
-  "primaryCurrencySetting": {
-    "message": "Primárna mena"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Vyberte natívne, ak chcete priorizovať zobrazovanie hodnôt v natívnej mene reťazca (napr. ETH). Ak chcete priorizovať zobrazovanie hodnôt vo svojej vybranej mene fiat, zvoľte možnosť Fiat."
   },
   "privacyMsg": {
     "message": "Zásady ochrany osobních údajů"
@@ -730,9 +720,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizovaný web čaká"
-  },
-  "updatedWithDate": {
-    "message": "Aktualizované $1"
   },
   "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."

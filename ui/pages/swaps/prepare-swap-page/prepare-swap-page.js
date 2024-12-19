@@ -69,8 +69,9 @@ import {
   getDataCollectionForMarketing,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import {
   getValueFromWeiHex,
@@ -212,14 +213,15 @@ export default function PrepareSwapPage({
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
   const isSmartTransaction =
-    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
+    useSelector(getSmartTransactionsPreferenceEnabled) &&
+    currentSmartTransactionsEnabled;
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
@@ -784,10 +786,17 @@ export default function PrepareSwapPage({
     );
   }
 
+  const isNonDefaultToken = !isSwapsDefaultTokenSymbol(
+    fromTokenSymbol,
+    chainId,
+  );
+  const hasPositiveFromTokenBalance = rawFromTokenBalance > 0;
+  const isTokenEligibleForMaxBalance =
+    isSmartTransaction || (!isSmartTransaction && isNonDefaultToken);
   const showMaxBalanceLink =
     fromTokenSymbol &&
-    !isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) &&
-    rawFromTokenBalance > 0;
+    isTokenEligibleForMaxBalance &&
+    hasPositiveFromTokenBalance;
 
   return (
     <div className="prepare-swap-page">

@@ -489,12 +489,6 @@
   "personalAddressDetected": {
     "message": "Adreça personal detectada. Introduir l'adreça del contracte de fitxa."
   },
-  "primaryCurrencySetting": {
-    "message": "Divisa principal"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selecciona Natiu per a prioritzar la mostra de valors en la divisa nadiua de la cadena (p. ex. ETH). Selecciona Fiat per prioritzar la mostra de valors en la divisa fiduciària seleccionada."
-  },
   "privacyMsg": {
     "message": "Política de privadesa"
   },
@@ -739,9 +733,6 @@
   },
   "unlockMessage": {
     "message": "La web descentralitzada està esperant"
-  },
-  "updatedWithDate": {
-    "message": "Actualitzat $1"
   },
   "urlErrorMsg": {
     "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."

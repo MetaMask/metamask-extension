@@ -71,30 +71,18 @@ export default class PermissionPageContainerContent extends PureComponent {
           paddingBottom={4}
         >
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {process.env.CHAIN_PERMISSIONS
-              ? t('reviewPermissions')
-              : t('permissions')}
+            {t('reviewPermissions')}
           </Text>
           <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-            {process.env.CHAIN_PERMISSIONS
-              ? t('nativeNetworkPermissionRequestDescription', [
-                  <Text
-                    as="span"
-                    key={`description_key_${subjectMetadata.origin}`}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {getURLHost(subjectMetadata.origin)}
-                  </Text>,
-                ])
-              : t('nativePermissionRequestDescription', [
-                  <Text
-                    as="span"
-                    key={`description_key_${subjectMetadata.origin}`}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {subjectMetadata.origin}
-                  </Text>,
-                ])}
+            {t('nativeNetworkPermissionRequestDescription', [
+              <Text
+                as="span"
+                key={`description_key_${subjectMetadata.origin}`}
+                fontWeight={FontWeight.Medium}
+              >
+                {getURLHost(subjectMetadata.origin)}
+              </Text>,
+            ])}
           </Text>
         </Box>
         <Box

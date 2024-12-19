@@ -505,12 +505,6 @@
   "prev": {
     "message": "السابق"
   },
-  "primaryCurrencySetting": {
-    "message": "العملة الأساسية"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "حدد خيار \"المحلية\" لتحديد أولويات عرض القيم بالعملة المحلية للسلسلة (مثلاً ETH). حدد Fiat لتحديد أولويات عرض القيم بعملات fiat المحددة الخاصة بك."
-  },
   "privacyMsg": {
     "message": "سياسة الخصوصية"
   },
@@ -761,9 +755,6 @@
   },
   "unlockMessage": {
     "message": "شبكة الويب اللامركزية بانتظارك"
-  },
-  "updatedWithDate": {
-    "message": "تم تحديث $1"
   },
   "urlErrorMsg": {
     "message": "تتطلب الروابط بادئة HTTP/HTTPS مناسبة."

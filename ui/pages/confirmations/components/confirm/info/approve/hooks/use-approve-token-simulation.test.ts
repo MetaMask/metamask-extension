@@ -65,7 +65,7 @@ describe('useApproveTokenSimulation', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "formattedSpendingCap": 7,
+        "formattedSpendingCap": "7",
         "pending": undefined,
         "spendingCap": "#7",
         "value": {
@@ -146,6 +146,72 @@ describe('useApproveTokenSimulation', () => {
                 {
                   "type": "uint256",
                   "value": 1000000000000000,
+                },
+              ],
+            },
+          ],
+          "source": "FourByte",
+        },
+      }
+    `);
+  });
+
+  it('returns correct small decimal number token amount for fungible tokens', async () => {
+    const useIsNFTMock = jest.fn().mockImplementation(() => ({ isNFT: false }));
+
+    const useDecodedTransactionDataMock = jest.fn().mockImplementation(() => ({
+      pending: false,
+      value: {
+        data: [
+          {
+            name: 'approve',
+            params: [
+              {
+                type: 'address',
+                value: '0x9bc5baF874d2DA8D216aE9f137804184EE5AfEF4',
+              },
+              {
+                type: 'uint256',
+                value: 10 ** 5,
+              },
+            ],
+          },
+        ],
+        source: 'FourByte',
+      },
+    }));
+
+    (useIsNFT as jest.Mock).mockImplementation(useIsNFTMock);
+    (useDecodedTransactionData as jest.Mock).mockImplementation(
+      useDecodedTransactionDataMock,
+    );
+
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    const { result } = renderHookWithProvider(
+      () => useApproveTokenSimulation(transactionMeta, '18'),
+      mockState,
+    );
+
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "formattedSpendingCap": "0.0000000000001",
+        "pending": undefined,
+        "spendingCap": "0.0000000000001",
+        "value": {
+          "data": [
+            {
+              "name": "approve",
+              "params": [
+                {
+                  "type": "address",
+                  "value": "0x9bc5baF874d2DA8D216aE9f137804184EE5AfEF4",
+                },
+                {
+                  "type": "uint256",
+                  "value": 100000,
                 },
               ],
             },

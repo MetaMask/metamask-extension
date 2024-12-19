@@ -17,6 +17,7 @@ describe('Localization', function () {
           .withPreferencesController({
             preferences: {
               showFiatInTestnets: true,
+              showNativeTokenAsMainBalance: false,
             },
           })
           .build(),
@@ -26,15 +27,13 @@ describe('Localization', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        const secondaryBalance = await driver.findElement(
-          '[data-testid="eth-overview__secondary-currency"]',
+        // After the removal of displaying secondary currency in coin-overview.tsx, we will test localization on main balance with showNativeTokenAsMainBalance = false
+        const primaryBalance = await driver.findElement(
+          '[data-testid="eth-overview__primary-currency"]',
         );
-        const secondaryBalanceText = await secondaryBalance.getText();
-        const [fiatAmount, fiatUnit] = secondaryBalanceText
-          .trim()
-          .split(/\s+/u);
-        assert.ok(fiatAmount.startsWith('₱'));
-        assert.equal(fiatUnit, 'PHP');
+        const balanceText = await primaryBalance.getText();
+        assert.ok(balanceText.startsWith('₱'));
+        assert.ok(balanceText.endsWith('PHP'));
       },
     );
   });
