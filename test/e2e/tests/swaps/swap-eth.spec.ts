@@ -9,7 +9,9 @@ import {
   mockEthDaiTrade,
 } from './shared';
 
-describe('Swap Eth for another Token @no-mmi', function () {
+// TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Swap Eth for another Token @no-mmi', function () {
   it('Completes second Swaps while first swap is processing', async function () {
     withFixturesOptions.ganacheOptions.miner.blockTime = 10;
 

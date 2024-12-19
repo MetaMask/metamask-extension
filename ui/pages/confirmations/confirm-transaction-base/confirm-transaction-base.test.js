@@ -43,6 +43,7 @@ setBackgroundConnection({
   getNextNonce: jest.fn(),
   updateTransaction: jest.fn(),
   getLastInteractedConfirmationInfo: jest.fn(),
+  setAlertEnabledness: jest.fn(),
 });
 
 const mockTxParamsFromAddress = '0x123456789';
