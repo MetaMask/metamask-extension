@@ -2,6 +2,7 @@ import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import {
+  ACCOUNT_TYPE,
   DEFAULT_BTC_ACCOUNT,
   DEFAULT_BTC_BALANCE,
   DEFAULT_BTC_FEES_RATE,
@@ -14,7 +15,6 @@ import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { ACCOUNT_TYPE } from '../../page-objects/common';
 
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
 
@@ -218,7 +218,7 @@ export async function withBtcAccountSnap(
       await new HeaderNavbar(driver).openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.check_pageIsLoaded();
-      await accountListPage.addAccount(ACCOUNT_TYPE.Bitcoin, '');
+      await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
       await test(driver, mockServer);
     },
   );

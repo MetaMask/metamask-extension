@@ -9,6 +9,7 @@ import {
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
@@ -65,8 +66,14 @@ describe('Account syncing - Rename Accounts @no-mmi', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             'My Second Synced Account',
           );
-          await accountListPage.openAccountOptionsMenu();
-          await accountListPage.changeAccountLabel('My Renamed First Account');
+          await accountListPage.openAccountDetailsModal(
+            'My First Synced Account',
+          );
+          const accountDetailsModal = new AccountDetailsModal(driver);
+          await accountDetailsModal.check_pageIsLoaded();
+          await accountDetailsModal.changeAccountLabel(
+            'My Renamed First Account',
+          );
         },
       );
 
