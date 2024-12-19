@@ -3,9 +3,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   AlignItems,
+  BorderColor,
   BorderRadius,
   BorderStyle,
-  Color,
   Display,
   JustifyContent,
   TextColor,
@@ -14,7 +14,12 @@ import {
 import { getSubjectMetadata } from '../../../selectors';
 import { AvatarFavicon, Box, Text } from '../../component-library';
 
-export default function OriginPill({ origin, dataTestId }) {
+type OriginPillProps = {
+  origin: string;
+  dataTestId: string;
+};
+
+export default function OriginPill({ origin, dataTestId }: OriginPillProps) {
   const subjectMetadata = useSelector(getSubjectMetadata);
 
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
@@ -28,7 +33,7 @@ export default function OriginPill({ origin, dataTestId }) {
       marginRight={4}
       marginLeft={4}
       padding={2}
-      borderColor={Color.borderMuted}
+      borderColor={BorderColor.borderMuted}
       borderStyle={BorderStyle.solid}
       borderRadius={BorderRadius.pill}
       borderWidth={1}
