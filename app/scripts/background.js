@@ -52,8 +52,8 @@ import { checkURLForProviderInjection } from '../../shared/modules/provider-inje
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
-import LocalStore from './lib/local-store';
-import ReadOnlyNetworkStore from './lib/network-store';
+import LocalStore from './lib/state-management/local-store';
+import ReadOnlyNetworkStore from './lib/state-management/network-store';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
 import createStreamSink from './lib/createStreamSink';
