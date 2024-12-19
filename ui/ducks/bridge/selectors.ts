@@ -19,13 +19,17 @@ import {
   ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  RequestStatus,
 } from '../../../shared/constants/bridge';
 import {
-  BridgeControllerState,
+  BridgeState,
   BridgeFeatureFlagsKey,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
+  L1GasFees,
+  QuoteMetadata,
+  QuoteResponse,
+  SortOrder,
+  BridgeToken,
+} from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import {
@@ -33,16 +37,6 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { RequestStatus } from '../../../app/scripts/controllers/bridge/constants';
-import {
-  L1GasFees,
-  BridgeToken,
-  QuoteMetadata,
-  QuoteResponse,
-  SortOrder,
-} from '../../pages/bridge/types';
 import {
   calcAdjustedReturn,
   calcCost,
@@ -59,15 +53,15 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
+import { BridgeSlice } from './bridge';
 import {
-  exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
+  exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
 } from './utils';
-import { BridgeState } from './bridge';
 
 type BridgeAppState = {
-  metamask: { bridgeState: BridgeControllerState } & NetworkState & {
+  metamask: { bridgeState: BridgeState } & NetworkState & {
       useExternalServices: boolean;
       currencyRates: {
         [currency: string]: {
@@ -76,7 +70,7 @@ type BridgeAppState = {
         };
       };
     };
-  bridge: BridgeState;
+  bridge: BridgeSlice;
 };
 
 // only includes networks user has added

@@ -2,7 +2,7 @@ import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import BridgeStatusController from './bridge-status-controller';
 import { BridgeStatusControllerMessenger } from './types';
-import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from './constants';
+import { DEFAULT_BRIDGE_STATUS_STATE } from './constants';
 import * as bridgeStatusUtils from './utils';
 import {
   MockStatusResponse,
@@ -11,7 +11,7 @@ import {
 } from './mocks';
 
 const EMPTY_INIT_STATE = {
-  bridgeStatusState: DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+  bridgeStatusState: DEFAULT_BRIDGE_STATUS_STATE,
 };
 
 const getMessengerMock = ({

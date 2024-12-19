@@ -12,7 +12,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import { FeatureFlagResponse } from '../../../../ui/pages/bridge/types';
+import { FeatureFlagResponse } from '../../../../shared/types/bridge';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,

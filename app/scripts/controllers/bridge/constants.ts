@@ -1,23 +1,16 @@
 import { zeroAddress } from 'ethereumjs-util';
-import { Hex } from '@metamask/utils';
+import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../../shared/constants/bridge';
 import {
-  BRIDGE_DEFAULT_SLIPPAGE,
-  METABRIDGE_ETHEREUM_ADDRESS,
-} from '../../../../shared/constants/bridge';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { BridgeControllerState, BridgeFeatureFlagsKey } from './types';
+  BridgeState,
+  BridgeFeatureFlagsKey,
+  BridgeControllerState,
+} from '../../../../shared/types/bridge';
 
 export const BRIDGE_CONTROLLER_NAME = 'BridgeController';
 export const REFRESH_INTERVAL_MS = 30 * 1000;
 const DEFAULT_MAX_REFRESH_COUNT = 5;
 
-export enum RequestStatus {
-  LOADING,
-  FETCHED,
-  ERROR,
-}
-
-export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
+export const DEFAULT_BRIDGE_STATE: BridgeState = {
   bridgeFeatureFlags: {
     [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
       refreshRate: REFRESH_INTERVAL_MS,
@@ -45,6 +38,6 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
   quotesRefreshCount: 0,
 };
 
-export const METABRIDGE_CHAIN_TO_ADDRESS_MAP: Record<Hex, string> = {
-  [CHAIN_IDS.MAINNET]: METABRIDGE_ETHEREUM_ADDRESS,
+export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
+  bridgeState: { ...DEFAULT_BRIDGE_STATE },
 };

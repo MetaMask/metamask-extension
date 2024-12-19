@@ -14,7 +14,7 @@ import {
   QuoteMetadata,
   QuoteResponse,
   SortOrder,
-} from '../../pages/bridge/types';
+} from '../../../shared/types/bridge';
 import {
   getAllBridgeableNetworks,
   getBridgeQuotes,

@@ -1,7 +1,5 @@
 import React from 'react';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { RequestStatus } from '../../../../app/scripts/controllers/bridge/constants';
+import { RequestStatus } from '../../../../shared/constants/bridge';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
