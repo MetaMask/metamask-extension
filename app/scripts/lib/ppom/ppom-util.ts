@@ -173,8 +173,7 @@ function normalizePPOMRequest(
       request,
     )
   ) {
-    sanitizeRequest(request);
-    return request;
+    return sanitizeRequest(request);
   }
 
   const transactionParams = request.params[0];
@@ -186,15 +185,20 @@ function normalizePPOMRequest(
   };
 }
 
-function sanitizeRequest(request: JsonRpcRequest) {
+function sanitizeRequest(request: JsonRpcRequest): JsonRpcRequest {
+  // This is a temporary fix to prevent a PPOM bypass
   if (
     request.method === METHOD_SIGN_TYPED_DATA_V4 ||
     request.method === METHOD_SIGN_TYPED_DATA_V3
   ) {
     if (Array.isArray(request.params)) {
-      request.params = request.params.slice(0, 2);
+      return {
+        ...request,
+        params: request.params.slice(0, 2),
+      };
     }
   }
+  return request;
 }
 
 function getErrorMessage(error: unknown) {
