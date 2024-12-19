@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "正在添加网络"
   },
-  "addingTokens": {
-    "message": "正在添加代币"
-  },
   "additionalNetworks": {
     "message": "其他网络"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "自动检测钱包中的代币，显示 NFT，并获取批量账户余额更新"
   },
-  "attemptSendingAssets": {
-    "message": "如果您试图将资产从一个网络直接发送到另一个网络，这可能会导致永久的资产损失。请务必使用跨链桥进行操作。"
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "如果您尝试将资产从一个网络发送到另一个网络，这可能会导致资产损失。请务必使用跨链桥在不同网络间安全转移资金，例如 $1"
-  },
   "attemptToCancelSwapForFree": {
     "message": "尝试免费取消兑换"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "正在计算......"
   },
-  "bridgeDontSend": {
-    "message": "跨链桥，不要发送"
-  },
   "bridgeEnterAmount": {
     "message": "输入金额"
   },
@@ -858,7 +846,6 @@
   "bridgeTo": {
     "message": "桥接至"
   },
-
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
   },
@@ -954,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "点击这里以通过 WebHID 连接您的 Ledger",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "请点击这里，以手动添加代币。"
   },
   "close": {
     "message": "关闭"
@@ -2139,9 +2123,6 @@
   "gasFee": {
     "message": "燃料费"
   },
-  "gasIsETH": {
-    "message": "燃料是 $1 "
-  },
   "gasLimit": {
     "message": "燃料限制"
   },
@@ -2703,9 +2684,6 @@
   "learnScamRisk": {
     "message": "欺诈和安全风险信息。"
   },
-  "learnToBridge": {
-    "message": "了解跨链桥"
-  },
   "leaveMetaMask": {
     "message": "要离开 MetaMask？"
   },
@@ -2901,9 +2879,6 @@
   "metamaskNotificationsAreOff": {
     "message": "钱包通知目前未开启。"
   },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio。"
-  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps 正在进行维护。请稍后再查看。"
   },
@@ -3047,10 +3022,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 请求您的批准，以便：",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "此网络上的原生代币为 $1。它是用于燃料费的代币。 ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "编辑网络详情"
@@ -5941,9 +5912,6 @@
     "message": "$1 现已在 $2 上激活",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "您现在使用的是"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "切换网络将取消所有待处理的确认"
   },
@@ -5979,9 +5947,6 @@
   },
   "themeDescription": {
     "message": "选择您喜欢的MetaMask主题。"
-  },
-  "thingsToKeep": {
-    "message": "注意事项:"
   },
   "thirdPartySoftware": {
     "message": "第三方软件通告",
@@ -6063,9 +6028,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "代币欺诈和安全风险。"
-  },
-  "tokenShowUp": {
-    "message": "您的代币可能不会自动显示在您的钱包中。"
   },
   "tokenStandard": {
     "message": "代币标准"
