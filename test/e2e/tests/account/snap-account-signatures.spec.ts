@@ -16,6 +16,7 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
+import { DAPP_URL } from '../../constants';
 
 describe('Snap Account Signatures @no-mmi', function (this: Suite) {
   this.timeout(200000); // This test is very long, so we need an unusually high timeout
@@ -30,11 +31,7 @@ describe('Snap Account Signatures @no-mmi', function (this: Suite) {
       await withFixtures(
         {
           dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp({
-              restrictReturnedAccounts: false,
-            })
-            .build(),
+          fixtures: new FixtureBuilder().build(),
           title,
         },
         async ({ driver }: { driver: Driver }) => {
@@ -62,8 +59,22 @@ describe('Snap Account Signatures @no-mmi', function (this: Suite) {
           await experimentalSettings.check_pageIsLoaded();
           await experimentalSettings.toggleRedesignedSignature();
 
-          // Run all 5 signature types
+          // Connect the SSK account
           await new TestDapp(driver).openTestDappPage();
+
+          await driver.findClickableElement({ text: 'Connect', tag: 'button' });
+          await driver.clickElement('#connectButton');
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Connect',
+            tag: 'button',
+          });
+
+          await driver.switchToWindowWithUrl(DAPP_URL);
+
+          // Run all 5 signature types
           await personalSignWithSnapAccount(
             driver,
             newPublicKey,

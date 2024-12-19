@@ -24,7 +24,10 @@ describe('Increase Token Allowance', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
+          .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountIdentities()
+          .withPermissionControllerConnectedToTestDappWithTwoAccounts()
           .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
@@ -32,7 +35,7 @@ describe('Increase Token Allowance', function () {
       },
       async ({ driver, contractRegistry }) => {
         const ACCOUNT_1_NAME = 'Account 1';
-        const ACCOUNT_2_NAME = '2nd Account';
+        const ACCOUNT_2_NAME = 'Account 2';
 
         const initialSpendingCap = '1';
         const additionalSpendingCap = '1';
@@ -40,6 +43,8 @@ describe('Increase Token Allowance', function () {
         await unlockWallet(driver);
 
         await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
+        await switchToAccountWithName(driver, ACCOUNT_1_NAME);
 
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
@@ -50,7 +55,6 @@ describe('Increase Token Allowance', function () {
         await approveTokenSpendingCapTo(driver, ACCOUNT_2, initialSpendingCap);
 
         await sendTransaction(driver, ACCOUNT_2, '1');
-        await addAccount(driver, ACCOUNT_2_NAME);
 
         await triggerTransferFromTokens(driver, ACCOUNT_1, ACCOUNT_2);
         // 'Transfer From Tokens' on the test dApp attempts to transfer 1.5 TST.
@@ -123,23 +127,6 @@ describe('Increase Token Allowance', function () {
     await driver.waitForSelector({
       css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
       text: 'Approve TST spending cap',
-    });
-  }
-
-  async function addAccount(driver, newAccountName) {
-    await driver.clickElement('[data-testid="account-menu-icon"]');
-    await driver.clickElement(
-      '[data-testid="multichain-account-menu-popover-action-button"]',
-    );
-    await driver.clickElement(
-      '[data-testid="multichain-account-menu-popover-add-account"]',
-    );
-
-    await driver.fill('[placeholder="Account 2"]', newAccountName);
-    await driver.clickElement({ text: 'Add account', tag: 'button' });
-    await driver.findElement({
-      css: '[data-testid="account-menu-icon"]',
-      text: newAccountName,
     });
   }
 

@@ -30,12 +30,12 @@ import {
   BlockSize,
 } from '../../../helpers/constants/design-system';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 type EditAccountsModalProps = {
   accounts: MergedInternalAccount[];
@@ -60,7 +60,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 
   useEffect(() => {
     setSelectedAccountAddresses(defaultSelectedAccountAddresses);
-  }, [defaultSelectedAccountAddresses]);
+  }, [JSON.stringify(defaultSelectedAccountAddresses)]);
 
   const selectAll = () => {
     const allNetworksAccountAddresses = accounts.map(({ address }) => address);
