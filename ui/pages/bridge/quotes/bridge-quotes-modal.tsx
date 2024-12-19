@@ -83,7 +83,7 @@ export const BridgeQuotesModal = ({
         </ModalHeader>
 
         {/* HEADERS */}
-        <Row padding={[4, 3]} paddingBottom={1}>
+        <Row paddingTop={3} paddingBottom={1} paddingInline={4}>
           {[
             [SortOrder.COST_ASC, t('bridgeNetCost'), IconName.Arrow2Up],
             [SortOrder.ETA_ASC, t('time'), IconName.Arrow2Down],
