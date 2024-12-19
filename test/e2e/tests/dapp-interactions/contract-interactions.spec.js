@@ -7,8 +7,8 @@ const {
   WINDOW_TITLES,
   locateAccountBalanceDOM,
   clickNestedButton,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
-
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -31,6 +31,8 @@ describe('Deploy contract and call contract methods', function () {
           smartContract,
         );
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // deploy contract
         await openDapp(driver, contractAddress);

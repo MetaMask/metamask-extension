@@ -9,9 +9,13 @@ import {
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { signatureRequestSIWE } from '../../../../../../../test/data/confirmations/personal_sign';
-import * as utils from '../../../../utils';
+import {
+  signatureRequestSIWE,
+  unapprovedPersonalSignMsg,
+} from '../../../../../../../test/data/confirmations/personal_sign';
 import * as snapUtils from '../../../../../../helpers/utils/snaps';
+import { SignatureRequestType } from '../../../../types/confirm';
+import * as utils from '../../../../utils';
 import PersonalSignInfo from './personal-sign';
 
 jest.mock(
@@ -183,5 +187,23 @@ describe('PersonalSignInfo', () => {
     expect(
       queryByText('This is the site asking for your signature.'),
     ).toBeDefined();
+  });
+
+  it('display hex message value if it can not be converted to valid UTF-8 string', () => {
+    const message =
+      '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470';
+    const state = getMockPersonalSignConfirmStateForRequest({
+      ...unapprovedPersonalSignMsg,
+      msgParams: {
+        ...unapprovedPersonalSignMsg.msgParams,
+        data: message,
+      },
+    } as SignatureRequestType);
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithConfirmContextProvider(
+      <PersonalSignInfo />,
+      mockStore,
+    );
+    expect(getByText(message)).toBeDefined();
   });
 });

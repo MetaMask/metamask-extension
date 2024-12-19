@@ -39,6 +39,7 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { getCurrentLocale } from '../../../../../ducks/locale/locale';
 import Spinner from '../../../../ui/spinner';
+import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -92,6 +93,12 @@ export default function NftsTab() {
     nickname,
     currentLocale,
   ]);
+
+  useEffect(() => {
+    if (!nftsLoading && !nftsStillFetchingIndication) {
+      endTrace({ name: TraceName.AccountOverviewNftsTab });
+    }
+  }, [nftsLoading, nftsStillFetchingIndication]);
 
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (

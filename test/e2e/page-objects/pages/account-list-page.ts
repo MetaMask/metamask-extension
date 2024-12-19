@@ -1,11 +1,21 @@
 import { Driver } from '../../webdriver/driver';
-import { largeDelayMs } from '../../helpers';
+import { largeDelayMs, regularDelayMs } from '../../helpers';
+import messages from '../../../../app/_locales/en/messages.json';
+import { ACCOUNT_TYPE } from '../common';
 
 class AccountListPage {
   private readonly driver: Driver;
 
+  private readonly accountAddressText = '.qr-code__address-segments';
+
+  private readonly accountListAddressItem =
+    '[data-testid="account-list-address"]';
+
   private readonly accountListBalance =
     '[data-testid="second-currency-display"]';
+
+  private readonly accountValueAndSuffix =
+    '[data-testid="account-value-and-suffix"]';
 
   private readonly accountListItem =
     '.multichain-account-menu-popover__list--menu-item';
@@ -25,8 +35,23 @@ class AccountListPage {
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
 
+  private readonly addBtcAccountButton = {
+    text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  };
+
+  private readonly addSolanaAccountButton = {
+    text: messages.addNewSolanaAccount.message,
+    tag: 'button',
+  };
+
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
+
+  private readonly addHardwareWalletButton = {
+    text: 'Add hardware wallet',
+    tag: 'button',
+  };
 
   private readonly addImportedAccountButton =
     '[data-testid="multichain-account-menu-popover-add-imported-account"]';
@@ -36,7 +61,8 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly closeAccountModalButton = 'button[aria-label="Close"]';
+  private readonly closeAccountModalButton =
+    'header button[aria-label="Close"]';
 
   private readonly createAccountButton =
     '[data-testid="multichain-account-menu-popover-action-button"]';
@@ -93,6 +119,11 @@ class AccountListPage {
     tag: 'div',
   };
 
+  private readonly removeAccountNevermindButton = {
+    text: 'Nevermind',
+    tag: 'button',
+  };
+
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
 
@@ -114,15 +145,21 @@ class AccountListPage {
   }
 
   /**
-   * Adds a new account with a custom label.
+   * Adds a new account with an optional custom label.
    *
-   * @param customLabel - The custom label for the new account.
+   * @param customLabel - The custom label for the new account. If not provided, a default name will be used.
    */
-  async addNewAccountWithCustomLabel(customLabel: string): Promise<void> {
-    console.log(`Adding new account with custom label: ${customLabel}`);
+  async addNewAccount(customLabel?: string): Promise<void> {
+    if (customLabel) {
+      console.log(`Adding new account with custom label: ${customLabel}`);
+    } else {
+      console.log(`Adding new account with default name`);
+    }
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addEthereumAccountButton);
-    await this.driver.fill(this.accountNameInput, customLabel);
+    if (customLabel) {
+      await this.driver.fill(this.accountNameInput, customLabel);
+    }
     // needed to mitigate a race condition with the state update
     // there is no condition we can wait for in the UI
     await this.driver.delay(largeDelayMs);
@@ -131,20 +168,11 @@ class AccountListPage {
     );
   }
 
-  /**
-   * Adds a new account with default next available name.
-   *
-   */
-  async addNewAccountWithDefaultName(): Promise<void> {
-    console.log(`Adding new account with next available name`);
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.addEthereumAccountButton);
-    // needed to mitigate a race condition with the state update
-    // there is no condition we can wait for in the UI
-    await this.driver.delay(largeDelayMs);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.addAccountConfirmButton,
+  async isBtcAccountCreationButtonEnabled() {
+    const createButton = await this.driver.findElement(
+      this.addBtcAccountButton,
     );
+    return await createButton.isEnabled();
   }
 
   /**
@@ -175,6 +203,48 @@ class AccountListPage {
   }
 
   /**
+   * Adds a new account of the specified type with an optional custom name.
+   *
+   * @param accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
+   * @param accountName - Optional custom name for the new account
+   * @throws {Error} If the specified account type is not supported
+   * @example
+   * // Add a new Ethereum account with default name
+   * await accountListPage.addAccount(ACCOUNT_TYPE.Ethereum);
+   *
+   * // Add a new Bitcoin account with custom name
+   * await accountListPage.addAccount(ACCOUNT_TYPE.Bitcoin, 'My BTC Wallet');
+   */
+  async addAccount(accountType: ACCOUNT_TYPE, accountName?: string) {
+    await this.driver.clickElement(this.createAccountButton);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let addAccountButton: any;
+    switch (accountType) {
+      case ACCOUNT_TYPE.Ethereum:
+        addAccountButton = this.addEthereumAccountButton;
+        break;
+      case ACCOUNT_TYPE.Bitcoin:
+        addAccountButton = this.addBtcAccountButton;
+        break;
+      case ACCOUNT_TYPE.Solana:
+        addAccountButton = this.addSolanaAccountButton;
+        break;
+      default:
+        throw new Error('Account type not supported');
+    }
+
+    await this.driver.clickElement(addAccountButton);
+    if (accountName) {
+      await this.driver.fill(this.accountNameInput, accountName);
+    }
+
+    await this.driver.clickElementAndWaitToDisappear(
+      this.addAccountConfirmButton,
+      5000,
+    );
+  }
+
+  /**
    * Changes the label of the current account.
    *
    * @param newLabel - The new label to set for the account.
@@ -182,6 +252,33 @@ class AccountListPage {
   async changeAccountLabel(newLabel: string): Promise<void> {
     console.log(`Changing account label to: ${newLabel}`);
     await this.driver.clickElement(this.accountMenuButton);
+    await this.changeLabelFromAccountDetailsModal(newLabel);
+  }
+
+  /**
+   * Changes the account label from within an already opened account details modal.
+   * Note: This method assumes the account details modal is already open.
+   *
+   * Recommended usage:
+   * ```typescript
+   * await accountListPage.openAccountDetailsModal('Current Account Name');
+   * await accountListPage.changeLabelFromAccountDetailsModal('New Account Name');
+   * ```
+   *
+   * @param newLabel - The new label to set for the account
+   * @throws Will throw an error if the modal is not open when method is called
+   * @example
+   * // To rename a specific account, first open its details modal:
+   * await accountListPage.openAccountDetailsModal('Current Account Name');
+   * await accountListPage.changeLabelFromAccountDetailsModal('New Account Name');
+   *
+   * // Note: Using changeAccountLabel() alone will only work for the first account
+   */
+  async changeLabelFromAccountDetailsModal(newLabel: string): Promise<void> {
+    await this.driver.waitForSelector(this.editableLabelButton);
+    console.log(
+      `Account details modal opened, changing account label to: ${newLabel}`,
+    );
     await this.driver.clickElement(this.editableLabelButton);
     await this.driver.fill(this.editableLabelInput, newLabel);
     await this.driver.clickElement(this.saveAccountLabelButton);
@@ -193,6 +290,23 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
     );
+  }
+
+  /**
+   * Get the address of the specified account.
+   *
+   * @param accountLabel - The label of the account to get the address.
+   */
+  async getAccountAddress(accountLabel: string): Promise<string> {
+    console.log(`Get account address in account list`);
+    await this.openAccountOptionsInAccountList(accountLabel);
+    await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.waitForSelector(this.accountAddressText);
+    const accountAddress = await (
+      await this.driver.findElement(this.accountAddressText)
+    ).getText();
+    await this.driver.clickElement(this.closeAccountModalButton);
+    return accountAddress;
   }
 
   async hideAccount(): Promise<void> {
@@ -253,6 +367,39 @@ class AccountListPage {
     );
   }
 
+  /**
+   * Checks that the account value and suffix is displayed in the account list.
+   *
+   * @param expectedValueAndSuffix - The expected value and suffix to check.
+   */
+  async check_accountValueAndSuffixDisplayed(
+    expectedValueAndSuffix: string,
+  ): Promise<void> {
+    console.log(
+      `Check that account value and suffix ${expectedValueAndSuffix} is displayed in account list`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountValueAndSuffix,
+      text: expectedValueAndSuffix,
+    });
+  }
+
+  async check_addBitcoinAccountAvailable(
+    expectedAvailability: boolean,
+  ): Promise<void> {
+    console.log(
+      `Check add bitcoin account button is ${
+        expectedAvailability ? 'displayed ' : 'not displayed'
+      }`,
+    );
+    await this.openAddAccountModal();
+    if (expectedAvailability) {
+      await this.driver.waitForSelector(this.addBtcAccountButton);
+    } else {
+      await this.driver.assertElementNotPresent(this.addBtcAccountButton);
+    }
+  }
+
   async openAccountOptionsMenu(): Promise<void> {
     console.log(`Open account option menu`);
     await this.driver.waitForSelector(this.accountListItem);
@@ -263,6 +410,15 @@ class AccountListPage {
     console.log(`Open add account modal in account list`);
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.waitForSelector(this.addEthereumAccountButton);
+  }
+
+  async openConnectHardwareWalletModal(): Promise<void> {
+    console.log(`Open connect hardware wallet modal`);
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.clickElement(this.addHardwareWalletButton);
+    // This delay is needed to mitigate an existing bug in FF
+    // See https://github.com/metamask/metamask-extension/issues/25851
+    await this.driver.delay(regularDelayMs);
   }
 
   async openHiddenAccountOptions(): Promise<void> {
@@ -284,13 +440,23 @@ class AccountListPage {
    * Remove the specified account from the account list.
    *
    * @param accountLabel - The label of the account to remove.
+   * @param confirmRemoval - Whether to confirm the removal of the account. Defaults to true.
    */
-  async removeAccount(accountLabel: string): Promise<void> {
+  async removeAccount(
+    accountLabel: string,
+    confirmRemoval: boolean = true,
+  ): Promise<void> {
     console.log(`Remove account in account list`);
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.removeAccountButton);
     await this.driver.waitForSelector(this.removeAccountMessage);
-    await this.driver.clickElement(this.removeAccountConfirmButton);
+    if (confirmRemoval) {
+      console.log('Confirm removal of account');
+      await this.driver.clickElement(this.removeAccountConfirmButton);
+    } else {
+      console.log('Click nevermind button to cancel account removal');
+      await this.driver.clickElement(this.removeAccountNevermindButton);
+    }
   }
 
   async switchToAccount(expectedLabel: string): Promise<void> {
@@ -311,6 +477,18 @@ class AccountListPage {
   async unpinAccount(): Promise<void> {
     console.log(`Unpin account in account list`);
     await this.driver.clickElement(this.pinUnpinAccountButton);
+  }
+
+  async check_accountAddressDisplayedInAccountList(
+    expectedAddress: string,
+  ): Promise<void> {
+    console.log(
+      `Check that account address ${expectedAddress} is displayed in account list`,
+    );
+    await this.driver.waitForSelector({
+      css: this.accountListAddressItem,
+      text: expectedAddress,
+    });
   }
 
   /**
@@ -395,6 +573,19 @@ class AccountListPage {
     });
   }
 
+  /**
+   * Verifies that all occurrences of the account balance value and symbol are displayed as private.
+   *
+   */
+  async check_balanceIsPrivateEverywhere(): Promise<void> {
+    console.log(`Verify all account balance occurrences are private`);
+    const balanceSelectors = {
+      tag: 'span',
+      text: '••••••',
+    };
+    await this.driver.elementCountBecomesN(balanceSelectors, 6);
+  }
+
   async check_currentAccountIsImported(): Promise<void> {
     console.log(`Check that current account is an imported account`);
     await this.driver.waitForSelector({
@@ -419,11 +610,17 @@ class AccountListPage {
     console.log(
       `Verify the number of accounts in the account menu is: ${expectedNumberOfAccounts}`,
     );
+
+    await this.driver.waitForSelector(this.accountListItem);
     await this.driver.wait(async () => {
       const internalAccounts = await this.driver.findElements(
         this.accountListItem,
       );
-      return internalAccounts.length === expectedNumberOfAccounts;
+      const isValid = internalAccounts.length === expectedNumberOfAccounts;
+      console.log(
+        `Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${isValid}`,
+      );
+      return isValid;
     }, 20000);
   }
 

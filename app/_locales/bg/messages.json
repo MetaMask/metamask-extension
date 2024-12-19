@@ -381,9 +381,6 @@
   "loading": {
     "message": "Зарежда се..."
   },
-  "loadingTokens": {
-    "message": "Зареждане на жетони..."
-  },
   "localhost": {
     "message": "Локален хост 8545"
   },

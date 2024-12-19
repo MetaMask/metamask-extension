@@ -264,6 +264,7 @@ describe('Custom RPC history', function () {
         const customRpcs = await driver.findElements({
           text: 'Localhost 8545',
           tag: 'p',
+          css: '.multichain-network-list-item__tooltip',
         });
 
         // click Mainnet to dismiss network dropdown

@@ -4,6 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import BigNumber from 'bignumber.js';
 import {
   getDetectedTokensInCurrentNetwork,
   getKnownMethodData,
@@ -35,6 +36,10 @@ import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
+import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
+import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
+import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
+import { getIntlLocale } from '../ducks/locale/locale';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -43,6 +48,7 @@ import { useTokenDisplayValue } from './useTokenDisplayValue';
 import { useTokenData } from './useTokenData';
 import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
+import useBridgeChainInfo from './bridge/useBridgeChainInfo';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:
@@ -79,6 +85,10 @@ const signatureTypes = [
  * @property {boolean} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
  * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
+ * @property {string} date - the formatted date of the transaction
+ * @property {string} displayedStatusKey - the key representing the displayed status of the transaction
+ * @property {boolean} isPending - indicates if the transaction is pending
+ * @property {boolean} isSubmitted - indicates if the transaction has been submitted
  */
 
 /**
@@ -96,12 +106,23 @@ export function useTransactionDisplayData(transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
   const dispatch = useDispatch();
+  const locale = useSelector(getIntlLocale);
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getTokens);
   const knownNfts = useSelector(getNfts);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
   const tokenList = useSelector(getTokenList);
   const t = useI18nContext();
+
+  // Bridge data
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  const srcTxMetaId = transactionGroup.initialTransaction.id;
+  const bridgeHistoryItem = bridgeHistory[srcTxMetaId];
+  const { destNetwork } = useBridgeChainInfo({
+    bridgeHistoryItem,
+    srcTxMeta: transactionGroup.initialTransaction,
+  });
+  const destChainName = destNetwork?.name;
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
@@ -241,6 +262,8 @@ export function useTransactionDisplayData(transactionGroup) {
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
+  const bridgeTokenDisplayData = useBridgeTokenDisplayData(transactionGroup);
+
   if (signatureTypes.includes(type)) {
     category = TransactionGroupCategory.signatureRequest;
     title = t('signatureRequest');
@@ -357,6 +380,22 @@ export function useTransactionDisplayData(transactionGroup) {
     category = TransactionGroupCategory.send;
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
+  } else if (type === TransactionType.bridgeApproval) {
+    title = t('bridgeApproval');
+    category = TransactionGroupCategory.approval;
+    title = t('bridgeApproval', [primaryTransaction.sourceTokenSymbol]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+    primarySuffix = primaryTransaction.sourceTokenSymbol;
+  } else if (type === TransactionType.bridge) {
+    title = t('bridgeToChain', [destChainName || '']);
+    category = bridgeTokenDisplayData.category;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    primaryDisplayValue = formatAmount(
+      locale,
+      new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
+    );
+    secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else {
     dispatch(
       captureSingleException(

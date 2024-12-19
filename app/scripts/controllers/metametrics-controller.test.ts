@@ -10,7 +10,7 @@ import {
   Token,
   TokensControllerState,
 } from '@metamask/assets-controllers';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { merge } from 'lodash';
@@ -309,6 +309,7 @@ describe('MetaMetricsController', function () {
           });
 
           const expectedFragment = merge(
+            {},
             SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT,
             SAMPLE_PERSISTED_EVENT_NO_ID,
             {
@@ -1453,7 +1454,7 @@ describe('MetaMetricsController', function () {
           participateInMetaMetrics: true,
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true },
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
@@ -1494,6 +1495,7 @@ describe('MetaMetricsController', function () {
           ///: END:ONLY_INCLUDE_IF
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
           [MetaMetricsUserTrait.PrivacyModeEnabled]: true,
+          [MetaMetricsUserTrait.NetworkFilterPreference]: [],
         });
       });
     });
@@ -1543,7 +1545,7 @@ describe('MetaMetricsController', function () {
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true },
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           securityAlertsEnabled: true,
           names: {
             ethereumAddress: {},
@@ -1607,7 +1609,7 @@ describe('MetaMetricsController', function () {
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true },
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           securityAlertsEnabled: true,
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
@@ -1667,12 +1669,12 @@ describe('MetaMetricsController', function () {
           },
           ShowNativeTokenAsMainBalance: true,
           allNfts: {},
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           names: {
             ethereumAddress: {},
           },
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: false,
-          preferences: { privacyMode: true },
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
@@ -1718,7 +1720,7 @@ describe('MetaMetricsController', function () {
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true },
+          preferences: { privacyMode: true, tokenNetworkFilter: [] },
           names: {
             ethereumAddress: {},
           },
@@ -1838,6 +1840,40 @@ describe('MetaMetricsController', function () {
           );
         },
       );
+    });
+  });
+  describe('updateExtensionUninstallUrl', function () {
+    it('should include extension version in uninstall URL regardless of MetaMetrics participation', async function () {
+      await withController(({ controller }) => {
+        const setUninstallURLSpy = jest.spyOn(
+          MOCK_EXTENSION.runtime,
+          'setUninstallURL',
+        );
+
+        // Test with MetaMetrics disabled
+        controller.updateExtensionUninstallUrl(false, 'test-id');
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining(`av=${VERSION}`),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.not.stringContaining('mmi='),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.not.stringContaining('env='),
+        );
+
+        // Test with MetaMetrics enabled
+        controller.updateExtensionUninstallUrl(true, 'test-id');
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining(`av=${VERSION}`),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining('mmi='),
+        );
+        expect(setUninstallURLSpy).toHaveBeenCalledWith(
+          expect.stringContaining('env='),
+        );
+      });
     });
   });
 });

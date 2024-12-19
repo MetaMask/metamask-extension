@@ -13,6 +13,7 @@ import {
 } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getSendTo } from '../../../ducks/send';
+import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_SEND_ETHER_PATH,
@@ -27,7 +28,6 @@ import { isTokenMethodAction } from '../../../helpers/utils/transactions.util';
 import usePolling from '../../../hooks/usePolling';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
-  getSelectedNetworkClientId,
   unconfirmedTransactionsHashSelector,
   unconfirmedTransactionsListSelector,
   use4ByteResolutionSelector,
@@ -133,9 +133,7 @@ const ConfirmTransaction = () => {
   });
 
   useEffect(() => {
-    if (!totalUnapproved && !sendTo) {
-      history.replace(mostRecentOverviewPage);
-    } else {
+    if (totalUnapproved || sendTo) {
       const { txParams: { data } = {}, origin } = transaction;
 
       if (origin !== ORIGIN_METAMASK) {

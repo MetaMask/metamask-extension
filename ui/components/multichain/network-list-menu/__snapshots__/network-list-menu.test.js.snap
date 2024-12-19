@@ -116,7 +116,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       class="mm-box multichain-network-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
                     />
                     <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       <img
                         alt="Ethereum Mainnet logo"
@@ -132,12 +132,23 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
                         data-testid="Ethereum Mainnet"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
+                        <div
+                          class="multichain-network-list-item__tooltip"
                         >
-                          Ethereum Mainnet
-                        </p>
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Ethereum Mainnet
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -167,7 +178,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                   >
                     <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       <img
                         alt="Linea Mainnet logo"
@@ -183,12 +194,23 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
                         data-testid="Linea Mainnet"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
+                        <div
+                          class="multichain-network-list-item__tooltip"
                         >
-                          Linea Mainnet
-                        </p>
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Linea Mainnet
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -218,7 +240,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                   >
                     <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       <img
                         alt="BNB Chain logo"
@@ -234,12 +256,23 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
                         data-testid="BNB Chain"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
+                        <div
+                          class="multichain-network-list-item__tooltip"
                         >
-                          BNB Chain
-                        </p>
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              BNB Chain
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -269,7 +302,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     class="mm-box multichain-network-list-item mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
                   >
                     <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       C
                     </div>
@@ -281,12 +314,23 @@ exports[`NetworkListMenu renders properly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
                         data-testid="Chain 5"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-                          tabindex="0"
+                        <div
+                          class="multichain-network-list-item__tooltip"
                         >
-                          Chain 5
-                        </p>
+                          <div
+                            class=""
+                            style="display: inline;"
+                            tabindex="0"
+                            title=""
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                              tabindex="0"
+                            >
+                              Chain 5
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <button
@@ -337,7 +381,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
                           alt="Arbitrum One logo"
@@ -375,7 +419,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
                           alt="Avalanche Network C-Chain logo"
@@ -413,7 +457,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
                           alt="Base Mainnet logo"
@@ -451,7 +495,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
                           alt="OP Mainnet logo"
@@ -489,7 +533,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
                           alt="Polygon Mainnet logo"
@@ -527,7 +571,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
                           alt="zkSync Era Mainnet logo"
@@ -575,7 +619,7 @@ exports[`NetworkListMenu renders properly 1`] = `
                     style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
                   >
                     <div
-                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(132, 140, 150);"
+                      style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
                     >
                       <div
                         style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"

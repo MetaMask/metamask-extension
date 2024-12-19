@@ -335,9 +335,6 @@
   "loading": {
     "message": "Naglo-load..."
   },
-  "loadingTokens": {
-    "message": "Naglo-load ng Mga Token..."
-  },
   "lock": {
     "message": "Mag-log out"
   },

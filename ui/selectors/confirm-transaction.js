@@ -11,7 +11,6 @@ import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
-  getProviderConfig,
 } from '../ducks/metamask/metamask';
 import {
   GasEstimateTypes,
@@ -29,10 +28,13 @@ import {
   subtractHexes,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
+import {
+  getProviderConfig,
+  getCurrentChainId,
+} from '../../shared/modules/selectors/networks';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
-  getCurrentChainId,
   getMetaMaskAccounts,
   getTokenExchangeRates,
 } from './selectors';
@@ -40,17 +42,13 @@ import {
   getUnapprovedTransactions,
   selectTransactionMetadata,
   selectTransactionSender,
+  unapprovedPersonalMsgsSelector,
+  unapprovedDecryptMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedTypedMessagesSelector,
 } from './transactions';
 
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
-const unapprovedPersonalMsgsSelector = (state) =>
-  state.metamask.unapprovedPersonalMsgs;
-const unapprovedDecryptMsgsSelector = (state) =>
-  state.metamask.unapprovedDecryptMsgs;
-const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
-  state.metamask.unapprovedEncryptionPublicKeyMsgs;
-const unapprovedTypedMessagesSelector = (state) =>
-  state.metamask.unapprovedTypedMessages;
 
 export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedTxsSelector,

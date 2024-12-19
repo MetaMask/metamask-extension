@@ -152,9 +152,6 @@
   "loading": {
     "message": "लोड हो रहा है ....."
   },
-  "loadingTokens": {
-    "message": "टोकन लोड हो रहा है ....."
-  },
   "localhost": {
     "message": "स्थानीयहोस्ट 8545"
   },

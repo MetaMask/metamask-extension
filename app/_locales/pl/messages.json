@@ -381,9 +381,6 @@
   "loading": {
     "message": "Ładowanie..."
   },
-  "loadingTokens": {
-    "message": "Ładowanie tokenów..."
-  },
   "localhost": {
     "message": "Serwer lokalny 8545"
   },

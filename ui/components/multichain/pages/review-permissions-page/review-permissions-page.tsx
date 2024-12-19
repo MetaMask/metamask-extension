@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   AlignItems,
@@ -11,10 +12,10 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getConnectedSitesList,
   getInternalAccounts,
-  getNetworkConfigurationsByChainId,
   getPermissionSubjects,
   getPermittedAccountsForSelectedTab,
   getPermittedChainsForSelectedTab,
@@ -54,7 +55,7 @@ import { PermissionsHeader } from '../../permissions-header/permissions-header';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { MergedInternalAccount } from '../../../../selectors/selectors.types';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
-import { SiteCell } from '.';
+import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -175,6 +176,11 @@ export const ReviewPermissions = () => {
     setShowAccountToast(true);
   };
 
+  const hideAllToasts = () => {
+    setShowAccountToast(false);
+    setShowNetworkToast(false);
+  };
+
   return (
     <Page
       data-testid="connections-page"
@@ -195,6 +201,7 @@ export const ReviewPermissions = () => {
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
+              hideAllToasts={hideAllToasts}
             />
           ) : (
             <NoConnectionContent />

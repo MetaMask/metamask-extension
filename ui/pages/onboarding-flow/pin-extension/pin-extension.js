@@ -39,9 +39,9 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getFirstTimeFlowType,
   getExternalServicesOnboardingToggleState,
+  getParticipateInMetaMetrics,
 } from '../../../selectors';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
-import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -63,13 +63,15 @@ export default function OnboardingPinExtension() {
     getExternalServicesOnboardingToggleState,
   );
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
   const handleClick = async () => {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
     } else {
-      dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
+      await dispatch(
+        toggleExternalServices(externalServicesOnboardingToggleState),
+      );
       await dispatch(setCompletedOnboarding());
 
       if (externalServicesOnboardingToggleState) {

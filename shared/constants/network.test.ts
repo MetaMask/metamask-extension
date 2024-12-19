@@ -87,11 +87,11 @@ describe('NetworkConstants', () => {
       expect(zksyncEraRpc.rpcEndpoints[0].url).not.toContain('infura.io');
     });
 
-    it('base entry should not use Infura', () => {
+    it('base entry should use Infura', () => {
       const [baseRpc] = FEATURED_RPCS.filter(
         (rpc) => rpc.chainId === CHAIN_IDS.BASE,
       );
-      expect(baseRpc.rpcEndpoints[0].url).not.toContain('infura.io');
+      expect(baseRpc.rpcEndpoints[0].url).toContain('infura.io');
     });
   });
 });

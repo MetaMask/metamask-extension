@@ -33,14 +33,14 @@ function removeAccount(targetAccount, existingAccounts) {
   );
 
   if (newAccounts.length === existingAccounts.length) {
-    return { operation: CaveatMutatorOperation.noop };
+    return { operation: CaveatMutatorOperation.Noop };
   } else if (newAccounts.length > 0) {
     return {
-      operation: CaveatMutatorOperation.updateValue,
+      operation: CaveatMutatorOperation.UpdateValue,
       value: newAccounts,
     };
   }
-  return { operation: CaveatMutatorOperation.revokePermission };
+  return { operation: CaveatMutatorOperation.RevokePermission };
 }
 
 /**
@@ -60,12 +60,12 @@ function removeChainId(targetChainId, existingChainIds) {
   );
 
   if (newChainIds.length === existingChainIds.length) {
-    return { operation: CaveatMutatorOperation.noop };
+    return { operation: CaveatMutatorOperation.Noop };
   } else if (newChainIds.length > 0) {
     return {
-      operation: CaveatMutatorOperation.updateValue,
+      operation: CaveatMutatorOperation.UpdateValue,
       value: newChainIds,
     };
   }
-  return { operation: CaveatMutatorOperation.revokePermission };
+  return { operation: CaveatMutatorOperation.RevokePermission };
 }

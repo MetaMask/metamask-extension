@@ -269,6 +269,14 @@ function getValues(pendingApproval, t, actions, history, data) {
         },
       },
       {
+        element: 'OriginPill',
+        key: 'origin-pill',
+        props: {
+          origin: pendingApproval.origin,
+          dataTestId: 'signature-origin-pill',
+        },
+      },
+      {
         element: 'TruncatedDefinitionList',
         key: 'network-details',
         props: {

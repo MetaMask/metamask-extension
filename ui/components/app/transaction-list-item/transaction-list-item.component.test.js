@@ -24,6 +24,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { abortTransactionSigning } from '../../../store/actions';
+import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -59,6 +60,17 @@ jest.mock('react-redux', () => {
     ...actual,
     useSelector: jest.fn(),
     useDispatch: jest.fn(),
+  };
+});
+
+jest.mock('../../../hooks/bridge/useBridgeTxHistoryData', () => {
+  return {
+    ...jest.requireActual('../../../hooks/bridge/useBridgeTxHistoryData'),
+    useBridgeTxHistoryData: jest.fn(() => ({
+      bridgeTxHistoryItem: undefined,
+      isBridgeComplete: false,
+      showBridgeTxDetails: false,
+    })),
   };
 });
 
@@ -110,6 +122,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     return opts.shouldShowFiat ?? false;
   } else if (selector === getTokens) {
     return opts.tokens ?? [];
+  } else if (selector === selectBridgeHistoryForAccount) {
+    return opts.bridgeHistory ?? {};
   }
   return undefined;
 };

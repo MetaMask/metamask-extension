@@ -47,7 +47,7 @@ export const CaveatFactories = Object.freeze({
  * PermissionController.
  *
  * @param {{
- *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
+ *   getInternalAccounts: () => Record<string, import('@metamask/keyring-internal-api').InternalAccount>,
  * }} options - Options bag.
  */
 export const getCaveatSpecifications = ({
@@ -96,7 +96,7 @@ export const getCaveatSpecifications = ({
  *
  * @param {{
  *   getAllAccounts: () => Promise<string[]>,
- *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
+ *   getInternalAccounts: () => Record<string, import('@metamask/keyring-internal-api').InternalAccount>,
  * }} options - Options bag.
  * @param options.getAllAccounts - A function that returns all Ethereum accounts
  * in the current MetaMask instance.
@@ -254,7 +254,7 @@ export const getPermissionSpecifications = ({
  * corresponds to a PreferencesController identity.
  *
  * @param {string[]} accounts - The accounts associated with the caveat.
- * @param {() => Record<string, import('@metamask/keyring-api').InternalAccount>} getInternalAccounts -
+ * @param {() => Record<string, import('@metamask/keyring-internal-api').InternalAccount>} getInternalAccounts -
  * Gets all AccountsController InternalAccounts.
  */
 function validateCaveatAccounts(accounts, getInternalAccounts) {
@@ -412,6 +412,7 @@ export const unrestrictedMethods = Object.freeze([
   'snap_createInterface',
   'snap_updateInterface',
   'snap_getInterfaceState',
+  'snap_getInterfaceContext',
   'snap_resolveInterface',
   'snap_getCurrencyRate',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

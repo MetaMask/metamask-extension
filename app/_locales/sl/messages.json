@@ -375,9 +375,6 @@
   "loading": {
     "message": "Nalaganje ..."
   },
-  "loadingTokens": {
-    "message": "Nalaganje žetonov ..."
-  },
   "lock": {
     "message": "Odjava"
   },

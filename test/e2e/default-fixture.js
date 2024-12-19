@@ -115,20 +115,28 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         trezorModel: null,
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
-        usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
-        },
         snapsInstallPrivacyWarningShown: true,
       },
       BridgeController: {
         bridgeState: {
           bridgeFeatureFlags: {
-            extensionSupport: false,
-            srcNetworkAllowlist: ['0x1', '0xa', '0xe708'],
-            destNetworkAllowlist: ['0x1', '0xa', '0xe708'],
+            extensionConfig: {
+              support: false,
+              chains: {
+                '0x1': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+                '0xa': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+                '0xe708': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+              },
+            },
           },
           destTokens: {},
           destTopAssets: [],
@@ -225,6 +233,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             sortCallback: 'stringNumeric',
           },
           shouldShowAggregatedBalancePopover: true,
+          tokenNetworkFilter: {},
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
