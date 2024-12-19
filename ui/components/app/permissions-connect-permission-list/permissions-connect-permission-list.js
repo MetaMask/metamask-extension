@@ -18,7 +18,12 @@ import { Box } from '../../component-library';
  * @param options.requestedChainIds - An array representing list of chain ids for which permission is used.
  * @returns {JSX.Element} A permission description node.
  */
-function getDescriptionNode({permission, index, accounts, requestedChainIds}) {
+function getDescriptionNode({
+  permission,
+  index,
+  accounts,
+  requestedChainIds,
+}) {
   return (
     <PermissionCell
       permissionName={permission.name}
