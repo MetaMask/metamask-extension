@@ -640,6 +640,7 @@ export enum MetaMetricsEventName {
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
+  AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
   AppLocked = 'App Locked',
@@ -765,6 +766,7 @@ export enum MetaMetricsEventName {
   TokenAdded = 'Token Added',
   TokenRemoved = 'Token Removed',
   TokenSortPreference = 'Token Sort Preference',
+  TokenListRefreshed = 'Token List Refreshed',
   NFTRemoved = 'NFT Removed',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
@@ -1032,4 +1034,9 @@ export enum DeleteRegulationStatus {
   PartialSuccess = 'PARTIAL_SUCCESS',
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
+}
+
+export enum MetaMetricsEventTransactionEstimateType {
+  DappProposed = 'dapp_proposed',
+  DefaultEstimate = 'default_estimate',
 }

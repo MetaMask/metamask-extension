@@ -25,10 +25,12 @@ export type TransactionGroup = {
 
 export type UseBridgeTxHistoryDataProps = {
   transactionGroup: TransactionGroup;
+  isEarliestNonce: boolean;
 };
 
 export function useBridgeTxHistoryData({
   transactionGroup,
+  isEarliestNonce,
 }: UseBridgeTxHistoryDataProps) {
   const history = useHistory();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
@@ -49,7 +51,10 @@ export function useBridgeTxHistoryData({
   )
     ? undefined
     : () => {
-        history.push(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`);
+        history.push({
+          pathname: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`,
+          state: { transactionGroup, isEarliestNonce },
+        });
       };
 
   return {

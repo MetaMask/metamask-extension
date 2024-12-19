@@ -1,150 +1,38 @@
 @use "design-system";
 
-.tokens-main-view-modal {
-  .multichain-asset-picker-list-item .mm-badge-wrapper__badge-container {
-    display: none;
-  }
-}
-
 .prepare-bridge-page {
-  display: flex;
-  flex-flow: column;
   flex: 1;
-  width: 100%;
-  gap: 24px;
 
-  &__content {
-    display: flex;
-    flex-direction: column;
-    padding: 16px 0 16px 0;
-    border-radius: 8px;
-    border: 1px solid var(--color-border-muted);
-  }
+  .mm-text-field {
+    background-color: inherit;
 
-  .bridge-box {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    justify-content: center;
-    padding: 8px 16px 8px 16px;
-  }
-
-  &__input-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 298px;
-    gap: 16px;
-
-    input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      display: none;
-    }
-
-    input[type="number"]:hover::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      display: none;
-    }
-
-    .mm-text-field {
-      background-color: inherit;
-
-      &--focused {
-        outline: none;
-      }
-    }
-
-    .defined {
-      opacity: 1;
-
-      & > .mm-input--disabled {
-        opacity: 1;
-      }
-    }
-  }
-
-  .amount-input {
-    border: none;
-
-    input {
-      text-align: right;
-      padding-right: 0;
-      font-size: 24px;
-      font-weight: 700;
-
-      &:focus,
-      &:focus-visible {
-        outline: none;
-      }
-    }
-
-    .mm-text-field--focused {
+    &--focused {
       outline: none;
     }
   }
 
-  &__amounts-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 298px;
-    height: 22px;
-
-    p,
-    span {
-      color: var(--color-text-alternative);
-      font-size: 12px;
+  .defined {
+    & > .mm-input--disabled,
+    p {
+      opacity: 1;
     }
   }
 
-  .asset-picker {
-    border: 1px solid var(--color-border-muted);
-    height: 40px;
-    min-width: fit-content;
-    max-width: fit-content;
-    background-color: inherit;
+  .mm-select-button__content {
+    max-height: 100%;
+    overflow: hidden;
+  }
 
-    p {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .mm-avatar-token {
-      height: 24px;
-      width: 24px;
-      border: 1px solid var(--color-border-muted);
-    }
-
-    .mm-badge-wrapper__badge-container .mm-avatar-base {
-      height: 10px;
-      width: 10px;
-      border: none;
-    }
+  .amount-input {
+    border: none;
+    padding: 0;
+    width: 100%;
+    gap: 4px;
+    height: fit-content;
   }
 
   &__switch-tokens {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &::before,
-    &::after {
-      content: '';
-      border-top: 1px solid var(--color-border-muted);
-      flex-grow: 1;
-    }
-
     button {
-      border-radius: 50%;
-      padding: 10px;
-      border: 1px solid var(--color-border-muted);
-      transition: all 0.3s ease-in-out;
-      cursor: pointer;
-      width: 40px;
-      height: 40px;
-
       &:hover:enabled {
         background: var(--color-background-default-hover);
 
@@ -167,12 +55,54 @@
     }
 
     .mm-icon {
-      color: var(--color-icon-alternative);
       transition: all 0.3s ease-in-out;
     }
+  }
 
-    &:disabled {
-      cursor: not-allowed;
+  .mascot-background-animation__animation {
+    margin-top: 24px;
+    margin-bottom: 16px;
+  }
+
+  .highlight {
+    padding: 16px;
+    background: var(--color-background-default);
+    border: none;
+    border-radius: 8px;
+
+    [data-theme='light'],
+    .light {
+      box-shadow: 0 0 2px 0 #e2e4e9, 0 0 16px 0 rgba(226, 228, 233, 0.16);
+    }
+
+    [data-theme='dark'],
+    .dark {
+      box-shadow: 0 0 2px 0 #18191b, 0 0 16px 0 #18191b;
+    }
+  }
+}
+
+.bridge-settings-modal {
+  .mm-button-secondary {
+    &:hover {
+      background-color: var(--color-background-default-hover);
+    }
+  }
+
+  .mm-text-field {
+    height: 32px;
+    width: 94px;
+
+    &--focused,
+    &:focus-visible {
+      outline: none;
+    }
+
+    input {
+      font-size: var(--font-size-2);
+      padding-top: 1px;
+      width: 100%;
+      height: 32px;
     }
   }
 }

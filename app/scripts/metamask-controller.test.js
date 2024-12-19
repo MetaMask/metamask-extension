@@ -2412,6 +2412,7 @@ describe('MetaMaskController', () => {
         methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       };
+      const mockCurrency = 'CAD';
 
       beforeEach(() => {
         jest.spyOn(metamaskController.multichainRatesController, 'start');
@@ -2508,6 +2509,43 @@ describe('MetaMaskController', () => {
         expect(
           localMetamaskController.multichainRatesController.start,
         ).toHaveBeenCalled();
+      });
+
+      it('calls setFiatCurrency when the `currentCurrency` has changed', async () => {
+        jest.spyOn(RatesController.prototype, 'setFiatCurrency');
+        const localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            AccountsController: {
+              internalAccounts: {
+                accounts: {
+                  [mockNonEvmAccount.id]: mockNonEvmAccount,
+                  [mockEvmAccount.id]: mockEvmAccount,
+                },
+                selectedAccount: mockNonEvmAccount.id,
+              },
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        metamaskController.controllerMessenger.publish(
+          'CurrencyRateController:stateChange',
+          { currentCurrency: mockCurrency },
+        );
+
+        expect(
+          localMetamaskController.multichainRatesController.setFiatCurrency,
+        ).toHaveBeenCalledWith(mockCurrency);
       });
     });
 
@@ -2838,6 +2876,146 @@ describe('MetaMaskController', () => {
 
       expect(metamaskController.resetStates).not.toHaveBeenCalled();
       expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('MetaMetrics & authentication dependencies', () => {
+    let metamaskController;
+    let mockPerformSignIn;
+    let mockPerformSignOut;
+
+    const arrangeControllerState = (stateOverrides) => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: { ...cloneDeep(firstTimeState), ...stateOverrides },
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+      });
+
+      mockPerformSignIn = jest
+        .spyOn(metamaskController.authenticationController, 'performSignIn')
+        .mockResolvedValue();
+      mockPerformSignOut = jest
+        .spyOn(metamaskController.authenticationController, 'performSignOut')
+        .mockResolvedValue();
+    };
+
+    it('should sign in the user if MetaMetrics is enabled and the user is not signed in', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: false,
+        },
+        AuthenticationController: {
+          isSignedIn: false,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: true,
+        },
+      );
+
+      expect(mockPerformSignIn).toHaveBeenCalledTimes(1);
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
+    });
+
+    it('should sign out the user if MetaMetrics is disabled and the user is signed in but profile syncing is disabled', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+        },
+        AuthenticationController: {
+          isSignedIn: true,
+        },
+        UserStorageController: {
+          isProfileSyncingEnabled: false,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: false,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not sign in the user if MetaMetrics is enabled and the user is already signed in', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: false,
+        },
+        AuthenticationController: {
+          isSignedIn: true,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: true,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
+    });
+
+    it('should not sign out the user if MetaMetrics is disabled and the user is not signed in', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+        },
+        AuthenticationController: {
+          isSignedIn: false,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: false,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
+    });
+
+    it('should not sign out the user if MetaMetrics is disabled and profile syncing is enabled', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+        },
+        AuthenticationController: {
+          isSignedIn: true,
+        },
+        UserStorageController: {
+          isProfileSyncingEnabled: true,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: false,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
     });
   });
 });

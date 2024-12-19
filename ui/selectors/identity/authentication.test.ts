@@ -1,26 +1,27 @@
-import {
-  selectIsSignedIn,
-  selectParticipateInMetaMetrics,
-} from './authentication';
+import { selectIsSignedIn, selectSessionData } from './authentication';
 
 describe('Authentication Selectors', () => {
   const mockState = {
     metamask: {
       isSignedIn: true,
-      metametricsId: 'id',
-      participateInMetaMetrics: true,
+      sessionData: {
+        profile: {
+          identifierId: 'identifierId',
+          profileId: 'profileId',
+        },
+        accessToken: 'accessToken',
+        expiresIn: 'expiresIn',
+      },
     },
   };
 
-  it('should select the Authentications status', () => {
-    expect(selectIsSignedIn(mockState)).toBe(true);
+  it('should select the authentication status', () => {
+    expect(selectIsSignedIn(mockState)).toBe(mockState.metamask.isSignedIn);
   });
 
-  it('should select the Metamask Notifications Enabled status', () => {
-    expect(selectParticipateInMetaMetrics(mockState)).toBe(true);
-  });
-
-  it('should select the Metamask Notifications Enabled status', () => {
-    expect(selectParticipateInMetaMetrics(mockState)).toBe(true);
+  it('should select the session data', () => {
+    expect(selectSessionData(mockState)).toEqual(
+      mockState.metamask.sessionData,
+    );
   });
 });
