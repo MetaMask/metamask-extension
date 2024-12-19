@@ -259,13 +259,26 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       });
 
       const pollingToken = this.#pollingTokensByTxMetaId[bridgeTxMetaId];
-      if (status.status === StatusTypes.COMPLETE && pollingToken) {
+
+      if (
+        (status.status === StatusTypes.COMPLETE ||
+          status.status === StatusTypes.FAILED) &&
+        pollingToken
+      ) {
         this.stopPollingByPollingToken(pollingToken);
 
-        this.messagingSystem.publish(
-          `${BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionComplete`,
-          { bridgeHistoryItem: newBridgeHistoryItem },
-        );
+        if (status.status === StatusTypes.COMPLETE) {
+          this.messagingSystem.publish(
+            `${BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionComplete`,
+            { bridgeHistoryItem: newBridgeHistoryItem },
+          );
+        }
+        if (status.status === StatusTypes.FAILED) {
+          this.messagingSystem.publish(
+            `${BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionFailed`,
+            { bridgeHistoryItem: newBridgeHistoryItem },
+          );
+        }
       }
     } catch (e) {
       console.log('Failed to fetch bridge tx status', e);
