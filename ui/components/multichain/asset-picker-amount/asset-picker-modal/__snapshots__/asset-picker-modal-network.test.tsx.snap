@@ -175,6 +175,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                     alt="Ethereum logo"
                     class="mm-avatar-network__network-image"
                     src="./images/eth_logo.svg"
+                    title="Ethereum"
                   />
                 </div>
                 <div
@@ -215,6 +216,7 @@ exports[`AssetPickerModalNetwork should not show selected network when network p
                     alt="OP Mainnet logo"
                     class="mm-avatar-network__network-image"
                     src="./images/optimism.svg"
+                    title="OP Mainnet"
                   />
                 </div>
                 <div
@@ -348,6 +350,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                     alt="Ethereum logo"
                     class="mm-avatar-network__network-image"
                     src="./images/eth_logo.svg"
+                    title="Ethereum"
                   />
                 </div>
                 <div
@@ -388,6 +391,7 @@ exports[`AssetPickerModalNetwork should use passed in network as default when ne
                     alt="OP Mainnet logo"
                     class="mm-avatar-network__network-image"
                     src="./images/optimism.svg"
+                    title="OP Mainnet"
                   />
                 </div>
                 <div

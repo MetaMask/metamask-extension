@@ -30,6 +30,7 @@ exports[`TokenListItem handles clicking staking opens tab 1`] = `
               alt="network logo"
               class="mm-avatar-network__network-image"
               src="./eth-logo.png"
+              title=""
             />
           </div>
         </div>
@@ -276,6 +277,7 @@ exports[`TokenListItem should render correctly 1`] = `
               alt="network logo"
               class="mm-avatar-network__network-image"
               src="./eth-logo.png"
+              title=""
             />
           </div>
         </div>

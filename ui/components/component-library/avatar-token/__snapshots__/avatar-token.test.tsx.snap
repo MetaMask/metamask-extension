@@ -7,9 +7,10 @@ exports[`AvatarToken should render correctly 1`] = `
     data-testid="avatar-token"
   >
     <img
-      alt="ast logo"
+      alt="[avatarImageLogo]"
       class="mm-avatar-token__token-image"
       src="./AST.png"
+      title="ast"
     />
   </div>
 </div>

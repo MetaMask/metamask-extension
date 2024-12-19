@@ -65,6 +65,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
               alt="Ethereum Mainnet logo"
               class="mm-avatar-network__network-image"
               src="./images/optimism.svg"
+              title="Ethereum Mainnet"
             />
           </div>
           <p
@@ -84,6 +85,7 @@ exports[`BridgeQuoteCard should render the recommended quote 1`] = `
               alt="network logo"
               class="mm-avatar-network__network-image"
               src="./images/pol-token.svg"
+              title=""
             />
           </div>
           <p
@@ -229,6 +231,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
               alt="Ethereum Mainnet logo"
               class="mm-avatar-network__network-image"
               src="./images/optimism.svg"
+              title="Ethereum Mainnet"
             />
           </div>
           <p
@@ -248,6 +251,7 @@ exports[`BridgeQuoteCard should render the recommended quote while loading new q
               alt="network logo"
               class="mm-avatar-network__network-image"
               src="./images/pol-token.svg"
+              title=""
             />
           </div>
           <p

@@ -40,6 +40,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                 alt="ETH logo"
                 class="mm-avatar-token__token-image"
                 src="./images/eth_logo.svg"
+                title="ETH"
               />
             </div>
             <div
@@ -52,6 +53,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                   alt="Ethereum Mainnet logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
+                  title="Ethereum Mainnet"
                 />
               </div>
             </div>
@@ -229,6 +231,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                 alt="ETH logo"
                 class="mm-avatar-token__token-image"
                 src="./images/eth_logo.svg"
+                title="ETH"
               />
             </div>
             <div
@@ -241,6 +244,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                   alt="Ethereum Mainnet logo"
                   class="mm-avatar-network__network-image"
                   src="./images/eth_logo.svg"
+                  title="Ethereum Mainnet"
                 />
               </div>
             </div>

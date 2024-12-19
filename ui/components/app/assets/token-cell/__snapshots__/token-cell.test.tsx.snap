@@ -22,6 +22,7 @@ exports[`Token Cell should match snapshot 1`] = `
             alt="TEST logo"
             class="mm-avatar-token__token-image"
             src="./images/test_image.svg"
+            title="TEST"
           />
         </div>
         <div
@@ -34,6 +35,7 @@ exports[`Token Cell should match snapshot 1`] = `
               alt="network logo"
               class="mm-avatar-network__network-image"
               src="./images/eth_logo.svg"
+              title=""
             />
           </div>
         </div>

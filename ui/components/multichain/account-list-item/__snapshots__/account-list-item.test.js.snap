@@ -278,6 +278,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               alt="BTC logo"
               class="mm-avatar-token__token-image"
               src="./images/bitcoin-logo.svg"
+              title="BTC"
             />
           </div>
           <div

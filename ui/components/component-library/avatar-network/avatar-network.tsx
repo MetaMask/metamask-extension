@@ -9,6 +9,7 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { PolymorphicRef } from '../box';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import type { AvatarNetworkComponent } from './avatar-network.types';
@@ -29,6 +30,7 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
     }: AvatarNetworkProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    const t = useI18nContext();
     const [showFallback, setShowFallback] = useState(false);
 
     useEffect(() => {
@@ -83,7 +85,8 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
               }
               onError={handleOnError}
               src={src}
-              alt={(name && `${name} logo`) || 'network logo'}
+              alt={t('avatarImageLogo', [name || t('avatarImageNetwork')])}
+              title={name || ''}
             />
           </>
         )}

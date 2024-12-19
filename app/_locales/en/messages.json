@@ -673,6 +673,16 @@
   "autoLockTimeLimitDescription": {
     "message": "Set the idle time in minutes before MetaMask will become locked."
   },
+  "avatarImageLogo": {
+    "message": "$1 logo",
+    "description": "$1 is the name of the network or token"
+  },
+  "avatarImageNetwork": {
+    "message": "network"
+  },
+  "avatarImageToken": {
+    "message": "token"
+  },
   "average": {
     "message": "Average"
   },
