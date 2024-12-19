@@ -5,13 +5,12 @@ import { useSelector } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
 import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
 import { useIsNFT } from './use-is-nft';
 
-const UNLIMITED_THRESHOLD = 10 ** 15;
-
 function isSpendingCapUnlimited(decodedSpendingCap: number) {
-  return decodedSpendingCap >= UNLIMITED_THRESHOLD;
+  return decodedSpendingCap >= TOKEN_VALUE_UNLIMITED_THRESHOLD;
 }
 
 export const useApproveTokenSimulation = (

@@ -80,6 +80,35 @@ describe('DecodedSimulation', () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
       decodingLoading: false,
+      decodingData: {
+        ...decodingData,
+        stateChanges: decodingData.stateChanges
+          ? [
+              {
+                ...decodingData.stateChanges[0],
+                amount: '12345',
+              },
+            ]
+          : [],
+      },
+    });
+
+    const mockStore = configureMockStore([])(state);
+
+    const { findByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(await findByText('Estimated changes')).toBeInTheDocument();
+    expect(await findByText('Spending cap')).toBeInTheDocument();
+    expect(await findByText('12,345')).toBeInTheDocument();
+  });
+
+  it('renders component correctly for a very large amount', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
       decodingData,
     });
     const mockStore = configureMockStore([])(state);
@@ -91,7 +120,7 @@ describe('DecodedSimulation', () => {
 
     expect(await findByText('Estimated changes')).toBeInTheDocument();
     expect(await findByText('Spending cap')).toBeInTheDocument();
-    expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+    expect(await findByText('Unlimited')).toBeInTheDocument();
   });
 
   it('render correctly for ERC712 token', async () => {
