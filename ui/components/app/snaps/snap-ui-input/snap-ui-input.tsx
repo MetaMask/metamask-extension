@@ -33,11 +33,11 @@ export const SnapUIInput: FunctionComponent<
 
   /*
    * Focus input if the last focused input was this input
-   * This avoids loosing the focus when the UI is re-rendered
+   * This avoids losing the focus when the UI is re-rendered
    */
   useEffect(() => {
     if (inputRef.current && name === focusedInput) {
-      (inputRef.current.children[0] as HTMLInputElement).focus();
+      (inputRef.current.querySelector('input') as HTMLInputElement).focus();
     }
   }, [inputRef]);
 

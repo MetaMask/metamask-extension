@@ -34,8 +34,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useCreateSession } from '../../../hooks/metamask-notifications/useCreateSession';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { useCreateSession } from '../../../hooks/identity/useCreateSession';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 
 export default function CreationSuccessful() {
   const history = useHistory();

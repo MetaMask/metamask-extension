@@ -3,6 +3,9 @@
 # actions that may result in code from that branch being executed
 # such as installing dependencies or running build scripts.
 
+# For security reasons, this file always uses the latest version from the default branch.
+# Changes made in feature branches or forks will not take effect until they are merged.
+
 name: SonarCloud
 
 on:
@@ -17,9 +20,9 @@ permissions:
 
 jobs:
   sonarcloud:
-    # Only scan code from non-forked repositories that have passed the tests
+    # Only scan code from non-forked repositories that have completed successfully using the push and pull_request events
     # This will skip scanning the code for forks, but will run for the main repository on PRs from forks
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.repository.fork == false }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && contains(fromJSON('["push", "pull_request"]'), github.event.workflow_run.event) && !github.event.workflow_run.repository.fork }}
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
@@ -49,6 +52,23 @@ jobs:
             exit 1
           fi
           echo "$sonar_project_properties" > sonar-project.properties
+
+      - name: Update sonar-project.properties with branch information
+        env:
+          EVENT: ${{ github.event.workflow_run.event }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          BASE_BRANCH: ${{ github.event.workflow_run.pull_requests[0].base.ref || '' }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number || '' }}
+        run: |
+          if [ "$EVENT" == "pull_request" ]; then
+            {
+              echo "sonar.pullrequest.branch=$HEAD_BRANCH"
+              echo "sonar.pullrequest.base=$BASE_BRANCH"
+              echo "sonar.pullrequest.key=$PR_NUMBER"
+            } >> sonar-project.properties
+          else
+            echo "sonar.branch.name=$HEAD_BRANCH" >> sonar-project.properties
+          fi
 
       - name: SonarCloud Scan
         # This is SonarSource/sonarcloud-github-action@v2.0.0

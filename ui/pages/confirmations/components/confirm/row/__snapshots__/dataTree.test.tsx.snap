@@ -197,10 +197,11 @@ exports[`DataTree should match snapshot 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     >
                       <div
                         style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
@@ -273,10 +274,11 @@ exports[`DataTree should match snapshot 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class=""
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
                     >
                       <div
                         style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 183, 242);"
@@ -445,10 +447,11 @@ exports[`DataTree should match snapshot 1`] = `
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                        class=""
                       >
                         <div
-                          class="mm-avatar-account__jazzicon"
+                          class="identicon"
+                          style="height: 16px; width: 16px; border-radius: 8px;"
                         >
                           <div
                             style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
@@ -521,10 +524,11 @@ exports[`DataTree should match snapshot 1`] = `
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                        class=""
                       >
                         <div
-                          class="mm-avatar-account__jazzicon"
+                          class="identicon"
+                          style="height: 16px; width: 16px; border-radius: 8px;"
                         >
                           <div
                             style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 54, 0);"
@@ -597,10 +601,11 @@ exports[`DataTree should match snapshot 1`] = `
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                        class=""
                       >
                         <div
-                          class="mm-avatar-account__jazzicon"
+                          class="identicon"
+                          style="height: 16px; width: 16px; border-radius: 8px;"
                         >
                           <div
                             style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 86);"

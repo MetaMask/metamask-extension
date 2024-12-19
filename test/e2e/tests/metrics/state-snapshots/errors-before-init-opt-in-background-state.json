@@ -42,12 +42,6 @@
       "trezorModel": null,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "usedNetworks": {
-        "0x1": true,
-        "0xe708": true,
-        "0x5": true,
-        "0x539": true
-      },
       "snapsInstallPrivacyWarningShown": true
     },
     "CurrencyController": {
@@ -149,16 +143,13 @@
     "BridgeController": {
       "bridgeState": {
         "bridgeFeatureFlags": {
-          "extensionSupport": "boolean",
-          "srcNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          },
-          "destNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
+          "extensionConfig": {
+            "support": "boolean",
+            "chains": {
+              "0x1": "object",
+              "0xa": "object",
+              "0xe708": "object"
+            }
           }
         },
         "destTokens": {},

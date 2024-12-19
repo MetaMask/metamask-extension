@@ -2164,6 +2164,21 @@ describe('#getConnectedSitesList', () => {
     });
   });
 
+  describe('#getRemoteFeatureFlags', () => {
+    it('returns remoteFeatureFlags in state', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            existingFlag: true,
+          },
+        },
+      };
+      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
+        existingFlag: true,
+      });
+    });
+  });
+
   describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
     beforeEach(() => {
       process.env.PORTFOLIO_VIEW = 'true';

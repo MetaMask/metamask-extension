@@ -90,7 +90,6 @@ export const SENTRY_BACKGROUND_STATE = {
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
-    usedNetworks: true,
   },
   MultichainBalancesController: {
     balances: false,
@@ -98,15 +97,17 @@ export const SENTRY_BACKGROUND_STATE = {
   BridgeController: {
     bridgeState: {
       bridgeFeatureFlags: {
-        extensionConfig: false,
-        extensionSupport: false,
-        destNetworkAllowlist: [],
-        srcNetworkAllowlist: [],
+        extensionConfig: {
+          support: false,
+          chains: {},
+        },
       },
       destTokens: {},
       destTopAssets: [],
+      destTokensLoadingStatus: true,
       srcTokens: {},
       srcTopAssets: [],
+      srcTokensLoadingStatus: true,
       quoteRequest: {
         walletAddress: false,
         srcTokenAddress: true,
@@ -117,8 +118,10 @@ export const SENTRY_BACKGROUND_STATE = {
         srcTokenAmount: true,
       },
       quotes: [],
+      quotesInitialLoadTime: true,
       quotesLastFetched: true,
       quotesLoadingStatus: true,
+      quoteFetchError: true,
       quotesRefreshCount: true,
     },
   },
@@ -270,6 +273,10 @@ export const SENTRY_BACKGROUND_STATE = {
     useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
+  },
+  RemoteFeatureFlagController: {
+    remoteFeatureFlags: true,
+    cacheTimestamp: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
@@ -426,6 +433,7 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    slides: false,
     confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,

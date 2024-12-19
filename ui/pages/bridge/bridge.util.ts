@@ -72,16 +72,18 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     )
   ) {
     return {
-      [BridgeFeatureFlagsKey.EXTENSION_CONFIG]:
-        rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG],
-      [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]:
-        rawFeatureFlags[BridgeFlag.EXTENSION_SUPPORT],
-      [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: rawFeatureFlags[
-        BridgeFlag.NETWORK_SRC_ALLOWLIST
-      ].map((chainIdDec) => add0x(decimalToHex(chainIdDec))),
-      [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: rawFeatureFlags[
-        BridgeFlag.NETWORK_DEST_ALLOWLIST
-      ].map((chainIdDec) => add0x(decimalToHex(chainIdDec))),
+      [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
+        ...rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG],
+        chains: Object.entries(
+          rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG].chains,
+        ).reduce(
+          (acc, [chainId, value]) => ({
+            ...acc,
+            [add0x(decimalToHex(chainId))]: value,
+          }),
+          {},
+        ),
+      },
     };
   }
 
@@ -89,13 +91,9 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
       refreshRate: REFRESH_INTERVAL_MS,
       maxRefreshCount: 5,
+      support: false,
+      chains: {},
     },
-    // TODO set default to true once bridging is live
-    [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: false,
-    // TODO set default to ALLOWED_BRIDGE_CHAIN_IDS once bridging is live
-    [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: [],
-    // TODO set default to ALLOWED_BRIDGE_CHAIN_IDS once bridging is live
-    [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: [],
   };
 }
 
@@ -126,7 +124,7 @@ export async function fetchBridgeTokens(
 
   tokens.forEach((token: unknown) => {
     if (
-      validateResponse<SwapsTokenObject>(TOKEN_VALIDATORS, token, url) &&
+      validateResponse<SwapsTokenObject>(TOKEN_VALIDATORS, token, url, false) &&
       !(
         isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
         isSwapsDefaultTokenAddress(token.address, chainId)

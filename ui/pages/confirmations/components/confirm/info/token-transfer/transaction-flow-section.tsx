@@ -62,7 +62,7 @@ export const TransactionFlowSection = () => {
             flexDirection: FlexDirection.Column,
           }}
         >
-          <Box marginTop={1}>
+          <Box marginTop={1} data-testid="sender-address">
             <ConfirmInfoRowAddress
               address={transactionMeta.txParams.from}
               chainId={chainId}
@@ -84,7 +84,7 @@ export const TransactionFlowSection = () => {
               flexDirection: FlexDirection.Column,
             }}
           >
-            <Box marginTop={1}>
+            <Box marginTop={1} data-testid="recipient-address">
               <ConfirmInfoRowAddress
                 address={recipientAddress}
                 chainId={chainId}

@@ -10,7 +10,8 @@ import { Mockttp } from '../../../mock-e2e';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import HomePage from '../../../page-objects/pages/homepage';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -206,9 +207,8 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  const homePage = new HomePage(driver);
-  await homePage.goToNftTab();
-  await homePage.clickNFTIconOnActivityList();
+  await new HomePage(driver).goToNftTab();
+  await new NFTListPage(driver).clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);
   await nftDetailsPage.clickNFTSendButton();
@@ -295,9 +295,8 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await watchAssetConfirmation.clickFooterConfirmButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  const homePage = new HomePage(driver);
-  await homePage.goToNftTab();
-  await homePage.clickNFTIconOnActivityList();
+  await new HomePage(driver).goToNftTab();
+  await new NFTListPage(driver).clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);
   await nftDetailsPage.clickNFTSendButton();

@@ -640,6 +640,7 @@ export enum MetaMetricsEventName {
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
+  AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
   AppLocked = 'App Locked',
@@ -861,7 +862,6 @@ export enum MetaMetricsEventName {
   NotificationsActivated = 'Notifications Activated',
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
-
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',
@@ -870,6 +870,19 @@ export enum MetaMetricsEventName {
   sendSwapQuoteRequested = 'Send Swap Quote Requested',
   sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
+  // Cross Chain Swaps
+  ActionCompleted = 'Action Completed',
+  ActionFailed = 'Action Failed',
+  ActionOpened = 'Action Opened',
+  ActionSubmitted = 'Action Submitted',
+  AllQuotesOpened = 'All Quotes Opened',
+  AllQuotesSorted = 'All Quotes Sorted',
+  InputChanged = 'Input Changed',
+  InputSourceDestinationFlipped = 'Source and Destination Flipped',
+  CrossChainSwapsQuoteError = 'Cross-chain Quote Error',
+  QuoteSelected = 'Quote Selected',
+  CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
+  CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -931,6 +944,7 @@ export enum MetaMetricsEventCategory {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IF
+  CrossChainSwaps = 'Cross Chain Swaps',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -1019,4 +1033,9 @@ export enum DeleteRegulationStatus {
   PartialSuccess = 'PARTIAL_SUCCESS',
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
+}
+
+export enum MetaMetricsEventTransactionEstimateType {
+  DappProposed = 'dapp_proposed',
+  DefaultEstimate = 'default_estimate',
 }

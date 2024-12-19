@@ -2,11 +2,13 @@
 
 exports[`BridgeStatusController constructor rehydrates the tx history state 1`] = `
 {
-  "0xsrcTxHash1": {
+  "bridgeTxMetaId1": {
     "account": "0xaccount1",
     "estimatedProcessingTimeInSeconds": 15,
     "initialDestAssetBalance": undefined,
-    "pricingData": undefined,
+    "pricingData": {
+      "amountSent": "1.234",
+    },
     "quote": {
       "bridgeId": "lifi",
       "bridges": [
@@ -102,17 +104,20 @@ exports[`BridgeStatusController constructor rehydrates the tx history state 1`] 
       "status": "PENDING",
     },
     "targetContractAddress": "0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC",
+    "txMetaId": "bridgeTxMetaId1",
   },
 }
 `;
 
 exports[`BridgeStatusController startPollingForBridgeTxStatus sets the inital tx history state 1`] = `
 {
-  "0xsrcTxHash1": {
+  "bridgeTxMetaId1": {
     "account": "0xaccount1",
     "estimatedProcessingTimeInSeconds": 15,
     "initialDestAssetBalance": undefined,
-    "pricingData": undefined,
+    "pricingData": {
+      "amountSent": "1.234",
+    },
     "quote": {
       "bridgeId": "lifi",
       "bridges": [
@@ -208,6 +213,7 @@ exports[`BridgeStatusController startPollingForBridgeTxStatus sets the inital tx
       "status": "PENDING",
     },
     "targetContractAddress": "0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC",
+    "txMetaId": "bridgeTxMetaId1",
   },
 }
 `;

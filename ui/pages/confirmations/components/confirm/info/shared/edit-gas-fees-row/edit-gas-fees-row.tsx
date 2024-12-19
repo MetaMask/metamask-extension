@@ -58,6 +58,10 @@ export const EditGasFeesRow = ({
         alignItems={AlignItems.center}
         textAlign={TextAlign.Center}
       >
+        <EditGasIconButton
+          supportsEIP1559={supportsEIP1559}
+          setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+        />
         <Text
           marginRight={1}
           color={TextColor.textDefault}
@@ -85,10 +89,6 @@ export const EditGasFeesRow = ({
             {fiatFee}
           </Text>
         )}
-        <EditGasIconButton
-          supportsEIP1559={supportsEIP1559}
-          setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-        />
       </Box>
     </ConfirmInfoAlertRow>
   );

@@ -4,7 +4,7 @@ import { withFixtures, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Ganache } from '../../seeder/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import {
   switchToNetworkFlow,

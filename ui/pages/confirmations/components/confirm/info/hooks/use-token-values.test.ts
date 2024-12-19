@@ -76,6 +76,7 @@ describe('useTokenValues', () => {
       decodedTransferValue: '7',
       displayTransferValue: '7',
       fiatDisplayValue: '$6.37',
+      fiatValue: 6.37,
       pending: false,
     });
   });
@@ -122,6 +123,7 @@ describe('useTokenValues', () => {
       decodedTransferValue: '7',
       displayTransferValue: '7',
       fiatDisplayValue: null,
+      fiatValue: null,
       pending: false,
     });
   });

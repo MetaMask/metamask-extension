@@ -3,7 +3,8 @@ import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import Homepage from '../../../page-objects/pages/homepage';
+import Homepage from '../../../page-objects/pages/home/homepage';
+import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('Import NFT', function () {
@@ -27,11 +28,11 @@ describe('Import NFT', function () {
 
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
-        await homepage.importNft(contractAddress, '1');
-        await homepage.check_successImportNftMessageIsDisplayed();
-
-        await homepage.check_nftNameIsDisplayed('TestDappNFTs');
-        await homepage.check_nftImageIsDisplayed();
+        const nftList = new NftListPage(driver);
+        await nftList.importNft(contractAddress, '1');
+        await nftList.check_successImportNftMessageIsDisplayed();
+        await nftList.check_nftNameIsDisplayed('TestDappNFTs');
+        await nftList.check_nftImageIsDisplayed();
       },
     );
   });
@@ -55,10 +56,11 @@ describe('Import NFT', function () {
         // Import a NFT and check that it is displayed in the NFT tab on homepage
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
-        await homepage.importNft(contractAddress, '1');
-        await homepage.check_successImportNftMessageIsDisplayed();
-        await homepage.check_nftNameIsDisplayed('TestDappNFTs');
-        await homepage.check_nftImageIsDisplayed();
+        const nftList = new NftListPage(driver);
+        await nftList.importNft(contractAddress, '1');
+        await nftList.check_successImportNftMessageIsDisplayed();
+        await nftList.check_nftNameIsDisplayed('TestDappNFTs');
+        await nftList.check_nftImageIsDisplayed();
 
         // Create new account with default name Account 2
         const headerNavbar = new HeaderNavbar(driver);
@@ -76,8 +78,8 @@ describe('Import NFT', function () {
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
         await homepage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
-        await homepage.check_nftNameIsDisplayed('TestDappNFTs');
-        await homepage.check_nftImageIsDisplayed();
+        await nftList.check_nftNameIsDisplayed('TestDappNFTs');
+        await nftList.check_nftImageIsDisplayed();
       },
     );
   });
@@ -98,9 +100,8 @@ describe('Import NFT', function () {
           contractRegistry.getContractAddress(smartContract);
         await loginWithBalanceValidation(driver, ganacheServer);
 
-        const homepage = new Homepage(driver);
-        await homepage.goToNftTab();
-        await homepage.importNft(
+        await new Homepage(driver).goToNftTab();
+        await new NftListPage(driver).importNft(
           contractAddress,
           '2',
           'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',

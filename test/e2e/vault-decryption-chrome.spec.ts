@@ -5,7 +5,7 @@ import level from 'level';
 import { Driver } from './webdriver/driver';
 import { withFixtures, WALLET_PASSWORD } from './helpers';
 import HeaderNavbar from './page-objects/pages/header-navbar';
-import HomePage from './page-objects/pages/homepage';
+import HomePage from './page-objects/pages/home/homepage';
 import PrivacySettings from './page-objects/pages/settings/privacy-settings';
 import SettingsPage from './page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from './page-objects/pages/vault-decryptor-page';

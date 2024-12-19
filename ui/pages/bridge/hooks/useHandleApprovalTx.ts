@@ -3,9 +3,9 @@ import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { TxData, QuoteResponse, FeeType } from '../types';
 import { isEthUsdt, getEthUsdtResetData } from '../bridge.util';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import { ETH_USDT_ADDRESS } from '../../../../shared/constants/bridge';
 import { getBridgeERC20Allowance } from '../../../ducks/bridge/actions';
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import useHandleTx from './useHandleTx';
 
 export default function useHandleApprovalTx() {
@@ -42,11 +42,8 @@ export default function useHandleApprovalTx() {
       await handleTx({
         txType: TransactionType.bridgeApproval,
         txParams,
-        swapsOptions: {
-          hasApproveTx: true,
-          meta: {
-            type: TransactionType.bridgeApproval,
-          },
+        fieldsToAddToTxMeta: {
+          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
         },
       });
     }
@@ -59,10 +56,7 @@ export default function useHandleApprovalTx() {
     approval: TxData;
     quoteResponse: QuoteResponse;
   }) => {
-    const hexChainId = new Numeric(
-      approval.chainId,
-      10,
-    ).toPrefixedHexString() as `0x${string}`;
+    const hexChainId = decimalToPrefixedHex(approval.chainId);
 
     // On Ethereum, we need to reset the allowance to 0 for USDT first if we need to set a new allowance
     // https://www.google.com/url?q=https://docs.unizen.io/trade-api/before-you-get-started/token-allowance-management-for-non-updatable-allowance-tokens&sa=D&source=docs&ust=1727386175513609&usg=AOvVaw3Opm6BSJeu7qO0Ve5iLTOh
@@ -77,16 +71,12 @@ export default function useHandleApprovalTx() {
     const txMeta = await handleTx({
       txType: TransactionType.bridgeApproval,
       txParams: approval,
-      swapsOptions: {
-        hasApproveTx: true,
-        meta: {
-          type: TransactionType.bridgeApproval,
-          sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
-        },
+      fieldsToAddToTxMeta: {
+        sourceTokenSymbol: quoteResponse.quote.srcAsset.symbol,
       },
     });
 
-    return txMeta.id;
+    return txMeta;
   };
   return {
     handleApprovalTx,

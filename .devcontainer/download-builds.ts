@@ -7,7 +7,7 @@ function getGitBranch() {
   const gitOutput = execSync('git status').toString();
 
   const branchRegex = /On branch (?<branch>.*)\n/;
-  return gitOutput.match(branchRegex)?.groups?.branch || 'develop';
+  return gitOutput.match(branchRegex)?.groups?.branch || 'main';
 }
 
 async function getCircleJobs(branch: string) {

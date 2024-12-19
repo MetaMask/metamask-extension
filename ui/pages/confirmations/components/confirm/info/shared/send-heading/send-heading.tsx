@@ -22,6 +22,7 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenValues } from '../../hooks/use-token-values';
+import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import { useTokenDetails } from '../../hooks/useTokenDetails';
 import { ConfirmLoader } from '../confirm-loader/confirm-loader';
 
@@ -34,6 +35,7 @@ const SendHeading = () => {
     decodedTransferValue,
     displayTransferValue,
     fiatDisplayValue,
+    fiatValue,
     pending,
   } = useTokenValues(transactionMeta);
 
@@ -84,6 +86,8 @@ const SendHeading = () => {
         {fiatDisplayValue}
       </Text>
     );
+
+  useSendingValueMetric({ transactionMeta, fiatValue });
 
   if (pending) {
     return <ConfirmLoader />;
