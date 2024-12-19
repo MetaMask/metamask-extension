@@ -3,12 +3,18 @@ import React, {
   useState,
   useCallback,
   Fragment,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useContext,
+  ///: END:ONLY_INCLUDE_IF
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { capitalize } from 'lodash';
+import { isEvmAccountType } from '@metamask/keyring-api';
+///: END:ONLY_INCLUDE_IF
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
@@ -32,13 +38,24 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import {
   Box,
   Button,
+  Text,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ButtonSize,
   ButtonVariant,
   IconName,
-  Text,
+  BadgeWrapper,
+  AvatarNetwork,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import TransactionIcon from '../transaction-icon';
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
+///: END:ONLY_INCLUDE_IF
+
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   Display,
+  ///: END:ONLY_INCLUDE_IF
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -51,12 +68,18 @@ import {
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
-import { isSelectedInternalAccountBtc } from '../../../selectors/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getMultichainNetwork,
+  getSelectedAccountMultichainTransactions,
+} from '../../../selectors/multichain';
+///: END:ONLY_INCLUDE_IF
+
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 const PAGE_INCREMENT = 10;
@@ -147,6 +170,12 @@ export default function TransactionList({
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const nonEvmTransactions = useSelector(
+    getSelectedAccountMultichainTransactions,
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   const unfilteredPendingTransactions = useSelector(
     nonceSortedPendingTransactionsSelector,
@@ -271,45 +300,159 @@ export default function TransactionList({
   const dateGroupsWithTransactionGroups = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
 
-  // Check if the current account is a bitcoin account
-  const isBitcoinAccount = useSelector(isSelectedInternalAccountBtc);
-  const trackEvent = useContext(MetaMetricsContext);
-
   useEffect(() => {
     endTrace({ name: TraceName.AccountOverviewActivityTab });
   }, []);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,
   );
-  if (isBitcoinAccount) {
+
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const groupNonEvmTransactionsByDate = (transactions) => {
+    const groupedTransactions = [];
+
+    transactions.data.forEach((transaction) => {
+      const date = formatDateWithYearContext(
+        transaction.timestamp,
+        'MMM d, y',
+        'MMM d',
+      );
+
+      const existingGroup = groupedTransactions.find(
+        (group) => group.date === date,
+      );
+
+      if (existingGroup) {
+        existingGroup.transactions.push(transaction);
+      } else {
+        groupedTransactions.push({
+          date,
+          dateMillis: transaction.timestamp,
+          transactions: [transaction],
+        });
+      }
+    });
+
+    groupedTransactions.sort((a, b) => b.dateMillis - a.dateMillis);
+
+    return groupedTransactions;
+  };
+
+  if (!isEvmAccountType(selectedAccount.type)) {
     const addressLink = getMultichainAccountUrl(
       selectedAccount.address,
       multichainNetwork,
     );
+
     const metricsLocation = 'Activity Tab';
     return (
       <Box className="transaction-list" {...boxProps}>
-        <Box className="transaction-list__empty-text">
-          {t('bitcoinActivityNotSupported')}
-        </Box>
-        <Box className="transaction-list__view-on-block-explorer">
-          <Button
-            display={Display.Flex}
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Sm}
-            endIconName={IconName.Export}
-            onClick={() =>
-              openBlockExplorer(addressLink, metricsLocation, trackEvent)
-            }
-          >
-            {t('viewOnBlockExplorer')}
-          </Button>
+        <Box className="transaction-list__transactions">
+          {nonEvmTransactions.data.length > 0 ? (
+            <Box className="transaction-list__completed-transactions">
+              {groupNonEvmTransactionsByDate(nonEvmTransactions).map(
+                (dateGroup) => (
+                  <Fragment key={dateGroup.date}>
+                    <Text
+                      paddingTop={4}
+                      paddingInline={4}
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.textDefault}
+                    >
+                      {dateGroup.date}
+                    </Text>
+                    {dateGroup.transactions.map((transaction, index) => (
+                      <ActivityListItem
+                        key={`${transaction.account}:${index}`}
+                        className="custom-class"
+                        data-testid="activity-list-item"
+                        icon={
+                          <BadgeWrapper
+                            anchorElementShape="circular"
+                            badge={
+                              <AvatarNetwork
+                                borderColor="background-default"
+                                borderWidth={1}
+                                className="activity-tx__network-badge"
+                                data-testid="activity-tx-network-badge"
+                                name="Solana"
+                                size="xs"
+                                src="./images/solana-logo.svg"
+                              />
+                            }
+                            display="block"
+                            positionObj={{ right: -4, top: -4 }}
+                          >
+                            <TransactionIcon
+                              category={transaction.type}
+                              status={transaction.status}
+                            />
+                          </BadgeWrapper>
+                        }
+                        rightContent={
+                          <>
+                            <Text
+                              className="activity-list-item__primary-currency"
+                              color="text-default"
+                              data-testid="transaction-list-item-primary-currency"
+                              ellipsis
+                              fontWeight="medium"
+                              textAlign="right"
+                              title="Primary Currency"
+                              variant="body-lg-medium"
+                            >
+                              {`${transaction.from[0]?.asset?.amount} ${transaction.from[0]?.asset?.unit}`}
+                            </Text>
+                          </>
+                        }
+                        subtitle={
+                          <TransactionStatusLabel
+                            date={formatDateWithYearContext(
+                              transaction.timestamp,
+                              'MMM d, y',
+                              'MMM d',
+                            )}
+                            error={{}}
+                            status={transaction.status}
+                            statusOnly
+                          />
+                        }
+                        title={capitalize(transaction.type)}
+                      ></ActivityListItem>
+                    ))}
+                  </Fragment>
+                ),
+              )}
+              <Box className="transaction-list__view-on-block-explorer">
+                <Button
+                  display={Display.Flex}
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Sm}
+                  endIconName={IconName.Export}
+                  onClick={() =>
+                    openBlockExplorer(addressLink, metricsLocation, trackEvent)
+                  }
+                >
+                  {t('viewOnBlockExplorer')}
+                </Button>
+              </Box>
+            </Box>
+          ) : (
+            <Box className="transaction-list__empty">
+              <Box className="transaction-list__empty-text">
+                {t('noTransactions')}
+              </Box>
+            </Box>
+          )}
         </Box>
       </Box>
     );
   }
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
