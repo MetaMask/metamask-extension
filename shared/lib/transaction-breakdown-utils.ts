@@ -1,8 +1,10 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+// eslint-disable-next-line import/no-restricted-paths
 import { getHexGasTotal } from '../../ui/helpers/utils/confirm-tx.util';
 
 /**
  * Calculates the total cost of a transaction in hex wei.
+ *
  * @param txMeta - The transaction meta object.
  * @returns The total cost of the transaction in hex wei.
  */
