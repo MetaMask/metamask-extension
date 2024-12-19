@@ -22,27 +22,20 @@ import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/in
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
-import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
+import { useTokenTransactionData } from '../hooks/useTokenTransactionData';
 
 export const TransactionFlowSection = () => {
   const t = useI18nContext();
+
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { value, pending } = useDecodedTransactionData();
+  const parsedTransactionData = useTokenTransactionData();
 
-  const addresses = value?.data[0].params.filter(
-    (param) => param.type === 'address',
-  );
   const recipientAddress =
     transactionMeta.type === TransactionType.simpleSend
       ? transactionMeta.txParams.to
-      : // sometimes there's more than one address, in which case we want the last one
-        addresses?.[addresses.length - 1].value;
-
-  if (pending) {
-    return null;
-  }
+      : parsedTransactionData?.args?._to;
 
   const { chainId } = transactionMeta;
 

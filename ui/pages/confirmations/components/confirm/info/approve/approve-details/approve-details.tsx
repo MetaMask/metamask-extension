@@ -11,8 +11,6 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
-import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
-import { Container } from '../../shared/transaction-data/transaction-data';
 import {
   MethodDataRow,
   OriginRow,
@@ -20,6 +18,7 @@ import {
 } from '../../shared/transaction-details/transaction-details';
 import { getIsRevokeSetApprovalForAll } from '../../utils';
 import { useIsNFT } from '../hooks/use-is-nft';
+import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
 
 const Spender = ({
   isSetApprovalForAll = false,
@@ -32,23 +31,16 @@ const Spender = ({
     useConfirmContext<TransactionMeta>();
 
   const { isNFT } = useIsNFT(transactionMeta);
+  const parsedTransactionData = useTokenTransactionData();
 
-  const decodedResponse = useDecodedTransactionData();
-
-  const { value, pending } = decodedResponse;
-
-  if (pending) {
-    return <Container isLoading />;
-  }
-
-  if (!value) {
+  if (!parsedTransactionData) {
     return null;
   }
 
-  const spender = value.data[0].params[0].value;
+  const spender = parsedTransactionData.args?._spender;
   const { chainId } = transactionMeta;
 
-  if (getIsRevokeSetApprovalForAll(value)) {
+  if (getIsRevokeSetApprovalForAll(parsedTransactionData)) {
     return null;
   }
 

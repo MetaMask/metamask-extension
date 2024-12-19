@@ -1,13 +1,11 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { isHexString } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { isBoolean } from 'lodash';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
-import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
+import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
 import { useIsNFT } from './use-is-nft';
 
 const UNLIMITED_THRESHOLD = 10 ** 15;
@@ -22,31 +20,13 @@ export const useApproveTokenSimulation = (
 ) => {
   const locale = useSelector(getIntlLocale);
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
-  const decodedResponse = useDecodedTransactionData();
-  const { value, pending } = decodedResponse;
+  const parsedTransactionData = useTokenTransactionData();
 
-  const decodedSpendingCap = useMemo(() => {
-    if (!value) {
-      return '0';
-    }
+  const value =
+    (parsedTransactionData?.args?._value as BigNumber | undefined) ??
+    new BigNumber(0);
 
-    const paramIndex = value.data[0].params.findIndex(
-      (param) =>
-        param.value !== undefined &&
-        !isHexString(param.value) &&
-        param.value.length === undefined &&
-        !isBoolean(param.value),
-    );
-    if (paramIndex === -1) {
-      return '0';
-    }
-
-    return calcTokenAmount(
-      value.data[0].params[paramIndex].value,
-      Number(decimals),
-    ).toFixed();
-  }, [value, decimals]);
-
+  const decodedSpendingCap = calcTokenAmount(value, Number(decimals)).toFixed();
   const tokenPrefix = isNFT ? '#' : '';
 
   const formattedSpendingCap = useMemo(() => {
@@ -70,6 +50,6 @@ export const useApproveTokenSimulation = (
     spendingCap,
     formattedSpendingCap,
     value,
-    pending: pending || isNFTPending,
+    pending: isNFTPending,
   };
 };
