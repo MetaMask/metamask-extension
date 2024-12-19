@@ -9,15 +9,27 @@ export type L1GasFees = {
 
 // Values derived from the quote response
 // valueInCurrency values are calculated based on the user's selected currency
+export type TokenAmountValues = {
+  amount: BigNumber;
+  valueInCurrency: BigNumber | null;
+  usd: BigNumber | null;
+};
+
 export type QuoteMetadata = {
-  gasFee: { amount: BigNumber; valueInCurrency: BigNumber | null };
-  totalNetworkFee: { amount: BigNumber; valueInCurrency: BigNumber | null }; // estimatedGasFees + relayerFees
-  totalMaxNetworkFee: { amount: BigNumber; valueInCurrency: BigNumber | null }; // maxGasFees + relayerFees
-  toTokenAmount: { amount: BigNumber; valueInCurrency: BigNumber | null };
-  adjustedReturn: { valueInCurrency: BigNumber | null }; // destTokenAmount - totalNetworkFee
-  sentAmount: { amount: BigNumber; valueInCurrency: BigNumber | null }; // srcTokenAmount + metabridgeFee
+  gasFee: TokenAmountValues;
+  // estimatedGasFees + relayerFees
+  totalNetworkFee: TokenAmountValues;
+  // maxGasFees + relayerFees
+  totalMaxNetworkFee: TokenAmountValues;
+  // destTokenAmount
+  toTokenAmount: TokenAmountValues;
+  // destTokenAmount - totalNetworkFee
+  adjustedReturn: Omit<TokenAmountValues, 'amount'>;
+  // srcTokenAmount + metabridgeFee
+  sentAmount: TokenAmountValues;
   swapRate: BigNumber; // destTokenAmount / sentAmount
-  cost: { valueInCurrency: BigNumber | null }; // sentAmount - adjustedReturn
+  // sentAmount - adjustedReturn
+  cost: Omit<TokenAmountValues, 'amount'>;
 };
 
 // Sort order set by the user

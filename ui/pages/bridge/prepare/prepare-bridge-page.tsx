@@ -119,7 +119,7 @@ const PrepareBridgePage = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const fromAmountInFiat = useSelector(getFromAmountInCurrency);
+  const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
   const providerConfig = useSelector(getProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -378,7 +378,7 @@ const PrepareBridgePage = () => {
         onMaxButtonClick={(value: string) => {
           dispatch(setFromTokenInputValue(value));
         }}
-        amountInFiat={fromAmountInFiat}
+        amountInFiat={fromAmountInCurrency.valueInCurrency}
         amountFieldProps={{
           testId: 'from-amount',
           autoFocus: true,

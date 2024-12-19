@@ -53,7 +53,14 @@ export type Asset = {
 
 export type SrcChainStatus = {
   chainId: ChainId;
-  txHash?: string; // might be undefined if this is a smart transaction (STX)
+  /**
+   * The txHash of the transaction on the source chain.
+   * This might be undefined for smart transactions (STX)
+   */
+  txHash?: string;
+  /**
+   * The atomic amount of the token sent minus fees on the source chain
+   */
   amount?: string;
   token?: Asset;
 };
@@ -61,6 +68,9 @@ export type SrcChainStatus = {
 export type DestChainStatus = {
   chainId: ChainId;
   txHash?: string;
+  /**
+   * The atomic amount of the token received on the destination chain
+   */
   amount?: string;
   token?: Record<string, never> | Asset;
 };
@@ -132,13 +142,15 @@ export type BridgeHistoryItem = {
   startTime?: number; // timestamp in ms
   estimatedProcessingTimeInSeconds: number;
   slippagePercentage: number;
-  completionTime?: number;
+  completionTime?: number; // timestamp in ms
   pricingData?: {
-    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
-
-    quotedGasInUsd?: string;
-    quotedReturnInUsd?: string;
+    /**
+     * From QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
+     */
+    amountSent: string;
     amountSentInUsd?: string;
+    quotedGasInUsd?: string; // from QuoteMetadata.gasFee.usd
+    quotedReturnInUsd?: string; // from QuoteMetadata.toTokenAmount.usd
     quotedRefuelSrcAmountInUsd?: string;
     quotedRefuelDestAmountInUsd?: string;
   };
@@ -153,9 +165,45 @@ export enum BridgeStatusAction {
   GET_STATE = 'getState',
 }
 
-// The BigNumber values are serialized to strings
+// The BigNumber values are serialized to strings when QuoteMetadata sent to the background
+export type TokenAmountValuesSerialized = {
+  amount: string;
+  valueInCurrency: string | null;
+  usd: string | null;
+};
+
 export type QuoteMetadataSerialized = {
-  sentAmount: { amount: string; fiat: string | null };
+  gasFee: TokenAmountValuesSerialized;
+  /**
+   * The total network fee for the bridge transaction
+   * estimatedGasFees + relayerFees
+   */
+  totalNetworkFee: TokenAmountValuesSerialized;
+  /**
+   * The total max network fee for the bridge transaction
+   * maxGasFees + relayerFees
+   */
+  totalMaxNetworkFee: TokenAmountValuesSerialized;
+  toTokenAmount: TokenAmountValuesSerialized;
+  /**
+   * The adjusted return for the bridge transaction
+   * destTokenAmount - totalNetworkFee
+   */
+  adjustedReturn: TokenAmountValuesSerialized;
+  /**
+   * The actual amount sent by user in non-atomic decimal form
+   * srcTokenAmount + metabridgeFee
+   */
+  sentAmount: TokenAmountValuesSerialized;
+  swapRate: string; // destTokenAmount / sentAmount
+  /**
+   * The cost of the bridge transaction
+   * sentAmount - adjustedReturn
+   */
+  cost: {
+    valueInCurrency: string | null;
+    usd: string | null;
+  };
 };
 
 export type StartPollingForBridgeTxStatusArgs = {

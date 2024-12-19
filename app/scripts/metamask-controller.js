@@ -381,6 +381,7 @@ import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { rejectAllApprovals } from './lib/approval/utils';
+import { handleBridgeTransactionComplete } from './lib/bridge-status/metrics';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -2052,6 +2053,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this._addTransactionControllerListeners();
+    this._addBridgeStatusControllerListeners();
 
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
@@ -6801,6 +6803,17 @@ export default class MetamaskController extends EventEmitter {
       ({ transactionMeta }) => {
         this._onFinishedTransaction(transactionMeta);
       },
+    );
+  }
+
+  /**
+   * A method for setting BridgeStatusController event listeners
+   */
+  _addBridgeStatusControllerListeners() {
+    this.controllerMessenger.subscribe(
+      'BridgeStatusController:bridgeTransactionComplete',
+      (payload) =>
+        handleBridgeTransactionComplete(payload, { metamask: this.getState() }),
     );
   }
 
