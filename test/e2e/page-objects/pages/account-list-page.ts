@@ -621,6 +621,7 @@ class AccountListPage {
         console.log(
           `Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${isValid}`,
         );
+        return isValid;
       },
       20000,
       true,
