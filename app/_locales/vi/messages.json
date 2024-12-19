@@ -416,6 +416,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "Các thay đổi ước tính cho giao dịch này đã được cập nhật. Hãy xem xét kỹ trước khi tiếp tục."
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "Bạn đang tương tác với địa chỉ này lần đầu tiên. Hãy đảm bảo địa chỉ này chính xác trước khi tiếp tục."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "Chúng tôi không thể cung cấp phí chính xác và ước tính này có thể cao. Chúng tôi khuyên bạn nên nhập hạn mức phí gas tùy chỉnh, nhưng vẫn có rủi ro giao dịch sẽ thất bại."
   },
@@ -452,6 +455,9 @@
   "alertReasonChangeInSimulationResults": {
     "message": "Kết quả đã thay đổi"
   },
+  "alertReasonFirstTimeInteraction": {
+    "message": "Tương tác lần đầu tiên"
+  },
   "alertReasonGasEstimateFailed": {
     "message": "Phí không chính xác"
   },
@@ -478,6 +484,9 @@
   },
   "alertReasonWrongAccount": {
     "message": "Tài khoản không đúng"
+  },
+  "alertSelectedAccountWarning": {
+    "message": "Yêu cầu này dành cho một tài khoản khác với tài khoản được chọn trong ví của bạn. Để sử dụng tài khoản khác, hãy kết nối tài khoản đó với trang web."
   },
   "alerts": {
     "message": "Cảnh báo"
@@ -720,8 +729,7 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "Đây là một phiên bản beta. Vui lòng báo cáo lỗi $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "Đây là một phiên bản beta. Vui lòng báo cáo lỗi $1"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "Phiên bản MetaMask Institutional Beta"
@@ -828,14 +836,24 @@
   "bridge": {
     "message": "Cầu nối"
   },
+  "bridgeApproval": {
+    "message": "Chấp thuận $1 cho cầu nối",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
   "bridgeCalculatingAmount": {
     "message": "Đang tính toán..."
   },
   "bridgeEnterAmount": {
     "message": "Nhập số tiền"
   },
+  "bridgeExplorerLinkViewOn": {
+    "message": "Xem trên $1"
+  },
   "bridgeFrom": {
     "message": "Cầu nối từ"
+  },
+  "bridgeNetCost": {
+    "message": "Chi phí ròng"
   },
   "bridgeSelectNetwork": {
     "message": "Chọn mạng"
@@ -843,8 +861,56 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Chọn token và số tiền"
   },
+  "bridgeStepActionBridgeComplete": {
+    "message": "Đã nhận $1 trên $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionBridgePending": {
+    "message": "Đang nhận $1 trên $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "Đã hoán đổi $1 thành $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "Đang hoán đổi $1 thành $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1 phút",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
   "bridgeTo": {
     "message": "Cầu nối đến"
+  },
+  "bridgeToChain": {
+    "message": "Cầu nối đến $1"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Liên hệ với"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "Hỗ trợ MetaMask"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "Đã quá 3 giờ chưa?"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "Số nonce"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "Trạng thái"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "Dấu thời gian"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$1 lúc $2",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "Tổng phí gas"
   },
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
@@ -1302,6 +1368,10 @@
   "creatorAddress": {
     "message": "Địa chỉ của người tạo"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "Giá trị này phản ánh giá trị của tất cả các token mà bạn sở hữu trên tất cả các mạng. Nếu bạn muốn xem giá trị này bằng ETH hoặc các loại tiền tệ khác, hãy truy cập $1.",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "Hoán đổi trên các mạng với MetaMask Portfolio"
   },
@@ -1332,6 +1402,10 @@
   },
   "currentLanguage": {
     "message": "Ngôn ngữ hiện tại"
+  },
+  "currentNetwork": {
+    "message": "Mạng hiện tại",
+    "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
     "message": "Đường dẫn URL RPC hiện tại cho mạng này không còn được dùng nữa."
@@ -1685,6 +1759,12 @@
   "dropped": {
     "message": "Đã ngừng"
   },
+  "duplicateContactTooltip": {
+    "message": "Tên liên hệ này trùng với một tài khoản hoặc liên hệ đã có"
+  },
+  "duplicateContactWarning": {
+    "message": "Bạn có liên hệ bị trùng"
+  },
   "edit": {
     "message": "Chỉnh sửa"
   },
@@ -1770,6 +1850,9 @@
   },
   "editGasTooLow": {
     "message": "Thời gian xử lý không rõ"
+  },
+  "editInPortfolio": {
+    "message": "Chỉnh sửa trong Portfolio"
   },
   "editNetworkLink": {
     "message": "chỉnh sửa mạng gốc"
@@ -2967,6 +3050,9 @@
     "message": "Địa chỉ",
     "description": "Label above address field in name component modal."
   },
+  "nameAlreadyInUse": {
+    "message": "Tên đã được sử dụng"
+  },
   "nameInstructionsNew": {
     "message": "Nếu bạn biết địa chỉ này, hãy đặt biệt danh để dễ nhận biết trong tương lai.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -3114,6 +3200,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameSolana": {
+    "message": "Solana"
   },
   "networkNameTestnet": {
     "message": "Mạng thử nghiệm"
@@ -3309,6 +3398,13 @@
   },
   "noTransactions": {
     "message": "Bạn không có giao dịch nào"
+  },
+  "noTransactionsChainIdMismatch": {
+    "message": "Vui lòng chuyển đổi mạng để xem giao dịch"
+  },
+  "noTransactionsNetworkName": {
+    "message": "Vui lòng chuyển sang mạng $1 để xem giao dịch",
+    "description": "$1 represents the network name"
   },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
@@ -4065,6 +4161,24 @@
   "permissionsPageEmptySubContent": {
     "message": "Đây là nơi bạn có thể xem các quyền mà bạn đã cấp cho các Snap đã cài đặt hoặc các trang web đã kết nối."
   },
+  "permitSimulationChange_approve": {
+    "message": "Hạn mức chi tiêu"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "Bạn đặt giá"
+  },
+  "permitSimulationChange_listing": {
+    "message": "Bạn niêm yết"
+  },
+  "permitSimulationChange_receive": {
+    "message": "Bạn nhận được"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "Hạn mức chi tiêu"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "Bạn gửi"
+  },
   "permitSimulationDetailInfo": {
     "message": "Bạn đang cấp cho người chi tiêu quyền chi tiêu số lượng token này từ tài khoản của bạn."
   },
@@ -4267,6 +4381,9 @@
   },
   "quoteRate": {
     "message": "Tỷ giá báo giá"
+  },
+  "quotedReceiveAmount": {
+    "message": "Số tiền nhận $1"
   },
   "rank": {
     "message": "Xếp hạng"
@@ -4751,6 +4868,9 @@
   "selectType": {
     "message": "Chọn loại"
   },
+  "selectedAccountMismatch": {
+    "message": "Đã chọn tài khoản khác"
+  },
   "selectingAllWillAllow": {
     "message": "Việc chọn tất cả sẽ cho phép trang này xem tất cả các tài khoản hiện tại của bạn. Đảm bảo rằng bạn tin tưởng trang web này."
   },
@@ -4902,6 +5022,12 @@
   "signatureRequestGuidance": {
     "message": "Chỉ ký vào thông báo này nếu bạn hoàn toàn hiểu nội dung và tin tưởng trang web yêu cầu."
   },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "NFT sẽ hiển thị trong ví của bạn khi giá thầu được chấp nhận."
+  },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "Chỉ thay đổi khi có người mua NFT của bạn."
+  },
   "signed": {
     "message": "Đã ký"
   },
@@ -4913,6 +5039,9 @@
   },
   "signingInWith": {
     "message": "Đăng nhập bằng"
+  },
+  "signingWith": {
+    "message": "Ký bằng"
   },
   "simulationApproveHeading": {
     "message": "Rút"
@@ -4959,6 +5088,9 @@
   },
   "simulationErrorMessageV2": {
     "message": "Chúng tôi không thể ước tính gas. Có thể đã xảy ra lỗi trong hợp đồng và giao dịch này có thể thất bại."
+  },
+  "simulationsSettingDescription": {
+    "message": "Bật tính năng này để ước tính thay đổi số dư của các giao dịch và chữ ký trước khi bạn xác nhận. Điều này không đảm bảo kết quả cuối cùng. $1"
   },
   "simulationsSettingSubHeader": {
     "message": "Ước tính thay đổi số dư"
@@ -5276,6 +5408,9 @@
   },
   "spendingCapTooltipDesc": {
     "message": "Đây là số lượng token mà người chi tiêu có thể truy cập thay mặt cho bạn."
+  },
+  "spendingCaps": {
+    "message": "Hạn mức chi tiêu"
   },
   "srpInputNumberOfWords": {
     "message": "Tôi có một cụm từ gồm $1 từ",
@@ -5911,6 +6046,10 @@
   "switchedNetworkToastMessage": {
     "message": "$1 hiện đang hoạt động trên $2",
     "description": "$1 represents the account name, $2 represents the network name"
+  },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "Bạn hiện đang sử dụng $1",
+    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Khi bạn chuyển mạng, mọi xác nhận đang chờ xử lý sẽ bị hủy"
