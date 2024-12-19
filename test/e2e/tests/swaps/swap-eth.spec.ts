@@ -9,6 +9,7 @@ import {
   mockEthDaiTrade,
 } from './shared';
 
+// TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
 describe('Swap Eth for another Token @no-mmi', function () {
   it('Completes second Swaps while first swap is processing', async function () {
     withFixturesOptions.ganacheOptions.miner.blockTime = 10;

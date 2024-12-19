@@ -144,6 +144,7 @@ import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useBridging from '../../../hooks/bridge/useBridging';
+import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -822,6 +823,9 @@ export default function PrepareSwapPage({
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken isOpen {...importTokenProps} />
         )}
+        <Box>
+          <SmartTransactionsBannerAlert marginType="onlyTop" />
+        </Box>
         <Modal
           onClose={onSwapToClose}
           isOpen={isSwapToOpen}

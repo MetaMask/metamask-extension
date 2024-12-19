@@ -11,6 +11,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import * as txUtil from '../../../../../shared/modules/transaction.utils';
 import * as metamaskControllerUtils from '../../../../../shared/lib/metamask-controller-utils';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import { AlertTypes } from '../../../../../shared/constants/alerts';
+import { ALERT_STATE } from '../../../../ducks/alerts/enums';
 import TransactionAlerts from './transaction-alerts';
 
 jest.mock('../../../../selectors/transactions', () => {
@@ -33,6 +35,13 @@ const STATE_MOCK = {
     ...mockNetworkState({
       chainId: CHAIN_ID_MOCK,
     }),
+    preferences: {
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: true,
+    },
+  },
+  [AlertTypes.smartTransactionsMigration]: {
+    state: ALERT_STATE.OPEN,
   },
 };
 
@@ -40,12 +49,13 @@ function render({
   componentProps = {},
   useGasFeeContextValue = {},
   submittedPendingTransactionsSelectorValue = null,
+  state = STATE_MOCK,
 }) {
   useGasFeeContext.mockReturnValue(useGasFeeContextValue);
   submittedPendingTransactionsSelector.mockReturnValue(
     submittedPendingTransactionsSelectorValue,
   );
-  const store = configureStore(STATE_MOCK);
+  const store = configureStore(state);
   return renderWithProvider(<TransactionAlerts {...componentProps} />, store);
 }
 
@@ -556,5 +566,66 @@ describe('TransactionAlerts', () => {
         getByText('The gas for this transaction will be paid by a paymaster.'),
       ).toBeInTheDocument();
     });
+  });
+});
+
+describe('Smart Transactions Migration Alert', () => {
+  it('shows when alert is enabled, opted in, and migration applied', () => {
+    const { getByTestId } = render({
+      componentProps: {
+        txData: {
+          chainId: CHAIN_ID_MOCK,
+          txParams: { value: '0x1' },
+        },
+      },
+      state: {
+        ...STATE_MOCK,
+        metamask: {
+          ...STATE_MOCK.metamask,
+          networkConfigurationsByChainId: {
+            [CHAIN_ID_MOCK]: {
+              chainId: CHAIN_ID_MOCK,
+            },
+          },
+          alertEnabledness: {
+            [AlertTypes.smartTransactionsMigration]: true,
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+            smartTransactionsMigrationApplied: true,
+          },
+        },
+      },
+    });
+    expect(getByTestId('smart-transactions-banner-alert')).toBeInTheDocument();
+  });
+
+  it('does not show when alert is disabled', () => {
+    const closedState = {
+      ...STATE_MOCK,
+      metamask: {
+        ...STATE_MOCK.metamask,
+        alertEnabledness: {
+          [AlertTypes.smartTransactionsMigration]: false,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
+          smartTransactionsMigrationApplied: true,
+        },
+      },
+    };
+    const store = configureStore(closedState);
+    const { queryByTestId } = renderWithProvider(
+      <TransactionAlerts
+        txData={{
+          chainId: CHAIN_ID_MOCK,
+          txParams: { value: '0x1' },
+        }}
+      />,
+      store,
+    );
+    expect(
+      queryByTestId('smart-transactions-banner-alert'),
+    ).not.toBeInTheDocument();
   });
 });

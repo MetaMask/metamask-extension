@@ -17,6 +17,7 @@ type SmartTransactionsMetaMaskState = {
   metamask: {
     preferences: {
       smartTransactionsOptInStatus?: boolean;
+      smartTransactionsMigrationApplied?: boolean;
     };
     internalAccounts: {
       selectedAccount: string;
@@ -69,6 +70,25 @@ export const getSmartTransactionsOptInStatusInternal = createSelector(
   getPreferences,
   (preferences: { smartTransactionsOptInStatus?: boolean }): boolean => {
     return preferences?.smartTransactionsOptInStatus ?? true;
+  },
+);
+
+/**
+ * Returns whether the smart transactions migration has been applied to the user's settings.
+ * This specifically tracks if Migration 135 has been run, which enables Smart Transactions
+ * by default for users who have never interacted with the feature or who previously opted out
+ * with no STX activity.
+ *
+ * This should only be used for internal checks of the migration status, and not
+ * for determining overall Smart Transactions availability.
+ *
+ * @param state - The state object.
+ * @returns true if the migration has been applied to the user's settings, false if not or if unset.
+ */
+export const getSmartTransactionsMigrationAppliedInternal = createSelector(
+  getPreferences,
+  (preferences: { smartTransactionsMigrationApplied?: boolean }): boolean => {
+    return preferences?.smartTransactionsMigrationApplied ?? false;
   },
 );
 
