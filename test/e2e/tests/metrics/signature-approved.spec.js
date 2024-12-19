@@ -10,8 +10,6 @@ const {
   clickSignOnSignatureConfirmation,
   tempToggleSettingRedesignedConfirmations,
   validateContractDetails,
-  clickSignOnRedesignedSignatureConfirmation,
-  WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -58,10 +56,6 @@ const expectedEventPropertiesBase = {
   environment_type: 'background',
   security_alert_reason: 'CheckingChain',
   security_alert_response: 'loading',
-};
-
-const additionalRedesignEventProperties = {
-  ui_customizations: ['redesigned_confirmation'],
 };
 
 describe('Signature Approved Event @no-mmi', function () {
