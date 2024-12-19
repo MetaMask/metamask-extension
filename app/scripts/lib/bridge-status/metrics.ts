@@ -9,19 +9,25 @@ import { NetworkState } from '../../../../shared/modules/selectors/networks';
 import {
   exchangeRateFromMarketData,
   getTokenExchangeRate,
+
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/ducks/bridge/utils';
+// eslint-disable-next-line import/no-restricted-paths
 import { ActionType } from '../../../../ui/hooks/bridge/events/types';
+// eslint-disable-next-line import/no-restricted-paths
 import { formatProviderLabel } from '../../../../ui/pages/bridge/utils/quote';
 import {
   getCurrentKeyring,
   getMarketData,
   getUSDConversionRateByChainId,
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/selectors';
 import { BridgeStatusControllerBridgeTransactionCompleteEvent } from '../../controllers/bridge-status/types';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+// eslint-disable-next-line import/no-restricted-paths
 import { isHardwareKeyring } from '../../../../ui/helpers/utils/hardware';
 
 type BackgroundState = SmartTransactionsMetaMaskState &
