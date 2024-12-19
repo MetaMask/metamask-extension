@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
   BorderColor,
+  Color,
 } from '../../../helpers/constants/design-system';
 import { isAccountConnectedToCurrentTab } from '../../../selectors';
 import {
