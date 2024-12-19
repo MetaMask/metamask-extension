@@ -71,6 +71,10 @@ const StateChangeRow = ({
   const { assetType, changeType, amount, contractAddress, tokenID } =
     stateChange;
   const tooltip = getStateChangeToolip(stateChangeList, stateChange, t);
+  const canDisplayValueAsUnlimited =
+    assetType === TokenStandard.ERC20 &&
+    (changeType === DecodingDataChangeType.Approve ||
+      changeType === DecodingDataChangeType.Revoke);
   return (
     <ConfirmInfoRow
       label={shouldDisplayLabel ? getStateChangeLabelMap(t, changeType) : ''}
@@ -86,6 +90,7 @@ const StateChangeRow = ({
           tokenId={tokenID}
           credit={changeType === DecodingDataChangeType.Receive}
           debit={changeType === DecodingDataChangeType.Transfer}
+          canDisplayValueAsUnlimited={canDisplayValueAsUnlimited}
         />
       )}
       {assetType === 'NATIVE' && (
