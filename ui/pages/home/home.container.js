@@ -162,7 +162,7 @@ const mapStateToProps = (state) => {
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
-    haveBridgeQuotes: Boolean(Object.values(bridgeState.quotes || {}).length),
+    haveBridgeQuotes: Boolean(Object.values(bridgeState?.quotes || {}).length),
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
