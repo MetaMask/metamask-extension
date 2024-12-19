@@ -416,6 +416,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "このトランザクションの推定増減額が更新されました。先に進む前によく確認してください。"
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "このアドレスとやり取りするのは初めてです。先に進む前に、これが正しいことを確認してください。"
+  },
   "alertMessageGasEstimateFailed": {
     "message": "正確な手数料を提供できず、この見積もりは高い可能性があります。カスタムガスリミットの入力をお勧めしますが、それでもトランザクションが失敗するリスクがあります。"
   },
@@ -452,6 +455,9 @@
   "alertReasonChangeInSimulationResults": {
     "message": "結果が変更されました"
   },
+  "alertReasonFirstTimeInteraction": {
+    "message": "初回のやり取り"
+  },
   "alertReasonGasEstimateFailed": {
     "message": "不正確な手数料"
   },
@@ -478,6 +484,9 @@
   },
   "alertReasonWrongAccount": {
     "message": "正しくないアカウント"
+  },
+  "alertSelectedAccountWarning": {
+    "message": "このリクエストは、ウォレットで選択されているアカウントとは別のアカウントに対するものです。別のアカウントを使用するには、そのアカウントをサイトに接続してください。"
   },
   "alerts": {
     "message": "アラート"
@@ -720,8 +729,7 @@
     "message": "ベータ版"
   },
   "betaHeaderText": {
-    "message": "これはベータ版です。バグは報告してください $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "これはベータ版です。バグは報告してください $1"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "MetaMask Institutionalベータ版"
@@ -828,14 +836,24 @@
   "bridge": {
     "message": "ブリッジ"
   },
+  "bridgeApproval": {
+    "message": "$1のブリッジを承認",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
   "bridgeCalculatingAmount": {
     "message": "計算中..."
   },
   "bridgeEnterAmount": {
     "message": "金額を入力"
   },
+  "bridgeExplorerLinkViewOn": {
+    "message": "$1で表示"
+  },
   "bridgeFrom": {
     "message": "ブリッジ元:"
+  },
+  "bridgeNetCost": {
+    "message": "純コスト"
   },
   "bridgeSelectNetwork": {
     "message": "ネットワークを選択"
@@ -843,8 +861,56 @@
   "bridgeSelectTokenAndAmount": {
     "message": "トークンと金額を選択"
   },
+  "bridgeStepActionBridgeComplete": {
+    "message": "$2で$1を受け取りました",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionBridgePending": {
+    "message": "$2で$1を受け取っています",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "$1を$2にスワップしました",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "$1を$2にスワップしています",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1分",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
   "bridgeTo": {
     "message": "ブリッジ先:"
+  },
+  "bridgeToChain": {
+    "message": "$1にブリッジ"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "お問い合わせ先:"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMaskサポート"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "3時間を経過していますか？"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "ナンス"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "ステータス"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "タイムスタンプ"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$1 $2",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "ガス代合計"
   },
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
@@ -1302,6 +1368,10 @@
   "creatorAddress": {
     "message": "クリエイターのアドレス"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "これにはすべてのネットワークで所有している全トークンの価値が反映されています。この値をETHまたはその他の通貨で表示する場合は、$1に移動します。",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolioでネットワーク間でスワップ"
   },
@@ -1332,6 +1402,10 @@
   },
   "currentLanguage": {
     "message": "現在の言語"
+  },
+  "currentNetwork": {
+    "message": "現在のネットワーク",
+    "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
     "message": "このネットワークの現在のRPC URLは非推奨となりました。"
@@ -1685,6 +1759,12 @@
   "dropped": {
     "message": "削除されました"
   },
+  "duplicateContactTooltip": {
+    "message": "この連絡先名は既存のアカウントまたは連絡先と矛盾しています"
+  },
+  "duplicateContactWarning": {
+    "message": "重複する連絡先があります"
+  },
   "edit": {
     "message": "編集"
   },
@@ -1770,6 +1850,9 @@
   },
   "editGasTooLow": {
     "message": "不明な処理時間"
+  },
+  "editInPortfolio": {
+    "message": "Portfolioで編集"
   },
   "editNetworkLink": {
     "message": "元のネットワークを編集"
@@ -2967,6 +3050,9 @@
     "message": "アドレス",
     "description": "Label above address field in name component modal."
   },
+  "nameAlreadyInUse": {
+    "message": "名前がすでに使用されています"
+  },
   "nameInstructionsNew": {
     "message": "このアドレスを知っている場合は、今後認識できるようニックネームを付けてください。",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -3114,6 +3200,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameSolana": {
+    "message": "Solana"
   },
   "networkNameTestnet": {
     "message": "テストネット"
@@ -3309,6 +3398,13 @@
   },
   "noTransactions": {
     "message": "トランザクションがありません"
+  },
+  "noTransactionsChainIdMismatch": {
+    "message": "トランザクションを表示するにはネットワークを切り替えてください"
+  },
+  "noTransactionsNetworkName": {
+    "message": "トランザクションを表示するには$1ネットワークに切り替えてください",
+    "description": "$1 represents the network name"
   },
   "noWebcamFound": {
     "message": "お使いのコンピューターのWebカメラが見つかりませんでした。もう一度お試しください。"
@@ -4065,6 +4161,24 @@
   "permissionsPageEmptySubContent": {
     "message": "ここには、インストールされたSnapや接続されたサイトに付与したアクセス許可が表示されます。"
   },
+  "permitSimulationChange_approve": {
+    "message": "使用上限"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "入札"
+  },
+  "permitSimulationChange_listing": {
+    "message": "出品"
+  },
+  "permitSimulationChange_receive": {
+    "message": "受取"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "使用上限"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "送金"
+  },
   "permitSimulationDetailInfo": {
     "message": "この数量のトークンをアカウントから転送する権限を使用者に付与しようとしています。"
   },
@@ -4267,6 +4381,9 @@
   },
   "quoteRate": {
     "message": "クォートレート"
+  },
+  "quotedReceiveAmount": {
+    "message": "$1の受取額"
   },
   "rank": {
     "message": "ランク"
@@ -4751,6 +4868,9 @@
   "selectType": {
     "message": "種類を選択"
   },
+  "selectedAccountMismatch": {
+    "message": "別のアカウントが選択されました"
+  },
   "selectingAllWillAllow": {
     "message": "すべてを選択すると、このサイトに現在のすべてのアカウントが表示されます。このサイトが信頼できることを確認してください。"
   },
@@ -4902,6 +5022,12 @@
   "signatureRequestGuidance": {
     "message": "このメッセージの内容を完全に理解し、リクエスト元のサイトを信頼する場合にのみ署名してください。"
   },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "入札が受け入れられると、NFTがウォレットに反映されます。"
+  },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "お手持ちのNFTが購入された場合のみ変更されます。"
+  },
   "signed": {
     "message": "署名が完了しました"
   },
@@ -4913,6 +5039,9 @@
   },
   "signingInWith": {
     "message": "サインイン方法:"
+  },
+  "signingWith": {
+    "message": "署名方法:"
   },
   "simulationApproveHeading": {
     "message": "引き出し"
@@ -4959,6 +5088,9 @@
   },
   "simulationErrorMessageV2": {
     "message": "ガス代を見積もることができませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
+  },
+  "simulationsSettingDescription": {
+    "message": "トランザクションと署名を確定する前に残高の増減を予測するには、この機能をオンにします。これは最終的な結果を保証するものではありません。$1"
   },
   "simulationsSettingSubHeader": {
     "message": "予測される残高の増減"
@@ -5276,6 +5408,9 @@
   },
   "spendingCapTooltipDesc": {
     "message": "これは、使用者が代理でアクセスできるようになるトークンの金額です。"
+  },
+  "spendingCaps": {
+    "message": "使用上限"
   },
   "srpInputNumberOfWords": {
     "message": "$1語のフレーズがあります",
@@ -5911,6 +6046,10 @@
   "switchedNetworkToastMessage": {
     "message": "$1が$2で有効になりました",
     "description": "$1 represents the account name, $2 represents the network name"
+  },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "$1に切り替えました",
+    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "ネットワークを切り替えると、保留中の承認がすべてキャンセルされます"

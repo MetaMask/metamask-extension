@@ -416,6 +416,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "As mudanças estimadas para esta transação foram atualizadas. Revise-as com atenção antes de prosseguir."
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "Esta é sua primeira interação com este endereço. Certifique-se de que ele está correto antes de continuar."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "Não conseguimos fornecer uma taxa precisa, e essa estimativa pode estar alta. Sugerimos que você informe um limite de gás personalizado, mas há o risco de a transação falhar mesmo assim."
   },
@@ -452,6 +455,9 @@
   "alertReasonChangeInSimulationResults": {
     "message": "Os resultados mudaram"
   },
+  "alertReasonFirstTimeInteraction": {
+    "message": "1ª interação"
+  },
   "alertReasonGasEstimateFailed": {
     "message": "Taxa imprecisa"
   },
@@ -478,6 +484,9 @@
   },
   "alertReasonWrongAccount": {
     "message": "Conta incorreta"
+  },
+  "alertSelectedAccountWarning": {
+    "message": "Esta solicitação é para uma conta diferente daquela selecionada em sua carteira. Para usar outra conta, conecte-a ao site."
   },
   "alerts": {
     "message": "Alertas"
@@ -720,8 +729,7 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "Esta é uma versão beta. Pedimos que relatem os bugs $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "Esta é uma versão beta. Pedimos que relatem os bugs $1"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "Versão beta do MetaMask Institutional"
@@ -828,14 +836,24 @@
   "bridge": {
     "message": "Ponte"
   },
+  "bridgeApproval": {
+    "message": "Aprovar $1 para ponte",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
   "bridgeCalculatingAmount": {
     "message": "Calculando..."
   },
   "bridgeEnterAmount": {
     "message": "Insira o valor"
   },
+  "bridgeExplorerLinkViewOn": {
+    "message": "Ver em $1"
+  },
   "bridgeFrom": {
     "message": "Ponte de"
+  },
+  "bridgeNetCost": {
+    "message": "Custo líquido"
   },
   "bridgeSelectNetwork": {
     "message": "Selecionar rede"
@@ -843,8 +861,56 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Selecionar token e valor"
   },
+  "bridgeStepActionBridgeComplete": {
+    "message": "$1 recebeu em $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionBridgePending": {
+    "message": "Recebendo $1 em $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "Trocou $1 por $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "Trocando $1 por $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1 mín.",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
   "bridgeTo": {
     "message": "Ponte para"
+  },
+  "bridgeToChain": {
+    "message": "Ponte para $1"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Entre em contato com"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "Suporte da MetaMask"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "Já se passaram mais de 3 horas?"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "Nonce"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "Status"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "Carimbo de data/hora"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$1 em $2",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "Taxa de gás total"
   },
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
@@ -1302,6 +1368,10 @@
   "creatorAddress": {
     "message": "Endereço do criador"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "Isso reflete o valor de todos os tokens que você possui em todas as redes. Se você preferir ver esse valor em ETH ou outras moedas, acesse $1.",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "Faça trocas entre redes com o MetaMask Portfolio"
   },
@@ -1332,6 +1402,10 @@
   },
   "currentLanguage": {
     "message": "Idioma atual"
+  },
+  "currentNetwork": {
+    "message": "Rede atual",
+    "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
     "message": "O atual URL da RPC para essa rede foi descontinuado."
@@ -1685,6 +1759,12 @@
   "dropped": {
     "message": "Abandonada"
   },
+  "duplicateContactTooltip": {
+    "message": "O nome deste contato colide com uma conta ou contato existente"
+  },
+  "duplicateContactWarning": {
+    "message": "Você tem contatos duplicados"
+  },
   "edit": {
     "message": "Editar"
   },
@@ -1770,6 +1850,9 @@
   },
   "editGasTooLow": {
     "message": "Tempo de processamento desconhecido"
+  },
+  "editInPortfolio": {
+    "message": "Editar no Portfolio"
   },
   "editNetworkLink": {
     "message": "editar a rede original"
@@ -2967,6 +3050,9 @@
     "message": "Endereço",
     "description": "Label above address field in name component modal."
   },
+  "nameAlreadyInUse": {
+    "message": "Nome já em uso"
+  },
   "nameInstructionsNew": {
     "message": "Se você conhece esse endereço, dê um apelido a ele para reconhecê-lo posteriormente.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -3114,6 +3200,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameSolana": {
+    "message": "Solana"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -3309,6 +3398,13 @@
   },
   "noTransactions": {
     "message": "Você não tem transações"
+  },
+  "noTransactionsChainIdMismatch": {
+    "message": "Mude de rede para ver as transações"
+  },
+  "noTransactionsNetworkName": {
+    "message": "Mude para a rede $1 para ver as transações",
+    "description": "$1 represents the network name"
   },
   "noWebcamFound": {
     "message": "A webcam do seu computador não foi encontrada. Tente novamente."
@@ -4065,6 +4161,24 @@
   "permissionsPageEmptySubContent": {
     "message": "Aqui você pode ver as permissões que deu aos snaps instalados ou sites conectados."
   },
+  "permitSimulationChange_approve": {
+    "message": "Limite de gastos"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "Seu lance"
+  },
+  "permitSimulationChange_listing": {
+    "message": "Sua listagem"
+  },
+  "permitSimulationChange_receive": {
+    "message": "Você recebe"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "Limite de gastos"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "Você envia"
+  },
   "permitSimulationDetailInfo": {
     "message": "Você está autorizando o consumidor a gastar esta quantidade de tokens de sua conta."
   },
@@ -4267,6 +4381,9 @@
   },
   "quoteRate": {
     "message": "Taxa de cotação"
+  },
+  "quotedReceiveAmount": {
+    "message": "Valor recebido $1"
   },
   "rank": {
     "message": "Classificação"
@@ -4751,6 +4868,9 @@
   "selectType": {
     "message": "Selecione o tipo"
   },
+  "selectedAccountMismatch": {
+    "message": "Conta diferente selecionada"
+  },
   "selectingAllWillAllow": {
     "message": "Selecionar todos permitirá que esse site visualize todas as suas contas atuais. Certifique-se de confiar nesse site."
   },
@@ -4902,6 +5022,12 @@
   "signatureRequestGuidance": {
     "message": "Assine essa mensagem apenas se entende integralmente o conteúdo e confia no site solicitante."
   },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "O NFT será refletido em sua carteira quando o lance for aceito."
+  },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "Espere alterações somente se alguém comprar seus NFTs."
+  },
   "signed": {
     "message": "Assinado"
   },
@@ -4912,6 +5038,9 @@
     "message": "Assinando"
   },
   "signingInWith": {
+    "message": "Assinando com"
+  },
+  "signingWith": {
     "message": "Assinando com"
   },
   "simulationApproveHeading": {
@@ -4959,6 +5088,9 @@
   },
   "simulationErrorMessageV2": {
     "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
+  },
+  "simulationsSettingDescription": {
+    "message": "Ative esta opção para estimar alterações de saldo pelas transações e assinaturas antes de confirmá-las. Isso não garante o resultado final de suas transações. $1"
   },
   "simulationsSettingSubHeader": {
     "message": "Estimar alterações de saldo"
@@ -5276,6 +5408,9 @@
   },
   "spendingCapTooltipDesc": {
     "message": "Esta é a quantidade de tokens que o consumidor poderá acessar em seu nome."
+  },
+  "spendingCaps": {
+    "message": "Limites de gastos"
   },
   "srpInputNumberOfWords": {
     "message": "Eu tenho uma frase com $1 palavras",
@@ -5911,6 +6046,10 @@
   "switchedNetworkToastMessage": {
     "message": "$1 agora está ativa na $2",
     "description": "$1 represents the account name, $2 represents the network name"
+  },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "Agora você está usando $1",
+    "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "A alternância de redes cancelará todas as confirmações pendentes"
