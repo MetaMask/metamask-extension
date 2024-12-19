@@ -51,7 +51,7 @@ const useTrackERC20WithoutDecimalInformation = (
         });
       }
     }
-  }, [tokenDetails, chainId, tokenAddress, trackEvent]);
+  }, []);
 };
 
 export default useTrackERC20WithoutDecimalInformation;
