@@ -226,7 +226,7 @@ export const TokenListItem = ({
       />
     </Box>
   );
-  // Used for badge icon
+  // Used for badge icon and tooltips
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
@@ -281,13 +281,18 @@ export const TokenListItem = ({
       >
         <BadgeWrapper
           badge={
-            <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
-              name={allNetworks?.[chainId as Hex]?.name}
-              src={tokenChainImage || undefined}
-              backgroundColor={testNetworkBackgroundColor}
-              className="multichain-token-list-item__badge__avatar-network"
-            />
+            <Tooltip
+              html={allNetworks?.[chainId as Hex]?.name}
+              position="bottom"
+            >
+              <AvatarNetwork
+                size={AvatarNetworkSize.Xs}
+                name={allNetworks?.[chainId as Hex]?.name}
+                src={tokenChainImage || undefined}
+                backgroundColor={testNetworkBackgroundColor}
+                className="multichain-token-list-item__badge__avatar-network"
+              />
+            </Tooltip>
           }
           marginRight={4}
           className="multichain-token-list-item__badge"
