@@ -39,6 +39,11 @@ class HeaderNavbar {
     console.log('Header navbar is loaded');
   }
 
+  async clickSwitchNetworkDropDown(): Promise<void> {
+    console.log(`Click switch network menu`);
+    await this.driver.clickElement(this.switchNetworkDropDown);
+  }
+
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
@@ -75,9 +80,13 @@ class HeaderNavbar {
     await this.driver.clickElement(this.settingsButton);
   }
 
-  async clickSwitchNetworkDropDown(): Promise<void> {
-    console.log(`Click switch network menu`);
-    await this.driver.clickElement(this.switchNetworkDropDown);
+  async switchNetwork(network: string): Promise<void> {
+    console.log(`Switch to ${network} network`);
+    await this.clickSwitchNetworkDropDown();
+    await this.driver.clickElement({
+      tag: 'p',
+      text: network,
+    });
   }
 
   /**
