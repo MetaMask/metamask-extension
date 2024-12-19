@@ -122,7 +122,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   style="bottom: -1px; right: 2px;"
                 >
                   <div
-                    class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                    class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   />
                 </div>
               </div>
@@ -421,7 +421,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   style="bottom: -1px; right: 2px;"
                 >
                   <div
-                    class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                    class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   />
                 </div>
               </div>
@@ -720,7 +720,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   style="bottom: -1px; right: 2px;"
                 >
                   <div
-                    class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                    class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   />
                 </div>
               </div>
@@ -1028,7 +1028,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   style="bottom: -1px; right: 2px;"
                 >
                   <div
-                    class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                    class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   />
                 </div>
               </div>
@@ -1327,7 +1327,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   style="bottom: -1px; right: 2px;"
                 >
                   <div
-                    class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                    class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   />
                 </div>
               </div>
@@ -1639,7 +1639,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   style="bottom: -1px; right: 2px;"
                 >
                   <div
-                    class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                    class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   />
                 </div>
               </div>
