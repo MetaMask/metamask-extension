@@ -1,14 +1,16 @@
-import React, { useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Token } from '@metamask/assets-controllers';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import TokenList from '../token-list';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import {
   getAllDetectedTokensForSelectedAddress,
   getDetectedTokensInCurrentNetwork,
-  getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
+  getSelectedAddress,
 } from '../../../../selectors';
 import {
   getMultichainIsEvm,
@@ -25,7 +27,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import DetectedToken from '../../detected-token/detected-token';
-import { DetectedTokensBanner, ReceiveModal } from '../../../multichain';
+import { ReceiveModal } from '../../../multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { FundingMethodModal } from '../../../multichain/funding-method-modal/funding-method-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -35,6 +37,11 @@ import {
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
+import {
+  getNetworkConfigurationsByChainId,
+  getSelectedNetworkClientId,
+} from '../../../../../shared/modules/selectors/networks';
+import { addImportedTokens } from '../../../../store/actions';
 import AssetListControlBar from './asset-list-control-bar';
 import NativeToken from './native-token';
 
@@ -54,6 +61,7 @@ export type AssetListProps = {
 };
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
+  const dispatch = useDispatch();
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
   const t = useI18nContext();
@@ -74,13 +82,16 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   });
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
-    getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  );
 
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
+
+  const allNetworks: Record<`0x${string}`, NetworkConfiguration> = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+  const networkClientId = useSelector(getSelectedNetworkClientId);
+  const selectedAddress = useSelector(getSelectedAddress);
 
   const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
@@ -104,32 +115,55 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
-  const detectedTokensMultichain = useSelector(
-    getAllDetectedTokensForSelectedAddress,
+  const detectedTokensMultichain: {
+    [key: `0x${string}`]: Token[];
+  } = useSelector(getAllDetectedTokensForSelectedAddress);
+
+  const multichainDetectedTokensLength = Object.keys(
+    detectedTokensMultichain || {},
+  ).reduce(
+    (sum, key) => sum + detectedTokensMultichain[key as `0x${string}`].length,
+    0,
   );
 
-  const totalTokens =
-    process.env.PORTFOLIO_VIEW &&
-    !isTokenNetworkFilterEqualCurrentNetwork &&
-    detectedTokensMultichain
-      ? (Object.values(detectedTokensMultichain).reduce(
-          // @ts-expect-error TS18046: 'tokenArray' is of type 'unknown'
-          (count, tokenArray) => count + tokenArray.length,
-          0,
-        ) as number)
-      : detectedTokens.length;
+  // Add detected tokens to sate
+  useEffect(() => {
+    const importAllDetectedTokens = async () => {
+      // TODO add event for MetaMetricsEventName.TokenAdded
+
+      if (
+        process.env.PORTFOLIO_VIEW &&
+        !isTokenNetworkFilterEqualCurrentNetwork
+      ) {
+        const importPromises = Object.entries(detectedTokensMultichain).map(
+          async ([networkId, tokens]) => {
+            const chainConfig = allNetworks[networkId as `0x${string}`];
+            const { defaultRpcEndpointIndex } = chainConfig;
+            const { networkClientId: networkInstanceId } =
+              chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+
+            await dispatch(
+              addImportedTokens(tokens as Token[], networkInstanceId),
+            );
+          },
+        );
+
+        await Promise.all(importPromises);
+      } else {
+        await dispatch(addImportedTokens(detectedTokens, networkClientId));
+      }
+    };
+    importAllDetectedTokens();
+  }, [
+    isTokenNetworkFilterEqualCurrentNetwork,
+    selectedAddress,
+    networkClientId,
+    detectedTokens.length,
+    multichainDetectedTokensLength,
+  ]);
+
   return (
     <>
-      {totalTokens &&
-      totalTokens > 0 &&
-      !isTokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
-        <DetectedTokensBanner
-          className=""
-          actionButtonOnClick={() => setShowDetectedTokens(true)}
-          margin={4}
-          marginBottom={1}
-        />
-      ) : null}
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
       <TokenList
         // nativeToken is still needed to avoid breaking flask build's support for bitcoin
