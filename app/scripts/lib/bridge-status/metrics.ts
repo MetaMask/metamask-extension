@@ -40,11 +40,6 @@ export const handleBridgeTransactionComplete = async (
     ) => void;
   },
 ) => {
-  console.log('handleBridgeTransactionComplete', {
-    payload,
-    state,
-  });
-
   const { bridgeHistoryItem } = payload;
 
   const keyring = getCurrentKeyring(state);
@@ -127,8 +122,6 @@ export const handleBridgeTransactionComplete = async (
     quoted_vs_used_gas_ratio: quotedVsUsedGasRatio,
     gas_included: false, // TODO check if trade has gas included
   };
-
-  console.log('properties', properties);
 
   trackEvent({
     category: MetaMetricsEventCategory.CrossChainSwaps,
