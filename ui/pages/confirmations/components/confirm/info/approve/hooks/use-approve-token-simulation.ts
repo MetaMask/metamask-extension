@@ -18,7 +18,7 @@ function isSpendingCapUnlimited(decodedSpendingCap: number) {
 
 export const useApproveTokenSimulation = (
   transactionMeta: TransactionMeta,
-  decimals: string,
+  decimals: string | undefined,
 ) => {
   const locale = useSelector(getIntlLocale);
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
@@ -43,7 +43,7 @@ export const useApproveTokenSimulation = (
 
     return calcTokenAmount(
       value.data[0].params[paramIndex].value,
-      Number(decimals),
+      Number(decimals || '0'),
     ).toFixed();
   }, [value, decimals]);
 

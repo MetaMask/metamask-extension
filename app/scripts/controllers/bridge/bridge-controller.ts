@@ -224,13 +224,35 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   };
 
   selectSrcNetwork = async (chainId: Hex) => {
-    await this.#setTopAssets(chainId, 'srcTopAssets');
-    await this.#setTokens(chainId, 'srcTokens');
+    this.update((state) => {
+      state.bridgeState.srcTokensLoadingStatus = RequestStatus.LOADING;
+      return state;
+    });
+    try {
+      await this.#setTopAssets(chainId, 'srcTopAssets');
+      await this.#setTokens(chainId, 'srcTokens');
+    } finally {
+      this.update((state) => {
+        state.bridgeState.srcTokensLoadingStatus = RequestStatus.FETCHED;
+        return state;
+      });
+    }
   };
 
   selectDestNetwork = async (chainId: Hex) => {
-    await this.#setTopAssets(chainId, 'destTopAssets');
-    await this.#setTokens(chainId, 'destTokens');
+    this.update((state) => {
+      state.bridgeState.destTokensLoadingStatus = RequestStatus.LOADING;
+      return state;
+    });
+    try {
+      await this.#setTopAssets(chainId, 'destTopAssets');
+      await this.#setTokens(chainId, 'destTokens');
+    } finally {
+      this.update((state) => {
+        state.bridgeState.destTokensLoadingStatus = RequestStatus.FETCHED;
+        return state;
+      });
+    }
   };
 
   #fetchBridgeQuotes = async ({
