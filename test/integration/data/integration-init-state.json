@@ -784,8 +784,15 @@
     "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
+    "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,
-    "tokenNetworkFilter": {}
+    "privacyMode": false,
+    "tokenNetworkFilter": {},
+    "tokenSortConfig": {
+      "key": "token-sort-key",
+      "order": "dsc",
+      "sortCallback": "stringNumeric"
+    }
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
@@ -1228,6 +1235,14 @@
   "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1692109813199,
   "theme": "os",
+  "tokenBalances": {
+    "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {
+      "0x1": {
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "0xbdbd",
+        "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e": "0x501b4176a64d6"
+      }
+    }
+  },
   "tokenList": {
     "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
       "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
