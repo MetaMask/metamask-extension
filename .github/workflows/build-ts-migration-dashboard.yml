@@ -1,0 +1,32 @@
+name: Build ts migration dashboard
+
+on:
+  workflow_call:
+
+jobs:
+  build-ts-migration-dashboard:
+    name: Build ts migration dashboard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Build ts migration dashboard
+        run: yarn ts-migration:dashboard:build
+
+      - name: Upload ts migration dashboard
+        uses: actions/upload-artifact@v4
+        with:
+          name: ts-migration-dashboard
+          path: development/ts-migration-dashboard/build/final
+
+      - name: Deploy ts migration dashboard
+        if: ${{ (github.head_ref || github.ref_name) == 'main' }}
+        run: |
+          git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
+          git config user.name "MetaMask Bot"
+          git config user.email metamaskbot@users.noreply.github.com
+          yarn ts-migration:dashboard:deploy

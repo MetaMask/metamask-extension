@@ -1,0 +1,30 @@
+name: Build storybook
+
+on:
+  workflow_call:
+
+jobs:
+  build-storybook:
+    name: Build storybook
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Build storybook
+        run: yarn storybook:build
+
+      - name: Upload storybook
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-build
+          path: storybook-build
+
+      - name: Deploy storybook
+        if: ${{ (github.head_ref || github.ref_name) == 'main' }}
+        run: |
+          git remote add storybook git@github.com:MetaMask/metamask-storybook.git
+          yarn storybook:deploy

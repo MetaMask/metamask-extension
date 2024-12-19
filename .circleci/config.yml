@@ -25,10 +25,6 @@ executors:
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
-  shellcheck:
-    docker:
-      - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
-    resource_class: small
   playwright:
     docker:
       - image: mcr.microsoft.com/playwright:v1.44.1-focal
@@ -115,9 +111,6 @@ workflows:
           <<: *rc_branch_only
           requires:
             - prep-deps
-      - trigger-beta-build:
-          requires:
-            - prep-deps
       - check-mmi-trigger
       - prep-deps
       - get-changed-files-with-git-diff:
@@ -125,27 +118,6 @@ workflows:
             branches:
               ignore:
                 - master
-          requires:
-            - prep-deps
-      - test-deps-audit:
-          requires:
-            - prep-deps
-      - test-deps-depcheck:
-          requires:
-            - prep-deps
-      - test-yarn-dedupe:
-          requires:
-            - prep-deps
-      - validate-lavamoat-allow-scripts:
-          requires:
-            - prep-deps
-      - validate-lavamoat-policy-build:
-          requires:
-            - prep-deps
-      - validate-lavamoat-policy-webapp:
-          matrix:
-            parameters:
-              build-type: [main, beta, flask, mmi]
           requires:
             - prep-deps
       - prep-build-mmi:
@@ -187,22 +159,6 @@ workflows:
           requires:
             - prep-deps
             - check-mmi-trigger
-      - prep-build-storybook:
-          requires:
-            - prep-deps
-      - prep-build-ts-migration-dashboard:
-          requires:
-            - prep-deps
-      - test-lint:
-          requires:
-            - prep-deps
-      - test-lint-shellcheck
-      - test-lint-lockfile:
-          requires:
-            - prep-deps
-      - test-lint-changelog:
-          requires:
-            - prep-deps
       - test-e2e-chrome-webpack:
           <<: *main_master_rc_only
           requires:
@@ -259,19 +215,12 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-      - test-storybook:
-          requires:
-            - prep-deps
-            - prep-build-storybook
       - validate-source-maps:
           requires:
             - prep-build
       - validate-source-maps-mv2:
           requires:
             - prep-build-mv2
-      - validate-source-maps-beta:
-          requires:
-            - trigger-beta-build
       - validate-source-maps-mmi:
           requires:
             - prep-build-mmi
@@ -291,16 +240,7 @@ workflows:
             - prep-build-flask-mv2
       - all-tests-pass:
           requires:
-            - test-deps-depcheck
-            - validate-lavamoat-allow-scripts
-            - validate-lavamoat-policy-build
-            - validate-lavamoat-policy-webapp
-            - test-lint
-            - test-lint-shellcheck
-            - test-lint-lockfile
-            - test-lint-changelog
             - validate-source-maps
-            - validate-source-maps-beta
             - validate-source-maps-flask
             - validate-source-maps-mmi
             - test-mozilla-lint-mv2
@@ -314,7 +254,6 @@ workflows:
             - test-e2e-chrome-rpc-mmi
             - test-e2e-chrome-vault-decryption
             - test-e2e-chrome-webpack
-            - test-storybook
       - benchmark:
           requires:
             - prep-build-test
@@ -329,12 +268,9 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-mv2
-            - trigger-beta-build
             - prep-build-mmi
             - prep-build-flask
             - prep-build-flask-mv2
-            - prep-build-storybook
-            - prep-build-ts-migration-dashboard
             - benchmark
             - user-actions-benchmark
             - stats-module-load-init
@@ -351,18 +287,6 @@ workflows:
             - prep-build-flask
             - prep-build-flask-mv2
             - all-tests-pass
-      - job-publish-storybook:
-          filters:
-            branches:
-              only: main
-          requires:
-            - prep-build-storybook
-      - job-publish-ts-migration-dashboard:
-          filters:
-            branches:
-              only: main
-          requires:
-            - prep-build-ts-migration-dashboard
 
   rerun-from-failed:
     when:
@@ -390,44 +314,11 @@ workflows:
           requires:
             - prep-deps
             - get-changed-files-with-git-diff
-      - test-lint:
-          requires:
-            - prep-deps
       - all-tests-pass:
           requires:
-            - test-lint
             - validate-locales-only
 
 jobs:
-  trigger-beta-build:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: Build beta prod
-                command: .circleci/scripts/trigger-beta-build.sh
-            - run:
-                name: Move beta build to 'dist-beta' to avoid conflict with production build
-                command: mv ./dist ./dist-beta
-            - run:
-                name: Move beta zips to 'builds-beta' to avoid conflict with production build
-                command: mv ./builds ./builds-beta
-            - persist_to_workspace:
-                root: .
-                paths:
-                  - dist-beta
-                  - builds-beta
-
   create_release_pull_request:
     executor: node-browsers-medium
     steps:
@@ -508,51 +399,6 @@ jobs:
       - attach_workspace:
           at: .
       - run: yarn tsx .circleci/scripts/validate-locales-only.ts
-
-  validate-lavamoat-allow-scripts:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate allow-scripts config
-          command: yarn allow-scripts auto
-      - run:
-          name: Check working tree
-          command: .circleci/scripts/check-working-tree.sh
-
-  validate-lavamoat-policy-build:
-    executor: node-browsers-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate LavaMoat build policy
-          command: yarn lavamoat:build:auto
-      - run:
-          name: Check working tree
-          command: .circleci/scripts/check-working-tree.sh
-
-  validate-lavamoat-policy-webapp:
-    executor: node-browsers-medium-plus
-    parameters:
-      build-type:
-        type: string
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate LavaMoat << parameters.build-type >>  policy
-          command: yarn lavamoat:webapp:auto:ci '--build-types=<< parameters.build-type >>'
-      - run:
-          name: Check working tree
-          command: .circleci/scripts/check-working-tree.sh
 
   prep-build:
     executor: node-linux-medium
@@ -923,36 +769,6 @@ jobs:
           paths:
             - dist-test-webpack
 
-  prep-build-storybook:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build Storybook
-          command: yarn storybook:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - storybook-build
-
-  prep-build-ts-migration-dashboard:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build TypeScript migration dashboard
-          command: yarn ts-migration:dashboard:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - development/ts-migration-dashboard/build/final
-
   rerun-workflows-from-failed:
     executor: node-browsers-small
     steps:
@@ -963,117 +779,6 @@ jobs:
       - run:
           name: Rerun workflows from failed
           command: yarn ci-rerun-from-failed
-
-  test-yarn-dedupe:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Detect yarn lock deduplications
-          command: yarn dedupe --check
-
-  test-lint:
-    executor: node-browsers-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Lint
-          command: yarn lint
-      - run:
-          name: Verify locales
-          command: yarn verify-locales --quiet
-
-  test-storybook:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Playwright browsers
-          command: yarn exec playwright install chromium
-      - run:
-          name: Test Storybook
-          command: yarn test-storybook:ci
-
-  test-lint-shellcheck:
-    executor: shellcheck
-    steps:
-      - checkout
-      - run: apk add --no-cache bash jq yarn
-      - run:
-          name: ShellCheck Lint
-          command: ./development/shellcheck.sh
-
-  test-lint-lockfile:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: lockfile-lint
-          command: yarn lint:lockfile
-      - run:
-          name: check yarn resolutions
-          command: yarn --check-resolutions
-
-  test-lint-changelog:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^Version-v(\d+)[.](\d+)[.](\d+)$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: Validate changelog
-                command: yarn lint:changelog
-      - when:
-          condition:
-            matches:
-              pattern: /^Version-v(\d+)[.](\d+)[.](\d+)$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: Validate release candidate changelog
-                command: .circleci/scripts/validate-changelog-in-rc.sh
-
-  test-deps-audit:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: yarn audit
-          command: yarn audit
-
-  test-deps-depcheck:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: depcheck
-          command: yarn depcheck
 
   test-e2e-chrome-webpack:
     executor: node-browsers-medium-plus
@@ -1551,14 +1256,6 @@ jobs:
       - store_artifacts:
           path: development/ts-migration-dashboard/build/final
           destination: ts-migration-dashboard
-      - run:
-          name: Set branch parent commit env var
-          command: |
-            echo "export PARENT_COMMIT=$(git merge-base origin/HEAD HEAD)" >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: build:announce
-          command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
     executor: node-browsers-small
@@ -1586,40 +1283,6 @@ jobs:
           name: Create GitHub release
           command: .circleci/scripts/release-create-gh-release.sh
 
-  job-publish-storybook:
-    executor: node-browsers-small
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: storybook:deploy
-          command: |
-            git remote add storybook git@github.com:MetaMask/metamask-storybook.git
-            yarn storybook:deploy
-
-  job-publish-ts-migration-dashboard:
-    executor: node-browsers-small
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: ts-migration-dashboard:deploy
-          command: |
-            git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
-            git config user.name "MetaMask Bot"
-            git config user.email metamaskbot@users.noreply.github.com
-            yarn ts-migration:dashboard:deploy
-
   validate-source-maps:
     executor: node-browsers-small
     steps:
@@ -1630,17 +1293,6 @@ jobs:
       - run:
           name: Validate source maps
           command: yarn validate-source-maps
-
-  validate-source-maps-beta:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate source maps
-          command: .circleci/scripts/validate-source-maps-beta.sh
 
   validate-source-maps-mmi:
     executor: node-browsers-small
