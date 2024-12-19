@@ -117,24 +117,24 @@ describe('SmartTransactionsBannerAlert', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('calls setAlertEnabledness when close button clicked', () => {
+  it('dismisses banner when close button or link is clicked', () => {
     const store = configureStore(mockState);
-    renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
+    // Test close button
+    const { unmount } = renderWithProvider(<SmartTransactionsBannerAlert />, store);
     screen.getByRole('button', { name: /close/iu }).click();
-
     expect(setAlertEnabledness).toHaveBeenCalledWith(
       AlertTypes.smartTransactionsMigration,
       false,
     );
-  });
 
-  it('calls setAlertEnabledness when (Higher success rates) link clicked', () => {
-    const store = configureStore(mockState);
+    // Cleanup
+    unmount();
+    jest.clearAllMocks();
+
+    // Test link
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
-
     screen.getByText('smartTransactionsEnabledLink').click();
-
     expect(setAlertEnabledness).toHaveBeenCalledWith(
       AlertTypes.smartTransactionsMigration,
       false,

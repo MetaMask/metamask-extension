@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -14,6 +14,10 @@ import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constan
 import { FontWeight } from '../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../context/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
+import {
+  getSmartTransactionsOptInStatusInternal,
+  getSmartTransactionsMigrationAppliedInternal,
+} from '../../../../../shared/modules/selectors/smart-transactions';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -21,23 +25,8 @@ type SmartTransactionsBannerAlertProps = {
   marginType?: MarginType;
 };
 
-type MetaMaskState = {
-  alertEnabledness: {
-    [key: string]: boolean;
-  };
-  preferences: {
-    smartTransactionsOptInStatus: boolean;
-    smartTransactionsMigrationApplied: boolean;
-  };
-};
-
-type RootState = {
-  metamask: MetaMaskState;
-};
-
 export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlertProps> =
   React.memo(({ marginType = 'default' }) => {
-    const dispatch = useDispatch();
     const t = useI18nContext();
 
     let currentConfirmation;
@@ -49,54 +38,41 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     }
 
     const alertEnabled = useSelector(
-      (state: RootState) =>
+      (state: {
+        metamask: { alertEnabledness?: { [key: string]: boolean } };
+      }) =>
         state.metamask.alertEnabledness?.[
           AlertTypes.smartTransactionsMigration
         ] !== false,
     );
 
     const smartTransactionsOptIn = useSelector(
-      (state: RootState) =>
-        state.metamask.preferences?.smartTransactionsOptInStatus === true,
+      getSmartTransactionsOptInStatusInternal,
     );
 
     const smartTransactionsMigrationApplied = useSelector(
-      (state: RootState) =>
-        state.metamask.preferences?.smartTransactionsMigrationApplied === true,
+      getSmartTransactionsMigrationAppliedInternal,
     );
+
+    const dismissAlert = useCallback(() => {
+      setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
+    }, []);
 
     React.useEffect(() => {
       if (alertEnabled && !smartTransactionsOptIn) {
-        dispatch({
-          type: 'alert/dismiss',
-          payload: {
-            alertId: AlertTypes.smartTransactionsMigration,
-            enabled: false,
-          },
-        });
-        setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
+        dismissAlert();
       }
-    }, [alertEnabled, smartTransactionsOptIn, dispatch]);
+    }, [alertEnabled, smartTransactionsOptIn, dismissAlert]);
 
-    const handleDismiss = useCallback(() => {
-      dispatch({
-        type: 'alert/dismiss',
-        payload: {
-          alertId: AlertTypes.smartTransactionsMigration,
-          enabled: false,
-        },
-      });
-      setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
-    }, [dispatch]);
+    const alertConditions =
+      alertEnabled &&
+      smartTransactionsOptIn &&
+      smartTransactionsMigrationApplied;
 
     const shouldRender =
       currentConfirmation === null
-        ? alertEnabled &&
-          smartTransactionsOptIn &&
-          smartTransactionsMigrationApplied
-        : alertEnabled &&
-          smartTransactionsOptIn &&
-          smartTransactionsMigrationApplied &&
+        ? alertConditions
+        : alertConditions &&
           isCorrectDeveloperTransactionType(
             currentConfirmation?.type as TransactionType,
           );
@@ -121,7 +97,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     return (
       <BannerAlert
         severity={BannerAlertSeverity.Info}
-        onClose={handleDismiss}
+        onClose={dismissAlert}
         data-testid="smart-transactions-banner-alert"
         style={getMarginStyle()}
       >
@@ -131,7 +107,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
         <Text as="p">
           <ButtonLink
             href={SMART_TRANSACTIONS_LEARN_MORE_URL}
-            onClick={handleDismiss}
+            onClick={dismissAlert}
             externalLink
             style={{ height: 'unset', verticalAlign: 'unset' }}
           >
