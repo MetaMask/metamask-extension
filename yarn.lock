@@ -5958,19 +5958,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^12.0.0, @metamask/polling-controller@npm:^12.0.1":
-  version: 12.0.1
-  resolution: "@metamask/polling-controller@npm:12.0.1"
+"@metamask/polling-controller@npm:^12.0.0, @metamask/polling-controller@npm:^12.0.1, @metamask/polling-controller@npm:^12.0.2":
+  version: 12.0.2
+  resolution: "@metamask/polling-controller@npm:12.0.2"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.2"
+    "@metamask/controller-utils": "npm:^11.4.4"
     "@metamask/utils": "npm:^10.0.0"
     "@types/uuid": "npm:^8.3.0"
     fast-json-stable-stringify: "npm:^2.1.0"
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/eac9ed2fcc9697a2aa55e9746d4eac8d762dd6948b00d77cd2d4894b8c3e1a8e6ed5d0df4d01a69d9a7e2b3c09d9d7c1ffc6f9504023388dd7452d45b5d87065
+  checksum: 10/15bb6c087b506e15474d4d3555a37a540389c47674ac14052f7877bbf2be29e3bf78f2ea34a10d1ed21696bc0f45525cb2916e020a1b87e74ad695cb98ae4a94
   languageName: node
   linkType: hard
 
@@ -6188,9 +6188,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@metamask/smart-transactions-controller@npm:15.0.0"
+"@metamask/smart-transactions-controller@npm:^16.0.0":
+  version: 16.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:16.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -6202,18 +6202,17 @@ __metadata:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/polling-controller": "npm:^12.0.0"
     bignumber.js: "npm:^9.0.1"
-    events: "npm:^3.3.0"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/network-controller": ^22.0.0
-    "@metamask/transaction-controller": ^38.0.0
+    "@metamask/transaction-controller": ^42.0.0
   peerDependenciesMeta:
     "@metamask/accounts-controller":
       optional: true
     "@metamask/approval-controller":
       optional: true
-  checksum: 10/e30faad97451ba003da5b650040c0803d229954b6d6a28bc759ef6129d8e33f02dc2219c8346ae5049e62a84b62d8df211a403bdc80d59c1caed4ba182b6cc0a
+  checksum: 10/5bfe2e459ca75b3de31f28213e908f389a6a7e82b45dd43ee7fd4c46a619a561da030f7f90426af03063ff5dcfc90269a155230db484a2c415db11f8ad8caa02
   languageName: node
   linkType: hard
 
@@ -6347,10 +6346,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@metamask/solana-wallet-snap@npm:1.0.3"
-  checksum: 10/4c7c0f05676e7bb84140226c1a3bd716493a6f3582142de83575df682e8351c7583fc5db6209fbde1b43f376fd4eda4d2063f0e651d8209e92001514fc8caf81
+"@metamask/solana-wallet-snap@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@metamask/solana-wallet-snap@npm:1.0.4"
+  checksum: 10/4d3b2a400607299fb4200e409f151e999e980e30521e63dcbbb5b658a4fdcfd6be341452695de32d985e14e8f8d4c5c24169f84dfd1a2063d3bc35f0c4903f74
   languageName: node
   linkType: hard
 
@@ -6432,14 +6431,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/user-operation-controller@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "@metamask/user-operation-controller@npm:19.0.0"
+"@metamask/user-operation-controller@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@metamask/user-operation-controller@npm:21.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.3"
+    "@metamask/controller-utils": "npm:^11.4.4"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/polling-controller": "npm:^12.0.1"
+    "@metamask/polling-controller": "npm:^12.0.2"
     "@metamask/rpc-errors": "npm:^7.0.1"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^10.0.0"
@@ -6449,11 +6448,12 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/keyring-controller": ^19.0.0
     "@metamask/network-controller": ^22.0.0
-    "@metamask/transaction-controller": ^40.0.0
-  checksum: 10/ca3d8ee77243eb3bdc455420185d5c41d45cb5520735af0b05c1792d66fdb6a7404c557b053b16b6fded57124da21c3bb0b6b1c943d290e9808164f05453a8d9
+    "@metamask/transaction-controller": ^42.0.0
+  checksum: 10/c9d794ea386c57c3213714181444a0483bdff361de386716f4c38b0e99c411db91183d8bcc1f229b3bdcf9b1611219636c39b726e9f56e23d29b3fb7874c0e0a
   languageName: node
   linkType: hard
 
@@ -6596,10 +6596,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.4.0, @noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:~1.4.0":
+"@noble/hashes@npm:1.4.0, @noble/hashes@npm:~1.4.0":
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
   checksum: 10/e156e65794c473794c52fa9d06baf1eb20903d0d96719530f523cc4450f6c721a957c544796e6efd0197b2296e7cd70efeb312f861465e17940a3e3c7e0febc6
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0":
+  version: 1.5.0
+  resolution: "@noble/hashes@npm:1.5.0"
+  checksum: 10/da7fc7af52af7afcf59810a7eea6155075464ff462ffda2572dc6d57d53e2669b1ea2ec774e814f6273f1697e567f28d36823776c9bf7068cba2a2855140f26e
   languageName: node
   linkType: hard
 
@@ -7750,9 +7757,9 @@ __metadata:
   linkType: hard
 
 "@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:^1.1.3, @scure/base@npm:~1.1.0, @scure/base@npm:~1.1.3, @scure/base@npm:~1.1.6":
-  version: 1.1.7
-  resolution: "@scure/base@npm:1.1.7"
-  checksum: 10/fc50ffaab36cb46ff9fa4dc5052a06089ab6a6707f63d596bb34aaaec76173c9a564ac312a0b981b5e7a5349d60097b8878673c75d6cbfc4da7012b63a82099b
+  version: 1.1.9
+  resolution: "@scure/base@npm:1.1.9"
+  checksum: 10/f0ab7f687bbcdee2a01377fe3cd808bf63977999672751295b6a92625d5322f4754a96d40f6bd579bc367aad48ecf8a4e6d0390e70296e6ded1076f52adb16bb
   languageName: node
   linkType: hard
 
@@ -15820,14 +15827,11 @@ __metadata:
   linkType: hard
 
 "crc-32@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "crc-32@npm:1.2.0"
-  dependencies:
-    exit-on-epipe: "npm:~1.0.1"
-    printj: "npm:~1.1.0"
+  version: 1.2.2
+  resolution: "crc-32@npm:1.2.2"
   bin:
-    crc32: ./bin/crc32.njs
-  checksum: 10/10c648c986b005ed0ea8393bb0d1ccb99e7a102505b136d313dee6abe204aa682d9bb9bc6fd180f9cd98ef92aa029964f1cc96a2a85eb50507dedd9ead1a262f
+    crc32: bin/crc32.njs
+  checksum: 10/824f696a5baaf617809aa9cd033313c8f94f12d15ebffa69f10202480396be44aef9831d900ab291638a8022ed91c360696dd5b1ba691eb3f34e60be8835b7c3
   languageName: node
   linkType: hard
 
@@ -19089,13 +19093,6 @@ __metadata:
   dependencies:
     clone-regexp: "npm:^2.1.0"
   checksum: 10/d98ee3e33f6c9001e80970e927fb9f16c6a121d5e250b2f4d6764d4157974f58cbe88613bbf073db05d5342677012002c5de956f4f0c32d10d092b6ff03a085c
-  languageName: node
-  linkType: hard
-
-"exit-on-epipe@npm:~1.0.1":
-  version: 1.0.1
-  resolution: "exit-on-epipe@npm:1.0.1"
-  checksum: 10/b180aa277aec5bef2609b34e5876061f421a1f81bf343beb213c4d60b382ddcb6b83012833f0ba329d6bc38042685c8d89b1c52ea495b9b6327948ea80627398
   languageName: node
   linkType: hard
 
@@ -26611,17 +26608,17 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^23.1.0"
-    "@metamask/smart-transactions-controller": "npm:^15.0.0"
+    "@metamask/smart-transactions-controller": "npm:^16.0.0"
     "@metamask/snaps-controllers": "npm:^9.15.0"
     "@metamask/snaps-execution-environments": "npm:^6.10.0"
     "@metamask/snaps-rpc-methods": "npm:^11.7.0"
     "@metamask/snaps-sdk": "npm:^6.13.0"
     "@metamask/snaps-utils": "npm:^8.6.1"
-    "@metamask/solana-wallet-snap": "npm:^1.0.3"
+    "@metamask/solana-wallet-snap": "npm:^1.0.4"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.13.0"
     "@metamask/transaction-controller": "npm:^42.0.0"
-    "@metamask/user-operation-controller": "npm:^19.0.0"
+    "@metamask/user-operation-controller": "npm:^21.0.0"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
     "@noble/hashes": "npm:^1.3.3"
@@ -30282,15 +30279,6 @@ __metadata:
   dependencies:
     parse-ms: "npm:^2.1.0"
   checksum: 10/a39aac23cc7dae7a94c70518ab8b6c6db0894a7b84c81ee7abc8778c5ec8bae2d1e71ba991ff641732b38433724bfbdbb37bd3a00418637f797c072e06fe8b4c
-  languageName: node
-  linkType: hard
-
-"printj@npm:~1.1.0":
-  version: 1.1.2
-  resolution: "printj@npm:1.1.2"
-  bin:
-    printj: ./bin/printj.njs
-  checksum: 10/45376a5ee7ef2e0d7ff0b4fecc893d73995a332e63d7e0622a544fe662c8213d22f0c9750e627c6d732a7d7a543266be960e6cd51cf19485cce87cf80468bb41
   languageName: node
   linkType: hard
 
