@@ -180,7 +180,7 @@ exports[`AssetPicker should render network picker when networks prop is defined 
           class="mm-box"
         >
           <div
-            aria-describedby="tippy-tooltip-4"
+            aria-describedby="tippy-tooltip-5"
             class=""
             data-original-title="NATIVE TICKER"
             data-tooltipped=""
