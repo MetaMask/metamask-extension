@@ -28,7 +28,7 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { UNLIMITED_THRESHOLD } from '../../../constants';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
 
 type PermitSimulationValueDisplayParams = {
@@ -57,7 +57,7 @@ type PermitSimulationValueDisplayParams = {
   /** True if value is being debited to wallet */
   debit?: boolean;
 
-  /** Wether a large amount can be substituted by "Unlimited" */
+  /** Whether a large amount can be substituted by "Unlimited" */
   canDisplayValueAsUnlimited?: boolean;
 };
 
@@ -110,7 +110,8 @@ const PermitSimulationValueDisplay: React.FC<
         tokenValue: formatAmount('en-US', tokenAmount),
         tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
         shouldShowUnlimitedValue:
-          canDisplayValueAsUnlimited && Number(value) > UNLIMITED_THRESHOLD,
+          canDisplayValueAsUnlimited &&
+          Number(value) > TOKEN_VALUE_UNLIMITED_THRESHOLD,
       };
     }, [tokenDecimals, value]);
 
