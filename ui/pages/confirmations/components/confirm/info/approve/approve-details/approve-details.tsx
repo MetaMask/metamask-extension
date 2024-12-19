@@ -37,7 +37,11 @@ const Spender = ({
     return null;
   }
 
-  const spender = parsedTransactionData.args?._spender;
+  const spender =
+    parsedTransactionData.args?._spender ?? // ERC-20 - approve
+    parsedTransactionData.args?._operator ?? // ERC-721 - setApprovalForAll
+    parsedTransactionData.args?.spender; //  Fiat Token V2 - increaseAllowance
+
   const { chainId } = transactionMeta;
 
   if (getIsRevokeSetApprovalForAll(parsedTransactionData)) {

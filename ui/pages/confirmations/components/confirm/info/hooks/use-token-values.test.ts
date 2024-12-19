@@ -4,7 +4,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../../test/
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
+import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import { useTokenValues } from './use-token-values';
 
 jest.mock('../../../../hooks/useAssetDetails', () => ({
@@ -31,7 +31,7 @@ describe('useTokenValues', () => {
 
     useTokenExchangeRateMock.mockReturnValue(new Numeric(0.91, 10));
 
-    const transactionMeta = genUnapprovedApproveConfirmation({
+    const transactionMeta = genUnapprovedTokenTransferConfirmation({
       amountHex:
         '0000000000000000000000000000000000000000000000000000000000011170',
     }) as TransactionMeta;
@@ -56,7 +56,7 @@ describe('useTokenValues', () => {
 
     useTokenExchangeRateMock.mockReturnValue(undefined);
 
-    const transactionMeta = genUnapprovedApproveConfirmation({
+    const transactionMeta = genUnapprovedTokenTransferConfirmation({
       amountHex:
         '0000000000000000000000000000000000000000000000000000000000011170',
     }) as TransactionMeta;

@@ -20,12 +20,13 @@ export const useApproveTokenSimulation = (
 ) => {
   const locale = useSelector(getIntlLocale);
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
-  const parsedTransactionData = useTokenTransactionData();
+  const { args: parsedArgs } = useTokenTransactionData() ?? {};
 
-  const value =
-    (parsedTransactionData?.args?._value as BigNumber | undefined) ??
-    new BigNumber(0);
+  const parsedValue =
+    parsedArgs?._value ?? // ERC-20 - approve
+    parsedArgs?.increment; // Fiat Token V2 - increaseAllowance
 
+  const value = parsedValue ?? new BigNumber(0);
   const decodedSpendingCap = calcTokenAmount(value, Number(decimals)).toFixed();
   const tokenPrefix = isNFT ? '#' : '';
 

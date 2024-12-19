@@ -1,8 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
 import ApproveInfo from './approve';
 
 jest.mock('../../../../../../store/actions', () => ({
@@ -72,7 +73,9 @@ describe('<ApproveInfo />', () => {
   const middleware = [thunk];
 
   it('renders component for approve request', async () => {
-    const state = getMockApproveConfirmState();
+    const state = getMockConfirmStateForTransaction(
+      genUnapprovedApproveConfirmation(),
+    );
 
     const mockStore = configureMockStore(middleware)(state);
 

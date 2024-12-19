@@ -22,14 +22,12 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     transactionMeta.chainId,
   );
 
-  const value =
-    (parsedTransactionData?.args?._value as BigNumber | undefined) ??
-    new BigNumber(0);
+  const value = parsedTransactionData?.args?._value as BigNumber | undefined;
 
-  const decodedTransferValue = calcTokenAmount(
-    value,
-    Number(decimals),
-  ).toFixed();
+  const decodedTransferValue =
+    decimals !== undefined && value
+      ? calcTokenAmount(value, Number(decimals)).toFixed()
+      : '0';
 
   const fiatValue =
     exchangeRate &&
