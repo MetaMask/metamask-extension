@@ -22,33 +22,31 @@ import {
   decimalToHex,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
-import {
-  L1GasFees,
-  QuoteRequest,
-  QuoteResponse,
-  TxData,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/bridge/types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidQuoteRequest } from '../../../../ui/pages/bridge/utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import {
-  BRIDGE_CONTROLLER_NAME,
-  DEFAULT_BRIDGE_CONTROLLER_STATE,
-  REFRESH_INTERVAL_MS,
-  RequestStatus,
-  METABRIDGE_CHAIN_TO_ADDRESS_MAP,
-} from './constants';
 import {
   BridgeControllerState,
-  BridgeControllerMessenger,
   BridgeFeatureFlagsKey,
-} from './types';
+  L1GasFees,
+  QuoteRequest,
+  QuoteResponse,
+  TxData,
+} from '../../../../shared/types/bridge';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  RequestStatus,
+  METABRIDGE_CHAIN_TO_ADDRESS_MAP,
+} from '../../../../shared/constants/bridge';
+import {
+  BRIDGE_CONTROLLER_NAME,
+  DEFAULT_BRIDGE_STATE,
+  REFRESH_INTERVAL_MS,
+} from './constants';
+import { BridgeControllerMessenger } from './types';
 
-const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
+const metadata: StateMetadata<BridgeControllerState> = {
   bridgeState: {
     persist: false,
     anonymous: false,
@@ -65,7 +63,7 @@ type BridgePollingInput = {
 
 export default class BridgeController extends StaticIntervalPollingController<BridgePollingInput>()<
   typeof BRIDGE_CONTROLLER_NAME,
-  { bridgeState: BridgeControllerState },
+  BridgeControllerState,
   BridgeControllerMessenger
 > {
   #abortController: AbortController | undefined;
@@ -92,7 +90,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       metadata,
       messenger,
       state: {
-        bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE,
+        bridgeState: DEFAULT_BRIDGE_STATE,
       },
     });
 
@@ -140,7 +138,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     const { bridgeState } = this.state;
     const updatedQuoteRequest = {
-      ...DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
+      ...DEFAULT_BRIDGE_STATE.quoteRequest,
       ...paramsToUpdate,
     };
 
@@ -148,14 +146,11 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       _state.bridgeState = {
         ...bridgeState,
         quoteRequest: updatedQuoteRequest,
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
-        quotesLoadingStatus:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
-        quoteFetchError: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteFetchError,
-        quotesRefreshCount: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesRefreshCount,
-        quotesInitialLoadTime:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesInitialLoadTime,
+        quotes: DEFAULT_BRIDGE_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
+        quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
+        quoteFetchError: DEFAULT_BRIDGE_STATE.quoteFetchError,
+        quotesInitialLoadTime: DEFAULT_BRIDGE_STATE.quotesInitialLoadTime,
       };
     });
 
@@ -205,7 +200,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     this.update((_state) => {
       _state.bridgeState = {
-        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
+        ...DEFAULT_BRIDGE_STATE,
         quotes: [],
         bridgeFeatureFlags: _state.bridgeState.bridgeFeatureFlags,
       };
@@ -270,7 +265,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
         ...bridgeState,
         quotesLoadingStatus: RequestStatus.LOADING,
         quoteRequest: updatedQuoteRequest,
-        quoteFetchError: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteFetchError,
+        quoteFetchError: DEFAULT_BRIDGE_STATE.quoteFetchError,
       };
     });
 

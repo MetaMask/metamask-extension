@@ -5,7 +5,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../shared/constants/metametrics';
-import { SortOrder } from '../../pages/bridge/types';
+import { SortOrder } from '../../../shared/types/bridge';
 import {
   RequestParams,
   RequestMetadata,

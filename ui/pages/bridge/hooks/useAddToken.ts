@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { QuoteResponse } from '../types';
+import { QuoteResponse } from '../../../../shared/types/bridge';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { addToken, addNetwork } from '../../../store/actions';
 import {

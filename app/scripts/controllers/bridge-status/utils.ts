@@ -8,9 +8,7 @@ import {
   StatusRequestWithSrcTxHash,
   StatusRequestDto,
 } from '../../../../shared/types/bridge-status';
-// TODO fix this
-// eslint-disable-next-line import/no-restricted-paths
-import { Quote } from '../../../../ui/pages/bridge/types';
+import { Quote } from '../../../../shared/types/bridge';
 import { validateResponse, validators } from './validators';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };

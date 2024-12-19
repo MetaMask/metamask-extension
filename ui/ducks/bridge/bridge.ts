@@ -6,11 +6,11 @@ import {
   QuoteMetadata,
   QuoteResponse,
   SortOrder,
-} from '../../pages/bridge/types';
+} from '../../../shared/types/bridge';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
 import { getTokenExchangeRate } from './utils';
 
-export type BridgeState = {
+export type BridgeSlice = {
   toChainId: Hex | null;
   fromToken: BridgeToken;
   toToken: BridgeToken;
@@ -24,7 +24,7 @@ export type BridgeState = {
   slippage: number;
 };
 
-const initialState: BridgeState = {
+const initialState: BridgeSlice = {
   toChainId: null,
   fromToken: null,
   toToken: null,

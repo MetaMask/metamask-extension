@@ -15,7 +15,7 @@ import {
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
-import { ChainId } from '../types';
+import { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 

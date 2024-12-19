@@ -8,7 +8,7 @@ import {
 } from '@metamask/network-controller';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { TxData } from '../../pages/bridge/types';
+import { TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 

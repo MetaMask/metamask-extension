@@ -3,8 +3,8 @@ import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
-import { DEFAULT_BRIDGE_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge/constants';
-import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge-status/constants';
+import { DEFAULT_BRIDGE_STATE } from '../../app/scripts/controllers/bridge/constants';
+import { DEFAULT_BRIDGE_STATUS_STATE } from '../../app/scripts/controllers/bridge-status/constants';
 import { BRIDGE_PREFERRED_GAS_ESTIMATE } from '../../shared/constants/bridge';
 import { mockTokenData } from '../data/bridge/mock-token-data';
 
@@ -759,7 +759,7 @@ export const createBridgeMockStore = (
       ...mockTokenData,
       ...metamaskStateOverrides,
       bridgeState: {
-        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
+        ...DEFAULT_BRIDGE_STATE,
         bridgeFeatureFlags: {
           ...featureFlagOverrides,
           extensionConfig: {
@@ -771,7 +771,7 @@ export const createBridgeMockStore = (
         ...bridgeStateOverrides,
       },
       bridgeStatusState: {
-        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+        ...DEFAULT_BRIDGE_STATUS_STATE,
         ...bridgeStatusStateOverrides,
       },
     },
