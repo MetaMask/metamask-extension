@@ -17,9 +17,9 @@ describe('Switching between account from different networks', function (this: Su
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.check_accountLabel('Solana 1');
         const accountListPage = new AccountListPage(driver);
-        /*await accountListPage.check_accountValueAndSuffixDisplayed(
+        await accountListPage.check_accountValueAndSuffixDisplayed(
           "0.00011294SOL",
-        );*/
+        );
       },
     );
 

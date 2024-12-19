@@ -416,6 +416,10 @@ class AccountListPage {
     console.log(
       `Check that account value and suffix ${expectedValueAndSuffix} is displayed in account list`,
     );
+    const solBalanceValue = await this.driver.findElement(
+      this.accountValueAndSuffix,
+    );
+    console.log(solBalanceValue.getText());
     await this.driver.waitForSelector(
       {
         css: this.accountValueAndSuffix,
