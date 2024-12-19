@@ -159,7 +159,6 @@ export default class PermissionConnect extends Component {
 
     // if this is an incremental permission request for permitted chains, skip the account selection
     if (
-      // TODO pretty sure this is not needed anymore.
       permissionsRequest?.diff?.permissionDiffMap?.[
         PermissionNames.permittedChains
       ]
