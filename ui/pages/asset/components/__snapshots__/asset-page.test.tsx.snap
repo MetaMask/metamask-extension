@@ -199,7 +199,7 @@ exports[`AssetPage should render a native asset 1`] = `
             >
               <div>
                 <div
-                  aria-describedby="tippy-tooltip-14"
+                  aria-describedby="tippy-tooltip-16"
                   class=""
                   data-original-title="null"
                   data-tooltipped=""
@@ -252,7 +252,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 data-testid="multichain-token-list-item-value"
               >
                 0
-                 
+
                 TEST
               </p>
             </div>
@@ -582,7 +582,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 data-testid="multichain-token-list-item-value"
               >
                 0
-                 
+
                 TEST
               </p>
             </div>
@@ -808,7 +808,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               class="mm-box mm-text mm-text--body-md-medium mm-box--margin-right-1 mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-success-default"
             >
               $15,128.00
-               
+
               (
               +
               1512800.00
@@ -1098,7 +1098,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 data-testid="multichain-token-list-item-value"
               >
                 0
-                 
+
                 TEST
               </p>
             </div>
