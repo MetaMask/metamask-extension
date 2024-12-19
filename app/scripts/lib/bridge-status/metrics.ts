@@ -13,6 +13,11 @@ import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.util
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { isHardwareKeyring } from '../../../../ui/helpers/utils/hardware';
+import MetaMetricsController from '../../controllers/metametrics-controller';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   BackgroundState,
   getHexGasTotalUsd,
@@ -20,15 +25,21 @@ import {
 } from './metrics-utils';
 
 export const handleBridgeTransactionComplete = async (
-  bridgeTransactionCompletePayload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
-  state: BackgroundState,
+  payload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
+  {
+    state,
+    metaMetricsController,
+  }: {
+    state: BackgroundState;
+    metaMetricsController: MetaMetricsController;
+  },
 ) => {
   console.log('handleBridgeTransactionComplete', {
-    bridgeTransactionCompletePayload,
+    payload,
     state,
   });
 
-  const { bridgeHistoryItem } = bridgeTransactionCompletePayload;
+  const { bridgeHistoryItem } = payload;
 
   const keyring = getCurrentKeyring(state);
   // @ts-expect-error keyring type is possibly wrong
@@ -107,4 +118,10 @@ export const handleBridgeTransactionComplete = async (
   };
 
   console.log('properties', properties);
+
+  metaMetricsController.trackEvent({
+    category: MetaMetricsEventCategory.CrossChainSwaps,
+    event: MetaMetricsEventName.ActionCompleted,
+    properties,
+  });
 };
