@@ -965,9 +965,6 @@
   "loading": {
     "message": "Caricamento..."
   },
-  "loadingTokens": {
-    "message": "Caricamento Tokens..."
-  },
   "lock": {
     "message": "Disconnetti"
   },

@@ -149,9 +149,6 @@
   "loading": {
     "message": "Bezig met laden..."
   },
-  "loadingTokens": {
-    "message": "Tokens laden ..."
-  },
   "lock": {
     "message": "Uitloggen"
   },

@@ -375,9 +375,6 @@
   "loading": {
     "message": "Läser in..."
   },
-  "loadingTokens": {
-    "message": "Laddar tokens..."
-  },
   "lock": {
     "message": "Logga ut"
   },

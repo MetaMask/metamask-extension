@@ -372,9 +372,6 @@
   "loading": {
     "message": "S'està carregant..."
   },
-  "loadingTokens": {
-    "message": "Carregant els tokens..."
-  },
   "localhost": {
     "message": "Host local 8545"
   },

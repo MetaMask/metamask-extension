@@ -381,9 +381,6 @@
   "loading": {
     "message": "Betöltés..."
   },
-  "loadingTokens": {
-    "message": "Tokenek betöltése..."
-  },
   "lock": {
     "message": "Kilépés"
   },

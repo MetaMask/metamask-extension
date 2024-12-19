@@ -385,9 +385,6 @@
   "loading": {
     "message": "جارٍ التحميل..."
   },
-  "loadingTokens": {
-    "message": "جارِ تحميل العملات الرمزية ..."
-  },
   "localhost": {
     "message": "المضيف المحلي 8545"
   },

@@ -260,9 +260,6 @@
   "loading": {
     "message": "Telechaje..."
   },
-  "loadingTokens": {
-    "message": "Telechaje Tokens..."
-  },
   "lock": {
     "message": "Dekonekte"
   },

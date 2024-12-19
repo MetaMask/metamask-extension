@@ -2775,9 +2775,6 @@
   "loadingScreenSnapMessage": {
     "message": "Mangyaring kumpletuhin ang transaksyon sa Snap."
   },
-  "loadingTokens": {
-    "message": "Nilo-load ang Mga Token..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },

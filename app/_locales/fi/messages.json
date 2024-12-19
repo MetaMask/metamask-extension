@@ -381,9 +381,6 @@
   "loading": {
     "message": "Ladataan..."
   },
-  "loadingTokens": {
-    "message": "Käyttötunnuksia ladataan..."
-  },
   "localhost": {
     "message": "Paikallisjoukko 8545"
   },

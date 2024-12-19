@@ -375,9 +375,6 @@
   "loading": {
     "message": "Indlæser..."
   },
-  "loadingTokens": {
-    "message": "Indlæser tokens..."
-  },
   "lock": {
     "message": "Log ud"
   },
