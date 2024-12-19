@@ -18,11 +18,6 @@ const mockState = {
   metamask: {
     isMetamaskNotificationsEnabled: true,
     isFeatureAnnouncementsEnabled: true,
-    notifications: {
-      1: { id: 1, readDate: null },
-      2: { id: 2, readDate: null },
-      3: { id: 3, readDate: null },
-    },
     metamaskNotificationsList: [
       {
         type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
@@ -83,10 +78,10 @@ describe('useUnreadNotificationsCounter', () => {
     const { result } = renderHook(() => useUnreadNotificationsCounter(), {
       wrapper,
     });
-    expect(result.current.notificationsUnreadCount).toBe(5);
+    expect(result.current.notificationsUnreadCount).toBe(2);
   });
 
-  it('should return three when metamask notifications are disabled', () => {
+  it('should return zero when metamask notifications are disabled', () => {
     const disabledState = {
       ...mockState,
       metamask: {
@@ -100,7 +95,7 @@ describe('useUnreadNotificationsCounter', () => {
         <Provider store={mockStore(disabledState)}>{children}</Provider>
       ),
     });
-    expect(result.current.notificationsUnreadCount).toBe(3);
+    expect(result.current.notificationsUnreadCount).toBe(0);
   });
 });
 

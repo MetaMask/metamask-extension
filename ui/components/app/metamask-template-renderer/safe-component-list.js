@@ -28,6 +28,7 @@ import {
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
+import Preloader from '../../ui/icon/preloader';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUILink } from '../snaps/snap-ui-link';
 import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
@@ -93,6 +94,7 @@ export const safeComponentList = {
   SnapUIImage,
   BannerAlert,
   Spinner,
+  Preloader,
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowValueDouble,

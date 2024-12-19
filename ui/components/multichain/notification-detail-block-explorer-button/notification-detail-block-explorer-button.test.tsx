@@ -46,6 +46,16 @@ const mockNotification = {
   type: 'ERC20_RECEIVED',
 };
 
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
+  return {
+    ...original,
+    useHistory: () => ({
+      push: jest.fn(),
+    }),
+  };
+});
+
 describe('NotificationDetailBlockExplorerButton', () => {
   it('renders correctly with a valid block explorer URL', () => {
     render(

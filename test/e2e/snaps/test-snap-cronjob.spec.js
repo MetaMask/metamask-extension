@@ -3,6 +3,7 @@ const {
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
+  largeDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -74,7 +75,9 @@ describe('Test Snap Cronjob', function () {
           text: 'Reconnect to Cronjobs Snap',
         });
 
-        // switch to dialog popup, wait for a maximum of 65 seconds
+        // Switching to dialog popup takes time, hence this wait is needed
+        await driver.delay(largeDelayMs);
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // look for the dialog popup to verify cronjob fired

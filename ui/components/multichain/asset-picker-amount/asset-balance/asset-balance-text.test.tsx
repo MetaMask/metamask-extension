@@ -1,10 +1,9 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
 import { TextColor } from '../../../../helpers/constants/design-system';
+import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { AssetBalanceText } from './asset-balance-text';
 
 const store = configureStore({
@@ -41,17 +40,22 @@ jest.mock('../utils', () => ({
   getIsFiatPrimary: () => mockGetIsFiatPrimary(),
 }));
 
+const MOCK_TOKEN_WITH_BALANCES_ONE = {
+  tokensWithBalances: [
+    { string: "doesn't matter", symbol: "doesn't matter", address: '0x01' },
+  ],
+};
+const MOCK_TOKEN_WITH_BALANCES_TWO = {
+  tokensWithBalances: [{ string: '100', address: '0x01' }],
+};
+
 describe('AssetBalanceText', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('matches snapshot', () => {
-    mockUseTokenTracker.mockReturnValue({
-      tokensWithBalances: [
-        { string: "doesn't matter", symbol: "doesn't matter", address: '0x01' },
-      ],
-    });
+    mockUseTokenTracker.mockReturnValue(MOCK_TOKEN_WITH_BALANCES_ONE);
     mockUseCurrencyDisplay.mockReturnValue([
       'undefined',
       { value: 'fiat value', suffix: 'suffix', prefix: 'prefix-' },
@@ -64,21 +68,18 @@ describe('AssetBalanceText', () => {
       type: AssetType.native,
       balance: '1000000',
     };
-    const { asFragment } = render(
-      <Provider store={store}>
-        <AssetBalanceText
-          asset={asset}
-          balanceColor={'textColor' as TextColor}
-        />
-      </Provider>,
+    const { asFragment } = renderWithProvider(
+      <AssetBalanceText
+        asset={asset}
+        balanceColor={'textColor' as TextColor}
+      />,
+      store,
     );
     expect(asFragment()).toMatchSnapshot();
   });
 
   it('renders fiat primary correctly', () => {
-    mockUseTokenTracker.mockReturnValue({
-      tokensWithBalances: [{ string: "doesn't matter", address: '0x01' }],
-    });
+    mockUseTokenTracker.mockReturnValue(MOCK_TOKEN_WITH_BALANCES_ONE);
     mockUseCurrencyDisplay.mockReturnValue([
       'title',
       { value: '$1.23', symbol: "doesn't matter" },
@@ -92,20 +93,18 @@ describe('AssetBalanceText', () => {
       details: { address: '0x01', decimals: 2 },
       balance: '100',
     };
-    const { getByText } = render(
-      <Provider store={store}>
-        {/* Replace `any` with type */}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <AssetBalanceText asset={asset} balanceColor={'textColor' as any} />
-      </Provider>,
+    const { getByText } = renderWithProvider(
+      <AssetBalanceText
+        asset={asset}
+        balanceColor={'textColor' as TextColor}
+      />,
+      store,
     );
     expect(getByText('$1.23')).toBeInTheDocument();
   });
 
   it('renders native asset type correctly', () => {
-    mockUseTokenTracker.mockReturnValue({
-      tokensWithBalances: [{ string: '100', address: '0x01' }],
-    });
+    mockUseTokenTracker.mockReturnValue(MOCK_TOKEN_WITH_BALANCES_TWO);
     mockUseCurrencyDisplay.mockReturnValue([
       'title',
       { value: 'test_balance' },
@@ -119,21 +118,86 @@ describe('AssetBalanceText', () => {
       balance: '10000',
     };
 
-    const { getByText } = render(
-      <Provider store={store}>
-        {/* Replace `any` with type */}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <AssetBalanceText asset={asset} balanceColor={'textColor' as any} />
-      </Provider>,
+    const { getByText } = renderWithProvider(
+      <AssetBalanceText
+        asset={asset}
+        balanceColor={'textColor' as TextColor}
+      />,
+      store,
     );
 
     expect(getByText('test_balance')).toBeInTheDocument();
   });
 
-  it('renders error correctly', () => {
-    mockUseTokenTracker.mockReturnValue({
-      tokensWithBalances: [{ string: '100', address: '0x01' }],
-    });
+  it('renders a single NFT correctly', () => {
+    mockUseTokenTracker.mockReturnValue(MOCK_TOKEN_WITH_BALANCES_TWO);
+    const asset = {
+      type: AssetType.NFT,
+      balance: '0x1',
+    };
+    mockUseCurrencyDisplay.mockReturnValue([
+      'title',
+      { value: 'test_balance' },
+    ]);
+    const { getByTestId } = renderWithProvider(
+      <AssetBalanceText
+        asset={asset}
+        balanceColor={'textColor' as TextColor}
+      />,
+      store,
+    );
+    expect(
+      getByTestId('asset-balance-nft-display').textContent,
+    ).toMatchInlineSnapshot(`"1 NFT"`);
+  });
+
+  it('renders multiple NFTs correctly', () => {
+    mockUseTokenTracker.mockReturnValue(MOCK_TOKEN_WITH_BALANCES_TWO);
+    const asset = {
+      type: AssetType.NFT,
+      balance: '0x3',
+    };
+    mockUseCurrencyDisplay.mockReturnValue([
+      'title',
+      { value: 'test_balance' },
+    ]);
+    const { getByTestId } = renderWithProvider(
+      <AssetBalanceText
+        asset={asset}
+        balanceColor={'textColor' as TextColor}
+      />,
+      store,
+    );
+    expect(
+      getByTestId('asset-balance-nft-display').textContent,
+    ).toMatchInlineSnapshot(`"3 NFTs"`);
+  });
+
+  it('renders NFT with error message', () => {
+    mockUseTokenTracker.mockReturnValue(MOCK_TOKEN_WITH_BALANCES_TWO);
+    const asset = {
+      type: AssetType.NFT,
+      balance: '0x3',
+    };
+    mockUseCurrencyDisplay.mockReturnValue([
+      'title',
+      { value: 'test_balance' },
+    ]);
+    const { getByTestId } = renderWithProvider(
+      <AssetBalanceText
+        asset={asset}
+        balanceColor={'textColor' as TextColor}
+        error="insufficientFundsForGas"
+      />,
+      store,
+    );
+    expect(
+      getByTestId('asset-balance-nft-display').textContent,
+    ).toMatchInlineSnapshot(`"3 NFTs. Insufficient funds for gas"`);
+  });
+
+  it('renders error message correctly', () => {
+    mockUseTokenTracker.mockReturnValue(MOCK_TOKEN_WITH_BALANCES_TWO);
     mockUseCurrencyDisplay.mockReturnValue([
       'title',
       { value: 'test_balance' },
@@ -147,17 +211,18 @@ describe('AssetBalanceText', () => {
       balance: '10000',
     };
 
-    const { getByText } = render(
-      <Provider store={store}>
-        <AssetBalanceText
-          asset={asset}
-          balanceColor={'textColor' as TextColor}
-          error="errorText"
-        />
-      </Provider>,
+    const { getByText, getByTestId } = renderWithProvider(
+      <AssetBalanceText
+        asset={asset}
+        balanceColor={'textColor' as TextColor}
+        error="insufficientFundsForGas"
+      />,
+      store,
     );
 
     expect(getByText('test_balance')).toBeInTheDocument();
-    expect(getByText('. [errorText]')).toBeInTheDocument();
+    expect(
+      getByTestId('send-page-amount-error').textContent,
+    ).toMatchInlineSnapshot(`". Insufficient funds for gas"`);
   });
 });

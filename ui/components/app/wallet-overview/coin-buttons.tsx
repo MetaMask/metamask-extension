@@ -24,7 +24,9 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { BtcAccountType, InternalAccount } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { SnapId } from '@metamask/snaps-sdk';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
@@ -54,6 +56,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
+  getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -82,18 +85,23 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  setSwitchedNetworkDetails,
+  setActiveNetworkWithError,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
 ///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsEvm,
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -132,6 +140,17 @@ const CoinButtons = ({
 
   const { address: selectedAddress } = account;
   const history = useHistory();
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
+  const currentChainId = useSelector(getCurrentChainId);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const currentActivityTabName = useSelector(
+    // @ts-expect-error TODO: fix state type
+    (state) => state.metamask.defaultHomeActiveTabName,
+  );
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
@@ -298,7 +317,9 @@ const CoinButtons = ({
       (approval) => {
         return (
           approval.type === 'snap_dialog' &&
-          approval.origin === BITCOIN_WALLET_SNAP_ID
+          account.metadata.snap &&
+          account.metadata.snap.id === approval.origin &&
+          isMultichainWalletSnap(account.metadata.snap.id as SnapId)
         );
       },
     );
@@ -306,8 +327,27 @@ const CoinButtons = ({
     if (templatedSnapApproval) {
       history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, history]);
+  }, [unapprovedTemplatedConfirmations, history, account]);
   ///: END:ONLY_INCLUDE_IF
+
+  const setCorrectChain = useCallback(async () => {
+    if (currentChainId !== chainId) {
+      try {
+        const networkConfigurationId = networks[chainId];
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
+        await dispatch(
+          setSwitchedNetworkDetails({
+            networkClientId: networkConfigurationId,
+          }),
+        );
+      } catch (err) {
+        console.error(`Failed to switch chains.
+        Target chainId: ${chainId}, Current chainId: ${currentChainId}.
+        ${err}`);
+        throw err;
+      }
+    }
+  }, [currentChainId, chainId, networks, dispatch]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
@@ -325,28 +365,47 @@ const CoinButtons = ({
       },
       { excludeMetaMetricsId: false },
     );
-    switch (account.type) {
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      case BtcAccountType.P2wpkh: {
-        await sendMultichainTransaction(
-          BITCOIN_WALLET_SNAP_ID,
-          account.id,
-          chainId as CaipChainId,
-        );
 
-        // We automatically switch to the activity tab once the transaction has been sent.
-        dispatch(setDefaultHomeActiveTabName('activity'));
-        break;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    if (!isEvmAccountType(account.type)) {
+      // Non-EVM (Snap) Send flow
+      if (!account.metadata.snap) {
+        throw new Error('Non-EVM needs to be Snap accounts');
       }
-      ///: END:ONLY_INCLUDE_IF
-      default: {
-        await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-        history.push(SEND_ROUTE);
+
+      // TODO: Remove this once we want to enable all non-EVM Snaps
+      if (!isMultichainWalletSnap(account.metadata.snap.id as SnapId)) {
+        throw new Error(
+          `Non-EVM Snap is not whitelisted: ${account.metadata.snap.id}`,
+        );
       }
+
+      try {
+        // FIXME: We switch the tab before starting the send flow (we
+        // faced some inconsistencies when changing it after).
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        await sendMultichainTransaction(account.metadata.snap.id, {
+          account: account.id,
+          scope: chainId as CaipChainId,
+        });
+      } catch {
+        // Restore the previous tab in case of any error (see FIXME comment above).
+        await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
+      }
+
+      // Early return, not to let the non-EVM flow slip into the native send flow.
+      return;
     }
-  }, [chainId, account]);
+    ///: END:ONLY_INCLUDE_IF
+
+    // Native Send flow
+    await setCorrectChain();
+    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+    history.push(SEND_ROUTE);
+  }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
+    await setCorrectChain();
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
       url: `${mmiPortfolioUrl}/swap`,
@@ -376,6 +435,7 @@ const CoinButtons = ({
     }
     ///: END:ONLY_INCLUDE_IF
   }, [
+    setCorrectChain,
     isSwapsChain,
     chainId,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -404,10 +464,11 @@ const CoinButtons = ({
     });
   }, [chainId, defaultSwapsToken]);
 
-  const handleBridgeOnClick = useCallback(() => {
+  const handleBridgeOnClick = useCallback(async () => {
     if (!defaultSwapsToken) {
       return;
     }
+    await setCorrectChain();
     openBridgeExperience(
       'Home',
       defaultSwapsToken,

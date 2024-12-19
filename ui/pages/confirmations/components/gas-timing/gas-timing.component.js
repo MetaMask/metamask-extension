@@ -178,13 +178,15 @@ export default function GasTiming({
 
   return (
     <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
-      <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMd}
-        paddingInlineEnd={1}
-      >
-        {text}
-      </Text>
+      {text && (
+        <Text
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodyMd}
+          paddingInlineEnd={1}
+        >
+          {text}
+        </Text>
+      )}
 
       {time && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>

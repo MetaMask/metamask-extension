@@ -31,14 +31,15 @@ describe('Wallet Created Events', () => {
   });
 
   it('are sent when onboarding user who chooses to opt in metrics', async () => {
-    const { getByTestId, getByText } = await integrationTestRender({
-      preloadedState: mockMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
-    });
+    const { getByTestId, findByTestId, getByText, findByText } =
+      await integrationTestRender({
+        preloadedState: mockMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
 
-    expect(getByText('Congratulations!')).toBeInTheDocument();
+    expect(await findByText('Congratulations!')).toBeInTheDocument();
 
-    fireEvent.click(getByTestId('onboarding-complete-done'));
+    fireEvent.click(await findByTestId('onboarding-complete-done'));
 
     await waitFor(() => {
       expect(getByTestId('onboarding-pin-extension')).toBeInTheDocument();
@@ -69,7 +70,7 @@ describe('Wallet Created Events', () => {
       ]),
     );
 
-    fireEvent.click(getByTestId('pin-extension-next'));
+    fireEvent.click(await findByTestId('pin-extension-next'));
 
     let onboardingPinExtensionMetricsEvent;
 
@@ -91,7 +92,7 @@ describe('Wallet Created Events', () => {
       ).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('pin-extension-done'));
+    fireEvent.click(await findByTestId('pin-extension-done'));
 
     await waitFor(() => {
       const completeOnboardingBackgroundRequest =

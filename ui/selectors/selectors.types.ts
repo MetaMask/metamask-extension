@@ -1,4 +1,4 @@
-import type { InternalAccount } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { SubjectMetadata } from '@metamask/permission-controller';
 
 type KeyringType = {

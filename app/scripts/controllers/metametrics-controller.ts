@@ -166,6 +166,7 @@ export type MetaMaskState = {
   currentCurrency: string;
   preferences: {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
+    tokenNetworkFilter: string[];
   };
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails: {
@@ -583,8 +584,7 @@ export default class MetaMetricsController extends BaseController<
       : {};
 
     this.update((state) => {
-      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-      state.fragments[id] = merge(additionalFragmentProps, fragment);
+      state.fragments[id] = merge({}, additionalFragmentProps, fragment);
     });
 
     if (fragment.initialEvent) {
@@ -778,13 +778,14 @@ export default class MetaMetricsController extends BaseController<
     const query: {
       mmi?: string;
       env?: string;
-      av?: string;
-    } = {};
+      av: string;
+    } = {
+      av: this.version,
+    };
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
       query.mmi = Buffer.from(metaMetricsId).toString('base64');
       query.env = this.#environment;
-      query.av = this.version;
     }
     const queryString = new URLSearchParams(query);
 
@@ -1233,6 +1234,9 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.preferences.privacyMode,
+      [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
+        metamaskState.preferences.tokenNetworkFilter || {},
+      ),
     };
 
     if (!previousUserTraits) {

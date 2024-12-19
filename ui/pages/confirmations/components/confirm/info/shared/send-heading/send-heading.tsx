@@ -9,7 +9,6 @@ import {
   Text,
 } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
-import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import {
   AlignItems,
   BackgroundColor,
@@ -19,12 +18,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
-import { MIN_AMOUNT } from '../../../../../../../hooks/useCurrencyDisplay';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { formatAmountMaxPrecision } from '../../../../simulation-details/formatAmount';
 import { useTokenValues } from '../../hooks/use-token-values';
+import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import { useTokenDetails } from '../../hooks/useTokenDetails';
 import { ConfirmLoader } from '../confirm-loader/confirm-loader';
 
@@ -32,12 +30,12 @@ const SendHeading = () => {
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const locale = useSelector(getIntlLocale);
   const { tokenImage, tokenSymbol } = useTokenDetails(transactionMeta);
   const {
     decodedTransferValue,
     displayTransferValue,
     fiatDisplayValue,
+    fiatValue,
     pending,
   } = useTokenValues(transactionMeta);
 
@@ -66,21 +64,20 @@ const SendHeading = () => {
   );
 
   const TokenValue =
-    displayTransferValue ===
-    `<${formatAmountMaxPrecision(locale, MIN_AMOUNT)}` ? (
-      <Tooltip title={decodedTransferValue.toString()} position="right">
+    displayTransferValue === decodedTransferValue ? (
+      <Text
+        variant={TextVariant.headingLg}
+        color={TextColor.inherit}
+        marginTop={3}
+      >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+    ) : (
+      <Tooltip title={decodedTransferValue} position="right">
         <Text
           variant={TextVariant.headingLg}
           color={TextColor.inherit}
           marginTop={3}
         >{`${displayTransferValue} ${tokenSymbol}`}</Text>
       </Tooltip>
-    ) : (
-      <Text
-        variant={TextVariant.headingLg}
-        color={TextColor.inherit}
-        marginTop={3}
-      >{`${displayTransferValue} ${tokenSymbol}`}</Text>
     );
 
   const TokenFiatValue = Boolean(fiatDisplayValue) &&
@@ -89,6 +86,8 @@ const SendHeading = () => {
         {fiatDisplayValue}
       </Text>
     );
+
+  useSendingValueMetric({ transactionMeta, fiatValue });
 
   if (pending) {
     return <ConfirmLoader />;

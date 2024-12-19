@@ -3,7 +3,7 @@ name: Add release label to PR and linked issues when PR gets merged
 on:
   pull_request:
     branches:
-      - develop
+      - main
     types:
       - closed
 
