@@ -42,6 +42,8 @@ class HomePage {
     testId: 'popover-close',
   };
 
+  private readonly portfolioLink = '[data-testid="portfolio-link"]';
+
   private readonly privacyBalanceToggle = {
     testId: 'sensitive-toggle',
   };
@@ -103,6 +105,11 @@ class HomePage {
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
+  }
+
+  async openPortfolioPage(): Promise<void> {
+    console.log(`Open portfolio page on homepage`);
+    await this.driver.clickElement(this.portfolioLink);
   }
 
   async refreshErc20TokenList(): Promise<void> {

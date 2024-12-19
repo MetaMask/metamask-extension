@@ -19,11 +19,11 @@ import {
   EthAccountType,
   SolAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  InternalAccount,
   KeyringAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
