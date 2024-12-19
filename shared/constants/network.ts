@@ -171,7 +171,6 @@ export const CHAIN_IDS = {
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
   INK_SEPOLIA: '0xba5eD',
   INK: '0xdef1',
-
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
