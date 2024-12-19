@@ -1,7 +1,7 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs, regularDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
+import { ACCOUNT_TYPE } from '../common';
 
 class AccountListPage {
   private readonly driver: Driver;
@@ -37,6 +37,11 @@ class AccountListPage {
 
   private readonly addBtcAccountButton = {
     text: messages.addNewBitcoinAccount.message,
+    tag: 'button',
+  };
+
+  private readonly addSolanaAccountButton = {
+    text: messages.addNewSolanaAccount.message,
     tag: 'button',
   };
 
@@ -163,48 +168,11 @@ class AccountListPage {
     );
   }
 
-  /**
-   * Adds a new BTC account with an optional custom name.
-   *
-   * @param options - Options for adding a new BTC account.
-   * @param [options.btcAccountCreationEnabled] - Indicates if the BTC account creation is expected to be enabled or disabled. Defaults to true.
-   * @param [options.accountName] - The custom name for the BTC account. Defaults to an empty string, which means the default name will be used.
-   */
-  async addNewBtcAccount({
-    btcAccountCreationEnabled = true,
-    accountName = '',
-  }: {
-    btcAccountCreationEnabled?: boolean;
-    accountName?: string;
-  } = {}): Promise<void> {
-    console.log(
-      `Adding new BTC account${
-        accountName ? ` with custom name: ${accountName}` : ' with default name'
-      }`,
+  async isBtcAccountCreationButtonEnabled() {
+    const createButton = await this.driver.findElement(
+      this.addBtcAccountButton,
     );
-    await this.driver.clickElement(this.createAccountButton);
-    if (btcAccountCreationEnabled) {
-      await this.driver.clickElement(this.addBtcAccountButton);
-      // needed to mitigate a race condition with the state update
-      // there is no condition we can wait for in the UI
-      await this.driver.delay(largeDelayMs);
-      if (accountName) {
-        await this.driver.fill(this.accountNameInput, accountName);
-      }
-      await this.driver.clickElementAndWaitToDisappear(
-        this.addAccountConfirmButton,
-        // Longer timeout than usual, this reduces the flakiness
-        // around Bitcoin account creation (mainly required for
-        // Firefox)
-        5000,
-      );
-    } else {
-      const createButton = await this.driver.findElement(
-        this.addBtcAccountButton,
-      );
-      assert.equal(await createButton.isEnabled(), false);
-      await this.driver.clickElement(this.closeAccountModalButton);
-    }
+    return await createButton.isEnabled();
   }
 
   /**
@@ -232,6 +200,48 @@ class AccountListPage {
         this.importAccountConfirmButton,
       );
     }
+  }
+
+  /**
+   * Adds a new account of the specified type with an optional custom name.
+   *
+   * @param accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
+   * @param accountName - Optional custom name for the new account
+   * @throws {Error} If the specified account type is not supported
+   * @example
+   * // Add a new Ethereum account with default name
+   * await accountListPage.addAccount(ACCOUNT_TYPE.Ethereum);
+   *
+   * // Add a new Bitcoin account with custom name
+   * await accountListPage.addAccount(ACCOUNT_TYPE.Bitcoin, 'My BTC Wallet');
+   */
+  async addAccount(accountType: ACCOUNT_TYPE, accountName?: string) {
+    await this.driver.clickElement(this.createAccountButton);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let addAccountButton: any;
+    switch (accountType) {
+      case ACCOUNT_TYPE.Ethereum:
+        addAccountButton = this.addEthereumAccountButton;
+        break;
+      case ACCOUNT_TYPE.Bitcoin:
+        addAccountButton = this.addBtcAccountButton;
+        break;
+      case ACCOUNT_TYPE.Solana:
+        addAccountButton = this.addSolanaAccountButton;
+        break;
+      default:
+        throw new Error('Account type not supported');
+    }
+
+    await this.driver.clickElement(addAccountButton);
+    if (accountName) {
+      await this.driver.fill(this.accountNameInput, accountName);
+    }
+
+    await this.driver.clickElementAndWaitToDisappear(
+      this.addAccountConfirmButton,
+      5000,
+    );
   }
 
   /**
@@ -600,11 +610,17 @@ class AccountListPage {
     console.log(
       `Verify the number of accounts in the account menu is: ${expectedNumberOfAccounts}`,
     );
+
+    await this.driver.waitForSelector(this.accountListItem);
     await this.driver.wait(async () => {
       const internalAccounts = await this.driver.findElements(
         this.accountListItem,
       );
-      return internalAccounts.length === expectedNumberOfAccounts;
+      const isValid = internalAccounts.length === expectedNumberOfAccounts;
+      console.log(
+        `Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${isValid}`,
+      );
+      return isValid;
     }, 20000);
   }
 
