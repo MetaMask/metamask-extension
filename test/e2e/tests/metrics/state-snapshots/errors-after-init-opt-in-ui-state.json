@@ -122,7 +122,6 @@
     "useTokenDetection": true,
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
-    "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",

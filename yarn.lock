@@ -6150,8 +6150,8 @@ __metadata:
   version: 19.0.0
   resolution: "@metamask/selected-network-controller@npm:19.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.1"
-    "@metamask/json-rpc-engine": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^7.0.2"
+    "@metamask/json-rpc-engine": "npm:^10.0.1"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
     "@metamask/utils": "npm:^10.0.0"
   peerDependencies:
