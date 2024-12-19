@@ -102,6 +102,8 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { Toast } from '../../multichain';
+import { logErrorWithMessage } from '../../../../shared/modules/error';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -137,6 +139,7 @@ const CoinButtons = ({
 
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [isToastOpen, setIsToastOpen] = useState(false);
 
   const { address: selectedAddress } = account;
   const history = useHistory();
@@ -340,13 +343,26 @@ const CoinButtons = ({
             networkClientId: networkConfigurationId,
           }),
         );
+        return {
+          error: false,
+          message: `Successfully switched chains. Target chainId: ${chainId}, Current chainId: ${currentChainId}.`,
+        };
       } catch (err) {
-        console.error(`Failed to switch chains.
+        setIsToastOpen(true);
+        return {
+          error: true,
+          message: `Failed to switch chains.
         Target chainId: ${chainId}, Current chainId: ${currentChainId}.
-        ${err}`);
-        throw err;
+        ${err}`,
+        };
       }
     }
+
+    // Add this explicit return for when no switching is needed
+    return {
+      error: false,
+      message: `No chain switch required. Current chainId: ${currentChainId} matches target chainId: ${chainId}.`,
+    };
   }, [currentChainId, chainId, networks, dispatch]);
 
   const handleSendOnClick = useCallback(async () => {
@@ -399,41 +415,46 @@ const CoinButtons = ({
     ///: END:ONLY_INCLUDE_IF
 
     // Native Send flow
-    await setCorrectChain();
-    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    history.push(SEND_ROUTE);
+    const switchToCorrectChain = await setCorrectChain();
+    if (switchToCorrectChain.error) {
+      logErrorWithMessage(switchToCorrectChain.message);
+    } else {
+      await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+      history.push(SEND_ROUTE);
+    }
   }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
-    await setCorrectChain();
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    global.platform.openTab({
-      url: `${mmiPortfolioUrl}/swap`,
-    });
-    ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    if (isSwapsChain) {
-      trackEvent({
-        event: MetaMetricsEventName.NavSwapButtonClicked,
-        category: MetaMetricsEventCategory.Swaps,
-        properties: {
-          token_symbol: 'ETH',
-          location: MetaMetricsSwapsEventSource.MainView,
-          text: 'Swap',
-          chain_id: chainId,
-        },
+    const switchToCorrectChain = await setCorrectChain();
+    if (switchToCorrectChain.error) {
+      logErrorWithMessage(switchToCorrectChain.message);
+    } else {
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      global.platform.openTab({
+        url: `${mmiPortfolioUrl}/swap`,
       });
-      dispatch(setSwapsFromToken(defaultSwapsToken));
-      if (usingHardwareWallet) {
-        if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
-        }
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      isSwapsChain &&
+        trackEvent({
+          event: MetaMetricsEventName.NavSwapButtonClicked,
+          category: MetaMetricsEventCategory.Swaps,
+          properties: {
+            token_symbol: 'ETH',
+            location: MetaMetricsSwapsEventSource.MainView,
+            text: 'Swap',
+            chain_id: chainId,
+          },
+        });
+      isSwapsChain && dispatch(setSwapsFromToken(defaultSwapsToken));
+      if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
+        global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
       } else {
         history.push(PREPARE_SWAP_ROUTE);
       }
+      ///: END:ONLY_INCLUDE_IF
     }
-    ///: END:ONLY_INCLUDE_IF
   }, [
     setCorrectChain,
     isSwapsChain,
@@ -602,6 +623,17 @@ const CoinButtons = ({
           />
         </>
       }
+      {isToastOpen && (
+        <Box className="coin-buttons-toast">
+          <Toast
+            startAdornment={<></>}
+            text={t('failedToSwitchNetworks')}
+            onClose={() => setIsToastOpen(false)}
+            autoHideTime={2000}
+            onAutoHideToast={() => setIsToastOpen(false)}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
