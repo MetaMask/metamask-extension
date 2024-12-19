@@ -238,10 +238,16 @@ class TestDapp {
   }
 
   async clickSimpleSendButton() {
+    await this.driver.waitForSelector(this.simpleSendButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElement(this.simpleSendButton);
   }
 
   async clickERC721MintButton() {
+    await this.driver.waitForSelector(this.erc721MintButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElement(this.erc721MintButton);
   }
 
