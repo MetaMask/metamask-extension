@@ -366,17 +366,6 @@ class TestDapp {
   }
 
   /**
-   * Scrolls to the create token button and clicks it.
-   */
-  public async findAndClickCreateToken() {
-    const createTokenElement = await this.driver.findElement(
-      this.createTokenButton,
-    );
-    await this.driver.scrollToElement(createTokenElement);
-    await this.driver.clickElement(this.createTokenButton);
-  }
-
-  /**
    * Verifies the accounts connected to the test dapp.
    *
    * @param connectedAccounts - Account addresses to check if connected to test dapp, separated by a comma.
