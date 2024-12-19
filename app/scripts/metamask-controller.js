@@ -6864,7 +6864,9 @@ export default class MetamaskController extends EventEmitter {
       (payload) =>
         handleBridgeTransactionComplete(payload, {
           state: this.getState(),
-          metaMetricsController: this.metaMetricsController,
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
         }),
     );
   }

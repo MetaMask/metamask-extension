@@ -13,11 +13,14 @@ import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.util
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { isHardwareKeyring } from '../../../../ui/helpers/utils/hardware';
-import MetaMetricsController from '../../controllers/metametrics-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
+// eslint-disable-next-line import/no-restricted-paths
+import { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
 import {
   BackgroundState,
   getHexGasTotalUsd,
@@ -28,10 +31,13 @@ export const handleBridgeTransactionComplete = async (
   payload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
   {
     state,
-    metaMetricsController,
+    trackEvent,
   }: {
     state: BackgroundState;
-    metaMetricsController: MetaMetricsController;
+    trackEvent: (
+      payload: MetaMetricsEventPayload,
+      options?: MetaMetricsEventOptions,
+    ) => void;
   },
 ) => {
   console.log('handleBridgeTransactionComplete', {
@@ -58,15 +64,16 @@ export const handleBridgeTransactionComplete = async (
     destTokenAmountAtomic,
     bridgeHistoryItem.quote.destAsset.decimals,
   ).toNumber();
-  const destTokenUsdValue = await getTokenUsdValue({
-    chainId: destChainIdHex,
-    tokenAmount: destTokenAmount,
-    tokenAddress: bridgeHistoryItem.quote.destAsset.address,
-    state,
-  });
+  const destTokenUsdValue =
+    (await getTokenUsdValue({
+      chainId: destChainIdHex,
+      tokenAmount: destTokenAmount,
+      tokenAddress: bridgeHistoryItem.quote.destAsset.address,
+      state,
+    })) ?? 0;
 
   // Get gas total in usd
-  const gasTotalUsd = getHexGasTotalUsd({ bridgeHistoryItem, state });
+  const gasTotalUsd = getHexGasTotalUsd({ bridgeHistoryItem, state }) ?? 0;
 
   const srcChainIdHex = decimalToPrefixedHex(
     bridgeHistoryItem.quote.srcChainId,
@@ -80,18 +87,22 @@ export const handleBridgeTransactionComplete = async (
   const quoteVsExecutionRatio =
     quotedReturnInUsd && destTokenUsdValue
       ? quotedReturnInUsd / destTokenUsdValue
-      : null;
+      : 0;
 
   const quotedVsUsedGasRatio =
-    quotedGasInUsd && gasTotalUsd ? quotedGasInUsd / gasTotalUsd : null;
+    quotedGasInUsd && gasTotalUsd ? quotedGasInUsd / gasTotalUsd : 0;
 
-  const properties = {
+  const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionCompleted] & {
+    action_type: ActionType.CROSSCHAIN_V1;
+  } = {
     action_type: ActionType.CROSSCHAIN_V1,
     slippage_limit: bridgeHistoryItem.slippagePercentage,
     custom_slippage:
       bridgeHistoryItem.slippagePercentage !== BRIDGE_DEFAULT_SLIPPAGE,
     chain_id_source: srcChainIdHex,
     chain_id_destination: destChainIdHex,
+    token_address_source: bridgeHistoryItem.quote.srcAsset.address,
+    token_address_destination: bridgeHistoryItem.quote.destAsset.address,
     token_symbol_source: bridgeHistoryItem.quote.srcAsset.symbol,
     token_symbol_destination: bridgeHistoryItem.quote.destAsset.symbol,
     stx_enabled: getIsSmartTransaction(state),
@@ -119,7 +130,7 @@ export const handleBridgeTransactionComplete = async (
 
   console.log('properties', properties);
 
-  metaMetricsController.trackEvent({
+  trackEvent({
     category: MetaMetricsEventCategory.CrossChainSwaps,
     event: MetaMetricsEventName.ActionCompleted,
     properties,
