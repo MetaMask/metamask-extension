@@ -2971,10 +2971,10 @@
     "message": "Low"
   },
   "lowEstimatedReturnTooltipMessage": {
-    "message": "Either your rate or your fees are less favorable than usual. It looks like you'll get back less than $1% of the amount you’re bridging."
+    "message": "You’ll pay more than $1% of your starting amount in fees. Check your receiving amount and network fees."
   },
   "lowEstimatedReturnTooltipTitle": {
-    "message": "Low estimated return"
+    "message": "High cost"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredictable.",

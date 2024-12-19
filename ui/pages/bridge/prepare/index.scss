@@ -70,6 +70,14 @@
     border: none;
     border-radius: 8px;
 
+    .row-with-warning {
+      padding-left: 16px;
+      padding-right: 12px;
+      margin-left: -16px;
+      max-width: calc(100% + 32px);
+      width: calc(100% + 32px);
+    }
+
     [data-theme='light'],
     .light {
       box-shadow: 0 0 2px 0 #e2e4e9, 0 0 16px 0 rgba(226, 228, 233, 0.16);

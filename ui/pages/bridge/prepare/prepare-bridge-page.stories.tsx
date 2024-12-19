@@ -28,12 +28,15 @@ const Wrapper = ({ children }) => (
 );
 
 const mockFeatureFlags = {
-  srcNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
-  destNetworkAllowlist: [CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET],
   extensionSupport: true,
   extensionConfig: {
     refreshRate: 30000,
     maxRefreshCount: 5,
+    support: true,
+    chains: {
+      '0x1': { isActiveSrc: true, isActiveDest: true },
+      '0xa': { isActiveSrc: true, isActiveDest: true },
+    },
   },
 };
 const mockBridgeSlice = {
