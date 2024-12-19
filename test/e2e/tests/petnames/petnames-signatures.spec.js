@@ -169,7 +169,7 @@ describe('Petnames - Signatures', function () {
           await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
           await switchToNotificationWindow(driver, 3);
           await expectName(driver, 'test.lens', true);
-          await expectName(driver, 'Test Token 2', true);
+          await expectName(driver, 'Test Toke...', true);
           await showThirdPartyDetails(driver);
           await expectName(driver, 'Custom Name', true);
         },
@@ -269,7 +269,7 @@ describe('Petnames - Signatures', function () {
           await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await expectName(driver, 'test.lens', true);
-          await expectName(driver, 'Test Token 2', true);
+          await expectName(driver, 'Test Toke...', true);
           await expectName(driver, 'Custom Name', true);
         },
       );
