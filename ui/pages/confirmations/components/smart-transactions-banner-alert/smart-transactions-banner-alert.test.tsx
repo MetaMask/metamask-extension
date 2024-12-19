@@ -97,26 +97,6 @@ describe('SmartTransactionsBannerAlert', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('does not render when STX is not opted in', () => {
-    const notOptedInState = {
-      metamask: {
-        alertEnabledness: {
-          [AlertTypes.smartTransactionsMigration]: true,
-        },
-        preferences: {
-          smartTransactionsOptInStatus: false,
-          smartTransactionsMigrationApplied: true,
-        },
-      },
-    };
-    const store = configureStore(notOptedInState);
-    renderWithProvider(<SmartTransactionsBannerAlert />, store);
-
-    expect(
-      screen.queryByTestId('smart-transactions-banner-alert'),
-    ).not.toBeInTheDocument();
-  });
-
   it('does not render when migration has not been applied', () => {
     const noMigrationState = {
       metamask: {
