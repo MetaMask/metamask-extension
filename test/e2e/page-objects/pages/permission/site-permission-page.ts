@@ -60,8 +60,18 @@ class SitePermissionPage {
     await this.driver.clickElementAndWaitToDisappear(this.confirmEditAccountsButton);
   }
 
-
-
+  /**
+   * Check if the number of connected accounts is correct
+   *
+   * @param number - Expected number of connected accounts
+   */
+  async check_connectedAccountsNumber(number: number): Promise<void> {
+    console.log(`Check that the number of connected accounts is: ${number}`);
+    await this.driver.waitForSelector({
+      text: `${number} accounts connected`,
+      tag: 'span',
+    });
+  }
 }
 
 export default SitePermissionPage;

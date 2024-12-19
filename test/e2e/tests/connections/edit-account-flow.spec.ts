@@ -1,19 +1,15 @@
-import { strict as assert } from 'assert';
 import {
   withFixtures,
   WINDOW_TITLES,
-  connectToDapp,
-  logInWithBalanceValidation,
-  locateAccountBalanceDOM,
-  defaultGanacheOptions
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { DAPP_HOST_ADDRESS } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
+import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const accountLabel2 = '2nd custom name';
@@ -26,11 +22,17 @@ describe('Edit Accounts Flow', function () {
         fixtures: new FixtureBuilder()
           .build(),
         title: this.test?.fullTitle(),
-        ganacheOptions: defaultGanacheOptions,
       },
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
-        testdapp.connectToDapp(driver);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
+        });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+        await new Homepage(driver).check_pageIsLoaded();
         new HeaderNavbar(driver).openAccountMenu();
 
         // create second account with custom label
@@ -53,14 +55,8 @@ describe('Edit Accounts Flow', function () {
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
         const sitePermissionPage = new SitePermissionPage(driver);
         await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
-
         await sitePermissionPage.editPermissionsForAccount([accountLabel2, accountLabel3]);
-
-        const updatedAccountInfo = await driver.isElementPresent({
-          text: '3 accounts connected',
-          tag: 'span',
-        });
-        assert.ok(updatedAccountInfo, 'Accounts List Updated');
+        await sitePermissionPage.check_connectedAccountsNumber(3);
       },
     );
   });
