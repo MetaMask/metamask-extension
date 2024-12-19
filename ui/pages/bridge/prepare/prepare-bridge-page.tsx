@@ -63,7 +63,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import {
+  decimalToHex,
+  hexToDecimal,
+} from '../../../../shared/modules/conversion.utils';
 import { QuoteRequest } from '../types';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
@@ -207,8 +210,25 @@ const PrepareBridgePage = () => {
   }, [rotateSwitchTokens]);
 
   useEffect(() => {
-    // Reset controller and inputs on load
-    dispatch(resetBridgeState());
+    if (activeQuote) {
+      // Get input data from active quote
+      const { srcAsset, destAsset, destChainId } = activeQuote.quote;
+      const quoteSrcToken = fromTokens[srcAsset.address.toLowerCase()];
+      const quoteDestChainId = `0x${decimalToHex(destChainId)}`;
+      const quoteDestToken = toTokens[destAsset.address.toLowerCase()];
+
+      // Set inputs to values from active quote
+      dispatch(
+        setFromToken({ ...quoteSrcToken, image: quoteSrcToken.iconUrl }),
+      );
+      dispatch(setToChainId(quoteDestChainId));
+      dispatch(
+        setToToken({ ...quoteDestToken, image: quoteDestToken.iconUrl }),
+      );
+    } else {
+      // Reset controller and inputs on load
+      dispatch(resetBridgeState());
+    }
   }, []);
 
   const scrollRef = useRef<HTMLDivElement>(null);
