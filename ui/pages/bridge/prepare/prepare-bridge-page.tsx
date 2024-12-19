@@ -224,14 +224,16 @@ const PrepareBridgePage = () => {
       const quoteDestChainId = `0x${decimalToHex(destChainId)}`;
       const quoteDestToken = toTokens[destAsset.address.toLowerCase()];
 
-      // Set inputs to values from active quote
-      dispatch(
-        setFromToken({ ...quoteSrcToken, image: quoteSrcToken?.iconUrl }),
-      );
-      dispatch(setToChainId(quoteDestChainId));
-      dispatch(
-        setToToken({ ...quoteDestToken, image: quoteDestToken?.iconUrl }),
-      );
+      if (quoteSrcToken && quoteDestToken && quoteDestChainId) {
+        // Set inputs to values from active quote
+        dispatch(
+          setFromToken({ ...quoteSrcToken, image: quoteSrcToken?.iconUrl }),
+        );
+        dispatch(setToChainId(quoteDestChainId));
+        dispatch(
+          setToToken({ ...quoteDestToken, image: quoteDestToken?.iconUrl }),
+        );
+      }
     } else {
       // Reset controller and inputs on load
       dispatch(resetBridgeState());
