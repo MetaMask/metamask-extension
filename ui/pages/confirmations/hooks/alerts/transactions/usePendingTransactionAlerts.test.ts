@@ -4,32 +4,16 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import {
-  getRedesignedTransactionsEnabled,
-  submittedPendingTransactionsSelector,
-} from '../../../../../selectors';
 import { PendingTransactionAlertMessage } from './PendingTransactionAlertMessage';
 import { usePendingTransactionAlerts } from './usePendingTransactionAlerts';
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
-}));
-
 jest.mock('./PendingTransactionAlertMessage', () => ({
   PendingTransactionAlertMessage: () => 'PendingTransactionAlertMessage',
-}));
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn().mockReturnValue({ id: 'mock-transaction-id' }),
 }));
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -59,6 +43,7 @@ function runHook({
   transactions?: TransactionMeta[];
 } = {}) {
   let pendingApprovals = {};
+
   if (currentConfirmation) {
     pendingApprovals = {
       [currentConfirmation.id as string]: {
@@ -68,12 +53,14 @@ function runHook({
     };
     transactions.push(currentConfirmation);
   }
+
   const state = getMockConfirmState({
     metamask: {
       pendingApprovals,
       transactions,
     },
   });
+
   const response = renderHookWithConfirmContextProvider(
     usePendingTransactionAlerts,
     state,
@@ -83,19 +70,8 @@ function runHook({
 }
 
 describe('usePendingTransactionAlerts', () => {
-  const useSelectorMock = useSelector as jest.Mock;
-
   beforeEach(() => {
     jest.resetAllMocks();
-
-    (useParams as jest.Mock).mockReturnValue({ id: 'mock-transaction-id' });
-
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector.toString().includes('pendingApprovalsSortedSelector')) {
-        return [];
-      }
-      return undefined;
-    });
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -152,24 +128,6 @@ describe('usePendingTransactionAlerts', () => {
   });
 
   it('returns alert if submitted transaction', () => {
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === submittedPendingTransactionsSelector) {
-        return [
-          { name: 'first transaction', id: '1' },
-          { name: 'second transaction', id: '2' },
-        ];
-      } else if (selector === getRedesignedTransactionsEnabled) {
-        return true;
-      } else if (selector.toString().includes('getUnapprovedTransaction')) {
-        return { type: TransactionType.contractInteraction };
-      } else if (
-        selector.toString().includes('pendingApprovalsSortedSelector')
-      ) {
-        return [];
-      }
-      return undefined;
-    });
-
     const alerts = runHook({
       currentConfirmation: CONFIRMATION_MOCK,
       transactions: [TRANSACTION_META_MOCK],
