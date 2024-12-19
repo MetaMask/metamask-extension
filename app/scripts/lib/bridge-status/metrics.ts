@@ -22,6 +22,7 @@ import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.util
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import { isHardwareKeyring } from '../../../../ui/helpers/utils/hardware';
 
 type BackgroundState = SmartTransactionsMetaMaskState &
   NetworkState & { metamask: TransactionControllerState };
