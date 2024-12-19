@@ -2155,7 +2155,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2165,6 +2165,24 @@
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2248,7 +2266,7 @@
     "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
     },
@@ -3448,7 +3466,7 @@
       },
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
         "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
       }
     },
