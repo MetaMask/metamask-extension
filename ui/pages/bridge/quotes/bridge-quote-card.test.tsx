@@ -5,9 +5,7 @@ import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { RequestStatus } from '../../../../app/scripts/controllers/bridge/constants';
+import { RequestStatus } from '../../../../shared/types/bridge';
 import { BridgeQuoteCard } from './bridge-quote-card';
 
 describe('BridgeQuoteCard', () => {

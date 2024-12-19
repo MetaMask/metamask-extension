@@ -1,10 +1,7 @@
 import { isStrictHexString } from '@metamask/utils';
 import { isValidHexAddress as isValidHexAddress_ } from '@metamask/controller-utils';
-import {
-  truthyDigitString,
-  validateData,
-} from '../../../../shared/lib/swaps-utils';
-import { BridgeFlag, FeatureFlagResponse } from '../types';
+import { truthyDigitString, validateData } from '../../lib/swaps-utils';
+import { BridgeFlag, FeatureFlagResponse } from '../../types/bridge';
 
 type Validator<ExpectedResponse> = {
   property: keyof ExpectedResponse | string;

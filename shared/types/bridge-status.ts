@@ -1,12 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-// TODO fix this
-import {
-  ChainId,
-  Quote,
-  QuoteMetadata,
-  QuoteResponse,
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../ui/pages/bridge/types';
+import type { ChainId, Quote, QuoteMetadata, QuoteResponse } from './bridge';
 
 // All fields need to be types not interfaces, same with their children fields
 // o/w you get a type error

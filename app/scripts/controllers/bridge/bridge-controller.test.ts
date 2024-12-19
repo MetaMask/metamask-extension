@@ -5,20 +5,19 @@ import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import * as bridgeUtil from '../../../../ui/pages/bridge/bridge.util';
+import * as bridgeUtil from '../../../../shared/modules/bridge-utils/bridge.util';
 import * as balanceUtils from '../../../../shared/modules/bridge-utils/balance';
 import mockBridgeQuotesErc20Native from '../../../../test/data/bridge/mock-quotes-erc20-native.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import mockBridgeQuotesNativeErc20Eth from '../../../../test/data/bridge/mock-quotes-native-erc20-eth.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { QuoteResponse } from '../../../../ui/pages/bridge/types';
+import {
+  type QuoteResponse,
+  RequestStatus,
+} from '../../../../shared/types/bridge';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import BridgeController from './bridge-controller';
 import { BridgeControllerMessenger } from './types';
-import { DEFAULT_BRIDGE_CONTROLLER_STATE, RequestStatus } from './constants';
+import { DEFAULT_BRIDGE_CONTROLLER_STATE } from './constants';
 
 const EMPTY_INIT_STATE = {
   bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE,

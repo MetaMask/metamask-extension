@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getAllBridgeableNetworks } from '../../ducks/bridge/selectors';
-import { fetchBridgeTokens } from '../../pages/bridge/bridge.util';
+import { fetchBridgeTokens } from '../../../shared/modules/bridge-utils/bridge.util';
 
 // This hook is used to fetch the bridge tokens for all bridgeable networks
 export const useBridgeTokens = () => {
