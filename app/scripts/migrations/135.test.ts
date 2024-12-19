@@ -23,14 +23,17 @@ describe('migration #135', () => {
       meta: { version: prevVersion },
       data: {
         PreferencesController: {
-          smartTransactionsOptInStatus: null,
+          preferences: {
+            smartTransactionsOptInStatus: null,
+          },
         },
       },
     };
 
     const newStorage = await migrate(oldStorage);
     expect(
-      newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
     ).toBe(true);
     expect(
       newStorage.data.PreferencesController?.preferences
@@ -48,7 +51,8 @@ describe('migration #135', () => {
 
     const newStorage = await migrate(oldStorage);
     expect(
-      newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
     ).toBe(true);
     expect(
       newStorage.data.PreferencesController?.preferences
@@ -61,7 +65,9 @@ describe('migration #135', () => {
       meta: { version: prevVersion },
       data: {
         PreferencesController: {
-          smartTransactionsOptInStatus: false,
+          preferences: {
+            smartTransactionsOptInStatus: false,
+          },
         },
         SmartTransactionsController: {
           smartTransactionsState: {
@@ -76,7 +82,8 @@ describe('migration #135', () => {
 
     const newStorage = await migrate(oldStorage);
     expect(
-      newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
     ).toBe(true);
     expect(
       newStorage.data.PreferencesController?.preferences
@@ -89,7 +96,9 @@ describe('migration #135', () => {
       meta: { version: prevVersion },
       data: {
         PreferencesController: {
-          smartTransactionsOptInStatus: false,
+          preferences: {
+            smartTransactionsOptInStatus: false,
+          },
         },
         SmartTransactionsController: {
           smartTransactionsState: {
@@ -103,7 +112,8 @@ describe('migration #135', () => {
 
     const newStorage = await migrate(oldStorage);
     expect(
-      newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
     ).toBe(false);
     expect(
       newStorage.data.PreferencesController?.preferences
@@ -116,14 +126,17 @@ describe('migration #135', () => {
       meta: { version: prevVersion },
       data: {
         PreferencesController: {
-          smartTransactionsOptInStatus: true,
+          preferences: {
+            smartTransactionsOptInStatus: true,
+          },
         },
       },
     };
 
     const newStorage = await migrate(oldStorage);
     expect(
-      newStorage.data.PreferencesController?.smartTransactionsOptInStatus,
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
     ).toBe(true);
     expect(
       newStorage.data.PreferencesController?.preferences
@@ -136,7 +149,9 @@ describe('migration #135', () => {
       meta: { version: prevVersion },
       data: {
         PreferencesController: {
-          smartTransactionsOptInStatus: true,
+          preferences: {
+            smartTransactionsOptInStatus: true,
+          },
         },
       },
     };

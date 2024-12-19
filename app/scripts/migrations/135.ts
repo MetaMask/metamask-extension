@@ -36,45 +36,46 @@ function transformState(state: VersionedData['data']) {
     );
     return state;
   }
-
   const { PreferencesController } = state;
+
+  // Ensure PreferencesController.preferences is initialized
+  PreferencesController.preferences = {
+    ...PreferencesController.preferences,
+  };
+
   const currentOptInStatus =
-    PreferencesController?.smartTransactionsOptInStatus;
-  if (currentOptInStatus === undefined || currentOptInStatus === null) {
-    PreferencesController.smartTransactionsOptInStatus = true;
-  } else if (
-    currentOptInStatus === false &&
-    !hasExistingSmartTransactions(state)
+    PreferencesController.preferences.smartTransactionsOptInStatus;
+
+  if (
+    currentOptInStatus === undefined ||
+    currentOptInStatus === null ||
+    (currentOptInStatus === false && !hasExistingSmartTransactions(state))
   ) {
-    PreferencesController.smartTransactionsOptInStatus = true;
-  }
-  if (!state.PreferencesController.preferences) {
-    state.PreferencesController.preferences = {};
+    PreferencesController.preferences.smartTransactionsOptInStatus = true;
   }
 
-  const { preferences } = state.PreferencesController;
-  preferences.smartTransactionsOptInStatus = true;
-  preferences.smartTransactionsMigrationApplied = true;
+  // Ensure state.PreferencesController.preferences is initialized
+  state.PreferencesController.preferences = {
+    ...state.PreferencesController.preferences,
+  };
+
+  // Apply migration
+  state.PreferencesController.preferences.smartTransactionsMigrationApplied =
+    true;
 
   return state;
 }
 
 function hasExistingSmartTransactions(state: VersionedData['data']): boolean {
-  if (
-    !hasProperty(state, 'SmartTransactionsController') ||
-    !isObject(
-      state.SmartTransactionsController?.smartTransactionsState
-        ?.smartTransactions,
-    )
-  ) {
+  const smartTransactions =
+    state?.SmartTransactionsController?.smartTransactionsState
+      ?.smartTransactions;
+
+  if (!isObject(smartTransactions)) {
     return false;
   }
 
-  const { smartTransactions } =
-    state.SmartTransactionsController.smartTransactionsState;
-
-  const mainnetTransactionsOnly = smartTransactions[CHAIN_IDS.MAINNET] || [];
-  return mainnetTransactionsOnly.length > 0;
+  return (smartTransactions[CHAIN_IDS.MAINNET] || []).length > 0;
 }
 
 export async function migrate(
