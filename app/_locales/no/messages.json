@@ -369,9 +369,6 @@
   "loading": {
     "message": "Laster inn ..."
   },
-  "loadingTokens": {
-    "message": "Laster tokener ..."
-  },
   "localhost": {
     "message": "Lokalvert 8545"
   },

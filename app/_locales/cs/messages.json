@@ -175,9 +175,6 @@
   "loading": {
     "message": "Načítám..."
   },
-  "loadingTokens": {
-    "message": "Načítám tokeny..."
-  },
   "lock": {
     "message": "Odhlásit"
   },

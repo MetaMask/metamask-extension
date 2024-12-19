@@ -4,7 +4,7 @@ import configureStore from '../../../store/store';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import { SortOrder } from '../types';
+import { SortOrder } from '../../../../shared/types/bridge';
 
 const storybook = {
   title: 'Pages/Bridge/BridgeQuotesModal',
