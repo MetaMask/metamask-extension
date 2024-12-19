@@ -190,6 +190,12 @@ export const checkActivityTransaction = async (
   await driver.clickElement('[data-testid="popover-close"]');
 };
 
+export const closeSmartTransactionsMigrationNotification = async (
+  driver: Driver,
+) => {
+  await driver.clickElement('[aria-label="Close"]');
+};
+
 export const checkNotification = async (
   driver: Driver,
   options: { title: string; text: string },
