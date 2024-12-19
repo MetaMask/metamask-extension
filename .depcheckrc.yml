@@ -23,6 +23,7 @@ ignores:
   - '@metamask/forwarder'
   - '@metamask/phishing-warning' # statically hosted as part of some e2e tests
   - '@metamask/test-dapp'
+  - '@metamask/test-dapp-multichain'
   - '@metamask/design-tokens' # Only imported in index.css
   - '@tsconfig/node20' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
