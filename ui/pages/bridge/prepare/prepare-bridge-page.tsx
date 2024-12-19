@@ -227,11 +227,11 @@ const PrepareBridgePage = () => {
       if (quoteSrcToken && quoteDestToken && quoteDestChainId) {
         // Set inputs to values from active quote
         dispatch(
-          setFromToken({ ...quoteSrcToken, image: quoteSrcToken?.iconUrl }),
+          setFromToken({ ...quoteSrcToken, image: quoteSrcToken.iconUrl }),
         );
         dispatch(setToChainId(quoteDestChainId));
         dispatch(
-          setToToken({ ...quoteDestToken, image: quoteDestToken?.iconUrl }),
+          setToToken({ ...quoteDestToken, image: quoteDestToken.iconUrl }),
         );
       }
     } else {
