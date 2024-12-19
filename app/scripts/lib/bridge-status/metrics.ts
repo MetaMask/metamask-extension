@@ -130,8 +130,8 @@ export const handleBridgeTransactionComplete = async (
   const quotedGasInUsd = Number(bridgeHistoryItem.pricingData?.quotedGasInUsd);
 
   const quoteVsExecutionRatio =
-    quotedReturnInUsd && quotedGasInUsd
-      ? quotedReturnInUsd / quotedGasInUsd
+    quotedReturnInUsd && destTokenUsdValue
+      ? quotedReturnInUsd / destTokenUsdValue
       : null;
 
   const quotedVsUsedGasRatio =
