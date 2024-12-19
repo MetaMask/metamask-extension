@@ -1,0 +1,25 @@
+name: Validate lavamoat policy build
+
+on:
+  workflow_call:
+
+jobs:
+  validate-lavamoat-policy-build:
+    name: Validate lavamoat policy build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Validate lavamoat build policy
+        run: yarn lavamoat:build:auto
+
+      - name: Check working tree
+        run: |
+          if ! git diff --exit-code; then
+              echo "::error::Working tree dirty."
+              exit 1
+          fi
