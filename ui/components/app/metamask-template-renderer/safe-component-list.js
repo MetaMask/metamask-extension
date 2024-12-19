@@ -47,6 +47,7 @@ import { SnapUIAddress } from '../snaps/snap-ui-address';
 import { SnapUIAvatar } from '../snaps/snap-ui-avatar';
 import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapUIFooterButton } from '../snaps/snap-ui-footer-button';
+import { SnapUIBanner } from '../snaps/snap-ui-banner';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
@@ -112,6 +113,7 @@ export const safeComponentList = {
   SnapUIAvatar,
   SnapUIFooterButton,
   FormTextField,
+  SnapUIBanner,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,

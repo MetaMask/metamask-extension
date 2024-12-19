@@ -62,6 +62,9 @@ PATH_NAME_MAP[CONTACT_ADD_ROUTE] = 'Add Contact Settings Page';
 export const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 PATH_NAME_MAP[`${CONTACT_VIEW_ROUTE}/:address`] = 'View Contact Settings Page';
 
+export const SNAP_SETTINGS_ROUTE = '/settings/snap';
+PATH_NAME_MAP[`${SNAP_SETTINGS_ROUTE}/:snapId`] = 'Snap Settings Page';
+
 export const REVEAL_SEED_ROUTE = '/seed';
 PATH_NAME_MAP[REVEAL_SEED_ROUTE] = 'Reveal Secret Recovery Phrase Page';
 
