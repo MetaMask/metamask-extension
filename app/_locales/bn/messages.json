@@ -375,9 +375,6 @@
   "loading": {
     "message": "লোড হচ্ছে..."
   },
-  "loadingTokens": {
-    "message": "টোকেনগুলি লোড করছে..."
-  },
   "localhost": {
     "message": "লোকালহোস্ট 8545"
   },
