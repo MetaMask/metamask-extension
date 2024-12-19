@@ -6417,6 +6417,9 @@
   "transactionFailed": {
     "message": "Transaction Failed"
   },
+  "transactionFailedBannerMessage": {
+    "message": "This transaction would have cost you extra fees, so we stopped it. Your money is still in your wallet."
+  },
   "transactionFee": {
     "message": "Transaction fee"
   },
