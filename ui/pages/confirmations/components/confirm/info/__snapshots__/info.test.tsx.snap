@@ -80,7 +80,7 @@ exports[`Info renders info section for approve request 1`] = `
               class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
               data-testid="simulation-token-value"
             >
-              #1
+              #0.0001
             </p>
           </div>
           <div

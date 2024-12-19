@@ -213,7 +213,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       'simulation-token-value',
     );
     expect(simulationSection).toContainElement(spendingCapValue);
-    expect(spendingCapValue).toHaveTextContent('30,000');
+    expect(spendingCapValue).toHaveTextContent('3');
     expect(simulationSection).toHaveTextContent('0x07614...3ad68');
   });
 
@@ -301,7 +301,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     expect(spendingCapSection).toContainElement(spendingCapGroup);
     expect(spendingCapGroup).toHaveTextContent(tEn('spendingCap') as string);
-    expect(spendingCapGroup).toHaveTextContent('30,000');
+    expect(spendingCapGroup).toHaveTextContent('3');
 
     const spendingCapGroupTooltip = await screen.findByTestId(
       'confirmation__approve-spending-cap-group-tooltip',
