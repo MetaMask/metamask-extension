@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "नेटवर्क जोड़ रहे हैं"
   },
-  "addingTokens": {
-    "message": "टोकन जोड़ना"
-  },
   "additionalNetworks": {
     "message": "अतिरिक्त नेटवर्क"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "अपने वॉलेट में टोकन ऑटोडिटेक्ट करें, NFT प्रदर्शित करें, और बैच अकाउंट बैलेंस संबंधी अपडेट प्राप्त करें"
   },
-  "attemptSendingAssets": {
-    "message": "अगर आप एसेट्स को सीधे एक नेटवर्क से दूसरे नेटवर्क पर भेजने की कोशिश करते हैं, तो ऐसा करने से आपको एसेट्स का नुकसान हो सकता है। ब्रिज का इस्तेमाल करके नेटवर्कों के बीच फंड्स को सुरक्षित तरीके से ट्रांसफ़र करें।"
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "अगर आप एसेट्स को सीधे एक नेटवर्क से दूसरे नेटवर्क पर भेजने की कोशिश करते हैं, तो ऐसा करने से आपको एसेट्स का नुकसान हो सकता है। ब्रिज, जैसे like $1, का इस्तेमाल करके नेटवर्कों के बीच फंड्स को सुरक्षित तरीके से ट्रांसफ़र करें।"
-  },
   "attemptToCancelSwapForFree": {
     "message": "स्वैप को मुफ्त में कैंसिल करने की कोशिश करें"
   },
@@ -837,9 +828,6 @@
   "bridgeCalculatingAmount": {
     "message": "कैलकुलेट किया जा रहा है..."
   },
-  "bridgeDontSend": {
-    "message": "ब्रिज, न भेजें"
-  },
   "bridgeEnterAmount": {
     "message": "रकम डालें"
   },
@@ -950,9 +938,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "अपने Ledger को WebHID के ज़रिए कनेक्ट करने के लिए यहां क्लिक करें",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "आप कभी भी मैन्युअल रूप से टोकन जोड़ सकते हैं।"
   },
   "close": {
     "message": "बंद करें"
@@ -2135,9 +2120,6 @@
   "gasFee": {
     "message": "गैस फीस"
   },
-  "gasIsETH": {
-    "message": "गैस $1 है "
-  },
   "gasLimit": {
     "message": "गैस लिमिट"
   },
@@ -2699,9 +2681,6 @@
   "learnScamRisk": {
     "message": "घोटाले और सुरक्षा जोखिम।"
   },
-  "learnToBridge": {
-    "message": "ब्रिज करना सीखें"
-  },
   "leaveMetaMask": {
     "message": "MetaMask से बाहर निकलें?"
   },
@@ -2897,9 +2876,6 @@
   "metamaskNotificationsAreOff": {
     "message": "वॉलेट नोटिफिकेशंस वर्तमान में सक्रिय नहीं हैं।"
   },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
-  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask स्वैप का रखरखाव किया जा रहा है। कृपया बाद में वापस देखें।"
   },
@@ -3043,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 निम्नलिखित के लिए आपका एप्रूवल मांग रहा है:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "इस नेटवर्क पर ओरिजिनल टोकन $1 है। यह गैस फ़ीस के लिए इस्तेमाल किया जाने वाला टोकन है।",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "नेटवर्क का ब्यौरा बदलें"
@@ -5937,9 +5909,6 @@
     "message": "$1 अब $2 पर एक्टिव है",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "आप अब इस्तेमाल कर रहे हैं"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "नेटवर्क स्विच करने से सभी लंबित कन्फर्मेशन कैंसिल हो जाएंगे"
   },
@@ -5975,9 +5944,6 @@
   },
   "themeDescription": {
     "message": "अपनी पसंदीदा MetaMask थीम चुन लें"
-  },
-  "thingsToKeep": {
-    "message": "ध्यान रखने योग्य बातें:"
   },
   "thirdPartySoftware": {
     "message": "थर्ड-पार्टी सॉफ्टवेयर नोटिस",
@@ -6059,9 +6025,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "टोकन घोटाले और सुरक्षा जोखिम"
-  },
-  "tokenShowUp": {
-    "message": "हो सकता है आपके वॉलेट में आपके टोकन ऑटोमेटिकली दिखाई नहीं दें। "
   },
   "tokenStandard": {
     "message": "टोकन स्टैंडर्ड"

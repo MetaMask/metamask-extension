@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Προσθήκη δικτύου"
   },
-  "addingTokens": {
-    "message": "Προσθήκη tokens"
-  },
   "additionalNetworks": {
     "message": "Επιπλέον δίκτυα"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "Αυτόματος εντοπισμός tokens στο πορτοφόλι σας, εμφάνιση NFT και ομαδοποιημένες ενημερώσεις υπολοίπων λογαριασμών"
   },
-  "attemptSendingAssets": {
-    "message": "Ενδέχεται να χάσετε τα περιουσιακά σας στοιχεία εάν προσπαθήσετε να τα στείλετε από άλλο δίκτυο. Μεταφέρετε κεφάλαια με ασφάλεια μεταξύ δικτύων χρησιμοποιώντας μια διασύνδεση."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Μπορεί να χάσετε τα περιουσιακά σας στοιχεία αν προσπαθήσετε να τα στείλετε από άλλο δίκτυο. Μεταφέρετε χρήματα με ασφάλεια μεταξύ δικτύων χρησιμοποιώντας μια διασύνδεση, όπως το $1"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Προσπάθεια ακύρωσης των ανταλλαγών δωρεάν"
   },
@@ -837,9 +828,6 @@
   "bridgeCalculatingAmount": {
     "message": "Υπολογισμός..."
   },
-  "bridgeDontSend": {
-    "message": "Μην στείλετε χωρίς διασύνδεση"
-  },
   "bridgeEnterAmount": {
     "message": "Πληκτρολογήστε το ποσό"
   },
@@ -950,9 +938,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Κάντε κλικ εδώ για να συνδέσετε το Ledger σας μέσω WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Μπορείτε πάντα να προσθέσετε τα tokens χειροκίνητα."
   },
   "close": {
     "message": "Κλείσιμο"
@@ -2135,9 +2120,6 @@
   "gasFee": {
     "message": "Τέλη συναλλαγών"
   },
-  "gasIsETH": {
-    "message": "Τέλη συναλλαγής $1 "
-  },
   "gasLimit": {
     "message": "Όριο τέλους συναλλαγής"
   },
@@ -2699,9 +2681,6 @@
   "learnScamRisk": {
     "message": "απάτες και κίνδυνοι ασφάλειας."
   },
-  "learnToBridge": {
-    "message": "Μάθετε για την διασύνδεση"
-  },
   "leaveMetaMask": {
     "message": "Αποχώρηση από το MetaMask;"
   },
@@ -2897,9 +2876,6 @@
   "metamaskNotificationsAreOff": {
     "message": "Οι ειδοποιήσεις του πορτοφολιού δεν είναι προς το παρόν ενεργές."
   },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
-  },
   "metamaskSwapsOfflineDescription": {
     "message": "Το MetaMask Swaps είναι υπό συντήρηση. Παρακαλείστε να επιστρέψετε αργότερα."
   },
@@ -3043,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "Το $1 ζητάει την έγκρισή σας για:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Το αρχικό token σε αυτό το δίκτυο είναι το $1. Είναι το token που χρησιμοποιείται για τα τέλη συναλλαγών.",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Επεξεργασία λεπτομερειών δικτύου"
@@ -5937,9 +5909,6 @@
     "message": "Το $1 είναι τώρα ενεργό στο $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Τώρα χρησιμοποιείτε το"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Η αλλαγή δικτύων θα ακυρώσει όλες τις εκκρεμείς επιβεβαιώσεις"
   },
@@ -5975,9 +5944,6 @@
   },
   "themeDescription": {
     "message": "Επιλέξτε το προτιμώμενο θέμα σας για το MetaMask."
-  },
-  "thingsToKeep": {
-    "message": "Πράγματα που πρέπει να έχετε υπόψη σας:"
   },
   "thirdPartySoftware": {
     "message": "Ειδοποίηση για λογισμικό τρίτων",
@@ -6059,9 +6025,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "απάτες με token και κίνδυνοι ασφάλειας"
-  },
-  "tokenShowUp": {
-    "message": "Τα tokens σας ενδέχεται να μην εμφανιστούν αυτόματα στο πορτοφόλι σας."
   },
   "tokenStandard": {
     "message": "Πρότυπο Token"
