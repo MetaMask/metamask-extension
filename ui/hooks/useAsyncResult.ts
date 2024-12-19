@@ -32,7 +32,9 @@ export function useAsyncResult<T>(
   });
 
   useEffect(() => {
-    setResult({ pending: true });
+    if (!result.pending) {
+      setResult({ pending: true });
+    }
     let cancelled = false;
     asyncFn()
       .then((value) => {
