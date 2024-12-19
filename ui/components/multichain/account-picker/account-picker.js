@@ -124,6 +124,7 @@ export const AccountPicker = ({
       <Text
         as="span"
         ellipsis
+        variant={TextVariant.headingSm}
         {...labelProps}
         className={classnames(
           'multichain-account-picker__label',
