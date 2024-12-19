@@ -15,7 +15,7 @@ const SetApprovalForAllInfo = () => {
 
   const parsedTransactionData = useTokenTransactionData();
 
-  const spender = parsedTransactionData?.args?._spender;
+  const spender = parsedTransactionData?.args?._operator;
 
   const isRevokeSetApprovalForAll = getIsRevokeSetApprovalForAll(
     parsedTransactionData,
