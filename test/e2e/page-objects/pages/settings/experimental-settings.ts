@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import messages from '../../../../../app/_locales/en/messages.json';
 
 class ExperimentalSettings {
   private readonly driver: Driver;
@@ -6,6 +7,9 @@ class ExperimentalSettings {
   // Locators
   private readonly addAccountSnapToggle =
     '[data-testid="add-account-snap-toggle-div"]';
+
+  private readonly addBitcoinAccountToggle =
+    '[data-testid="bitcoin-support-toggle-div"]';
 
   private readonly experimentalPageTitle = {
     text: 'Experimental',
@@ -33,6 +37,15 @@ class ExperimentalSettings {
       throw e;
     }
     console.log('Experimental Settings page is loaded');
+  }
+
+  async toggleBitcoinAccount(): Promise<void> {
+    console.log('Toggle Add new Bitcoin account on experimental setting page');
+    await this.driver.waitForSelector({
+      text: messages.bitcoinSupportToggleTitle.message,
+      tag: 'span',
+    });
+    await this.driver.clickElement(this.addBitcoinAccountToggle);
   }
 
   async toggleAddAccountSnap(): Promise<void> {
