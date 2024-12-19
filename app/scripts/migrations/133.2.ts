@@ -9,7 +9,8 @@ type VersionedData = {
 export const version = 133.2;
 
 /**
- *
+ * This migration removes tokens on mainnet with the
+ * zero address, since this is not a valid erc20 token.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to disk.
@@ -24,11 +25,6 @@ export async function migrate(
   return versionedData;
 }
 
-/**
- * Transforms the TokensController state to remove tokens with `decimals === null`.
- *
- * @param state - The persisted MetaMask state.
- */
 function transformState(state: Record<string, unknown>): void {
   if (
     !hasProperty(state, 'TokensController') ||
@@ -54,7 +50,7 @@ function transformState(state: Record<string, unknown>): void {
 
       state.TokensController.allTokens[chainId][account] = tokens.filter(
         (token) =>
-          token.address !== '0x0000000000000000000000000000000000000000',
+          token?.address !== '0x0000000000000000000000000000000000000000',
       );
     }
   }
