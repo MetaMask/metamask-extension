@@ -6,6 +6,9 @@ import {
   genUnapprovedContractInteractionConfirmation,
 } from './contract-interaction';
 
+export const INCREASE_ALLOWANCE_TRANSACTION_DATA =
+  '0x395093510000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000123';
+
 export const genUnapprovedSetApprovalForAllConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   chainId = CHAIN_ID,

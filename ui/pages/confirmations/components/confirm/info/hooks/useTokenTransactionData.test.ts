@@ -1,4 +1,5 @@
 import { Hex } from '@metamask/utils';
+import { TransactionDescription } from '@ethersproject/abi';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import {
@@ -6,10 +7,12 @@ import {
   TRANSFER_FROM_TRANSACTION_DATA,
 } from '../../../../../../../test/data/confirmations/token-transfer';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { useTokenTransactionData } from './useTokenTransactionData';
-import { TransactionDescription } from '@ethersproject/abi';
 import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
-import { genUnapprovedSetApprovalForAllConfirmation } from '../../../../../../../test/data/confirmations/set-approval-for-all';
+import {
+  genUnapprovedSetApprovalForAllConfirmation,
+  INCREASE_ALLOWANCE_TRANSACTION_DATA,
+} from '../../../../../../../test/data/confirmations/set-approval-for-all';
+import { useTokenTransactionData } from './useTokenTransactionData';
 
 function runHook(transactionData: string) {
   const transaction = genUnapprovedContractInteractionConfirmation({
@@ -72,6 +75,16 @@ describe('useTokenTransactionData', () => {
       '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B',
     );
     expect(result.args._approved).toBe(true);
+  });
+
+  it('parses increaseAllowance transaction', () => {
+    const result = runHook(INCREASE_ALLOWANCE_TRANSACTION_DATA);
+
+    expect(result.name).toBe('increaseAllowance');
+    expect(result.args.spender).toBe(
+      '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B',
+    );
+    expect(result.args.increment.toHexString()).toBe('0x0123');
   });
 
   it('returns undefined if no transaction data', () => {
