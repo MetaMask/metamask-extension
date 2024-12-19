@@ -579,13 +579,12 @@ describe('Smart Transactions Migration Alert', () => {
         },
       },
       state: {
-        ...STATE_MOCK, // Keep existing mock state
+        ...STATE_MOCK,
         metamask: {
           ...STATE_MOCK.metamask,
           networkConfigurationsByChainId: {
             [CHAIN_ID_MOCK]: {
               chainId: CHAIN_ID_MOCK,
-              // other required network properties
             },
           },
           alertEnabledness: {

@@ -13,7 +13,6 @@ export type VersionedData = {
         smartTransactionsOptInStatus?: boolean | null;
         smartTransactionsMigrationApplied?: boolean;
       };
-      smartTransactionsOptInStatus?: boolean | null;
     };
     SmartTransactionsController?: {
       smartTransactionsState: {
