@@ -2775,9 +2775,6 @@
   "loadingScreenSnapMessage": {
     "message": "Lütfen işlemi Snap üzerinde tamamlayın."
   },
-  "loadingTokens": {
-    "message": "Tokenler yükleniyor..."
-  },
   "localhost": {
     "message": "Yerel Ana Bilgisayar 8545"
   },

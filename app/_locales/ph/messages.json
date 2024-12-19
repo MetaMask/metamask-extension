@@ -700,9 +700,6 @@
   "loading": {
     "message": "Nilo-load..."
   },
-  "loadingTokens": {
-    "message": "Nilo-load ang Mga Token..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },
