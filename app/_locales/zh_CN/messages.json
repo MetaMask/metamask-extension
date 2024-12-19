@@ -2775,9 +2775,6 @@
   "loadingScreenSnapMessage": {
     "message": "请在Snap上完成交易。"
   },
-  "loadingTokens": {
-    "message": "加载代币中……"
-  },
   "localhost": {
     "message": "Localhost 8545"
   },
