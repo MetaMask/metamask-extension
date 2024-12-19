@@ -146,7 +146,6 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "smartTransactionsOptInStatus": "boolean",
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
