@@ -2775,9 +2775,6 @@
   "loadingScreenSnapMessage": {
     "message": "कृपया Snap पर ट्रांजेक्शन पूरा करें।"
   },
-  "loadingTokens": {
-    "message": "टोकन लोड हो रहे हैं..."
-  },
   "localhost": {
     "message": "लोकलहोस्ट 8545"
   },
