@@ -1,5 +1,6 @@
 import { E2E_SRP } from '../../default-fixture';
 import FixtureBuilder from '../../fixture-builder';
+import { ACCOUNT_TYPE } from '../../constants';
 import {
   WALLET_PASSWORD,
   defaultGanacheOptions,
@@ -43,7 +44,9 @@ describe('Add account', function () {
           const newAccountName = 'Account 2';
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.addNewAccount();
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+          });
           await headerNavbar.check_accountLabel(newAccountName);
           await homePage.check_expectedBalanceIsDisplayed();
 
@@ -112,7 +115,9 @@ describe('Add account', function () {
           const newAccountName = 'Account 2';
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.addNewAccount();
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+          });
           await headerNavbar.check_accountLabel(newAccountName);
           await homePage.check_expectedBalanceIsDisplayed();
 
@@ -177,7 +182,9 @@ describe('Add account', function () {
           // Create new account with default name Account 2
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.addNewAccount();
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+          });
           await headerNavbar.check_accountLabel('Account 2');
           await homePage.check_expectedBalanceIsDisplayed();
 

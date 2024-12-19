@@ -76,3 +76,10 @@ export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 
 /* Title of the mocked E2E test empty HTML page */
 export const EMPTY_E2E_TEST_PAGE_TITLE = 'E2E Test Page';
+
+/* Account types */
+export enum ACCOUNT_TYPE {
+  Ethereum,
+  Bitcoin,
+  Solana,
+}

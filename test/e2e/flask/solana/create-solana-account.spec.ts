@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import { ACCOUNT_TYPE } from '../../page-objects/common';
+import { ACCOUNT_TYPE } from '../../constants';
 import { withSolanaAccountSnap } from './common-solana';
 
 // Scenarios skipped due to https://consensyssoftware.atlassian.net/browse/SOL-87
@@ -17,7 +17,10 @@ describe('Create Solana Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
-        await accountListPage.addAccount(ACCOUNT_TYPE.Solana, 'Solana 2');
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Solana,
+          accountName: 'Solana 2',
+        });
         await headerNavbar.check_accountLabel('Solana 2');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_numberOfAvailableAccounts(3);
