@@ -4,6 +4,7 @@ import { DecodedTransactionDataSource } from '../../../../../../shared/types/tra
 import {
   getIsRevokeSetApprovalForAll,
   hasValueAndNativeBalanceMismatch,
+  isValidUTF8,
 } from './utils';
 
 describe('getIsRevokeSetApprovalForAll', () => {
@@ -139,5 +140,13 @@ describe('hasValueAndNativeBalanceMismatch', () => {
     } as unknown as TransactionMeta;
 
     expect(hasValueAndNativeBalanceMismatch(transaction)).toBe(true);
+  });
+});
+
+describe('isValidUTF8', () => {
+  it('returns true for valid UTF-8 string', () => {
+    expect(isValidUTF8('Hello')).toEqual(true);
+    expect(isValidUTF8('\xC3\x28')).toEqual(true);
+    expect(isValidUTF8('😀')).toEqual(true);
   });
 });
