@@ -16,7 +16,7 @@ function isSpendingCapUnlimited(decodedSpendingCap: number) {
 
 export const useApproveTokenSimulation = (
   transactionMeta: TransactionMeta,
-  decimals: string,
+  decimals: string | undefined,
 ) => {
   const locale = useSelector(getIntlLocale);
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
@@ -27,7 +27,12 @@ export const useApproveTokenSimulation = (
     parsedArgs?.increment; // Fiat Token V2 - increaseAllowance
 
   const value = parsedValue ?? new BigNumber(0);
-  const decodedSpendingCap = calcTokenAmount(value, Number(decimals)).toFixed();
+
+  const decodedSpendingCap = calcTokenAmount(
+    value,
+    Number(decimals ?? '0'),
+  ).toFixed();
+
   const tokenPrefix = isNFT ? '#' : '';
 
   const formattedSpendingCap = useMemo(() => {
