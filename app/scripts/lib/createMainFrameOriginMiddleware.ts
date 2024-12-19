@@ -1,3 +1,6 @@
+// Request and responses are currently untyped.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Returns a middleware that appends the mainFrameOrigin to request
  *
