@@ -612,20 +612,16 @@ class AccountListPage {
     );
 
     await this.driver.waitForSelector(this.accountListItem);
-    await this.driver.wait(
-      async () => {
-        const internalAccounts = await this.driver.findElements(
-          this.accountListItem,
-        );
-        const isValid = internalAccounts.length === expectedNumberOfAccounts;
-        console.log(
-          `Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${isValid}`,
-        );
-        return isValid;
-      },
-      20000,
-      true,
-    );
+    await this.driver.wait(async () => {
+      const internalAccounts = await this.driver.findElements(
+        this.accountListItem,
+      );
+      const isValid = internalAccounts.length === expectedNumberOfAccounts;
+      console.log(
+        `Number of accounts: ${internalAccounts.length} is equal to ${expectedNumberOfAccounts}? ${isValid}`,
+      );
+      return isValid;
+    }, 20000);
   }
 
   /**
