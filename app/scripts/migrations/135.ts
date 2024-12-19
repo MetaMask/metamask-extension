@@ -36,32 +36,28 @@ function transformState(state: VersionedData['data']) {
     );
     return state;
   }
+
   const { PreferencesController } = state;
 
-  // Ensure PreferencesController.preferences is initialized
-  PreferencesController.preferences = {
-    ...PreferencesController.preferences,
-  };
-
   const currentOptInStatus =
-    PreferencesController.preferences.smartTransactionsOptInStatus;
+    PreferencesController.preferences?.smartTransactionsOptInStatus;
 
   if (
     currentOptInStatus === undefined ||
     currentOptInStatus === null ||
     (currentOptInStatus === false && !hasExistingSmartTransactions(state))
   ) {
-    PreferencesController.preferences.smartTransactionsOptInStatus = true;
+    state.PreferencesController.preferences = {
+      ...state.PreferencesController.preferences,
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: true,
+    };
+  } else {
+    state.PreferencesController.preferences = {
+      ...state.PreferencesController.preferences,
+      smartTransactionsMigrationApplied: true,
+    };
   }
-
-  // Ensure state.PreferencesController.preferences is initialized
-  state.PreferencesController.preferences = {
-    ...state.PreferencesController.preferences,
-  };
-
-  // Apply migration
-  state.PreferencesController.preferences.smartTransactionsMigrationApplied =
-    true;
 
   return state;
 }

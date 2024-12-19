@@ -121,7 +121,10 @@ describe('SmartTransactionsBannerAlert', () => {
     const store = configureStore(mockState);
 
     // Test close button
-    const { unmount } = renderWithProvider(<SmartTransactionsBannerAlert />, store);
+    const { unmount } = renderWithProvider(
+      <SmartTransactionsBannerAlert />,
+      store,
+    );
     screen.getByRole('button', { name: /close/iu }).click();
     expect(setAlertEnabledness).toHaveBeenCalledWith(
       AlertTypes.smartTransactionsMigration,
