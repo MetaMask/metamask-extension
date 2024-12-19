@@ -59,19 +59,13 @@ DefaultStory.decorators = [
           bridgeStateOverrides: {
             quotes: [],
             destTokens: {
-              '0x1234': {
-                symbol: 'USDC',
-                address: '0x1234',
-                decimals: 6,
-                iconUrl: 'https://example.com/usdc.png',
-              },
+              '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
             },
             srcTokens: {
               '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                 symbol: 'USDC',
                 address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 decimals: 6,
-                iconUrl: 'https://example.com/usdc.png',
               },
             },
             quotesLastFetchedMs: Date.now(),
@@ -118,19 +112,13 @@ LoadingStory.decorators = [
               quotesLastFetched: 134,
               quotesLoadingStatus: RequestStatus.LOADING,
               destTokens: {
-                '0x1234': {
-                  symbol: 'USDC',
-                  address: '0x1234',
-                  decimals: 6,
-                  iconUrl: 'https://example.com/usdc.png',
-                },
+                '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
               },
               srcTokens: {
                 '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                   symbol: 'USDC',
                   address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                   decimals: 6,
-                  iconUrl: 'https://example.com/usdc.png',
                 },
               },
             },
@@ -175,19 +163,13 @@ NoQuotesStory.decorators = [
               quotesLastFetched: 134,
               quotesLoadingStatus: RequestStatus.FETCHED,
               destTokens: {
-                '0x1234': {
-                  symbol: 'USDC',
-                  address: '0x1234',
-                  decimals: 6,
-                  iconUrl: 'https://example.com/usdc.png',
-                },
+                '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
               },
               srcTokens: {
                 '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                   symbol: 'USDC',
                   address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                   decimals: 6,
-                  iconUrl: 'https://example.com/usdc.png',
                 },
               },
             },
@@ -232,19 +214,13 @@ QuotesFetchedStory.decorators = [
               quotesLastFetched: Date.now(),
               quotesLoadingStatus: RequestStatus.FETCHED,
               destTokens: {
-                '0x1234': {
-                  symbol: 'USDC',
-                  address: '0x1234',
-                  decimals: 6,
-                  iconUrl: 'https://example.com/usdc.png',
-                },
+                '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
               },
               srcTokens: {
                 '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
                   symbol: 'USDC',
                   address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                   decimals: 6,
-                  iconUrl: 'https://example.com/usdc.png',
                 },
               },
             },
