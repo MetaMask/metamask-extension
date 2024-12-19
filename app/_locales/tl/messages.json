@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Nagdaragdag ng Network"
   },
-  "addingTokens": {
-    "message": "Nagdaragdag ng mga token"
-  },
   "additionalNetworks": {
     "message": "Mga karagdagang network"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "I-autodetect ang mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
   },
-  "attemptSendingAssets": {
-    "message": "Maaari mong mawala ang mga asset kung susubukan mo itong ipadala mula sa isang network papunta sa isa pa. Ligtas ng maglipat ng pondo sa pagitan ng mga network sa pamamagitan ng paggamit ng bridge."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Maaaring mawala ang iyong mga asset kung susubukan mong ipadala ito mula sa ibang network. Ilipat ang mga pondo nang ligtas sa pagitan ng mga network gamit ang isang bridge, tulad ng $1"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Subukang kanselahin ang swap nang libre"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Nagkakalkula..."
   },
-  "bridgeDontSend": {
-    "message": "Bridge, huwag ipadala"
-  },
   "bridgeEnterAmount": {
     "message": "Ilagay ang halaga"
   },
@@ -858,7 +846,6 @@
   "bridgeTo": {
     "message": "I-bridge papunta sa"
   },
-
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong browser..."
   },
@@ -954,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Mag-click dito upang ikonekta ang iyong Ledger sa pamamagitan ng WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Maaari ka ring magdagdag ng mga token nang manu-mano."
   },
   "close": {
     "message": "Isara"
@@ -2139,9 +2123,6 @@
   "gasFee": {
     "message": "Bayad sa gas"
   },
-  "gasIsETH": {
-    "message": "Ang gas ay $1 "
-  },
   "gasLimit": {
     "message": "Limitasyon ng gas"
   },
@@ -2703,9 +2684,6 @@
   "learnScamRisk": {
     "message": "mga panloloko at panganib sa seguridad."
   },
-  "learnToBridge": {
-    "message": "Matutong mag-bridge"
-  },
   "leaveMetaMask": {
     "message": "Umalis sa MetaMask?"
   },
@@ -2901,9 +2879,6 @@
   "metamaskNotificationsAreOff": {
     "message": "Hindi active sa kasalukuyan ang mga notipikasyon sa wallet."
   },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
-  },
   "metamaskSwapsOfflineDescription": {
     "message": "Kasalukuyang minementina ang MetaMask Swaps. Bumalik sa ibang pagkakataon."
   },
@@ -3047,10 +3022,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "Ang $1 ay humihiling ng iyong pag-apruba para:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Ang native token sa network na ito ay $1. Ito ang token na ginagamit para sa mga gas fee. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "I-edit ang mga detalye ng network"
@@ -5941,9 +5912,6 @@
     "message": "Ang $1 ay aktibo ngayon sa $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Lumipat ka sa"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Ang paglipat ng network ay magkakansela ng lahat ng nakabinbing kumpirmasyon"
   },
@@ -5979,9 +5947,6 @@
   },
   "themeDescription": {
     "message": "Piliin ang mas gusto mong tema ng MetaMask."
-  },
-  "thingsToKeep": {
-    "message": "Mga bagay na dapat tandaan:"
   },
   "thirdPartySoftware": {
     "message": "Paunawa ng third-party na software",
@@ -6063,9 +6028,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "mga panloloko sa token at panganib sa seguridad"
-  },
-  "tokenShowUp": {
-    "message": "Maaaring hindi awtomatikong lumabas ang iyong mga token sa iyong wallet. "
   },
   "tokenStandard": {
     "message": "Pamantayan ng token"

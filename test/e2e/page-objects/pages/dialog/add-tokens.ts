@@ -43,7 +43,7 @@ class AddTokensModal {
   }
 
   async confirmAddTokens() {
-    await this.driver.clickElement(this.addTokenButton);
+    await this.driver.clickElementAndWaitForWindowToClose(this.addTokenButton);
   }
 }
 
