@@ -51,7 +51,9 @@ export default function SnapInstall({
   const [showAllPermissions, setShowAllPermissions] = useState(false);
 
   const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
-    useScrollRequired([requestState]);
+    useScrollRequired([requestState], {
+      offsetPxFromBottom: 100,
+    });
 
   const onCancel = useCallback(
     () => rejectSnapInstall(request.metadata.id),
