@@ -282,6 +282,7 @@ exports[`AssetPage should render a native asset 1`] = `
                     alt="static-logo"
                     class="mm-avatar-network__network-image"
                     src="./images/eth_logo.svg"
+                    title="Ethereum Mainnet"
                   />
                 </div>
                 Ethereum Mainnet
@@ -626,6 +627,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                     alt="static-logo"
                     class="mm-avatar-network__network-image"
                     src="./images/eth_logo.svg"
+                    title="Ethereum Mainnet"
                   />
                 </div>
                 Ethereum Mainnet
@@ -1156,6 +1158,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                     alt="static-logo"
                     class="mm-avatar-network__network-image"
                     src="./images/eth_logo.svg"
+                    title="Ethereum Mainnet"
                   />
                 </div>
                 Ethereum Mainnet
