@@ -373,7 +373,7 @@ export function isEIP1559Network(state, networkClientId) {
   return (
     state.metamask.networksMetadata?.[
       networkClientId ?? selectedNetworkClientId
-    ].EIPS[1559] === true
+    ]?.EIPS[1559] === true
   );
 }
 
