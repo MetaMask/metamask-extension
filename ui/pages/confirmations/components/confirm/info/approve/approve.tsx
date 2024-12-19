@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -18,6 +18,7 @@ import { RevokeStaticSimulation } from './revoke-static-simulation/revoke-static
 import { SpendingCap } from './spending-cap/spending-cap';
 
 const ApproveInfo = () => {
+  const [initialPending, setInitialPending] = useState<boolean>(true);
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -38,7 +39,16 @@ const ApproveInfo = () => {
     decimals || '0',
   );
 
+  // initialPending is introduced so that entire component does not go into loading state
+  // each time spending cap is updated.
+  useEffect(() => {
+    if (!pending) {
+      setInitialPending(false);
+    }
+  }, [pending]);
+
   const showRevokeVariant =
+    !pending &&
     spendingCap === '0' &&
     transactionMeta.type === TransactionType.tokenMethodApprove;
 
@@ -46,17 +56,13 @@ const ApproveInfo = () => {
     return null;
   }
 
-  if (pending) {
+  if (initialPending) {
     return <ConfirmLoader />;
   }
 
   return (
     <>
-      {showRevokeVariant ? (
-        <RevokeStaticSimulation />
-      ) : (
-        <ApproveStaticSimulation />
-      )}
+      <ApproveStaticSimulation />
       {showRevokeVariant ? <RevokeDetails /> : <ApproveDetails />}
       {!isNFT && !showRevokeVariant && (
         <SpendingCap

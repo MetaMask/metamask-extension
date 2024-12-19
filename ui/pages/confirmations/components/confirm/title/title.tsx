@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
@@ -61,14 +61,9 @@ const getTitle = (
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
-  pending?: boolean,
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
 ) => {
-  if (pending) {
-    return '';
-  }
-
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
@@ -113,14 +108,9 @@ const getDescription = (
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
-  pending?: boolean,
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
 ) => {
-  if (pending) {
-    return '';
-  }
-
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return '';
@@ -163,6 +153,8 @@ const getDescription = (
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
@@ -187,53 +179,60 @@ const ConfirmTitle: React.FC = memo(() => {
     revokePending = decodedResponse.pending;
   }
 
-  const title = useMemo(
-    () =>
+  useEffect(() => {
+    // if use is making any change to transaction like changing spending cap - pending is again set to true
+    // condition below ensures that title is not reset each time pending is true
+    // so that there is no flickering on the page
+    if (spendingCapPending || revokePending) {
+      return;
+    }
+    setTitle(
       getTitle(
         t as IntlFunction,
         currentConfirmation,
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
-        spendingCapPending || revokePending,
         primaryType,
         tokenStandard,
       ),
-    [
-      currentConfirmation,
-      isNFT,
-      customSpendingCap,
-      isRevokeSetApprovalForAll,
-      spendingCapPending,
-      revokePending,
-      primaryType,
-      tokenStandard,
-    ],
-  );
+    );
+  }, [
+    currentConfirmation,
+    isNFT,
+    customSpendingCap,
+    isRevokeSetApprovalForAll,
+    spendingCapPending,
+    revokePending,
+    primaryType,
+    tokenStandard,
+  ]);
 
-  const description = useMemo(
-    () =>
+  useEffect(() => {
+    if (spendingCapPending || revokePending) {
+      return;
+    }
+    setDescription(
       getDescription(
         t as IntlFunction,
         currentConfirmation,
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
-        spendingCapPending || revokePending,
         primaryType,
         tokenStandard,
       ),
-    [
-      currentConfirmation,
-      isNFT,
-      customSpendingCap,
-      isRevokeSetApprovalForAll,
-      spendingCapPending,
-      revokePending,
-      primaryType,
-      tokenStandard,
-    ],
-  );
+    );
+  }, [
+    currentConfirmation,
+    isNFT,
+    customSpendingCap,
+    isRevokeSetApprovalForAll,
+    spendingCapPending,
+    revokePending,
+    primaryType,
+    tokenStandard,
+  ]);
 
   if (!currentConfirmation) {
     return null;

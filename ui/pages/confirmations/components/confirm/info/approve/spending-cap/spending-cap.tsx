@@ -95,21 +95,21 @@ export const SpendingCap = ({
     decimals || '0',
   );
 
-  if (pending) {
-    return <Container isLoading />;
-  }
-
   return (
     <ConfirmInfoSection data-testid="confirmation__approve-spending-cap-section">
       <ConfirmInfoRow label={t('accountBalance')}>
         <ConfirmInfoRowText text={`${accountBalance} ${tokenSymbol || ''}`} />
       </ConfirmInfoRow>
 
-      <SpendingCapGroup
-        tokenSymbol={tokenSymbol || ''}
-        decimals={decimals || '0'}
-        setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
-      />
+      {pending ? (
+        <Container isLoading />
+      ) : (
+        <SpendingCapGroup
+          tokenSymbol={tokenSymbol || ''}
+          decimals={decimals || '0'}
+          setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
+        />
+      )}
     </ConfirmInfoSection>
   );
 };
