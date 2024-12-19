@@ -100,10 +100,10 @@ describe('Test Snap Notification', function () {
 
         // try to click on the account menu icon (via xpath)
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="notifications-tag-counter__unread-dot"]',
         );
 
-        // try to click on the notification item (via xpath)
+        // // try to click on the notification item (via xpath)
         await driver.waitForSelector({
           text: 'Notifications 1',
           css: '.menu-item',
