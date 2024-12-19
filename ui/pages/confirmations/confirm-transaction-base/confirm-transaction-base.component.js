@@ -180,10 +180,10 @@ export default class ConfirmTransactionBase extends Component {
     maxValue: PropTypes.string,
     smartTransactionsPreferenceEnabled: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
-    selectedNetworkClientId: PropTypes.string,
     isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
     chainId: PropTypes.string,
+    networkClientId: PropTypes.string,
   };
 
   state = {
@@ -1047,17 +1047,17 @@ export default class ConfirmTransactionBase extends Component {
      * while waiting for `gasFeeStartPollingByNetworkClientId` to resolve, the `_isMounted`
      * flag ensures that a call to disconnect happens after promise resolution.
      */
-    gasFeeStartPollingByNetworkClientId(
-      this.props.selectedNetworkClientId,
-    ).then((pollingToken) => {
-      if (this._isMounted) {
-        addPollingTokenToAppState(pollingToken);
-        this.setState({ pollingToken });
-      } else {
-        gasFeeStopPollingByPollingToken(pollingToken);
-        removePollingTokenFromAppState(this.state.pollingToken);
-      }
-    });
+    gasFeeStartPollingByNetworkClientId(this.props.networkClientId).then(
+      (pollingToken) => {
+        if (this._isMounted) {
+          addPollingTokenToAppState(pollingToken);
+          this.setState({ pollingToken });
+        } else {
+          gasFeeStopPollingByPollingToken(pollingToken);
+          removePollingTokenFromAppState(this.state.pollingToken);
+        }
+      },
+    );
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
 

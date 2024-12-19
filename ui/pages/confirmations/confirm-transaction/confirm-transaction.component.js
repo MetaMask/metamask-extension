@@ -13,7 +13,6 @@ import {
 } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getSendTo } from '../../../ducks/send';
-import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_SEND_ETHER_PATH,
@@ -65,7 +64,6 @@ const ConfirmTransaction = () => {
 
   const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
-  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const totalUnapproved = unconfirmedTxsSorted.length || 0;
   const getTransaction = useCallback(() => {
@@ -129,7 +127,7 @@ const ConfirmTransaction = () => {
     startPolling: (input) =>
       gasFeeStartPollingByNetworkClientId(input.networkClientId),
     stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-    input: { networkClientId: transaction.networkClientId ?? networkClientId },
+    input: { networkClientId: transaction.networkClientId },
   });
 
   useEffect(() => {

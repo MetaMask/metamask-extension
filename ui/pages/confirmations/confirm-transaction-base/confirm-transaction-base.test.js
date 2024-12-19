@@ -343,7 +343,7 @@ describe('Confirm Transaction Base', () => {
     expect(securityProviderBanner).toBeInTheDocument();
   });
 
-  it('should estimated fee details for optimism', async () => {
+  it('should estimate fee details for optimism', async () => {
     const state = {
       metamask: {
         ...baseStore.metamask,
