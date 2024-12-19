@@ -9,6 +9,7 @@ const {
   withFixtures,
   switchToNotificationWindow,
 } = require('../../helpers');
+const { mockSecurityAlertsAPIFailed } = require('./utils');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -83,6 +84,7 @@ const testMaliciousConfigs = [
 ];
 
 async function mockInfura(mockServer) {
+  await mockSecurityAlertsAPIFailed(mockServer);
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     ['eth_call'],
