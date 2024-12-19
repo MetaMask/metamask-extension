@@ -142,7 +142,7 @@ describe('PriorityfeeInput', () => {
   it('should show current value of priority fee in users primary currency in right side of input box', async () => {
     await render({
       txParams: {
-        gas: '0x5208',
+        gasLimit: '0x5208',
         maxPriorityFeePerGas: '0x77359400',
       },
     });

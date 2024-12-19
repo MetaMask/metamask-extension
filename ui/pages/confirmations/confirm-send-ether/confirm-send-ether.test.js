@@ -42,7 +42,7 @@ const sendEther = {
     from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     to: '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb',
     value: '0x0',
-    gas: '0x5208',
+    gasLimit: '0x5208',
     maxFeePerGas: '0x2540be400',
     maxPriorityFeePerGas: '0x3b9aca00',
   },
@@ -53,7 +53,7 @@ const sendEther = {
   userFeeLevel: 'dappSuggested',
   defaultGasEstimates: {
     estimateType: 'dappSuggested',
-    gas: '0x5208',
+    gasLimit: '0x5208',
     maxFeePerGas: '0x2540be400',
     maxPriorityFeePerGas: '0x3b9aca00',
   },

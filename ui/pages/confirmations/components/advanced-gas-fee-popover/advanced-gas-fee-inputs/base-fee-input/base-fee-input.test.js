@@ -145,7 +145,7 @@ describe('BaseFeeInput', () => {
   it('should show current value of estimatedBaseFee in users primary currency in right side of input box', async () => {
     await render({
       txParams: {
-        gas: '0x5208',
+        gasLimit: '0x5208',
         maxFeePerGas: '0x2E90EDD000',
       },
     });

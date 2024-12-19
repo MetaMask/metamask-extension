@@ -110,7 +110,7 @@ const render = (
       transaction={{
         userFeeLevel: 'tenPercentIncreased',
         txParams: {
-          gas: '0x5208',
+          gasLimit: '0x5208',
           maxFeePerGas,
           maxPriorityFeePerGas: '0x59682f00',
         },

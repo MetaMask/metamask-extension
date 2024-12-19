@@ -125,7 +125,10 @@ const render = async ({
     async () =>
       (result = renderWithProvider(
         <GasFeeContextProvider
-          transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
+          transaction={{
+            txParams: { gasLimit: '0x5208' },
+            ...transactionProps,
+          }}
           {...contextProps}
         >
           <EditGasItem priorityLevel="low" {...componentProps} />
@@ -214,7 +217,7 @@ describe('EditGasItem', () => {
     ).not.toBeInTheDocument();
     await render({
       componentProps: { priorityLevel: PriorityLevels.dAppSuggested },
-      transactionProps: { dappSuggestedGasFees: { gas: '0x59682f10' } },
+      transactionProps: { dappSuggestedGasFees: { gasLimit: '0x59682f10' } },
     });
     expect(
       screen.queryByRole('button', { name: 'dappSuggested' }),

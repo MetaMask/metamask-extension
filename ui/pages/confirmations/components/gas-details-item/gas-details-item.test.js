@@ -58,7 +58,7 @@ const render = async ({ contextProps } = {}) => {
         <GasFeeContextProvider
           transaction={{
             txParams: {
-              gas: '0x5208',
+              gasLimit: '0x5208',
             },
             userFeeLevel: 'medium',
           }}
@@ -112,10 +112,10 @@ describe('GasDetailsItem', () => {
         },
         transaction: {
           txParams: {
-            gas: '0x52081',
+            gasLimit: '0x52081',
             maxFeePerGas: '0x38D7EA4C68000',
           },
-          userFeeLevel: 'medium',
+          userFeeLevel: 'high',
           dappSuggestedGasFees: {
             maxPriorityFeePerGas: '0x38D7EA4C68000',
             maxFeePerGas: '0x38D7EA4C68000',
@@ -172,7 +172,7 @@ describe('GasDetailsItem', () => {
       contextProps: {
         transaction: {
           txParams: {
-            gas: '0x5208',
+            gasLimit: '0x5208',
             maxFeePerGas: '0x59682f10',
             maxPriorityFeePerGas: '0',
           },
@@ -192,7 +192,7 @@ describe('GasDetailsItem', () => {
       contextProps: {
         transaction: {
           txParams: {
-            gas: '0x5208',
+            gasLimit: '0x5208',
             maxFeePerGas: '0x59682f10',
           },
           simulationFails: false,
@@ -274,7 +274,7 @@ describe('GasDetailsItem', () => {
         },
         transaction: {
           txParams: {
-            gas: '0x52081',
+            gasLimit: '0x52081',
             maxFeePerGas: '0x38D7EA4C68000',
           },
           userFeeLevel: 'medium',

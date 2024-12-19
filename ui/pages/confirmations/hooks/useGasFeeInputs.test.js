@@ -183,7 +183,7 @@ describe('useGasFeeInputs', () => {
           userFeeLevel: GasRecommendations.medium,
           txParams: {
             ...mockTransaction.txParams,
-            gas: '0x5208',
+            gasLimit: '0x5208',
           },
         }),
       );

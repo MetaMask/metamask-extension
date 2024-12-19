@@ -558,6 +558,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           <button
             class="button btn--rounded btn-primary page-container__footer-button"
             data-testid="page-container-footer-next"
+            disabled=""
           >
             Confirm
           </button>

@@ -65,7 +65,7 @@ const render = async () => {
         <GasFeeContextProvider
           transaction={{
             userFeeLevel: 'high',
-            txParams: { gas: '0x5208' },
+            txParams: { gasLimit: '0x5208' },
           }}
         >
           <AdvancedGasFeePopover />

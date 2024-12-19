@@ -164,7 +164,7 @@ export function useGasFeeInputs(
   });
 
   const [gasLimit, setGasLimit] = useState(() =>
-    Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
+    Number(hexToDecimal(transaction?.txParams?.gasLimit ?? '0x0')),
   );
 
   const properGasLimit = Number(hexToDecimal(transaction?.originalGasEstimate));
@@ -195,7 +195,9 @@ export function useGasFeeInputs(
         setEstimateUsed(transaction?.userFeeLevel);
       }
 
-      setGasLimit(Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')));
+      setGasLimit(
+        Number(hexToDecimal(transaction?.txParams?.gasLimit ?? '0x0')),
+      );
     }
   }, [
     setEstimateUsed,

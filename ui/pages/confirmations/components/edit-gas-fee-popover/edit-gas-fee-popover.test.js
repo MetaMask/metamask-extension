@@ -111,7 +111,7 @@ const render = async ({ txProps, contextProps } = {}) => {
     async () =>
       (result = renderWithProvider(
         <GasFeeContextProvider
-          transaction={{ txParams: { gas: '0x5208' }, ...txProps }}
+          transaction={{ txParams: { gasLimit: '0x5208' }, ...txProps }}
           {...contextProps}
         >
           <EditGasFeePopover />

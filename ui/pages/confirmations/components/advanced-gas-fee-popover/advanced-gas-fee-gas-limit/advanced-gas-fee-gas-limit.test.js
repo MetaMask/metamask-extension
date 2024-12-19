@@ -60,7 +60,7 @@ const render = async (contextProps, transaction) => {
           transaction={
             transaction ?? {
               userFeeLevel: 'custom',
-              txParams: { gas: '0x5208' },
+              txParams: { gasLimit: '0x5208' },
             }
           }
           {...contextProps}
@@ -146,7 +146,7 @@ describe('AdvancedGasFeeGasLimit', () => {
           from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
           to: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
           value: '0x0',
-          gas: '0x3b9aca00',
+          gasLimit: '0x3b9aca00',
           gasPrice: '0x3b9aca00',
         },
         origin: 'metamask',
