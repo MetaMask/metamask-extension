@@ -169,6 +169,8 @@ export const CHAIN_IDS = {
   B3_TESTNET: '0x7c9',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
+  LISK: '0x46f',
+  LISK_SEPOLIA: '0x106a',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -278,6 +280,8 @@ export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
+export const LISK_DISPLAY_NAME = 'Lisk';
+export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -400,6 +404,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   ACALA_NETWORK: 'ACA',
   IOTEX_MAINNET: 'IOTX',
   APE: 'APE',
+  LISK: 'ETH',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -483,6 +488,8 @@ export const B3_IMAGE_URL = './images/b3.svg';
 export const APE_IMAGE_URL = './images/ape.svg';
 export const GRAVITY_ALPHA_MAINNET_IMAGE_URL = './images/gravity.svg';
 export const GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL = './images/gravity.svg';
+export const LISK_IMAGE_URL = './images/lisk.svg';
+export const LISK_SEPOLIA_IMAGE_URL = './images/lisk_sepolia.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -593,6 +600,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_DISPLAY_NAME,
   [CHAIN_IDS.BERACHAIN]: BERACHAIN_DISPLAY_NAME,
   [CHAIN_IDS.METACHAIN_ONE]: METACHAIN_ONE_DISPLAY_NAME,
+  [CHAIN_IDS.LISK]: LISK_DISPLAY_NAME,
+  [CHAIN_IDS.LISK_SEPOLIA]: LISK_SEPOLIA_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -827,6 +836,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
     GRAVITY_ALPHA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.GRAVITY_ALPHA_TESTNET_SEPOLIA]:
     GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.LISK]: LISK_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.LISK_SEPOLIA]: LISK_SEPOLIA_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
