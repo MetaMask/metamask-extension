@@ -1045,18 +1045,6 @@
         "punycode": true
       }
     },
-    "@metamask/eth-block-tracker": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/eth-block-tracker>@metamask/utils": true,
-        "@metamask/eth-query>json-rpc-random-id": true
-      }
-    },
     "@metamask/eth-token-tracker>@metamask/eth-block-tracker": {
       "globals": {
         "clearTimeout": true,
@@ -1068,6 +1056,18 @@
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker>@metamask/utils": true,
         "@metamask/eth-query>json-rpc-random-id": true,
         "pify": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-block-tracker": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/safe-event-emitter": true,
+        "@metamask/network-controller>@metamask/eth-block-tracker>@metamask/utils": true,
+        "@metamask/eth-query>json-rpc-random-id": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
@@ -1483,7 +1483,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-block-tracker": true,
+        "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
@@ -1968,7 +1968,7 @@
         "semver": true
       }
     },
-    "@metamask/eth-block-tracker>@metamask/utils": {
+    "@metamask/eth-token-tracker>@metamask/eth-block-tracker>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -1983,7 +1983,7 @@
         "semver": true
       }
     },
-    "@metamask/eth-token-tracker>@metamask/eth-block-tracker>@metamask/utils": {
+    "@metamask/network-controller>@metamask/eth-block-tracker>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
