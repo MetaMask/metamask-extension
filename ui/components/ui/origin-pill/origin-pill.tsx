@@ -56,8 +56,3 @@ export default function OriginPill({ origin, dataTestId }: OriginPillProps) {
     </Box>
   );
 }
-
-OriginPill.propTypes = {
-  origin: PropTypes.string,
-  dataTestId: PropTypes.string,
-};
