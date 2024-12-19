@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../../shared/constants/bridge';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // eslint-disable-next-line import/no-restricted-paths
@@ -8,7 +9,10 @@ import {
   getCurrentKeyring,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/selectors';
-import { BridgeStatusControllerBridgeTransactionCompleteEvent } from '../../controllers/bridge-status/types';
+import {
+  BridgeStatusControllerBridgeTransactionCompleteEvent,
+  BridgeStatusControllerBridgeTransactionFailedEvent,
+} from '../../controllers/bridge-status/types';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 // eslint-disable-next-line import/no-restricted-paths
@@ -21,88 +25,63 @@ import {
 } from '../../../../shared/constants/metametrics';
 // eslint-disable-next-line import/no-restricted-paths
 import { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
+import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
 import {
   BackgroundState,
   getHexGasTotalUsd,
   getTokenUsdValue,
 } from './metrics-utils';
 
-export const handleBridgeTransactionComplete = async (
-  payload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
-  {
-    state,
-    trackEvent,
-  }: {
-    state: BackgroundState;
-    trackEvent: (
-      payload: MetaMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ) => void;
-  },
-) => {
-  const { bridgeHistoryItem } = payload;
+type TrackEvent = (
+  payload: MetaMetricsEventPayload,
+  options?: MetaMetricsEventOptions,
+) => void;
 
+const getCommonProperties = (
+  bridgeHistoryItem: BridgeHistoryItem,
+  state: BackgroundState,
+) => {
   const keyring = getCurrentKeyring(state);
   // @ts-expect-error keyring type is possibly wrong
-  const isHardwareWallet = isHardwareKeyring(keyring.type) ?? false;
+  const is_hardware_wallet = isHardwareKeyring(keyring.type) ?? false;
+
+  const chain_id_source = decimalToPrefixedHex(
+    bridgeHistoryItem.quote.srcChainId,
+  );
+  const chain_id_destination = decimalToPrefixedHex(
+    bridgeHistoryItem.quote.destChainId,
+  );
+
+  const usd_actual_gas = getHexGasTotalUsd({ bridgeHistoryItem, state }) ?? 0;
+  const usd_quoted_return = Number(
+    bridgeHistoryItem.pricingData?.quotedReturnInUsd,
+  );
+  const usd_quoted_gas = Number(bridgeHistoryItem.pricingData?.quotedGasInUsd);
 
   const isBridgeTx =
     bridgeHistoryItem.quote.srcChainId !== bridgeHistoryItem.quote.destChainId;
 
-  // Get dest token usd price
-  const destChainIdHex = decimalToPrefixedHex(
-    bridgeHistoryItem.quote.destChainId,
-  );
-  const destTokenAmountAtomic =
-    bridgeHistoryItem.status.destChain?.amount ?? '0';
-  const destTokenAmount = calcTokenAmount(
-    destTokenAmountAtomic,
-    bridgeHistoryItem.quote.destAsset.decimals,
-  ).toNumber();
-  const destTokenUsdValue =
-    (await getTokenUsdValue({
-      chainId: destChainIdHex,
-      tokenAmount: destTokenAmount,
-      tokenAddress: bridgeHistoryItem.quote.destAsset.address,
-      state,
-    })) ?? 0;
-
-  // Get gas total in usd
-  const gasTotalUsd = getHexGasTotalUsd({ bridgeHistoryItem, state }) ?? 0;
-
-  const srcChainIdHex = decimalToPrefixedHex(
-    bridgeHistoryItem.quote.srcChainId,
-  );
-
-  const quotedReturnInUsd = Number(
-    bridgeHistoryItem.pricingData?.quotedReturnInUsd,
-  );
-  const quotedGasInUsd = Number(bridgeHistoryItem.pricingData?.quotedGasInUsd);
-
-  const quoteVsExecutionRatio =
-    quotedReturnInUsd && destTokenUsdValue
-      ? quotedReturnInUsd / destTokenUsdValue
-      : 0;
-
-  const quotedVsUsedGasRatio =
-    quotedGasInUsd && gasTotalUsd ? quotedGasInUsd / gasTotalUsd : 0;
-
-  const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionCompleted] & {
-    action_type: ActionType.CROSSCHAIN_V1;
-  } = {
+  return {
     action_type: ActionType.CROSSCHAIN_V1,
+
     slippage_limit: bridgeHistoryItem.slippagePercentage,
     custom_slippage:
       bridgeHistoryItem.slippagePercentage !== BRIDGE_DEFAULT_SLIPPAGE,
-    chain_id_source: srcChainIdHex,
-    chain_id_destination: destChainIdHex,
+
+    chain_id_source,
+    chain_id_destination,
+
     token_address_source: bridgeHistoryItem.quote.srcAsset.address,
     token_address_destination: bridgeHistoryItem.quote.destAsset.address,
+
     token_symbol_source: bridgeHistoryItem.quote.srcAsset.symbol,
     token_symbol_destination: bridgeHistoryItem.quote.destAsset.symbol,
+
     stx_enabled: getIsSmartTransaction(state),
-    is_hardware_wallet: isHardwareWallet,
+    is_hardware_wallet,
+
     provider: formatProviderLabel(bridgeHistoryItem.quote),
+
     quoted_time_minutes: bridgeHistoryItem.estimatedProcessingTimeInSeconds
       ? bridgeHistoryItem.estimatedProcessingTimeInSeconds / 60
       : 0,
@@ -111,21 +90,99 @@ export const handleBridgeTransactionComplete = async (
         ? (bridgeHistoryItem.completionTime - bridgeHistoryItem.startTime) /
           1000 /
           60
-        : 0, // TODO make this more accurate by looking up dest txHash block time
+        : 0,
+
     swap_type: isBridgeTx ? ActionType.CROSSCHAIN_V1 : ActionType.SWAPBRIDGE_V1,
+
     usd_amount_source: Number(bridgeHistoryItem.pricingData?.amountSentInUsd),
-    usd_quoted_return: quotedReturnInUsd,
-    usd_quoted_gas: quotedGasInUsd,
-    usd_actual_return: destTokenUsdValue,
-    usd_actual_gas: gasTotalUsd,
-    quote_vs_execution_ratio: quoteVsExecutionRatio,
-    quoted_vs_used_gas_ratio: quotedVsUsedGasRatio,
+
+    usd_actual_gas,
+    usd_quoted_return,
+    usd_quoted_gas,
+
     gas_included: false, // TODO check if trade has gas included
+  };
+};
+
+export const handleBridgeTransactionComplete = async (
+  payload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
+  {
+    state,
+    trackEvent,
+  }: {
+    state: BackgroundState;
+    trackEvent: TrackEvent;
+  },
+) => {
+  const { bridgeHistoryItem } = payload;
+
+  const common = getCommonProperties(bridgeHistoryItem, state);
+  const {
+    chain_id_destination,
+    usd_actual_gas,
+    usd_quoted_return,
+    usd_quoted_gas,
+  } = common;
+
+  // Get received dest token usd price
+  const destTokenAmountAtomic =
+    bridgeHistoryItem.status.destChain?.amount ?? '0';
+  const destTokenAmount = calcTokenAmount(
+    destTokenAmountAtomic,
+    bridgeHistoryItem.quote.destAsset.decimals,
+  ).toNumber();
+  const destTokenUsdValue =
+    (await getTokenUsdValue({
+      chainId: chain_id_destination,
+      tokenAmount: destTokenAmount,
+      tokenAddress: bridgeHistoryItem.quote.destAsset.address,
+      state,
+    })) ?? 0;
+
+  const quote_vs_execution_ratio =
+    usd_quoted_return && destTokenUsdValue
+      ? usd_quoted_return / destTokenUsdValue
+      : 0;
+
+  const quoted_vs_used_gas_ratio =
+    usd_quoted_gas && usd_actual_gas ? usd_quoted_gas / usd_actual_gas : 0;
+
+  const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionCompleted] & {
+    action_type: ActionType;
+  } = {
+    ...common,
+    usd_actual_return: destTokenUsdValue,
+    quote_vs_execution_ratio,
+    quoted_vs_used_gas_ratio,
   };
 
   trackEvent({
     category: MetaMetricsEventCategory.CrossChainSwaps,
     event: MetaMetricsEventName.ActionCompleted,
+    properties,
+  });
+};
+
+export const handleBridgeTransactionFailed = async (
+  payload: BridgeStatusControllerBridgeTransactionFailedEvent['payload'][0],
+  {
+    state,
+    trackEvent,
+  }: {
+    state: BackgroundState;
+    trackEvent: TrackEvent;
+  },
+) => {
+  const { bridgeHistoryItem } = payload;
+  const common = getCommonProperties(bridgeHistoryItem, state);
+  const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionFailed] =
+    {
+      ...common,
+    };
+
+  trackEvent({
+    category: MetaMetricsEventCategory.CrossChainSwaps,
+    event: MetaMetricsEventName.ActionFailed,
     properties,
   });
 };

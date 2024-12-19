@@ -379,7 +379,10 @@ import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { rejectAllApprovals } from './lib/approval/utils';
-import { handleBridgeTransactionComplete } from './lib/bridge-status/metrics';
+import {
+  handleBridgeTransactionComplete,
+  handleBridgeTransactionFailed,
+} from './lib/bridge-status/metrics';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -6863,6 +6866,17 @@ export default class MetamaskController extends EventEmitter {
       'BridgeStatusController:bridgeTransactionComplete',
       (payload) =>
         handleBridgeTransactionComplete(payload, {
+          state: this.getState(),
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        }),
+    );
+
+    this.controllerMessenger.subscribe(
+      'BridgeStatusController:bridgeTransactionFailed',
+      (payload) =>
+        handleBridgeTransactionFailed(payload, {
           state: this.getState(),
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,

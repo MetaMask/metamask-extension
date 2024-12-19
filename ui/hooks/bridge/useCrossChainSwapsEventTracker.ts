@@ -12,7 +12,6 @@ import {
   TradeData,
   QuoteFetchData,
   ActionType,
-  TxStatusData,
 } from './events/types';
 
 export type CrossChainSwapsEventProperties = {
@@ -22,9 +21,9 @@ export type CrossChainSwapsEventProperties = {
   [MetaMetricsEventName.ActionCompleted]: RequestParams &
     RequestMetadata &
     TradeData & {
+      actual_time_minutes: number;
       usd_actual_return: number;
       usd_actual_gas: number;
-      actual_time_minutes: number;
       quote_vs_execution_ratio: number;
       quoted_vs_used_gas_ratio: number;
     };
@@ -33,10 +32,8 @@ export type CrossChainSwapsEventProperties = {
     TradeData;
   [MetaMetricsEventName.ActionFailed]: RequestParams &
     RequestMetadata &
-    TradeData &
-    TxStatusData & {
+    TradeData & {
       actual_time_minutes: number;
-      error_message: string;
     };
   [MetaMetricsEventName.CrossChainSwapsQuotesRequested]: RequestParams &
     RequestMetadata & {
