@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
+import { ACCOUNT_TYPE } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
@@ -36,7 +37,10 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         // Add new account with custom label and verify new added account label
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccount(anotherAccountLabel);
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Ethereum,
+          accountName: anotherAccountLabel,
+        });
         await headerNavbar.check_accountLabel(anotherAccountLabel);
 
         // Switch back to the first account and verify first custom account persists

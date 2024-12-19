@@ -6,6 +6,7 @@ import {
   IDENTITY_TEAM_PASSWORD,
   IDENTITY_TEAM_SEED_PHRASE,
 } from '../constants';
+import { ACCOUNT_TYPE } from '../../../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
@@ -109,7 +110,9 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
           }
 
           // Create new account and prepare for additional accounts
-          await accountListPage.addNewAccount();
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+          });
           accountsToMock = [...INITIAL_ACCOUNTS, ...ADDITIONAL_ACCOUNTS];
         },
       );
