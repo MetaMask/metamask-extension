@@ -1334,13 +1334,9 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.SelectedNetworkController,
-      useRequestQueuePreference:
-        this.preferencesController.state.useRequestQueue,
+      useRequestQueuePreference: true,
       onPreferencesStateChange: (listener) => {
-        preferencesMessenger.subscribe(
-          'PreferencesController:stateChange',
-          listener,
-        );
+        listener({ useRequestQueue: true });
       },
       domainProxyMap: new WeakRefObjectMap(),
     });
@@ -3357,9 +3353,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[] }>} An object with relevant state properties.
    */
   async getProviderState(origin) {
-    const providerNetworkState = await this.getProviderNetworkState(
-      this.preferencesController.getUseRequestQueue() ? origin : undefined,
-    );
+    const providerNetworkState = await this.getProviderNetworkState(origin);
 
     return {
       isUnlocked: this.isUnlocked(),
@@ -3514,9 +3508,6 @@ export default class MetamaskController extends EventEmitter {
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
-      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
-      ),
       getProviderConfig: () =>
         getProviderConfig({
           metamask: this.networkController.state,
@@ -3566,7 +3557,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseTransactionSimulations.bind(
           preferencesController,
         ),
-      setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -5464,14 +5454,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   //=============================================================================
-  // REQUEST QUEUE
-  //=============================================================================
-
-  setUseRequestQueue(value) {
-    this.preferencesController.setUseRequestQueue(value);
-  }
-
-  //=============================================================================
   // SETUP
   //=============================================================================
 
@@ -5943,9 +5925,6 @@ export default class MetamaskController extends EventEmitter {
     const requestQueueMiddleware = createQueuedRequestMiddleware({
       enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
         this.queuedRequestController,
-      ),
-      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
       ),
       shouldEnqueueRequest: (request) => {
         return methodsThatShouldBeEnqueued.includes(request.method);
@@ -7181,31 +7160,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _notifyChainChange() {
-    if (this.preferencesController.getUseRequestQueue()) {
-      this.notifyAllConnections(async (origin) => ({
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
-      }));
-    } else {
-      this.notifyAllConnections({
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(),
-      });
-    }
+    this.notifyAllConnections(async (origin) => ({
+      method: NOTIFICATION_NAMES.chainChanged,
+      params: await this.getProviderNetworkState(origin),
+    }));
   }
 
   async _notifyChainChangeForConnection(connection, origin) {
-    if (this.preferencesController.getUseRequestQueue()) {
-      this.notifyConnection(connection, {
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
-      });
-    } else {
-      this.notifyConnection(connection, {
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(),
-      });
-    }
+    this.notifyConnection(connection, {
+      method: NOTIFICATION_NAMES.chainChanged,
+      params: await this.getProviderNetworkState(origin),
+    });
   }
 
   async _onFinishedTransaction(transactionMeta) {
