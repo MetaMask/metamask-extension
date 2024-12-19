@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "네트워크 추가"
   },
-  "addingTokens": {
-    "message": "토큰 추가"
-  },
   "additionalNetworks": {
     "message": "추가 네트워크"
   },
@@ -437,17 +434,11 @@
   "alertMessageNoGasPrice": {
     "message": "수수료를 직접 업데이트할 때까지는 이 트랜잭션을 진행할 수 없습니다."
   },
-  "alertMessagePendingTransactions": {
-    "message": "이 트랜잭션은 이전 트랜잭션이 완료될 때까지 진행되지 않습니다. 트랜잭션을 취소하거나 속도를 올리는 법을 알아보세요."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "요청을 보낸 사이트에 로그인되어 있지 않습니다. 이는 로그인 정보를 도용하려는 시도일 수 있습니다."
   },
   "alertMessageSignInWrongAccount": {
     "message": "이 사이트에서 잘못된 계정으로 로그인하라고 요청합니다."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "이 트랜잭션은 이전 트랜잭션이 완료된 경우에만 진행됩니다."
   },
   "alertModalAcknowledge": {
     "message": "위험성을 인지했으며, 계속 진행합니다"
@@ -632,12 +623,6 @@
   },
   "assetsDescription": {
     "message": "지갑에서 토큰을 자동으로 감지하고, NFT를 표시하며, 계정 잔액을 일괄 업데이트하세요."
-  },
-  "attemptSendingAssets": {
-    "message": "다른 네트워크로 자산을 직접 전송하면 자산이 영구적으로 손실될 수 있습니다. 브릿지를 이용하여 네트워크 간에 자금을 안전하게 전송하세요."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "다른 네트워크에서 자산을 전송하려고 하면 자산이 손실될 수 있습니다. $1 같은 브릿지를 사용하여 네트워크 간에 자산을 안전하게 전송하세요."
   },
   "attemptToCancelSwapForFree": {
     "message": "무료 스왑 취소 시도"
@@ -846,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "계산 중..."
   },
-  "bridgeDontSend": {
-    "message": "전송하지 마세요, 브릿지 하세요"
-  },
   "bridgeEnterAmount": {
     "message": "금액 입력"
   },
@@ -861,14 +843,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "토큰 및 금액 선택"
   },
-  "bridgeTimingTooltipText": {
-    "message": "브릿지가 완료되는 데 걸리는 예상 시간입니다."
-  },
   "bridgeTo": {
     "message": "브릿지 대상"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "가스비(암호화폐 채굴자에게 지급)와 릴레이어 수수료(브릿지와 같은 복잡한 서비스 제공에 지급)가 포함됩니다.\n수수료는 네트워크 트래픽과 트랜잭션 복잡성에 따라 달라집니다. MetaMask는 어떤 수수료에서도 수익을 얻지 않습니다."
   },
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
@@ -965,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "WebHID를 통해 Ledger를 연결하려면 여기를 클릭하세요.",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "토큰은 언제든지 직접 추가할 수 있습니다."
   },
   "close": {
     "message": "닫기"
@@ -1989,9 +1962,6 @@
   "estimatedFeeTooltip": {
     "message": "네트워크에서 트랜잭션을 처리하기 위해 지불한 금액입니다."
   },
-  "estimatedTime": {
-    "message": "예상 시간"
-  },
   "ethGasPriceFetchWarning": {
     "message": "현재 주요 가스 견적 서비스를 사용할 수 없으므로 백업 가스 가격을 제공합니다."
   },
@@ -2152,9 +2122,6 @@
   },
   "gasFee": {
     "message": "가스비"
-  },
-  "gasIsETH": {
-    "message": "가스는 $1입니다 "
   },
   "gasLimit": {
     "message": "가스 한도"
@@ -2717,9 +2684,6 @@
   "learnScamRisk": {
     "message": "사기 및 보안 위험"
   },
-  "learnToBridge": {
-    "message": "브릿지 알아보기"
-  },
   "leaveMetaMask": {
     "message": "MetaMask를 나가시겠습니까?"
   },
@@ -2915,9 +2879,6 @@
   "metamaskNotificationsAreOff": {
     "message": "현재 지갑 알림이 꺼져 있습니다."
   },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
-  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps 점검 중입니다. 나중에 다시 확인하세요."
   },
@@ -3061,10 +3022,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1에서 다음 승인을 요청합니다:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "이 네트워크의 네이티브 토큰은 $1입니다. 이는 가스비 지불에 사용하는 토큰입니다. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "네트워크 세부 정보 편집"
@@ -4107,12 +4064,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "여기에서 설치된 Snap 또는 연결된 사이트의 권한을 확인할 수 있습니다."
-  },
-  "permissionsPageTourDescription": {
-    "message": "연결된 사이트 또는 설치된 Snap의 권한을 관리하기 위한 제어판입니다."
-  },
-  "permissionsPageTourTitle": {
-    "message": "이제 연결된 사이트에 권한이 부여됩니다"
   },
   "permitSimulationDetailInfo": {
     "message": "내 계정에서 이만큼의 토큰을 사용할 수 있도록 승인합니다."
@@ -5961,9 +5912,6 @@
     "message": "$1 계정이 현재 $2 네트워크에서 활성화되어 있습니다",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "다음을 사용 중입니다:"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "네트워크를 전환하면 대기 중인 모든 컨펌 작업이 취소됩니다."
   },
@@ -5999,9 +5947,6 @@
   },
   "themeDescription": {
     "message": "원하는 MetaMask 테마를 선택하세요."
-  },
-  "thingsToKeep": {
-    "message": "유의 사항:"
   },
   "thirdPartySoftware": {
     "message": "타사 소프트웨어 알림",
@@ -6084,9 +6029,6 @@
   "tokenScamSecurityRisk": {
     "message": "토큰 사기 및 보안 위험"
   },
-  "tokenShowUp": {
-    "message": "토큰이 지갑에 자동으로 표시되지 않을 수 있습니다. "
-  },
   "tokenStandard": {
     "message": "토큰 표준"
   },
@@ -6117,9 +6059,6 @@
   },
   "total": {
     "message": "합계"
-  },
-  "totalFees": {
-    "message": "총 수수료"
   },
   "totalVolume": {
     "message": "총 거래량"
@@ -6597,10 +6536,6 @@
   },
   "wrongNetworkName": {
     "message": "기록에 따르면 네트워크 이름이 이 체인 ID와 일치하지 않습니다."
-  },
-  "xOfYPending": {
-    "message": "$1/$2개 보류 중",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "예"

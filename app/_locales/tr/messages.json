@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Ağ Ekleniyor"
   },
-  "addingTokens": {
-    "message": "Token'leri ekleme"
-  },
   "additionalNetworks": {
     "message": "İlave ağlar"
   },
@@ -437,17 +434,11 @@
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Önceki bir işlem tamamlanana dek bu işlem gerçekleşmeyecektir. Bir işlemi nasıl iptal edeceğinizi veya hızlandıracağınızı öğrenin."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Talepte bulunan site giriş yaptığınız site değil. Bu durum oturum açma bilgilerinizi çalma teşebbüsü olabilir."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Bu site sizden yanlış hesabı kullanarak giriş yapmanızı istiyor."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Bu işlem sadece önceki işleminiz tamamlandıktan sonra gerçekleşecek."
   },
   "alertModalAcknowledge": {
     "message": "Riski anlıyor ve yine de ilerlemek istiyorum"
@@ -632,12 +623,6 @@
   },
   "assetsDescription": {
     "message": "Cüzdanınızdaki token'ler otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
-  },
-  "attemptSendingAssets": {
-    "message": "Varlıklarınızı doğrudan bir ağdan diğerine göndermeye çalışırsanız onları kaybedebilirsiniz. Fonları köprü kullanarak ağlar arasında güvenli bir şekilde transfer edin."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. $1 gibi bir köprü kullandığınızdan emin olun"
   },
   "attemptToCancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal etme girişimi"
@@ -846,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Hesaplanıyor..."
   },
-  "bridgeDontSend": {
-    "message": "Köprü yap, gönderme"
-  },
   "bridgeEnterAmount": {
     "message": "Miktar girin"
   },
@@ -861,14 +843,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Token ve miktar seçin"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Bu, köprü işleminin tamamlanacağı tahmini süredir."
-  },
   "bridgeTo": {
     "message": "Şuraya köprü:"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Buna, gaz ücretleri (kripto madencilerine ödenen) ve düzenleyici ücretleri (köprü gibi güç kompleksi hizmetlerine ödenen) dahildir. Ücretler ağ trafiğine ve işlemin karmaşıklığına dayanır. MetaMask iki ücretten de kazanç sağlamaz."
   },
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
@@ -965,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "WebHID üzerinden Ledger'ınızı bağlamak için tıklayın",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Dilediğiniz zaman tokenleri manuel olarak ekleyebilirsiniz."
   },
   "close": {
     "message": "Kapat"
@@ -1989,9 +1962,6 @@
   "estimatedFeeTooltip": {
     "message": "Ağda işlemi gerçekleştirmek için ödenen tutar."
   },
-  "estimatedTime": {
-    "message": "Tahmini süre"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Ana gaz tahmini hizmeti olarak sunulan yedek gaz fiyatı şu anda kullanılamıyor."
   },
@@ -2152,9 +2122,6 @@
   },
   "gasFee": {
     "message": "Gaz ücreti"
-  },
-  "gasIsETH": {
-    "message": "Gaz $1 "
   },
   "gasLimit": {
     "message": "Gaz limiti"
@@ -2717,9 +2684,6 @@
   "learnScamRisk": {
     "message": "dolandırıcılıklar ve güvenlik riskleri."
   },
-  "learnToBridge": {
-    "message": "Köprü yapmayı öğren"
-  },
   "leaveMetaMask": {
     "message": "MetaMask'ten ayrıl?"
   },
@@ -2915,9 +2879,6 @@
   "metamaskNotificationsAreOff": {
     "message": "Cüzdan bildirimleri şu anda aktif değil."
   },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
-  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swap İşlemleri bakımda. Lütfen daha sonra tekrar kontrol edin."
   },
@@ -3061,10 +3022,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 sizden şunun için onay istiyor:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Bu ağdaki yerli token $1. Bu, gaz ücretleri için kullanılan tokendir. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Ağ bilgilerini düzenle"
@@ -4107,12 +4064,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "Burada, yüklü Snap'lere veya bağlı sitelere verdiğiniz izinleri görebilirsiniz."
-  },
-  "permissionsPageTourDescription": {
-    "message": "Burası, bağlı sitelere ve yüklü Snap'lere verilen izinleri yönetebileceğiniz kontrol panelinizdir."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Bağlı siteler şimdi izinler oldu"
   },
   "permitSimulationDetailInfo": {
     "message": "Harcama yapan tarafa hesabınızdan bu kadar çok token'i harcama izni veriyorsunuz."
@@ -5961,9 +5912,6 @@
     "message": "$1, $2 üzerinde aktif",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Şu anda kullandığınız ağ"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Ağ değiştirmek bekleyen tüm onayları iptal eder"
   },
@@ -5999,9 +5947,6 @@
   },
   "themeDescription": {
     "message": "Tercih ettiğin MetaMask temasını seç."
-  },
-  "thingsToKeep": {
-    "message": "Unutulmaması gerekenler:"
   },
   "thirdPartySoftware": {
     "message": "Üçüncü taraf yazılım uyarısı",
@@ -6084,9 +6029,6 @@
   "tokenScamSecurityRisk": {
     "message": "token dolandırıcılıkları ve güvenlik riskleri"
   },
-  "tokenShowUp": {
-    "message": "Tokenleriniz cüzdanınızda otomatik olarak görünmeyebilir. "
-  },
   "tokenStandard": {
     "message": "Token standardı"
   },
@@ -6117,9 +6059,6 @@
   },
   "total": {
     "message": "Toplam"
-  },
-  "totalFees": {
-    "message": "Toplam ücretler"
   },
   "totalVolume": {
     "message": "Toplam hacim"
@@ -6597,10 +6536,6 @@
   },
   "wrongNetworkName": {
     "message": "Kayıtlarımıza göre ağ adı bu zincir kimliği ile doğru şekilde eşleşmiyor olabilir."
-  },
-  "xOfYPending": {
-    "message": "$1 / $2 bekliyor",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Evet"

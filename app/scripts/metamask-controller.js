@@ -47,7 +47,7 @@ import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from '@metamask/eth-query';
 import EthJSQuery from '@metamask/ethjs-query';
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
@@ -380,6 +380,7 @@ import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
+import { rejectAllApprovals } from './lib/approval/utils';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1662,15 +1663,53 @@ export default class MetamaskController extends EventEmitter {
           'NotificationServicesController:selectIsNotificationServicesEnabled',
           'AccountsController:listAccounts',
           'AccountsController:updateAccountMetadata',
+          'NetworkController:getState',
+          'NetworkController:addNetwork',
+          'NetworkController:removeNetwork',
+          'NetworkController:updateNetwork',
         ],
         allowedEvents: [
           'KeyringController:lock',
           'KeyringController:unlock',
           'AccountsController:accountAdded',
           'AccountsController:accountRenamed',
+          'NetworkController:networkRemoved',
         ],
       }),
     });
+
+    this.controllerMessenger.subscribe(
+      'MetaMetricsController:stateChange',
+      previousValueComparator(async (prevState, currState) => {
+        const { participateInMetaMetrics: prevParticipateInMetaMetrics } =
+          prevState;
+        const { participateInMetaMetrics: currParticipateInMetaMetrics } =
+          currState;
+
+        const metaMetricsWasDisabled =
+          prevParticipateInMetaMetrics && !currParticipateInMetaMetrics;
+        const metaMetricsWasEnabled =
+          !prevParticipateInMetaMetrics && currParticipateInMetaMetrics;
+
+        if (!metaMetricsWasDisabled && !metaMetricsWasEnabled) {
+          return;
+        }
+
+        const shouldPerformSignIn =
+          metaMetricsWasEnabled &&
+          !this.authenticationController.state.isSignedIn;
+        const shouldPerformSignOut =
+          metaMetricsWasDisabled &&
+          this.authenticationController.state.isSignedIn &&
+          !this.userStorageController.state.isProfileSyncingEnabled;
+
+        if (shouldPerformSignIn) {
+          await this.authenticationController.performSignIn();
+        } else if (shouldPerformSignOut) {
+          await this.authenticationController.performSignOut();
+        }
+      }, this.metaMetricsController.state),
+    );
 
     const notificationServicesPushControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -3264,6 +3303,17 @@ export default class MetamaskController extends EventEmitter {
     );
     this.multichainBalancesController.start();
     this.multichainBalancesController.updateBalances();
+
+    this.controllerMessenger.subscribe(
+      'CurrencyRateController:stateChange',
+      ({ currentCurrency }) => {
+        if (
+          currentCurrency !== this.multichainRatesController.state.fiatCurrency
+        ) {
+          this.multichainRatesController.setFiatCurrency(currentCurrency);
+        }
+      },
+    );
   }
 
   /**
@@ -3558,10 +3608,6 @@ export default class MetamaskController extends EventEmitter {
       markNotificationPopupAsAutomaticallyClosed: () =>
         this.notificationManager.markAsAutomaticallyClosed(),
 
-      // approval
-      requestUserApproval:
-        approvalController.addAndShowApprovalRequest.bind(approvalController),
-
       // primary keyring management
       addNewAccount: this.addNewAccount.bind(this),
       getSeedPhrase: this.getSeedPhrase.bind(this),
@@ -3800,6 +3846,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setLastInteractedConfirmationInfo.bind(
           appStateController,
         ),
+      updateSlides: appStateController.updateSlides.bind(appStateController),
+      removeSlide: appStateController.removeSlide.bind(appStateController),
 
       // EnsController
       tryReverseResolveAddress:
@@ -4185,9 +4233,12 @@ export default class MetamaskController extends EventEmitter {
       ),
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
 
-      // approval controller
-      resolvePendingApproval: this.resolvePendingApproval,
+      // ApprovalController
+      rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
       rejectPendingApproval: this.rejectPendingApproval,
+      requestUserApproval:
+        approvalController.addAndShowApprovalRequest.bind(approvalController),
+      resolvePendingApproval: this.resolvePendingApproval,
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -7079,6 +7130,19 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  rejectAllPendingApprovals() {
+    const deleteInterface = (id) =>
+      this.controllerMessenger.call(
+        'SnapInterfaceController:deleteInterface',
+        id,
+      );
+
+    rejectAllApprovals({
+      approvalController: this.approvalController,
+      deleteInterface,
+    });
+  }
 
   async _onAccountChange(newAddress) {
     const permittedAccountsMap = getPermittedAccountsByOrigin(
