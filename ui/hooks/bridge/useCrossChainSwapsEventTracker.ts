@@ -21,9 +21,9 @@ export type CrossChainSwapsEventProperties = {
   };
   [MetaMetricsEventName.ActionCompleted]: RequestParams &
     RequestMetadata &
-    TradeData &
-    TxStatusData & {
+    TradeData & {
       usd_actual_return: number;
+      usd_actual_gas: number;
       actual_time_minutes: number;
       quote_vs_execution_ratio: number;
       quoted_vs_used_gas_ratio: number;
