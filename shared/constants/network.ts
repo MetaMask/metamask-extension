@@ -232,7 +232,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   APE: '0x8173',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
-  INK_SEPOLIA: '0xba5eD',
+  INK_SEPOLIA: '0xba5ed',
   INK: '0xdef1',
 } as const;
 
