@@ -5,11 +5,15 @@
  * @returns {Function}
  */
 
-export default function createMainFrameOriginMiddleware({ mainFrameOrigin }) {
+export default function createMainFrameOriginMiddleware({
+  mainFrameOrigin,
+}: {
+  mainFrameOrigin: string;
+}) {
   return function mainFrameOriginMiddleware(
-    /** @type {any} */ req,
-    /** @type {any} */ _,
-    /** @type {Function} */ next,
+    req: any,
+    _res: any,
+    next: () => void,
   ) {
     req.mainFrameOrigin = mainFrameOrigin;
     next();
