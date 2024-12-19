@@ -656,7 +656,6 @@ export default class MetamaskController extends EventEmitter {
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
     });
-
     this.networkController.initializeProvider();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
