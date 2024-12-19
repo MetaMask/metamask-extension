@@ -196,9 +196,6 @@
   "next": {
     "message": "अगला"
   },
-  "noTransactions": {
-    "message": "कोई लेन-देन नहीं"
-  },
   "pastePrivateKey": {
     "message": "यहां अपनी निजी कुंजी स्ट्रिंग चिपकाएं:",
     "description": "For importing an account from a private key"

@@ -235,9 +235,6 @@
   "next": {
     "message": "ถัดไป"
   },
-  "noTransactions": {
-    "message": "ยังไม่มีรายการธุรกรรม"
-  },
   "on": {
     "message": "เปิด"
   },

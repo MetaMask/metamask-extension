@@ -213,9 +213,6 @@
   "next": {
     "message": "Další"
   },
-  "noTransactions": {
-    "message": "Žádné transakce"
-  },
   "passwordNotLongEnough": {
     "message": "Heslo není dost dlouhé"
   },

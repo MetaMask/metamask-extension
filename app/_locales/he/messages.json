@@ -443,9 +443,6 @@
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"
   },
-  "noTransactions": {
-    "message": "אין לך עסקאות"
-  },
   "noWebcamFound": {
     "message": "מצלמת הרשת של מחשבך לא נמצאה. נא לנסות שוב."
   },

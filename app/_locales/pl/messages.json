@@ -443,9 +443,6 @@
   "noConversionRateAvailable": {
     "message": "Brak kursu waluty"
   },
-  "noTransactions": {
-    "message": "Nie ma transakcji"
-  },
   "noWebcamFound": {
     "message": "Twoja kamera nie została znaleziona. Spróbuj ponownie."
   },

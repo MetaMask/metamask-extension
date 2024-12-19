@@ -122,12 +122,6 @@ describe('Multiple transactions', function () {
             '[data-testid="account-overview__activity-tab"]',
           );
 
-          const isTransactionListEmpty =
-            await driver.isElementPresentAndVisible(
-              '.transaction-list__empty-text',
-            );
-          assert.equal(isTransactionListEmpty, true);
-
           // The previous isTransactionListEmpty wait already serves as the guard here for the assertElementNotPresent
           await driver.assertElementNotPresent(
             '.transaction-list__completed-transactions .activity-list-item',
@@ -243,12 +237,6 @@ describe('Multiple transactions', function () {
           await driver.clickElement(
             '[data-testid="account-overview__activity-tab"]',
           );
-
-          const isTransactionListEmpty =
-            await driver.isElementPresentAndVisible(
-              '.transaction-list__empty-text',
-            );
-          assert.equal(isTransactionListEmpty, true);
 
           // The previous isTransactionListEmpty wait already serves as the guard here for the assertElementNotPresent
           await driver.assertElementNotPresent(
