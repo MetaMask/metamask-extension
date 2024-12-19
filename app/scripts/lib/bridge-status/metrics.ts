@@ -1,92 +1,23 @@
-import { Hex } from '@metamask/utils';
-import { TransactionControllerState } from '@metamask/transaction-controller';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../../shared/constants/bridge';
-import {
-  getIsSmartTransaction,
-  SmartTransactionsMetaMaskState,
-} from '../../../../shared/modules/selectors';
-import { NetworkState } from '../../../../shared/modules/selectors/networks';
-import {
-  exchangeRateFromMarketData,
-  getTokenExchangeRate,
-
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/ducks/bridge/utils';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { ActionType } from '../../../../ui/hooks/bridge/events/types';
 // eslint-disable-next-line import/no-restricted-paths
 import { formatProviderLabel } from '../../../../ui/pages/bridge/utils/quote';
 import {
   getCurrentKeyring,
-  getMarketData,
-  getUSDConversionRateByChainId,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/selectors';
 import { BridgeStatusControllerBridgeTransactionCompleteEvent } from '../../controllers/bridge-status/types';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
-import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
 // eslint-disable-next-line import/no-restricted-paths
 import { isHardwareKeyring } from '../../../../ui/helpers/utils/hardware';
-
-type BackgroundState = SmartTransactionsMetaMaskState &
-  NetworkState & { metamask: TransactionControllerState };
-
-const getTokenUsdValue = async ({
-  chainId,
-  tokenAmount,
-  tokenAddress,
-  state,
-}: {
-  chainId: Hex;
-  tokenAmount: number;
-  tokenAddress: string;
-  state: BackgroundState;
-}) => {
-  const marketData = getMarketData(state);
-  const tokenToNativeAssetRate = exchangeRateFromMarketData(
-    chainId,
-    tokenAddress,
-    marketData,
-  );
-  if (tokenToNativeAssetRate) {
-    const nativeToUsdRate = getUSDConversionRateByChainId(chainId)(state);
-    return tokenAmount * tokenToNativeAssetRate * nativeToUsdRate;
-  }
-
-  const tokenToUsdRate = await getTokenExchangeRate({
-    chainId,
-    tokenAddress,
-    currency: 'usd',
-  });
-  if (!tokenToUsdRate) {
-    return null;
-  }
-  return tokenAmount * tokenToUsdRate;
-};
-
-const getHexGasTotalUsd = ({
-  bridgeHistoryItem,
-  state,
-}: {
-  bridgeHistoryItem: BridgeHistoryItem;
-  state: BackgroundState;
-}) => {
-  const srcTxMeta = state.metamask.transactions.find(
-    (txMeta) => txMeta.id === bridgeHistoryItem.txMetaId,
-  );
-
-  if (!srcTxMeta) {
-    return null;
-  }
-
-  const hexGasTotalWei = calcHexGasTotal(srcTxMeta);
-  const nativeToUsdRate = getUSDConversionRateByChainId(srcTxMeta.chainId)(
-    state,
-  );
-  return calcTokenAmount(hexGasTotalWei, 18).toNumber() * nativeToUsdRate;
-};
+import {
+  BackgroundState,
+  getHexGasTotalUsd,
+  getTokenUsdValue,
+} from './metrics-utils';
 
 export const handleBridgeTransactionComplete = async (
   bridgeTransactionCompletePayload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
