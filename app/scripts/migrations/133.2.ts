@@ -37,21 +37,17 @@ function transformState(state: Record<string, unknown>): void {
   const chainIds = ['0x1'];
 
   for (const chainId of chainIds) {
-    if (!isObject(state.TokensController.allTokens[chainId])) {
-      continue;
-    }
+    const allTokensOnChain = state.TokensController.allTokens[chainId];
 
-    for (const [account, tokens] of Object.entries(
-      state.TokensController.allTokens[chainId],
-    )) {
-      if (!Array.isArray(tokens)) {
-        continue;
+    if (isObject(allTokensOnChain)) {
+      for (const [account, tokens] of Object.entries(allTokensOnChain)) {
+        if (Array.isArray(tokens)) {
+          allTokensOnChain[account] = tokens.filter(
+            (token) =>
+              token?.address !== '0x0000000000000000000000000000000000000000',
+          );
+        }
       }
-
-      state.TokensController.allTokens[chainId][account] = tokens.filter(
-        (token) =>
-          token?.address !== '0x0000000000000000000000000000000000000000',
-      );
     }
   }
 }
