@@ -28,6 +28,10 @@ export const createEthAccountsMethodMiddleware = makeMethodMiddlewareMaker([
   ethAccountsHandler,
 ]);
 
+// The primary home of RPC method implementations for the MultiChain API.
+export const createMultichainMethodMiddleware =
+  makeMethodMiddlewareMaker(localHandlers);
+
 /**
  * Creates a method middleware factory function given a set of method handlers.
  *
@@ -35,7 +39,7 @@ export const createEthAccountsMethodMiddleware = makeMethodMiddlewareMaker([
  * handler implementations.
  * @returns The method middleware factory function.
  */
-function makeMethodMiddlewareMaker(handlers) {
+export function makeMethodMiddlewareMaker(handlers) {
   const handlerMap = handlers.reduce((map, handler) => {
     for (const methodName of handler.methodNames) {
       map[methodName] = handler;
