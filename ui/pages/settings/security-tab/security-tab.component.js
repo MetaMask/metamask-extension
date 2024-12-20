@@ -330,7 +330,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('use4ByteResolution')}</span>
           <div className="settings-page__content-description">
-            {t('use4ByteResolutionDescription')}
+            {t('toggleDecodeDescription')}
           </div>
         </div>
 
