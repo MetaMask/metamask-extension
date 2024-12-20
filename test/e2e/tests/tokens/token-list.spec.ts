@@ -123,13 +123,12 @@ describe('Token List', function () {
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomToken(tokenAddress, symbol);
 
-        const percentageNative =
-          await assetListPage.getAssetPercentageIncreaseDecrease(zeroAddress());
-        assert.equal(percentageNative, '');
-
-        const percentage =
-          await assetListPage.getAssetPercentageIncreaseDecrease(tokenAddress);
-        assert.equal(percentage, '');
+        await assetListPage.check_tokenGeneralChangePercentageNotPresent(
+          zeroAddress(),
+        );
+        await assetListPage.check_tokenGeneralChangePercentageNotPresent(
+          tokenAddress,
+        );
       },
     );
   });
@@ -173,15 +172,15 @@ describe('Token List', function () {
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomToken(tokenAddress, symbol);
 
-        await assetListPage.check_tokenIncreasePercentage(
+        await assetListPage.check_tokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',
         );
-        await assetListPage.check_tokenIncreasePercentage(
+        await assetListPage.check_tokenGeneralChangePercentage(
           tokenAddress,
           '+0.05%',
         );
-        await assetListPage.check_tokenIncreaseValue('+$50.00');
+        await assetListPage.check_tokenGeneralChangeValue('+$50.00');
       },
     );
   });

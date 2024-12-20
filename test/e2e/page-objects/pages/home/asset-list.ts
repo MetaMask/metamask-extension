@@ -84,9 +84,6 @@ class AssetListPage {
   private readonly tokenIncreaseDecreaseValue =
     '[data-testid="token-increase-decrease-value"]';
 
-  private readonly tokenIncreaseDecreasePercentageGeneral =
-    '[data-testid="token-increase-decrease-percentage"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -341,40 +338,67 @@ class AssetListPage {
   }
 
   /**
-   * Checks if the token increase/decrease percentage is displayed correctly for a specific token
+   * Checks if the token's general increase or decrease percentage is displayed correctly
    *
    * @param address - The token address to check
-   * @param expectedPercentage - The expected percentage value (e.g. '+0.02%')
+   * @param expectedChange - The expected change percentage value (e.g. '+0.02%' or '-0.03%')
    */
-  async check_tokenIncreasePercentage(
+  async check_tokenGeneralChangePercentage(
     address: string,
-    expectedPercentage: string,
+    expectedChange: string,
   ): Promise<void> {
-    console.log(`Checking token increase percentage for address ${address}`);
+    console.log(
+      `Checking token general change percentage for address ${address}`,
+    );
     const isPresent = await this.driver.isElementPresentAndVisible({
-      css: `[data-testid="token-increase-decrease-percentage-${address}"]`,
-      text: expectedPercentage,
+      css: this.tokenPercentage(address),
+      text: expectedChange,
     });
     if (!isPresent) {
       throw new Error(
-        `Token increase percentage ${expectedPercentage} not found for address ${address}`,
+        `Token general change percentage ${expectedChange} not found for address ${address}`,
       );
     }
   }
 
-  /**
-   * Checks if the token increase/decrease value is displayed correctly
+    /**
+   * Checks if the token's percentage change element does not exist
    *
-   * @param expectedValue - The expected value (e.g. '+$50.00')
+   * @param address - The token address to check
    */
-  async check_tokenIncreaseValue(expectedValue: string): Promise<void> {
-    console.log(`Checking token increase value ${expectedValue}`);
+    async check_tokenGeneralChangePercentageNotPresent(
+      address: string,
+    ): Promise<void> {
+      console.log(
+        `Checking token general change percentage is not present for address ${address}`,
+      );
+      const isPresent = await this.driver.isElementPresent({
+        css: this.tokenPercentage(address),
+      });
+      if (isPresent) {
+        throw new Error(
+          `Token general change percentage element should not exist for address ${address}`,
+        );
+      }
+    }
+
+  /**
+   * Checks if the token's general increase or decrease value is displayed correctly
+   *
+   * @param expectedChangeValue - The expected change value (e.g. '+$50.00' or '-$30.00')
+   */
+  async check_tokenGeneralChangeValue(
+    expectedChangeValue: string,
+  ): Promise<void> {
+    console.log(`Checking token general change value ${expectedChangeValue}`);
     const isPresent = await this.driver.isElementPresentAndVisible({
       css: this.tokenIncreaseDecreaseValue,
-      text: expectedValue,
+      text: expectedChangeValue,
     });
     if (!isPresent) {
-      throw new Error(`Token increase value ${expectedValue} not found`);
+      throw new Error(
+        `Token general change value ${expectedChangeValue} not found`,
+      );
     }
   }
 }

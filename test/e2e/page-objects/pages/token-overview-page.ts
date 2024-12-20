@@ -3,13 +3,13 @@ import { Driver } from '../../webdriver/driver';
 class TokenOverviewPage {
   private driver: Driver;
 
-  private readonly sendButton = {
-    text: 'Send',
+  private readonly receiveButton = {
+    text: 'Receive',
     css: '.icon-button',
   };
 
-  private readonly receiveButton = {
-    text: 'Receive',
+  private readonly sendButton = {
+    text: 'Send',
     css: '.icon-button',
   };
 
@@ -38,12 +38,12 @@ class TokenOverviewPage {
     console.log('Token overview page is loaded');
   }
 
-  async clickSend(): Promise<void> {
-    await this.driver.clickElement(this.sendButton);
-  }
-
   async clickReceive(): Promise<void> {
     await this.driver.clickElement(this.receiveButton);
+  }
+
+  async clickSend(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
   }
 
   async clickSwap(): Promise<void> {
