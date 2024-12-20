@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
 
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
