@@ -39,6 +39,7 @@ export const getMockedNotificationsState = () => {
     isProfileSyncingEnabled: true,
     isProfileSyncingUpdateLoading: false,
     hasAccountSyncingSyncedAtLeastOnce: false,
+    isAccountSyncingInProgress: false,
     isAccountSyncingReadyToBeDispatched: false,
     isMetamaskNotificationsFeatureSeen: true,
     isNotificationServicesEnabled: true,
