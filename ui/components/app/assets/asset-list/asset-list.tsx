@@ -11,6 +11,7 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
   getSelectedAddress,
+  getUseTokenDetection,
 } from '../../../../selectors';
 import {
   getMultichainIsEvm,
@@ -25,6 +26,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
 import DetectedToken from '../../detected-token/detected-token';
 import { ReceiveModal } from '../../../multichain';
@@ -38,10 +40,15 @@ import {
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import {
+  getCurrentChainId,
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../../../../shared/modules/selectors/networks';
 import { addImportedTokens } from '../../../../store/actions';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../../shared/constants/transaction';
 import AssetListControlBar from './asset-list-control-bar';
 import NativeToken from './native-token';
 
@@ -92,6 +99,8 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   );
   const networkClientId = useSelector(getSelectedNetworkClientId);
   const selectedAddress = useSelector(getSelectedAddress);
+  const useTokenDetection = useSelector(getUseTokenDetection);
+  const currentChainId = useSelector(getCurrentChainId);
 
   const [showFundingMethodModal, setShowFundingMethodModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
@@ -129,6 +138,10 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   // Add detected tokens to sate
   useEffect(() => {
     const importAllDetectedTokens = async () => {
+      // If autodetect tokens toggle is OFF, return
+      if (!useTokenDetection) {
+        return;
+      }
       // TODO add event for MetaMetricsEventName.TokenAdded
 
       if (
@@ -145,12 +158,44 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
             await dispatch(
               addImportedTokens(tokens as Token[], networkInstanceId),
             );
+            tokens.forEach((importedToken) => {
+              trackEvent({
+                event: MetaMetricsEventName.TokenAdded,
+                category: MetaMetricsEventCategory.Wallet,
+                sensitiveProperties: {
+                  token_symbol: importedToken.symbol,
+                  token_contract_address: importedToken.address,
+                  token_decimal_precision: importedToken.decimals,
+                  source: MetaMetricsTokenEventSource.Detected,
+                  token_standard: TokenStandard.ERC20,
+                  asset_type: AssetType.token,
+                  token_added_type: 'detected',
+                  chain_id: chainConfig.chainId,
+                },
+              });
+            });
           },
         );
 
         await Promise.all(importPromises);
       } else {
         await dispatch(addImportedTokens(detectedTokens, networkClientId));
+        detectedTokens.forEach((importedToken: Token) => {
+          trackEvent({
+            event: MetaMetricsEventName.TokenAdded,
+            category: MetaMetricsEventCategory.Wallet,
+            sensitiveProperties: {
+              token_symbol: importedToken.symbol,
+              token_contract_address: importedToken.address,
+              token_decimal_precision: importedToken.decimals,
+              source: MetaMetricsTokenEventSource.Detected,
+              token_standard: TokenStandard.ERC20,
+              asset_type: AssetType.token,
+              token_added_type: 'detected',
+              chain_id: currentChainId,
+            },
+          });
+        });
       }
     };
     importAllDetectedTokens();
