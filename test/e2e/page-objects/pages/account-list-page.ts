@@ -1,12 +1,10 @@
 import { Driver } from '../../webdriver/driver';
 import { largeDelayMs, regularDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
-import { ACCOUNT_TYPE } from '../common';
+import { ACCOUNT_TYPE } from '../../constants';
 
 class AccountListPage {
   private readonly driver: Driver;
-
-  private readonly accountAddressText = '.qr-code__address-segments';
 
   private readonly accountListAddressItem =
     '[data-testid="account-list-address"]';
@@ -28,10 +26,6 @@ class AccountListPage {
   private readonly accountOptionsMenuButton =
     '[data-testid="account-list-item-menu-button"]';
 
-  private readonly accountQrCodeImage = '.qr-code__wrapper';
-
-  private readonly accountQrCodeAddress = '.qr-code__address-segments';
-
   private readonly addAccountConfirmButton =
     '[data-testid="submit-add-account-with-name"]';
 
@@ -47,6 +41,9 @@ class AccountListPage {
 
   private readonly addEthereumAccountButton =
     '[data-testid="multichain-account-menu-popover-add-account"]';
+
+  private readonly addEoaAccountButton =
+    '[data-testid="multichain-account-menu-popover-add-watch-only-account"]';
 
   private readonly addHardwareWalletButton = {
     text: 'Add hardware wallet',
@@ -69,11 +66,6 @@ class AccountListPage {
 
   private readonly currentSelectedAccount =
     '.multichain-account-list-item--selected';
-
-  private readonly editableLabelButton =
-    '[data-testid="editable-label-button"]';
-
-  private readonly editableLabelInput = '[data-testid="editable-input"] input';
 
   private readonly hiddenAccountOptionsMenuButton =
     '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
@@ -124,8 +116,18 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly saveAccountLabelButton =
-    '[data-testid="save-account-label-input"]';
+  private readonly watchAccountAddressInput =
+    'input#address-input[type="text"]';
+
+  private readonly watchAccountConfirmButton = {
+    text: 'Watch account',
+    tag: 'button',
+  };
+
+  private readonly watchAccountModalTitle = {
+    text: 'Watch any Ethereum account',
+    tag: 'h4',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -145,34 +147,36 @@ class AccountListPage {
   }
 
   /**
-   * Adds a new account with an optional custom label.
+   * Watch an EOA (external owned account).
    *
-   * @param customLabel - The custom label for the new account. If not provided, a default name will be used.
+   * @param address - The address to watch.
+   * @param expectedErrorMessage - Optional error message to display if the address is invalid.
    */
-  async addNewAccount(customLabel?: string): Promise<void> {
-    if (customLabel) {
-      console.log(`Adding new account with custom label: ${customLabel}`);
-    } else {
-      console.log(`Adding new account with default name`);
-    }
+  async addEoaAccount(
+    address: string,
+    expectedErrorMessage: string = '',
+  ): Promise<void> {
+    console.log(`Watch EOA account with address ${address}`);
     await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.addEthereumAccountButton);
-    if (customLabel) {
-      await this.driver.fill(this.accountNameInput, customLabel);
-    }
-    // needed to mitigate a race condition with the state update
-    // there is no condition we can wait for in the UI
-    await this.driver.delay(largeDelayMs);
+    await this.driver.clickElement(this.addEoaAccountButton);
+    await this.driver.waitForSelector(this.watchAccountModalTitle);
+    await this.driver.fill(this.watchAccountAddressInput, address);
     await this.driver.clickElementAndWaitToDisappear(
-      this.addAccountConfirmButton,
+      this.watchAccountConfirmButton,
     );
-  }
-
-  async isBtcAccountCreationButtonEnabled() {
-    const createButton = await this.driver.findElement(
-      this.addBtcAccountButton,
-    );
-    return await createButton.isEnabled();
+    if (expectedErrorMessage) {
+      console.log(
+        `Check if error message is displayed: ${expectedErrorMessage}`,
+      );
+      await this.driver.waitForSelector({
+        css: '.snap-ui-renderer__text',
+        text: expectedErrorMessage,
+      });
+    } else {
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+      );
+    }
   }
 
   /**
@@ -205,20 +209,27 @@ class AccountListPage {
   /**
    * Adds a new account of the specified type with an optional custom name.
    *
-   * @param accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
-   * @param accountName - Optional custom name for the new account
+   * @param options - Options for adding a new account
+   * @param options.accountType - The type of account to add (Ethereum, Bitcoin, or Solana)
+   * @param [options.accountName] - Optional custom name for the new account
    * @throws {Error} If the specified account type is not supported
    * @example
    * // Add a new Ethereum account with default name
-   * await accountListPage.addAccount(ACCOUNT_TYPE.Ethereum);
+   * await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Ethereum });
    *
    * // Add a new Bitcoin account with custom name
-   * await accountListPage.addAccount(ACCOUNT_TYPE.Bitcoin, 'My BTC Wallet');
+   * await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin, accountName: 'My BTC Wallet' });
    */
-  async addAccount(accountType: ACCOUNT_TYPE, accountName?: string) {
+  async addAccount({
+    accountType,
+    accountName,
+  }: {
+    accountType: ACCOUNT_TYPE;
+    accountName?: string;
+  }) {
+    console.log(`Adding new account of type: ${ACCOUNT_TYPE[accountType]}`);
     await this.driver.clickElement(this.createAccountButton);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let addAccountButton: any;
+    let addAccountButton;
     switch (accountType) {
       case ACCOUNT_TYPE.Ethereum:
         addAccountButton = this.addEthereumAccountButton;
@@ -235,54 +246,18 @@ class AccountListPage {
 
     await this.driver.clickElement(addAccountButton);
     if (accountName) {
+      console.log(
+        `Customize the new account with account name: ${accountName}`,
+      );
       await this.driver.fill(this.accountNameInput, accountName);
     }
-
+    // needed to mitigate a race condition with the state update
+    // there is no condition we can wait for in the UI
+    await this.driver.delay(largeDelayMs);
     await this.driver.clickElementAndWaitToDisappear(
       this.addAccountConfirmButton,
       5000,
     );
-  }
-
-  /**
-   * Changes the label of the current account.
-   *
-   * @param newLabel - The new label to set for the account.
-   */
-  async changeAccountLabel(newLabel: string): Promise<void> {
-    console.log(`Changing account label to: ${newLabel}`);
-    await this.driver.clickElement(this.accountMenuButton);
-    await this.changeLabelFromAccountDetailsModal(newLabel);
-  }
-
-  /**
-   * Changes the account label from within an already opened account details modal.
-   * Note: This method assumes the account details modal is already open.
-   *
-   * Recommended usage:
-   * ```typescript
-   * await accountListPage.openAccountDetailsModal('Current Account Name');
-   * await accountListPage.changeLabelFromAccountDetailsModal('New Account Name');
-   * ```
-   *
-   * @param newLabel - The new label to set for the account
-   * @throws Will throw an error if the modal is not open when method is called
-   * @example
-   * // To rename a specific account, first open its details modal:
-   * await accountListPage.openAccountDetailsModal('Current Account Name');
-   * await accountListPage.changeLabelFromAccountDetailsModal('New Account Name');
-   *
-   * // Note: Using changeAccountLabel() alone will only work for the first account
-   */
-  async changeLabelFromAccountDetailsModal(newLabel: string): Promise<void> {
-    await this.driver.waitForSelector(this.editableLabelButton);
-    console.log(
-      `Account details modal opened, changing account label to: ${newLabel}`,
-    );
-    await this.driver.clickElement(this.editableLabelButton);
-    await this.driver.fill(this.editableLabelInput, newLabel);
-    await this.driver.clickElement(this.saveAccountLabelButton);
-    await this.driver.clickElement(this.closeAccountModalButton);
   }
 
   async closeAccountModal(): Promise<void> {
@@ -290,23 +265,6 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
     );
-  }
-
-  /**
-   * Get the address of the specified account.
-   *
-   * @param accountLabel - The label of the account to get the address.
-   */
-  async getAccountAddress(accountLabel: string): Promise<string> {
-    console.log(`Get account address in account list`);
-    await this.openAccountOptionsInAccountList(accountLabel);
-    await this.driver.clickElement(this.accountMenuButton);
-    await this.driver.waitForSelector(this.accountAddressText);
-    const accountAddress = await (
-      await this.driver.findElement(this.accountAddressText)
-    ).getText();
-    await this.driver.clickElement(this.closeAccountModalButton);
-    return accountAddress;
   }
 
   async hideAccount(): Promise<void> {
@@ -338,6 +296,13 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
+  }
+
+  async isBtcAccountCreationButtonEnabled(): Promise<boolean> {
+    const createButton = await this.driver.findElement(
+      this.addBtcAccountButton,
+    );
+    return await createButton.isEnabled();
   }
 
   /**
@@ -556,21 +521,24 @@ class AccountListPage {
   }
 
   /**
-   * Check that the correct address is displayed in the account details modal.
+   * Checks that the add watch account button is displayed in the create account modal.
    *
-   * @param expectedAddress - The expected address to check.
+   * @param expectedAvailability - Whether the add watch account button is expected to be displayed.
    */
-  async check_addressInAccountDetailsModal(
-    expectedAddress: string,
+  async check_addWatchAccountAvailable(
+    expectedAvailability: boolean,
   ): Promise<void> {
     console.log(
-      `Check that address ${expectedAddress} is displayed in account details modal`,
+      `Check add watch account button is ${
+        expectedAvailability ? 'displayed ' : 'not displayed'
+      }`,
     );
-    await this.driver.waitForSelector(this.accountQrCodeImage);
-    await this.driver.waitForSelector({
-      css: this.accountQrCodeAddress,
-      text: expectedAddress,
-    });
+    await this.openAddAccountModal();
+    if (expectedAvailability) {
+      await this.driver.waitForSelector(this.addEoaAccountButton);
+    } else {
+      await this.driver.assertElementNotPresent(this.addEoaAccountButton);
+    }
   }
 
   /**
