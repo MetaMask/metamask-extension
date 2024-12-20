@@ -361,26 +361,26 @@ class AssetListPage {
     }
   }
 
-    /**
+  /**
    * Checks if the token's percentage change element does not exist
    *
    * @param address - The token address to check
    */
-    async check_tokenGeneralChangePercentageNotPresent(
-      address: string,
-    ): Promise<void> {
-      console.log(
-        `Checking token general change percentage is not present for address ${address}`,
+  async check_tokenGeneralChangePercentageNotPresent(
+    address: string,
+  ): Promise<void> {
+    console.log(
+      `Checking token general change percentage is not present for address ${address}`,
+    );
+    const isPresent = await this.driver.isElementPresent({
+      css: this.tokenPercentage(address),
+    });
+    if (isPresent) {
+      throw new Error(
+        `Token general change percentage element should not exist for address ${address}`,
       );
-      const isPresent = await this.driver.isElementPresent({
-        css: this.tokenPercentage(address),
-      });
-      if (isPresent) {
-        throw new Error(
-          `Token general change percentage element should not exist for address ${address}`,
-        );
-      }
     }
+  }
 
   /**
    * Checks if the token's general increase or decrease value is displayed correctly

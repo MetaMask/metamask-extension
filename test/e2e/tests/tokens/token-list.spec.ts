@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { zeroAddress } from 'ethereumjs-util';
