@@ -44,7 +44,9 @@ function getPercentageChange(from, to) {
  * @returns True if the artifact exists, false if it doesn't
  */
 async function artifactExists(url) {
-  const response = await fetch(url, { method: 'HEAD' });
+  // Using a regular GET request here rather than HEAD because for some reason CircleCI always
+  // returns 404 for HEAD requests.
+  const response = await fetch(url);
   return response.ok;
 }
 
