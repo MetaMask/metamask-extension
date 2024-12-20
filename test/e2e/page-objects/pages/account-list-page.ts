@@ -418,15 +418,16 @@ class AccountListPage {
     );
     const solBalanceValue = await this.driver.findElement(
       this.accountValueAndSuffix,
+      200000,
     );
-    console.log(solBalanceValue.getText());
+    console.log(await solBalanceValue.getText());
     await this.driver.waitForSelector(
       {
         css: this.accountValueAndSuffix,
         text: expectedValueAndSuffix,
       },
       {
-        timeout: 60000,
+        timeout: 20000,
       },
     );
   }

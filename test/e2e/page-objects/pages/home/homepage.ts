@@ -211,6 +211,14 @@ class HomePage {
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
   }
+
+  async getBalanceText(): Promise<string> {
+    const balanceValue = await this.driver.waitForSelector(this.balance, {
+      timeout: 120000,
+    });
+    const singleBalanceText = await balanceValue.getText();
+    return singleBalanceText;
+  }
 }
 
 export default HomePage;

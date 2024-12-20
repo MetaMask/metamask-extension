@@ -1509,6 +1509,14 @@ class FixtureBuilder {
     });
   }
 
+  withUseNativeCurrencyAsPrimaryCurrency() {
+    return this.withPreferencesController({
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
+    });
+  }
+
   build() {
     this.fixture.meta = {
       version: FIXTURE_STATE_METADATA_VERSION,
