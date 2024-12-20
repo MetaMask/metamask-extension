@@ -217,9 +217,6 @@ const PrepareBridgePage = () => {
   }, [rotateSwitchTokens]);
 
   useEffect(() => {
-    // Reset controller and inputs on load
-    dispatch(resetBridgeState());
-
     if (activeQuote) {
       // Get input data from active quote
       const { srcAsset, destAsset, destChainId } = activeQuote.quote;
@@ -229,6 +226,7 @@ const PrepareBridgePage = () => {
 
       if (quoteSrcToken && quoteDestToken && quoteDestChainId) {
         // Set inputs to values from active quote
+        dispatch(setFromTokenInputValue(null));
         dispatch(
           setFromToken({ ...quoteSrcToken, image: quoteSrcToken.iconUrl }),
         );
@@ -237,6 +235,9 @@ const PrepareBridgePage = () => {
           setToToken({ ...quoteDestToken, image: quoteDestToken.iconUrl }),
         );
       }
+    } else {
+      // Reset controller and inputs on load
+      dispatch(resetBridgeState());
     }
   }, []);
 
