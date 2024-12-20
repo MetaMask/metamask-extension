@@ -71,38 +71,34 @@ export default function OnboardingWelcome() {
   const modalBodyRef = useRef(null);
 
   useEffect(() => {
-    if (showTermsModal) {
-      // Reset scroll after a short delay to ensure modal is rendered
-      setTimeout(() => {
-        if (modalBodyRef.current) {
-          modalBodyRef.current.scrollTop = 0;
-          console.log(
-            'Scroll position after timeout:',
-            modalBodyRef.current.scrollTop,
-          );
-        }
-      }, 100);
-
-      // Add scroll event listener
-      const handleScroll = () => {
-        if (modalBodyRef.current) {
-          console.log(
-            'Current scroll position:',
-            modalBodyRef.current.scrollTop,
-          );
-        }
-      };
-
-      if (modalBodyRef.current) {
-        modalBodyRef.current.addEventListener('scroll', handleScroll);
-      }
-
-      return () => {
-        if (modalBodyRef.current) {
-          modalBodyRef.current.removeEventListener('scroll', handleScroll);
-        }
-      };
+    if (!showTermsModal) {
+      return undefined;
     }
+
+    const modalBody = modalBodyRef.current;
+
+    setTimeout(() => {
+      if (modalBody) {
+        modalBody.scrollTop = 0;
+        console.log('Scroll position after timeout:', modalBody.scrollTop);
+      }
+    }, 100);
+
+    const handleScroll = () => {
+      if (modalBody) {
+        console.log('Current scroll position:', modalBody.scrollTop);
+      }
+    };
+
+    if (modalBody) {
+      modalBody.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (modalBody) {
+        modalBody.removeEventListener('scroll', handleScroll);
+      }
+    };
   }, [showTermsModal]);
 
   // Don't allow users to come back to this screen after they
@@ -354,7 +350,7 @@ export default function OnboardingWelcome() {
                     className="onboarding__terms-checkbox"
                     dataTestId="onboarding-terms-checkbox"
                     checked={false}
-                    onClick={() => {}}
+                    onClick={() => undefined}
                   />
                   <Text variant={TextVariant.bodyMd} marginLeft={2}>
                     I agree to the Terms of use, which apply to my use of
