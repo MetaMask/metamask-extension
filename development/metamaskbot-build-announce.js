@@ -84,9 +84,6 @@ async function start() {
       chrome: `${BUILD_LINK_BASE}/builds-test/metamask-chrome-${VERSION}.zip`,
       firefox: `${BUILD_LINK_BASE}/builds-test-mv2/metamask-firefox-${VERSION}.zip`,
     },
-    'builds (test webpack)': {
-      chrome: `${BUILD_LINK_BASE}/builds-test-webpack/metamask-chrome-${VERSION}.zip`,
-    },
     'builds (test-flask)': {
       chrome: `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
       firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
