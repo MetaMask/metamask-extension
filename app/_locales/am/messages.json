@@ -428,9 +428,6 @@
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
   },
-  "noTransactions": {
-    "message": "ግብይቶች የሉዎትም"
-  },
   "noWebcamFound": {
     "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"
   },

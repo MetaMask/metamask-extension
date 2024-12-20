@@ -812,9 +812,6 @@
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
   },
-  "noTransactions": {
-    "message": "尚未有交易"
-  },
   "noWebcamFound": {
     "message": "無法搜尋到攝影鏡頭裝置。請再試一次"
   },

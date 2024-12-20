@@ -443,9 +443,6 @@
   "noConversionRateAvailable": {
     "message": "Няма наличен процент на преобръщане"
   },
-  "noTransactions": {
-    "message": "Нямате транзакции"
-  },
   "noWebcamFound": {
     "message": "Уеб камерата на компютърa Ви не беше намерена. Моля, опитайте отново."
   },
