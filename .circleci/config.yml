@@ -123,8 +123,6 @@ workflows:
                 - master
           requires:
             - prep-deps
-          requires:
-            - prep-deps
       - prep-build-mmi:
           requires:
             - prep-deps
