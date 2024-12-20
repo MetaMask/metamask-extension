@@ -1,20 +1,33 @@
 import EventEmitter from 'events';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
 ///: END:ONLY_INCLUDE_IF
 import Mascot from '../../../components/ui/mascot';
-import Button from '../../../components/ui/button';
-import { Text } from '../../../components/component-library';
-import CheckBox from '../../../components/ui/check-box';
-import Box from '../../../components/ui/box';
+import {
+  Text,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalContent,
+  ModalOverlay,
+  ModalBody,
+  ModalFooter,
+  Box,
+  Checkbox,
+  ButtonVariant,
+} from '../../../components/component-library';
 import {
   TextVariant,
-  AlignItems,
   TextAlign,
   FontWeight,
+  BlockSize,
+  AlignItems,
+  Display,
+  Color,
+  BorderStyle,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -42,6 +55,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { TermsOfUse } from '../../../components/app/terms-of-use-popup/terms-of-use';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -50,9 +64,46 @@ export default function OnboardingWelcome() {
   const [eventEmitter] = useState(new EventEmitter());
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const [termsChecked, setTermsChecked] = useState(false);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
+  const modalBodyRef = useRef(null);
+
+  useEffect(() => {
+    if (showTermsModal) {
+      // Reset scroll after a short delay to ensure modal is rendered
+      setTimeout(() => {
+        if (modalBodyRef.current) {
+          modalBodyRef.current.scrollTop = 0;
+          console.log(
+            'Scroll position after timeout:',
+            modalBodyRef.current.scrollTop,
+          );
+        }
+      }, 100);
+
+      // Add scroll event listener
+      const handleScroll = () => {
+        if (modalBodyRef.current) {
+          console.log(
+            'Current scroll position:',
+            modalBodyRef.current.scrollTop,
+          );
+        }
+      };
+
+      if (modalBodyRef.current) {
+        modalBodyRef.current.addEventListener('scroll', handleScroll);
+      }
+
+      return () => {
+        if (modalBodyRef.current) {
+          modalBodyRef.current.removeEventListener('scroll', handleScroll);
+        }
+      };
+    }
+  }, [showTermsModal]);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -75,61 +126,58 @@ export default function OnboardingWelcome() {
   ]);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const onCreateClick = async () => {
-    setNewAccountCreationInProgress(true);
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
-      properties: {
-        account_type: 'metamask',
-      },
-    });
-    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+  const handleAcceptTerms = async () => {
+    setShowTermsModal(false);
+    if (pendingAction === 'create') {
+      setNewAccountCreationInProgress(true);
+      dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+        properties: {
+          account_type: 'metamask',
+        },
+      });
+      dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
-    ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      history.push(ONBOARDING_METAMETRICS);
+      ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      await dispatch(setParticipateInMetaMetrics(false));
+      history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+      ///: END:ONLY_INCLUDE_IF
+    } else if (pendingAction === 'import') {
+      await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingWalletImportStarted,
+        properties: {
+          account_type: 'imported',
+        },
+      });
+      dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      history.push(ONBOARDING_METAMETRICS);
+      ///: END:ONLY_INCLUDE_IF
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      await dispatch(setParticipateInMetaMetrics(false));
+      history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+      ///: END:ONLY_INCLUDE_IF
+    }
   };
-  const toggleTermsCheck = () => {
-    setTermsChecked((currentTermsChecked) => !currentTermsChecked);
+
+  const onCreateClick = () => {
+    setPendingAction('create');
+    setShowTermsModal(true);
   };
-  const termsOfUse = t('agreeTermsOfUse', [
-    <a
-      className="create-new-vault__terms-link"
-      key="create-new-vault__link-text"
-      href="https://metamask.io/terms.html"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {t('terms')}
-    </a>,
-  ]);
 
-  const onImportClick = async () => {
-    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletImportStarted,
-      properties: {
-        account_type: 'imported',
-      },
-    });
-    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
-    ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
-    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
+  const onImportClick = () => {
+    setPendingAction('import');
+    setShowTermsModal(true);
   };
 
   return (
@@ -234,34 +282,11 @@ export default function OnboardingWelcome() {
 
       <ul className="onboarding-welcome__buttons">
         <li>
-          <Box
-            alignItems={AlignItems.center}
-            className="onboarding__terms-of-use"
-          >
-            <CheckBox
-              id="onboarding__terms-checkbox"
-              className="onboarding__terms-checkbox"
-              dataTestId="onboarding-terms-checkbox"
-              checked={termsChecked}
-              onClick={toggleTermsCheck}
-            />
-            <label
-              className="onboarding__terms-label"
-              htmlFor="onboarding__terms-checkbox"
-            >
-              <Text variant={TextVariant.bodyMd} marginLeft={2} as="span">
-                {termsOfUse}
-              </Text>
-            </label>
-          </Box>
-        </li>
-
-        <li>
           <Button
             data-testid="onboarding-create-wallet"
-            type="primary"
+            variant={ButtonVariant.Primary}
+            width={BlockSize.Full}
             onClick={onCreateClick}
-            disabled={!termsChecked}
           >
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -278,14 +303,78 @@ export default function OnboardingWelcome() {
         <li>
           <Button
             data-testid="onboarding-import-wallet"
-            type="secondary"
+            variant={ButtonVariant.Secondary}
+            width={BlockSize.Full}
             onClick={onImportClick}
-            disabled={!termsChecked}
           >
             {t('onboardingImportWallet')}
           </Button>
         </li>
       </ul>
+
+      {showTermsModal && (
+        <Modal isOpen onClose={() => setShowTermsModal(false)}>
+          <ModalOverlay />
+          <ModalContent style={{ scrollTop: 0 }}>
+            <ModalHeader>
+              <Text
+                variant={TextVariant.headingSm}
+                textAlign={TextAlign.Center}
+              >
+                Review our latest terms of use
+              </Text>
+            </ModalHeader>
+            <ModalBody
+              ref={modalBodyRef}
+              borderWidth={1}
+              borderStyle={BorderStyle.Solid}
+              borderColor={Color.borderDefault}
+              padding={10}
+              style={{
+                maxHeight: '400px',
+                borderRadius: '8px',
+                marginLeft: '16px',
+                marginRight: '16px',
+                overflowY: 'auto',
+                scrollBehavior: 'smooth',
+              }}
+            >
+              <TermsOfUse marginLeft={16} marginRight={16} showHeader />
+            </ModalBody>
+            <ModalFooter>
+              <>
+                <Box
+                  alignItems={AlignItems.center}
+                  display={Display.Flex}
+                  gap={3}
+                  className="onboarding__terms-of-use"
+                >
+                  <Checkbox
+                    id="onboarding__terms-checkbox"
+                    className="onboarding__terms-checkbox"
+                    dataTestId="onboarding-terms-checkbox"
+                    checked={false}
+                    onClick={() => {}}
+                  />
+                  <Text variant={TextVariant.bodyMd} marginLeft={2}>
+                    I agree to the Terms of use, which apply to my use of
+                    MetaMask and all of its features
+                  </Text>
+                </Box>
+                <Button
+                  onClick={handleAcceptTerms}
+                  variant={ButtonVariant.Primary}
+                  width={BlockSize.Full}
+                  className="onboarding-welcome__terms-accept"
+                  data-testid="onboarding-terms-accept"
+                >
+                  {t('agree')}
+                </Button>
+              </>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
 }
