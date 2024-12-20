@@ -7,6 +7,7 @@ import {
   AlignItems,
   TextAlign,
   TextVariant,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 
 type TransactionDetailRowProps = {
@@ -20,18 +21,16 @@ export default function TransactionDetailRow({
 }: TransactionDetailRowProps) {
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-      <Box style={{ maxWidth: '40%' }} paddingRight={1}>
+      <Box width={BlockSize.OneFourth} paddingRight={1}>
         <Text variant={TextVariant.bodyMd}>{title}</Text>
       </Box>
       <Box
         display={Display.Flex}
+        width={BlockSize.ThreeFourths}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexEnd}
         textAlign={TextAlign.Right}
         paddingLeft={1}
-        style={{
-          maxWidth: '60%',
-        }}
       >
         <Text variant={TextVariant.bodyMd}>{value}</Text>
       </Box>
