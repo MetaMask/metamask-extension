@@ -3304,9 +3304,6 @@
   "noThanks": {
     "message": "不，谢谢"
   },
-  "noTransactions": {
-    "message": "您没有任何交易"
-  },
   "noWebcamFound": {
     "message": "未找到您电脑的网络摄像头。请重试。"
   },

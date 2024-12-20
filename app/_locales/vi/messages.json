@@ -3304,9 +3304,6 @@
   "noThanks": {
     "message": "Không, cảm ơn"
   },
-  "noTransactions": {
-    "message": "Bạn không có giao dịch nào"
-  },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
   },
