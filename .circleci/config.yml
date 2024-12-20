@@ -304,6 +304,7 @@ workflows:
             - trigger-beta-build
             - prep-build-mmi
             - prep-build-flask
+            - prep-build-test-flask
             - prep-build-flask-mv2
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
