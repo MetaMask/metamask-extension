@@ -7,9 +7,6 @@ const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const baseManifest = isManifestV3
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
-const baradDurManifest = isManifestV3
-  ? require('../../app/manifest/v3/_barad_dur.json')
-  : require('../../app/manifest/v2/_barad_dur.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
@@ -42,7 +39,6 @@ function createManifestTasks({
         );
         const result = mergeWith(
           cloneDeep(baseManifest),
-          process.env.BARAD_DUR ? cloneDeep(baradDurManifest) : {},
           platformModifications,
           browserVersionMap[platform],
           await getBuildModifications(buildType, platform),
