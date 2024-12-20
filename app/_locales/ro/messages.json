@@ -434,9 +434,6 @@
   "noConversionRateAvailable": {
     "message": "Nici o rată de conversie disponibilă"
   },
-  "noTransactions": {
-    "message": "Nu aveți tranzacții"
-  },
   "noWebcamFound": {
     "message": "Webcam-ul computerului dvs. nu a fost găsit. Vă rugăm să încercați din nou."
   },

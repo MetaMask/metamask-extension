@@ -440,9 +440,6 @@
   "noConversionRateAvailable": {
     "message": "Nijedan konverzijski tečaj nije dostupan"
   },
-  "noTransactions": {
-    "message": "Nemate transkacija"
-  },
   "noWebcamFound": {
     "message": "Mrežna kamera vašeg računala nije pronađena. Pokušajte ponovno."
   },
