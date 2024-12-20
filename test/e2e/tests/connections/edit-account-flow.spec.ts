@@ -1,7 +1,4 @@
-import {
-  withFixtures,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -19,8 +16,7 @@ describe('Edit Accounts Flow', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -31,7 +27,9 @@ describe('Edit Accounts Flow', function () {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await new Homepage(driver).check_pageIsLoaded();
         new HeaderNavbar(driver).openAccountMenu();
 
@@ -55,7 +53,10 @@ describe('Edit Accounts Flow', function () {
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
         const sitePermissionPage = new SitePermissionPage(driver);
         await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
-        await sitePermissionPage.editPermissionsForAccount([accountLabel2, accountLabel3]);
+        await sitePermissionPage.editPermissionsForAccount([
+          accountLabel2,
+          accountLabel3,
+        ]);
         await sitePermissionPage.check_connectedAccountsNumber(3);
       },
     );

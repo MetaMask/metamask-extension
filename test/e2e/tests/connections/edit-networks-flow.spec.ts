@@ -1,13 +1,11 @@
-import { strict as assert } from 'assert';
-import {
-  withFixtures,
-  WINDOW_TITLES,
-  connectToDapp,
-  logInWithBalanceValidation,
-  locateAccountBalanceDOM,
-  defaultGanacheOptions,
-} from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import Homepage from '../../page-objects/pages/home/homepage';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
+import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Edit Networks Flow', function () {
@@ -20,53 +18,31 @@ describe('Edit Networks Flow', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await connectToDapp(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
-        // It should render connected status for button if dapp is connected
-        const getConnectedStatus = await driver.waitForSelector({
-          css: '#connectButton',
-          text: 'Connected',
+        await testDapp.connectAccount({
+          publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
-        assert.ok(getConnectedStatus, 'Account is connected to Dapp');
-
-        // Switch to extension Tab
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.clickElement('[data-testid="network-display"]');
-        await driver.clickElement('.mm-modal-content__dialog .toggle-button');
-        await driver.clickElement(
-          '.mm-modal-content__dialog button[aria-label="Close"]',
-        );
-        await locateAccountBalanceDOM(driver);
-        await driver.clickElement(
-          '[data-testid ="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElement({
-          text: '127.0.0.1:8080',
-          tag: 'p',
-        });
-        const editButtons = await driver.findElements('[data-testid="edit"]');
+        await new Homepage(driver).check_pageIsLoaded();
 
-        // Ensure there are edit buttons
-        assert.ok(editButtons.length > 0, 'Edit buttons are available');
-
-        // Click the first (0th) edit button
-        await editButtons[1].click();
+        // Open permission page for dapp
+        new HeaderNavbar(driver).openPermissionsPage();
+        const permissionListPage = new PermissionListPage(driver);
+        await permissionListPage.check_pageIsLoaded();
+        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
+        const sitePermissionPage = new SitePermissionPage(driver);
+        await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
 
         // Disconnect Mainnet
-        await driver.clickElement({
-          text: 'Ethereum Mainnet',
-          tag: 'p',
-        });
-
-        await driver.clickElement('[data-testid="connect-more-chains-button"]');
-        const updatedNetworkInfo = await driver.isElementPresent({
-          text: '2 networks connected',
-          tag: 'span',
-        });
-        assert.ok(updatedNetworkInfo, 'Networks List Updated');
+        await sitePermissionPage.editPermissionsForNetwork([
+          'Ethereum Mainnet',
+        ]);
+        await sitePermissionPage.check_connectedNetworksNumber(2);
       },
     );
   });
