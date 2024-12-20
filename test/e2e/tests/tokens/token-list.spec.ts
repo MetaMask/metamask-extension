@@ -6,7 +6,6 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  clickNestedButton,
   defaultGanacheOptions,
   unlockWallet,
   withFixtures,
@@ -29,7 +28,10 @@ describe('Token List', function () {
     },
   };
 
-  const mockEmptyPrices = async (mockServer: Mockttp, chainIdToMock: string) => {
+  const mockEmptyPrices = async (
+    mockServer: Mockttp,
+    chainIdToMock: string,
+  ) => {
     return mockServer
       .forGet(
         `https://price.api.cx.metamask.io/v2/chains/${parseInt(
@@ -43,7 +45,10 @@ describe('Token List', function () {
       }));
   };
 
-  const mockEmptyHistoricalPrices = async (mockServer: Mockttp, address: string) => {
+  const mockEmptyHistoricalPrices = async (
+    mockServer: Mockttp,
+    address: string,
+  ) => {
     return mockServer
       .forGet(
         `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}`,
@@ -57,7 +62,10 @@ describe('Token List', function () {
   const mockSpotPrices = async (
     mockServer: Mockttp,
     chainIdToMock: string,
-    prices: Record<string, any>
+    prices: Record<
+      string,
+      { price: number; pricePercentChange1d: number; marketCap: number }
+    >,
   ) => {
     return mockServer
       .forGet(
@@ -75,7 +83,7 @@ describe('Token List', function () {
   const mockHistoricalPrices = async (
     mockServer: Mockttp,
     address: string,
-    price: number
+    price: number,
   ) => {
     return mockServer
       .forGet(
@@ -115,10 +123,12 @@ describe('Token List', function () {
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomToken(tokenAddress, symbol);
 
-        const percentageNative = await assetListPage.getAssetPercentageIncreaseDecrease(zeroAddress());
+        const percentageNative =
+          await assetListPage.getAssetPercentageIncreaseDecrease(zeroAddress());
         assert.equal(percentageNative, '');
 
-        const percentage = await assetListPage.getAssetPercentageIncreaseDecrease(tokenAddress);
+        const percentage =
+          await assetListPage.getAssetPercentageIncreaseDecrease(tokenAddress);
         assert.equal(percentage, '');
       },
     );
@@ -126,8 +136,16 @@ describe('Token List', function () {
 
   it('shows percentage increase for an ERC20 token with prices available', async function () {
     const ethConversionInUsd = 10000;
-    const marketData = { price: 0.123, marketCap: 12, pricePercentChange1d: 0.05 };
-    const marketDataNative = { price: 0.123, marketCap: 12, pricePercentChange1d: 0.02 };
+    const marketData = {
+      price: 0.123,
+      marketCap: 12,
+      pricePercentChange1d: 0.05,
+    };
+    const marketDataNative = {
+      price: 0.123,
+      marketCap: 12,
+      pricePercentChange1d: 0.02,
+    };
 
     await withFixtures(
       {
@@ -139,7 +157,11 @@ describe('Token List', function () {
             [zeroAddress()]: marketDataNative,
             [tokenAddress.toLowerCase()]: marketData,
           }),
-          await mockHistoricalPrices(mockServer, tokenAddress, marketData.price),
+          await mockHistoricalPrices(
+            mockServer,
+            tokenAddress,
+            marketData.price,
+          ),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -151,8 +173,14 @@ describe('Token List', function () {
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomToken(tokenAddress, symbol);
 
-        await assetListPage.check_tokenIncreasePercentage(zeroAddress(), '+0.02%');
-        await assetListPage.check_tokenIncreasePercentage(tokenAddress, '+0.05%');
+        await assetListPage.check_tokenIncreasePercentage(
+          zeroAddress(),
+          '+0.02%',
+        );
+        await assetListPage.check_tokenIncreasePercentage(
+          tokenAddress,
+          '+0.05%',
+        );
         await assetListPage.check_tokenIncreaseValue('+$50.00');
       },
     );

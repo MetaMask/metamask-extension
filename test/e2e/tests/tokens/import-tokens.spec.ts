@@ -1,16 +1,16 @@
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 
-import { strict as assert } from 'assert';
 import {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import { Mockttp } from '../../mock-e2e';
 
 describe('Import flow', function () {
-  async function mockPriceFetch(mockServer: any) {
+  async function mockPriceFetch(mockServer: Mockttp) {
     return [
       await mockServer
         .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
@@ -72,7 +72,11 @@ describe('Import flow', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.check_pageIsLoaded();
-        await assetListPage.importMultipleTokensBySearch(['CHAIN', 'CHANGE', 'CHAI']);
+        await assetListPage.importMultipleTokensBySearch([
+          'CHAIN',
+          'CHANGE',
+          'CHAI',
+        ]);
 
         const tokenList = new AssetListPage(driver);
         await tokenList.check_tokenItemNumber(5); // Linea & Mainnet Eth
@@ -80,7 +84,6 @@ describe('Import flow', function () {
         await tokenList.check_tokenIsDisplayed('Chain Games');
         await tokenList.check_tokenIsDisplayed('Changex');
         await tokenList.check_tokenIsDisplayed('Chai');
-
       },
     );
   });

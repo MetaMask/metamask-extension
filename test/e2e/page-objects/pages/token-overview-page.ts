@@ -6,17 +6,17 @@ class TokenOverviewPage {
   private readonly sendButton = {
     text: 'Send',
     css: '.icon-button',
-  }
+  };
 
   private readonly receiveButton = {
     text: 'Receive',
     css: '.icon-button',
-  }
+  };
 
   private readonly swapButton = {
     text: 'Swap',
     css: '.icon-button',
-  }
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;

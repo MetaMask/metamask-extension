@@ -342,6 +342,7 @@ class AssetListPage {
 
   /**
    * Checks if the token increase/decrease percentage is displayed correctly for a specific token
+   *
    * @param address - The token address to check
    * @param expectedPercentage - The expected percentage value (e.g. '+0.02%')
    */
@@ -363,6 +364,7 @@ class AssetListPage {
 
   /**
    * Checks if the token increase/decrease value is displayed correctly
+   *
    * @param expectedValue - The expected value (e.g. '+$50.00')
    */
   async check_tokenIncreaseValue(expectedValue: string): Promise<void> {
