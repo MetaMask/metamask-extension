@@ -133,6 +133,7 @@ async function start() {
   ];
 
   for (const fileRoot of fileRoots) {
+    bundles[fileRoot] = [];
     let fileIndex = 0;
     let url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
     console.log(`Verifying ${url}`);
