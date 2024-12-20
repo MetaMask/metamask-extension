@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import {
@@ -22,7 +19,7 @@ import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/in
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
-import { useTokenTransactionData } from '../hooks/useTokenTransactionData';
+import { useTransferRecipient } from '../hooks/useTransferRecipient';
 
 export const TransactionFlowSection = () => {
   const t = useI18nContext();
@@ -30,13 +27,7 @@ export const TransactionFlowSection = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const parsedTransactionData = useTokenTransactionData();
-
-  const recipientAddress =
-    transactionMeta.type === TransactionType.simpleSend
-      ? transactionMeta.txParams.to
-      : parsedTransactionData?.args?._to;
-
+  const recipientAddress = useTransferRecipient();
   const { chainId } = transactionMeta;
 
   return (
