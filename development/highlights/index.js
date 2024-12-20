@@ -9,7 +9,7 @@ async function getHighlights({ artifactBase }) {
   // here we assume the PR base branch ("target") is `main` in lieu of doing
   // a query against the github api which requires an access token
   // see https://discuss.circleci.com/t/how-to-retrieve-a-pull-requests-base-branch-name-github/36911
-  const changedFiles = await getChangedFiles({ target: 'main' });
+  const changedFiles = await getChangedFiles({ target: 'origin/main' });
   console.log(`detected changed files vs main:`);
   for (const filename of changedFiles) {
     console.log(`  ${filename}`);
