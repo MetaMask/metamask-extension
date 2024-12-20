@@ -1,5 +1,4 @@
 import * as path from 'path';
-import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import {
   KnownRpcMethods,
@@ -105,12 +104,12 @@ export async function getSessionScopes(
 }
 
 /**
- * Use dapp UI to send custom addresses to request scope for.
+ * Use dapp UI to add account addresses to `wallet_createSession` request.
  *
  * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
- * @param accounts - The addresses to get session scope for.
+ * @param accounts - The addresses to add to the create session request.
  */
-export async function addRequestAccountsToCreateSession(
+export async function addAccountsToCreateSessionForm(
   driver: Driver,
   accounts: [string, string],
 ): Promise<void> {
@@ -155,7 +154,9 @@ export const getExpectedSessionScope = (scope: string, accounts: string[]) => ({
   accounts: accounts.map((acc) => `${scope}:${acc.toLowerCase()}`),
 });
 
-export const addAndAuthorizeAccount = async (driver: Driver): Promise<void> => {
+export const addAccountInWalletAndAuthorize = async (
+  driver: Driver,
+): Promise<void> => {
   const editButtons = await driver.findElements('[data-testid="edit"]');
   await editButtons[0].click();
   await driver.clickElement({ text: 'New account', tag: 'button' });
@@ -204,39 +205,4 @@ export const uncheckNetworksExceptMainnet = async (
     }
   }
   await driver.clickElement({ text: 'Update', tag: 'button' });
-};
-
-/**
- * Will assert only the requested networks are selected, and all other are not.
- *
- * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
- * @param networkList - list of networks to assert selection for.
- */
-export const assertOnlyRequestedNetworksAreSelected = async (
-  driver: Driver,
-  networkList: string[],
-) => {
-  const networkListItems = await driver.findElements(
-    '.multichain-network-list-item',
-  );
-
-  for (const item of networkListItems) {
-    const network = await item.getText();
-    const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
-    const isChecked = await checkbox.isSelected();
-
-    if (networkList.includes(network)) {
-      assert.strictEqual(
-        isChecked,
-        true,
-        `Expected ${network} to be selected.`,
-      );
-    } else {
-      assert.strictEqual(
-        isChecked,
-        false,
-        `Expected ${network} to NOT be selected.`,
-      );
-    }
-  }
 };
