@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useTokenTransactionData } from './useTokenTransactionData';
 import { useConfirmContext } from '../../../../context/confirm';
+import { useTokenTransactionData } from './useTokenTransactionData';
 
 export function useTransferRecipient() {
   const { currentConfirmation: transactionMetadata } =
