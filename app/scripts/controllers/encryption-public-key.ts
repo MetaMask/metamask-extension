@@ -203,14 +203,6 @@ export default class EncryptionPublicKeyController extends BaseController<
     const keyringType = await this._getAccountKeyringType(address);
 
     switch (keyringType) {
-      case KeyringType.ledger: {
-        return new Promise((_, reject) => {
-          reject(
-            new Error('Ledger does not support eth_getEncryptionPublicKey.'),
-          );
-        });
-      }
-
       case KeyringType.trezor: {
         return new Promise((_, reject) => {
           reject(
