@@ -443,9 +443,6 @@
   "noConversionRateAvailable": {
     "message": "Nėra keitimo kurso"
   },
-  "noTransactions": {
-    "message": "Neturite jokių operacijų"
-  },
   "noWebcamFound": {
     "message": "Jūsų kompiuterio vaizdo kamera nerasta. Bandykite dar kartą."
   },

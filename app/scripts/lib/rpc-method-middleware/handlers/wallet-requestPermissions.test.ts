@@ -31,9 +31,7 @@ const getBaseRequest = (overrides = {}) => ({
 const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
-  const requestPermissionsForOrigin = jest
-    .fn()
-    .mockRejectedValue(new Error('failed to request unexpected permission'));
+  const requestPermissionsForOrigin = jest.fn().mockResolvedValue({});
   const getAccounts = jest.fn().mockReturnValue([]);
   const requestCaip25PermissionForOrigin = jest.fn().mockResolvedValue({});
   const response: PendingJsonRpcResponse<Json> = {
@@ -79,251 +77,562 @@ describe('requestPermissionsHandler', () => {
     );
   });
 
-  it('requests the CAIP-25 permission using eth_accounts when only eth_accounts is specified in params', async () => {
-    const { handler, requestCaip25PermissionForOrigin } = createMockedHandler();
+  describe('only other permissions (non CAIP-25 equivalent) requested', () => {
+    it('it treats "endowment:caip25" as an other permission', async () => {
+      const {
+        handler,
+        requestPermissionsForOrigin,
+        requestCaip25PermissionForOrigin,
+      } = createMockedHandler();
 
-    await handler(
-      getBaseRequest({
-        params: [
-          {
-            [RestrictedMethods.eth_accounts]: {
-              foo: 'bar',
+      await handler(
+        getBaseRequest({
+          params: [
+            {
+              [Caip25EndowmentPermissionName]: {},
             },
-          },
-        ],
-      }),
-    );
+          ],
+        }),
+      );
 
-    expect(requestCaip25PermissionForOrigin).toHaveBeenCalledWith({
-      [RestrictedMethods.eth_accounts]: {
-        foo: 'bar',
-      },
+      expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
+        [Caip25EndowmentPermissionName]: {},
+      });
+      expect(requestCaip25PermissionForOrigin).not.toHaveBeenCalled();
     });
-  });
 
-  it('requests the CAIP-25 permission for permittedChains when only permittedChains is specified in params', async () => {
-    const { handler, requestCaip25PermissionForOrigin } = createMockedHandler();
+    it('requests the permission for the other permissions', async () => {
+      const { handler, requestPermissionsForOrigin } = createMockedHandler();
 
-    await handler(
-      getBaseRequest({
-        params: [
-          {
-            [PermissionNames.permittedChains]: {
-              caveats: [
-                {
-                  type: CaveatTypes.restrictNetworkSwitching,
-                  value: ['0x64'],
-                },
-              ],
+      await handler(
+        getBaseRequest({
+          params: [
+            {
+              otherPermissionA: {},
+              otherPermissionB: {},
             },
-          },
-        ],
-      }),
-    );
+          ],
+        }),
+      );
 
-    expect(requestCaip25PermissionForOrigin).toHaveBeenCalledWith({
-      [PermissionNames.permittedChains]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: ['0x64'],
-          },
-        ],
-      },
+      expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
+        otherPermissionA: {},
+        otherPermissionB: {},
+      });
     });
-  });
 
-  it('requests the CAIP-25 permission for eth_accounts and permittedChains when both are specified in params', async () => {
-    const { handler, requestCaip25PermissionForOrigin } = createMockedHandler();
+    it('returns an error if requesting other permissions fails', async () => {
+      const { handler, requestPermissionsForOrigin, end } =
+        createMockedHandler();
 
-    await handler(
-      getBaseRequest({
-        params: [
-          {
-            [RestrictedMethods.eth_accounts]: {
-              foo: 'bar',
+      requestPermissionsForOrigin.mockRejectedValue(
+        new Error('failed to request other permissions'),
+      );
+
+      await handler(
+        getBaseRequest({
+          params: [
+            {
+              otherPermissionA: {},
+              otherPermissionB: {},
             },
-            [PermissionNames.permittedChains]: {
-              caveats: [
-                {
-                  type: CaveatTypes.restrictNetworkSwitching,
-                  value: ['0x64'],
-                },
-              ],
-            },
-          },
-        ],
-      }),
-    );
+          ],
+        }),
+      );
 
-    expect(requestCaip25PermissionForOrigin).toHaveBeenCalledWith({
-      [RestrictedMethods.eth_accounts]: {
-        foo: 'bar',
-      },
-      [PermissionNames.permittedChains]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: ['0x64'],
-          },
-        ],
-      },
+      expect(end).toHaveBeenCalledWith(
+        new Error('failed to request other permissions'),
+      );
     });
-  });
 
-  it('returns an error if requesting the CAIP-25 permission fails', async () => {
-    const { handler, requestCaip25PermissionForOrigin, end } =
-      createMockedHandler();
-    requestCaip25PermissionForOrigin.mockRejectedValue(
-      new Error('failed to request caip25 permission'),
-    );
+    it('returns the other permissions that are granted', async () => {
+      const { handler, requestPermissionsForOrigin, response } =
+        createMockedHandler();
 
-    await handler(
-      getBaseRequest({
-        params: [
-          {
-            [RestrictedMethods.eth_accounts]: {
-              foo: 'bar',
-            },
-            [PermissionNames.permittedChains]: {
-              caveats: [
-                {
-                  type: CaveatTypes.restrictNetworkSwitching,
-                  value: ['0x64'],
-                },
-              ],
-            },
-          },
-        ],
-      }),
-    );
-
-    expect(end).toHaveBeenCalledWith(
-      new Error('failed to request caip25 permission'),
-    );
-  });
-
-  it('returns an error by requesting other permissions in params from the PermissionController if specified', async () => {
-    const { handler, requestPermissionsForOrigin, end } = createMockedHandler();
-
-    await handler(
-      getBaseRequest({
-        params: [
-          {
-            [Caip25EndowmentPermissionName]: {},
-            otherPermission: {},
-          },
-        ],
-      }),
-    );
-
-    expect(requestPermissionsForOrigin).toHaveBeenCalledWith({
-      [Caip25EndowmentPermissionName]: {},
-      otherPermission: {},
-    });
-    expect(end).toHaveBeenCalledWith(
-      new Error('failed to request unexpected permission'),
-    );
-  });
-
-  it('returns an error by requesting empty permissions in params from the PermissionController if no permissions specified', async () => {
-    const { handler, requestPermissionsForOrigin, end } = createMockedHandler();
-
-    await handler(
-      getBaseRequest({
-        params: [{}],
-      }),
-    );
-    expect(requestPermissionsForOrigin).toHaveBeenCalledWith({});
-    expect(end).toHaveBeenCalledWith(
-      new Error('failed to request unexpected permission'),
-    );
-  });
-
-  it('returns both eth_accounts and permittedChains permissions that were granted there are permitted chains', async () => {
-    const { handler, getAccounts, requestCaip25PermissionForOrigin, response } =
-      createMockedHandler();
-    getAccounts.mockReturnValue(['0xdeadbeef']);
-    requestCaip25PermissionForOrigin.mockResolvedValue({
-      id: 'new',
-      parentCapability: Caip25EndowmentPermissionName,
-      caveats: [
+      requestPermissionsForOrigin.mockResolvedValue([
         {
-          type: Caip25CaveatType,
-          value: {
-            requiredScopes: {},
-            optionalScopes: {
-              'eip155:1': {
-                accounts: ['0xdeadbeef'],
-              },
-              'eip155:5': {
-                accounts: ['0xdeadbeef'],
-              },
-            },
-          },
+          otherPermissionA: { foo: 'bar' },
+          otherPermissionB: { hello: true },
         },
-      ],
-    });
+      ]);
 
-    await handler(getBaseRequest());
-    expect(response.result).toStrictEqual([
-      {
-        caveats: [
-          {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ['0xdeadbeef'],
-          },
-        ],
-        id: 'new',
-        parentCapability: RestrictedMethods.eth_accounts,
-      },
-      {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: ['0x1', '0x5'],
-          },
-        ],
-        id: 'new',
-        parentCapability: PermissionNames.permittedChains,
-      },
-    ]);
+      await handler(
+        getBaseRequest({
+          params: [
+            {
+              otherPermissionA: {},
+              otherPermissionB: {},
+            },
+          ],
+        }),
+      );
+
+      expect(response.result).toStrictEqual([{ foo: 'bar' }, { hello: true }]);
+    });
   });
 
-  it('returns only eth_accounts permission that was granted if there are no permitted chains', async () => {
-    const { handler, getAccounts, requestCaip25PermissionForOrigin, response } =
-      createMockedHandler();
-    getAccounts.mockReturnValue(['0xdeadbeef']);
-    requestCaip25PermissionForOrigin.mockResolvedValue({
-      id: 'new',
-      parentCapability: Caip25EndowmentPermissionName,
-      caveats: [
-        {
-          type: Caip25CaveatType,
-          value: {
-            requiredScopes: {},
-            optionalScopes: {
-              'wallet:eip155': {
-                accounts: ['0xdeadbeef'],
+  describe('only CAIP-25 equivalent permissions ("eth_accounts" and/or "endowment:permittedChains") requested', () => {
+    it('requests the CAIP-25 permission using eth_accounts when only eth_accounts is specified in params', async () => {
+      const { handler, requestCaip25PermissionForOrigin } =
+        createMockedHandler();
+
+      await handler(
+        getBaseRequest({
+          params: [
+            {
+              [RestrictedMethods.eth_accounts]: {
+                foo: 'bar',
+              },
+            },
+          ],
+        }),
+      );
+
+      expect(requestCaip25PermissionForOrigin).toHaveBeenCalledWith({
+        [RestrictedMethods.eth_accounts]: {
+          foo: 'bar',
+        },
+      });
+    });
+
+    it('requests the CAIP-25 permission for permittedChains when only permittedChains is specified in params', async () => {
+      const { handler, requestCaip25PermissionForOrigin } =
+        createMockedHandler();
+
+      await handler(
+        getBaseRequest({
+          params: [
+            {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x64'],
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+      );
+
+      expect(requestCaip25PermissionForOrigin).toHaveBeenCalledWith({
+        [PermissionNames.permittedChains]: {
+          caveats: [
+            {
+              type: CaveatTypes.restrictNetworkSwitching,
+              value: ['0x64'],
+            },
+          ],
+        },
+      });
+    });
+
+    it('requests the CAIP-25 permission for eth_accounts and permittedChains when both are specified in params', async () => {
+      const { handler, requestCaip25PermissionForOrigin } =
+        createMockedHandler();
+
+      await handler(
+        getBaseRequest({
+          params: [
+            {
+              [RestrictedMethods.eth_accounts]: {
+                foo: 'bar',
+              },
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x64'],
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+      );
+
+      expect(requestCaip25PermissionForOrigin).toHaveBeenCalledWith({
+        [RestrictedMethods.eth_accounts]: {
+          foo: 'bar',
+        },
+        [PermissionNames.permittedChains]: {
+          caveats: [
+            {
+              type: CaveatTypes.restrictNetworkSwitching,
+              value: ['0x64'],
+            },
+          ],
+        },
+      });
+    });
+
+    it('returns an error if requesting the CAIP-25 permission fails', async () => {
+      const { handler, requestCaip25PermissionForOrigin, end } =
+        createMockedHandler();
+      requestCaip25PermissionForOrigin.mockRejectedValue(
+        new Error('failed to request caip25 permission'),
+      );
+
+      await handler(
+        getBaseRequest({
+          params: [
+            {
+              [RestrictedMethods.eth_accounts]: {
+                foo: 'bar',
+              },
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x64'],
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+      );
+
+      expect(end).toHaveBeenCalledWith(
+        new Error('failed to request caip25 permission'),
+      );
+    });
+
+    it('returns both eth_accounts and permittedChains permissions that were granted if there are permitted chains', async () => {
+      const {
+        handler,
+        getAccounts,
+        requestCaip25PermissionForOrigin,
+        response,
+      } = createMockedHandler();
+      getAccounts.mockReturnValue(['0xdeadbeef']);
+      requestCaip25PermissionForOrigin.mockResolvedValue({
+        id: 'new',
+        parentCapability: Caip25EndowmentPermissionName,
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {},
+              optionalScopes: {
+                'eip155:1': {
+                  accounts: ['0xdeadbeef'],
+                },
+                'eip155:5': {
+                  accounts: ['0xdeadbeef'],
+                },
               },
             },
           },
+        ],
+      });
+
+      await handler(getBaseRequest());
+      expect(response.result).toStrictEqual([
+        {
+          caveats: [
+            {
+              type: CaveatTypes.restrictReturnedAccounts,
+              value: ['0xdeadbeef'],
+            },
+          ],
+          id: 'new',
+          parentCapability: RestrictedMethods.eth_accounts,
         },
-      ],
+        {
+          caveats: [
+            {
+              type: CaveatTypes.restrictNetworkSwitching,
+              value: ['0x1', '0x5'],
+            },
+          ],
+          id: 'new',
+          parentCapability: PermissionNames.permittedChains,
+        },
+      ]);
     });
 
-    await handler(getBaseRequest());
-    expect(response.result).toStrictEqual([
-      {
+    it('returns only eth_accounts permission that was granted if there are no permitted chains', async () => {
+      const {
+        handler,
+        getAccounts,
+        requestCaip25PermissionForOrigin,
+        response,
+      } = createMockedHandler();
+      getAccounts.mockReturnValue(['0xdeadbeef']);
+      requestCaip25PermissionForOrigin.mockResolvedValue({
+        id: 'new',
+        parentCapability: Caip25EndowmentPermissionName,
         caveats: [
           {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ['0xdeadbeef'],
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {},
+              optionalScopes: {
+                'wallet:eip155': {
+                  accounts: ['0xdeadbeef'],
+                },
+              },
+            },
           },
         ],
-        id: 'new',
-        parentCapability: RestrictedMethods.eth_accounts,
-      },
-    ]);
+      });
+
+      await handler(getBaseRequest());
+      expect(response.result).toStrictEqual([
+        {
+          caveats: [
+            {
+              type: CaveatTypes.restrictReturnedAccounts,
+              value: ['0xdeadbeef'],
+            },
+          ],
+          id: 'new',
+          parentCapability: RestrictedMethods.eth_accounts,
+        },
+      ]);
+    });
+  });
+
+  describe('both CAIP-25 equivalent and other permissions requested', () => {
+    describe('both CAIP-25 equivalent permissions and other permissions are granted', () => {
+      it('returns eth_accounts, permittedChains, and other permissions that were granted', async () => {
+        const {
+          handler,
+          getAccounts,
+          requestPermissionsForOrigin,
+          requestCaip25PermissionForOrigin,
+          response,
+        } = createMockedHandler();
+        requestPermissionsForOrigin.mockResolvedValue([
+          {
+            otherPermissionA: { foo: 'bar' },
+            otherPermissionB: { hello: true },
+          },
+        ]);
+        getAccounts.mockReturnValue(['0xdeadbeef']);
+        requestCaip25PermissionForOrigin.mockResolvedValue({
+          id: 'new',
+          parentCapability: Caip25EndowmentPermissionName,
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': {
+                    accounts: ['0xdeadbeef'],
+                  },
+                  'eip155:5': {
+                    accounts: ['0xdeadbeef'],
+                  },
+                },
+              },
+            },
+          ],
+        });
+
+        await handler(
+          getBaseRequest({
+            params: [
+              {
+                eth_accounts: {},
+                'endowment:permitted-chains': {},
+                otherPermissionA: {},
+                otherPermissionB: {},
+              },
+            ],
+          }),
+        );
+        expect(response.result).toStrictEqual([
+          { foo: 'bar' },
+          { hello: true },
+          {
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['0xdeadbeef'],
+              },
+            ],
+            id: 'new',
+            parentCapability: RestrictedMethods.eth_accounts,
+          },
+          {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x1', '0x5'],
+              },
+            ],
+            id: 'new',
+            parentCapability: PermissionNames.permittedChains,
+          },
+        ]);
+      });
+    });
+
+    describe('CAIP-25 equivalent permissions are granted, but other permissions are not granted', () => {
+      it('returns both eth_accounts and permittedChains permissions that were granted', async () => {
+        const {
+          handler,
+          getAccounts,
+          requestPermissionsForOrigin,
+          requestCaip25PermissionForOrigin,
+          response,
+        } = createMockedHandler();
+        requestPermissionsForOrigin.mockRejectedValue(
+          new Error('other permissions rejected'),
+        );
+        getAccounts.mockReturnValue(['0xdeadbeef']);
+        requestCaip25PermissionForOrigin.mockResolvedValue({
+          id: 'new',
+          parentCapability: Caip25EndowmentPermissionName,
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': {
+                    accounts: ['0xdeadbeef'],
+                  },
+                  'eip155:5': {
+                    accounts: ['0xdeadbeef'],
+                  },
+                },
+              },
+            },
+          ],
+        });
+
+        await handler(
+          getBaseRequest({
+            params: [
+              {
+                eth_accounts: {},
+                'endowment:permitted-chains': {},
+                otherPermissionA: {},
+                otherPermissionB: {},
+              },
+            ],
+          }),
+        );
+        expect(response.result).toStrictEqual([
+          {
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['0xdeadbeef'],
+              },
+            ],
+            id: 'new',
+            parentCapability: RestrictedMethods.eth_accounts,
+          },
+          {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x1', '0x5'],
+              },
+            ],
+            id: 'new',
+            parentCapability: PermissionNames.permittedChains,
+          },
+        ]);
+      });
+    });
+
+    describe('CAIP-25 equivalent permissions are not granted, but other permissions are granted', () => {
+      it('returns the other permissions that are granted', async () => {
+        const {
+          handler,
+          requestPermissionsForOrigin,
+          requestCaip25PermissionForOrigin,
+          response,
+        } = createMockedHandler();
+        requestPermissionsForOrigin.mockResolvedValue([
+          {
+            otherPermissionA: { foo: 'bar' },
+            otherPermissionB: { hello: true },
+          },
+        ]);
+        requestCaip25PermissionForOrigin.mockRejectedValue(
+          new Error('caip25 permission rejected'),
+        );
+
+        await handler(
+          getBaseRequest({
+            params: [
+              {
+                eth_accounts: {},
+                'endowment:permitted-chains': {},
+                otherPermissionA: {},
+                otherPermissionB: {},
+              },
+            ],
+          }),
+        );
+
+        expect(response.result).toStrictEqual([
+          { foo: 'bar' },
+          { hello: true },
+        ]);
+      });
+    });
+
+    describe('both CAIP-25 equivalent permissions and other permissions are not granted', () => {
+      it('returns the error from the rejected CAIP-25 permission grant', async () => {
+        const {
+          handler,
+          requestPermissionsForOrigin,
+          requestCaip25PermissionForOrigin,
+          end,
+        } = createMockedHandler();
+        requestPermissionsForOrigin.mockRejectedValue(
+          new Error('other permissions rejected'),
+        );
+        requestCaip25PermissionForOrigin.mockRejectedValue(
+          new Error('caip25 permission rejected'),
+        );
+
+        await handler(
+          getBaseRequest({
+            params: [
+              {
+                eth_accounts: {},
+                'endowment:permitted-chains': {},
+                otherPermissionA: {},
+                otherPermissionB: {},
+              },
+            ],
+          }),
+        );
+
+        expect(end).toHaveBeenCalledWith(
+          new Error('caip25 permission rejected'),
+        );
+      });
+    });
+  });
+
+  describe('no permissions requested', () => {
+    it('returns an error by requesting empty permissions in params from the PermissionController if no permissions specified', async () => {
+      const { handler, requestPermissionsForOrigin, end } =
+        createMockedHandler();
+      requestPermissionsForOrigin.mockRejectedValue(
+        new Error('failed to request unexpected permission'),
+      );
+
+      await handler(
+        getBaseRequest({
+          params: [{}],
+        }),
+      );
+      expect(requestPermissionsForOrigin).toHaveBeenCalledWith({});
+      expect(end).toHaveBeenCalledWith(
+        new Error('failed to request unexpected permission'),
+      );
+    });
   });
 });

@@ -94,20 +94,23 @@ export function getPermissionBackgroundApiMethods({
       new Set([...ethChainIds, ...chainIds]),
     );
 
-    let updatedCaveatValue = setPermittedEthChainIds(
+    const caveatValueWithChains = setPermittedEthChainIds(
       caip25Caveat.value,
       updatedEthChainIds,
     );
 
     // ensure that the list of permitted eth accounts is set for the newly added eth scopes
-    const ethAccounts = getEthAccounts(updatedCaveatValue);
-    updatedCaveatValue = setEthAccounts(updatedCaveatValue, ethAccounts);
+    const ethAccounts = getEthAccounts(caveatValueWithChains);
+    const caveatValueWithAccountsSynced = setEthAccounts(
+      caveatValueWithChains,
+      ethAccounts,
+    );
 
     permissionController.updateCaveat(
       origin,
       Caip25EndowmentPermissionName,
       Caip25CaveatType,
-      updatedCaveatValue,
+      caveatValueWithAccountsSynced,
     );
   };
 
@@ -135,18 +138,21 @@ export function getPermissionBackgroundApiMethods({
       type: MethodNames.RequestPermissions,
     });
 
-    let caveatValue = {
+    const newCaveatValue = {
       requiredScopes: {},
       optionalScopes: {},
       isMultichainOrigin: false,
     };
 
-    caveatValue = setPermittedEthChainIds(
-      caveatValue,
+    const caveatValueWithChains = setPermittedEthChainIds(
+      newCaveatValue,
       legacyApproval.approvedChainIds,
     );
 
-    caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
+    const caveatValueWithAccounts = setEthAccounts(
+      caveatValueWithChains,
+      legacyApproval.approvedAccounts,
+    );
 
     permissionController.grantPermissions({
       subject: { origin },
@@ -155,7 +161,7 @@ export function getPermissionBackgroundApiMethods({
           caveats: [
             {
               type: Caip25CaveatType,
-              value: caveatValue,
+              value: caveatValueWithAccounts,
             },
           ],
         },

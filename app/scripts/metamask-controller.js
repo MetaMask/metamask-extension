@@ -5640,19 +5640,22 @@ export default class MetamaskController extends EventEmitter {
       await this.requestApprovalPermittedChainsPermission(origin, chainId);
     }
 
-    let updatedCaveatValue = addPermittedEthChainId(
+    const caveatValueWithChainsAdded = addPermittedEthChainId(
       caip25Caveat.value,
       chainId,
     );
 
     const ethAccounts = getEthAccounts(caip25Caveat.value);
-    updatedCaveatValue = setEthAccounts(updatedCaveatValue, ethAccounts);
+    const caveatValueWithAccountsSynced = setEthAccounts(
+      caveatValueWithChainsAdded,
+      ethAccounts,
+    );
 
     this.permissionController.updateCaveat(
       origin,
       Caip25EndowmentPermissionName,
       Caip25CaveatType,
-      updatedCaveatValue,
+      caveatValueWithAccountsSynced,
     );
   }
 
@@ -5697,26 +5700,30 @@ export default class MetamaskController extends EventEmitter {
         type: MethodNames.RequestPermissions,
       });
 
-    let caveatValue = {
+    const newCaveatValue = {
       requiredScopes: {},
       optionalScopes: {},
       isMultichainOrigin: false,
     };
 
-    if (isSnapId(origin)) {
-      caveatValue.optionalScopes = {
-        'wallet:eip155': {
-          accounts: [],
-        },
-      };
-    } else {
-      caveatValue = setPermittedEthChainIds(
-        caveatValue,
-        legacyApproval.approvedChainIds,
-      );
-    }
+    const caveatValueWithChains = isSnapId(origin)
+      ? {
+          ...newCaveatValue,
+          optionalScopes: {
+            'wallet:eip155': {
+              accounts: [],
+            },
+          },
+        }
+      : setPermittedEthChainIds(
+          newCaveatValue,
+          legacyApproval.approvedChainIds,
+        );
 
-    caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
+    const caveatValueWithAccounts = setEthAccounts(
+      caveatValueWithChains,
+      legacyApproval.approvedAccounts,
+    );
 
     const grantedPermissions = this.permissionController.grantPermissions({
       subject: { origin },
@@ -5725,7 +5732,7 @@ export default class MetamaskController extends EventEmitter {
           caveats: [
             {
               type: Caip25CaveatType,
-              value: caveatValue,
+              value: caveatValueWithAccounts,
             },
           ],
         },
