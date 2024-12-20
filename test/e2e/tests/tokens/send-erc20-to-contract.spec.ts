@@ -31,7 +31,7 @@ describe('Send ERC20 token to contract address', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.check_pageIsLoaded();
-        await assetListPage.clickOnAsset('ETH');
+        await assetListPage.clickOnAsset('TST');
 
         // Send TST
         const tokenOverviewPage = new TokenOverviewPage(driver);

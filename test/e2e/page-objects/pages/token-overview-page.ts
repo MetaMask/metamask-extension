@@ -3,11 +3,20 @@ import { Driver } from '../../webdriver/driver';
 class TokenOverviewPage {
   private driver: Driver;
 
-  private readonly sendButton = '[data-testid="coin-overview-send"]';
+  private readonly sendButton = {
+    text: 'Send',
+    css: '.icon-button',
+  }
 
-  private readonly receiveButton = '[data-testid="coin-overview-receive"]';
+  private readonly receiveButton = {
+    text: 'Receive',
+    css: '.icon-button',
+  }
 
-  private readonly swapButton = '[data-testid="token-overview-button-swap"]';
+  private readonly swapButton = {
+    text: 'Swap',
+    css: '.icon-button',
+  }
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -17,7 +26,6 @@ class TokenOverviewPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
-        this.receiveButton,
         this.swapButton,
       ]);
     } catch (e) {
