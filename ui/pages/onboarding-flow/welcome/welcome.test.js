@@ -97,10 +97,22 @@ describe('Onboarding Welcome Component', () => {
 
     it('should set first time flow to create and route to metametrics', () => {
       renderWithProvider(<OnboardingWelcome />, mockStore);
-      const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
-      fireEvent.click(termsCheckbox);
       const createWallet = screen.getByTestId('onboarding-create-wallet');
       fireEvent.click(createWallet);
+
+      const modalBody = screen
+        .getByRole('dialog')
+        .querySelector('.mm-modal-body');
+      Object.defineProperties(modalBody, {
+        scrollHeight: { configurable: true, get: () => 1000 },
+        clientHeight: { configurable: true, get: () => 400 },
+      });
+      fireEvent.scroll(modalBody, { target: { scrollTop: 1000 } });
+
+      const termsCheckbox = screen.getByRole('checkbox');
+      fireEvent.click(termsCheckbox);
+      const acceptButton = screen.getByRole('button', { name: /agree/iu });
+      fireEvent.click(acceptButton);
 
       expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
       expect(setFirstTimeFlowType).toHaveBeenCalledWith(
@@ -110,17 +122,133 @@ describe('Onboarding Welcome Component', () => {
 
     it('should set first time flow to import and route to metametrics', async () => {
       renderWithProvider(<OnboardingWelcome />, mockStore);
-      const termsCheckbox = screen.getByTestId('onboarding-terms-checkbox');
-      fireEvent.click(termsCheckbox);
+      const importWallet = screen.getByTestId('onboarding-import-wallet');
+      fireEvent.click(importWallet);
 
-      const createWallet = screen.getByTestId('onboarding-import-wallet');
-      fireEvent.click(createWallet);
+      const modalBody = screen
+        .getByRole('dialog')
+        .querySelector('.mm-modal-body');
+      Object.defineProperties(modalBody, {
+        scrollHeight: { configurable: true, get: () => 1000 },
+        clientHeight: { configurable: true, get: () => 400 },
+      });
+      fireEvent.scroll(modalBody, { target: { scrollTop: 1000 } });
+
+      const termsCheckbox = screen.getByRole('checkbox');
+      fireEvent.click(termsCheckbox);
+      const acceptButton = screen.getByRole('button', { name: /agree/iu });
+      fireEvent.click(acceptButton);
 
       await waitFor(() => {
         expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
         expect(setFirstTimeFlowType).toHaveBeenCalledWith('import');
         expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
       });
+    });
+  });
+
+  describe('Terms of Use Modal', () => {
+    const mockStore = configureMockStore([thunk])(mockState);
+
+    it('should show modal when create wallet is clicked', () => {
+      renderWithProvider(<OnboardingWelcome />, mockStore);
+      const createWallet = screen.getByTestId('onboarding-create-wallet');
+      fireEvent.click(createWallet);
+
+      expect(
+        screen.getByText('Review our latest terms of use'),
+      ).toBeInTheDocument();
+    });
+
+    it('should show modal when import wallet is clicked', () => {
+      renderWithProvider(<OnboardingWelcome />, mockStore);
+      const importWallet = screen.getByTestId('onboarding-import-wallet');
+      fireEvent.click(importWallet);
+
+      expect(
+        screen.getByText('Review our latest terms of use'),
+      ).toBeInTheDocument();
+    });
+
+    it('should have terms checkbox disabled initially and accept button disabled', () => {
+      renderWithProvider(<OnboardingWelcome />, mockStore);
+      const createWallet = screen.getByTestId('onboarding-create-wallet');
+      fireEvent.click(createWallet);
+
+      const termsCheckbox = screen.getByRole('checkbox');
+      const acceptButton = screen.getByRole('button', { name: /agree/iu });
+
+      expect(termsCheckbox).toBeDisabled();
+      expect(acceptButton).toBeDisabled();
+    });
+
+    it('should enable checkbox after scrolling to bottom', () => {
+      renderWithProvider(<OnboardingWelcome />, mockStore);
+      const createWallet = screen.getByTestId('onboarding-create-wallet');
+      fireEvent.click(createWallet);
+
+      const modalBody = screen
+        .getByRole('dialog')
+        .querySelector('.mm-modal-body');
+      if (!modalBody) {
+        throw new Error('Modal body not found');
+      }
+
+      Object.defineProperties(modalBody, {
+        scrollHeight: { configurable: true, get: () => 1000 },
+        clientHeight: { configurable: true, get: () => 400 },
+      });
+
+      fireEvent.scroll(modalBody, { target: { scrollTop: 1000 } });
+
+      const termsCheckbox = screen.getByRole('checkbox');
+      expect(termsCheckbox).not.toBeDisabled();
+    });
+
+    it('should enable accept button only after terms are agreed', async () => {
+      renderWithProvider(<OnboardingWelcome />, mockStore);
+      const createWallet = screen.getByTestId('onboarding-create-wallet');
+      fireEvent.click(createWallet);
+
+      const modalBody = screen
+        .getByRole('dialog')
+        .querySelector('.mm-modal-body');
+      if (!modalBody) {
+        throw new Error('Modal body not found');
+      }
+
+      Object.defineProperties(modalBody, {
+        scrollHeight: { configurable: true, get: () => 1000 },
+        clientHeight: { configurable: true, get: () => 400 },
+      });
+
+      fireEvent.scroll(modalBody, { target: { scrollTop: 1000 } });
+
+      const termsCheckbox = screen.getByRole('checkbox');
+      const acceptButton = screen.getByRole('button', { name: /agree/iu });
+
+      expect(acceptButton).toBeDisabled();
+
+      fireEvent.click(termsCheckbox);
+      expect(acceptButton).not.toBeDisabled();
+    });
+
+    it('should close modal when clicking outside', () => {
+      renderWithProvider(<OnboardingWelcome />, mockStore);
+      const createWallet = screen.getByTestId('onboarding-create-wallet');
+      fireEvent.click(createWallet);
+
+      // The modal overlay is rendered at the document.body level
+      const modalOverlay = document.querySelector('.mm-modal-overlay');
+      if (!modalOverlay) {
+        throw new Error('Modal overlay not found');
+      }
+
+      fireEvent.mouseDown(modalOverlay);
+
+      expect(
+        screen.queryByText('Review our latest terms of use'),
+      ).not.toBeInTheDocument();
     });
   });
 });
