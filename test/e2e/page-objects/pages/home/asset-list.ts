@@ -24,6 +24,11 @@ class AssetListPage {
 
   private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
+  private readonly customTokenModalOption = {
+    text: 'Custom token',
+    tag: 'button',
+  };
+
   private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
 
   private readonly hideTokenConfirmationButton =
@@ -43,15 +48,44 @@ class AssetListPage {
 
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
+  private sortByAlphabetically = '[data-testid="sortByAlphabetically"]';
+
+  private sortByDecliningBalance = '[data-testid="sortByDecliningBalance"]';
+
+  private sortByPopoverToggle = '[data-testid="sort-by-popover-toggle"]';
+
+  private readonly tokenAddressInput =
+    '[data-testid="import-tokens-modal-custom-address"]';
+
   private readonly tokenAmountValue =
     '[data-testid="multichain-token-list-item-value"]';
+
+  private readonly tokenImportedSuccessMessage = {
+    text: 'Token imported',
+    tag: 'h6',
+  };
 
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
 
   private readonly tokenOptionsButton = '[data-testid="import-token-button"]';
 
+  private tokenPercentage(address: string): string {
+    return `[data-testid="token-increase-decrease-percentage-${address}"]`;
+  }
+
   private readonly tokenSearchInput = 'input[placeholder="Search tokens"]';
+
+  private readonly tokenSymbolInput =
+    '[data-testid="import-tokens-modal-custom-symbol"]';
+
+  private readonly modalWarningBanner = 'div.mm-banner-alert--severity-warning';
+
+  private readonly tokenIncreaseDecreaseValue =
+    '[data-testid="token-increase-decrease-value"]';
+
+  private readonly tokenIncreaseDecreasePercentageGeneral =
+    '[data-testid="token-increase-decrease-percentage"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -103,6 +137,42 @@ class AssetListPage {
     return assets.length;
   }
 
+  async getTokenListNames(): Promise<string[]> {
+    console.log(`Retrieving the list of token names`);
+    const tokenElements = await this.driver.findElements(this.tokenListItem);
+    const tokenNames = await Promise.all(
+      tokenElements.map(async (element) => {
+        return await element.getText();
+      }),
+    );
+    return tokenNames;
+  }
+
+  async getAssetPercentageIncreaseDecrease(
+    assetAddress: string,
+  ): Promise<string> {
+    console.log(
+      `Retrieving the percentage increase or decrease for ${assetAddress}`,
+    );
+    const percentageElement = await this.driver.findElement(
+      this.tokenPercentage(assetAddress),
+    );
+    const percentage = await percentageElement.getText();
+    return percentage;
+  }
+
+  async sortTokenList(
+    sortBy: 'alphabetically' | 'decliningBalance',
+  ): Promise<void> {
+    console.log(`Sorting the token list by ${sortBy}`);
+    await this.driver.clickElement(this.sortByPopoverToggle);
+    if (sortBy === 'alphabetically') {
+      await this.driver.clickElement(this.sortByAlphabetically);
+    } else if (sortBy === 'decliningBalance') {
+      await this.driver.clickElement(this.sortByDecliningBalance);
+    }
+  }
+
   /**
    * Hides a token by clicking on the token name, and confirming the hide modal.
    *
@@ -119,6 +189,22 @@ class AssetListPage {
     );
   }
 
+  async importCustomToken(tokenAddress: string, symbol: string): Promise<void> {
+    console.log(`Creating custom token ${symbol} on homepage`);
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.importTokensButton);
+    await this.driver.waitForSelector(this.importTokenModalTitle);
+    await this.driver.clickElement(this.customTokenModalOption);
+    await this.driver.waitForSelector(this.modalWarningBanner);
+    await this.driver.fill(this.tokenAddressInput, tokenAddress);
+    await this.driver.fill(this.tokenSymbolInput, symbol);
+    await this.driver.clickElement(this.importTokensNextButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmImportTokenButton,
+    );
+    await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
+  }
+
   async importTokenBySearch(tokenName: string) {
     console.log(`Import token ${tokenName} on homepage by search`);
     await this.driver.clickElement(this.tokenOptionsButton);
@@ -128,6 +214,24 @@ class AssetListPage {
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.confirmImportTokenMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmImportTokenButton,
+    );
+  }
+
+  async importMultipleTokensBySearch(tokenNames: string[]) {
+    console.log(
+      `Importing tokens ${tokenNames.join(', ')} on homepage by search`,
+    );
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.importTokensButton);
+    await this.driver.waitForSelector(this.importTokenModalTitle);
+
+    for (const name of tokenNames) {
+      await this.driver.fill(this.tokenSearchInput, name);
+      await this.driver.clickElement({ text: name, tag: 'p' });
+    }
+    await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
@@ -234,6 +338,42 @@ class AssetListPage {
     console.log(
       `Expected number of token items ${expectedNumber} is displayed.`,
     );
+  }
+
+  /**
+   * Checks if the token increase/decrease percentage is displayed correctly for a specific token
+   * @param address - The token address to check
+   * @param expectedPercentage - The expected percentage value (e.g. '+0.02%')
+   */
+  async check_tokenIncreasePercentage(
+    address: string,
+    expectedPercentage: string,
+  ): Promise<void> {
+    console.log(`Checking token increase percentage for address ${address}`);
+    const isPresent = await this.driver.isElementPresentAndVisible({
+      css: `[data-testid="token-increase-decrease-percentage-${address}"]`,
+      text: expectedPercentage,
+    });
+    if (!isPresent) {
+      throw new Error(
+        `Token increase percentage ${expectedPercentage} not found for address ${address}`,
+      );
+    }
+  }
+
+  /**
+   * Checks if the token increase/decrease value is displayed correctly
+   * @param expectedValue - The expected value (e.g. '+$50.00')
+   */
+  async check_tokenIncreaseValue(expectedValue: string): Promise<void> {
+    console.log(`Checking token increase value ${expectedValue}`);
+    const isPresent = await this.driver.isElementPresentAndVisible({
+      css: this.tokenIncreaseDecreaseValue,
+      text: expectedValue,
+    });
+    if (!isPresent) {
+      throw new Error(`Token increase value ${expectedValue} not found`);
+    }
   }
 }
 

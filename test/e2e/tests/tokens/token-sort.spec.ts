@@ -3,102 +3,66 @@ import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  clickNestedButton,
   defaultGanacheOptions,
-  regularDelayMs,
   unlockWallet,
   withFixtures,
+  regularDelayMs,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 
-describe('Token List', function () {
-  const chainId = CHAIN_IDS.MAINNET;
-  const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
-  const symbol = 'ABC';
+describe('Token List Sorting', function () {
+  const mainnetChainId = CHAIN_IDS.MAINNET;
+  const customTokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
+  const customTokenSymbol = 'ABC';
 
-  const fixtures = {
-    fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
+  const testFixtures = {
+    fixtures: new FixtureBuilder({ inputChainId: mainnetChainId }).build(),
     ganacheOptions: {
       ...defaultGanacheOptions,
-      chainId: parseInt(chainId, 16),
+      chainId: parseInt(mainnetChainId, 16),
     },
   };
 
-  const importToken = async (driver: Driver) => {
-    await driver.clickElement(`[data-testid="import-token-button"]`);
-    await driver.clickElement(`[data-testid="importTokens"]`);
-    await clickNestedButton(driver, 'Custom token');
-    await driver.fill(
-      '[data-testid="import-tokens-modal-custom-address"]',
-      tokenAddress,
-    );
-    await driver.waitForSelector('p.mm-box--color-error-default');
-    await driver.fill(
-      '[data-testid="import-tokens-modal-custom-symbol"]',
-      symbol,
-    );
-    await driver.delay(2000);
-    await driver.clickElement({ text: 'Next', tag: 'button' });
-    await driver.clickElement(
-      '[data-testid="import-tokens-modal-import-button"]',
-    );
-    await driver.findElement({ text: 'Token imported', tag: 'h6' });
-  };
-
-  it('should sort alphabetically and by decreasing balance', async function () {
+  it('should sort tokens alphabetically and by decreasing balance', async function () {
     await withFixtures(
       {
-        ...fixtures,
+        ...testFixtures,
         title: (this as Context).test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await importToken(driver);
 
-        const tokenListBeforeSorting = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        const tokenSymbolsBeforeSorting = await Promise.all(
-          tokenListBeforeSorting.map(async (tokenElement) => {
-            return tokenElement.getText();
-          }),
-        );
+        const homePage = new HomePage(driver);
+        const assetListPage = new AssetListPage(driver);
 
-        assert.ok(tokenSymbolsBeforeSorting[0].includes('Ethereum'));
-
-        await driver.clickElement('[data-testid="sort-by-popover-toggle"]');
-        await driver.clickElement('[data-testid="sortByAlphabetically"]');
-
-        await driver.delay(regularDelayMs);
-        const tokenListAfterSortingAlphabetically = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        const tokenListSymbolsAfterSortingAlphabetically = await Promise.all(
-          tokenListAfterSortingAlphabetically.map(async (tokenElement) => {
-            return tokenElement.getText();
-          }),
+        await homePage.check_pageIsLoaded();
+        await assetListPage.importCustomToken(
+          customTokenAddress,
+          customTokenSymbol,
         );
 
-        assert.ok(
-          tokenListSymbolsAfterSortingAlphabetically[0].includes('ABC'),
+        const initialTokenList = await assetListPage.getTokenListNames();
+        assert.ok(initialTokenList[0].includes('Ethereum'));
+        await assetListPage.sortTokenList('alphabetically');
+
+        await driver.waitUntil(
+          async () => {
+            const sortedTokenList = await assetListPage.getTokenListNames();
+            return sortedTokenList[0].includes(customTokenSymbol);
+          },
+          { timeout: regularDelayMs, interval: 100 },
         );
 
-        await driver.clickElement('[data-testid="sort-by-popover-toggle"]');
-        await driver.clickElement('[data-testid="sortByDecliningBalance"]');
-
-        await driver.delay(regularDelayMs);
-        const tokenListBeforeSortingByDecliningBalance =
-          await driver.findElements(
-            '[data-testid="multichain-token-list-button"]',
-          );
-
-        const tokenListAfterSortingByDecliningBalance = await Promise.all(
-          tokenListBeforeSortingByDecliningBalance.map(async (tokenElement) => {
-            return tokenElement.getText();
-          }),
-        );
-        assert.ok(
-          tokenListAfterSortingByDecliningBalance[0].includes('Ethereum'),
+        await assetListPage.sortTokenList('decliningBalance');
+        await driver.waitUntil(
+          async () => {
+            const sortedTokenListByBalance =
+              await assetListPage.getTokenListNames();
+            return sortedTokenListByBalance[0].includes('Ethereum');
+          },
+          { timeout: regularDelayMs, interval: 100 },
         );
       },
     );
