@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { largeDelayMs, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
@@ -17,6 +17,11 @@ import {
 } from './testHelpers';
 
 describe('Multichain API', function () {
+  /**
+   * check {@link FixtureBuilder.withPreferencesControllerAdditionalAccountIdentities} for second injected account address.
+   */
+  const SECOND_INJECTED_ACCOUNT = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
+
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the user’s enabled networks', function () {
     it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(
@@ -94,11 +99,20 @@ describe('Multichain API', function () {
 
           await initCreateSessionScopes(driver, requestScopes);
 
+          // navigate to network selection screen
+          const editButtons = await driver.findElements('[data-testid="edit"]');
+          await editButtons[1].click();
+          await driver.delay(largeDelayMs);
+
           await assertOnlyRequestedNetworksAreSelected(
             driver,
             networksToRequest,
           );
 
+          // proceed with network selection confirm
+          await driver.clickElement(
+            '[data-testid="connect-more-chains-button"]',
+          );
           await confirmAndSwitchFocusToDapp(driver);
 
           const getSessionScopesResult = await getSessionScopes(driver);
@@ -157,7 +171,6 @@ describe('Multichain API', function () {
             '',
           ]);
           await initCreateSessionScopes(driver, requestScopes);
-          await driver.clickElement({ text: 'Update', tag: 'button' });
 
           await addAndAuthorizeAccount(driver);
           await uncheckNetworksExceptMainnet(driver);
@@ -180,9 +193,9 @@ describe('Multichain API', function () {
             getSessionScopesResult.sessionScopes['eip155:1'].accounts,
             getExpectedSessionScope('eip155:1', [
               DEFAULT_FIXTURE_ACCOUNT,
-              '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+              SECOND_INJECTED_ACCOUNT,
             ]).accounts,
-            'Should add account 0x09781764c08de8ca82e156bbf156a3ca217c7950 to scope',
+            `Should add account ${SECOND_INJECTED_ACCOUNT} to scope`,
           );
         },
       );

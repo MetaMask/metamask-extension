@@ -68,10 +68,6 @@ export async function initCreateSessionScopes(
   await driver.clickElement({ text: 'wallet_createSession', tag: 'span' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.delay(largeDelayMs);
-
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[1].click();
-  await driver.delay(largeDelayMs);
 }
 
 /**
@@ -82,7 +78,6 @@ export async function initCreateSessionScopes(
 export async function confirmAndSwitchFocusToDapp(
   driver: Driver,
 ): Promise<void> {
-  await driver.clickElement('[data-testid="connect-more-chains-button"]');
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 }
