@@ -157,15 +157,6 @@ export default class PermissionConnect extends Component {
       return;
     }
 
-    // if this is an incremental permission request for permitted chains, skip the account selection
-    if (
-      // TODO pretty sure this is not needed anymore.
-      permissionsRequest?.diff?.permissionDiffMap?.[
-        PermissionNames.permittedChains
-      ]
-    ) {
-      history.replace(confirmPermissionPath);
-    }
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       switch (requestType) {
         case 'wallet_installSnap':

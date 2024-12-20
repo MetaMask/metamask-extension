@@ -1,7 +1,7 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { InternalAccount } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getCurrentCurrency,
   getNativeCurrency,

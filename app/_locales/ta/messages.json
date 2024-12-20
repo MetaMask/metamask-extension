@@ -209,9 +209,6 @@
   "loading": {
     "message": "ஏற்றுகிறது…"
   },
-  "loadingTokens": {
-    "message": "டோக்கன்களை ஏற்றுகிறது ..."
-  },
   "localhost": {
     "message": "லோக்கல் ஹோஸ்ட் 8545"
   },
@@ -255,9 +252,6 @@
   },
   "next": {
     "message": "அடுத்தது"
-  },
-  "noTransactions": {
-    "message": "பரிவர்த்தனைகள் இல்லை"
   },
   "off": {
     "message": "ஆஃப்"

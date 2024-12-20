@@ -20,6 +20,9 @@ class HomePage {
     css: '.mm-banner-alert',
   };
 
+  protected readonly bridgeButton: string =
+    '[data-testid="eth-overview-bridge"]';
+
   private readonly closeUseNetworkNotificationModalButton = {
     text: 'Got it',
     tag: 'h6',
@@ -39,15 +42,20 @@ class HomePage {
     testId: 'popover-close',
   };
 
+  private readonly portfolioLink = '[data-testid="portfolio-link"]';
+
   private readonly privacyBalanceToggle = {
     testId: 'sensitive-toggle',
   };
 
+  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+
+  protected readonly swapButton: string =
+    '[data-testid="token-overview-button-swap"]';
+
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',
   };
-
-  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
   private readonly tokensTab = {
     testId: 'account-overview__asset-tab',
@@ -99,6 +107,11 @@ class HomePage {
     await this.driver.clickElement(this.nftTab);
   }
 
+  async openPortfolioPage(): Promise<void> {
+    console.log(`Open portfolio page on homepage`);
+    await this.driver.clickElement(this.portfolioLink);
+  }
+
   async refreshErc20TokenList(): Promise<void> {
     console.log(`Refresh the ERC20 token list`);
     await this.driver.clickElement(this.erc20TokenDropdown);
@@ -133,6 +146,13 @@ class HomePage {
       'Check if basic functionality off warning message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
+  }
+
+  async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
+    console.log(`Check if disabled button tooltip is displayed on homepage`);
+    await this.driver.waitForSelector(
+      `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
+    );
   }
 
   /**
@@ -188,6 +208,39 @@ class HomePage {
       const uiState = await getCleanAppState(this.driver);
       return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
     }, 10000);
+  }
+
+  async check_ifBridgeButtonIsClickable(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.bridgeButton, 1000);
+    } catch (e) {
+      console.log('Bridge button not clickable', e);
+      return false;
+    }
+    console.log('Bridge button is clickable');
+    return true;
+  }
+
+  async check_ifSendButtonIsClickable(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.sendButton, 1000);
+    } catch (e) {
+      console.log('Send button not clickable', e);
+      return false;
+    }
+    console.log('Send button is clickable');
+    return true;
+  }
+
+  async check_ifSwapButtonIsClickable(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.swapButton, 1000);
+    } catch (e) {
+      console.log('Swap button not clickable', e);
+      return false;
+    }
+    console.log('Swap button is clickable');
+    return true;
   }
 
   async check_localBlockchainBalanceIsDisplayed(

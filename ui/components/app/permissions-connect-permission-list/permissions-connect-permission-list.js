@@ -11,13 +11,19 @@ import { Box } from '../../component-library';
 /**
  * Get one or more permission descriptions for a permission name.
  *
- * @param permission - The permission to render.
- * @param index - The index of the permission.
- * @param accounts - An array representing list of accounts for which permission is used.
- * @param requestedChainIds - An array representing list of chain ids for which permission is used.
+ * @param options - The options object.
+ * @param options.permission - The permission to render.
+ * @param options.index - The index of the permission.
+ * @param options.accounts - An array representing list of accounts for which permission is used.
+ * @param options.requestedChainIds - An array representing list of chain ids for which permission is used.
  * @returns {JSX.Element} A permission description node.
  */
-function getDescriptionNode(permission, index, accounts, requestedChainIds) {
+function getDescriptionNode({
+  permission,
+  index,
+  accounts,
+  requestedChainIds,
+}) {
   return (
     <PermissionCell
       permissionName={permission.name}
@@ -49,12 +55,12 @@ export default function PermissionsConnectPermissionList({
         getSubjectName: getSnapName(snapsMetadata),
         subjectName,
       }).map((permission, index) => {
-        return getDescriptionNode(
+        return getDescriptionNode({
           permission,
           index,
           accounts,
           requestedChainIds,
-        );
+        });
       })}
     </Box>
   );

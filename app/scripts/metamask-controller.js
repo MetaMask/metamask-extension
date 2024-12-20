@@ -272,6 +272,10 @@ import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
+import {
+  BridgeUserAction,
+  BridgeBackgroundAction,
+} from '../../shared/types/bridge';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -395,10 +399,6 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmM
 import { isEthAddress } from './lib/multichain/address';
 
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import {
-  BridgeUserAction,
-  BridgeBackgroundAction,
-} from './controllers/bridge/types';
 import BridgeController from './controllers/bridge/bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
 import {
@@ -656,7 +656,6 @@ export default class MetamaskController extends EventEmitter {
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
     });
-
     this.networkController.initializeProvider();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -5663,19 +5662,22 @@ export default class MetamaskController extends EventEmitter {
       await this.requestApprovalPermittedChainsPermission(origin, chainId);
     }
 
-    let updatedCaveatValue = addPermittedEthChainId(
+    const caveatValueWithChainsAdded = addPermittedEthChainId(
       caip25Caveat.value,
       chainId,
     );
 
     const ethAccounts = getEthAccounts(caip25Caveat.value);
-    updatedCaveatValue = setEthAccounts(updatedCaveatValue, ethAccounts);
+    const caveatValueWithAccountsSynced = setEthAccounts(
+      caveatValueWithChainsAdded,
+      ethAccounts,
+    );
 
     this.permissionController.updateCaveat(
       origin,
       Caip25EndowmentPermissionName,
       Caip25CaveatType,
-      updatedCaveatValue,
+      caveatValueWithAccountsSynced,
     );
   }
 
@@ -5720,26 +5722,30 @@ export default class MetamaskController extends EventEmitter {
         type: MethodNames.RequestPermissions,
       });
 
-    let caveatValue = {
+    const newCaveatValue = {
       requiredScopes: {},
       optionalScopes: {},
       isMultichainOrigin: false,
     };
 
-    if (isSnapId(origin)) {
-      caveatValue.optionalScopes = {
-        'wallet:eip155': {
-          accounts: [],
-        },
-      };
-    } else {
-      caveatValue = setPermittedEthChainIds(
-        caveatValue,
-        legacyApproval.approvedChainIds,
-      );
-    }
+    const caveatValueWithChains = isSnapId(origin)
+      ? {
+          ...newCaveatValue,
+          optionalScopes: {
+            'wallet:eip155': {
+              accounts: [],
+            },
+          },
+        }
+      : setPermittedEthChainIds(
+          newCaveatValue,
+          legacyApproval.approvedChainIds,
+        );
 
-    caveatValue = setEthAccounts(caveatValue, legacyApproval.approvedAccounts);
+    const caveatValueWithAccounts = setEthAccounts(
+      caveatValueWithChains,
+      legacyApproval.approvedAccounts,
+    );
 
     const grantedPermissions = this.permissionController.grantPermissions({
       subject: { origin },
@@ -5748,7 +5754,7 @@ export default class MetamaskController extends EventEmitter {
           caveats: [
             {
               type: Caip25CaveatType,
-              value: caveatValue,
+              value: caveatValueWithAccounts,
             },
           ],
         },

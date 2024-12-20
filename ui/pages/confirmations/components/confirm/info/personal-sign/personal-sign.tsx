@@ -38,7 +38,16 @@ import { selectUseTransactionSimulations } from '../../../../selectors/preferenc
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
+import { isValidUTF8 } from '../utils';
 import { SIWESignInfo } from './siwe-sign';
+
+const getMessageText = (hexString?: string) => {
+  if (!hexString) {
+    return hexString;
+  }
+  const messageText = sanitizeString(hexToText(hexString));
+  return isValidUTF8(messageText) ? messageText : hexString;
+};
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -52,8 +61,8 @@ const PersonalSignInfo: React.FC = () => {
   }
 
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const messageText = sanitizeString(
-    hexToText(currentConfirmation.msgParams?.data),
+  const messageText = getMessageText(
+    currentConfirmation.msgParams?.data as string,
   );
 
   let toolTipMessage;
