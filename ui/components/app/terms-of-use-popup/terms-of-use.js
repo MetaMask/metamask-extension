@@ -7,7 +7,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, ButtonLink, Text } from '../../component-library';
 
-export const TermsOfUse = (props) => {
+export const TermsOfUse = ({ showHeader, ...props }) => {
   return (
     <Box className="terms-of-use" {...props}>
       <Box
@@ -16,7 +16,7 @@ export const TermsOfUse = (props) => {
         marginLeft={4}
         marginRight={4}
       >
-        {props.showHeader ? (
+        {showHeader ? (
           <Box textAlign={TextAlign.Center} marginBottom={4}>
             <Text variant={TextVariant.headingLg}>Terms of use</Text>
             <Text

@@ -359,7 +359,7 @@ export default function OnboardingWelcome() {
                   <Checkbox
                     id="onboarding__terms-checkbox"
                     className="onboarding__terms-checkbox"
-                    dataTestId="onboarding-terms-checkbox"
+                    data-testid="onboarding-terms-checkbox"
                     isDisabled={!hasScrolledToBottom}
                     isChecked={hasAgreedToTerms}
                     onClick={() =>
