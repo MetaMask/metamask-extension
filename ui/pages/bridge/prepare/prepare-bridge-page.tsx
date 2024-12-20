@@ -65,7 +65,7 @@ import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFilte
 import { setActiveNetwork } from '../../../store/actions';
 import {
   hexToDecimal,
-  decimalToHex,
+  decimalToPrefixedHex,
 } from '../../../../shared/modules/conversion.utils';
 import type { QuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
@@ -221,7 +221,7 @@ const PrepareBridgePage = () => {
       // Get input data from active quote
       const { srcAsset, destAsset, destChainId } = activeQuote.quote;
       const quoteSrcToken = fromTokens[srcAsset.address.toLowerCase()];
-      const quoteDestChainId = `0x${decimalToHex(destChainId)}`;
+      const quoteDestChainId = decimalToPrefixedHex(destChainId);
       const quoteDestToken = toTokens[destAsset.address.toLowerCase()];
 
       if (quoteSrcToken && quoteDestToken && quoteDestChainId) {
