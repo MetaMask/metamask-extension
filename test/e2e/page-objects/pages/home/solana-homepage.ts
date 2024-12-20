@@ -25,16 +25,14 @@ class SolanaHomepage extends HomePage {
    *
    * @param expectedBalance - The expected bitcoin balance to be displayed. Defaults to '0'.
    */
-  async getSolanaBalance(
-    expectedBalance: number = 0,
-  ): Promise<string> {
+  async getSolanaBalance(): Promise<string> {
     console.log(
-      `Check if expected Solana balance is displayed: ${expectedBalance} SOL`,
+      `Getting Solana balance`,
     );
     const balanceValue = await this.driver.waitForSelector(this.solanaBalance, { timeout: 120000 })
     const singleBalanceText = await balanceValue.getText();
     const trimmedBalance = singleBalanceText.replaceAll(/\s+/g, ' ').trim()
-    return singleBalanceText.replaceAll(/\s+/g, ' ').trim()
+    return trimmedBalance
   }
 
   /**
