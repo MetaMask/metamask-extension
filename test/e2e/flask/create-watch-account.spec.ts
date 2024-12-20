@@ -32,6 +32,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // new account should be displayed in the account list
@@ -55,6 +56,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.check_accountLabel(
@@ -153,6 +155,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address for ACCOUNT_2
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, ACCOUNT_2);
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
@@ -182,6 +185,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // open account details modal in header navbar
@@ -210,6 +214,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.check_accountLabel(
@@ -233,7 +238,7 @@ describe('Account-watcher snap', function (this: Suite) {
           await homePage.check_expectedBalanceIsDisplayed();
 
           // watch the same EOA address again and check the account is recreated
-          await watchEoaAddress(driver, EOA_ADDRESS, false);
+          await watchEoaAddress(driver, EOA_ADDRESS);
           await homePage.headerNavbar.check_accountLabel(
             DEFAULT_WATCHED_ACCOUNT_NAME,
           );
