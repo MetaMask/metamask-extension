@@ -133,7 +133,7 @@ const MultichainTransactionsControllerMetadata = {
 };
 
 const BTC_AVG_BLOCK_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
-const SOLANA_TRANSACTIONS_UPDATE_TIME = 400; // 400 milliseconds
+const SOLANA_TRANSACTIONS_UPDATE_TIME = 7000; // 7 seconds
 const BTC_TRANSACTIONS_UPDATE_TIME = BTC_AVG_BLOCK_TIME / 2;
 
 const TRANSACTIONS_CHECK_INTERVALS = {
