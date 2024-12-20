@@ -34,30 +34,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
           await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
-          // Open settings menu button
-          const accountOptionsMenuSelector =
-            '[data-testid="account-options-menu-button"]';
-          await driver.waitForSelector(accountOptionsMenuSelector);
-          await driver.clickElement(accountOptionsMenuSelector);
-
-          // Click settings from dropdown menu
-          const globalMenuSettingsSelector =
-            '[data-testid="global-menu-settings"]';
-          await driver.waitForSelector(globalMenuSettingsSelector);
-          await driver.clickElement(globalMenuSettingsSelector);
-
-          // Click Experimental tab
-          const experimentalTabRawLocator = {
-            text: 'Experimental',
-            tag: 'div',
-          };
-          await driver.clickElement(experimentalTabRawLocator);
-
-          // Toggle off request queue setting (on by default now)
-          await driver.clickElement(
-            '[data-testid="experimental-setting-toggle-request-queue"]',
-          );
-
           // open two dapps
           const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
           const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -184,31 +160,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         },
         async ({ driver }) => {
           await unlockWallet(driver);
-
-          // Open settings menu button
-          const accountOptionsMenuSelector =
-            '[data-testid="account-options-menu-button"]';
-          await driver.waitForSelector(accountOptionsMenuSelector);
-          await driver.clickElement(accountOptionsMenuSelector);
-
-          // Click settings from dropdown menu
-          const globalMenuSettingsSelector =
-            '[data-testid="global-menu-settings"]';
-          await driver.waitForSelector(globalMenuSettingsSelector);
-          await driver.clickElement(globalMenuSettingsSelector);
-
-          // Click Experimental tab
-          const experimentalTabRawLocator = {
-            text: 'Experimental',
-            tag: 'div',
-          };
-          await driver.clickElement(experimentalTabRawLocator);
-
-          // Toggle off request queue setting (on by default now)
-          await driver.clickElement(
-            '[data-testid="experimental-setting-toggle-request-queue"]',
-          );
-
           // open two dapps
           const dappOne = await openDapp(driver, undefined, DAPP_URL);
           const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
@@ -273,30 +224,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         },
         async ({ driver }) => {
           await unlockWallet(driver);
-
-          // Open settings menu button
-          const accountOptionsMenuSelector =
-            '[data-testid="account-options-menu-button"]';
-          await driver.waitForSelector(accountOptionsMenuSelector);
-          await driver.clickElement(accountOptionsMenuSelector);
-
-          // Click settings from dropdown menu
-          const globalMenuSettingsSelector =
-            '[data-testid="global-menu-settings"]';
-          await driver.waitForSelector(globalMenuSettingsSelector);
-          await driver.clickElement(globalMenuSettingsSelector);
-
-          // Click Experimental tab
-          const experimentalTabRawLocator = {
-            text: 'Experimental',
-            tag: 'div',
-          };
-          await driver.clickElement(experimentalTabRawLocator);
-
-          // Toggle off request queue setting (on by default now)
-          await driver.clickElement(
-            '[data-testid="experimental-setting-toggle-request-queue"]',
-          );
 
           // open two dapps
           await openDapp(driver, undefined, DAPP_URL);
@@ -410,30 +337,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         async ({ driver }) => {
           await unlockWallet(driver);
 
-          // Open settings menu button
-          const accountOptionsMenuSelector =
-            '[data-testid="account-options-menu-button"]';
-          await driver.waitForSelector(accountOptionsMenuSelector);
-          await driver.clickElement(accountOptionsMenuSelector);
-
-          // Click settings from dropdown menu
-          const globalMenuSettingsSelector =
-            '[data-testid="global-menu-settings"]';
-          await driver.waitForSelector(globalMenuSettingsSelector);
-          await driver.clickElement(globalMenuSettingsSelector);
-
-          // Click Experimental tab
-          const experimentalTabRawLocator = {
-            text: 'Experimental',
-            tag: 'div',
-          };
-          await driver.clickElement(experimentalTabRawLocator);
-
-          // Toggle off request queue setting (on by default now)
-          await driver.clickElement(
-            '[data-testid="experimental-setting-toggle-request-queue"]',
-          );
-
           // open two dapps
           const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
           const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -543,30 +446,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         },
         async ({ driver }) => {
           await unlockWallet(driver);
-
-          // Open settings menu button
-          const accountOptionsMenuSelector =
-            '[data-testid="account-options-menu-button"]';
-          await driver.waitForSelector(accountOptionsMenuSelector);
-          await driver.clickElement(accountOptionsMenuSelector);
-
-          // Click settings from dropdown menu
-          const globalMenuSettingsSelector =
-            '[data-testid="global-menu-settings"]';
-          await driver.waitForSelector(globalMenuSettingsSelector);
-          await driver.clickElement(globalMenuSettingsSelector);
-
-          // Click Experimental tab
-          const experimentalTabRawLocator = {
-            text: 'Experimental',
-            tag: 'div',
-          };
-          await driver.clickElement(experimentalTabRawLocator);
-
-          // Toggle off request queue setting (on by default now)
-          await driver.clickElement(
-            '[data-testid="experimental-setting-toggle-request-queue"]',
-          );
 
           // open two dapps
           const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
