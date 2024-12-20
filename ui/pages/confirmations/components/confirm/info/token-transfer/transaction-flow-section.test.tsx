@@ -1,51 +1,38 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionDescription } from '@ethersproject/abi';
 import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
+import { useTokenTransactionData } from '../hooks/useTokenTransactionData';
 import { TransactionFlowSection } from './transaction-flow-section';
 
-jest.mock('../hooks/useDecodedTransactionData', () => ({
-  ...jest.requireActual('../hooks/useDecodedTransactionData'),
-  useDecodedTransactionData: jest.fn(),
-}));
+jest.mock('../hooks/useTokenTransactionData');
 
 jest.mock(
   '../../../../../../components/app/alert-system/contexts/alertMetricsContext.tsx',
   () => ({
-    useAlertMetrics: jest.fn(() => ({
+    useAlertMetrics: () => ({
       trackInlineAlertClicked: jest.fn(),
       trackAlertRender: jest.fn(),
       trackAlertActionClicked: jest.fn(),
-    })),
+    }),
   }),
 );
 
 describe('<TransactionFlowSection />', () => {
-  const useDecodedTransactionDataMock = jest.fn().mockImplementation(() => ({
-    pending: false,
-    value: {
-      data: [
-        {
-          name: TransactionType.tokenMethodTransfer,
-          params: [
-            {
-              name: 'dst',
-              type: 'address',
-              value: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-            },
-            { name: 'wad', type: 'uint256', value: 0 },
-          ],
-        },
-      ],
-      source: 'Sourcify',
-    },
-  }));
+  const useTokenTransactionDataMock = jest.mocked(useTokenTransactionData);
 
-  (useDecodedTransactionData as jest.Mock).mockImplementation(
-    useDecodedTransactionDataMock,
-  );
+  beforeEach(() => {
+    jest.resetAllMocks();
+
+    useTokenTransactionDataMock.mockReturnValue({
+      name: TransactionType.tokenMethodTransfer,
+      args: {
+        _to: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      },
+    } as unknown as TransactionDescription);
+  });
 
   it('renders correctly', () => {
     const state = getMockTokenTransferConfirmState({});

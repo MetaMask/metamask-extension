@@ -375,9 +375,6 @@
   "loading": {
     "message": "Se încarcă…"
   },
-  "loadingTokens": {
-    "message": "Se încarcă token-urile..."
-  },
   "lock": {
     "message": "Deconectați-vă"
   },
@@ -436,9 +433,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Nici o rată de conversie disponibilă"
-  },
-  "noTransactions": {
-    "message": "Nu aveți tranzacții"
   },
   "noWebcamFound": {
     "message": "Webcam-ul computerului dvs. nu a fost găsit. Vă rugăm să încercați din nou."
