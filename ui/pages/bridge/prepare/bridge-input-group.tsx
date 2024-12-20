@@ -15,7 +15,11 @@ import { TabName } from '../../../components/multichain/asset-picker-amount/asse
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getLocale } from '../../../selectors';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { formatCurrencyAmount, formatTokenAmount, isNativeAddress } from '../utils/quote';
+import {
+  formatCurrencyAmount,
+  formatTokenAmount,
+  isNativeAddress,
+} from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
