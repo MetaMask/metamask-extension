@@ -1,9 +1,15 @@
 import * as path from 'path';
-import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
+import { By } from 'selenium-webdriver';
+import {
+  KnownRpcMethods,
+  KnownNotifications,
+  NormalizedScopeObject,
+} from '@metamask/multichain';
 import {
   DAPP_URL,
   largeDelayMs,
   openDapp,
+  regularDelayMs,
   unlockWallet,
   WINDOW_TITLES,
 } from '../../helpers';
@@ -45,12 +51,12 @@ export async function openMultichainDappAndConnectWalletWithExternallyConnectabl
 }
 
 /**
- * Sends a request to wallet extension to create session for the passed scopes.
+ * Initiates a request to wallet extension to create session for the passed scopes.
  *
  * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
  * @param scopes - scopes to create session for.
  */
-export async function createSessionScopes(
+export async function initCreateSessionScopes(
   driver: Driver,
   scopes: string[],
 ): Promise<void> {
@@ -61,14 +67,6 @@ export async function createSessionScopes(
   await driver.clickElement({ text: 'wallet_createSession', tag: 'span' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.delay(largeDelayMs);
-
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[1].click();
-  await driver.delay(largeDelayMs);
-
-  await driver.clickElement('[data-testid="connect-more-chains-button"]');
-  await driver.clickElement({ text: 'Connect', tag: 'button' });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 }
 
 /**
@@ -79,7 +77,7 @@ export async function createSessionScopes(
  */
 export async function getSessionScopes(
   driver: Driver,
-): Promise<{ sessionScopes: Record<string, unknown> }> {
+): Promise<{ sessionScopes: Record<string, NormalizedScopeObject> }> {
   await driver.clickElement({ text: 'wallet_getSession', tag: 'span' });
 
   const completeResultSummary = await driver.findElements('.result-summary');
@@ -94,6 +92,44 @@ export async function getSessionScopes(
 }
 
 /**
+ * Use dapp UI to add account addresses to `wallet_createSession` request.
+ *
+ * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
+ * @param accounts - The addresses to add to the create session request.
+ */
+export async function addAccountsToCreateSessionForm(
+  driver: Driver,
+  accounts: [string, string],
+): Promise<void> {
+  const label = await driver.findElement({
+    tag: 'label',
+    text: 'Address',
+  });
+  const addressInput0 = await driver.findNestedElement(
+    label,
+    'input[type=text]',
+  );
+
+  // @ts-expect-error Driver.findNestedElement injects `fill` method onto returned element, but typescript compiler will not let us access this method without a complaint, so we override it.
+  addressInput0.fill(accounts[0]);
+  await driver.clickElement({ text: '+', tag: 'button' });
+  await driver.delay(largeDelayMs);
+
+  const allLabels = await driver.findElements({
+    tag: 'label',
+    text: 'Address',
+  });
+
+  const addressInput1 = await driver.findNestedElement(
+    allLabels[1],
+    'input[type=text]',
+  );
+
+  // @ts-expect-error refer above comment
+  addressInput1.fill(accounts[1]);
+}
+
+/**
  * Retrieves the expected session scope for a given set of addresses.
  *
  * @param scope - The session scope.
@@ -105,3 +141,56 @@ export const getExpectedSessionScope = (scope: string, accounts: string[]) => ({
   notifications: KnownNotifications.eip155,
   accounts: accounts.map((acc) => `${scope}:${acc.toLowerCase()}`),
 });
+
+export const addAccountInWalletAndAuthorize = async (
+  driver: Driver,
+): Promise<void> => {
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[0].click();
+  await driver.clickElement({ text: 'New account', tag: 'button' });
+  await driver.clickElement({ text: 'Add account', tag: 'button' });
+  await driver.delay(regularDelayMs);
+
+  /**
+   * this needs to be called again, as previous element is stale and will not be found in current frame
+   */
+  const freshEditButtons = await driver.findElements('[data-testid="edit"]');
+  await freshEditButtons[0].click();
+  await driver.delay(regularDelayMs);
+
+  const checkboxes = await driver.findElements('input[type="checkbox" i]');
+  await checkboxes[0].click(); // select all checkbox
+  await driver.delay(regularDelayMs);
+
+  await driver.clickElement({ text: 'Update', tag: 'button' });
+};
+
+/**
+ * Deselect all networks but Ethereum Mainnet through extension UI.
+ *
+ * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
+ */
+export const uncheckNetworksExceptMainnet = async (
+  driver: Driver,
+): Promise<void> => {
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[1].click();
+  await driver.delay(regularDelayMs);
+
+  const networkListItems = await driver.findElements(
+    '.multichain-network-list-item',
+  );
+
+  for (const item of networkListItems) {
+    const network = await item.getText();
+    const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
+    const isChecked = await checkbox.isSelected();
+
+    // we make sure to uncheck every other previously selected network other than Ethereum Mainnet
+    if (isChecked && !network.includes('Ethereum Mainnet')) {
+      await checkbox.click();
+      await driver.delay(regularDelayMs);
+    }
+  }
+  await driver.clickElement({ text: 'Update', tag: 'button' });
+};
