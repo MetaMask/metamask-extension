@@ -6,7 +6,7 @@ import {
   defaultGanacheOptions,
   unlockWallet,
   withFixtures,
-  regularDelayMs,
+  largeDelayMs,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -52,7 +52,7 @@ describe('Token List Sorting', function () {
             const sortedTokenList = await assetListPage.getTokenListNames();
             return sortedTokenList[0].includes(customTokenSymbol);
           },
-          { timeout: regularDelayMs, interval: 100 },
+          { timeout: largeDelayMs, interval: 100 },
         );
 
         await assetListPage.sortTokenList('decliningBalance');
@@ -62,7 +62,7 @@ describe('Token List Sorting', function () {
               await assetListPage.getTokenListNames();
             return sortedTokenListByBalance[0].includes('Ethereum');
           },
-          { timeout: regularDelayMs, interval: 100 },
+          { timeout: largeDelayMs, interval: 100 },
         );
       },
     );
