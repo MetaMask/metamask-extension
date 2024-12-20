@@ -375,9 +375,6 @@
   "loading": {
     "message": "Se încarcă…"
   },
-  "loadingTokens": {
-    "message": "Se încarcă token-urile..."
-  },
   "lock": {
     "message": "Deconectați-vă"
   },
