@@ -6335,9 +6335,6 @@
   "use4ByteResolution": {
     "message": "Decodificar contratos inteligentes"
   },
-  "use4ByteResolutionDescription": {
-    "message": "Para melhorar a experiência do usuário, personalizamos a guia de atividades com mensagens baseadas nos contratos inteligentes com os quais você interage. A MetaMask usa um serviço chamado 4byte.directory para decodificar os dados e exibir a você uma versão de um contrato inteligente que é mais fácil de ler. Isso ajuda a reduzir suas chances de aprovar ações de contratos inteligentes mal-intencionados, mas pode resultar no compartilhamento do seu endereço IP."
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Agrupar solicitações de saldo de contas"
   },
