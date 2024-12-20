@@ -5,7 +5,6 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import {
-  confirmAndSwitchFocusToDapp,
   initCreateSessionScopes,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getSessionScopes,
@@ -48,7 +47,12 @@ describe('Multichain API', function () {
             'eip155:1',
             ...scopesToIgnore,
           ]);
-          await confirmAndSwitchFocusToDapp(driver);
+
+          await driver.clickElement({ text: 'Connect', tag: 'button' });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
+
           const getSessionScopesResult = await getSessionScopes(driver);
 
           for (const scope of scopesToIgnore) {
@@ -100,7 +104,11 @@ describe('Multichain API', function () {
           ]);
 
           await initCreateSessionScopes(driver, [REQUEST_SCOPE]);
-          await confirmAndSwitchFocusToDapp(driver);
+
+          await driver.clickElement({ text: 'Connect', tag: 'button' });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
 
           const getSessionScopesResult = await getSessionScopes(driver);
           /**

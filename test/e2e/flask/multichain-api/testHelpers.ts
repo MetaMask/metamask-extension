@@ -70,18 +70,6 @@ export async function initCreateSessionScopes(
 }
 
 /**
- * Confirms wallet operation and switches focus to multichain test dapp
- *
- * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
- */
-export async function confirmAndSwitchFocusToDapp(
-  driver: Driver,
-): Promise<void> {
-  await driver.clickElement({ text: 'Connect', tag: 'button' });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
-}
-
-/**
  * Retrieves permitted session scopes by using test driver to interact with web dapp.
  *
  * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
