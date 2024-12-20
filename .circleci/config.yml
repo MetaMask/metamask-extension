@@ -284,6 +284,7 @@ workflows:
             - prep-build-mv2
             - prep-build-mmi
             - prep-build-flask
+            - prep-build-test-flask
             - prep-build-flask-mv2
             - prep-build-test
             - prep-build-test-mv2
