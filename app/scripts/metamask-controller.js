@@ -5805,13 +5805,10 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
-    // Determine if the request is coming from an iframe and set mainFrameOrigin
-    let mainFrameOrigin = null;
-    if (sender.frameId && sender.frameId > 0 && sender.tab && sender.tab.url) {
-      // If sender is an iframe, get the top-level frame's origin
+    let mainFrameOrigin = origin;
+    if (sender.tab && sender.tab.url) {
+      // If sender origin is an iframe, then get the top-level frame's origin
       mainFrameOrigin = new URL(sender.tab.url).origin;
-    } else {
-      mainFrameOrigin = origin;
     }
 
     const engine = this.setupProviderEngineEip1193({
