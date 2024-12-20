@@ -91,9 +91,6 @@ async function start() {
       chrome: `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
       firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
-    'builds (test-mmi)': {
-      chrome: `${BUILD_LINK_BASE}/builds-test-mmi/metamask-mmi-chrome-${VERSION}-mmi.0.zip`,
-    },
   };
 
   const buildContentRows = Object.entries(buildMap).map(([label, builds]) => {

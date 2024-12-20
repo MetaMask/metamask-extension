@@ -163,7 +163,6 @@ workflows:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
-          <<: *main_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -309,7 +308,6 @@ workflows:
             - prep-build-test-webpack
             - prep-build-test-flask
             - prep-build-test-flask-mv2
-            - prep-build-test-mmi
             - trigger-beta-build
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
@@ -771,10 +769,10 @@ jobs:
           name: Build extension for testing
           command: yarn build:test:flask:mv2
       - run:
-          name: Move test build to 'dist-test-flask' to avoid conflict with production build
+          name: Move test build to 'dist-test-flask-mv2' to avoid conflict with production build
           command: mv ./dist ./dist-test-flask-mv2
       - run:
-          name: Move test zips to 'builds-test-flask' to avoid conflict with production build
+          name: Move test zips to 'builds-test-flask-mv2' to avoid conflict with production build
           command: mv ./builds ./builds-test-flask-mv2
       - persist_to_workspace:
           root: .
@@ -896,10 +894,14 @@ jobs:
       - run:
           name: Move test build to 'dist-test-webpack' to avoid conflict with production build
           command: mv ./dist ./dist-test-webpack
+      - run:
+          name: Move test zips to 'builds-test-webpack' to avoid conflict with production build
+          command: mv ./builds ./builds-test-webpack
       - persist_to_workspace:
           root: .
           paths:
             - dist-test-webpack
+            - builds-test-webpack
 
   prep-build-storybook:
     executor: node-linux-medium
@@ -1422,8 +1424,6 @@ jobs:
           path: builds-test-flask
       - store_artifacts:
           path: builds-test-flask-mv2
-      - store_artifacts:
-          path: builds-test-mmi
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
