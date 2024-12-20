@@ -222,9 +222,21 @@ export const checkNotification = async (
 };
 
 export const changeExchangeRate = async (driver: Driver) => {
+  // Ensure quote view button is present
+  await driver.waitForSelector('[data-testid="review-quote-view-all-quotes"]');
+
+  // Scroll button into view before clicking
+  await driver.executeScript(`
+    const element = document.querySelector('[data-testid="review-quote-view-all-quotes"]');
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  `);
+
+  // Add small delay allowing for smooth scroll
+  await driver.delay(500);
+
+  // Try to click the element
   await driver.clickElement('[data-testid="review-quote-view-all-quotes"]');
   await driver.waitForSelector({ text: 'Quote details', tag: 'h2' });
-
   const networkFees = await driver.findElements(
     '[data-testid*="select-quote-popover-row"]',
   );
