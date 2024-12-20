@@ -7,61 +7,72 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../page-objects/common';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { DEFAULT_SOL_CONVERSION_RATE } from '../../constants';
+import { withFixturesOptions } from '../../tests/swaps/shared';
 
 const SOLANA_URL_REGEX = /^https:\/\/.*\..*/u;
 const SOLANA_PRICE_REGEX =
   /^https:\/\/price-api\.metamask-institutional\.io\/v2\/chains\/solana:/u;
-
+const SOLANA_BITCOIN_MIN_API =
+  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u;
 export enum SendFlowPlaceHolders {
   AMOUNT = 'Enter amount to send',
   RECIPIENT = 'Enter receiving address',
   LOADING = 'Preparing transaction',
 }
 
-export const SOL_BALANCE = 500;
+export const SOL_BALANCE = 50000000000;
 
 export const SOL_TO_USD_RATE = 225.88;
 
 export const USD_BALANCE = SOL_BALANCE * SOL_TO_USD_RATE;
 
+export const LAMPORTS_PER_SOL = 1_000_000_000;
+
+export async function mockMultiCoinPrice(mockServer: Mockttp) {
+  return await mockServer.forGet(SOLANA_BITCOIN_MIN_API).thenCallback(() => {
+    console.log('Entra en api min ');
+    return {
+      statusCode: 200,
+      json: {
+        BTC: {
+          USD: 96155.06,
+        },
+        SOL: {
+          USD: 180.5,
+        },
+      },
+    };
+  });
+}
+
 export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        context: {
+          apiVersion: '2.0.18',
+          slot: 308460925,
+        },
+        value: SOL_BALANCE,
+      },
+      id: 1337,
+    },
+  };
   return await mockServer
     .forPost('https://api.devnet.solana.com/')
     .withJsonBodyIncluding({
       method: 'getBalance',
     })
     .thenCallback(() => {
-      console.log('Entra y returning ', {
-        statusCode: 200,
-        json: {
-          result: {
-            context: {
-              apiVersion: '2.0.18',
-              slot: 308460925,
-            },
-            value: SOL_BALANCE,
-          },
-          id: 1337,
-        },
-      });
-      return {
-        statusCode: 200,
-        json: {
-          result: {
-            context: {
-              apiVersion: '2.0.18',
-              slot: 308460925,
-            },
-            value: SOL_BALANCE,
-          },
-          id: 1337,
-        },
-      };
+      console.log('Entra y returning ', response);
+      return response;
     });
 }
 export async function mockGetSignaturesForAddress(mockServer: Mockttp) {
+  console.log('Mocking getSignaturesForAddress call');
   return await mockServer
-    .forGet(SOLANA_URL_REGEX)
+    .forPost(SOLANA_URL_REGEX)
     .withBodyIncluding('getSignaturesForAddress')
     .thenCallback(() => {
       return {
@@ -174,10 +185,12 @@ export async function withSolanaAccountSnap(
     title,
     solanaSupportEnabled,
     showNativeTokenAsMainBalance,
+    mockCalls,
   }: {
     title?: string;
     solanaSupportEnabled?: boolean;
     showNativeTokenAsMainBalance?: boolean;
+    mockCalls?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -189,16 +202,21 @@ export async function withSolanaAccountSnap(
     fixtures =
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
+  // withFixturesOptions.ganacheOptions.miner.blockTime = 10;
   await withFixtures(
     {
       fixtures: fixtures.build(),
       title,
       dapp: true,
-      testSpecificMock: async (mockServer: Mockttp) => [
-        /* await mockSolanaBalanceQuote(mockServer),
-        await mockSolanaRatesCall(mockServer),
-        await mockGetSignaturesForAddress(mockServer),*/
-      ],
+      testSpecificMock: async (mockServer: Mockttp) =>
+        mockCalls
+          ? [
+              await mockSolanaBalanceQuote(mockServer),
+              await mockSolanaRatesCall(mockServer),
+              await mockGetSignaturesForAddress(mockServer),
+              await mockMultiCoinPrice(mockServer),
+            ]
+          : [],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithBalanceValidation(driver);
