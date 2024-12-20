@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { PermissionConstraint } from '@metamask/permission-controller';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -36,7 +37,17 @@ describe('wallet_requestPermissions', function () {
         const getPermissions = await driver.executeScript(
           `return window.ethereum.request(${getPermissionsRequest})`,
         );
-        assert.strictEqual(getPermissions[1].parentCapability, 'eth_accounts');
+
+        const grantedPermissionNames = getPermissions
+          .map(
+            (permission: PermissionConstraint) => permission.parentCapability,
+          )
+          .sort();
+
+        assert.deepStrictEqual(grantedPermissionNames, [
+          'endowment:permitted-chains',
+          'eth_accounts',
+        ]);
       },
     );
   });
