@@ -1331,14 +1331,6 @@ jobs:
       - store_artifacts:
           path: development/ts-migration-dashboard/build/final
           destination: ts-migration-dashboard
-      - run:
-          name: Set branch parent commit env var
-          command: |
-            echo "export PARENT_COMMIT=$(git merge-base origin/HEAD HEAD)" >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: build:announce
-          command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
     executor: node-browsers-small
