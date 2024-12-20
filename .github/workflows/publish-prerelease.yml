@@ -50,11 +50,8 @@ jobs:
         env:
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
         run: |
-          for platform in chrome firefox; do
-            pageload=$(curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/${platform}/benchmark/pageload.json")
-            mkdir -p "test-artifacts/${platform}/benchmark"
-            echo "${pageload}" > "test-artifacts/${platform}/benchmark/pageload.json"
-          done
+          mkdir -p "test-artifacts/chrome/benchmark"
+          curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/benchmark/pageload.json" > "test-artifacts/chrome/benchmark/pageload.json"
 
           bundle_size=$(curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json")
           mkdir -p "test-artifacts/chrome"
