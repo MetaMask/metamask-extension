@@ -194,9 +194,6 @@
   "loading": {
     "message": "กำลังโหลด..."
   },
-  "loadingTokens": {
-    "message": "กำลังโหลดโทเค็น..."
-  },
   "lock": {
     "message": "ออกจากระบบ"
   },
