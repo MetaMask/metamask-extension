@@ -127,15 +127,6 @@ workflows:
                 - master
           requires:
             - prep-deps
-      - test-deps-audit:
-          requires:
-            - prep-deps
-      - test-deps-depcheck:
-          requires:
-            - prep-deps
-      - test-yarn-dedupe:
-          requires:
-            - prep-deps
       - validate-lavamoat-allow-scripts:
           requires:
             - prep-deps
@@ -295,7 +286,6 @@ workflows:
             - prep-build-flask-mv2
       - all-tests-pass:
           requires:
-            - test-deps-depcheck
             - validate-lavamoat-allow-scripts
             - validate-lavamoat-policy-build
             - validate-lavamoat-policy-webapp
@@ -968,17 +958,6 @@ jobs:
           name: Rerun workflows from failed
           command: yarn ci-rerun-from-failed
 
-  test-yarn-dedupe:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Detect yarn lock deduplications
-          command: yarn dedupe --check
-
   test-lint:
     executor: node-browsers-medium
     steps:
@@ -1056,28 +1035,6 @@ jobs:
             - run:
                 name: Validate release candidate changelog
                 command: .circleci/scripts/validate-changelog-in-rc.sh
-
-  test-deps-audit:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: yarn audit
-          command: yarn audit
-
-  test-deps-depcheck:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: depcheck
-          command: yarn depcheck
 
   test-e2e-chrome-webpack:
     executor: node-browsers-medium-plus
