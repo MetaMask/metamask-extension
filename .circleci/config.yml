@@ -1427,7 +1427,7 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
       - run:
-          name: Run page load benchmark
+          name: Initialize test artifact directories
           command: |
             mkdir -p test-artifacts/chrome/
             cp -R development/charts/flamegraph test-artifacts/chrome/initialisation

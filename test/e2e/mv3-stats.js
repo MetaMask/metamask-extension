@@ -20,49 +20,45 @@ const FixtureBuilder = require('./fixture-builder');
 
 async function profilePageLoad() {
   const parsedLogs = {};
-  try {
-    await withFixtures(
-      { fixtures: new FixtureBuilder().build() },
-      async ({ driver }) => {
-        await driver.delay(tinyDelayMs);
-        await driver.navigate();
-        await driver.delay(1000);
-        const logs = await driver.checkBrowserForLavamoatLogs();
+  await withFixtures(
+    { fixtures: new FixtureBuilder().build() },
+    async ({ driver }) => {
+      await driver.delay(tinyDelayMs);
+      await driver.navigate();
+      await driver.delay(1000);
+      const logs = await driver.checkBrowserForLavamoatLogs();
 
-        let logString = '';
-        let logType = '';
+      let logString = '';
+      let logType = '';
 
-        logs.forEach((log) => {
-          if (log.indexOf('"version": 1') >= 0) {
-            // log end here
-            logString += log;
-            parsedLogs[logType] = JSON.parse(`{${logString}}`);
-            logString = '';
-            logType = '';
-          } else if (logType) {
-            // log string continues
-            logString += log;
-          } else if (
-            log.search(/"name": ".*app\/scripts\/background.js",/u) >= 0
-          ) {
-            // background log starts
-            logString += log;
-            logType = 'background';
-          } else if (log.search(/"name": ".*app\/scripts\/ui.js",/u) >= 0) {
-            // ui log starts
-            logString += log;
-            logType = 'ui';
-          } else if (log.search(/"name": "Total"/u) >= 0) {
-            // load time log starts
-            logString += log;
-            logType = 'loadTime';
-          }
-        });
-      },
-    );
-  } catch (error) {
-    console.log('Error in trying to parse logs.');
-  }
+      logs.forEach((log) => {
+        if (log.indexOf('"version": 1') >= 0) {
+          // log end here
+          logString += log;
+          parsedLogs[logType] = JSON.parse(`{${logString}}`);
+          logString = '';
+          logType = '';
+        } else if (logType) {
+          // log string continues
+          logString += log;
+        } else if (
+          log.search(/"name": ".*app\/scripts\/background.js",/u) >= 0
+        ) {
+          // background log starts
+          logString += log;
+          logType = 'background';
+        } else if (log.search(/"name": ".*app\/scripts\/ui.js",/u) >= 0) {
+          // ui log starts
+          logString += log;
+          logType = 'ui';
+        } else if (log.search(/"name": "Total"/u) >= 0) {
+          // load time log starts
+          logString += log;
+          logType = 'loadTime';
+        }
+      });
+    },
+  );
   return parsedLogs;
 }
 
