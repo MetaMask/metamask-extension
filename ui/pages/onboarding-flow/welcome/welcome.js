@@ -57,6 +57,9 @@ import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { TermsOfUse } from '../../../components/app/terms-of-use-popup/terms-of-use';
 
+const SCROLL_THRESHOLD = 50;
+const SCROLL_TIMEOUT = 100;
+
 export default function OnboardingWelcome() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -68,6 +71,8 @@ export default function OnboardingWelcome() {
     useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false);
   const modalBodyRef = useRef(null);
 
   useEffect(() => {
@@ -77,16 +82,21 @@ export default function OnboardingWelcome() {
 
     const modalBody = modalBodyRef.current;
 
+    modalBody.scrollTop = 0;
     setTimeout(() => {
       if (modalBody) {
         modalBody.scrollTop = 0;
-        console.log('Scroll position after timeout:', modalBody.scrollTop);
       }
-    }, 100);
+    }, SCROLL_TIMEOUT);
 
     const handleScroll = () => {
       if (modalBody) {
-        console.log('Current scroll position:', modalBody.scrollTop);
+        const isAtBottom =
+          modalBody.scrollHeight -
+            modalBody.scrollTop -
+            modalBody.clientHeight <
+          SCROLL_THRESHOLD;
+        setHasScrolledToBottom((prevValue) => prevValue || isAtBottom);
       }
     };
 
@@ -343,14 +353,18 @@ export default function OnboardingWelcome() {
                   alignItems={AlignItems.center}
                   display={Display.Flex}
                   gap={3}
+                  marginBottom={4}
                   className="onboarding__terms-of-use"
                 >
                   <Checkbox
                     id="onboarding__terms-checkbox"
                     className="onboarding__terms-checkbox"
                     dataTestId="onboarding-terms-checkbox"
-                    checked={false}
-                    onClick={() => undefined}
+                    isDisabled={!hasScrolledToBottom}
+                    isChecked={hasAgreedToTerms}
+                    onClick={() =>
+                      setHasAgreedToTerms((prevValue) => !prevValue)
+                    }
                   />
                   <Text variant={TextVariant.bodyMd} marginLeft={2}>
                     I agree to the Terms of use, which apply to my use of
@@ -363,6 +377,7 @@ export default function OnboardingWelcome() {
                   width={BlockSize.Full}
                   className="onboarding-welcome__terms-accept"
                   data-testid="onboarding-terms-accept"
+                  disabled={!hasAgreedToTerms}
                 >
                   {t('agree')}
                 </Button>
