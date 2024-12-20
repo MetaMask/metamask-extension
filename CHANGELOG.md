@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.9.3]
+### Fixed
+- Fix some cases where users were incorrectly seeing 0 token balances ([#29361](https://github.com/MetaMask/metamask-extension/pull/29361))
+- Ensure users that opt out of smart transaction decoding don't send network requests to related APIs ([#29341](https://github.com/
+MetaMask/metamask-extension/pull/29341))
 
 ## [12.9.2]
 ### Changed
