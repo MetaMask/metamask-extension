@@ -301,10 +301,16 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-mv2
-            - trigger-beta-build
             - prep-build-mmi
             - prep-build-flask
             - prep-build-flask-mv2
+            - prep-build-test
+            - prep-build-test-mv2
+            - prep-build-test-webpack
+            - prep-build-test-flask
+            - prep-build-test-flask-mv2
+            - prep-build-test-mmi
+            - trigger-beta-build
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
             - benchmark
@@ -1409,7 +1415,15 @@ jobs:
       - store_artifacts:
           path: builds-test
       - store_artifacts:
+          path: builds-test-mv2
+      - store_artifacts:
+          path: builds-test-webpack
+      - store_artifacts:
           path: builds-test-flask
+      - store_artifacts:
+          path: builds-test-flask-mv2
+      - store_artifacts:
+          path: builds-test-mmi
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
