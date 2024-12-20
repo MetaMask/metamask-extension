@@ -25,10 +25,6 @@ executors:
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
-  shellcheck:
-    docker:
-      - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
-    resource_class: small
   playwright:
     docker:
       - image: mcr.microsoft.com/playwright:v1.44.1-focal
@@ -184,16 +180,6 @@ workflows:
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
-      - test-lint:
-          requires:
-            - prep-deps
-      - test-lint-shellcheck
-      - test-lint-lockfile:
-          requires:
-            - prep-deps
-      - test-lint-changelog:
-          requires:
-            - prep-deps
       - test-e2e-chrome-webpack:
           <<: *main_master_rc_only
           requires:
@@ -285,10 +271,6 @@ workflows:
             - validate-lavamoat-allow-scripts
             - validate-lavamoat-policy-build
             - validate-lavamoat-policy-webapp
-            - test-lint
-            - test-lint-shellcheck
-            - test-lint-lockfile
-            - test-lint-changelog
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -954,20 +936,6 @@ jobs:
           name: Rerun workflows from failed
           command: yarn ci-rerun-from-failed
 
-  test-lint:
-    executor: node-browsers-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Lint
-          command: yarn lint
-      - run:
-          name: Verify locales
-          command: yarn verify-locales --quiet
-
   test-storybook:
     executor: node-browsers-medium-plus
     steps:
@@ -981,56 +949,6 @@ jobs:
       - run:
           name: Test Storybook
           command: yarn test-storybook:ci
-
-  test-lint-shellcheck:
-    executor: shellcheck
-    steps:
-      - checkout
-      - run: apk add --no-cache bash jq yarn
-      - run:
-          name: ShellCheck Lint
-          command: ./development/shellcheck.sh
-
-  test-lint-lockfile:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: lockfile-lint
-          command: yarn lint:lockfile
-      - run:
-          name: check yarn resolutions
-          command: yarn --check-resolutions
-
-  test-lint-changelog:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^Version-v(\d+)[.](\d+)[.](\d+)$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: Validate changelog
-                command: yarn lint:changelog
-      - when:
-          condition:
-            matches:
-              pattern: /^Version-v(\d+)[.](\d+)[.](\d+)$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: Validate release candidate changelog
-                command: .circleci/scripts/validate-changelog-in-rc.sh
 
   test-e2e-chrome-webpack:
     executor: node-browsers-medium-plus
