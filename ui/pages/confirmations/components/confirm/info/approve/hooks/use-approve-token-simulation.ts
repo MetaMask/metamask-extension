@@ -8,17 +8,16 @@ import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
 import { useIsNFT } from './use-is-nft';
 
-const UNLIMITED_THRESHOLD = 10 ** 15;
-
 function isSpendingCapUnlimited(decodedSpendingCap: number) {
-  return decodedSpendingCap >= UNLIMITED_THRESHOLD;
+  return decodedSpendingCap >= TOKEN_VALUE_UNLIMITED_THRESHOLD;
 }
 
 export const useApproveTokenSimulation = (
   transactionMeta: TransactionMeta,
-  decimals: string,
+  decimals: string | undefined,
 ) => {
   const locale = useSelector(getIntlLocale);
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
@@ -43,7 +42,7 @@ export const useApproveTokenSimulation = (
 
     return calcTokenAmount(
       value.data[0].params[paramIndex].value,
-      Number(decimals),
+      Number(decimals || '0'),
     ).toFixed();
   }, [value, decimals]);
 

@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Ağ Ekleniyor"
   },
-  "addingTokens": {
-    "message": "Token'leri ekleme"
-  },
   "additionalNetworks": {
     "message": "İlave ağlar"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "Cüzdanınızdaki token'ler otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
   },
-  "attemptSendingAssets": {
-    "message": "Varlıklarınızı doğrudan bir ağdan diğerine göndermeye çalışırsanız onları kaybedebilirsiniz. Fonları köprü kullanarak ağlar arasında güvenli bir şekilde transfer edin."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. $1 gibi bir köprü kullandığınızdan emin olun"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal etme girişimi"
   },
@@ -837,9 +828,6 @@
   "bridgeCalculatingAmount": {
     "message": "Hesaplanıyor..."
   },
-  "bridgeDontSend": {
-    "message": "Köprü yap, gönderme"
-  },
   "bridgeEnterAmount": {
     "message": "Miktar girin"
   },
@@ -855,7 +843,6 @@
   "bridgeTo": {
     "message": "Şuraya köprü:"
   },
-
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
@@ -951,9 +938,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "WebHID üzerinden Ledger'ınızı bağlamak için tıklayın",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Dilediğiniz zaman tokenleri manuel olarak ekleyebilirsiniz."
   },
   "close": {
     "message": "Kapat"
@@ -2136,9 +2120,6 @@
   "gasFee": {
     "message": "Gaz ücreti"
   },
-  "gasIsETH": {
-    "message": "Gaz $1 "
-  },
   "gasLimit": {
     "message": "Gaz limiti"
   },
@@ -2700,9 +2681,6 @@
   "learnScamRisk": {
     "message": "dolandırıcılıklar ve güvenlik riskleri."
   },
-  "learnToBridge": {
-    "message": "Köprü yapmayı öğren"
-  },
   "leaveMetaMask": {
     "message": "MetaMask'ten ayrıl?"
   },
@@ -2793,9 +2771,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Lütfen işlemi Snap üzerinde tamamlayın."
-  },
-  "loadingTokens": {
-    "message": "Tokenler yükleniyor..."
   },
   "localhost": {
     "message": "Yerel Ana Bilgisayar 8545"
@@ -2897,9 +2872,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Cüzdan bildirimleri şu anda aktif değil."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swap İşlemleri bakımda. Lütfen daha sonra tekrar kontrol edin."
@@ -3044,10 +3016,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 sizden şunun için onay istiyor:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Bu ağdaki yerli token $1. Bu, gaz ücretleri için kullanılan tokendir. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Ağ bilgilerini düzenle"
@@ -5938,9 +5906,6 @@
     "message": "$1, $2 üzerinde aktif",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Şu anda kullandığınız ağ"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Ağ değiştirmek bekleyen tüm onayları iptal eder"
   },
@@ -5976,9 +5941,6 @@
   },
   "themeDescription": {
     "message": "Tercih ettiğin MetaMask temasını seç."
-  },
-  "thingsToKeep": {
-    "message": "Unutulmaması gerekenler:"
   },
   "thirdPartySoftware": {
     "message": "Üçüncü taraf yazılım uyarısı",
@@ -6060,9 +6022,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "token dolandırıcılıkları ve güvenlik riskleri"
-  },
-  "tokenShowUp": {
-    "message": "Tokenleriniz cüzdanınızda otomatik olarak görünmeyebilir. "
   },
   "tokenStandard": {
     "message": "Token standardı"

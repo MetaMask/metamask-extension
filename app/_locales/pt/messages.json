@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Adicionar rede"
   },
-  "addingTokens": {
-    "message": "Adicionando tokens"
-  },
   "additionalNetworks": {
     "message": "Redes adicionais"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "Detecte automaticamente os tokens em sua carteira, exiba NFTs e receba atualizações de saldo de contas em lote"
   },
-  "attemptSendingAssets": {
-    "message": "Você poderá perder seus ativos se tentar enviá-los a partir de outra rede. Transfira fundos entre redes com segurança usando uma ponte."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Você poderá perder seus ativos se tentar enviá-los a partir de outra rede. Transfira os fundos com segurança entre redes usando uma ponte, como $1"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Tentar cancelar a troca sem custo"
   },
@@ -837,9 +828,6 @@
   "bridgeCalculatingAmount": {
     "message": "Calculando..."
   },
-  "bridgeDontSend": {
-    "message": "Usar uma ponte, não enviar"
-  },
   "bridgeEnterAmount": {
     "message": "Insira o valor"
   },
@@ -855,7 +843,6 @@
   "bridgeTo": {
     "message": "Ponte para"
   },
-
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
@@ -951,9 +938,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Clique aqui para conectar seu Ledger por meio do WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Sempre é possível adicionar tokens manualmente."
   },
   "close": {
     "message": "Fechar"
@@ -2136,9 +2120,6 @@
   "gasFee": {
     "message": "Taxa de gás"
   },
-  "gasIsETH": {
-    "message": "O gás é $1 "
-  },
   "gasLimit": {
     "message": "Limite de gás"
   },
@@ -2700,9 +2681,6 @@
   "learnScamRisk": {
     "message": "golpes e riscos de segurança."
   },
-  "learnToBridge": {
-    "message": "Aprenda a usar uma ponte"
-  },
   "leaveMetaMask": {
     "message": "Sair da MetaMask?"
   },
@@ -2793,9 +2771,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Por favor, conclua a transação no Snap."
-  },
-  "loadingTokens": {
-    "message": "Carregando tokens..."
   },
   "localhost": {
     "message": "Host local 8545"
@@ -2897,9 +2872,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "As notificações de carteiras estão inativas no momento."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "O recurso de Trocas da MetaMask está em manutenção. Verifique novamente mais tarde."
@@ -3044,10 +3016,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 solicita sua aprovação para:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "O token nativo dessa rede é $1. Esse é o token usado para taxas de gás.",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Editar detalhes da rede"
@@ -5938,9 +5906,6 @@
     "message": "$1 agora está ativa na $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Você alternou para"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "A alternância de redes cancelará todas as confirmações pendentes"
   },
@@ -5976,9 +5941,6 @@
   },
   "themeDescription": {
     "message": "Escolha o seu tema preferido para a MetaMask."
-  },
-  "thingsToKeep": {
-    "message": "Informações importantes:"
   },
   "thirdPartySoftware": {
     "message": "Aviso de software de terceiros",
@@ -6060,9 +6022,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "golpes e riscos de segurança envolvendo tokens"
-  },
-  "tokenShowUp": {
-    "message": "Seus tokens podem não aparecer automaticamente em sua carteira."
   },
   "tokenStandard": {
     "message": "Padrão de token"

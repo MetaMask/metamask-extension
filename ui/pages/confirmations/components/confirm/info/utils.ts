@@ -110,3 +110,17 @@ export function hasValueAndNativeBalanceMismatch(
     nativeBalanceChange?.isDecrease === false,
   );
 }
+
+export function isValidUTF8(inputString: string) {
+  try {
+    const encoder = new TextEncoder();
+    const encoded = encoder.encode(inputString);
+
+    const decoder = new TextDecoder('utf-8', { fatal: true });
+    decoder.decode(encoded);
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}

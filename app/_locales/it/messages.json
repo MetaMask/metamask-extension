@@ -252,9 +252,6 @@
   "assetOptions": {
     "message": "Opzioni asset"
   },
-  "attemptSendingAssets": {
-    "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
-  },
   "attributions": {
     "message": "Attribuzioni"
   },
@@ -368,9 +365,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Clicca qui per connettere il tuo Ledger tramite WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Clicca qui per aggiungere manualmente i token."
   },
   "close": {
     "message": "Chiudi"
@@ -970,9 +964,6 @@
   },
   "loading": {
     "message": "Caricamento..."
-  },
-  "loadingTokens": {
-    "message": "Caricamento Tokens..."
   },
   "lock": {
     "message": "Disconnetti"

@@ -378,9 +378,6 @@
   "loading": {
     "message": "Учитава се..."
   },
-  "loadingTokens": {
-    "message": "Učitavanje tokena..."
-  },
   "lock": {
     "message": "Odjavi se"
   },
