@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
@@ -6,6 +9,7 @@ import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../tes
 import { useTransferRecipient } from './useTransferRecipient';
 
 const ADDRESS_MOCK = '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B';
+const ADDRESS_2_MOCK = '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09C';
 
 const TRANSACTION_METADATA_MOCK =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -28,10 +32,11 @@ describe('useTransferRecipient', () => {
     expect(runHook()).toBeUndefined();
   });
 
-  it('returns transaction to address if no token data', () => {
+  it('returns parameter to address if simple send', () => {
     expect(
       runHook({
         ...TRANSACTION_METADATA_MOCK,
+        type: TransactionType.simpleSend,
         txParams: {
           ...TRANSACTION_METADATA_MOCK.txParams,
           to: ADDRESS_MOCK,
@@ -40,16 +45,30 @@ describe('useTransferRecipient', () => {
     ).toBe(ADDRESS_MOCK);
   });
 
-  it('returns transaction data to address if token transfer', () => {
+  it('returns data to address if token data', () => {
     expect(
       runHook({
         ...TRANSACTION_METADATA_MOCK,
         txParams: {
           ...TRANSACTION_METADATA_MOCK.txParams,
-          to: '0x123',
+          to: ADDRESS_2_MOCK,
           data: genUnapprovedTokenTransferConfirmation().txParams.data,
         },
       }),
     ).toBe(ADDRESS_MOCK);
+  });
+
+  it('returns parameter to address if token data but type is simple send', () => {
+    expect(
+      runHook({
+        ...TRANSACTION_METADATA_MOCK,
+        type: TransactionType.simpleSend,
+        txParams: {
+          ...TRANSACTION_METADATA_MOCK.txParams,
+          to: ADDRESS_2_MOCK,
+          data: genUnapprovedTokenTransferConfirmation().txParams.data,
+        },
+      }),
+    ).toBe(ADDRESS_2_MOCK);
   });
 });
