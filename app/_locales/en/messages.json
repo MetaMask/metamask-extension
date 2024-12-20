@@ -6269,6 +6269,9 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
+  "toggleDecodeDescription": {
+    "message": "We use 4byte.directory and Sourcify services to decode and display more readable transaction data. This helps you understand the outcome of pending and past transactions, but can result in your IP address being shared."
+  },
   "toggleRequestQueueDescription": {
     "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
   },
@@ -6631,9 +6634,6 @@
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "We use 4byte.directory and Sourcify services to decode and display more readable transaction data. This helps you understand the outcome of pending and past transactions, but can result in your IP address being shared."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"

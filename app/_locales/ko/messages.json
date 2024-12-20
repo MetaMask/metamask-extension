@@ -6338,9 +6338,6 @@
   "use4ByteResolution": {
     "message": "스마트 계약 디코딩"
   },
-  "use4ByteResolutionDescription": {
-    "message": "인터렉션하는 스마트 계약에 따라 메시지를 이용하여 활동 탭을 사용자 맞춤하여 사용자 경험을 개선합니다. MetaMask는 4byte.directory라는 서비스를 통해 데이터를 디코딩하여 스마트 계약을 읽기 쉬운 버전으로 보여 줍니다. 이는 악의적인 스마트 계약을 승인할 가능성을 줄이는 데 도움이 되지만 IP 주소가 공유될 수 있습니다."
-  },
   "useMultiAccountBalanceChecker": {
     "message": "일괄 계정 잔액 요청"
   },
