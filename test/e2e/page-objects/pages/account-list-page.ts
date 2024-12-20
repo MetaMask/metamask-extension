@@ -129,6 +129,9 @@ class AccountListPage {
     tag: 'h4',
   };
 
+  private readonly selectAccountSelector =
+    '.multichain-account-list-item__account-name';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -203,6 +206,41 @@ class AccountListPage {
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
       );
+    }
+  }
+
+  async addNewSolanaAccount({
+    solanaAccountCreationEnabled = true,
+    accountName = '',
+  }: {
+    solanaAccountCreationEnabled?: boolean;
+    accountName?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Adding new Solana account${
+        accountName ? ` with custom name: ${accountName}` : ' with default name'
+      }`,
+    );
+    if (solanaAccountCreationEnabled) {
+      await this.driver.clickElement(this.addSolanaAccountButton);
+      // needed to mitigate a race condition with the state update
+      // there is no condition we can wait for in the UI
+      if (accountName) {
+        await this.driver.fill(this.accountNameInput, accountName);
+      }
+      await this.driver.clickElementAndWaitToDisappear(
+        this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
+      );
+    } else {
+      const createButton = await this.driver.findElement(
+        this.addSolanaAccountButton,
+      );
+      assert.equal(await createButton.isEnabled(), false);
+      await this.driver.clickElement(this.closeAccountModalButton);
     }
   }
 
@@ -343,10 +381,20 @@ class AccountListPage {
     console.log(
       `Check that account value and suffix ${expectedValueAndSuffix} is displayed in account list`,
     );
-    await this.driver.waitForSelector({
-      css: this.accountValueAndSuffix,
-      text: expectedValueAndSuffix,
-    });
+    const solBalanceValue = await this.driver.findElement(
+      this.accountValueAndSuffix,
+      200000,
+    );
+    console.log(await solBalanceValue.getText());
+    await this.driver.waitForSelector(
+      {
+        css: this.accountValueAndSuffix,
+        text: expectedValueAndSuffix,
+      },
+      {
+        timeout: 20000,
+      },
+    );
   }
 
   async check_addBitcoinAccountAvailable(
@@ -483,6 +531,18 @@ class AccountListPage {
     });
   }
 
+  async check_accountNotDisplayedInAccountList(
+    expectedLabel: string = 'Account',
+  ): Promise<void> {
+    console.log(
+      `Check that account label ${expectedLabel} is not displayed in account list`,
+    );
+    await this.driver.assertElementNotPresent({
+      css: this.accountListItem,
+      text: expectedLabel,
+    });
+  }
+
   /**
    * Checks that the account with the specified label is not displayed in the account list.
    *
@@ -605,6 +665,13 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.assertElementNotPresent(this.removeAccountButton);
+  }
+
+  async selectAccount(accountLabel: string): Promise<void> {
+    await this.driver.clickElement({
+      css: this.selectAccountSelector,
+      text: accountLabel,
+    });
   }
 }
 
