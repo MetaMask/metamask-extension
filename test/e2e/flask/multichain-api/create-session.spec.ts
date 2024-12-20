@@ -263,7 +263,7 @@ describe('Multichain API', function () {
   });
 
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` without any accounts requested', function () {
-    it('should automatically select first account', async function () {
+    it('should automatically select the current active account', async function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
@@ -296,7 +296,7 @@ describe('Multichain API', function () {
           assert.strictEqual(
             isChecked,
             true,
-            'first account should be automatically selected',
+            'current active account in the wallet should be automatically selected',
           );
         },
       );
@@ -352,7 +352,7 @@ describe('Multichain API', function () {
     });
 
     describe('deselect all', function () {
-      it('should not be able to update the account permissions (at least one account is required)', async function () {
+      it('should not be able to approve the create session request without at least one account selected', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
@@ -394,7 +394,7 @@ describe('Multichain API', function () {
             assert.strictEqual(
               isEnabled,
               false,
-              'should not able to update the account permissions (at least one account should be selected)',
+              'should not able to approve the create session request without at least one account should be selected',
             );
           },
         );
