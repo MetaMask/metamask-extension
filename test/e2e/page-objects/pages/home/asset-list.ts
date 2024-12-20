@@ -145,7 +145,6 @@ class AssetListPage {
     return tokenNames;
   }
 
-
   async sortTokenList(
     sortBy: 'alphabetically' | 'decliningBalance',
   ): Promise<void> {
