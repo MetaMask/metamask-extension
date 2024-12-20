@@ -173,22 +173,29 @@ export async function withSolanaAccountSnap(
   {
     title,
     solanaSupportEnabled,
-  }: { title?: string; solanaSupportEnabled?: boolean },
+    showNativeTokenAsMainBalance,
+  }: {
+    title?: string;
+    solanaSupportEnabled?: boolean;
+    showNativeTokenAsMainBalance?: boolean;
+  },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
   console.log('Starting withSolanaAccountSnap');
+  let fixtures = new FixtureBuilder().withPreferencesControllerAndFeatureFlag({
+    solanaSupportEnabled: solanaSupportEnabled ?? true,
+  });
+  if (!showNativeTokenAsMainBalance) {
+    fixtures =
+      fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
+  }
   await withFixtures(
     {
-      fixtures: new FixtureBuilder()
-        .withPreferencesControllerAndFeatureFlag({
-          solanaSupportEnabled: solanaSupportEnabled ?? true,
-        })
-        .withUseNativeCurrencyAsPrimaryCurrency()
-        .build(),
+      fixtures: fixtures.build(),
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [
-        /*await mockSolanaBalanceQuote(mockServer),
+        /* await mockSolanaBalanceQuote(mockServer),
         await mockSolanaRatesCall(mockServer),
         await mockGetSignaturesForAddress(mockServer),*/
       ],
