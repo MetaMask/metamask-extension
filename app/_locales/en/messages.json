@@ -3495,16 +3495,6 @@
   "noThanks": {
     "message": "No thanks"
   },
-  "noTransactions": {
-    "message": "You have no transactions"
-  },
-  "noTransactionsChainIdMismatch": {
-    "message": "Please switch network to view transactions"
-  },
-  "noTransactionsNetworkName": {
-    "message": "Please switch to $1 network to view transactions",
-    "description": "$1 represents the network name"
-  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
@@ -6266,6 +6256,9 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
+  "toggleDecodeDescription": {
+    "message": "We use 4byte.directory and Sourcify services to decode and display more readable transaction data. This helps you understand the outcome of pending and past transactions, but can result in your IP address being shared."
+  },
   "toggleRequestQueueDescription": {
     "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
   },
@@ -6628,9 +6621,6 @@
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "To improve user experience, we customize the activity tab with messages based on the smart contracts you interact with. MetaMask uses a service called 4byte.directory to decode data and show you a version of a smart contract that's easier to read. This helps reduce your chances of approving malicious smart contract actions, but can result in your IP address being shared."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"

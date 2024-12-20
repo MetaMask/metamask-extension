@@ -340,17 +340,7 @@ exports[`AssetPage should render a native asset 1`] = `
             >
               <div
                 class="mm-box transaction-list__completed-transactions"
-              >
-                <div
-                  class="mm-box transaction-list__empty"
-                >
-                  <div
-                    class="mm-box transaction-list__empty-text"
-                  >
-                    You have no transactions
-                  </div>
-                </div>
-              </div>
+              />
             </div>
           </div>
         </div>
@@ -743,17 +733,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             >
               <div
                 class="mm-box transaction-list__completed-transactions"
-              >
-                <div
-                  class="mm-box transaction-list__empty"
-                >
-                  <div
-                    class="mm-box transaction-list__empty-text"
-                  >
-                    You have no transactions
-                  </div>
-                </div>
-              </div>
+              />
             </div>
           </div>
         </div>
@@ -1300,17 +1280,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             >
               <div
                 class="mm-box transaction-list__completed-transactions"
-              >
-                <div
-                  class="mm-box transaction-list__empty"
-                >
-                  <div
-                    class="mm-box transaction-list__empty-text"
-                  >
-                    You have no transactions
-                  </div>
-                </div>
-              </div>
+              />
             </div>
           </div>
         </div>
