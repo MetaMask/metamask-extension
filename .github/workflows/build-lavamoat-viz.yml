@@ -1,0 +1,23 @@
+name: Build LavaMoat visualization
+
+on:
+  workflow_call:
+
+jobs:
+  build-lavamoat-viz:
+    name: Build LavaMoat visualization
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Build LavaMoat visualization
+        run: ./development/create-lavamoat-viz.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lavamoat-build-viz
+          path: ./build-artifacts/build-viz/

@@ -58,6 +58,7 @@ async function start() {
     MERGE_BASE_COMMIT_HASH,
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
+    LAVAMOAT_BUILD_VIZ_ID,
   } = process.env;
 
   console.log('PR_NUMBER', PR_NUMBER);
@@ -65,6 +66,7 @@ async function start() {
   console.log('MERGE_BASE_COMMIT_HASH', MERGE_BASE_COMMIT_HASH);
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
   console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
+  console.log('LAVAMOAT_BUILD_VIZ_ID', LAVAMOAT_BUILD_VIZ_ID);
 
   if (!PR_NUMBER) {
     console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
@@ -165,7 +167,7 @@ async function start() {
   const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
 
   // links to bundle browser builds
-  const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
+  const depVizUrl = `https://api.github.com/repos/MetaMask/metamask-extension/actions/artifacts/${LAVAMOAT_BUILD_VIZ_ID}/zip`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
   const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/initialisation/background/index.html`;
   const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;

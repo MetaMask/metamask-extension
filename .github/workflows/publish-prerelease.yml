@@ -7,8 +7,32 @@ on:
         required: true
 
 jobs:
+  lavamoat-build-viz:
+    name: Build LavaMoat build visualization
+    runs-on: ubuntu-latest
+    outputs:
+      ARTIFACT_ID: ${{ steps.artifact-upload-step.outputs.artifact-id }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Build LavaMoat visualization
+        run: ./development/create-lavamoat-viz.sh
+        env:
+          INFURA_PROJECT_ID: 00000000000
+
+      - uses: actions/upload-artifact@v4
+        id: artifact-upload-step
+        with:
+          name: lavamoat-build-viz
+          path: ./build-artifacts/build-viz/
+
   publish-prerelease:
     name: Publish prerelease
+    needs: lavamoat-build-viz
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -61,6 +85,12 @@ jobs:
           mkdir "storybook-build"
           echo "${stories}" > "storybook-build/stories.json"
 
+      - name: Download LavaMoat build visualization
+        uses: actions/download-artifact@v4
+        with:
+          name: lavamoat-build-viz
+          path: ./build-artifacts/build-viz/
+
       - name: Publish prerelease
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -69,4 +99,5 @@ jobs:
           MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
           CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
+          LAVAMOAT_BUILD_VIZ_ID: ${{needs.lavamoat-build-viz.outputs.ARTIFACT_ID}}
         run: ./development/metamaskbot-build-announce.js
