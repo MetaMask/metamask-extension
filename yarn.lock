@@ -5124,13 +5124,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^7.0.0, @metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "@metamask/base-controller@npm:7.0.2"
+"@metamask/base-controller@npm:^7.0.0, @metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@metamask/base-controller@npm:7.1.0"
   dependencies:
     "@metamask/utils": "npm:^10.0.0"
     immer: "npm:^9.0.6"
-  checksum: 10/6f78ec5af840c9947aa8eac6e402df6469600260d613a92196daefd5b072097a176fe5da1c386f2d36853513254b74140d667d817a12880c46f088e18ff3606a
+  checksum: 10/5a0b50c1e096cbf6483e308eddb3ca2e5e1865b803b5dba778bf635ec59657290895e21ada71c7508d8e34ff9695a192a414fd75e287d290346359ef8e23960a
   languageName: node
   linkType: hard
 
@@ -6495,9 +6495,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^42.0.0":
-  version: 42.0.0
-  resolution: "@metamask/transaction-controller@npm:42.0.0"
+"@metamask/transaction-controller@npm:^42.1.0":
+  version: 42.1.0
+  resolution: "@metamask/transaction-controller@npm:42.1.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6505,13 +6505,13 @@ __metadata:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^7.0.2"
+    "@metamask/base-controller": "npm:^7.1.0"
     "@metamask/controller-utils": "npm:^11.4.4"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.1"
-    "@metamask/utils": "npm:^10.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.0.1"
     async-mutex: "npm:^0.5.0"
     bn.js: "npm:^5.2.1"
     eth-method-registry: "npm:^4.0.0"
@@ -6525,7 +6525,7 @@ __metadata:
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/73c510803a720b4c1da0b82f1279a404a9b11c4ab76f8e5e4378c65d5d08bbb32c52062abfe319476cc3f5e2623a8987775c4524e55aa94002af73d73721b869
+  checksum: 10/9f842e2b68e84cbffdda301a0e15faab08226fd8e22eb954690ed41df60fe92c24acffdd9186b4c9f1da911a368cbe22cdb9ee046fc02d079c53f76100c66755
   languageName: node
   linkType: hard
 
@@ -26772,7 +26772,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^1.0.4"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:8.13.0"
-    "@metamask/transaction-controller": "npm:^42.0.0"
+    "@metamask/transaction-controller": "npm:^42.1.0"
     "@metamask/user-operation-controller": "npm:^21.0.0"
     "@metamask/utils": "npm:^10.0.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"

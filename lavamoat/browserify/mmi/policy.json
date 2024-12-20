@@ -1965,7 +1965,7 @@
         "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
+        "@metamask/transaction-controller>@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -2372,6 +2372,21 @@
       }
     },
     "@metamask/rate-limit-controller>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
