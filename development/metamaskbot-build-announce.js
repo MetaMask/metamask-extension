@@ -5,7 +5,6 @@ const path = require('path');
 // Fetch is part of node js in future versions, thus triggering no-shadow
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
-const glob = require('fast-glob');
 const VERSION = require('../package.json').version;
 const { getHighlights } = require('./highlights');
 
@@ -36,6 +35,17 @@ function getHumanReadableSize(bytes) {
 
 function getPercentageChange(from, to) {
   return parseFloat(((to - from) / Math.abs(from)) * 100).toFixed(2);
+}
+
+/**
+ * Check whether an artifact exists,
+ *
+ * @param {string} url - The URL of the artifact to check.
+ * @returns True if the artifact exists, false if it doesn't
+ */
+async function artifactExists(url) {
+  const response = await fetch(url, { method: 'HEAD' });
+  return response.ok;
 }
 
 async function start() {
@@ -95,30 +105,26 @@ async function start() {
 
   // links to bundle browser builds
   const bundles = {};
-  const fileType = '.html';
   const sourceMapRoot = '/build-artifacts/source-map-explorer/';
-  const bundleFiles = await glob(`.${sourceMapRoot}*${fileType}`);
+  const fileRoots = [
+    'background',
+    'common',
+    'ui',
+    'content-script',
+    'offscreen',
+  ];
 
-  bundleFiles.forEach((bundleFile) => {
-    const fileName = bundleFile.split(sourceMapRoot)[1];
-    const bundleName = fileName.split(fileType)[0];
-    const url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileName}`;
-    let fileRoot = bundleName;
-    let fileIndex = bundleName.match(/-[0-9]{1,}$/u)?.index;
-
-    if (fileIndex) {
-      fileRoot = bundleName.slice(0, fileIndex);
-      fileIndex = bundleName.slice(fileIndex + 1, bundleName.length);
-    }
-
-    const link = `<a href="${url}">${fileIndex || fileRoot}</a>`;
-
-    if (fileRoot in bundles) {
+  for (const fileRoot of fileRoots) {
+    let fileIndex = 0;
+    let url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
+    while (await artifactExists(url)) {
+      const link = `<a href="${url}">${fileIndex}</a>`;
       bundles[fileRoot].push(link);
-    } else {
-      bundles[fileRoot] = [link];
+
+      fileIndex += 1;
+      url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
     }
-  });
+  }
 
   const bundleMarkup = `<ul>${Object.keys(bundles)
     .map((key) => `<li>${key}: ${bundles[key].join(', ')}</li>`)
