@@ -2772,9 +2772,6 @@
   "loadingScreenSnapMessage": {
     "message": "Snap에서 트랜잭션을 완료하세요."
   },
-  "loadingTokens": {
-    "message": "토큰 불러오는 중..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },

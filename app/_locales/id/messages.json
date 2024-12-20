@@ -2772,9 +2772,6 @@
   "loadingScreenSnapMessage": {
     "message": "Selesaikan transaksi di Snap."
   },
-  "loadingTokens": {
-    "message": "Memuat token..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },

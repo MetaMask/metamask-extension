@@ -2772,9 +2772,6 @@
   "loadingScreenSnapMessage": {
     "message": "Por favor, complete la transacción en el Snap."
   },
-  "loadingTokens": {
-    "message": "Cargando tokens..."
-  },
   "localhost": {
     "message": "Host local 8545"
   },

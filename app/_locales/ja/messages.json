@@ -2772,9 +2772,6 @@
   "loadingScreenSnapMessage": {
     "message": "Snapでトランザクションを完了させてください。"
   },
-  "loadingTokens": {
-    "message": "トークンをロードしています..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },

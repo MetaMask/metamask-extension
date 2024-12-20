@@ -2772,9 +2772,6 @@
   "loadingScreenSnapMessage": {
     "message": "Ολοκληρώστε τη συναλλαγή στο Snap."
   },
-  "loadingTokens": {
-    "message": "Φόρτωση των tokens..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },

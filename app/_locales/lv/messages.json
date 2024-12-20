@@ -381,9 +381,6 @@
   "loading": {
     "message": "Notiek ielāde..."
   },
-  "loadingTokens": {
-    "message": "Ielādē marķierus..."
-  },
   "localhost": {
     "message": "Resursdators 8545"
   },

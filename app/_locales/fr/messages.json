@@ -2772,9 +2772,6 @@
   "loadingScreenSnapMessage": {
     "message": "Veuillez conclure la transaction sur le snap."
   },
-  "loadingTokens": {
-    "message": "Chargement des jetons..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },
