@@ -6379,9 +6379,6 @@
   "use4ByteResolution": {
     "message": "对智能合约进行解码"
   },
-  "use4ByteResolutionDescription": {
-    "message": "为了改善用户体验，我们根据与您交互的智能合约消息，自定义活动选项卡。MetaMask 使用名为 4byte.directory 的服务来对数据进行解码，并向您显示更方便阅读的智能合约版本。这有助于减少您批准恶意智能合约操作的机会，但可能导致您的 IP 地址被共享。"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "账户余额分批请求"
   },

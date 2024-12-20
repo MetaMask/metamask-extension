@@ -6379,9 +6379,6 @@
   "use4ByteResolution": {
     "message": "I-decode ang mga smart na kontrata"
   },
-  "use4ByteResolutionDescription": {
-    "message": "Upang mapabuti ang karanasan ng user, kino-customize namin ang tab ng mga aktibidad gamit ang mga mensahe ayon sa mga smart na kontrata kung saan ka nakikipag-ugnayan. Gumagamit ang MetaMask ng serbisyong tinatawag na 4byte.directory para i-decode ang datos at ipakita sa iyo ang bersyon ng smart na kontrata na mas madaling basahin. Tumutulong ito na bawasan ang pagkakataon na aprubahan mo ang mga mapaminsalang aksyon sa smart na kontrata, ngunit maaaring magresulta sa pagbabahagi ng iyong IP address."
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Maramihang kahilingan sa balanse ng account"
   },
