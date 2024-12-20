@@ -72,6 +72,15 @@ describe('Failing contract interaction ', function () {
           css: '.activity-list-item .transaction-status-label',
           text: 'Failed',
         });
+        // inspect transaction details
+        await driver.clickElement({
+          css: '.activity-list-item .transaction-status-label',
+          text: 'Failed',
+        });
+        await driver.waitForSelector('.transaction-list-item-details');
+        await driver.waitForSelector(
+          '[data-testid="transaction-list-item-details-banner-error-message"]',
+        );
       },
     );
   });
