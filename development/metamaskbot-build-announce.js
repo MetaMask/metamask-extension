@@ -133,13 +133,16 @@ async function start() {
   for (const fileRoot of fileRoots) {
     let fileIndex = 0;
     let url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
+    console.log(`Verifying ${url}`);
     while (await artifactExists(url)) {
       const link = `<a href="${url}">${fileIndex}</a>`;
       bundles[fileRoot].push(link);
 
       fileIndex += 1;
       url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
+      console.log(`Verifying ${url}`);
     }
+    console.log(`Not found: ${url}`);
   }
 
   const bundleMarkup = `<ul>${Object.keys(bundles)
