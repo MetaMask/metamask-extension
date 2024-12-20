@@ -261,4 +261,144 @@ describe('Multichain API', function () {
       });
     });
   });
+
+  describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` without any accounts requested', function () {
+    it('should automatically select first account', async function () {
+      await withFixtures(
+        {
+          title: this.test?.fullTitle(),
+          fixtures: new FixtureBuilder().withPopularNetworks().build(),
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+        },
+        async ({
+          driver,
+          extensionId,
+        }: {
+          driver: Driver;
+          extensionId: string;
+        }) => {
+          await openMultichainDappAndConnectWalletWithExternallyConnectable(
+            driver,
+            extensionId,
+          );
+
+          await initCreateSessionScopes(driver, ['eip155:1']);
+
+          const editButtons = await driver.findElements('[data-testid="edit"]');
+          await editButtons[0].click();
+
+          const checkboxes = await driver.findElements(
+            'input[type="checkbox" i]',
+          );
+          const accountCheckbox = checkboxes[1];
+          const isChecked = await accountCheckbox.isSelected();
+
+          assert.strictEqual(
+            isChecked,
+            true,
+            'first account should be automatically selected',
+          );
+        },
+      );
+    });
+  });
+
+  describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession`, choose to edit accounts and', function () {
+    describe('add a new one', function () {
+      it('dApp should receive a response that includes permissions for the accounts that were selected for sharing', async function () {
+        await withFixtures(
+          {
+            title: this.test?.fullTitle(),
+            fixtures: new FixtureBuilder()
+              .withPopularNetworks()
+              .withPreferencesControllerAdditionalAccountIdentities()
+              .build(),
+            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+          },
+          async ({
+            driver,
+            extensionId,
+          }: {
+            driver: Driver;
+            extensionId: string;
+          }) => {
+            await openMultichainDappAndConnectWalletWithExternallyConnectable(
+              driver,
+              extensionId,
+            );
+
+            await initCreateSessionScopes(driver, ['eip155:1']);
+
+            await addAccountInWalletAndAuthorize(driver);
+
+            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.MultichainTestDApp,
+            );
+
+            const getSessionScopesResult = await getSessionScopes(driver);
+
+            assert.deepEqual(
+              getSessionScopesResult.sessionScopes['eip155:1'].accounts,
+              getExpectedSessionScope('eip155:1', [
+                DEFAULT_FIXTURE_ACCOUNT,
+                SECOND_INJECTED_ACCOUNT,
+              ]).accounts,
+              'The dapp should receive a response that includes permissions for the accounts that were selected for sharing',
+            );
+          },
+        );
+      });
+    });
+
+    describe('deselect all', function () {
+      it('should not be able to update the account permissions (at least one account is required)', async function () {
+        await withFixtures(
+          {
+            title: this.test?.fullTitle(),
+            fixtures: new FixtureBuilder().withPopularNetworks().build(),
+            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+          },
+          async ({
+            driver,
+            extensionId,
+          }: {
+            driver: Driver;
+            extensionId: string;
+          }) => {
+            await openMultichainDappAndConnectWalletWithExternallyConnectable(
+              driver,
+              extensionId,
+            );
+
+            await initCreateSessionScopes(driver, ['eip155:1']);
+
+            const editButtons = await driver.findElements(
+              '[data-testid="edit"]',
+            );
+            await editButtons[0].click();
+
+            const checkboxes = await driver.findElements(
+              'input[type="checkbox" i]',
+            );
+            const selectAllCheckbox = checkboxes[0];
+
+            await selectAllCheckbox.click();
+            await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+
+            const confirmButton = await driver.findElement(
+              '[data-testid="confirm-btn"]',
+            );
+            const isEnabled = await confirmButton.isEnabled();
+
+            assert.strictEqual(
+              isEnabled,
+              false,
+              'should not able to update the account permissions (at least one account should be selected)',
+            );
+          },
+        );
+      });
+    });
+  });
 });
