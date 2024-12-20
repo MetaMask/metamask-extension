@@ -268,7 +268,7 @@ const CrossChainSwapTxDetails = () => {
       >
         {t('bridge')} details
       </Header>
-      <Content>
+      <Content className="bridge-transaction-details__content">
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
