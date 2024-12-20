@@ -111,16 +111,20 @@ async function start() {
   const verifiedBuildMap = {};
   await Promise.all(
     Object.entries(buildMap).map(async ([label, builds]) => {
-      verifiedBuildMap[label] = {};
+      const verifiedBuilds = {};
       await Promise.all(
         Object.entries(builds).map(async ([platform, url]) => {
           if (await artifactExists(url)) {
-            verifiedBuildMap[label][platform] = url;
+            verifiedBuilds[platform] = url;
           } else {
             console.warn(`Build missing: ${url}`);
           }
         }),
       );
+      // Skip labels with no builds
+      if (Object.keys(verifiedBuilds).length > 0) {
+        verifiedBuildMap[label] = verifiedBuilds;
+      }
     }),
   );
 
