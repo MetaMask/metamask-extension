@@ -129,8 +129,8 @@ async function start() {
   );
 
   const buildContentRows = Object.entries(verifiedBuildMap).map(
-    (label, builds) => {
-      const buildLinks = Object.entries(builds).map((platform, url) => {
+    ([label, builds]) => {
+      const buildLinks = Object.entries(builds).map(([platform, url]) => {
         return `<a href="${url}">${platform}</a>`;
       });
       return `${label}: ${buildLinks.join(', ')}`;
