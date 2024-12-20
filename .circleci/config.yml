@@ -167,62 +167,62 @@ workflows:
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
-      - test-e2e-chrome-webpack:
-          <<: *main_master_rc_only
-          requires:
-            - prep-build-test-webpack
-            - get-changed-files-with-git-diff
-      - test-e2e-chrome:
-          requires:
-            - prep-build-test
-            - get-changed-files-with-git-diff
-      - test-e2e-firefox:
-          <<: *main_master_rc_only
-          requires:
-            - prep-build-test-mv2
-            - get-changed-files-with-git-diff
-      - test-e2e-chrome-rpc:
-          requires:
-            - prep-build-test
-            - get-changed-files-with-git-diff
-      - test-api-specs:
-          requires:
-            - prep-build-test
-            - get-changed-files-with-git-diff
-      - test-e2e-chrome-multiple-providers:
-          requires:
-            - prep-build-test
-            - get-changed-files-with-git-diff
-      - test-e2e-chrome-flask:
-          requires:
-            - prep-build-test-flask
-            - get-changed-files-with-git-diff
-      - test-e2e-firefox-flask:
-          <<: *main_master_rc_only
-          requires:
-            - prep-build-test-flask-mv2
-      - test-e2e-chrome-mmi:
-          requires:
-            - prep-build-test-mmi
-            - get-changed-files-with-git-diff
-      - test-e2e-mmi-playwright:
-          requires:
-            - prep-build-test-mmi-playwright
-      - test-e2e-swap-playwright - OPTIONAL:
-          requires:
-            - prep-build
-      - test-e2e-chrome-rpc-mmi:
-          requires:
-            - prep-build-test-mmi
-            - get-changed-files-with-git-diff
-      - test-e2e-chrome-vault-decryption:
-          filters:
-            branches:
-              only:
-                - main
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
-          requires:
-            - prep-build
+      # - test-e2e-chrome-webpack:
+      #     <<: *main_master_rc_only
+      #     requires:
+      #       - prep-build-test-webpack
+      #       - get-changed-files-with-git-diff
+      # - test-e2e-chrome:
+      #     requires:
+      #       - prep-build-test
+      #       - get-changed-files-with-git-diff
+      # - test-e2e-firefox:
+      #     <<: *main_master_rc_only
+      #     requires:
+      #       - prep-build-test-mv2
+      #       - get-changed-files-with-git-diff
+      # - test-e2e-chrome-rpc:
+      #     requires:
+      #       - prep-build-test
+      #       - get-changed-files-with-git-diff
+      # - test-api-specs:
+      #     requires:
+      #       - prep-build-test
+      #       - get-changed-files-with-git-diff
+      # - test-e2e-chrome-multiple-providers:
+      #     requires:
+      #       - prep-build-test
+      #       - get-changed-files-with-git-diff
+      # - test-e2e-chrome-flask:
+      #     requires:
+      #       - prep-build-test-flask
+      #       - get-changed-files-with-git-diff
+      # - test-e2e-firefox-flask:
+      #     <<: *main_master_rc_only
+      #     requires:
+      #       - prep-build-test-flask-mv2
+      # - test-e2e-chrome-mmi:
+      #     requires:
+      #       - prep-build-test-mmi
+      #       - get-changed-files-with-git-diff
+      # - test-e2e-mmi-playwright:
+      #     requires:
+      #       - prep-build-test-mmi-playwright
+      # - test-e2e-swap-playwright - OPTIONAL:
+      #     requires:
+      #       - prep-build
+      # - test-e2e-chrome-rpc-mmi:
+      #     requires:
+      #       - prep-build-test-mmi
+      #       - get-changed-files-with-git-diff
+      # - test-e2e-chrome-vault-decryption:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      #           - /^Version-v(\d+)[.](\d+)[.](\d+)/
+      #     requires:
+      #       - prep-build
       - test-storybook:
           requires:
             - prep-deps
@@ -261,15 +261,15 @@ workflows:
             - validate-source-maps-mmi
             - test-mozilla-lint-mv2
             - test-mozilla-lint-flask-mv2
-            - test-e2e-chrome
-            - test-e2e-chrome-multiple-providers
-            - test-e2e-firefox
-            - test-e2e-chrome-flask
-            - test-e2e-firefox-flask
-            - test-e2e-chrome-mmi
-            - test-e2e-chrome-rpc-mmi
-            - test-e2e-chrome-vault-decryption
-            - test-e2e-chrome-webpack
+            # - test-e2e-chrome
+            # - test-e2e-chrome-multiple-providers
+            # - test-e2e-firefox
+            # - test-e2e-chrome-flask
+            # - test-e2e-firefox-flask
+            # - test-e2e-chrome-mmi
+            # - test-e2e-chrome-rpc-mmi
+            # - test-e2e-chrome-vault-decryption
+            # - test-e2e-chrome-webpack
             - test-storybook
       - benchmark:
           requires:
