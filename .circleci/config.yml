@@ -278,9 +278,6 @@ workflows:
       - user-actions-benchmark:
           requires:
             - prep-build-test
-      - stats-module-load-init:
-          requires:
-            - prep-build-test
       - job-publish-prerelease:
           requires:
             - prep-deps
@@ -294,7 +291,6 @@ workflows:
             - prep-build-ts-migration-dashboard
             - benchmark
             - user-actions-benchmark
-            - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -1263,44 +1259,6 @@ jobs:
       - run:
           name: Run page load benchmark
           command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - test-artifacts
-
-  stats-module-load-init:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: Run page load benchmark
-          command: |
-            mkdir -p test-artifacts/chrome/
-            cp -R development/charts/flamegraph test-artifacts/chrome/initialisation
-            cp -R development/charts/flamegraph/chart test-artifacts/chrome/initialisation/background
-            cp -R development/charts/flamegraph/chart test-artifacts/chrome/initialisation/ui
-            cp -R development/charts/table test-artifacts/chrome/load_time
-      - run:
-          name: Run page load benchmark
-          command: yarn mv3:stats:chrome --out test-artifacts/chrome
-      - run:
-          name: Install jq
-          command: sudo apt install jq -y
-      - run:
-          name: Record bundle size at commit
-          command: ./.circleci/scripts/bundle-stats-commit.sh
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
