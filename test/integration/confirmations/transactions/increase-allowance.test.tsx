@@ -3,6 +3,7 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -17,7 +18,17 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -144,6 +155,10 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       INCREASE_ALLOWANCE_ERC20_HEX_SIG,
       INCREASE_ALLOWANCE_ERC20_TEXT_SIG,
     );
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -198,7 +213,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       'simulation-token-value',
     );
     expect(simulationSection).toContainElement(spendingCapValue);
-    expect(spendingCapValue).toHaveTextContent('1');
+    expect(spendingCapValue).toHaveTextContent('3');
     expect(simulationSection).toHaveTextContent('0x07614...3ad68');
   });
 
@@ -225,7 +240,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
     expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
-    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
@@ -286,7 +301,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     expect(spendingCapSection).toContainElement(spendingCapGroup);
     expect(spendingCapGroup).toHaveTextContent(tEn('spendingCap') as string);
-    expect(spendingCapGroup).toHaveTextContent('1');
+    expect(spendingCapGroup).toHaveTextContent('3');
 
     const spendingCapGroupTooltip = await screen.findByTestId(
       'confirmation__approve-spending-cap-group-tooltip',
