@@ -14,7 +14,7 @@ export function useTransferRecipient() {
   const transactionTo = transactionMetadata?.txParams?.to;
   const transferTo = transactionData?.args?._to as string | undefined;
 
-  return transactionType == TransactionType.simpleSend
+  return transactionType === TransactionType.simpleSend
     ? transactionTo
     : transferTo;
 }

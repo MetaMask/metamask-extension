@@ -95,6 +95,7 @@ describe('useFirstTimeInteractionAlert', () => {
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
       isFirstTimeInteraction: true,
+      type: TransactionType.simpleSend,
       txParams: {
         ...TRANSACTION_META_MOCK.txParams,
         to: ACCOUNT_ADDRESS_2_MOCK,
@@ -112,6 +113,7 @@ describe('useFirstTimeInteractionAlert', () => {
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
       isFirstTimeInteraction: true,
+      type: TransactionType.tokenMethodTransfer,
       txParams: {
         ...TRANSACTION_META_MOCK.txParams,
         to: CONTRACT_ADDRESS_MOCK,
@@ -130,6 +132,7 @@ describe('useFirstTimeInteractionAlert', () => {
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
       isFirstTimeInteraction: true,
+      type: TransactionType.simpleSend,
       txParams: {
         ...TRANSACTION_META_MOCK.txParams,
         to: ACCOUNT_ADDRESS_2_MOCK.toLowerCase(),
