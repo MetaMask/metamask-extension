@@ -440,9 +440,6 @@
   "noConversionRateAvailable": {
     "message": "Nincs elérhető átváltási díj"
   },
-  "noTransactions": {
-    "message": "Nincsenek tranzakciói"
-  },
   "noWebcamFound": {
     "message": "Nem található számítógéped webkamerája. Kérünk, próbáld újra."
   },
