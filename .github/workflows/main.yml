@@ -64,6 +64,15 @@ jobs:
     name: Wait for CircleCI workflow status
     uses: ./.github/workflows/wait-for-circleci-workflow-status.yml
 
+  publish-prerelease:
+    name: Publish prerelease
+    if: ${{ github.event_name == 'pull_request' }}
+    needs:
+      - wait-for-circleci-workflow-status
+    uses: ./.github/workflows/publish-prerelease.yml
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest

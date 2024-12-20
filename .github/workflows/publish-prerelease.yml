@@ -1,0 +1,73 @@
+name: Publish prerelease
+
+on:
+  workflow_call:
+    secrets:
+      PR_COMMENT_TOKEN:
+        required: true
+
+jobs:
+  publish-prerelease:
+    name: Publish prerelease
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Get merge base commit hash
+        id: get-merge-base
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          merge_base="$(git merge-base "origin/${BASE_REF}" HEAD)"
+          echo "Merge base is '${merge_base}'"
+          echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
+
+      - name: Get CircleCI job details
+        id: get-circleci-job-details
+        env:
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.head_ref }}
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
+        run: |
+          pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq -r ".items | map(select(.vcs.revision == \"${HEAD_COMMIT_HASH}\" )) | first | .id")
+          workflow_id=$(curl --silent "https://circleci.com/api/v2/pipeline/$pipeline_id/workflow" | jq -r ".items[0].id")
+          job_details=$(curl --silent "https://circleci.com/api/v2/workflow/$workflow_id/job" | jq -r '.items[] | select(.name == "job-publish-prerelease")')
+          build_num=$(echo "$job_details" | jq -r '.job_number')
+
+          echo 'CIRCLE_BUILD_NUM='"$build_num" >> "$GITHUB_OUTPUT"
+          job_id=$(echo "$job_details" | jq -r '.id')
+          echo 'CIRCLE_WORKFLOW_JOB_ID='"$job_id" >> "$GITHUB_OUTPUT"
+
+          echo "Getting artifacts from pipeline '${pipeline_id}', workflow '${workflow_id}', build number '${build_num}', job ID '${job_id}'"
+
+      - name: Get CircleCI job artifacts
+        env:
+          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
+        run: |
+          for platform in chrome firefox; do
+            pageload=$(curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/${platform}/benchmark/pageload.json")
+            mkdir -p "test-artifacts/${platform}/benchmark"
+            echo "${pageload}" > "test-artifacts/${platform}/benchmark/pageload.json"
+          done
+
+          bundle_size=$(curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/test-artifacts/chrome/bundle_size.json")
+          mkdir -p "test-artifacts/chrome"
+          echo "${bundle_size}" > "test-artifacts/chrome/bundle_size.json"
+
+          stories=$(curl --silent --location "https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0/storybook/stories.json")
+          mkdir "storybook-build"
+          echo "${stories}" > "storybook-build/stories.json"
+
+      - name: Publish prerelease
+        env:
+          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
+          MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
+          CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
+          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
+        run: ./development/metamaskbot-build-announce.js
