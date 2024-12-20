@@ -209,13 +209,10 @@ class SendTokenPage {
    */
   async check_warningMessage(warningText: string): Promise<void> {
     console.log(`Checking if warning message "${warningText}" is displayed`);
-    const warning = await this.driver.findElement(this.warning);
-    const text = await warning.getText();
-    assert.equal(
-      text,
-      warningText,
-      `Expected warning message to be "${warningText}", got "${text}"`,
-    );
+    await this.driver.waitForSelector({
+      css: this.warning,
+      text: warningText,
+    });
     console.log('Warning message validation successful');
   }
 }
