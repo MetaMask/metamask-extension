@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getCurrentKeyring,
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsBridgeEnabled,
@@ -28,10 +27,10 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+// eslint-disable-next-line import/no-restricted-paths
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 ///: END:ONLY_INCLUDE_IF
 
@@ -45,10 +44,7 @@ const useBridging = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
-  const keyring = useSelector(getCurrentKeyring);
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-  // @ts-expect-error keyring type is wrong maybe?
-  const usingHardwareWallet = isHardwareKeyring(keyring.type);
 
   const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isBridgeChain = useSelector(getIsBridgeChain);
@@ -126,7 +122,6 @@ const useBridging = () => {
       isBridgeSupported,
       isBridgeChain,
       dispatch,
-      usingHardwareWallet,
       history,
       metaMetricsId,
       trackEvent,

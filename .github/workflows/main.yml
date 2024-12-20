@@ -69,6 +69,46 @@ jobs:
     name: Test storybook
     uses: ./.github/workflows/test-storybook.yml
 
+  test-lint-shellcheck:
+    name: Test lint shellcheck
+    uses: ./.github/workflows/test-lint-shellcheck.yml
+
+  test-lint:
+    name: Test lint
+    uses: ./.github/workflows/test-lint.yml
+
+  test-lint-changelog:
+    name: Test lint changelog
+    uses: ./.github/workflows/test-lint-changelog.yml
+
+  test-lint-lockfile:
+    name: Test lint lockfile
+    uses: ./.github/workflows/test-lint-lockfile.yml
+
+  test-deps-audit:
+    name: Test deps audit
+    uses: ./.github/workflows/test-deps-audit.yml
+
+  test-yarn-dedupe:
+    name: Test yarn dedupe
+    uses: ./.github/workflows/test-yarn-dedupe.yml
+
+  test-deps-depcheck:
+    name: Test deps depcheck
+    uses: ./.github/workflows/test-deps-depcheck.yml
+
+  validate-lavamoat-allow-scripts:
+    name: Validate lavamoat allow scripts
+    uses: ./.github/workflows/validate-lavamoat-allow-scripts.yml
+
+  validate-lavamoat-policy-build:
+    name: Validate lavamoat policy build
+    uses: ./.github/workflows/validate-lavamoat-policy-build.yml
+
+  validate-lavamoat-policy-webapp:
+    name: Validate lavamoat policy webapp
+    uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -99,7 +139,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - lint-workflows
-      - test-deps-audit
       - test-yarn-dedupe
       - test-lint-shellcheck
       - test-deps-depcheck
