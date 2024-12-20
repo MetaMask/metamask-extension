@@ -38,17 +38,6 @@ function getPercentageChange(from, to) {
   return parseFloat(((to - from) / Math.abs(from)) * 100).toFixed(2);
 }
 
-/**
- * Check whether an artifact exists,
- *
- * @param {string} url - The URL of the artifact to check.
- * @returns True if the artifact exists, false if it doesn't
- */
-async function artifactExists(url) {
-  const response = await fetch(url, { method: 'HEAD' });
-  return response.ok;
-}
-
 async function start() {
   const {
     GITHUB_COMMENT_TOKEN,
@@ -107,35 +96,12 @@ async function start() {
     },
   };
 
-  // Builds that have been verified to exist
-  const verifiedBuildMap = {};
-  await Promise.all(
-    Object.entries(buildMap).map(async ([label, builds]) => {
-      const verifiedBuilds = {};
-      await Promise.all(
-        Object.entries(builds).map(async ([platform, url]) => {
-          if (await artifactExists(url)) {
-            verifiedBuilds[platform] = url;
-          } else {
-            console.warn(`Build missing: ${url}`);
-          }
-        }),
-      );
-      // Skip labels with no builds
-      if (Object.keys(verifiedBuilds).length > 0) {
-        verifiedBuildMap[label] = verifiedBuilds;
-      }
-    }),
-  );
-
-  const buildContentRows = Object.entries(verifiedBuildMap).map(
-    ([label, builds]) => {
-      const buildLinks = Object.entries(builds).map(([platform, url]) => {
-        return `<a href="${url}">${platform}</a>`;
-      });
-      return `${label}: ${buildLinks.join(', ')}`;
-    },
-  );
+  const buildContentRows = Object.entries(buildMap).map(([label, builds]) => {
+    const buildLinks = Object.entries(builds).map(([platform, url]) => {
+      return `<a href="${url}">${platform}</a>`;
+    });
+    return `${label}: ${buildLinks.join(', ')}`;
+  });
 
   // links to bundle browser builds
   const bundles = {};
