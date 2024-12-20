@@ -186,69 +186,71 @@ describe('Multichain API', function () {
     );
   });
 
-  describe('With requested EVM scope that match the user’s enabled networks, edit selection in wallet UI', function () {
-    it('should change result according to changed network & accounts', async function () {
-      await withFixtures(
-        {
-          title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder()
-            .withPopularNetworks()
-            .withPreferencesControllerAdditionalAccountIdentities()
-            .build(),
-          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-        },
-        async ({
-          driver,
-          extensionId,
-        }: {
-          driver: Driver;
-          extensionId: string;
-        }) => {
-          const requestScopesToNetworkMap = {
-            'eip155:1': 'Ethereum Mainnet',
-            'eip155:10': 'OP Mainnet',
-          };
-
-          const requestScopes = Object.keys(requestScopesToNetworkMap);
-
-          await openMultichainDappAndConnectWalletWithExternallyConnectable(
+  describe('Call `wallet_createSession`', function () {
+    describe('With requested EVM scope that match the user’s enabled networks, edit selection in wallet UI', function () {
+      it('should change result according to changed network & accounts', async function () {
+        await withFixtures(
+          {
+            title: this.test?.fullTitle(),
+            fixtures: new FixtureBuilder()
+              .withPopularNetworks()
+              .withPreferencesControllerAdditionalAccountIdentities()
+              .build(),
+            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+          },
+          async ({
             driver,
             extensionId,
-          );
+          }: {
+            driver: Driver;
+            extensionId: string;
+          }) => {
+            const requestScopesToNetworkMap = {
+              'eip155:1': 'Ethereum Mainnet',
+              'eip155:10': 'OP Mainnet',
+            };
 
-          await addAccountsToCreateSessionForm(driver, [
-            DEFAULT_FIXTURE_ACCOUNT,
-            '',
-          ]);
-          await initCreateSessionScopes(driver, requestScopes);
+            const requestScopes = Object.keys(requestScopesToNetworkMap);
 
-          await addAccountInWalletAndAuthorize(driver);
-          await uncheckNetworksExceptMainnet(driver);
+            await openMultichainDappAndConnectWalletWithExternallyConnectable(
+              driver,
+              extensionId,
+            );
 
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.MultichainTestDApp,
-          );
-
-          const getSessionScopesResult = await getSessionScopes(driver);
-
-          assert.strictEqual(
-            getSessionScopesResult.sessionScopes['eip155:10'],
-            undefined,
-          );
-
-          assert.ok(getSessionScopesResult.sessionScopes['eip155:1']);
-
-          assert.deepEqual(
-            getSessionScopesResult.sessionScopes['eip155:1'].accounts,
-            getExpectedSessionScope('eip155:1', [
+            await addAccountsToCreateSessionForm(driver, [
               DEFAULT_FIXTURE_ACCOUNT,
-              SECOND_INJECTED_ACCOUNT,
-            ]).accounts,
-            `Should add account ${SECOND_INJECTED_ACCOUNT} to scope`,
-          );
-        },
-      );
+              '',
+            ]);
+            await initCreateSessionScopes(driver, requestScopes);
+
+            await addAccountInWalletAndAuthorize(driver);
+            await uncheckNetworksExceptMainnet(driver);
+
+            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.MultichainTestDApp,
+            );
+
+            const getSessionScopesResult = await getSessionScopes(driver);
+
+            assert.strictEqual(
+              getSessionScopesResult.sessionScopes['eip155:10'],
+              undefined,
+            );
+
+            assert.ok(getSessionScopesResult.sessionScopes['eip155:1']);
+
+            assert.deepEqual(
+              getSessionScopesResult.sessionScopes['eip155:1'].accounts,
+              getExpectedSessionScope('eip155:1', [
+                DEFAULT_FIXTURE_ACCOUNT,
+                SECOND_INJECTED_ACCOUNT,
+              ]).accounts,
+              `Should add account ${SECOND_INJECTED_ACCOUNT} to scope`,
+            );
+          },
+        );
+      });
     });
   });
 });
