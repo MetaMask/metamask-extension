@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.9.2",
+  "version": "12.9.3",
   "private": true,
   "repository": {
     "type": "git",
@@ -286,7 +286,7 @@
     "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A45.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-45.1.0-d914c453f0.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A45.1.0%23~/.yarn/patches/@metamask-assets-controllers-npm-45.1.0-d914c453f0.patch%3A%3Aversion=45.1.0&hash=cfcadc#~/.yarn/patches/@metamask-assets-controllers-patch-d6ed5f8213.patch",
     "@metamask/base-controller": "^7.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.8.2",
     "@metamask/browser-passworder": "^4.3.0",
@@ -397,7 +397,7 @@
     "loglevel": "^1.8.1",
     "lottie-web": "^5.12.2",
     "luxon": "^3.2.1",
-    "nanoid": "^2.1.6",
+    "nanoid": "^3.3.8",
     "pify": "^5.0.0",
     "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",

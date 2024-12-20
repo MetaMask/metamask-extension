@@ -37,11 +37,17 @@ export function shouldUseRedesignForTransactions({
   transactionMetadataType,
   isRedesignedTransactionsUserSettingEnabled,
   isRedesignedConfirmationsDeveloperEnabled,
+  isDecodingEnabled,
 }: {
   transactionMetadataType?: TransactionType;
   isRedesignedTransactionsUserSettingEnabled: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
+  isDecodingEnabled?: boolean;
 }): boolean {
+  if (isDecodingEnabled === false) {
+    return false;
+  }
+
   return (
     shouldUseRedesignForTransactionsUserMode(
       isRedesignedTransactionsUserSettingEnabled,

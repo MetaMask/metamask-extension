@@ -6560,7 +6560,7 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "postcss>nanoid": true,
+        "nanoid": true,
         "postcss>picocolors": true,
         "postcss>source-map-js": true
       }
