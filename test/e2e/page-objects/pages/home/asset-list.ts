@@ -145,18 +145,6 @@ class AssetListPage {
     return tokenNames;
   }
 
-  async getAssetPercentageIncreaseDecrease(
-    assetAddress: string,
-  ): Promise<string> {
-    console.log(
-      `Retrieving the percentage increase or decrease for ${assetAddress}`,
-    );
-    const percentageElement = await this.driver.findElement(
-      this.tokenPercentage(assetAddress),
-    );
-    const percentage = await percentageElement.getText();
-    return percentage;
-  }
 
   async sortTokenList(
     sortBy: 'alphabetically' | 'decliningBalance',
