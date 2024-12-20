@@ -318,11 +318,7 @@ export default function TransactionList({
     transactions.data.forEach((transaction) => {
       const timestamp = transaction.timestamp * 1000;
 
-      const date = formatDateWithYearContext(
-        timestamp,
-        'MMM d, y',
-        'MMM d',
-      );
+      const date = formatDateWithYearContext(timestamp, 'MMM d, y', 'MMM d');
 
       const existingGroup = groupedTransactions.find(
         (group) => group.date === date,
