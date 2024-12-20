@@ -102,6 +102,10 @@ const StateChangeRow = ({
     stateChange;
   const nftTransactionType = getStateChangeType(stateChangeList, stateChange);
   const tooltip = getStateChangeToolip(nftTransactionType, t);
+  const canDisplayValueAsUnlimited =
+    assetType === TokenStandard.ERC20 &&
+    (changeType === DecodingDataChangeType.Approve ||
+      changeType === DecodingDataChangeType.Revoke);
   return (
     <ConfirmInfoRow
       label={
@@ -124,6 +128,7 @@ const StateChangeRow = ({
             changeType === DecodingDataChangeType.Receive
           }
           debit={changeType === DecodingDataChangeType.Transfer}
+          canDisplayValueAsUnlimited={canDisplayValueAsUnlimited}
         />
       )}
       {assetType === 'NATIVE' && (

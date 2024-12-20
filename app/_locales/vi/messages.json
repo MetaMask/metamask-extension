@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Thêm mạng"
   },
-  "addingTokens": {
-    "message": "Đang thêm token"
-  },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
   },
@@ -442,9 +439,6 @@
   },
   "alertMessageSignInWrongAccount": {
     "message": "Trang web này yêu cầu bạn đăng nhập bằng tài khoản không đúng."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Giao dịch này sẽ chỉ được thực hiện sau khi giao dịch trước đó của bạn hoàn tất."
   },
   "alertModalAcknowledge": {
     "message": "Tôi đã nhận thức được rủi ro và vẫn muốn tiếp tục"
@@ -629,12 +623,6 @@
   },
   "assetsDescription": {
     "message": "Tự động phát hiện token trong ví của bạn, hiển thị NFT và nhận hàng loạt thông tin cập nhật về số dư tài khoản"
-  },
-  "attemptSendingAssets": {
-    "message": "Bạn có thể bị mất tài sản nếu cố gắng gửi tài sản từ một mạng khác. Chuyển tiền an toàn giữa các mạng bằng cách sử dụng cầu nối."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Bạn có thể bị mất tài sản nếu cố gắng gửi tài sản từ một mạng khác. Chuyển tiền an toàn giữa các mạng bằng cách sử dụng cầu nối, chẳng hạn như $1"
   },
   "attemptToCancelSwapForFree": {
     "message": "Cố gắng hủy hoán đổi miễn phí"
@@ -843,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Đang tính toán..."
   },
-  "bridgeDontSend": {
-    "message": "Cầu nối, không gửi"
-  },
   "bridgeEnterAmount": {
     "message": "Nhập số tiền"
   },
@@ -858,14 +843,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Chọn token và số tiền"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Đây là thời gian ước tính để hoàn thành cầu nối."
-  },
   "bridgeTo": {
     "message": "Cầu nối đến"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Bao gồm phí gas (trả cho các thợ đào tiền mã hóa) và phí sàn chuyển tiếp (trả để cung cấp các dịch vụ phức tạp như cầu nối).\nPhí được tính dựa trên lưu lượng mạng và độ phức tạp của giao dịch. MetaMask không thu lợi từ bất kỳ khoản phí nào."
   },
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
@@ -962,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Nhấp vào đây để kết nối với ví Ledger của bạn qua WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Bạn luôn có thể thêm token theo cách thủ công."
   },
   "close": {
     "message": "Đóng"
@@ -1986,9 +1962,6 @@
   "estimatedFeeTooltip": {
     "message": "Số tiền được chi trả để xử lý giao dịch trên mạng."
   },
-  "estimatedTime": {
-    "message": "Thời gian ước tính"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Giá gas dự phòng được cung cấp vì dịch vụ ước tính giá gas chính hiện không hoạt động."
   },
@@ -2149,9 +2122,6 @@
   },
   "gasFee": {
     "message": "Phí gas"
-  },
-  "gasIsETH": {
-    "message": "Gas là $1 "
   },
   "gasLimit": {
     "message": "Hạn mức phí gas"
@@ -2714,9 +2684,6 @@
   "learnScamRisk": {
     "message": "lừa đảo và nguy cơ bảo mật."
   },
-  "learnToBridge": {
-    "message": "Tìm hiểu cách sử dụng cầu nối"
-  },
   "leaveMetaMask": {
     "message": "Rời khỏi MetaMask?"
   },
@@ -2807,9 +2774,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Vui lòng hoàn tất giao dịch trên Snap."
-  },
-  "loadingTokens": {
-    "message": "Đang tải token..."
   },
   "localhost": {
     "message": "Máy chủ cục bộ 8545"
@@ -2911,9 +2875,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Thông báo ví hiện không hoạt động."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "Tính năng Hoán đổi trên MetaMask đang được bảo trì. Vui lòng kiểm tra lại sau."
@@ -3058,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 đang yêu cầu sự chấp thuận của bạn cho:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Token gốc của mạng này là $1. Token này được dùng làm phí gas.",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Chỉnh sửa thông tin mạng"
@@ -3346,9 +3303,6 @@
   },
   "noThanks": {
     "message": "Không, cảm ơn"
-  },
-  "noTransactions": {
-    "message": "Bạn không có giao dịch nào"
   },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
@@ -5952,9 +5906,6 @@
     "message": "$1 hiện đang hoạt động trên $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Bạn hiện đang sử dụng"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Khi bạn chuyển mạng, mọi xác nhận đang chờ xử lý sẽ bị hủy"
   },
@@ -5990,9 +5941,6 @@
   },
   "themeDescription": {
     "message": "Chọn chủ đề MetaMask yêu thích của bạn."
-  },
-  "thingsToKeep": {
-    "message": "Những điều cần lưu ý:"
   },
   "thirdPartySoftware": {
     "message": "Thông báo phần mềm của bên thứ ba",
@@ -6075,9 +6023,6 @@
   "tokenScamSecurityRisk": {
     "message": "rủi ro về bảo mật và lừa đảo token"
   },
-  "tokenShowUp": {
-    "message": "Các token có thể không tự động hiển thị trong ví của bạn. "
-  },
   "tokenStandard": {
     "message": "Tiêu chuẩn token"
   },
@@ -6108,9 +6053,6 @@
   },
   "total": {
     "message": "Tổng"
-  },
-  "totalFees": {
-    "message": "Tổng phí"
   },
   "totalVolume": {
     "message": "Tổng khối lượng giao dịch"

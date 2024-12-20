@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Menambahkan Jaringan"
   },
-  "addingTokens": {
-    "message": "Menambahkan token"
-  },
   "additionalNetworks": {
     "message": "Jaringan tambahan"
   },
@@ -442,9 +439,6 @@
   },
   "alertMessageSignInWrongAccount": {
     "message": "Situs ini meminta Anda masuk menggunakan akun yang salah."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Transaksi ini hanya akan dilanjutkan setelah transaksi Anda sebelumnya selesai."
   },
   "alertModalAcknowledge": {
     "message": "Saya telah mengetahui risikonya dan tetap ingin melanjutkan"
@@ -629,12 +623,6 @@
   },
   "assetsDescription": {
     "message": "Autodeteksi token di dompet Anda, tampilkan NFT, dan dapatkan pembaruan saldo akun secara batch"
-  },
-  "attemptSendingAssets": {
-    "message": "Aset Anda berpotensi hilang jika mencoba mengirimnya dari jaringan lain. Transfer dana secara aman antar jaringan menggunakan bridge."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Aset Anda berpotensi hilang jika mencoba mengirimnya melalui jaringan lain. Transfer dana antar jaringan dengan aman menggunakan bridge, seperti $1"
   },
   "attemptToCancelSwapForFree": {
     "message": "Mencoba membatalkan pertukaran secara gratis"
@@ -843,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Menghitung..."
   },
-  "bridgeDontSend": {
-    "message": "Bridge, jangan kirim"
-  },
   "bridgeEnterAmount": {
     "message": "Masukkan jumlah"
   },
@@ -858,14 +843,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Pilih token dan jumlah"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Ini merupakan estimasi waktu yang diperlukan untuk menyelesaikan bridge."
-  },
   "bridgeTo": {
     "message": "Bridge ke"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Ini termasuk biaya gas (dibayarkan kepada penambang kripto) dan biaya relayer (dibayarkan untuk menjalankan layanan kompleks seperti bridge).\nBiaya didasarkan pada lalu lintas jaringan dan kompleksitas transaksi. MetaMask tidak mendapat keuntungan dari kedua biaya tersebut."
   },
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
@@ -962,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Klik di sini untuk menghubungkan Ledger Anda melalui WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Anda dapat menambahkan token secara manual setiap saat."
   },
   "close": {
     "message": "Tutup"
@@ -1986,9 +1962,6 @@
   "estimatedFeeTooltip": {
     "message": "Jumlah yang dibayarkan untuk memproses transaksi di jaringan."
   },
-  "estimatedTime": {
-    "message": "Estimasi waktu"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Biaya gas cadangan diberikan karena layanan estimasi gas utama saat ini tidak tersedia."
   },
@@ -2149,9 +2122,6 @@
   },
   "gasFee": {
     "message": "Biaya gas"
-  },
-  "gasIsETH": {
-    "message": "Gas bernilai $1 "
   },
   "gasLimit": {
     "message": "Batas gas"
@@ -2714,9 +2684,6 @@
   "learnScamRisk": {
     "message": "penipuan dan risiko keamanan."
   },
-  "learnToBridge": {
-    "message": "Pelajari bridge"
-  },
   "leaveMetaMask": {
     "message": "Keluar dari MetaMask?"
   },
@@ -2807,9 +2774,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Selesaikan transaksi di Snap."
-  },
-  "loadingTokens": {
-    "message": "Memuat token..."
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -2911,9 +2875,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Saat ini notifikasi dompet tidak aktif."
-  },
-  "metamaskPortfolio": {
-    "message": "Portfolio MetaMask."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swap sedang dalam pemeliharaan. Harap periksa kembali nanti."
@@ -3058,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 meminta persetujuan Anda untuk:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Token asli di jaringan ini adalah $1. Ini merupakan token yang digunakan untuk biaya gas. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Edit detail jaringan"
@@ -3346,9 +3303,6 @@
   },
   "noThanks": {
     "message": "Tidak, terima kasih"
-  },
-  "noTransactions": {
-    "message": "Anda tidak memiliki transaksi"
   },
   "noWebcamFound": {
     "message": "Webcam komputer Anda tidak ditemukan. Harap coba lagi."
@@ -5952,9 +5906,6 @@
     "message": "$1 kini telah aktif di $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Saat ini Anda menggunakan"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Mengalihkan jaringan akan membatalkan semua konfirmasi yang berstatus menunggu"
   },
@@ -5990,9 +5941,6 @@
   },
   "themeDescription": {
     "message": "Pilih tema MetaMask yang Anda sukai."
-  },
-  "thingsToKeep": {
-    "message": "Ingatlah:"
   },
   "thirdPartySoftware": {
     "message": "Pemberitahuan perangkat lunak pihak ketiga",
@@ -6075,9 +6023,6 @@
   "tokenScamSecurityRisk": {
     "message": "penipuan dan risiko keamanan token"
   },
-  "tokenShowUp": {
-    "message": "Token Anda mungkin tidak muncul secara otomatis di dompet Anda. "
-  },
   "tokenStandard": {
     "message": "Standar token"
   },
@@ -6108,9 +6053,6 @@
   },
   "total": {
     "message": "Total"
-  },
-  "totalFees": {
-    "message": "Total biaya"
   },
   "totalVolume": {
     "message": "Volume total"

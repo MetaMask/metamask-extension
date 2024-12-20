@@ -27,7 +27,6 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
 }) => {
   const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
-    /* @ts-expect-error wrong type on selector. */
     getSnapMetadata(state, snapId),
   );
 

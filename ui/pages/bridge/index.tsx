@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { I18nContext } from '../../contexts/i18n';
@@ -17,27 +17,28 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
-  getCurrentCurrency,
-  getIsBridgeChain,
-  getIsBridgeEnabled,
-} from '../../selectors';
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../shared/modules/selectors/networks';
+import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
   Footer,
   Header,
+  Page,
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
 import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
+import { TextVariant } from '../../helpers/constants/design-system';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
-import { BridgeCTAButton } from './prepare/bridge-cta-button';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
+import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -50,15 +51,15 @@ const CrossChainSwap = () => {
   const dispatch = useDispatch();
 
   const isBridgeEnabled = useSelector(getIsBridgeEnabled);
-  const providerConfig = useSelector(getProviderConfig);
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const currency = useSelector(getCurrentCurrency);
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  const chainId = useSelector(getCurrentChainId);
 
   useEffect(() => {
-    if (isBridgeChain && isBridgeEnabled && providerConfig) {
-      dispatch(setFromChain(providerConfig.chainId));
+    if (isBridgeChain && isBridgeEnabled && chainId) {
+      dispatch(setFromChain(chainId));
     }
-  }, [isBridgeChain, isBridgeEnabled, providerConfig, currency]);
+  }, [isBridgeChain, isBridgeEnabled, chainId]);
 
   const resetControllerAndInputStates = async () => {
     await dispatch(resetBridgeState());
@@ -77,7 +78,7 @@ const CrossChainSwap = () => {
   }, []);
 
   // Needed for refreshing gas estimates
-  useGasFeeEstimates(providerConfig?.id);
+  useGasFeeEstimates(selectedNetworkClientId);
   // Needed for fetching exchange rates for tokens that have not been imported
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
@@ -93,45 +94,53 @@ const CrossChainSwap = () => {
     await resetControllerAndInputStates();
   };
 
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
   return (
-    <div className="bridge">
-      <div className="bridge__container">
+    <Page className="bridge__container">
+      <Header
+        textProps={{ variant: TextVariant.headingSm }}
+        startAccessory={
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('back')}
+            onClick={redirectToDefaultRoute}
+          />
+        }
+        endAccessory={
+          <ButtonIcon
+            iconName={IconName.Setting}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('settings')}
+            onClick={() => {
+              setIsSettingsModalOpen(true);
+            }}
+          />
+        }
+      >
+        {t('bridge')}
+      </Header>
+      <Content padding={0}>
         <Switch>
           <FeatureToggledRoute
             redirectRoute={SWAPS_MAINTENANCE_ROUTE}
             flag={isBridgeEnabled}
             path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
-          >
-            <>
-              <Header
-                className="bridge__header"
-                startAccessory={
-                  <ButtonIcon
-                    iconName={IconName.ArrowLeft}
-                    size={ButtonIconSize.Sm}
-                    ariaLabel={t('back')}
-                    onClick={redirectToDefaultRoute}
+            render={() => {
+              return (
+                <>
+                  <BridgeTransactionSettingsModal
+                    isOpen={isSettingsModalOpen}
+                    onClose={() => {
+                      setIsSettingsModalOpen(false);
+                    }}
                   />
-                }
-                endAccessory={
-                  <ButtonIcon
-                    iconName={IconName.Setting}
-                    size={ButtonIconSize.Sm}
-                    ariaLabel={t('settings')}
-                  />
-                }
-              >
-                {t('bridge')}
-              </Header>
-              <Content>
-                <PrepareBridgePage />
-              </Content>
-              <Footer>
-                <BridgeCTAButton />
-              </Footer>
-            </>
-          </FeatureToggledRoute>
-
+                  <PrepareBridgePage />
+                </>
+              );
+            }}
+          />
           <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
             <Content>
               <AwaitingSignatures />
@@ -141,8 +150,8 @@ const CrossChainSwap = () => {
             </Footer>
           </Route>
         </Switch>
-      </div>
-    </div>
+      </Content>
+    </Page>
   );
 };
 

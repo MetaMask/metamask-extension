@@ -1,12 +1,13 @@
 import { randomUUID } from 'crypto';
-import { act, fireEvent, screen } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
+import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { createMockImplementation, mock4byte } from '../../helpers';
+import { integrationTestRender } from '../../../lib/render-helpers';
 import { createTestProviderTools } from '../../../stub/provider';
+import mockMetaMaskState from '../../data/integration-init-state.json';
+import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
@@ -15,7 +16,17 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -92,6 +103,10 @@ describe('Contract Interaction Confirmation Alerts', () => {
     setupSubmitRequestToBackgroundMocks();
     const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
     mock4byte(APPROVE_NFT_HEX_SIG);
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -470,7 +485,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       alerts.some((alert) =>
         alert.textContent?.includes(
-          'This transaction will only go through once your previous transaction is complete.',
+          'A previous transaction is still being signed or submitted',
         ),
       ),
     ).toBe(true);
@@ -478,6 +493,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       await screen.findByTestId('confirm-footer-button'),
     ).toBeInTheDocument();
-    expect(await screen.findByTestId('confirm-footer-button')).toBeEnabled();
+    expect(await screen.findByTestId('confirm-footer-button')).toBeDisabled();
   });
 });
