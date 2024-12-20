@@ -1,13 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   TextVariant,
   TextAlign,
-  Color,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { Box, ButtonLink, Text } from '../../component-library';
+import type { BoxProps } from '../../component-library/box';
 
-export const TermsOfUse = ({ showHeader, ...props }) => {
+interface TermsOfUseProps extends Omit<BoxProps<'div'>, 'children'> {
+  showHeader?: boolean;
+}
+
+export const TermsOfUse: React.FC<TermsOfUseProps> = ({
+  showHeader,
+  ...props
+}) => {
   return (
     <Box className="terms-of-use" {...props}>
       <Box
@@ -21,7 +28,7 @@ export const TermsOfUse = ({ showHeader, ...props }) => {
             <Text variant={TextVariant.headingLg}>Terms of use</Text>
             <Text
               variant={TextVariant.bodyMdMedium}
-              color={Color.textAlternative}
+              color={TextColor.textAlternative}
             >
               Last update: January 1901
             </Text>
@@ -63,7 +70,7 @@ export const TermsOfUse = ({ showHeader, ...props }) => {
             href="https://consensys.io/privacy-policy/"
             target="_blank"
             rel="noopener noreferrer"
-            color={Color.primaryDefault}
+            color={TextColor.primaryDefault}
             variant={TextVariant.bodySm}
           >
             Privacy Policy.
@@ -1029,7 +1036,7 @@ export const TermsOfUse = ({ showHeader, ...props }) => {
             href="https://consensys.io/privacy-policy"
             target="_blank"
             rel="noopener noreferrer"
-            color={Color.primaryDefault}
+            color={TextColor.primaryDefault}
             variant={TextVariant.bodySm}
           >
             https://consensys.io/privacy-policy
@@ -1068,8 +1075,4 @@ export const TermsOfUse = ({ showHeader, ...props }) => {
       </Box>
     </Box>
   );
-};
-
-TermsOfUse.propTypes = {
-  showHeader: PropTypes.bool,
 };
