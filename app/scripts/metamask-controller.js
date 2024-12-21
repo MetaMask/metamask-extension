@@ -6267,6 +6267,11 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createSnapsMethodMiddleware(subjectType === SubjectType.Snap, {
+        clearSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:clearSnapState',
+          origin,
+        ),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
@@ -6287,6 +6292,16 @@ export default class MetamaskController extends EventEmitter {
         getSnapFile: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getFile',
+          origin,
+        ),
+        getSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getSnapState',
+          origin,
+        ),
+        updateSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:updateSnapState',
           origin,
         ),
         installSnaps: this.controllerMessenger.call.bind(
