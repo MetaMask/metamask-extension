@@ -81,13 +81,8 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import { Icon, IconName, IconSize } from '../../components/component-library';
-import Box from '../../components/ui/box';
-import {
-  DISPLAY,
-  JustifyContent,
-  IconColor,
-  FRACTIONS,
-} from '../../helpers/constants/design-system';
+import { IconColor } from '../../helpers/constants/design-system';
+import { Header } from '../../components/multichain/pages/page/components/header';
 import useUpdateSwapsState from './hooks/useUpdateSwapsState';
 import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
@@ -346,46 +341,24 @@ export default function Swap() {
   return (
     <div className="swaps">
       <div className="swaps__container">
-        <div className="swaps__header">
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            marginLeft={4}
-            width={FRACTIONS.ONE_TWELFTH}
-            tabIndex="0"
-            onKeyUp={(e) => {
-              if (e.key === 'Enter') {
-                redirectToDefaultRoute();
-              }
-            }}
-          >
-            {!isAwaitingSwapRoute &&
-              !isAwaitingSignaturesRoute &&
-              !isSmartTransactionStatusRoute && (
-                <Icon
-                  name={IconName.Arrow2Left}
-                  size={IconSize.Lg}
-                  color={IconColor.iconAlternative}
-                  onClick={redirectToDefaultRoute}
-                  style={{ cursor: 'pointer' }}
-                  title={t('cancel')}
-                />
-              )}
-          </Box>
-          <div className="swaps__title">{t('swap')}</div>
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            marginRight={4}
-            width={FRACTIONS.ONE_TWELFTH}
-            tabIndex="0"
-            onKeyUp={(e) => {
-              if (e.key === 'Enter') {
-                dispatch(setTransactionSettingsOpened(true));
-              }
-            }}
-          >
-            {isPrepareSwapRoute && (
+        <Header
+          className="swaps__header"
+          startAccessory={
+            !isAwaitingSwapRoute &&
+            !isAwaitingSignaturesRoute &&
+            !isSmartTransactionStatusRoute && (
+              <Icon
+                name={IconName.Arrow2Left}
+                size={IconSize.Lg}
+                color={IconColor.iconAlternative}
+                onClick={redirectToDefaultRoute}
+                style={{ cursor: 'pointer' }}
+                title={t('cancel')}
+              />
+            )
+          }
+          endAccessory={
+            isPrepareSwapRoute && (
               <Icon
                 name={IconName.Setting}
                 size={IconSize.Lg}
@@ -396,9 +369,11 @@ export default function Swap() {
                 style={{ cursor: 'pointer' }}
                 title={t('transactionSettings')}
               />
-            )}
-          </Box>
-        </div>
+            )
+          }
+        >
+          {t('swap')}
+        </Header>
         <div className="swaps__content">
           <Switch>
             <FeatureToggledRoute
