@@ -1,13 +1,16 @@
-const { strict: assert } = require('assert');
-const {
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import HomePage from '../../page-objects/pages/home/homepage';
+
+import {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+} from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { Mockttp } from '../../mock-e2e';
 
 describe('Import flow', function () {
-  async function mockPriceFetch(mockServer) {
+  async function mockPriceFetch(mockServer: Mockttp) {
     return [
       await mockServer
         .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
@@ -60,47 +63,27 @@ describe('Import flow', function () {
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockPriceFetch,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.assertElementNotPresent('.loading-overlay');
+        const homePage = new HomePage(driver);
+        const assetListPage = new AssetListPage(driver);
+        await homePage.check_pageIsLoaded();
+        await assetListPage.importMultipleTokensBySearch([
+          'CHAIN',
+          'CHANGE',
+          'CHAI',
+        ]);
 
-        await driver.clickElement('[data-testid="import-token-button"]');
-        await driver.clickElement('[data-testid="importTokens"]');
-
-        await driver.fill('input[placeholder="Search tokens"]', 'cha');
-
-        await driver.clickElement('.token-list__token_component');
-        await driver.clickElement(
-          '.token-list__token_component:nth-of-type(2)',
-        );
-        await driver.clickElement(
-          '.token-list__token_component:nth-of-type(3)',
-        );
-
-        await driver.clickElement('[data-testid="import-tokens-button-next"]');
-        await driver.clickElement(
-          '[data-testid="import-tokens-modal-import-button"]',
-        );
-
-        // Wait for "loading tokens" to be gone
-        await driver.assertElementNotPresent(
-          '[data-testid="token-list-loading-message"]',
-        );
-
-        await driver.assertElementNotPresent(
-          '[data-testid="token-list-loading-message"]',
-        );
-
-        await driver.clickElement('[data-testid="sort-by-networks"]');
-        await driver.clickElement('[data-testid="network-filter-current"]');
-
-        const expectedTokenListElementsAreFound =
-          await driver.elementCountBecomesN('.multichain-token-list-item', 4);
-        assert.equal(expectedTokenListElementsAreFound, true);
+        const tokenList = new AssetListPage(driver);
+        await tokenList.check_tokenItemNumber(5); // Linea & Mainnet Eth
+        await tokenList.check_tokenIsDisplayed('Ethereum');
+        await tokenList.check_tokenIsDisplayed('Chain Games');
+        await tokenList.check_tokenIsDisplayed('Changex');
+        await tokenList.check_tokenIsDisplayed('Chai');
       },
     );
   });
