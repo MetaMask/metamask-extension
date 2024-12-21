@@ -50,8 +50,6 @@
   }
 
   &__content__title {
-    @include design-system.H3;
-
     display: flex;
     justify-content: center;
     color: var(--color-default-text);
@@ -85,21 +83,6 @@
     margin-bottom: 16px;
   }
 
-  &__notice,
-  &__warning {
-    @include design-system.H6;
-
-    text-align: center;
-    margin-top: 21px;
-    margin-bottom: 11px;
-    width: 100%;
-  }
-
-  &__notice {
-    color: var(--color-text-alternative);
-    padding: 0 10px;
-  }
-
   &__rows {
     border-top: 1px solid var(--color-border-default);
     display: flex;
@@ -112,8 +95,6 @@
   }
 
   &__row-title {
-    @include design-system.H5;
-
     width: 80px;
     color: var(--color-text-alternative);
     margin-top: 12px;
@@ -122,8 +103,6 @@
   }
 
   &__row-value {
-    @include design-system.H6;
-
     color: var(--color-text-alternative);
     width: 100%;
     overflow-wrap: break-word;
