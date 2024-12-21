@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TransactionStatusLabel Component should render CONFIRMED properly 1`] = `
+exports[`TransactionStatusLabel Component renders CONFIRMED properly and tooltip 1`] = `
 <div>
   <div
     class="transaction-status-label transaction-status-label--confirmed"
@@ -10,7 +10,7 @@ exports[`TransactionStatusLabel Component should render CONFIRMED properly 1`] =
 </div>
 `;
 
-exports[`TransactionStatusLabel Component should render PENDING properly 1`] = `
+exports[`TransactionStatusLabel Component renders PENDING properly and tooltip 1`] = `
 <div>
   <div
     class="transaction-status-label transaction-status-label--pending transaction-status-label--pending"
@@ -20,7 +20,7 @@ exports[`TransactionStatusLabel Component should render PENDING properly 1`] = `
 </div>
 `;
 
-exports[`TransactionStatusLabel Component should render QUEUED properly 1`] = `
+exports[`TransactionStatusLabel Component renders QUEUED properly and tooltip 1`] = `
 <div>
   <div
     class="transaction-status-label transaction-status-label--queued transaction-status-label--queued"
@@ -30,7 +30,7 @@ exports[`TransactionStatusLabel Component should render QUEUED properly 1`] = `
 </div>
 `;
 
-exports[`TransactionStatusLabel Component should render SIGNING if status is approved 1`] = `
+exports[`TransactionStatusLabel Component renders SIGNING properly and tooltip 1`] = `
 <div>
   <div
     class="transaction-status-label transaction-status-label--signing"
@@ -40,7 +40,7 @@ exports[`TransactionStatusLabel Component should render SIGNING if status is app
 </div>
 `;
 
-exports[`TransactionStatusLabel Component should render UNAPPROVED properly 1`] = `
+exports[`TransactionStatusLabel Component renders UNAPPROVED properly and tooltip 1`] = `
 <div>
   <div
     class="transaction-status-label transaction-status-label--unapproved transaction-status-label--unapproved"

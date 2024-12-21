@@ -260,9 +260,6 @@
   "loading": {
     "message": "Telechaje..."
   },
-  "loadingTokens": {
-    "message": "Telechaje Tokens..."
-  },
   "lock": {
     "message": "Dekonekte"
   },
@@ -312,9 +309,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Pa gen okenn Konvèsyon Disponib"
-  },
-  "noTransactions": {
-    "message": "Pa gen tranzaksyon"
   },
   "noWebcamFound": {
     "message": "Nou pakay jwenn webcam òdinatè ou. Tanpri eseye ankò."

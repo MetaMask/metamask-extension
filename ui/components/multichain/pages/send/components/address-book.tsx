@@ -7,6 +7,7 @@ import ContactList from '../../../../app/contact-list';
 import {
   getAddressBook,
   getCurrentNetworkTransactions,
+  getInternalAccounts,
 } from '../../../../../selectors';
 import {
   addHistoryEntry,
@@ -33,6 +34,7 @@ export const SendPageAddressBook = () => {
   const trackEvent = useContext(MetaMetricsContext);
 
   const addressBook = useSelector(getAddressBook);
+  const internalAccounts = useSelector(getInternalAccounts);
   const contacts = addressBook.filter(({ name }) => Boolean(name));
   const currentNetworkTransactions = useSelector(getCurrentNetworkTransactions);
 
@@ -120,6 +122,7 @@ export const SendPageAddressBook = () => {
         <>
           <ContactList
             addressBook={addressBook}
+            internalAccounts={internalAccounts}
             searchForContacts={searchForContacts}
             searchForRecents={searchForRecents}
             selectRecipient={(address = '', name = '') => {

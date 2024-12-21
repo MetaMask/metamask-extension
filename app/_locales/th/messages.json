@@ -194,9 +194,6 @@
   "loading": {
     "message": "กำลังโหลด..."
   },
-  "loadingTokens": {
-    "message": "กำลังโหลดโทเค็น..."
-  },
   "lock": {
     "message": "ออกจากระบบ"
   },
@@ -234,9 +231,6 @@
   },
   "next": {
     "message": "ถัดไป"
-  },
-  "noTransactions": {
-    "message": "ยังไม่มีรายการธุรกรรม"
   },
   "on": {
     "message": "เปิด"

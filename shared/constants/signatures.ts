@@ -9,6 +9,7 @@ export enum PrimaryTypePermit {
   PermitBatchTransferFrom = 'PermitBatchTransferFrom',
   PermitSingle = 'PermitSingle',
   PermitTransferFrom = 'PermitTransferFrom',
+  PermitWitnessTransferFrom = 'PermitWitnessTransferFrom',
 }
 
 /**

@@ -16,6 +16,7 @@ import {
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
+import { useAssetDetails } from '../hooks/useAssetDetails';
 import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
@@ -27,7 +28,15 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+jest.mock('../hooks/useAssetDetails', () => ({
+  ...jest.requireActual('../hooks/useAssetDetails'),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const middleware = [thunk];
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 describe('Confirm', () => {
   afterEach(() => {
@@ -35,6 +44,13 @@ describe('Confirm', () => {
 
     /** Reset memoized function using getTokenStandardAndDetails for each test */
     memoizedGetTokenStandardAndDetails?.cache?.clear?.();
+  });
+
+  beforeEach(() => {
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   it('should render', () => {

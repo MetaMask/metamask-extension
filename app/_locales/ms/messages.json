@@ -374,9 +374,6 @@
   "loading": {
     "message": "Memuatkan..."
   },
-  "loadingTokens": {
-    "message": "Memuatkan Token..."
-  },
   "lock": {
     "message": "Log keluar"
   },
@@ -432,9 +429,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
-  },
-  "noTransactions": {
-    "message": "Anda tiada transaksi"
   },
   "noWebcamFound": {
     "message": "Webcam komputer anda tidak dijumpai. Sila cuba semula."

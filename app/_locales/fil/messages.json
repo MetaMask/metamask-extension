@@ -335,9 +335,6 @@
   "loading": {
     "message": "Naglo-load..."
   },
-  "loadingTokens": {
-    "message": "Naglo-load ng Mga Token..."
-  },
   "lock": {
     "message": "Mag-log out"
   },
@@ -383,9 +380,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Walang Presyo ng Palitan na Available"
-  },
-  "noTransactions": {
-    "message": "Wala kang mga transaksyon"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukang muli."

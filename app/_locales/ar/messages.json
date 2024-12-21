@@ -385,9 +385,6 @@
   "loading": {
     "message": "جارٍ التحميل..."
   },
-  "loadingTokens": {
-    "message": "جارِ تحميل العملات الرمزية ..."
-  },
   "localhost": {
     "message": "المضيف المحلي 8545"
   },
@@ -446,9 +443,6 @@
   },
   "noConversionRateAvailable": {
     "message": "لا يوجد معدل تحويل متاح"
-  },
-  "noTransactions": {
-    "message": "لا توجد لديك معاملات"
   },
   "noWebcamFound": {
     "message": "لم يتم العثور على كاميرا ويب للكمبيوتر الخاص بك. حاول مرة اخرى."

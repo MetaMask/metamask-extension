@@ -1,15 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TokenListItem should render correctly 1`] = `
+exports[`TokenListItem handles clicking staking opens tab 1`] = `
 <div>
   <div
-    class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+    class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
     data-testid="multichain-token-list-item"
   >
     <a
-      class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row"
+      class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
       data-testid="multichain-token-list-button"
       href="#"
+      style="height: 62px;"
     >
       <div
         class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
@@ -20,57 +21,426 @@ exports[`TokenListItem should render correctly 1`] = `
           ?
         </div>
         <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
           >
             <img
-              alt="Ethereum Mainnet logo"
+              alt="network logo"
               class="mm-avatar-network__network-image"
-              src="./images/eth_logo.svg"
+              src="./eth-logo.png"
             />
           </div>
         </div>
       </div>
       <div
-        class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+        class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
         style="flex-grow: 1; overflow: hidden;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
-          <div
-            class="mm-box mm-box--display-inline-block mm-box--width-1/3"
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
           >
-            <span
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-            />
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
-              data-testid="multichain-token-list-item-token-name"
-            />
-          </div>
-          <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-2/3"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--width-2/3 mm-box--color-text-default"
-              data-testid="multichain-token-list-item-secondary-value"
-            />
-            <p
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
-              data-testid="multichain-token-list-item-value"
+            <button
+              class="mm-box mm-box--padding-inline-0 mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--gap-1 mm-box--background-color-transparent"
+              data-testid="staking-entrypoint-0x1"
+              tabindex="0"
             >
-               
-            </p>
-          </div>
+              <span
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                •
+              </span>
+              <span
+                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--color-primary-default"
+              >
+                Stake
+              </span>
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-default"
+                style="mask-image: url('./images/icons/stake.svg');"
+              />
+            </button>
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-end mm-box--color-text-default"
+            data-testid="multichain-token-list-item-secondary-value"
+          />
         </div>
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
-        />
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-token-name"
+          />
+          <p
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-value"
+          >
+             
+          </p>
+        </div>
       </div>
     </a>
+  </div>
+</div>
+`;
+
+exports[`TokenListItem should display warning scam modal 1`] = `
+<div>
+  <div
+    class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+    data-testid="multichain-token-list-item"
+  >
+    <div
+      class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+      data-testid="multichain-token-list-button"
+      style="height: 62px;"
+    >
+      <div
+        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+        >
+          S
+        </div>
+        <div
+          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+          >
+            ?
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
+        style="flex-grow: 1; overflow: hidden;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          >
+            
+          </p>
+          <button
+            aria-label=""
+            class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-lg"
+            data-testid="scam-warning"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/danger.svg');"
+            />
+          </button>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+              data-testid="token-increase-decrease-percentage-0x0000000000000000000000000000000000000000"
+            />
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-value"
+          >
+            11.9751 ETH
+             
+            SCAM_TOKEN
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TokenListItem should display warning scam modal fallback when safechains fails to resolve correctly 1`] = `
+<div>
+  <div
+    class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+    data-testid="multichain-token-list-item"
+  >
+    <div
+      class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+      data-testid="multichain-token-list-button"
+      style="height: 62px;"
+    >
+      <div
+        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+        >
+          S
+        </div>
+        <div
+          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+          >
+            ?
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
+        style="flex-grow: 1; overflow: hidden;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          >
+            
+          </p>
+          <button
+            aria-label=""
+            class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-lg"
+            data-testid="scam-warning"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/danger.svg');"
+            />
+          </button>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+              data-testid="token-increase-decrease-percentage-0x0000000000000000000000000000000000000000"
+            />
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-value"
+          >
+            11.9751 ETH
+             
+            SCAM_TOKEN
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TokenListItem should render correctly 1`] = `
+<div>
+  <div
+    class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+    data-testid="multichain-token-list-item"
+  >
+    <a
+      class="mm-box multichain-token-list-item__container-cell multichain-token-list-item__container-cell--clickable mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+      data-testid="multichain-token-list-button"
+      href="#"
+      style="height: 62px;"
+    >
+      <div
+        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+        >
+          ?
+        </div>
+        <div
+          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+          >
+            <img
+              alt="network logo"
+              class="mm-avatar-network__network-image"
+              src="./eth-logo.png"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
+        style="flex-grow: 1; overflow: hidden;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          />
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+            data-testid="multichain-token-list-item-secondary-value"
+          />
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-token-name"
+          />
+          <p
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-value"
+          >
+             
+          </p>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+`;
+
+exports[`TokenListItem should render crypto balance 1`] = `
+<div>
+  <div
+    class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+    data-testid="multichain-token-list-item"
+  >
+    <div
+      class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+      data-testid="multichain-token-list-button"
+      style="height: 62px;"
+    >
+      <div
+        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+        >
+          ?
+        </div>
+        <div
+          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+          >
+            ?
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
+        style="flex-grow: 1; overflow: hidden;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          />
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+            data-testid="multichain-token-list-item-secondary-value"
+          />
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-token-name"
+          />
+          <p
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-value"
+          >
+            11.9751 ETH
+             
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TokenListItem should render crypto balance with warning scam 1`] = `
+<div>
+  <div
+    class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
+    data-testid="multichain-token-list-item"
+  >
+    <div
+      class="mm-box multichain-token-list-item__container-cell mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+      data-testid="multichain-token-list-button"
+      style="height: 62px;"
+    >
+      <div
+        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+        >
+          ?
+        </div>
+        <div
+          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+          >
+            ?
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--width-full"
+        style="flex-grow: 1; overflow: hidden;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          />
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
+            data-testid="multichain-token-list-item-secondary-value"
+          />
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-token-name"
+          />
+          <p
+            class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
+            data-testid="multichain-token-list-item-value"
+          >
+            11.9751 ETH
+             
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 `;

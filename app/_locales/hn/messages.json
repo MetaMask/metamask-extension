@@ -152,9 +152,6 @@
   "loading": {
     "message": "लोड हो रहा है ....."
   },
-  "loadingTokens": {
-    "message": "टोकन लोड हो रहा है ....."
-  },
   "localhost": {
     "message": "स्थानीयहोस्ट 8545"
   },
@@ -195,9 +192,6 @@
   },
   "next": {
     "message": "अगला"
-  },
-  "noTransactions": {
-    "message": "कोई लेन-देन नहीं"
   },
   "pastePrivateKey": {
     "message": "यहां अपनी निजी कुंजी स्ट्रिंग चिपकाएं:",

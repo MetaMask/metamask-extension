@@ -15,6 +15,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { isSnapId } from '../../../../../../helpers/utils/snaps';
+import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 
 const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
@@ -42,6 +43,7 @@ const TypedSignV1Info: React.FC = () => {
             url={currentConfirmation.msgParams?.origin ?? ''}
           />
         </ConfirmInfoAlertRow>
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         <ConfirmInfoRow

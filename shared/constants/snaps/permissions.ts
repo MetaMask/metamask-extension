@@ -7,6 +7,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:webassembly': 'endowment:webassembly',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
   'endowment:page-home': 'endowment:page-home',
+  'endowment:page-settings': 'endowment:page-settings',
   'endowment:signature-insight': 'endowment:signature-insight',
   'endowment:name-lookup': 'endowment:name-lookup',
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

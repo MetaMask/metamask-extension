@@ -175,9 +175,6 @@
   "loading": {
     "message": "Načítám..."
   },
-  "loadingTokens": {
-    "message": "Načítám tokeny..."
-  },
   "lock": {
     "message": "Odhlásit"
   },
@@ -212,9 +209,6 @@
   },
   "next": {
     "message": "Další"
-  },
-  "noTransactions": {
-    "message": "Žádné transakce"
   },
   "passwordNotLongEnough": {
     "message": "Heslo není dost dlouhé"

@@ -1,18 +1,18 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
-
+  QuoteRequest,
+} from '../../../shared/types/bridge';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { MetaMaskReduxDispatch } from '../../store/store';
-import { QuoteRequest } from '../../pages/bridge/types';
-import { bridgeSlice } from './bridge';
+import type { MetaMaskReduxDispatch } from '../../store/store';
+import {
+  bridgeSlice,
+  setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
+  setSrcTokenExchangeRates,
+} from './bridge';
 
 const {
   setToChainId,
@@ -20,6 +20,10 @@ const {
   setToToken,
   setFromTokenInputValue,
   resetInputFields,
+  setSortOrder,
+  setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
 } = bridgeSlice.actions;
 
 export {
@@ -28,6 +32,13 @@ export {
   setToToken,
   setFromToken,
   setFromTokenInputValue,
+  setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
+  setSrcTokenExchangeRates,
+  setSortOrder,
+  setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
 };
 
 const callBridgeControllerMethod = <T>(
@@ -46,6 +57,13 @@ export const setBridgeFeatureFlags = () => {
     return dispatch(
       callBridgeControllerMethod(BridgeBackgroundAction.SET_FEATURE_FLAGS),
     );
+  };
+};
+
+export const resetBridgeState = () => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(resetInputFields());
+    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
   };
 };
 
@@ -78,4 +96,14 @@ export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
       callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),
     );
   };
+};
+
+export const getBridgeERC20Allowance = async (
+  contractAddress: string,
+  chainId: Hex,
+): Promise<string> => {
+  return await submitRequestToBackground(
+    BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
+    [contractAddress, chainId],
+  );
 };
