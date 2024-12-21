@@ -1,3 +1,7 @@
+import type {
+  ContractExchangeRates,
+  Token,
+} from '@metamask/assets-controllers';
 import { AnyAction, Action } from 'redux';
 import { PayloadAction } from '@reduxjs/toolkit';
 import {
@@ -7,6 +11,15 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 
 type AppState = {
+  customNonceValue: string;
+  isAccountMenuOpen: boolean;
+  isNetworkMenuOpen: boolean;
+  nextNonce: string | null;
+  pendingTokens: {
+    [address: string]: Token & { isCustom?: boolean; unlisted?: boolean };
+  };
+  welcomeScreenSeen: boolean;
+  confirmationExchangeRates: ContractExchangeRates;
   shouldClose: boolean;
   menuOpen: boolean;
   modal: {
@@ -114,6 +127,13 @@ export type AppSliceState = {
 
 // default state
 const initialState: AppState = {
+  customNonceValue: '',
+  isAccountMenuOpen: false,
+  isNetworkMenuOpen: false,
+  nextNonce: null,
+  pendingTokens: {},
+  welcomeScreenSeen: false,
+  confirmationExchangeRates: {},
   shouldClose: false,
   menuOpen: false,
   modal: {
@@ -206,6 +226,57 @@ export default function reduceApp(
   };
 
   switch (action.type) {
+    case actionConstants.UPDATE_CUSTOM_NONCE:
+      return {
+        ...appState,
+        customNonceValue: action.value,
+      };
+
+    case actionConstants.TOGGLE_ACCOUNT_MENU:
+      return {
+        ...appState,
+        isAccountMenuOpen: !appState.isAccountMenuOpen,
+      };
+
+    case actionConstants.SET_NEXT_NONCE: {
+      return {
+        ...appState,
+        nextNonce: action.payload,
+      };
+    }
+
+    case actionConstants.SET_PENDING_TOKENS:
+      return {
+        ...appState,
+        pendingTokens: { ...action.payload },
+      };
+
+    case actionConstants.CLEAR_PENDING_TOKENS: {
+      return {
+        ...appState,
+        pendingTokens: {},
+      };
+    }
+
+    case actionConstants.CLOSE_WELCOME_SCREEN:
+      return {
+        ...appState,
+        welcomeScreenSeen: true,
+      };
+
+    case actionConstants.SET_CONFIRMATION_EXCHANGE_RATES:
+      return {
+        ...appState,
+        confirmationExchangeRates: action.value,
+      };
+
+    case actionConstants.RESET_ONBOARDING: {
+      return {
+        ...appState,
+        welcomeScreenSeen: false,
+      };
+    }
+
     // dropdown methods
     case actionConstants.NETWORK_DROPDOWN_OPEN:
       return {
@@ -613,6 +684,7 @@ export default function reduceApp(
         ...appState,
         isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
         isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
+        isNetworkMenuOpen: !appState.isNetworkMenuOpen,
       };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
       return {

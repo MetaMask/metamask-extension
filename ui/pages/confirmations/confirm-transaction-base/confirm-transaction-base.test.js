@@ -159,7 +159,6 @@ const baseStore = {
     ensResolutionsByAddress: {},
     snaps: {},
     useNonceField: true,
-    customNonceValue: '70',
   },
   confirmTransaction: {
     txData: {
@@ -200,6 +199,7 @@ const baseStore = {
   },
   appState: {
     sendInputCurrencySwitched: false,
+    customNonceValue: '70',
   },
   ramps: {
     buyableChains: defaultBuyableChains,

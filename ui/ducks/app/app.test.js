@@ -358,4 +358,73 @@ describe('App State', () => {
 
     expect(state.errorInSettings).toBeNull();
   });
+
+  it('toggles account menu', () => {
+    const state = reduceApp(
+      {},
+      {
+        type: actionConstants.TOGGLE_ACCOUNT_MENU,
+      },
+    );
+
+    expect(state.isAccountMenuOpen).toStrictEqual(true);
+  });
+
+  it('toggles network menu', () => {
+    const state = reduceApp(
+      {},
+      {
+        type: actionConstants.TOGGLE_NETWORK_MENU,
+      },
+    );
+
+    expect(state.isNetworkMenuOpen).toStrictEqual(true);
+  });
+
+  it('close welcome screen', () => {
+    const state = reduceApp(
+      {},
+      {
+        type: actionConstants.CLOSE_WELCOME_SCREEN,
+      },
+    );
+
+    expect(state.welcomeScreenSeen).toStrictEqual(true);
+  });
+
+  it('sets pending tokens', () => {
+    const payload = {
+      address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+      decimals: 18,
+      symbol: 'META',
+    };
+
+    const pendingTokensState = reduceApp(
+      {},
+      {
+        type: actionConstants.SET_PENDING_TOKENS,
+        payload,
+      },
+    );
+
+    expect(pendingTokensState.pendingTokens).toStrictEqual(payload);
+  });
+
+  it('clears pending tokens', () => {
+    const payload = {
+      address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+      decimals: 18,
+      symbol: 'META',
+    };
+
+    const pendingTokensState = {
+      pendingTokens: payload,
+    };
+
+    const state = reduceApp(pendingTokensState, {
+      type: actionConstants.CLEAR_PENDING_TOKENS,
+    });
+
+    expect(state.pendingTokens).toStrictEqual({});
+  });
 });
