@@ -81,6 +81,7 @@ const marginOfErrorResult = calculateResult((array) =>
 async function profilePageLoad(pages, numSamples, retries) {
   const results = {};
   for (const pageName of pages) {
+    console.log(`\n=== Starting measurements for page: ${pageName} ===`);
     const runResults = [];
     for (let i = 0; i < numSamples; i += 1) {
       let result;
@@ -88,6 +89,14 @@ async function profilePageLoad(pages, numSamples, retries) {
         result = await measurePage(pageName);
       });
       runResults.push(result);
+      console.log(result);
+
+      // Log memory usage after each sample
+      const used = process.memoryUsage();
+      console.log(`Sample ${i + 1}/${numSamples}:`);
+      console.log(`  Heap Used: ${Math.round(used.heapUsed / 1024 / 1024)}MB`);
+      console.log(`  RSS: ${Math.round(used.rss / 1024 / 1024)}MB`);
+      console.log(`  External: ${Math.round(used.external / 1024 / 1024)}MB`);
     }
 
     if (runResults.some((result) => result.navigation.length > 1)) {
@@ -192,5 +201,6 @@ async function main() {
 }
 
 main().catch((error) => {
+  console.error(error);
   exitWithError(error);
 });
