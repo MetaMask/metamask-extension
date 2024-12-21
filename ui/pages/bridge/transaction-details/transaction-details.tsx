@@ -57,6 +57,10 @@ import { formatAmount } from '../../confirmations/components/simulation-details/
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
+import {
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+  AllowedBridgeChainIds,
+} from '../../../../shared/constants/bridge';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -207,8 +211,14 @@ const CrossChainSwapTxDetails = () => {
       ]
     : undefined;
 
-  const srcNetworkName = srcNetwork?.name;
-  const destNetworkName = destNetwork?.name;
+  const srcNetworkName =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      srcNetwork?.chainId as AllowedBridgeChainIds
+    ];
+  const destNetworkName =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      destNetwork?.chainId as AllowedBridgeChainIds
+    ];
 
   const data = srcChainTxMeta
     ? getTransactionBreakdownData({
