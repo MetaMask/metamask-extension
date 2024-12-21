@@ -127,6 +127,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
           className=""
           actionButtonOnClick={() => setShowDetectedTokens(true)}
           margin={4}
+          marginBottom={1}
         />
       ) : null}
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />

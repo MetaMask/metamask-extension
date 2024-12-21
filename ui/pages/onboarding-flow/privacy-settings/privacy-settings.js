@@ -721,7 +721,7 @@ export default function PrivacySettings() {
                     value={turnOn4ByteResolution}
                     setValue={setTurnOn4ByteResolution}
                     title={t('use4ByteResolution')}
-                    description={t('use4ByteResolutionDescription')}
+                    description={t('toggleDecodeDescription')}
                   />
                   <Setting
                     value={turnOnPetnames}
