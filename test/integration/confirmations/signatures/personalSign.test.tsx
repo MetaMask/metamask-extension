@@ -97,35 +97,42 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     );
 
-    const { findByTestId, getByTestId, queryByTestId } =
+    await act(async () => {
       await integrationTestRender({
         preloadedState: mockedMetaMaskState,
         backgroundConnection: backgroundConnectionMocked,
       });
-
-    expect(await findByTestId('header-account-name')).toHaveTextContent(
-      accountName,
-    );
-    expect(await findByTestId('header-network-display-name')).toHaveTextContent(
-      'Sepolia',
-    );
-
-    fireEvent.click(await findByTestId('header-info__account-details-button'));
-
-    await waitFor(() => {
-      expect(
-        getByTestId('confirmation-account-details-modal__account-name'),
-      ).toBeInTheDocument();
     });
 
-    expect(
-      await findByTestId('confirmation-account-details-modal__account-name'),
-    ).toHaveTextContent(accountName);
-    expect(await findByTestId('address-copy-button-text')).toHaveTextContent(
-      '0x0DCD5...3E7bc',
+    expect(await screen.findByTestId('header-account-name')).toHaveTextContent(
+      accountName,
     );
     expect(
-      await findByTestId('confirmation-account-details-modal__account-balance'),
+      await screen.findByTestId('header-network-display-name'),
+    ).toHaveTextContent('Sepolia');
+
+    fireEvent.click(
+      await screen.findByTestId('header-info__account-details-button'),
+    );
+
+    expect(
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-name',
+      ),
+    ).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-name',
+      ),
+    ).toHaveTextContent(accountName);
+    expect(
+      await screen.findByTestId('address-copy-button-text'),
+    ).toHaveTextContent('0x0DCD5...3E7bc');
+    expect(
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-balance',
+      ),
     ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
@@ -155,12 +162,16 @@ describe('PersonalSign Confirmation', () => {
     );
 
     fireEvent.click(
-      await findByTestId('confirmation-account-details-modal__close-button'),
+      await screen.findByTestId(
+        'confirmation-account-details-modal__close-button',
+      ),
     );
 
     await waitFor(() => {
       expect(
-        queryByTestId('confirmation-account-details-modal__account-name'),
+        screen.queryByTestId(
+          'confirmation-account-details-modal__account-name',
+        ),
       ).not.toBeInTheDocument();
     });
   });
@@ -204,9 +215,11 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     );
 
-    const { findByText } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
 
     const mismatchAccountText = `Your selected account (${shortenAddress(
@@ -215,6 +228,6 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     )})`;
 
-    expect(await findByText(mismatchAccountText)).toBeInTheDocument();
+    expect(await screen.findByText(mismatchAccountText)).toBeInTheDocument();
   });
 });

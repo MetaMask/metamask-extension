@@ -222,15 +222,22 @@
   "pinnedAccountList": [],
   "popupGasPollTokens": [],
   "preferences": {
+    "hideZeroBalanceTokens": false,
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,
     "smartTransactionsOptInStatus": true,
-    "hideZeroBalanceTokens": false,
     "petnamesEnabled": true,
-    "redesignedConfirmationsEnabled": true,
+    "showConfirmationAdvancedDetails": false,
     "featureNotificationsEnabled": false,
-    "privacyMode": false
+    "showMultiRpcModal": false,
+    "privacyMode": false,
+    "tokenNetworkFilter": {},
+    "tokenSortConfig": {
+      "key": "token-sort-key",
+      "order": "dsc",
+      "sortCallback": "stringNumeric"
+    }
   },
   "preventPollingOnNetworkRestart": false,
   "previousAppVersion": "",
@@ -436,6 +443,14 @@
   "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1715944006161,
   "theme": "os",
+  "tokenBalances": {
+    "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {
+      "0x1": {
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "0xbdbd",
+        "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e": "0x501b4176a64d6"
+      }
+    }
+  },
   "tokenList": {},
   "tokens": [],
   "tokensChainsCache": {},
