@@ -72,6 +72,18 @@ jest.mock('../../../../store/actions', () => {
     })),
     tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
     tokenBalancesStopPollingByPollingToken: jest.fn(),
+    addImportedTokens: jest.fn(),
+  };
+});
+
+// Mock the dispatch function
+const mockDispatch = jest.fn();
+
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useDispatch: () => mockDispatch,
   };
 });
 

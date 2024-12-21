@@ -182,7 +182,7 @@
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
-    "detectedTokens": "object",
+    "detectedTokens": "undefined",
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {},
