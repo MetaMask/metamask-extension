@@ -56,6 +56,18 @@ jobs:
     name: Test deps depcheck
     uses: ./.github/workflows/test-deps-depcheck.yml
 
+  validate-lavamoat-allow-scripts:
+    name: Validate lavamoat allow scripts
+    uses: ./.github/workflows/validate-lavamoat-allow-scripts.yml
+
+  validate-lavamoat-policy-build:
+    name: Validate lavamoat policy build
+    uses: ./.github/workflows/validate-lavamoat-policy-build.yml
+
+  validate-lavamoat-policy-webapp:
+    name: Validate lavamoat policy webapp
+    uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
@@ -75,6 +87,9 @@ jobs:
       - test-lint-lockfile
       - test-yarn-dedupe
       - test-deps-depcheck
+      - validate-lavamoat-allow-scripts
+      - validate-lavamoat-policy-build
+      - validate-lavamoat-policy-webapp
       - run-tests
       - wait-for-circleci-workflow-status
     outputs:
