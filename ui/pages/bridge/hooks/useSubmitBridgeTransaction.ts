@@ -93,7 +93,8 @@ export default function useSubmitBridgeTransaction() {
           CHAIN_IDS.LINEA_GOERLI,
           CHAIN_IDS.LINEA_SEPOLIA,
         ] as Hex[]
-      ).includes(srcChainId)
+      ).includes(srcChainId) &&
+      quoteResponse?.approval
     ) {
       debugLog(
         'Delaying submitting bridge tx to make Linea confirmation more likely',
