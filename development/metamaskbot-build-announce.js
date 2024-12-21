@@ -144,9 +144,6 @@ async function start() {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
-  const coverageLink = `<a href="${coverageUrl}">Report</a>`;
-
   const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
@@ -174,7 +171,6 @@ async function start() {
     `build viz: ${depVizLink}`,
     `mv3: ${bundleSizeStatsLink}`,
     `mv2: ${userActionsStatsLink}`,
-    `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
