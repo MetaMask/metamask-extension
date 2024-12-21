@@ -104,6 +104,7 @@ export type Preferences = {
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
   smartTransactionsOptInStatus: boolean;
+  smartTransactionsMigrationApplied: boolean;
   showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
@@ -129,6 +130,7 @@ export type PreferencesControllerState = Omit<
   PreferencesState,
   | 'showTestNetworks'
   | 'smartTransactionsOptInStatus'
+  | 'smartTransactionsMigrationApplied'
   | 'privacyMode'
   | 'tokenSortConfig'
   | 'useMultiRpcMigration'
@@ -217,6 +219,7 @@ export const getDefaultPreferencesControllerState =
       showFiatInTestnets: false,
       showTestNetworks: false,
       smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: false,
       showNativeTokenAsMainBalance: false,
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,
@@ -406,6 +409,16 @@ const controllerMetadata = {
   preferences: {
     persist: true,
     anonymous: true,
+    properties: {
+      smartTransactionsOptInStatus: {
+        persist: true,
+        anonymous: true,
+      },
+      smartTransactionsMigrationApplied: {
+        persist: true,
+        anonymous: true,
+      },
+    },
   },
   ipfsGateway: {
     persist: true,
