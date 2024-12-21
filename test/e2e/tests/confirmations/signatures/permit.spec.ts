@@ -69,7 +69,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
-          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
         });
 
@@ -107,7 +107,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           location: 'confirmation',
-          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
         });
       },
@@ -126,12 +126,12 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         const simulationSection = driver.findElement({
           text: 'Estimated changes',
         });
-        const receiveChange = driver.findElement({ text: 'You receive' });
+        const receiveChange = driver.findElement({ text: 'Listing price' });
         const listChange = driver.findElement({ text: 'You list' });
         const listChangeValue = driver.findElement({ text: '#2101' });
 
         assert.ok(await simulationSection, 'Estimated changes');
-        assert.ok(await receiveChange, 'You receive');
+        assert.ok(await receiveChange, 'Listing price');
         assert.ok(await listChange, 'You list');
         assert.ok(await listChangeValue, '#2101');
 
