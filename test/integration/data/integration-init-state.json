@@ -781,7 +781,7 @@
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": true,
-    "smartTransactionsOptInStatus": false,
+    "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
     "showMultiRpcModal": false

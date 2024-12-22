@@ -1,4 +1,5 @@
 import {
+  CHAIN_IDS,
   SimulationData,
   TransactionMeta,
   TransactionStatus,
@@ -18,7 +19,7 @@ export const CONTRACT_INTERACTION_SENDER_ADDRESS =
 
 export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
 
-export const CHAIN_ID = '0xaa36a7';
+export const CHAIN_ID = CHAIN_IDS.GOERLI;
 
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,

@@ -395,7 +395,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore();
       const result = getToAmount(state as never);
 
-      expect(result).toStrictEqual('0');
+      expect(result).toStrictEqual(undefined);
     });
   });
 

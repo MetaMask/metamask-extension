@@ -338,7 +338,7 @@ ContractDetailsModal.propTypes = {
    */
   chainId: PropTypes.string,
   /**
-   * Block explorer URL of the current network
+   * Block explorer URL for the contract chain
    */
   blockExplorerUrl: PropTypes.string,
   /**

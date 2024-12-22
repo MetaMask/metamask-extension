@@ -36,7 +36,7 @@ import { SurveyUrl } from '../../../../shared/constants/urls';
 type ExperimentalTabProps = {
   watchAccountEnabled: boolean;
   setWatchAccountEnabled: (value: boolean) => void;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   solanaSupportEnabled: boolean;
   setSolanaSupportEnabled: (value: boolean) => void;
   ///: END:ONLY_INCLUDE_IF
@@ -373,7 +373,9 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       </>
     );
   }
+  ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   renderSolanaSupport() {
     const { t, trackEvent } = this.context;
     const { solanaSupportEnabled, setSolanaSupportEnabled } = this.props;
@@ -441,7 +443,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(solana)
           this.renderSolanaSupport()
           ///: END:ONLY_INCLUDE_IF
         }

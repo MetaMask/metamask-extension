@@ -1,18 +1,18 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 class ExperimentalSettings {
   private readonly driver: Driver;
 
   // Locators
-  private readonly addAccountSnapToggle: string =
+  private readonly addAccountSnapToggle =
     '[data-testid="add-account-snap-toggle-div"]';
 
-  private readonly experimentalPageTitle: object = {
+  private readonly experimentalPageTitle = {
     text: 'Experimental',
     tag: 'h4',
   };
 
-  private readonly redesignedSignatureToggle: string =
+  private readonly redesignedSignatureToggle =
     '[data-testid="toggle-redesigned-confirmations-container"]';
 
   constructor(driver: Driver) {

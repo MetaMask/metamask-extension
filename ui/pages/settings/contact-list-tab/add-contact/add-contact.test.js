@@ -6,6 +6,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import '@testing-library/jest-dom/extend-expect';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { domainInitialState } from '../../../../ducks/domains';
 import AddContact from './add-contact.component';
 
 describe('AddContact component', () => {
@@ -61,7 +62,12 @@ describe('AddContact component', () => {
   });
 
   it('should enable submit button when input is valid', () => {
-    const store = configureMockStore(middleware)(state);
+    const testStore = {
+      DNS: domainInitialState,
+      metamask: state.metamask,
+      snaps: {},
+    };
+    const store = configureMockStore(middleware)(testStore);
     const { getByText, getByTestId } = renderWithProvider(
       <AddContact {...props} />,
       store,
@@ -80,7 +86,12 @@ describe('AddContact component', () => {
   });
 
   it('should disable submit button when input is not a valid address', () => {
-    const store = configureMockStore(middleware)(state);
+    const testStore = {
+      DNS: domainInitialState,
+      metamask: state.metamask,
+      snaps: {},
+    };
+    const store = configureMockStore(middleware)(testStore);
     const { getByText, getByTestId } = renderWithProvider(
       <AddContact {...props} />,
       store,

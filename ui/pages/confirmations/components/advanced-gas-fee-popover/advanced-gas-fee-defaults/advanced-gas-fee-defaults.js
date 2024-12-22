@@ -11,8 +11,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import {
   getAdvancedGasFeeValues,
-  getCurrentChainId,
-  getNetworkIdentifier,
+  selectNetworkIdentifierByChainId,
 } from '../../../../../selectors';
 import { setAdvancedGasFee } from '../../../../../store/actions';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
@@ -35,11 +34,14 @@ const AdvancedGasFeeDefaults = () => {
     10,
   ).toString();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  // This will need to use a different chainId in multinetwork
-  const chainId = useSelector(getCurrentChainId);
-  const networkIdentifier = useSelector(getNetworkIdentifier);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
-  const { editGasMode } = useGasFeeContext();
+  const { editGasMode, transaction } = useGasFeeContext();
+  const { chainId } = transaction;
+
+  const networkIdentifier = useSelector((state) =>
+    selectNetworkIdentifierByChainId(state, chainId),
+  );
+
   const [isDefaultSettingsSelected, setDefaultSettingsSelected] = useState(
     Boolean(advancedGasFeeValues) &&
       advancedGasFeeValues.maxBaseFee === maxBaseFee &&

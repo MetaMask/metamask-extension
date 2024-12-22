@@ -18,6 +18,7 @@ import {
   getFromToken,
   getFromTokens,
   getFromTopAssets,
+  getQuoteRequest,
   getToAmount,
   getToChain,
   getToChains,
@@ -38,6 +39,8 @@ import { setActiveNetwork } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { QuoteRequest } from '../types';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
+import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
+import { isValidQuoteRequest } from '../utils/quote';
 import { BridgeInputGroup } from './bridge-input-group';
 
 const PrepareBridgePage = () => {
@@ -60,6 +63,8 @@ const PrepareBridgePage = () => {
 
   const fromAmount = useSelector(getFromAmount);
   const toAmount = useSelector(getToAmount);
+
+  const quoteRequest = useSelector(getQuoteRequest);
 
   const fromTokenListGenerator = useTokensWithFiltering(
     fromTokens,
@@ -110,7 +115,7 @@ const PrepareBridgePage = () => {
     <div className="prepare-bridge-page">
       <Box className="prepare-bridge-page__content">
         <BridgeInputGroup
-          className="prepare-bridge-page__from"
+          className="bridge-box"
           header={t('bridgeFrom')}
           token={fromToken}
           onAmountChange={(e) => {
@@ -157,7 +162,7 @@ const PrepareBridgePage = () => {
             data-testid="switch-tokens"
             ariaLabel="switch-tokens"
             iconName={IconName.Arrow2Down}
-            disabled={!toChain}
+            disabled={!isValidQuoteRequest(quoteRequest, false)}
             onClick={() => {
               setRotateSwitchTokens(!rotateSwitchTokens);
               const toChainClientId =
@@ -178,7 +183,7 @@ const PrepareBridgePage = () => {
         </Box>
 
         <BridgeInputGroup
-          className="prepare-bridge-page__to"
+          className="bridge-box"
           header={t('bridgeTo')}
           token={toToken}
           onAssetChange={(token) => dispatch(setToToken(token))}
@@ -199,10 +204,12 @@ const PrepareBridgePage = () => {
             testId: 'to-amount',
             readOnly: true,
             disabled: true,
-            value: toAmount,
+            value: toAmount?.toString() ?? '0',
+            className: toAmount ? 'amount-input defined' : 'amount-input',
           }}
         />
       </Box>
+      <BridgeQuoteCard />
     </div>
   );
 };

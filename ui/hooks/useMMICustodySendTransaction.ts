@@ -34,9 +34,9 @@ export function useMMICustodySendTransaction() {
   const accountType = useSelector(getAccountType);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
-  const { currentConfirmation } = useConfirmContext() as unknown as {
-    currentConfirmation: TransactionMeta | undefined;
-  };
+  const { currentConfirmation } = useConfirmContext<
+    TransactionMeta | undefined
+  >();
   const { from } = getConfirmationSender(currentConfirmation);
   const fromChecksumHexAddress = toChecksumHexAddress(from || '');
 

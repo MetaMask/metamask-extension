@@ -11,7 +11,25 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { RampsMetaMaskEntry } from '../../../hooks/ramps/useRamps/useRamps';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import BtcOverview from './btc-overview';
+
+// We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
+const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: () => mockDispatch,
+}));
+
+jest.mock('../../../store/actions', () => ({
+  handleSnapRequest: jest.fn(),
+  sendMultichainTransaction: jest.fn(),
+  setDefaultHomeActiveTabName: jest.fn(),
+}));
 
 const PORTOFOLIO_URL = 'https://portfolio.test';
 
@@ -19,6 +37,7 @@ const BTC_OVERVIEW_BUY = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
 const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
 const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
+const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
 const mockMetaMetricsId = 'deadbeef';
@@ -228,9 +247,110 @@ describe('BtcOverview', () => {
     });
   });
 
+  it('sends an event when clicking the Buy button', () => {
+    const storeWithBtcBuyable = getStore({
+      ramps: {
+        buyableChains: mockBuyableChainsWithBtc,
+      },
+    });
+
+    const mockTrackEvent = jest.fn();
+    const { queryByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <BtcOverview />
+      </MetaMetricsContext.Provider>,
+      storeWithBtcBuyable,
+    );
+
+    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+    expect(buyButton).toBeInTheDocument();
+    expect(buyButton).not.toBeDisabled();
+    fireEvent.click(buyButton as HTMLElement);
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        account_type: mockNonEvmAccount.type,
+        chain_id: MultichainNetworks.BITCOIN,
+        location: 'Home',
+        snap_id: mockNonEvmAccount.metadata.snap.id,
+        text: 'Buy',
+      },
+    });
+  });
+
   it('always show the Receive button', () => {
     const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
     const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
     expect(receiveButton).toBeInTheDocument();
+  });
+
+  it('"Buy & Sell" button is disabled for testnet accounts', () => {
+    const storeWithBtcBuyable = getStore({
+      metamask: {
+        ...mockMetamaskStore,
+        internalAccounts: {
+          ...mockMetamaskStore.internalAccounts,
+          accounts: {
+            [mockNonEvmAccount.id]: {
+              ...mockNonEvmAccount,
+              address: 'tb1q9lakrt5sw0w0twnc6ww4vxs7hm0q23e03286k8',
+            },
+          },
+        },
+      },
+      ramps: {
+        buyableChains: mockBuyableChainsWithBtc,
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <BtcOverview />,
+      storeWithBtcBuyable,
+    );
+
+    const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
+
+    expect(buyButton).toBeInTheDocument();
+    expect(buyButton).toBeDisabled();
+  });
+
+  it('always show the Send button', () => {
+    const { queryByTestId } = renderWithProvider(<BtcOverview />, getStore());
+    const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
+    expect(sendButton).toBeInTheDocument();
+    expect(sendButton).not.toBeDisabled();
+  });
+
+  it('sends an event when clicking the Send button', () => {
+    const mockTrackEvent = jest.fn();
+    const { queryByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <BtcOverview />
+      </MetaMetricsContext.Provider>,
+      getStore(),
+    );
+
+    const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
+    expect(sendButton).toBeInTheDocument();
+    expect(sendButton).not.toBeDisabled();
+    fireEvent.click(sendButton as HTMLElement);
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      {
+        event: MetaMetricsEventName.NavSendButtonClicked,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          account_type: mockNonEvmAccount.type,
+          chain_id: MultichainNetworks.BITCOIN,
+          location: 'Home',
+          snap_id: mockNonEvmAccount.metadata.snap.id,
+          text: 'Send',
+          token_symbol: 'BTC',
+        },
+      },
+      expect.any(Object),
+    );
   });
 });

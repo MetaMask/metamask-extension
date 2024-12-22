@@ -1,4 +1,8 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import { IconName } from '../../components/component-library';
 import {
   ADVANCED_ROUTE,
@@ -19,6 +23,7 @@ import {
  * # @param {string} route tab route with appended arbitrary, unique anchor tag / hash route
  * # @param {string} iconName
  * # @param {string} featureFlag ENV variable name. If the ENV value exists, the route will be searchable; else, route will not be searchable.
+ * # @param {boolean} hidden If true, the route will not be searchable.
  */
 
 /** @type {SettingRouteConfig[]} */
@@ -153,6 +158,16 @@ const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('exportYourDataDescription'),
     route: `${ADVANCED_ROUTE}#export-data`,
     icon: 'fas fa-download',
+  },
+  // advanced settingsRefs[11]
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('overrideContentSecurityPolicyHeader'),
+    descriptionMessage: (t) =>
+      t('overrideContentSecurityPolicyHeaderDescription'),
+    route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
+    icon: 'fas fa-sliders-h',
+    hidden: getPlatform() !== PLATFORM_FIREFOX,
   },
   {
     tabMessage: (t) => t('contacts'),

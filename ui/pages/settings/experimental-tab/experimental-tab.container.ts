@@ -13,12 +13,12 @@ import {
   setRedesignedConfirmationsEnabled,
   setRedesignedTransactionsEnabled,
   setWatchEthereumAccountEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getIsBitcoinSupportEnabled,
@@ -43,7 +43,7 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   const petnamesEnabled = getPetnamesEnabled(state);
   const featureNotificationsEnabled = getFeatureNotificationsEnabled(state);
   return {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
     solanaSupportEnabled: getIsSolanaSupportEnabled(state),
     ///: END:ONLY_INCLUDE_IF
     watchAccountEnabled: getIsWatchEthereumAccountEnabled(state),
@@ -64,7 +64,7 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     setWatchAccountEnabled: (value: boolean) =>
       setWatchEthereumAccountEnabled(value),
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
     setSolanaSupportEnabled: (value: boolean) => setSolanaSupportEnabled(value),
     ///: END:ONLY_INCLUDE_IF
     setBitcoinSupportEnabled: (value: boolean) =>

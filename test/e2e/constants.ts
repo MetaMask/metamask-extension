@@ -50,3 +50,10 @@ export const DEFAULT_BTC_ACCOUNT = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 
 /* Default (mocked) BTC balance used by the Bitcoin RPC provider */
 export const DEFAULT_BTC_BALANCE = 1; // BTC
+
+/* Default (mocked) SOLANA address created using test SRP */
+export const DEFAULT_SOLANA_ACCOUNT =
+  'E6Aa9DDv7zsePJHosoqiNb3cFuup3fkXTyRH2pZ1nVzP';
+
+/* Default (mocked) SOLANA balance used by the Solana RPC provider */
+export const DEFAULT_SOLANA_BALANCE = 1; // SOL

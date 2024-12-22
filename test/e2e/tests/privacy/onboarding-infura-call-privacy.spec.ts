@@ -146,7 +146,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await importSRPOnboardingFlow(driver);
+        await importSRPOnboardingFlow({ driver });
 
         // Check no requests before completing onboarding
         // Intended delay to ensure we cover at least 1 polling loop of time for the network request

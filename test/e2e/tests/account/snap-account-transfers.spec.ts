@@ -47,13 +47,13 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
         await headerNavbar.check_accountLabel('SSK Account');
 
         // send 1 ETH from snap account to account 1
-        await sendTransactionWithSnapAccount(
+        await sendTransactionWithSnapAccount({
           driver,
-          DEFAULT_FIXTURE_ACCOUNT,
-          '1',
-          '0.000042',
-          '1.000042',
-        );
+          recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
+          amount: '1',
+          gasFee: '0.000042',
+          totalFee: '1.000042',
+        });
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
@@ -95,14 +95,14 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
         await headerNavbar.check_accountLabel('SSK Account');
 
         // send 1 ETH from snap account to account 1 and approve the transaction
-        await sendTransactionWithSnapAccount(
+        await sendTransactionWithSnapAccount({
           driver,
-          DEFAULT_FIXTURE_ACCOUNT,
-          '1',
-          '0.000042',
-          '1.000042',
-          false,
-        );
+          recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
+          amount: '1',
+          gasFee: '0.000042',
+          totalFee: '1.000042',
+          isSyncFlow: false,
+        });
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
@@ -145,15 +145,15 @@ describe('Snap Account Transfers @no-mmi', function (this: Suite) {
         await headerNavbar.check_accountLabel('SSK Account');
 
         // send 1 ETH from snap account to account 1 and reject the transaction
-        await sendTransactionWithSnapAccount(
+        await sendTransactionWithSnapAccount({
           driver,
-          DEFAULT_FIXTURE_ACCOUNT,
-          '1',
-          '0.000042',
-          '1.000042',
-          false,
-          false,
-        );
+          recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
+          amount: '1',
+          gasFee: '0.000042',
+          totalFee: '1.000042',
+          isSyncFlow: false,
+          approveTransaction: false,
+        });
 
         // check the transaction is failed in MetaMask activity list
         const homepage = new HomePage(driver);

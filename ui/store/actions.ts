@@ -4218,6 +4218,18 @@ export function setDismissSeedBackUpReminder(
   };
 }
 
+export function setOverrideContentSecurityPolicyHeader(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setOverrideContentSecurityPolicyHeader', [
+      value,
+    ]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function getRpcMethodPreferences(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -4374,16 +4386,13 @@ export function setNextNonce(nextNonce: string): PayloadAction<string> {
  * accidental usage of a stale nonce as the call to getNextNonce only works for
  * the currently selected address.
  *
+ * @param address - address for which nonce lock shouuld be obtained.
  * @returns
  */
-export function getNextNonce(): ThunkAction<
-  Promise<string>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function getNextNonce(
+  address,
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
-    const { address } = getSelectedInternalAccount(getState());
     const networkClientId = getSelectedNetworkClientId(getState());
     let nextNonce;
     try {
@@ -5002,7 +5011,7 @@ export async function setBitcoinTestnetSupportEnabled(value: boolean) {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 export async function setSolanaSupportEnabled(value: boolean) {
   try {
     await submitRequestToBackground('setSolanaSupportEnabled', [value]);

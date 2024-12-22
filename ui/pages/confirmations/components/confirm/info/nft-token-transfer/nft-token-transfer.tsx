@@ -24,6 +24,7 @@ const NFTTokenTransferInfo = () => {
           <SimulationDetails
             transaction={transactionMeta}
             isTransactionsRedesign
+            enableMetrics
           />
         </ConfirmInfoSection>
       )}

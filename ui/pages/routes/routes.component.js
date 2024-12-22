@@ -138,6 +138,7 @@ export default class Routes extends Component {
     history: PropTypes.object,
     location: PropTypes.object,
     autoLockTimeLimit: PropTypes.number,
+    privacyMode: PropTypes.bool,
     pageChanged: PropTypes.func.isRequired,
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
@@ -417,6 +418,7 @@ export default class Routes extends Component {
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
       clearEditedNetwork,
+      privacyMode,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -494,7 +496,10 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IF
         }
         {isAccountMenuOpen ? (
-          <AccountListMenu onClose={() => toggleAccountMenu()} />
+          <AccountListMenu
+            onClose={() => toggleAccountMenu()}
+            privacyMode={privacyMode}
+          />
         ) : null}
         {isNetworkMenuOpen ? (
           <NetworkListMenu

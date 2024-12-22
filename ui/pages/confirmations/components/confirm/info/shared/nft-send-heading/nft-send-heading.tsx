@@ -24,11 +24,13 @@ const NFTSendHeading = () => {
   const tokenAddress = transactionMeta.txParams.to;
   const userAddress = transactionMeta.txParams.from;
   const { data } = transactionMeta.txParams;
+  const { chainId } = transactionMeta;
 
   const { assetName, tokenImage, tokenId } = useAssetDetails(
     tokenAddress,
     userAddress,
     data,
+    chainId,
   );
 
   const TokenImage = <AvatarToken src={tokenImage} size={AvatarTokenSize.Xl} />;

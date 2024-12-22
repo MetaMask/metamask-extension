@@ -49,7 +49,7 @@ export const TokenDetailsSection = () => {
       >
         <AvatarNetwork
           borderColor={BorderColor.backgroundDefault}
-          size={AvatarNetworkSize.Sm}
+          size={AvatarNetworkSize.Xs}
           src={
             CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
               chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
@@ -65,7 +65,10 @@ export const TokenDetailsSection = () => {
   );
 
   const tokenRow = transactionMeta.type !== TransactionType.simpleSend && (
-    <ConfirmInfoRow label={t('interactingWith')}>
+    <ConfirmInfoRow
+      label={t('interactingWith')}
+      tooltip={t('interactingWithTransactionDescription')}
+    >
       <ConfirmInfoRowAddress
         address={transactionMeta.txParams.to as string}
         chainId={chainId}

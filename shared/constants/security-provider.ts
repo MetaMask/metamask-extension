@@ -32,7 +32,7 @@ export enum BlockaidReason {
   approvalFarming = 'approval_farming',
   /** Malicious signature on Blur order  */
   blurFarming = 'blur_farming',
-  /** A known malicous site invoked that transaction  */
+  /** A known malicious site invoked that transaction  */
   maliciousDomain = 'malicious_domain',
   /** Malicious signature on a Permit order  */
   permitFarming = 'permit_farming',
@@ -57,6 +57,8 @@ export enum BlockaidReason {
   errored = 'Error',
   notApplicable = 'NotApplicable',
   inProgress = 'validation_in_progress',
+  checkingChain = 'CheckingChain',
+  chainNotSupported = 'ChainNotSupported',
 }
 
 export enum BlockaidResultType {
@@ -89,7 +91,7 @@ export const FALSE_POSITIVE_REPORT_BASE_URL =
 
 export const SECURITY_PROVIDER_UTM_SOURCE = 'metamask-ppom';
 
-export const SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS: Hex[] = [
+export const SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST: Hex[] = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.AVALANCHE,
   CHAIN_IDS.BASE,
@@ -116,6 +118,17 @@ export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
   result_type: BlockaidResultType.Loading,
   reason: BlockaidReason.inProgress,
 };
+
+export const SECURITY_ALERT_RESPONSE_CHECKING_CHAIN: SecurityAlertResponse = {
+  result_type: BlockaidResultType.Loading,
+  reason: BlockaidReason.checkingChain,
+};
+
+export const SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED: SecurityAlertResponse =
+  {
+    result_type: BlockaidResultType.Benign,
+    reason: BlockaidReason.chainNotSupported,
+  };
 
 export enum SecurityAlertSource {
   /** Validation performed remotely using the Security Alerts API. */
