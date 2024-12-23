@@ -169,8 +169,8 @@ export const CHAIN_IDS = {
   B3_TESTNET: '0x7c9',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
-  GSYS_MAINNET:'0x407b',
-  GSYS_TESTNET:'0xa5c8',
+  GSYS_MAINNET: '0x407b',
+  GSYS_TESTNET: '0xa5c8',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -231,8 +231,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   APE: '0x8173',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
-  GSYS_MAINNET:'0x407b',
-  GSYS_TESTNET:'0xa5c8',
+  GSYS_MAINNET: '0x407b',
+  GSYS_TESTNET: '0xa5c8',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
