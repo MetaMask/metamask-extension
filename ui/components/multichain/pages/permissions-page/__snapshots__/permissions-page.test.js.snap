@@ -32,11 +32,7 @@ exports[`All Connections render renders correctly 1`] = `
           <h2
             class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
-            <span
-              class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--color-text-default"
-            >
-              Permissions
-            </span>
+            Permissions
           </h2>
         </div>
       </div>

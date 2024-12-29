@@ -54,18 +54,20 @@ export const Header = ({
       endAccessory={endAccessory}
       {...props}
     >
-      <Text
-        as="h2"
-        display={Display.Block}
-        variant={TextVariant.headingSm}
-        textAlign={TextAlign.Center}
-        paddingInlineStart={8}
-        paddingInlineEnd={8}
-        ellipsis
-        {...textProps}
-      >
-        {children}
-      </Text>
+      {children && (
+        <Text
+          as="h2"
+          display={Display.Block}
+          variant={TextVariant.headingSm}
+          textAlign={TextAlign.Center}
+          paddingInlineStart={8}
+          paddingInlineEnd={8}
+          ellipsis
+          {...textProps}
+        >
+          {children}
+        </Text>
+      )}
     </HeaderBase>
   );
 };
