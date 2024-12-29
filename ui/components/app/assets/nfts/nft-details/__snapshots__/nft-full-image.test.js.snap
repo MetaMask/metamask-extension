@@ -15,15 +15,7 @@ exports[`NFT full image should match snapshot 1`] = `
           class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
         >
           <div
-            class="mm-box"
-          >
-            <h2
-              class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
-            />
-          </div>
-          <div
             class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-            style="min-width: 0px;"
           >
             <button
               aria-label="Back"
