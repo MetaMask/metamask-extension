@@ -40,7 +40,7 @@ exports[`Connections Content should render correctly 1`] = `
                 style="mask-image: url('./images/icons/global.svg');"
               />
               <span
-                class="mm-box mm-text mm-text--heading-md mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
+                class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
               >
                 metamask.github.io
               </span>

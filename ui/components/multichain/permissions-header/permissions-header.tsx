@@ -71,7 +71,7 @@ export const PermissionsHeader = ({
         )}
         <Text
           as="span"
-          variant={TextVariant.headingMd}
+          variant={TextVariant.headingSm}
           textAlign={TextAlign.Center}
           ellipsis
         >
