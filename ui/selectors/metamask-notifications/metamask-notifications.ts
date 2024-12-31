@@ -1,15 +1,14 @@
 import { createSelector } from 'reselect';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { BackgroundStateProxy } from '../../../shared/types/metamask';
+import { MetaMaskSliceControllerState } from '../../ducks/metamask/metamask';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 type Notification = NotificationServicesController.Types.INotification;
 
-type NotificationServicesState = {
-  metamask: Pick<BackgroundStateProxy, 'NotificationServicesController'>;
-};
+type NotificationServicesState =
+  MetaMaskSliceControllerState<'NotificationServicesController'>;
 
 const getMetamask = (state: NotificationServicesState) => state.metamask;
 

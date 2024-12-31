@@ -1,5 +1,5 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import { BackgroundStateProxy } from '../../shared/types/metamask';
+import { MetaMaskSliceControllerState } from '../ducks/metamask/metamask';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -8,9 +8,8 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../helpers/constants/routes';
 
-export type OnboardingState = {
-  metamask: Pick<BackgroundStateProxy, 'OnboardingController'>;
-};
+export type OnboardingState =
+  MetaMaskSliceControllerState<'OnboardingController'>;
 
 /**
  * When the user unlocks the wallet but onboarding has not fully completed we
