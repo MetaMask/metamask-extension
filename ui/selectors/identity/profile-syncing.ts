@@ -1,9 +1,7 @@
 import { createSelector } from 'reselect';
-import { BackgroundStateProxy } from '../../../shared/types/metamask';
+import { MetaMaskSliceControllerState } from '../../ducks/metamask/metamask';
 
-type UserStorageState = {
-  metamask: Pick<BackgroundStateProxy, 'UserStorageController'>;
-};
+type UserStorageState = MetaMaskSliceControllerState<'UserStorageController'>;
 
 const getMetamask = (state: UserStorageState) => state.metamask;
 

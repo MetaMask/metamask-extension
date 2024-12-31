@@ -38,6 +38,12 @@ export type MetaMaskSliceState = {
   metamask: BackgroundStateProxy;
 };
 
+export type MetaMaskSliceControllerState<
+  ControllerName extends keyof BackgroundStateProxy,
+> = {
+  metamask: Pick<BackgroundStateProxy, ControllerName>;
+};
+
 /**
  * Temporary types for this slice so that inference of MetaMask state tree can
  * occur
@@ -615,6 +621,6 @@ export function doesUserHaveALedgerAccount(state: MetaMaskSliceState) {
   });
 }
 
-export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
+export function getCurrentCurrency(state: MetaMaskSliceState) {
+  return state.metamask.CurrencyController.currentCurrency;
 }

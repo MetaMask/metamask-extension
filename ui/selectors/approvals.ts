@@ -6,11 +6,10 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { BackgroundStateProxy } from '../../shared/types/metamask';
+import { MetaMaskSliceControllerState } from '../ducks/metamask/metamask';
 
-export type ApprovalsMetaMaskState = {
-  metamask: Pick<BackgroundStateProxy, 'ApprovalController'>;
-};
+export type ApprovalsMetaMaskState =
+  MetaMaskSliceControllerState<'ApprovalController'>;
 
 export function hasPendingApprovals(
   state: ApprovalsMetaMaskState,

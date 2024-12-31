@@ -1,9 +1,8 @@
 import { createSelector } from 'reselect';
-import { BackgroundStateProxy } from '../../shared/types/metamask';
+import { MetaMaskSliceControllerState } from '../ducks/metamask/metamask';
 
-type MetaMetricsMetaMaskState = {
-  metamask: Pick<BackgroundStateProxy, 'MetaMetricsController'>;
-};
+type MetaMetricsMetaMaskState =
+  MetaMaskSliceControllerState<'MetaMetricsController'>;
 
 type Fragments =
   MetaMetricsMetaMaskState['metamask']['MetaMetricsController']['fragments'];

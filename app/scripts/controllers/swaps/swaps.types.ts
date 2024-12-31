@@ -51,11 +51,13 @@ export type SwapsControllerState = {
     swapsStxStatusDeadline?: number;
     swapsStxGetTransactionsRefreshTime: number;
     swapsStxMaxFeeMultiplier: number;
-    swapsFeatureFlags: {
-      smartTransactions?: Partial<FeatureFlags>;
-    } & {
-      [networkName: string]: { smartTransactions?: Partial<FeatureFlags> };
-    };
+    swapsFeatureFlags:
+      | ({
+          smartTransactions?: Partial<FeatureFlags>;
+        } & {
+          [networkName: string]: { smartTransactions?: Partial<FeatureFlags> };
+        })
+      | Record<string, boolean>;
   };
 };
 

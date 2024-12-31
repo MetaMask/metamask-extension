@@ -11,6 +11,7 @@ import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { AccountType } from '../../../shared/constants/custody';
 import { MetaMaskReduxState } from '../../store/store';
+import { MetaMaskSliceControllerState } from '../../ducks/metamask/metamask';
 
 export function getWaitForConfirmDeepLinkDialog(
   state: MetaMaskSliceControllerState<'CustodyController'>,
@@ -102,6 +103,7 @@ export function getCustodianIconForAddress(
 export function getIsCustodianSupportedChain(
   state: MetaMaskSliceControllerState<'CustodyController'> &
     Parameters<typeof getSelectedInternalAccount>[0] &
+    Parameters<typeof getAccountType>[0] &
     ProviderConfigState,
 ) {
   try {

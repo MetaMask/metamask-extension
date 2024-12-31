@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import { getAccountName } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { MetaMaskReduxState } from '../../store/store';
 
 /**
  * Get the account name for an address.
@@ -12,10 +11,7 @@ import { MetaMaskReduxState } from '../../store/store';
  * @returns The account name for the address.
  */
 export const getAccountNameFromState = createSelector(
-  [
-    getInternalAccounts,
-    (_state: MetaMaskReduxState, address: string) => address,
-  ],
+  [getInternalAccounts, (_state, address: string) => address],
   getAccountName,
 );
 

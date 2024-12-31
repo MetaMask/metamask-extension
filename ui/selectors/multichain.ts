@@ -16,6 +16,7 @@ import {
   getConversionRate,
   getNativeCurrency,
   getCurrentCurrency,
+  MetaMaskSliceControllerState,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -41,13 +42,11 @@ import {
   getShowFiatInTestnets,
 } from './selectors';
 
-export type RatesState = {
-  metamask: Pick<BackgroundStateProxy, 'MultichainRatesController'>;
-};
+export type RatesState =
+  MetaMaskSliceControllerState<'MultichainRatesController'>;
 
-export type BalancesState = {
-  metamask: Pick<BackgroundStateProxy, 'MultichainBalancesController'>;
-};
+export type BalancesState =
+  MetaMaskSliceControllerState<'MultichainBalancesController'>;
 
 export type MultichainState = Pick<
   BackgroundStateProxy,
