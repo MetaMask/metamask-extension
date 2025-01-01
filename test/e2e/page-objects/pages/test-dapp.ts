@@ -8,6 +8,11 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 class TestDapp {
   private driver: Driver;
 
+  private readonly addTokensToWalletButton = {
+    text: 'Add Token(s) to Wallet',
+    tag: 'button',
+  };
+
   private readonly confirmDepositButton =
     '[data-testid="confirm-footer-button"]';
 
@@ -16,8 +21,14 @@ class TestDapp {
   private readonly confirmDialogScrollButton =
     '[data-testid="signature-request-scroll-button"]';
 
+  private readonly confirmScrollToBottomButtonRedesign =
+    '.confirm-scroll-to-bottom__button';
+
   private readonly confirmSignatureButton =
     '[data-testid="page-container-footer-next"]';
+
+  private readonly confirmSignatureButtonRedesign =
+    '[data-testid="confirm-footer-button"]';
 
   private readonly connectAccountButton = '#connectButton';
 
@@ -31,6 +42,8 @@ class TestDapp {
   private readonly depositPiggyBankContractButton = '#depositButton';
 
   private readonly simpleSendButton = '#sendButton';
+
+  private readonly erc20TokenAddresses = '#erc20TokenAddresses';
 
   private readonly erc721MintButton = '#mintButton';
 
@@ -116,6 +129,11 @@ class TestDapp {
     tag: 'div',
   };
 
+  private readonly signTypedDataV3V4SignatureRequestMessageRedesign = {
+    text: 'Hello, Bob!',
+    tag: 'p',
+  };
+
   private readonly signTypedDataV3VerifyButton = '#signTypedDataV3Verify';
 
   private readonly signTypedDataV3VerifyResult = '#signTypedDataV3VerifyResult';
@@ -159,17 +177,17 @@ class TestDapp {
     tag: 'h2',
   };
 
-  private readonly updateNetworkButton = {
-    text: 'Update',
-    tag: 'button',
-  };
-
   private readonly userRejectedRequestMessage = {
     tag: 'span',
     text: 'Error: User rejected the request.',
   };
 
   private erc20TokenTransferButton = '#transferTokens';
+
+  private createTokenButton = {
+    text: 'Create Token',
+    tag: 'button',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -215,11 +233,21 @@ class TestDapp {
     });
   }
 
+  public async clickAddTokenToWallet() {
+    await this.driver.clickElement(this.addTokensToWalletButton);
+  }
+
   async clickSimpleSendButton() {
+    await this.driver.waitForSelector(this.simpleSendButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElement(this.simpleSendButton);
   }
 
   async clickERC721MintButton() {
+    await this.driver.waitForSelector(this.erc721MintButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElement(this.erc721MintButton);
   }
 
@@ -267,26 +295,46 @@ class TestDapp {
     await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
-  /**
-   * Connect account to test dapp.
-   *
-   * @param publicAddress - The public address to connect to test dapp.
-   */
-  async connectAccount(publicAddress: string) {
-    console.log('Connect account to test dapp');
-    await this.driver.clickElement(this.connectAccountButton);
+  async confirmConnectAccountModal() {
+    console.log('Confirm connect account modal in notification window');
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.driver.waitForSelector(this.connectMetaMaskMessage);
-
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmDialogButton,
     );
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-    await this.driver.waitForSelector({
-      css: this.connectedAccount,
-      text: publicAddress.toLowerCase(),
-    });
-    await this.driver.waitForSelector(this.localhostNetworkMessage);
+  }
+
+  /**
+   * Connect account to test dapp.
+   *
+   * @param options - Options for connecting account to test dapp.
+   * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
+   * @param options.publicAddress - The public address to connect to test dapp.
+   */
+  async connectAccount({
+    connectAccountButtonEnabled = true,
+    publicAddress,
+  }: {
+    connectAccountButtonEnabled?: boolean;
+    publicAddress?: string;
+  }) {
+    console.log('Connect account to test dapp');
+    await this.driver.clickElement(this.connectAccountButton);
+    if (connectAccountButtonEnabled) {
+      await this.confirmConnectAccountModal();
+    } else {
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await this.driver.waitForSelector(this.connectMetaMaskMessage);
+      const confirmConnectDialogButton = await this.driver.findElement(
+        this.confirmDialogButton,
+      );
+      assert.equal(await confirmConnectDialogButton.isEnabled(), false);
+    }
+    if (publicAddress) {
+      await this.check_connectedAccounts(publicAddress);
+      await this.driver.waitForSelector(this.localhostNetworkMessage);
+    }
   }
 
   async createDepositTransaction() {
@@ -309,10 +357,43 @@ class TestDapp {
     await this.driver.clickElement(this.revokePermissionButton);
     await this.driver.refresh();
     await this.check_pageIsLoaded();
-    await this.driver.assertElementNotPresent({
-      css: this.connectedAccount,
-      text: publicAddress.toLowerCase(),
-    });
+    await this.check_connectedAccounts(publicAddress, false);
+  }
+
+  /**
+   * Scrolls to the create token button and clicks it.
+   */
+  public async findAndClickCreateToken() {
+    const createTokenElement = await this.driver.findElement(
+      this.createTokenButton,
+    );
+    await this.driver.scrollToElement(createTokenElement);
+    await this.driver.clickElement(this.createTokenButton);
+  }
+
+  /**
+   * Verifies the accounts connected to the test dapp.
+   *
+   * @param connectedAccounts - Account addresses to check if connected to test dapp, separated by a comma.
+   * @param shouldBeConnected - Whether the accounts should be connected to test dapp. Defaults to true.
+   */
+  async check_connectedAccounts(
+    connectedAccounts: string,
+    shouldBeConnected: boolean = true,
+  ) {
+    if (shouldBeConnected) {
+      console.log('Verify connected accounts:', connectedAccounts);
+      await this.driver.waitForSelector({
+        css: this.connectedAccount,
+        text: connectedAccounts.toLowerCase(),
+      });
+    } else {
+      console.log('Verify accounts not connected:', connectedAccounts);
+      await this.driver.assertElementNotPresent({
+        css: this.connectedAccount,
+        text: connectedAccounts.toLowerCase(),
+      });
+    }
   }
 
   /**
@@ -551,6 +632,24 @@ class TestDapp {
     });
   }
 
+  /**
+   * Checks the count of token addresses.
+   *
+   * @param expectedCount - The expected count of token addresses.
+   */
+  async check_TokenAddressesCount(expectedCount: number) {
+    console.log(`checking token addresses count: ${expectedCount}`);
+    await this.driver.wait(async () => {
+      const tokenAddressesElement = await this.driver.findElement(
+        this.erc20TokenAddresses,
+      );
+      const tokenAddresses = await tokenAddressesElement.getText();
+      const addresses = tokenAddresses.split(',').filter(Boolean);
+
+      return addresses.length === expectedCount;
+    }, 10000);
+  }
+
   async verify_successSignTypedDataV4Result(result: string) {
     await this.driver.waitForSelector({
       css: this.signTypedDataV4Result,
@@ -657,18 +756,33 @@ class TestDapp {
 
   /**
    * Sign a message with the signTypedDataV4 method.
+   *
+   * @param confirmationRedesign - Indicates whether the redesigned signature confirmation flow is used. Defaults to false.
    */
-  async signTypedDataV4() {
+  async signTypedDataV4(confirmationRedesign: boolean = false) {
     console.log('Sign message with signTypedDataV4');
     await this.clickSignTypedDatav4();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessage,
-    );
-    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
-    );
+    if (confirmationRedesign) {
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessageRedesign,
+      );
+      await this.driver.clickElementSafe(
+        this.confirmScrollToBottomButtonRedesign,
+        200,
+      );
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButtonRedesign,
+      );
+    } else {
+      await this.driver.waitForSelector(
+        this.signTypedDataV3V4SignatureRequestMessage,
+      );
+      await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
+      await this.driver.clickElementAndWaitForWindowToClose(
+        this.confirmSignatureButton,
+      );
+    }
   }
 
   async pasteIntoEip747ContractAddressInput() {

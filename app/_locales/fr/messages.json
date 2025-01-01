@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Ajout de réseau"
   },
-  "addingTokens": {
-    "message": "Ajouter des jetons"
-  },
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
   },
@@ -437,17 +434,11 @@
   "alertMessageNoGasPrice": {
     "message": "Nous ne pouvons pas valider cette transaction tant que vous n’avez pas mis à jour manuellement les frais."
   },
-  "alertMessagePendingTransactions": {
-    "message": "La transaction précédente doit être finalisée avant que celle-ci ne soit traitée. Découvrez comment vous pouvez annuler ou accélérer une transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Le site auquel vous êtes en train de vous connecter n’est pas le site à l’origine de la demande. Il pourrait s’agir d’une tentative de vol de vos identifiants de connexion."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Ce site vous demande de vous connecter en utilisant le mauvais compte."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "La transaction précédente doit être finalisée avant que celle-ci ne soit traitée."
   },
   "alertModalAcknowledge": {
     "message": "Je suis conscient du risque et je souhaite quand même continuer"
@@ -632,12 +623,6 @@
   },
   "assetsDescription": {
     "message": "Détection automatique des jetons dans votre portefeuille, affichage des NFT et mise à jour du solde de plusieurs comptes"
-  },
-  "attemptSendingAssets": {
-    "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, vous pourriez les perdre définitivement. Utilisez une passerelle comme $1 pour transférer en toute sécurité des fonds d’un réseau à un autre"
   },
   "attemptToCancelSwapForFree": {
     "message": "Tentative d’annuler gratuitement le swap"
@@ -846,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Calcul en cours…"
   },
-  "bridgeDontSend": {
-    "message": "Passerelle, ne pas envoyer"
-  },
   "bridgeEnterAmount": {
     "message": "Saisissez le montant"
   },
@@ -861,14 +843,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Sélectionnez le jeton et le montant"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Il s’agit d’une estimation du temps nécessaire pour que la passerelle soit établie."
-  },
   "bridgeTo": {
     "message": "Passerelle vers"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Cela comprend les frais de gaz (payés aux mineurs de crypto-monnaies) et les frais pour relayeurs (payés pour assurer des services complexes tels que l’établissement de passerelles).\nLes frais sont basés sur le trafic réseau et la complexité des transactions. MetaMask ne tire aucun profit de ces frais."
   },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
@@ -965,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Cliquez ici pour connecter votre Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Vous pouvez ajouter des jetons manuellement."
   },
   "close": {
     "message": "Fermer"
@@ -1989,9 +1962,6 @@
   "estimatedFeeTooltip": {
     "message": "Montant payé pour traiter la transaction sur le réseau."
   },
-  "estimatedTime": {
-    "message": "Temps estimé"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Le prix de carburant de sauvegarde est fourni, car le service principal d’estimation du carburant est momentanément indisponible."
   },
@@ -2152,9 +2122,6 @@
   },
   "gasFee": {
     "message": "Frais de gaz"
-  },
-  "gasIsETH": {
-    "message": "Le gaz est $1 "
   },
   "gasLimit": {
     "message": "Montant maximal des frais de transaction"
@@ -2717,9 +2684,6 @@
   "learnScamRisk": {
     "message": "hameçonnages et risques de sécurité."
   },
-  "learnToBridge": {
-    "message": "Apprenez à établir une passerelle"
-  },
   "leaveMetaMask": {
     "message": "Voulez-vous quitter MetaMask ?"
   },
@@ -2810,9 +2774,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Veuillez conclure la transaction sur le snap."
-  },
-  "loadingTokens": {
-    "message": "Chargement des jetons..."
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -2914,9 +2875,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Les notifications du portefeuille ne sont actuellement pas activées."
-  },
-  "metamaskPortfolio": {
-    "message": "Portfolio MetaMask."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps est en cours de maintenance. Nous vous invitons à revenir plus tard."
@@ -3061,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 vous demande votre approbation pour :",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Le jeton natif de ce réseau est $1. C’est le jeton utilisé pour les frais de gaz. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Modifier les détails du réseau"
@@ -3349,9 +3303,6 @@
   },
   "noThanks": {
     "message": "Non merci"
-  },
-  "noTransactions": {
-    "message": "Aucune transaction"
   },
   "noWebcamFound": {
     "message": "La caméra de votre ordinateur n’a pas été trouvée. Veuillez réessayer."
@@ -4107,12 +4058,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "Ici, vous pouvez voir les autorisations que vous avez accordées aux Snaps installés ou aux sites connectés."
-  },
-  "permissionsPageTourDescription": {
-    "message": "C’’est votre panneau de configuration pour gérer les autorisations accordées aux sites connectés et aux Snaps installés."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Les sites connectés sont maintenant des autorisations"
   },
   "permitSimulationDetailInfo": {
     "message": "Vous autorisez la dépenseur à dépenser ce nombre de jetons de votre compte."
@@ -5961,9 +5906,6 @@
     "message": "$1 est maintenant actif sur $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Vous êtes en train d’utiliser"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Le changement de réseau annulera toutes les confirmations en attente"
   },
@@ -5999,9 +5941,6 @@
   },
   "themeDescription": {
     "message": "Choisissez votre thème MetaMask préféré."
-  },
-  "thingsToKeep": {
-    "message": "Les choses que vous devez garder à l’esprit :"
   },
   "thirdPartySoftware": {
     "message": "Avis sur les logiciels développés par des tiers",
@@ -6084,9 +6023,6 @@
   "tokenScamSecurityRisk": {
     "message": "les arnaques et les risques de piratage informatique"
   },
-  "tokenShowUp": {
-    "message": "Il se peut que vos jetons n’apparaissent pas automatiquement dans votre portefeuille. "
-  },
   "tokenStandard": {
     "message": "Jeton standard"
   },
@@ -6117,9 +6053,6 @@
   },
   "total": {
     "message": "Total"
-  },
-  "totalFees": {
-    "message": "Frais totaux"
   },
   "totalVolume": {
     "message": "Volume total"
@@ -6402,9 +6335,6 @@
   "use4ByteResolution": {
     "message": "Décoder les contrats intelligents"
   },
-  "use4ByteResolutionDescription": {
-    "message": "Pour améliorer l’expérience utilisateur, nous personnalisons les messages qui s’affichent dans l’onglet d’activité en fonction des contrats intelligents avec lesquels vous interagissez. MetaMask utilise un service appelé 4byte.directory pour décoder les données et vous montrer une version plus facile à lire des contrats intelligents. Ainsi vous aurez moins de chances d’approuver l’exécution de contrats intelligents malveillants, mais cela peut nécessiter le partage de votre adresse IP."
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Demandes d’informations concernant le solde de plusieurs comptes"
   },
@@ -6597,10 +6527,6 @@
   },
   "wrongNetworkName": {
     "message": "Selon nos informations, il se peut que le nom du réseau ne corresponde pas exactement à l’ID de chaîne."
-  },
-  "xOfYPending": {
-    "message": "$1 sur $2 en attente",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Oui"

@@ -5,16 +5,15 @@ import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import * as bridgeUtil from '../../../../ui/pages/bridge/bridge.util';
+import * as bridgeUtil from '../../../../shared/modules/bridge-utils/bridge.util';
 import * as balanceUtils from '../../../../shared/modules/bridge-utils/balance';
 import mockBridgeQuotesErc20Native from '../../../../test/data/bridge/mock-quotes-erc20-native.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import mockBridgeQuotesNativeErc20Eth from '../../../../test/data/bridge/mock-quotes-native-erc20-eth.json';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { QuoteResponse } from '../../../../ui/pages/bridge/types';
+import {
+  type QuoteResponse,
+  RequestStatus,
+} from '../../../../shared/types/bridge';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import BridgeController from './bridge-controller';
 import { BridgeControllerMessenger } from './types';
@@ -66,10 +65,26 @@ describe('BridgeController', function () {
         'extension-config': {
           refreshRate: 3,
           maxRefreshCount: 3,
+          support: true,
+          chains: {
+            '10': {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            '534352': {
+              isActiveSrc: true,
+              isActiveDest: false,
+            },
+            '137': {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+            '42161': {
+              isActiveSrc: false,
+              isActiveDest: true,
+            },
+          },
         },
-        'extension-support': true,
-        'src-network-allowlist': [10, 534352],
-        'dest-network-allowlist': [137, 42161],
         'approval-gas-multiplier': {
           '137': 1.1,
           '42161': 1.2,
@@ -90,6 +105,7 @@ describe('BridgeController', function () {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           symbol: 'ABC',
           decimals: 16,
+          aggregators: ['lifl', 'socket'],
         },
         {
           address: '0x1291478912',
@@ -114,12 +130,16 @@ describe('BridgeController', function () {
 
   it('setBridgeFeatureFlags should fetch and set the bridge feature flags', async function () {
     const expectedFeatureFlagsResponse = {
-      extensionSupport: true,
-      destNetworkAllowlist: [CHAIN_IDS.POLYGON, CHAIN_IDS.ARBITRUM],
-      srcNetworkAllowlist: [CHAIN_IDS.OPTIMISM, CHAIN_IDS.SCROLL],
       extensionConfig: {
         maxRefreshCount: 3,
         refreshRate: 3,
+        support: true,
+        chains: {
+          [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
+          [CHAIN_IDS.SCROLL]: { isActiveSrc: true, isActiveDest: false },
+          [CHAIN_IDS.POLYGON]: { isActiveSrc: false, isActiveDest: true },
+          [CHAIN_IDS.ARBITRUM]: { isActiveSrc: false, isActiveDest: true },
+        },
       },
     };
     expect(bridgeController.state).toStrictEqual(EMPTY_INIT_STATE);
@@ -151,6 +171,12 @@ describe('BridgeController', function () {
   it('selectDestNetwork should set the bridge dest tokens and top assets', async function () {
     await bridgeController.selectDestNetwork('0xa');
     expect(bridgeController.state.bridgeState.destTokens).toStrictEqual({
+      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        symbol: 'ABC',
+        decimals: 16,
+        aggregators: ['lifl', 'socket'],
+      },
       '0x0000000000000000000000000000000000000000': {
         address: '0x0000000000000000000000000000000000000000',
         decimals: 18,
@@ -158,12 +184,10 @@ describe('BridgeController', function () {
         name: 'Ether',
         symbol: 'ETH',
       },
-      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'ABC',
-        decimals: 16,
-      },
     });
+    expect(
+      bridgeController.state.bridgeState.destTokensLoadingStatus,
+    ).toStrictEqual(RequestStatus.FETCHED);
     expect(bridgeController.state.bridgeState.destTopAssets).toStrictEqual([
       { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', symbol: 'ABC' },
     ]);
@@ -188,8 +212,12 @@ describe('BridgeController', function () {
         address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
         symbol: 'ABC',
         decimals: 16,
+        aggregators: ['lifl', 'socket'],
       },
     });
+    expect(
+      bridgeController.state.bridgeState.srcTokensLoadingStatus,
+    ).toStrictEqual(RequestStatus.FETCHED);
     expect(bridgeController.state.bridgeState.srcTopAssets).toStrictEqual([
       {
         address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -393,6 +421,7 @@ describe('BridgeController', function () {
           ...mockBridgeQuotesNativeErc20Eth,
         ],
         quotesLoadingStatus: 1,
+        quoteFetchError: undefined,
         quotesRefreshCount: 2,
       }),
     );
@@ -413,12 +442,14 @@ describe('BridgeController', function () {
           ...mockBridgeQuotesNativeErc20Eth,
         ],
         quotesLoadingStatus: 2,
+        quoteFetchError: 'Network error',
         quotesRefreshCount: 3,
       }),
     );
-    expect(bridgeController.state.bridgeState.quotesLastFetched).toStrictEqual(
-      secondFetchTime,
-    );
+    secondFetchTime &&
+      expect(
+        bridgeController.state.bridgeState.quotesLastFetched,
+      ).toBeGreaterThan(secondFetchTime);
 
     expect(hasSufficientBalanceSpy).toHaveBeenCalledTimes(1);
     expect(getLayer1GasFeeMock).not.toHaveBeenCalled();
@@ -487,6 +518,7 @@ describe('BridgeController', function () {
         quoteRequest: { ...quoteRequest, walletAddress: undefined },
         quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
         quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
+        quotesInitialLoadTime: undefined,
         quotesLoadingStatus:
           DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
       }),
@@ -524,6 +556,7 @@ describe('BridgeController', function () {
         quotes: mockBridgeQuotesNativeErc20Eth,
         quotesLoadingStatus: 1,
         quotesRefreshCount: 1,
+        quotesInitialLoadTime: 11000,
       }),
     );
     const firstFetchTime =
@@ -540,6 +573,7 @@ describe('BridgeController', function () {
         quotes: mockBridgeQuotesNativeErc20Eth,
         quotesLoadingStatus: 1,
         quotesRefreshCount: 1,
+        quotesInitialLoadTime: 11000,
       }),
     );
     const secondFetchTime =

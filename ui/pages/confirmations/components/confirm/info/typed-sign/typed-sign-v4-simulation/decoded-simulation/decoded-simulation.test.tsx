@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import {
-  DecodingData,
   DecodingDataChangeType,
   DecodingDataStateChanges,
 } from '@metamask/signature-controller';
@@ -11,7 +10,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../../tes
 import { permitSignatureMsg } from '../../../../../../../../../test/data/confirmations/typed_sign';
 import PermitSimulation, { getStateChangeToolip } from './decoded-simulation';
 
-const decodingData: DecodingData = {
+const decodingData = {
   stateChanges: [
     {
       assetType: 'ERC20',
@@ -81,6 +80,35 @@ describe('DecodedSimulation', () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
       decodingLoading: false,
+      decodingData: {
+        ...decodingData,
+        stateChanges: decodingData.stateChanges
+          ? [
+              {
+                ...decodingData.stateChanges[0],
+                amount: '12345',
+              },
+            ]
+          : [],
+      },
+    });
+
+    const mockStore = configureMockStore([])(state);
+
+    const { findByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(await findByText('Estimated changes')).toBeInTheDocument();
+    expect(await findByText('Spending cap')).toBeInTheDocument();
+    expect(await findByText('12,345')).toBeInTheDocument();
+  });
+
+  it('renders component correctly for a very large amount', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
       decodingData,
     });
     const mockStore = configureMockStore([])(state);
@@ -92,7 +120,7 @@ describe('DecodedSimulation', () => {
 
     expect(await findByText('Estimated changes')).toBeInTheDocument();
     expect(await findByText('Spending cap')).toBeInTheDocument();
-    expect(await findByText('1,461,501,637,3...')).toBeInTheDocument();
+    expect(await findByText('Unlimited')).toBeInTheDocument();
   });
 
   it('render correctly for ERC712 token', async () => {
@@ -164,5 +192,27 @@ describe('DecodedSimulation', () => {
       (str: string) => str,
     );
     expect(tooltip).toBe('signature_decoding_bid_nft_tooltip');
+  });
+
+  it('renders label only once if there are multiple state changes of same changeType', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
+      decodingData: {
+        stateChanges: [
+          decodingData.stateChanges[0],
+          decodingData.stateChanges[0],
+          decodingData.stateChanges[0],
+        ],
+      },
+    });
+    const mockStore = configureMockStore([])(state);
+
+    const { findAllByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(await findAllByText('Spending cap')).toHaveLength(1);
   });
 });

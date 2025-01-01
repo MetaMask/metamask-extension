@@ -1,12 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-// TODO fix this
-import {
-  ChainId,
-  Quote,
-  QuoteMetadata,
-  QuoteResponse,
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../ui/pages/bridge/types';
+import type { ChainId, Quote, QuoteMetadata, QuoteResponse } from './bridge';
 
 // All fields need to be types not interfaces, same with their children fields
 // o/w you get a type error
@@ -28,6 +21,16 @@ export type StatusRequest = {
   refuel?: boolean; // lifi
 };
 
+export type StatusRequestDto = Omit<
+  StatusRequest,
+  'quote' | 'srcChainId' | 'destChainId' | 'refuel'
+> & {
+  srcChainId: string; // lifi, socket, squid
+  destChainId: string; // lifi, socket, squid
+  requestId?: string;
+  refuel?: string; // lifi
+};
+
 export type StatusRequestWithSrcTxHash = StatusRequest & {
   srcTxHash: string;
 };
@@ -38,7 +41,7 @@ export type Asset = {
   symbol: string;
   name: string;
   decimals: number;
-  icon?: string;
+  icon?: string | null;
 };
 
 export type SrcChainStatus = {
@@ -124,7 +127,7 @@ export type BridgeHistoryItem = {
   slippagePercentage: number;
   completionTime?: number;
   pricingData?: {
-    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, accounts for the MM fees
+    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
 
     quotedGasInUsd?: string;
     quotedReturnInUsd?: string;
