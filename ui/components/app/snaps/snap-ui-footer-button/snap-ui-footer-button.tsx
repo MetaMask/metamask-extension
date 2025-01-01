@@ -10,6 +10,8 @@ import {
   Button,
   ButtonProps,
   ButtonSize,
+  Icon,
+  IconName,
   IconSize,
 } from '../../../component-library';
 import {
@@ -35,6 +37,7 @@ export const SnapUIFooterButton: FunctionComponent<
   name,
   children,
   disabled = false,
+  loading = false,
   isSnapAction = false,
   type,
   variant = ButtonVariant.Primary,
@@ -85,10 +88,17 @@ export const SnapUIFooterButton: FunctionComponent<
         flexDirection: FlexDirection.Row,
       }}
     >
-      {isSnapAction && !hideSnapBranding && (
+      {isSnapAction && !hideSnapBranding && !loading && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
       )}
-      {children}
+      {loading ? (
+        <Icon
+          name={IconName.Loading}
+          style={{ animation: 'spin 1.2s linear infinite' }}
+        />
+      ) : (
+        children
+      )}
     </Button>
   );
 };

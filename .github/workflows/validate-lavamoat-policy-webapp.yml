@@ -1,0 +1,30 @@
+name: Validate lavamoat policy webapp
+
+on:
+  workflow_call:
+
+jobs:
+  validate-lavamoat-policy-webapp:
+    name: Validate lavamoat policy webapp
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build-type: [main, beta, flask, mmi]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Validate lavamoat ${{ matrix.build-type }} policy
+        run: yarn lavamoat:webapp:auto:ci --build-types=${{ matrix.build-type }}
+        env:
+          INFURA_PROJECT_ID: 00000000000
+
+      - name: Check working tree
+        run: |
+          if ! git diff --exit-code; then
+              echo "::error::Working tree dirty."
+              exit 1
+          fi

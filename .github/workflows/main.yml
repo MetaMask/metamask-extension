@@ -3,7 +3,7 @@ name: Main
 on:
   push:
     branches:
-      - develop
+      - main
       - master
   pull_request:
     types:
@@ -28,16 +28,70 @@ jobs:
         run: ${{ steps.download-actionlint.outputs.executable }} -color
         shell: bash
 
+  test-lint-shellcheck:
+    name: Test lint shellcheck
+    uses: ./.github/workflows/test-lint-shellcheck.yml
+
+  test-lint:
+    name: Test lint
+    uses: ./.github/workflows/test-lint.yml
+
+  test-lint-changelog:
+    name: Test lint changelog
+    uses: ./.github/workflows/test-lint-changelog.yml
+
+  test-lint-lockfile:
+    name: Test lint lockfile
+    uses: ./.github/workflows/test-lint-lockfile.yml
+
+  test-deps-audit:
+    name: Test deps audit
+    uses: ./.github/workflows/test-deps-audit.yml
+
+  test-yarn-dedupe:
+    name: Test yarn dedupe
+    uses: ./.github/workflows/test-yarn-dedupe.yml
+
+  test-deps-depcheck:
+    name: Test deps depcheck
+    uses: ./.github/workflows/test-deps-depcheck.yml
+
+  validate-lavamoat-allow-scripts:
+    name: Validate lavamoat allow scripts
+    uses: ./.github/workflows/validate-lavamoat-allow-scripts.yml
+
+  validate-lavamoat-policy-build:
+    name: Validate lavamoat policy build
+    uses: ./.github/workflows/validate-lavamoat-policy-build.yml
+
+  validate-lavamoat-policy-webapp:
+    name: Validate lavamoat policy webapp
+    uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
+
+  wait-for-circleci-workflow-status:
+    name: Wait for CircleCI workflow status
+    uses: ./.github/workflows/wait-for-circleci-workflow-status.yml
 
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
     needs:
       - check-workflows
+      - test-lint-shellcheck
+      - test-lint
+      - test-lint-changelog
+      - test-lint-lockfile
+      - test-yarn-dedupe
+      - test-deps-depcheck
+      - validate-lavamoat-allow-scripts
+      - validate-lavamoat-policy-build
+      - validate-lavamoat-policy-webapp
       - run-tests
+      - wait-for-circleci-workflow-status
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
@@ -58,3 +112,16 @@ jobs:
           if [[ $passed != "true" ]]; then
             exit 1
           fi
+
+  log-merge-group-failure:
+    name: Log merge group failure
+    # Only run this job if the merge group event fails, skip on forks
+    if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
+    needs:
+      - all-jobs-pass
+    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@6bbad335a01fce1a9ec1eabd9515542c225d46c0
+    secrets:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+      SPREADSHEET_ID: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
+      SHEET_NAME: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
