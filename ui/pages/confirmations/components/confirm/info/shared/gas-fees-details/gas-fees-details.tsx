@@ -36,12 +36,16 @@ export const GasFeesDetails = ({
 
   const {
     estimatedFeeFiat,
+    estimatedFeeFiatWith18SignificantDigits,
     estimatedFeeNative,
     l1FeeFiat,
+    l1FeeFiatWith18SignificantDigits,
     l1FeeNative,
     l2FeeFiat,
+    l2FeeFiatWith18SignificantDigits,
     l2FeeNative,
     maxFeeFiat,
+    maxFeeFiatWith18SignificantDigits,
     maxFeeNative,
   } = useFeeCalculations(transactionMeta);
 
@@ -57,6 +61,7 @@ export const GasFeesDetails = ({
     <>
       <EditGasFeesRow
         fiatFee={estimatedFeeFiat}
+        fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
         supportsEIP1559={supportsEIP1559}
         setShowCustomizeGasPopover={setShowCustomizeGasPopover}
@@ -68,6 +73,7 @@ export const GasFeesDetails = ({
             label={t('l1Fee')}
             tooltipText={t('l1FeeTooltip')}
             fiatFee={l1FeeFiat}
+            fiatFeeWith18SignificantDigits={l1FeeFiatWith18SignificantDigits}
             nativeFee={l1FeeNative}
           />
           <GasFeesRow
@@ -75,6 +81,7 @@ export const GasFeesDetails = ({
             label={t('l2Fee')}
             tooltipText={t('l2FeeTooltip')}
             fiatFee={l2FeeFiat}
+            fiatFeeWith18SignificantDigits={l2FeeFiatWith18SignificantDigits}
             nativeFee={l2FeeNative}
           />
         </>
@@ -100,6 +107,7 @@ export const GasFeesDetails = ({
           label={t('maxFee')}
           tooltipText={t('maxFeeTooltip')}
           fiatFee={maxFeeFiat}
+          fiatFeeWith18SignificantDigits={maxFeeFiatWith18SignificantDigits}
           nativeFee={maxFeeNative}
         />
       )}

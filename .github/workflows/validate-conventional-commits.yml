@@ -2,7 +2,7 @@ name: Validate Conventional Commit Title
 on:
   pull_request:
     branches:
-      - develop
+      - main
     types: [opened, edited, reopened, synchronize]
 
 jobs:

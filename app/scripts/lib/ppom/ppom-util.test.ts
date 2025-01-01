@@ -10,7 +10,7 @@ import {
   SignatureController,
   SignatureRequest,
 } from '@metamask/signature-controller';
-import { Hex } from '@metamask/utils';
+import { Hex, JsonRpcRequest } from '@metamask/utils';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -22,6 +22,8 @@ import { AppStateController } from '../../controllers/app-state-controller';
 import {
   generateSecurityAlertId,
   isChainSupported,
+  METHOD_SIGN_TYPED_DATA_V3,
+  METHOD_SIGN_TYPED_DATA_V4,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
@@ -56,6 +58,10 @@ const TRANSACTION_PARAMS_MOCK_1: TransactionParams = {
   from: '0x123',
   value: '0x123',
 };
+
+const SIGN_TYPED_DATA_PARAMS_MOCK_1 = '0x123';
+const SIGN_TYPED_DATA_PARAMS_MOCK_2 =
+  '{"primaryType":"Permit","domain":{},"types":{}}';
 
 const TRANSACTION_PARAMS_MOCK_2: TransactionParams = {
   ...TRANSACTION_PARAMS_MOCK_1,
@@ -198,6 +204,7 @@ describe('PPOM Utils', () => {
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
+          source: SecurityAlertSource.Local,
         },
       );
     });
@@ -219,6 +226,7 @@ describe('PPOM Utils', () => {
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
+          source: SecurityAlertSource.Local,
         },
       );
     });
@@ -258,6 +266,48 @@ describe('PPOM Utils', () => {
         TRANSACTION_PARAMS_MOCK_1,
       );
     });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([METHOD_SIGN_TYPED_DATA_V3, METHOD_SIGN_TYPED_DATA_V4])(
+      'sanitizes request params if method is %s',
+      async (method: string) => {
+        const ppom = createPPOMMock();
+        const ppomController = createPPOMControllerMock();
+
+        ppomController.usePPOM.mockImplementation(
+          (callback) =>
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            callback(ppom as any) as any,
+        );
+
+        const firstTwoParams = [
+          SIGN_TYPED_DATA_PARAMS_MOCK_1,
+          SIGN_TYPED_DATA_PARAMS_MOCK_2,
+        ];
+
+        const unwantedParams = [{}, undefined, 1, null];
+
+        const params = [...firstTwoParams, ...unwantedParams];
+
+        const request = {
+          ...REQUEST_MOCK,
+          method,
+          params,
+        } as unknown as JsonRpcRequest;
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+          ...request,
+          params: firstTwoParams,
+        });
+      },
+    );
 
     it('updates response indicating chain is not supported', async () => {
       const ppomController = {} as PPOMController;

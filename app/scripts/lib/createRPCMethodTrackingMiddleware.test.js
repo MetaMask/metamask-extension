@@ -36,20 +36,16 @@ const expectedMetametricsEventUndefinedProps = {
 };
 
 const appStateController = {
-  store: {
-    getState: () => ({
-      signatureSecurityAlertResponses: {
-        1: {
-          result_type: BlockaidResultType.Malicious,
-          reason: BlockaidReason.maliciousDomain,
-        },
+  state: {
+    signatureSecurityAlertResponses: {
+      1: {
+        result_type: BlockaidResultType.Malicious,
+        reason: BlockaidReason.maliciousDomain,
       },
-    }),
+    },
   },
   getSignatureSecurityAlertResponse: (id) => {
-    return appStateController.store.getState().signatureSecurityAlertResponses[
-      id
-    ];
+    return appStateController.state.signatureSecurityAlertResponses[id];
   },
 };
 
@@ -118,6 +114,7 @@ const createHandler = (opts) =>
     appStateController,
     metaMetricsController,
     isConfirmationRedesignEnabled: () => false,
+    isRedesignedConfirmationsDeveloperEnabled: () => false,
     ...opts,
   });
 
@@ -217,8 +214,20 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to true', () => {
+    const originalEnableConfirmationRedesign =
+      process.env.ENABLE_CONFIRMATION_REDESIGN;
+
     beforeEach(() => {
       metaMetricsController.setParticipateInMetaMetrics(true);
+    });
+
+    beforeAll(() => {
+      process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
+    });
+
+    afterAll(() => {
+      process.env.ENABLE_CONFIRMATION_REDESIGN =
+        originalEnableConfirmationRedesign;
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {

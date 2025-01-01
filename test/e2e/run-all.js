@@ -32,7 +32,7 @@ const getTestPathsForTestDir = async (testDir) => {
 };
 
 // Quality Gate Retries
-const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
+const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 4;
 
 /**
  * Runs the quality gate logic to filter and append changed or new tests if present.
@@ -79,7 +79,7 @@ function runningOnCircleCI(testPaths) {
   // 1. split the test files into chunks based on how long they take to run
   // 2. support "Rerun failed tests" on CircleCI
   const result = execSync(
-    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
+    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=50s < test/test-results/fullTestList.txt',
   ).toString('utf8');
 
   // Report if no tests found, exit gracefully

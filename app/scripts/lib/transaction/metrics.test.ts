@@ -18,6 +18,7 @@ import {
   MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
   MetaMetricsEventUiCustomization,
+  MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import {
@@ -115,6 +116,7 @@ describe('Transaction metrics', () => {
       type: TransactionType.simpleSend,
       origin: ORIGIN_METAMASK,
       chainId: mockChainId,
+      networkClientId: 'testNetworkClientId',
       time: 1624408066355,
       defaultGasEstimates: {
         gas: '0x7b0d',
@@ -160,9 +162,11 @@ describe('Transaction metrics', () => {
       ui_customizations: ['redesigned_confirmation'],
       transaction_advanced_view: undefined,
       transaction_contract_method: undefined,
+      transaction_internal_id: '1',
     };
 
     expectedSensitiveProperties = {
+      default_estimate: MetaMetricsEventTransactionEstimateType.DefaultEstimate,
       default_gas: '0.000031501',
       default_gas_price: '2',
       first_seen: 1624408066355,
