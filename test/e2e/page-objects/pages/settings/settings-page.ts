@@ -1,20 +1,24 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 class SettingsPage {
   private readonly driver: Driver;
 
-  // Locators
-  private readonly experimentalSettingsButton: object = {
-    text: 'Experimental',
-    css: '.tab-bar__tab__content__title',
-  };
-
-  private readonly developerOptionsButton: object = {
+  private readonly developerOptionsButton = {
     text: 'Developer Options',
     css: '.tab-bar__tab__content__title',
   };
 
-  private readonly settingsPageTitle: object = {
+  private readonly experimentalSettingsButton = {
+    text: 'Experimental',
+    css: '.tab-bar__tab__content__title',
+  };
+
+  private readonly privacySettingsButton = {
+    text: 'Security & privacy',
+    css: '.tab-bar__tab__content__title',
+  };
+
+  private readonly settingsPageTitle = {
     text: 'Settings',
     css: 'h3',
   };
@@ -33,14 +37,19 @@ class SettingsPage {
     console.log('Settings page is loaded');
   }
 
+  async goToDevelopOptionSettings(): Promise<void> {
+    console.log('Navigating to Develop options page');
+    await this.driver.clickElement(this.developerOptionsButton);
+  }
+
   async goToExperimentalSettings(): Promise<void> {
     console.log('Navigating to Experimental Settings page');
     await this.driver.clickElement(this.experimentalSettingsButton);
   }
 
-  async goToDevelopOptionSettings(): Promise<void> {
-    console.log('Navigating to Develop options page');
-    await this.driver.clickElement(this.developerOptionsButton);
+  async goToPrivacySettings(): Promise<void> {
+    console.log('Navigating to Privacy & Security Settings page');
+    await this.driver.clickElement(this.privacySettingsButton);
   }
 }
 

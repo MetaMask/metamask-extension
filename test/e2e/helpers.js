@@ -636,11 +636,10 @@ const openSRPRevealQuiz = async (driver) => {
   await driver.clickElement('[data-testid="reveal-seed-words"]');
 };
 
-const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await unlockWallet(driver);
-  await openSRPRevealQuiz(driver);
-};
-
+/**
+ * @deprecated Please use page object functions in `test/e2e/page-objects/pages/settings/privacy-settings.ts`.
+ * @param driver
+ */
 const completeSRPRevealQuiz = async (driver) => {
   // start quiz
   await driver.clickElement('[data-testid="srp-quiz-get-started"]');
@@ -666,17 +665,6 @@ const tapAndHoldToRevealSRP = async (driver) => {
     },
     3000,
   );
-};
-
-const closeSRPReveal = async (driver) => {
-  await driver.clickElement({
-    text: tEn('close'),
-    tag: 'button',
-  });
-  await driver.findVisibleElement({
-    text: tEn('tokens'),
-    tag: 'button',
-  });
 };
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
@@ -1238,9 +1226,7 @@ module.exports = {
   completeCreateNewWalletOnboardingFlow,
   completeCreateNewWalletOnboardingFlowWithOptOut,
   openSRPRevealQuiz,
-  passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,
-  closeSRPReveal,
   tapAndHoldToRevealSRP,
   createDownloadFolder,
   openDapp,

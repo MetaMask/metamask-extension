@@ -42,7 +42,6 @@ import {
   ConnectionRequest,
   MMIControllerMessenger,
 } from '../../../shared/constants/mmi-controller';
-import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import AccountTrackerController from './account-tracker-controller';
 import { AppStateController } from './app-state-controller';
@@ -84,8 +83,6 @@ export class MMIController {
   private getPendingNonce: (address: string) => Promise<any>;
 
   private accountTrackerController: AccountTrackerController;
-
-  private metaMetricsController: MetaMetricsController;
 
   #networkControllerState: NetworkState;
 
@@ -141,7 +138,6 @@ export class MMIController {
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
     this.accountTrackerController = opts.accountTrackerController;
-    this.metaMetricsController = opts.metaMetricsController;
     this.permissionController = opts.permissionController;
     this.signatureController = opts.signatureController;
     this.platform = opts.platform;
@@ -767,7 +763,9 @@ export class MMIController {
           name: internalAccount.metadata.name,
         };
       });
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const { metaMetricsId } = this.messagingSystem.call(
+      'MetaMetricsController:getState',
+    );
     const getAccountDetails = (address: string) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;

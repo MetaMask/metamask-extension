@@ -21,11 +21,11 @@ import { MMIController, AllowedActions } from './mmi-controller';
 import { AppStateController } from './app-state-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
-import MetaMetricsController from './metametrics';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { InfuraNetworkType } from '@metamask/controller-utils';
 import { API_REQUEST_LOG_EVENT } from '@metamask-institutional/sdk';
+import { getDefaultPreferencesControllerState } from './preferences-controller';
 
 jest.mock('@metamask-institutional/portfolio-dashboard', () => ({
   handleMmiPortfolio: jest.fn(),
@@ -90,7 +90,6 @@ describe('MMIController', function () {
     controllerMessenger,
     accountsController,
     keyringController,
-    metaMetricsController,
     custodyController,
     mmiControllerMessenger;
 
@@ -106,9 +105,9 @@ describe('MMIController', function () {
     };
 
     const controllerMessenger = new ControllerMessenger<
-    AllowedActions,
-    never
-  >();
+      AllowedActions,
+      never
+    >();
 
     accountsController = new AccountsController({
       messenger: controllerMessenger.getRestricted({
@@ -207,18 +206,18 @@ describe('MMIController', function () {
       },
     });
 
-    metaMetricsController = new MetaMetricsController({
-      preferencesControllerState: {
-        currentLocale: 'en'
-      },
-      onPreferencesStateChange: jest.fn(),
-      getCurrentChainId: jest.fn(),
-      onNetworkDidChange: jest.fn(),
-    });
+    controllerMessenger.registerActionHandler(
+      'MetaMetricsController:getState',
+      () => ({
+        metaMetricsId: mockMetaMetricsId,
+      }),
+    );
 
     controllerMessenger.registerActionHandler(
       'NetworkController:getState',
-      jest.fn().mockReturnValue(mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA })),
+      jest
+        .fn()
+        .mockReturnValue(mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA })),
     );
 
     controllerMessenger.registerActionHandler(
@@ -231,7 +230,7 @@ describe('MMIController', function () {
       jest.fn().mockReturnValue({
         configuration: {
           chainId: CHAIN_IDS.SEPOLIA,
-        }
+        },
       }),
     );
 
@@ -248,10 +247,11 @@ describe('MMIController', function () {
         'AccountsController:listAccounts',
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
+        'MetaMetricsController:getState',
         'NetworkController:getState',
         'NetworkController:setActiveNetwork',
         'NetworkController:getNetworkClientById',
-        'NetworkController:getNetworkConfigurationByChainId'
+        'NetworkController:getNetworkConfigurationByChainId',
       ],
     });
 
@@ -282,12 +282,11 @@ describe('MMIController', function () {
             preferences: {
               autoLockTimeLimit: 0,
             },
-          })
-        }
+          }),
+        },
       }),
       permissionController,
       custodyController,
-      metaMetricsController,
       custodianEventHandlerFactory: jest.fn(),
       getTransactions: jest.fn(),
       updateTransactionHash: jest.fn(),
@@ -302,10 +301,6 @@ describe('MMIController', function () {
     mmiController.getState = jest.fn();
     mmiController.captureException = jest.fn();
     mmiController.accountTrackerController = { syncWithAddresses: jest.fn() };
-
-    jest.spyOn(metaMetricsController.store, 'getState').mockReturnValue({
-      metaMetricsId: mockMetaMetricsId,
-    });
   });
 
   afterEach(() => {
@@ -391,24 +386,30 @@ describe('MMIController', function () {
         getSupportedChains: jest.fn().mockResolvedValue({}),
       };
 
-      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue(mockKeyring);
-      mmiController.custodyController.getAllCustodyTypes = jest.fn().mockReturnValue(['mock-custody-type']);
+      mmiController.addKeyringIfNotExists = jest
+        .fn()
+        .mockResolvedValue(mockKeyring);
+      mmiController.custodyController.getAllCustodyTypes = jest
+        .fn()
+        .mockReturnValue(['mock-custody-type']);
       mmiController.logAndStoreApiRequest = jest.fn();
 
       await mmiController.onSubmitPassword();
 
       expect(mockKeyring.on).toHaveBeenCalledWith(
         API_REQUEST_LOG_EVENT,
-        expect.any(Function)
+        expect.any(Function),
       );
 
       const mockLogData = { someKey: 'someValue' };
       const apiRequestLogEventHandler = mockKeyring.on.mock.calls.find(
-        call => call[0] === API_REQUEST_LOG_EVENT
+        (call) => call[0] === API_REQUEST_LOG_EVENT,
       )[1];
       apiRequestLogEventHandler(mockLogData);
 
-      expect(mmiController.logAndStoreApiRequest).toHaveBeenCalledWith(mockLogData);
+      expect(mmiController.logAndStoreApiRequest).toHaveBeenCalledWith(
+        mockLogData,
+      );
     });
   });
 
@@ -489,29 +490,41 @@ describe('MMIController', function () {
         getStatusMap: jest.fn(),
       };
 
-      mmiController.addKeyringIfNotExists = jest.fn().mockResolvedValue(mockKeyring);
-      mmiController.keyringController.getAccounts = jest.fn().mockResolvedValue(['0x2']);
-      mmiController.keyringController.addNewAccountForKeyring = jest.fn().mockResolvedValue('0x3');
+      mmiController.addKeyringIfNotExists = jest
+        .fn()
+        .mockResolvedValue(mockKeyring);
+      mmiController.keyringController.getAccounts = jest
+        .fn()
+        .mockResolvedValue(['0x2']);
+      mmiController.keyringController.addNewAccountForKeyring = jest
+        .fn()
+        .mockResolvedValue('0x3');
       mmiController.custodyController.setAccountDetails = jest.fn();
       mmiController.accountTrackerController.syncWithAddresses = jest.fn();
       mmiController.storeCustodianSupportedChains = jest.fn();
       mmiController.custodyController.storeCustodyStatusMap = jest.fn();
       mmiController.logAndStoreApiRequest = jest.fn();
 
-      await mmiController.connectCustodyAddresses(custodianType, custodianName, accounts);
+      await mmiController.connectCustodyAddresses(
+        custodianType,
+        custodianName,
+        accounts,
+      );
 
       expect(mockKeyring.on).toHaveBeenCalledWith(
         API_REQUEST_LOG_EVENT,
-        expect.any(Function)
+        expect.any(Function),
       );
 
       const mockLogData = { someKey: 'someValue' };
       const apiRequestLogEventHandler = mockKeyring.on.mock.calls.find(
-        call => call[0] === API_REQUEST_LOG_EVENT
+        (call) => call[0] === API_REQUEST_LOG_EVENT,
       )[1];
       apiRequestLogEventHandler(mockLogData);
 
-      expect(mmiController.logAndStoreApiRequest).toHaveBeenCalledWith(mockLogData);
+      expect(mmiController.logAndStoreApiRequest).toHaveBeenCalledWith(
+        mockLogData,
+      );
     });
   });
 
@@ -538,7 +551,9 @@ describe('MMIController', function () {
       CUSTODIAN_TYPES['CUSTODIAN-TYPE'] = {
         keyringClass: { type: 'mock-keyring-class' },
       };
-      jest.spyOn(mmiControllerMessenger, 'call').mockReturnValue({ address: '0x1' });
+      jest
+        .spyOn(mmiControllerMessenger, 'call')
+        .mockReturnValue({ address: '0x1' });
       mmiController.custodyController.getCustodyTypeByAddress = jest
         .fn()
         .mockReturnValue('custodian-type');
@@ -657,7 +672,9 @@ describe('MMIController', function () {
       mmiController.custodyController.getAccountDetails = jest
         .fn()
         .mockReturnValue({});
-        jest.spyOn(mmiControllerMessenger, 'call').mockReturnValue([mockAccount, mockAccount2]);
+      jest
+        .spyOn(mmiControllerMessenger, 'call')
+        .mockReturnValue([mockAccount, mockAccount2]);
       mmiController.mmiConfigurationController.store.getState = jest
         .fn()
         .mockReturnValue({
@@ -890,11 +907,15 @@ describe('MMIController', function () {
       const mockLogData = { someKey: 'someValue' };
       const mockSanitizedLogs = { sanitizedKey: 'sanitizedValue' };
 
-      mmiController.custodyController.sanitizeAndLogApiCall = jest.fn().mockResolvedValue(mockSanitizedLogs);
+      mmiController.custodyController.sanitizeAndLogApiCall = jest
+        .fn()
+        .mockResolvedValue(mockSanitizedLogs);
 
       const result = await mmiController.logAndStoreApiRequest(mockLogData);
 
-      expect(mmiController.custodyController.sanitizeAndLogApiCall).toHaveBeenCalledWith(mockLogData);
+      expect(
+        mmiController.custodyController.sanitizeAndLogApiCall,
+      ).toHaveBeenCalledWith(mockLogData);
       expect(result).toEqual(mockSanitizedLogs);
     });
 
@@ -902,9 +923,13 @@ describe('MMIController', function () {
       const mockLogData = { someKey: 'someValue' };
       const mockError = new Error('Sanitize error');
 
-      mmiController.custodyController.sanitizeAndLogApiCall = jest.fn().mockRejectedValue(mockError);
+      mmiController.custodyController.sanitizeAndLogApiCall = jest
+        .fn()
+        .mockRejectedValue(mockError);
 
-      await expect(mmiController.logAndStoreApiRequest(mockLogData)).rejects.toThrow('Sanitize error');
+      await expect(
+        mmiController.logAndStoreApiRequest(mockLogData),
+      ).rejects.toThrow('Sanitize error');
     });
   });
 });
