@@ -65,7 +65,7 @@ describe('TypedSignInfo', () => {
       type: TransactionType.signTypedData,
       chainId: '0x5',
     });
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+    (snapUtils.isSnapId as unknown as jest.Mock).mockReturnValue(true);
     const mockStore = configureMockStore([])(mockState);
     const { queryByText } = renderWithConfirmContextProvider(
       <TypedSignInfoV1 />,
@@ -88,7 +88,7 @@ describe('TypedSignInfo', () => {
       type: TransactionType.signTypedData,
       chainId: '0x5',
     });
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(false);
+    (snapUtils.isSnapId as unknown as jest.Mock).mockReturnValue(false);
     const mockStore = configureMockStore([])(mockState);
     const { queryByText } = renderWithConfirmContextProvider(
       <TypedSignInfoV1 />,

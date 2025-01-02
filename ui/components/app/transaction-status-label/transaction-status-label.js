@@ -64,6 +64,7 @@ export default function TransactionStatusLabel({
   isEarliestNonce,
   className,
   statusOnly,
+  shouldShowTooltip,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyStatus,
   custodyStatusDisplayText,
@@ -96,8 +97,7 @@ export default function TransactionStatusLabel({
     }
   }
   ///: END:ONLY_INCLUDE_IF
-
-  return (
+  return shouldShowTooltip ? (
     <Tooltip
       position="top"
       title={tooltipText}
@@ -110,6 +110,17 @@ export default function TransactionStatusLabel({
     >
       {statusText}
     </Tooltip>
+  ) : (
+    <div
+      data-testid="transaction-status-label"
+      className={classnames(
+        'transaction-status-label',
+        className,
+        statusToClassNameHash[statusKey],
+      )}
+    >
+      {statusText}
+    </div>
   );
 }
 
@@ -120,8 +131,13 @@ TransactionStatusLabel.propTypes = {
   error: PropTypes.object,
   isEarliestNonce: PropTypes.bool,
   statusOnly: PropTypes.bool,
+  shouldShowTooltip: PropTypes.bool,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyStatus: PropTypes.string,
   custodyStatusDisplayText: PropTypes.string,
   ///: END:ONLY_INCLUDE_IF
+};
+
+TransactionStatusLabel.defaultProps = {
+  shouldShowTooltip: true,
 };

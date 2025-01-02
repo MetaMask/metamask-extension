@@ -149,7 +149,7 @@ describe('PersonalSignInfo', () => {
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
 
     (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+    (snapUtils.isSnapId as unknown as jest.Mock).mockReturnValue(true);
 
     const mockStore = configureMockStore([])(state);
     const { queryByText, getByText } = renderWithConfirmContextProvider(
@@ -171,7 +171,7 @@ describe('PersonalSignInfo', () => {
     const state =
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
     (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+    (snapUtils.isSnapId as unknown as jest.Mock).mockReturnValue(true);
 
     const mockStore = configureMockStore([])(state);
     const { getByText, queryByText } = renderWithConfirmContextProvider(
