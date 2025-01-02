@@ -178,7 +178,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         );
 
         await Promise.all(importPromises);
-      } else {
+      } else if (detectedTokens.length > 0) {
         await dispatch(addImportedTokens(detectedTokens, networkClientId));
         detectedTokens.forEach((importedToken: Token) => {
           trackEvent({
