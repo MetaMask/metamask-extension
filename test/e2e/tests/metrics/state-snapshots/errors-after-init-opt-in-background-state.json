@@ -339,7 +339,7 @@
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",
-    "detectedTokens": "undefined",
+    "detectedTokens": "object",
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
