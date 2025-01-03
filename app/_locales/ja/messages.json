@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "ネットワークを追加中"
   },
-  "addingTokens": {
-    "message": "トークンを追加しています"
-  },
   "additionalNetworks": {
     "message": "他のネットワーク"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
   },
-  "attemptSendingAssets": {
-    "message": "別のネットワークからアセットを送ろうとすると、アセットが失われる可能性があります。ネットワーク間で安全に資金を移動するには、必ずブリッジを使用してください。"
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "別のネットワークからアセットを送ろうとすると、アセットが失われる可能性があります。ネットワーク間で安全に資金を移動するには、必ず$1などのブリッジを使用してください。"
-  },
   "attemptToCancelSwapForFree": {
     "message": "無料でスワップのキャンセルを試行"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "計算中..."
   },
-  "bridgeDontSend": {
-    "message": "ブリッジを使用してください"
-  },
   "bridgeEnterAmount": {
     "message": "金額を入力"
   },
@@ -855,14 +843,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "トークンと金額を選択"
   },
-  "bridgeTimingTooltipText": {
-    "message": "これは、ブリッジが完了するまでの推定時間です。"
-  },
   "bridgeTo": {
     "message": "ブリッジ先:"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "これには、(仮想通貨マイナーに支払われる) ガス代と (ブリッジなどの複雑なサービスを供給するために支払われる) リレイヤー手数料が含まれます。\n手数料はネットワークトラフィックとトランザクションの複雑性に基づいています。MetaMaskはどちらの手数料からも利益を得ることはありません。"
   },
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
@@ -959,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "ここをクリックして、WebHIDでLedgerを接続します",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "トークンはいつでも手動で追加できます。"
   },
   "close": {
     "message": "閉じる"
@@ -1983,9 +1962,6 @@
   "estimatedFeeTooltip": {
     "message": "ネットワーク上のトランザクションの処理に支払われる金額"
   },
-  "estimatedTime": {
-    "message": "推定所要時間"
-  },
   "ethGasPriceFetchWarning": {
     "message": "現在メインのガスの見積もりサービスが利用できないため、バックアップのガス価格が提供されています。"
   },
@@ -2146,9 +2122,6 @@
   },
   "gasFee": {
     "message": "ガス代"
-  },
-  "gasIsETH": {
-    "message": "ガス代は$1です"
   },
   "gasLimit": {
     "message": "ガスリミット"
@@ -2711,9 +2684,6 @@
   "learnScamRisk": {
     "message": "詐欺やセキュリティのリスク。"
   },
-  "learnToBridge": {
-    "message": "ブリッジの使い方"
-  },
   "leaveMetaMask": {
     "message": "MetaMaskから離れますか？"
   },
@@ -2804,9 +2774,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Snapでトランザクションを完了させてください。"
-  },
-  "loadingTokens": {
-    "message": "トークンをロードしています..."
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -2908,9 +2875,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "ウォレットの通知は現在無効になっています"
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio。"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swapsはメンテナンス中です。後でもう一度確認してください。"
@@ -3055,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1が次の承認を求めています:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "このネットワークのネイティブトークンは$1です。ガス代にもこのトークンが使用されます。",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "ネットワークの詳細を編集"
@@ -3343,9 +3303,6 @@
   },
   "noThanks": {
     "message": "結構です"
-  },
-  "noTransactions": {
-    "message": "トランザクションがありません"
   },
   "noWebcamFound": {
     "message": "お使いのコンピューターのWebカメラが見つかりませんでした。もう一度お試しください。"
@@ -5949,9 +5906,6 @@
     "message": "$1が$2で有効になりました",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "次に切り替えました:"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "ネットワークを切り替えると、保留中の承認がすべてキャンセルされます"
   },
@@ -5987,9 +5941,6 @@
   },
   "themeDescription": {
     "message": "ご希望のMetaMaskテーマを選択してください。"
-  },
-  "thingsToKeep": {
-    "message": "留意点:"
   },
   "thirdPartySoftware": {
     "message": "サードパーティソフトウェアに関する通知",
@@ -6072,9 +6023,6 @@
   "tokenScamSecurityRisk": {
     "message": "トークン関連の詐欺やセキュリティのリスク"
   },
-  "tokenShowUp": {
-    "message": "トークンはウォレットに自動的に表示されない可能性があります。"
-  },
   "tokenStandard": {
     "message": "トークン規格"
   },
@@ -6105,9 +6053,6 @@
   },
   "total": {
     "message": "合計"
-  },
-  "totalFees": {
-    "message": "合計手数料"
   },
   "totalVolume": {
     "message": "合計量"
@@ -6389,9 +6334,6 @@
   },
   "use4ByteResolution": {
     "message": "スマートコントラクトのデコード"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "ユーザーエクスペリエンスの向上のため、ユーザーがやり取りするスマートコントラクトに応じたメッセージで、アクティビティタブをカスタマイズします。MetaMaskは、4byte.directoryと呼ばれるサービスを利用してデータをデコードし、より読みやすいバージョンのスマートコントラクトを表示します。これにより、悪質なスマートコントラクトの操作を承認する可能性は減りますが、IPアドレスが公開されます。"
   },
   "useMultiAccountBalanceChecker": {
     "message": "アカウント残高の一括リクエスト"

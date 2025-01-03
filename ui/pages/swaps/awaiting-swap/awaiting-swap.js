@@ -13,8 +13,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
   isHardwareWallet,

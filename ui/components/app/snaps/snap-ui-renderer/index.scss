@@ -12,12 +12,8 @@
   &__container {
     & > *:first-child {
       gap: 16px;
-      padding: 16px;
+      margin: 16px;
     }
-  }
-
-  &__error {
-    margin-top: 0 !important;
   }
 
   &__spinner {
