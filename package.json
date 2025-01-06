@@ -470,7 +470,7 @@
     "@metamask/phishing-warning": "^4.1.0",
     "@metamask/preferences-controller": "^15.0.1",
     "@metamask/test-bundler": "^1.0.0",
-    "@metamask/test-dapp": "8.13.0",
+    "@metamask/test-dapp": "patch:@metamask/test-dapp@npm%3A8.13.0#~/.yarn/patches/@metamask-test-dapp-npm-8.13.0-cd1361a864.patch",
     "@octokit/core": "^3.6.0",
     "@open-rpc/meta-schema": "^1.14.6",
     "@open-rpc/mock-server": "^1.7.5",
