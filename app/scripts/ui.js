@@ -13,7 +13,7 @@ import browser from 'webextension-polyfill';
 
 import Eth from '@metamask/ethjs';
 import EthQuery from '@metamask/eth-query';
-import { StreamProvider } from '@metamask/providers';
+import { MetaMaskInpageProvider } from '@metamask/providers';
 import log from 'loglevel';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -357,7 +357,7 @@ function connectToAccountManager(connectionStream) {
  * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
  */
 function setupWeb3Connection(connectionStream) {
-  const providerStream = new StreamProvider(connectionStream, {
+  const providerStream = new MetaMaskInpageProvider(connectionStream, {
     jsonRpcStreamName: 'metamask-provider',
   });
   connectionStream.on('error', console.error.bind(console));
