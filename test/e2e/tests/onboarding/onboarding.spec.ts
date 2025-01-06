@@ -78,7 +78,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
         await startOnboardingPage.clickImportWalletButton();
 
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -106,7 +105,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
         await startOnboardingPage.clickImportWalletButton();
 
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -131,7 +129,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
         await startOnboardingPage.clickCreateWalletButton();
 
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
