@@ -48,23 +48,22 @@ class StartOnboardingPage {
       }
     `);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
+    await this.driver.findClickableElement(this.termsCheckbox);
     await this.driver.clickElement(this.termsCheckbox);
-    await new Promise((resolve) => setTimeout(resolve, 500));
 
+    await this.driver.findClickableElement(this.termsConfirmButton);
     await this.driver.clickElement(this.termsConfirmButton);
   }
 
   async clickCreateWalletButton(): Promise<void> {
+    await this.driver.findClickableElement(this.createWalletButton);
     await this.driver.clickElement(this.createWalletButton);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     await this.checkTermsCheckbox();
   }
 
   async clickImportWalletButton(): Promise<void> {
+    await this.driver.findClickableElement(this.importWalletButton);
     await this.driver.clickElement(this.importWalletButton);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     await this.checkTermsCheckbox();
   }
 }
