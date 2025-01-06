@@ -12,6 +12,7 @@ import {
   getExpectedSessionScope,
   addAccountInWalletAndAuthorize,
   editPermittedNetworks,
+  MULTIPLE_GANACHE_OPTIONS,
 } from './testHelpers';
 
 describe('Multichain API', function () {
@@ -75,6 +76,7 @@ describe('Multichain API', function () {
             .withTrezorAccount()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+          ...MULTIPLE_GANACHE_OPTIONS,
         },
         async ({
           driver,
@@ -203,6 +205,7 @@ describe('Multichain API', function () {
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+            ...MULTIPLE_GANACHE_OPTIONS,
           },
           async ({
             driver,
@@ -258,7 +261,7 @@ describe('Multichain API', function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
-          fixtures: new FixtureBuilder().withPopularNetworks().build(),
+          fixtures: new FixtureBuilder().build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({
@@ -305,6 +308,7 @@ describe('Multichain API', function () {
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+            ...MULTIPLE_GANACHE_OPTIONS,
           },
           async ({
             driver,
@@ -347,7 +351,7 @@ describe('Multichain API', function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
-            fixtures: new FixtureBuilder().withPopularNetworks().build(),
+            fixtures: new FixtureBuilder().build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
           async ({

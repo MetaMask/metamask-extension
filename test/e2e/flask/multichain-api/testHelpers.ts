@@ -31,6 +31,12 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       'build',
     ),
   ],
+};
+
+/**
+ * Options for setting up three ganache instances
+ */
+export const MULTIPLE_GANACHE_OPTIONS = {
   dappOptions: { numberOfDapps: 2 },
   ganacheOptions: {
     ...defaultGanacheOptions,
