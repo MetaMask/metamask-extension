@@ -219,8 +219,6 @@ export default function NftsItems({
       return found?.ipfsImageUpdated || undefined;
     };
 
-    console.log('NFTS: ', nfts);
-
     return (
       <Box display={Display.Flex} flexWrap={FlexWrap.Wrap} gap={4}>
         {nfts.map((nft, i) => {
@@ -250,6 +248,7 @@ export default function NftsItems({
               className="nfts-items__item-wrapper"
             >
               <NftItem
+                nft={nft}
                 alt={nftImageAlt}
                 src={source}
                 networkName={currentChain.nickname}

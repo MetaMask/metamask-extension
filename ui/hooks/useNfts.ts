@@ -25,8 +25,6 @@ export function useNfts() {
   const prevChainId = usePrevious(chainId);
   const prevSelectedAddress = usePrevious(selectedAddress);
 
-  console.log('NFTs: ', nfts);
-
   useEffect(() => {
     const selectNfts = () => {
       setNftsLoading(true);
