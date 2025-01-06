@@ -7,9 +7,9 @@ import {
 import { Box, ButtonLink, Text } from '../../component-library';
 import type { BoxProps } from '../../component-library/box';
 
-interface TermsOfUseProps extends Omit<BoxProps<'div'>, 'children'> {
+type TermsOfUseProps = {
   showHeader?: boolean;
-}
+} & Omit<BoxProps<'div'>, 'children'>;
 
 export const TermsOfUse: React.FC<TermsOfUseProps> = ({
   showHeader,
