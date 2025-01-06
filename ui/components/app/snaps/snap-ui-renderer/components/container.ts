@@ -2,7 +2,6 @@ import { BoxElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapToTemplate } from '../utils';
 import {
-  BlockSize,
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
