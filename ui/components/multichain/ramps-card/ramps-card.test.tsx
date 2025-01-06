@@ -10,7 +10,7 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-const renderRampsCard = (variant, handleOnClick) => {
+const renderRampsCard = (variant: string, handleOnClick?: VoidFunction) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
