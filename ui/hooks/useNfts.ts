@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
+import { Nft } from '@metamask/assets-controllers';
 import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
 import { getSelectedInternalAccount } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
-import { Nft } from '@metamask/assets-controllers';
 
 export function useNfts() {
   const t = useI18nContext();
