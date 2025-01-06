@@ -183,7 +183,7 @@ export type QuoteMetadataSerialized = {
    * The adjusted return for the bridge transaction
    * destTokenAmount - totalNetworkFee
    */
-  adjustedReturn: TokenAmountValuesSerialized;
+  adjustedReturn: Omit<TokenAmountValuesSerialized, 'amount'>;
   /**
    * The actual amount sent by user in non-atomic decimal form
    * srcTokenAmount + metabridgeFee
@@ -194,10 +194,7 @@ export type QuoteMetadataSerialized = {
    * The cost of the bridge transaction
    * sentAmount - adjustedReturn
    */
-  cost: {
-    valueInCurrency: string | null;
-    usd: string | null;
-  };
+  cost: Omit<TokenAmountValuesSerialized, 'amount'>;
 };
 
 export type StartPollingForBridgeTxStatusArgs = {

@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-// eslint-disable-next-line import/no-restricted-paths
-import { QuoteMetadata, QuoteResponse } from '../../../ui/pages/bridge/types';
+import { QuoteMetadata, QuoteResponse } from '../../types/bridge';
 
 export const getConvertedUsdAmounts = ({
   activeQuote,
