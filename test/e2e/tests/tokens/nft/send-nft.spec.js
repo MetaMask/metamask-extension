@@ -177,7 +177,7 @@ describe('Send NFT', function () {
         await driver.fill('input[placeholder="0"]', '0');
         assert.ok(
           await driver.findElement({
-            text: '1 token. Cannot send negative or zero amounts of asset.',
+            text: '1 NFT. Cannot send negative or zero amounts of asset.',
             tag: 'p',
           }),
         );

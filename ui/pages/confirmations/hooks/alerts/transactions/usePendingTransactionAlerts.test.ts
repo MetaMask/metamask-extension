@@ -4,13 +4,17 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { PendingTransactionAlertMessage } from './PendingTransactionAlertMessage';
 import { usePendingTransactionAlerts } from './usePendingTransactionAlerts';
+
+jest.mock('./PendingTransactionAlertMessage', () => ({
+  PendingTransactionAlertMessage: () => 'PendingTransactionAlertMessage',
+}));
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TRANSACTION_ID_MOCK = '123-456';
@@ -39,6 +43,7 @@ function runHook({
   transactions?: TransactionMeta[];
 } = {}) {
   let pendingApprovals = {};
+
   if (currentConfirmation) {
     pendingApprovals = {
       [currentConfirmation.id as string]: {
@@ -48,12 +53,14 @@ function runHook({
     };
     transactions.push(currentConfirmation);
   }
+
   const state = getMockConfirmState({
     metamask: {
       pendingApprovals,
       transactions,
     },
   });
+
   const response = renderHookWithConfirmContextProvider(
     usePendingTransactionAlerts,
     state,
@@ -130,8 +137,7 @@ describe('usePendingTransactionAlerts', () => {
       {
         field: RowAlertKey.Speed,
         key: 'pendingTransactions',
-        message:
-          'This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.',
+        content: PendingTransactionAlertMessage(),
         reason: 'Pending transaction',
         severity: Severity.Warning,
       },
