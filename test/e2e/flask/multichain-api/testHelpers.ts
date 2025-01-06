@@ -7,6 +7,7 @@ import {
 } from '@metamask/multichain';
 import {
   DAPP_URL,
+  defaultGanacheOptions,
   largeDelayMs,
   openDapp,
   regularDelayMs,
@@ -30,6 +31,22 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       'build',
     ),
   ],
+  dappOptions: { numberOfDapps: 2 },
+  ganacheOptions: {
+    ...defaultGanacheOptions,
+    concurrent: [
+      {
+        port: 8546,
+        chainId: 1338,
+        ganacheOptions2: defaultGanacheOptions,
+      },
+      {
+        port: 7777,
+        chainId: 1000,
+        ganacheOptions2: defaultGanacheOptions,
+      },
+    ],
+  },
 };
 
 /**
@@ -55,13 +72,29 @@ export async function openMultichainDappAndConnectWalletWithExternallyConnectabl
  *
  * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
  * @param scopes - scopes to create session for.
+ * @param accounts - The account addresses to create session for.
  */
 export async function initCreateSessionScopes(
   driver: Driver,
   scopes: string[],
+  accounts: string[] = [],
 ): Promise<void> {
-  for (const scope of scopes) {
-    await driver.clickElement(`input[name="${scope}"]`);
+  for (const [i, scope] of scopes.entries()) {
+    const scopeInput = await driver.waitForSelector(`#custom-Scope-input-${i}`);
+
+    // @ts-expect-error Driver.findNestedElement injects `fill` method onto returned element, but typescript compiler will not let us access this method without a complaint, so we override it.
+    scopeInput.fill(scope);
+    await driver.clickElement(`#add-custom-scope-button-${i}`);
+  }
+
+  for (const [i, account] of accounts.entries()) {
+    const accountInput = await driver.waitForSelector(
+      `#custom-Address-input-${i}`,
+    );
+
+    // @ts-expect-error Driver.findNestedElement injects `fill` method onto returned element, but typescript compiler will not let us access this method without a complaint, so we override it.
+    accountInput.fill(account);
+    await driver.clickElement(`#add-custom-address-button-${i}`);
   }
 
   await driver.clickElement({ text: 'wallet_createSession', tag: 'span' });
@@ -89,44 +122,6 @@ export async function getSessionScopes(
   );
 
   return JSON.parse(await getSessionRawResult.getText());
-}
-
-/**
- * Use dapp UI to add account addresses to `wallet_createSession` request.
- *
- * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
- * @param accounts - The addresses to add to the create session request.
- */
-export async function addAccountsToCreateSessionForm(
-  driver: Driver,
-  accounts: [string, string],
-): Promise<void> {
-  const label = await driver.findElement({
-    tag: 'label',
-    text: 'Address',
-  });
-  const addressInput0 = await driver.findNestedElement(
-    label,
-    'input[type=text]',
-  );
-
-  // @ts-expect-error Driver.findNestedElement injects `fill` method onto returned element, but typescript compiler will not let us access this method without a complaint, so we override it.
-  addressInput0.fill(accounts[0]);
-  await driver.clickElement({ text: '+', tag: 'button' });
-  await driver.delay(largeDelayMs);
-
-  const allLabels = await driver.findElements({
-    tag: 'label',
-    text: 'Address',
-  });
-
-  const addressInput1 = await driver.findNestedElement(
-    allLabels[1],
-    'input[type=text]',
-  );
-
-  // @ts-expect-error refer above comment
-  addressInput1.fill(accounts[1]);
 }
 
 /**
@@ -166,12 +161,14 @@ export const addAccountInWalletAndAuthorize = async (
 };
 
 /**
- * Deselect all networks but Ethereum Mainnet through extension UI.
+ * Update Multichain network edit form so that only matching networks are selected.
  *
  * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
+ * @param selectedNetworkNames
  */
-export const uncheckNetworksExceptMainnet = async (
+export const editPermittedNetworks = async (
   driver: Driver,
+  selectedNetworkNames: string[],
 ): Promise<void> => {
   const editButtons = await driver.findElements('[data-testid="edit"]');
   await editButtons[1].click();
@@ -182,12 +179,18 @@ export const uncheckNetworksExceptMainnet = async (
   );
 
   for (const item of networkListItems) {
-    const network = await item.getText();
+    const networkName = await item.getText();
     const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
     const isChecked = await checkbox.isSelected();
 
-    // we make sure to uncheck every other previously selected network other than Ethereum Mainnet
-    if (isChecked && !network.includes('Ethereum Mainnet')) {
+    const isSelectedNetwork = selectedNetworkNames.some((selectedNetworkName) =>
+      networkName.includes(selectedNetworkName),
+    );
+
+    const shouldNotBeChecked = isChecked && !isSelectedNetwork;
+    const shouldBeChecked = !isChecked && isSelectedNetwork;
+
+    if (shouldNotBeChecked || shouldBeChecked) {
       await checkbox.click();
       await driver.delay(regularDelayMs);
     }

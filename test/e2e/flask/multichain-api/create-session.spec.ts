@@ -10,9 +10,8 @@ import {
   getSessionScopes,
   openMultichainDappAndConnectWalletWithExternallyConnectable,
   getExpectedSessionScope,
-  addAccountsToCreateSessionForm,
   addAccountInWalletAndAuthorize,
-  uncheckNetworksExceptMainnet,
+  editPermittedNetworks,
 } from './testHelpers';
 
 describe('Multichain API', function () {
@@ -44,7 +43,7 @@ describe('Multichain API', function () {
             extensionId,
           );
           await initCreateSessionScopes(driver, [
-            'eip155:1',
+            'eip155:1337',
             ...scopesToIgnore,
           ]);
 
@@ -72,7 +71,7 @@ describe('Multichain API', function () {
         {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
-            .withPopularNetworks()
+            .withNetworkControllerTripleGanache()
             .withTrezorAccount()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -84,7 +83,7 @@ describe('Multichain API', function () {
           driver: Driver;
           extensionId: string;
         }) => {
-          const REQUEST_SCOPE = 'eip155:1';
+          const REQUEST_SCOPE = 'eip155:1337';
           /**
            * check {@link FixtureBuilder.withTrezorAccount} for second injected account address.
            */
@@ -98,12 +97,11 @@ describe('Multichain API', function () {
             extensionId,
           );
 
-          await addAccountsToCreateSessionForm(driver, [
-            SECOND_ACCOUNT_IN_WALLET,
-            ACCOUNT_NOT_IN_WALLET,
-          ]);
-
-          await initCreateSessionScopes(driver, [REQUEST_SCOPE]);
+          await initCreateSessionScopes(
+            driver,
+            [REQUEST_SCOPE],
+            [SECOND_ACCOUNT_IN_WALLET, ACCOUNT_NOT_IN_WALLET],
+          );
 
           await driver.clickElement({ text: 'Connect', tag: 'button' });
           await driver.switchToWindowWithTitle(
@@ -201,7 +199,7 @@ describe('Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withPopularNetworks()
+              .withNetworkControllerTripleGanache()
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -213,26 +211,19 @@ describe('Multichain API', function () {
             driver: Driver;
             extensionId: string;
           }) => {
-            const requestScopesToNetworkMap = {
-              'eip155:1': 'Ethereum Mainnet',
-              'eip155:10': 'OP Mainnet',
-            };
-
-            const requestScopes = Object.keys(requestScopesToNetworkMap);
-
             await openMultichainDappAndConnectWalletWithExternallyConnectable(
               driver,
               extensionId,
             );
 
-            await addAccountsToCreateSessionForm(driver, [
-              DEFAULT_FIXTURE_ACCOUNT,
-              '',
-            ]);
-            await initCreateSessionScopes(driver, requestScopes);
+            await initCreateSessionScopes(
+              driver,
+              ['eip155:1337', 'eip155:1338'],
+              [DEFAULT_FIXTURE_ACCOUNT],
+            );
 
             await addAccountInWalletAndAuthorize(driver);
-            await uncheckNetworksExceptMainnet(driver);
+            await editPermittedNetworks(driver, ['Localhost 8545']);
 
             await driver.clickElement({ text: 'Connect', tag: 'button' });
             await driver.switchToWindowWithTitle(
@@ -242,15 +233,15 @@ describe('Multichain API', function () {
             const getSessionScopesResult = await getSessionScopes(driver);
 
             assert.strictEqual(
-              getSessionScopesResult.sessionScopes['eip155:10'],
+              getSessionScopesResult.sessionScopes['eip155:1338'],
               undefined,
             );
 
-            assert.ok(getSessionScopesResult.sessionScopes['eip155:1']);
+            assert.ok(getSessionScopesResult.sessionScopes['eip155:1337']);
 
             assert.deepEqual(
-              getSessionScopesResult.sessionScopes['eip155:1'].accounts,
-              getExpectedSessionScope('eip155:1', [
+              getSessionScopesResult.sessionScopes['eip155:1337'].accounts,
+              getExpectedSessionScope('eip155:1337', [
                 DEFAULT_FIXTURE_ACCOUNT,
                 SECOND_INJECTED_ACCOUNT,
               ]).accounts,
@@ -282,7 +273,7 @@ describe('Multichain API', function () {
             extensionId,
           );
 
-          await initCreateSessionScopes(driver, ['eip155:1']);
+          await initCreateSessionScopes(driver, ['eip155:1337']);
 
           const editButtons = await driver.findElements('[data-testid="edit"]');
           await editButtons[0].click();
@@ -310,7 +301,7 @@ describe('Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withPopularNetworks()
+              .withNetworkControllerTripleGanache()
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -371,7 +362,7 @@ describe('Multichain API', function () {
               extensionId,
             );
 
-            await initCreateSessionScopes(driver, ['eip155:1']);
+            await initCreateSessionScopes(driver, ['eip155:1337']);
 
             const editButtons = await driver.findElements(
               '[data-testid="edit"]',
