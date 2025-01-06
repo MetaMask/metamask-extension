@@ -84,4 +84,12 @@
       max-width: $width-screen-lg-min;
     }
   }
+
+  &__form {
+    .snap-ui-renderer__panel {
+      .mm-box--display-flex.mm-box--flex-direction-column {
+        flex: 1 1 50%; // Ensure that adjacent form elements take up to 50% width
+      }
+    }
+  }
 }
