@@ -6446,6 +6446,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/test-dapp@patch:@metamask/test-dapp@npm%3A8.13.0#~/.yarn/patches/@metamask-test-dapp-npm-8.13.0-cd1361a864.patch":
+  version: 8.13.0
+  resolution: "@metamask/test-dapp@patch:@metamask/test-dapp@npm%3A8.13.0#~/.yarn/patches/@metamask-test-dapp-npm-8.13.0-cd1361a864.patch::version=8.13.0&hash=5583ed"
+  checksum: 10/17a5de0beb279c6899528d0be427ca21dbee4aab4e5c0498b6732cc3c324fc1928c33377200e02d7b75db45b9bdbfd1839504964b91acb02ef9903fbf598d6b5
+  languageName: node
+  linkType: hard
+
 "@metamask/transaction-controller@npm:^42.1.0":
   version: 42.1.0
   resolution: "@metamask/transaction-controller@npm:42.1.0"
@@ -26682,7 +26689,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^8.7.0"
     "@metamask/solana-wallet-snap": "npm:^1.0.4"
     "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:8.13.0"
+    "@metamask/test-dapp": "patch:@metamask/test-dapp@npm%3A8.13.0#~/.yarn/patches/@metamask-test-dapp-npm-8.13.0-cd1361a864.patch"
     "@metamask/transaction-controller": "npm:^42.1.0"
     "@metamask/user-operation-controller": "npm:^21.0.0"
     "@metamask/utils": "npm:^10.0.1"
