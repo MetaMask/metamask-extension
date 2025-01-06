@@ -255,7 +255,8 @@
     "secp256k1@npm:^4.0.0": "4.0.4",
     "secp256k1@npm:^4.0.1": "4.0.4",
     "secp256k1@npm:4.0.2": "4.0.4",
-    "secp256k1@npm:4.0.3": "4.0.4"
+    "secp256k1@npm:4.0.3": "4.0.4",
+    "secp256k1@npm:5.0.0": "5.0.1"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
