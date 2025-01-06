@@ -5327,20 +5327,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^4.1.5, @metamask/eth-json-rpc-provider@npm:^4.1.6":
-  version: 4.1.6
-  resolution: "@metamask/eth-json-rpc-provider@npm:4.1.6"
-  dependencies:
-    "@metamask/json-rpc-engine": "npm:^10.0.1"
-    "@metamask/rpc-errors": "npm:^7.0.1"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^10.0.0"
-    uuid: "npm:^8.3.2"
-  checksum: 10/aeec2c362a5386357e9f8c707da9baa4326e83889633723656b6801b6461ea8ab8f020b0d9ed0bbc2d8fd6add4af4c99cc9c9a1cbedca267a033a9f19da41200
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-json-rpc-provider@npm:^4.1.7":
+"@metamask/eth-json-rpc-provider@npm:^4.1.5, @metamask/eth-json-rpc-provider@npm:^4.1.6, @metamask/eth-json-rpc-provider@npm:^4.1.7":
   version: 4.1.7
   resolution: "@metamask/eth-json-rpc-provider@npm:4.1.7"
   dependencies:
