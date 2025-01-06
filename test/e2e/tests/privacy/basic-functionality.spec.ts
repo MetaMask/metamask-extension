@@ -46,7 +46,9 @@ describe('MetaMask onboarding @no-mmi', function () {
   it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withNetworkControllerOnMainnet()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
@@ -63,7 +65,6 @@ describe('MetaMask onboarding @no-mmi', function () {
           driver,
         );
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAssetsSettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.check_pageIsLoaded();
@@ -90,7 +91,9 @@ describe('MetaMask onboarding @no-mmi', function () {
   it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withNetworkControllerOnMainnet()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,

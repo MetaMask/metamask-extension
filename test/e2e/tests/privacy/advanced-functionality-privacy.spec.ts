@@ -2,7 +2,7 @@ import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import {
@@ -89,7 +89,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
-        await homePage.refreshTokenList();
+        await homePage.refreshErc20TokenList();
 
         for (const m of mockedEndpoint) {
           const requests = await m.getSeenRequests();
@@ -118,7 +118,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
-        await homePage.refreshTokenList();
+        await homePage.refreshErc20TokenList();
 
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
