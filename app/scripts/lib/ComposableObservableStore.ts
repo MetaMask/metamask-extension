@@ -1,7 +1,6 @@
 import { ObservableStore } from '@metamask/obs-store';
 import {
   ActionConstraint,
-  BaseState,
   ControllerMessenger,
   EventConstraint,
   getPersistentState,
@@ -27,7 +26,9 @@ export default class ComposableObservableStore extends ObservableStore<
    * package.
    */
   config: Partial<MemStoreControllers> = {};
+
   controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
+
   persist: boolean;
 
   /**
@@ -61,10 +62,10 @@ export default class ComposableObservableStore extends ObservableStore<
   /**
    * Composes a new internal store subscription structure
    *
-   * @param {Record<string, object>} config - Describes which stores are being
-   *   composed. The key is the name of the store, and the value is either a controller
-   *   with an `ObservableStore`-type `store` propeety, or a controller that extends one of the two base
-   *   controllers in the `@metamask/base-controller` package.
+   * @param config - Describes which stores are being
+   * composed. The key is the name of the store, and the value is either a controller
+   * with an `ObservableStore`-type `store` propeety, or a controller that extends one of the two base
+   * controllers in the `@metamask/base-controller` package.
    */
   updateStructure(config: MemStoreControllers) {
     this.config = config;
@@ -124,12 +125,12 @@ export default class ComposableObservableStore extends ObservableStore<
           }
         }
 
-        const controllerState =
-          'store' in controller && 'subscribe' in controller.store
-            ? controller.store.getState?.()
-            : 'state' in controller
-            ? controller.state
-            : undefined;
+        let controllerState;
+        if ('store' in controller && 'subscribe' in controller.store) {
+          controllerState = controller.store.getState?.();
+        } else if ('state' in controller) {
+          controllerState = controller.state;
+        }
 
         composedState[controllerKey] =
           this.persist && 'metadata' in controller && controller.metadata

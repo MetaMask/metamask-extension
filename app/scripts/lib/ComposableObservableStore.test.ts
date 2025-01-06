@@ -10,10 +10,6 @@ import {
   EventConstraint,
 } from '@metamask/base-controller';
 import ComposableObservableStore from './ComposableObservableStore';
-import {
-  MemStoreControllers,
-  MemStoreControllersComposedState,
-} from '../../../shared/types/metamask';
 
 type OldExampleControllerState = {
   baz: string;
