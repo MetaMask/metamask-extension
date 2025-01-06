@@ -3301,9 +3301,6 @@
   "noThanks": {
     "message": "結構です"
   },
-  "noTransactions": {
-    "message": "トランザクションがありません"
-  },
   "noWebcamFound": {
     "message": "お使いのコンピューターのWebカメラが見つかりませんでした。もう一度お試しください。"
   },
@@ -6334,9 +6331,6 @@
   },
   "use4ByteResolution": {
     "message": "スマートコントラクトのデコード"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "ユーザーエクスペリエンスの向上のため、ユーザーがやり取りするスマートコントラクトに応じたメッセージで、アクティビティタブをカスタマイズします。MetaMaskは、4byte.directoryと呼ばれるサービスを利用してデータをデコードし、より読みやすいバージョンのスマートコントラクトを表示します。これにより、悪質なスマートコントラクトの操作を承認する可能性は減りますが、IPアドレスが公開されます。"
   },
   "useMultiAccountBalanceChecker": {
     "message": "アカウント残高の一括リクエスト"

@@ -1273,9 +1273,6 @@
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
   },
-  "noTransactions": {
-    "message": "Você não tem transações"
-  },
   "noWebcamFound": {
     "message": "A webcam do seu computador não foi encontrada. Tente novamente."
   },
