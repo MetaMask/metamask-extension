@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Добавление сети"
   },
-  "addingTokens": {
-    "message": "Добавление токенов"
-  },
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },
@@ -442,9 +439,6 @@
   },
   "alertMessageSignInWrongAccount": {
     "message": "Этот сайт просит вас войти в систему, используя неправильный счет."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Эта транзакция будет выполнена только после завершения вашей предыдущей транзакции."
   },
   "alertModalAcknowledge": {
     "message": "Я осознал(-а) риск и все еще хочу продолжить"
@@ -629,12 +623,6 @@
   },
   "assetsDescription": {
     "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
-  },
-  "attemptSendingAssets": {
-    "message": "Вы можете потерять свои активы, если попытаетесь отправить их из другой сети. Безопасно переводите средства между сетями с помощью моста."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост, такой как $1"
   },
   "attemptToCancelSwapForFree": {
     "message": "Бесплатная попытка отменить своп"
@@ -843,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Расчет..."
   },
-  "bridgeDontSend": {
-    "message": "Мост, не отправлять"
-  },
   "bridgeEnterAmount": {
     "message": "Введите сумму"
   },
@@ -858,14 +843,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Выберите токен и сумму"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Это примерное время, которое потребуется для создания моста."
-  },
   "bridgeTo": {
     "message": "Мост в"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Сюда входят плата за газ (выплачивается майнерам криптовалюты) и плата ретранслятору (выплачивается за услуги энергетического комплекса, такие как мостовое соединение).\nРазмер комиссии зависит от сетевого трафика и сложности транзакции. MetaMask не получает прибыли ни от одной комиссии."
   },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
@@ -962,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Нажмите здесь, чтобы подключить свой Ledger через WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Вы также можете добавлять токены вручную."
   },
   "close": {
     "message": "Закрыть"
@@ -1986,9 +1962,6 @@
   "estimatedFeeTooltip": {
     "message": "Сумма, уплаченная за обработку транзакции в сети."
   },
-  "estimatedTime": {
-    "message": "Примерное время"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Указана резервная цена газа, поскольку основной сервис определения цены газа сейчас недоступен."
   },
@@ -2149,9 +2122,6 @@
   },
   "gasFee": {
     "message": "Плата за газ"
-  },
-  "gasIsETH": {
-    "message": "Газ стоит $1 "
   },
   "gasLimit": {
     "message": "Лимит газа"
@@ -2714,9 +2684,6 @@
   "learnScamRisk": {
     "message": "мошенничество и угрозы безопасности."
   },
-  "learnToBridge": {
-    "message": "Научитесь создавать мост для"
-  },
   "leaveMetaMask": {
     "message": "Выйти из MetaMask?"
   },
@@ -2807,9 +2774,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Завершите транзакцию в Snap."
-  },
-  "loadingTokens": {
-    "message": "Загрузка токенов..."
   },
   "localhost": {
     "message": "Локальный хост 8545"
@@ -2911,9 +2875,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Уведомления кошелька в настоящее время неактивны."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "Сервис свопов MetaMask на техобслуживании. Зайдите позже."
@@ -3058,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 запрашивает ваше одобрение на:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Нативный токен этой сети — $1. Этот токен используется для внесения платы за газ. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Изменить сведения о сети"
@@ -3346,9 +3303,6 @@
   },
   "noThanks": {
     "message": "Нет, спасибо"
-  },
-  "noTransactions": {
-    "message": "У вас нет транзакций"
   },
   "noWebcamFound": {
     "message": "Веб-камера вашего компьютера не найдена. Попробуйте еще раз."
@@ -5952,9 +5906,6 @@
     "message": "$1 теперь активен в $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Сейчас вы используете"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "В случае смены сетей все ожидающие подтверждения будут отменены"
   },
@@ -5990,9 +5941,6 @@
   },
   "themeDescription": {
     "message": "Выберите предпочитаемую тему MetaMask."
-  },
-  "thingsToKeep": {
-    "message": "Что нужно помнить:"
   },
   "thirdPartySoftware": {
     "message": "Уведомление о стороннем ПО",
@@ -6075,9 +6023,6 @@
   "tokenScamSecurityRisk": {
     "message": "мошенничество с токенами и угрозы безопасности"
   },
-  "tokenShowUp": {
-    "message": "Ваши токены могут не отображаться автоматически в вашем кошельке. "
-  },
   "tokenStandard": {
     "message": "Стандарт токена"
   },
@@ -6108,9 +6053,6 @@
   },
   "total": {
     "message": "Итого"
-  },
-  "totalFees": {
-    "message": "Итого комиссий"
   },
   "totalVolume": {
     "message": "Общий объем"
@@ -6392,9 +6334,6 @@
   },
   "use4ByteResolution": {
     "message": "Расшифровать смарт-контракты"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "Чтобы улучшить взаимодействие с пользователем, мы настраиваем вкладку действий, добавляя сообщения на основе смарт-контрактов, с которыми вы взаимодействуете. MetaMask использует службу под названием 4byte.directory для декодирования данных и показа версии смарт-контакта, которую легче читать. Это помогает снизить шансы того, что вы одобрите вредоносные действия смарт-контракта, но может привести к раскрытию вашего IP-адреса."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Пакетные запросы баланса счета"

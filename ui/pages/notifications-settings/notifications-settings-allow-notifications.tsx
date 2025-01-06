@@ -74,7 +74,7 @@ export function NotificationsSettingsAllowNotifications({
   }, [isMetamaskNotificationsEnabled]);
 
   useEffect(() => {
-    if (!error) {
+    if (!error && isMetamaskNotificationsEnabled) {
       listNotifications();
     }
   }, [isMetamaskNotificationsEnabled, error, listNotifications]);

@@ -2,7 +2,10 @@ import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -40,11 +43,7 @@ import {
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
 } from './multichain';
-import {
-  getCurrentCurrency,
-  getSelectedAccountCachedBalance,
-  getShouldShowFiat,
-} from '.';
+import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
 type TestState = MultichainState &
   AccountsState & {
@@ -270,15 +269,17 @@ describe('Multichain Selectors', () => {
       },
     );
 
-    it('fallbacks to ticker as currency if account is non-EVM (bip122:*)', () => {
-      const state = getNonEvmState(); // .currentCurrency = 'ETH'
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(['usd', 'BTC'])(
+      "returns current currency '%s' if account is non-EVM",
+      (currency: string) => {
+        const state = getNonEvmState();
 
-      const bip122ProviderConfig = getBip122ProviderConfig();
-      expect(getCurrentCurrency(state).toLowerCase()).not.toBe('usd');
-      expect(getMultichainCurrentCurrency(state)).toBe(
-        bip122ProviderConfig.ticker,
-      );
-    });
+        state.metamask.currentCurrency = currency;
+        expect(getCurrentCurrency(state)).toBe(currency);
+        expect(getMultichainCurrentCurrency(state)).toBe(currency);
+      },
+    );
   });
 
   describe('getMultichainShouldShowFiat', () => {
