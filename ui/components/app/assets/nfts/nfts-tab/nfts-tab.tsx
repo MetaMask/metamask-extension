@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { Nft } from '@metamask/assets-controllers';
 import {
   AlignItems,
   Display,
@@ -33,6 +32,7 @@ import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
+import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -112,7 +112,7 @@ export default function NftsTab() {
               collections={collections}
               previouslyOwnedCollection={previouslyOwnedCollection}
             /> */}
-            {currentlyOwnedNfts.map((nft: Nft) => {
+            {currentlyOwnedNfts.map((nft: NFT) => {
               const { image, imageOriginal, tokenURI } = nft;
               const nftImageAlt = getNftImageAlt(nft);
 

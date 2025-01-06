@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
-import { Nft } from '@metamask/assets-controllers';
 import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
 import { getSelectedInternalAccount } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
+import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 
 export function useNfts() {
   const t = useI18nContext();
@@ -18,8 +18,8 @@ export function useNfts() {
   const previouslyOwnedText = t('nftsPreviouslyOwned');
   const unknownCollectionText = t('unknownCollection');
 
-  const [currentlyOwnedNfts, setCurrentlyOwnedNfts] = useState<Nft[]>([]);
-  const [previouslyOwnedNfts, setPreviouslyOwnedNfts] = useState<Nft[]>([]);
+  const [currentlyOwnedNfts, setCurrentlyOwnedNfts] = useState<NFT[]>([]);
+  const [previouslyOwnedNfts, setPreviouslyOwnedNfts] = useState<NFT[]>([]);
   const [loading, setNftsLoading] = useState(() => nfts?.length >= 0);
   const prevNfts = usePrevious(nfts);
   const prevChainId = usePrevious(chainId);
@@ -32,10 +32,10 @@ export function useNfts() {
         return;
       }
 
-      const previousNfts: Nft[] = [];
-      const currentNfts: Nft[] = [];
+      const previousNfts: NFT[] = [];
+      const currentNfts: NFT[] = [];
 
-      nfts.forEach((nft: Nft) => {
+      nfts.forEach((nft: NFT) => {
         if (nft?.isCurrentlyOwned === false) {
           previousNfts.push(nft);
         } else {
