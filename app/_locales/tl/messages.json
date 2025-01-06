@@ -385,10 +385,6 @@
     "message": "Ipinapakita nito ang halaga ng lahat ng token na pagmamay-ari mo sa ibinigay na network. Kung mas gusto mong makita ang halagang ito sa ETH o sa ibang currency, pumunta sa $1.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "Sumasang-ayon ako sa $1 ng MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },

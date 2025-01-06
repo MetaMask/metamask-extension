@@ -385,10 +385,6 @@
     "message": "Dies spiegelt den Wert aller Tokens wider, über die Sie in einem bestimmten Netzwerk verfügen. Sollten Sie diesen Wert lieber in ETH oder anderen Währungen angezeigt bekommen wollen, wechseln Sie zu $1.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "Ich stimme MetaMasks $1 zu",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "AirGap-Tresor"
   },

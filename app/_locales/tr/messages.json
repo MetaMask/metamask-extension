@@ -385,10 +385,6 @@
     "message": "Bu, belirli bir ağda sahip olduğunuz tüm token'lerin değerini yansıtır. Bu değeri ETH olarak veya diğer para birimlerinde görmeyi tercih ediyorsanız $1 alanına gidin.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMask'in $1 bölümünü kabul ediyorum",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },

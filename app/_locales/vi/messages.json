@@ -385,10 +385,6 @@
     "message": "Điều này phản ánh giá trị của tất cả các token mà bạn sở hữu trên một mạng nhất định. Nếu bạn muốn xem giá trị này bằng ETH hoặc các loại tiền tệ khác, hãy truy cập $1.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "Tôi đồng ý với $1 của MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },

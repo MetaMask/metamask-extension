@@ -385,10 +385,6 @@
     "message": "Esto refleja el valor de todos los tokens que posee en una red determinada. Si prefiere ver este valor en ETH u otras monedas, vaya a $1.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "Acepto los $1 de MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "Bóveda AirGap"
   },

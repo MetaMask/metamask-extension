@@ -385,10 +385,6 @@
     "message": "이는 특정 네트워크에서 소유한 모든 토큰의 가치를 반영합니다. 이 가치를 ETH 또는 다른 통화로 보고 싶다면 $1(으)로 이동하세요.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMask의 $1에 동의합니다",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "에어갭 볼트"
   },

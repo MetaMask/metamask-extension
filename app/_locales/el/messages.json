@@ -385,10 +385,6 @@
     "message": "Αυτό αντικατοπτρίζει την αξία όλων των tokens που έχετε στην κατοχή σας σε ένα συγκεκριμένο δίκτυο. Εάν προτιμάτε να βλέπετε αυτή την αξία σε ETH ή άλλα νομίσματα, μεταβείτε στις $1.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "Συμφωνώ με το $1 του MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "Θησαυροφυλάκιο AirGap"
   },
