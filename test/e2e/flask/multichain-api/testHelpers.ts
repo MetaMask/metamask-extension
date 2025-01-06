@@ -172,7 +172,7 @@ export const addAccountInWalletAndAuthorize = async (
  * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
  * @param selectedNetworkNames
  */
-export const editPermittedNetworks = async (
+export const updateNetworkCheckboxes = async (
   driver: Driver,
   selectedNetworkNames: string[],
 ): Promise<void> => {

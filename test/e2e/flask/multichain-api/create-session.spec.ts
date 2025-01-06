@@ -11,7 +11,7 @@ import {
   openMultichainDappAndConnectWalletWithExternallyConnectable,
   getExpectedSessionScope,
   addAccountInWalletAndAuthorize,
-  editPermittedNetworks,
+  updateNetworkCheckboxes,
   MULTIPLE_GANACHE_OPTIONS,
 } from './testHelpers';
 
@@ -226,7 +226,7 @@ describe('Multichain API', function () {
             );
 
             await addAccountInWalletAndAuthorize(driver);
-            await editPermittedNetworks(driver, ['Localhost 8545']);
+            await updateNetworkCheckboxes(driver, ['Localhost 8545']);
 
             await driver.clickElement({ text: 'Connect', tag: 'button' });
             await driver.switchToWindowWithTitle(
