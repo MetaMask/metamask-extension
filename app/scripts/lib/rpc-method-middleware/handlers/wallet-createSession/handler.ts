@@ -14,7 +14,7 @@ import {
   getSessionScopes,
   NormalizedScopesObject,
   InternalScopeString,
-  filterScopeObjectsSupported,
+  getSupportedScopeObjects,
 } from '@metamask/multichain';
 import {
   Caveat,
@@ -132,10 +132,10 @@ async function walletCreateSessionHandler(
       scopedProperties as ScopedProperties,
     );
 
-    const supportedRequiredScopesObjects = filterScopeObjectsSupported(
+    const supportedRequiredScopesObjects = getSupportedScopeObjects(
       normalizedRequiredScopes,
     );
-    const supportedOptionalScopesObjects = filterScopeObjectsSupported(
+    const supportedOptionalScopesObjects = getSupportedScopeObjects(
       normalizedOptionalScopes,
     );
 

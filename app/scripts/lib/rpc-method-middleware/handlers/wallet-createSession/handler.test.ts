@@ -24,7 +24,7 @@ jest.mock('@metamask/multichain', () => ({
   validateAndNormalizeScopes: jest.fn(),
   bucketScopes: jest.fn(),
   getSessionScopes: jest.fn(),
-  filterScopeObjectsSupported: jest.fn(),
+  getSupportedScopeObjects: jest.fn(),
 }));
 const MockMultichain = jest.mocked(Multichain);
 
@@ -132,7 +132,7 @@ describe('wallet_createSession', () => {
       unsupportableScopes: {},
     });
     MockMultichain.getSessionScopes.mockReturnValue({});
-    MockMultichain.filterScopeObjectsSupported.mockImplementation(
+    MockMultichain.getSupportedScopeObjects.mockImplementation(
       (scopesObject) => scopesObject,
     );
     MockHelpers.processScopedProperties.mockReturnValue({});
@@ -263,7 +263,7 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.filterScopeObjectsSupported).toHaveBeenNthCalledWith(
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
       1,
       {
         'eip155:1': {
@@ -289,7 +289,7 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.filterScopeObjectsSupported).toHaveBeenNthCalledWith(
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
       2,
       {
         'eip155:1': {
