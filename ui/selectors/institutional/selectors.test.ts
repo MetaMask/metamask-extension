@@ -1,9 +1,16 @@
 import { toChecksumAddress } from 'ethereumjs-util';
+import { CustodyAccountDetails } from '@metamask-institutional/custody-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
+import { InternalAccountWithBalance } from '../selectors.types';
+import { MetaMaskReduxState } from '../../store/store';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
+import {
+  CustodyControllerState,
+  MmiConfigurationControllerState,
+} from '../../../shared/types/institutional';
 import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
@@ -25,32 +32,8 @@ import {
   getCustodianDeepLink,
   getNoteToTraderMessage,
   getIsNoteToTraderSupported,
-  MmiConfiguration,
-  State,
 } from './selectors';
-
-type KeyringTypes = 'Custody' | 'Simple' | 'Ledger';
-type EthMethod = 'EthMethod1' | 'EthMethod2';
-type BtcMethod = 'BtcMethod1' | 'BtcMethod12';
-
-export type InternalAccount = {
-  id: string;
-  address: string;
-  metadata: {
-    name: string;
-    importTime: number;
-    keyring: {
-      type: KeyringTypes;
-    };
-    snap?: undefined;
-  };
-  options: object;
-  methods: EthMethod[] | BtcMethod[];
-  type: EthAccountType;
-  code: string;
-  balance: string;
-  nonce: string;
-};
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
 const custodianMock = {
   type: 'saturn',
@@ -75,64 +58,77 @@ const custodianMock = {
 function buildState(overrides = {}) {
   const defaultState = {
     metamask: {
-      selectedNetworkClientId: '0x1',
-      networkConfigurationsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          chainId: CHAIN_IDS.MAINNET,
-          blockExplorerUrls: [],
-          defaultRpcEndpointIndex: 0,
-          name: NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET],
-          nativeCurrency: CURRENCY_SYMBOLS.ETH,
-          rpcEndpoints: [],
-        },
-      },
-      internalAccounts: {
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            metadata: {
-              name: 'Custody Account A',
-              keyring: {
-                type: 'Custody',
-              },
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-
-            type: EthAccountType.Eoa,
-            code: '0x',
-            balance: '0x47c9d71831c76efe',
-            nonce: '0x1b',
-            address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+      NetworkController: {
+        selectedNetworkClientId: '0x1',
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            chainId: CHAIN_IDS.MAINNET,
+            blockExplorerUrls: [],
+            defaultRpcEndpointIndex: 0,
+            name: NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET],
+            nativeCurrency: CURRENCY_SYMBOLS.ETH,
+            rpcEndpoints: [],
           },
         },
       },
-      waitForConfirmDeepLinkDialog: '123',
-      keyrings: [
-        {
-          type: 'Custody',
-          accounts: ['0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275'],
-        },
-      ],
-      custodyStatusMaps: '123',
-      custodyAccountDetails: {
-        '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
-          custodianName: 'saturn',
+      AccountsController: {
+        internalAccounts: {
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Custody Account A',
+                keyring: {
+                  type: 'Custody',
+                },
+                importTime: 0,
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+
+              type: EthAccountType.Eoa,
+              code: '0x',
+              balance: '0x47c9d71831c76efe',
+              nonce: '0x1b',
+              address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+            },
+          },
         },
       },
-      custodianSupportedChains: {
-        '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
-          supportedChains: ['1', '2'],
-          custodianName: 'saturn',
-        },
+      KeyringController: {
+        keyrings: [
+          {
+            type: 'Custody',
+            accounts: ['0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275'],
+          },
+        ],
       },
-      mmiConfiguration: {
-        portfolio: {
-          enabled: true,
-          url: 'https://dashboard.metamask-institutional.io',
+      CustodyController: {
+        waitForConfirmDeepLinkDialog: '123',
+        custodyStatusMaps: { '123': {} },
+        custodyAccountDetails: {
+          '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
+            custodianName: 'saturn',
+          } as CustodyAccountDetails,
         },
-        custodians: [custodianMock],
+        custodianSupportedChains: {
+          '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
+            supportedChains: ['1', '2'],
+            custodianName: 'saturn',
+          },
+        },
+        apiRequestLogs: [],
+        custodianConnectRequest: {},
+      },
+      MmiConfigurationController: {
+        mmiConfiguration: {
+          portfolio: {
+            enabled: true,
+            url: 'https://dashboard.metamask-institutional.io',
+          },
+          custodians: [custodianMock],
+        } as MmiConfigurationControllerState['mmiConfiguration'],
       },
     },
   };
@@ -144,7 +140,9 @@ describe('Institutional selectors', () => {
     it('extracts a state property', () => {
       const state = buildState();
       const result = getWaitForConfirmDeepLinkDialog(state);
-      expect(result).toStrictEqual(state.metamask.waitForConfirmDeepLinkDialog);
+      expect(result).toStrictEqual(
+        state.metamask.CustodyController.waitForConfirmDeepLinkDialog,
+      );
     });
   });
 
@@ -152,7 +150,9 @@ describe('Institutional selectors', () => {
     it('extracts a state property', () => {
       const state = buildState();
       const result = getCustodyAccountDetails(state);
-      expect(result).toStrictEqual(state.metamask.custodyAccountDetails);
+      expect(result).toStrictEqual(
+        state.metamask.CustodyController.custodyAccountDetails,
+      );
     });
   });
 
@@ -160,7 +160,9 @@ describe('Institutional selectors', () => {
     it('extracts a state property', () => {
       const state = buildState();
       const result = getTransactionStatusMap(state);
-      expect(result).toStrictEqual(state.metamask.custodyStatusMaps);
+      expect(result).toStrictEqual(
+        state.metamask.CustodyController.custodyStatusMaps,
+      );
     });
   });
 
@@ -173,7 +175,7 @@ describe('Institutional selectors', () => {
       );
       expect(result).toStrictEqual(
         (
-          state.metamask.custodianSupportedChains as Record<
+          state.metamask.CustodyController.custodianSupportedChains as Record<
             string,
             { supportedChains: string[]; custodianName: string }
           >
@@ -187,7 +189,8 @@ describe('Institutional selectors', () => {
       const state = buildState();
       const result = getMmiPortfolioEnabled(state);
       expect(result).toStrictEqual(
-        state.metamask.mmiConfiguration.portfolio.enabled,
+        state.metamask.MmiConfigurationController.mmiConfiguration.portfolio
+          .enabled,
       );
     });
   });
@@ -197,7 +200,8 @@ describe('Institutional selectors', () => {
       const state = buildState();
       const result = getMmiPortfolioUrl(state);
       expect(result).toStrictEqual(
-        state.metamask.mmiConfiguration.portfolio.url,
+        state.metamask.MmiConfigurationController.mmiConfiguration.portfolio
+          .url,
       );
     });
   });
@@ -206,7 +210,9 @@ describe('Institutional selectors', () => {
     it('extracts a state property', () => {
       const state = buildState();
       const result = getConfiguredCustodians(state);
-      expect(result).toStrictEqual(state.metamask.mmiConfiguration.custodians);
+      expect(result).toStrictEqual(
+        state.metamask.MmiConfigurationController.mmiConfiguration.custodians,
+      );
     });
   });
 
@@ -214,13 +220,17 @@ describe('Institutional selectors', () => {
     it('extracts a state property', () => {
       const newState = {
         metamask: {
-          custodyAccountDetails: {
-            '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
-              custodianName: 'custodian1',
+          CustodyController: {
+            custodyAccountDetails: {
+              '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
+                custodianName: 'custodian1',
+              },
             },
           },
-          mmiConfiguration: {
-            custodians: [custodianMock],
+          MmiConfigurationController: {
+            mmiConfiguration: {
+              custodians: [custodianMock],
+            },
           },
         },
       };
@@ -232,7 +242,8 @@ describe('Institutional selectors', () => {
       );
 
       expect(result).toStrictEqual(
-        state.metamask.mmiConfiguration.custodians[0].iconUrl,
+        state.metamask.MmiConfigurationController.mmiConfiguration.custodians[0]
+          .iconUrl,
       );
     });
   });
@@ -242,30 +253,35 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Custody Account A',
-                  keyring: {
-                    type: 'Custody',
+          AccountsController: {
+            internalAccounts: {
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Custody Account A',
+                    keyring: {
+                      type: 'Custody',
+                    },
+                    importTime: 0,
                   },
+                  options: {},
+                  methods: ETH_EOA_METHODS,
+                  type: EthAccountType.Eoa,
+                  code: '0x',
+                  balance: '0x47c9d71831c76efe',
+                  nonce: '0x1b',
+                  address: accountAddress,
                 },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-                code: '0x',
-                balance: '0x47c9d71831c76efe',
-                nonce: '0x1b',
-                address: accountAddress,
               },
             },
           },
-          custodianSupportedChains: {
-            [accountAddress]: {
-              supportedChains: ['1', '2', '3'],
+          CustodyController: {
+            custodianSupportedChains: {
+              [accountAddress]: {
+                supportedChains: ['1', '2', '3'],
+              },
             },
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -587,12 +603,15 @@ describe('Institutional selectors', () => {
               },
             },
           },
-        },
+        } as unknown as MetaMaskReduxState['appState'],
         metamask: {
-          internalAccounts: {
-            accounts: {},
-            selectedAccount: '',
+          AccountsController: {
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
           },
+          MmiConfigurationController: {} as MmiConfigurationControllerState,
         },
       };
 
@@ -602,7 +621,10 @@ describe('Institutional selectors', () => {
     });
 
     it('returns selectedAccount if modalAddress does not exist', () => {
-      const mockInternalAccount: InternalAccount = {
+      const mockInternalAccount: InternalAccountWithBalance & {
+        code: Hex;
+        nonce: Hex;
+      } = {
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
         metadata: {
@@ -621,21 +643,24 @@ describe('Institutional selectors', () => {
         nonce: '0x1b',
       };
 
-      const state: State = {
+      const state = {
         appState: {
           modal: {
             modalState: {
               props: {},
             },
           },
-        },
+        } as unknown as MetaMaskReduxState['appState'],
         metamask: {
-          internalAccounts: {
-            accounts: {
-              [mockInternalAccount.id]: mockInternalAccount,
+          AccountsController: {
+            internalAccounts: {
+              accounts: {
+                [mockInternalAccount.id]: mockInternalAccount,
+              },
+              selectedAccount: mockInternalAccount.id,
             },
-            selectedAccount: mockInternalAccount.id,
           },
+          MmiConfigurationController: {} as MmiConfigurationControllerState,
         },
       };
 
@@ -652,12 +677,15 @@ describe('Institutional selectors', () => {
               props: {},
             },
           },
-        },
+        } as unknown as MetaMaskReduxState['appState'],
         metamask: {
-          internalAccounts: {
-            accounts: {},
-            selectedAccount: '',
+          AccountsController: {
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
           },
+          MmiConfigurationController: {} as MmiConfigurationControllerState,
         },
       };
 
@@ -669,17 +697,17 @@ describe('Institutional selectors', () => {
 
   describe('getMMIConfiguration', () => {
     it('returns mmiConfiguration if it exists', () => {
-      const mmiConfiguration: MmiConfiguration = {
+      const mmiConfiguration = {
         portfolio: {
           enabled: true,
           url: 'https://example.com',
         },
         custodians: [custodianMock],
-      };
+      } as MmiConfigurationControllerState['mmiConfiguration'];
 
       const state = {
         metamask: {
-          mmiConfiguration,
+          MmiConfigurationController: { mmiConfiguration },
         },
       };
 
@@ -690,9 +718,10 @@ describe('Institutional selectors', () => {
 
     it('returns an empty object if mmiConfiguration does not exist', () => {
       const state = {
-        metamask: {},
+        metamask: { MmiConfigurationController: {} },
       };
 
+      // @ts-expect-error Intentionally passing incomplete input for testing
       const config = getMMIConfiguration(state);
 
       expect(config).toStrictEqual({});
@@ -707,8 +736,10 @@ describe('Institutional selectors', () => {
       };
       const state = {
         metamask: {
-          interactiveReplacementToken,
-        },
+          AppStateController: {
+            interactiveReplacementToken,
+          },
+        } as Pick<BackgroundStateProxy, 'AppStateController'>,
       };
 
       const token = getInteractiveReplacementToken(state);
@@ -718,9 +749,10 @@ describe('Institutional selectors', () => {
 
     it('returns an empty object if interactiveReplacementToken does not exist', () => {
       const state = {
-        metamask: {},
+        metamask: { AppStateController: {} },
       };
 
+      // @ts-expect-error Intentionally passing incomplete input for testing
       const token = getInteractiveReplacementToken(state);
 
       expect(token).toStrictEqual({});
@@ -735,8 +767,10 @@ describe('Institutional selectors', () => {
       };
       const state = {
         metamask: {
-          custodianDeepLink,
-        },
+          AppStateController: {
+            custodianDeepLink,
+          },
+        } as Pick<BackgroundStateProxy, 'AppStateController'>,
       };
 
       const token = getCustodianDeepLink(state);
@@ -746,9 +780,10 @@ describe('Institutional selectors', () => {
 
     it('returns an empty object if custodianDeepLink does not exist', () => {
       const state = {
-        metamask: {},
+        metamask: { AppStateController: {} },
       };
 
+      // @ts-expect-error Intentionally passing incomplete input for testing
       const token = getCustodianDeepLink(state);
 
       expect(token).toStrictEqual({});
@@ -759,14 +794,18 @@ describe('Institutional selectors', () => {
     it('returns true if isNoteToTraderSupported is true for the custodian', () => {
       const state = {
         metamask: {
-          custodyAccountDetails: {
-            '0x1': {
-              custodianName: 'custodian1',
+          CustodyController: {
+            custodyAccountDetails: {
+              '0x1': {
+                custodianName: 'custodian1',
+              },
             },
-          },
-          mmiConfiguration: {
-            custodians: [custodianMock],
-          },
+          } as unknown as CustodyControllerState,
+          MmiConfigurationController: {
+            mmiConfiguration: {
+              custodians: [custodianMock],
+            },
+          } as unknown as MmiConfigurationControllerState,
         },
       };
 
@@ -778,14 +817,20 @@ describe('Institutional selectors', () => {
     it('returns false if isNoteToTraderSupported is false for the custodian', () => {
       const state = {
         metamask: {
-          custodyAccountDetails: {
-            '0x1': {
-              custodianName: 'custodian1',
+          CustodyController: {
+            custodyAccountDetails: {
+              '0x1': {
+                custodianName: 'custodian1',
+              },
             },
-          },
-          mmiConfiguration: {
-            custodians: [{ ...custodianMock, isNoteToTraderSupported: false }],
-          },
+          } as unknown as CustodyControllerState,
+          MmiConfigurationController: {
+            mmiConfiguration: {
+              custodians: [
+                { ...custodianMock, isNoteToTraderSupported: false },
+              ],
+            },
+          } as unknown as MmiConfigurationControllerState,
         },
       };
 
@@ -797,32 +842,42 @@ describe('Institutional selectors', () => {
     it('returns false if custodyAccountDetails does not exist for the address', () => {
       const state = {
         metamask: {
-          custodyAccountDetails: {},
-          mmiConfiguration: {
-            custodians: [custodianMock],
+          CustodyController: {
+            custodyAccountDetails: {},
+          },
+          MmiConfigurationController: {
+            mmiConfiguration: {
+              custodians: [custodianMock],
+            },
           },
         },
       };
 
+      // @ts-expect-error Intentionally passing incomplete input for testing
       const isSupported = getIsNoteToTraderSupported(state, '0x1');
 
       expect(isSupported).toBe(false);
     });
 
     it('returns false if custodianName does not exist in custodyAccountDetails', () => {
-      const state: State = {
+      const state = {
         metamask: {
-          custodyAccountDetails: {
-            '0x1': {
-              custodianName: '',
+          CustodyController: {
+            custodyAccountDetails: {
+              '0x1': {
+                custodianName: '',
+              },
             },
           },
-          mmiConfiguration: {
-            custodians: [custodianMock],
+          MmiConfigurationController: {
+            mmiConfiguration: {
+              custodians: [custodianMock],
+            },
           },
         },
       };
 
+      // @ts-expect-error Intentionally passing incomplete input for testing
       const isSupported = getIsNoteToTraderSupported(state, '0x1');
 
       expect(isSupported).toBe(false);
@@ -831,14 +886,18 @@ describe('Institutional selectors', () => {
     it('returns false if custodianName does not match any custodian in mmiConfiguration', () => {
       const state = {
         metamask: {
-          custodyAccountDetails: {
-            '0x1': {
-              custodianName: 'custodian2',
+          CustodyController: {
+            custodyAccountDetails: {
+              '0x1': {
+                custodianName: 'custodian2',
+              },
             },
-          },
-          mmiConfiguration: {
-            custodians: [custodianMock],
-          },
+          } as unknown as CustodyControllerState,
+          MmiConfigurationController: {
+            mmiConfiguration: {
+              custodians: [custodianMock],
+            },
+          } as unknown as MmiConfigurationControllerState,
         },
       };
 
@@ -848,17 +907,22 @@ describe('Institutional selectors', () => {
     });
 
     it('returns false if mmiConfiguration or custodians is null', () => {
-      const state: State = {
+      const state = {
         metamask: {
-          custodyAccountDetails: {
-            '0x1': {
-              custodianName: 'custodian1',
+          CustodyController: {
+            custodyAccountDetails: {
+              '0x1': {
+                custodianName: 'custodian1',
+              },
             },
+          } as unknown as CustodyControllerState,
+          MmiConfigurationController: {
+            mmiConfiguration: undefined,
           },
-          mmiConfiguration: undefined,
         },
       };
 
+      // @ts-expect-error Intentionally passing invalid input for testing
       const isSupported = getIsNoteToTraderSupported(state, '0x1');
 
       expect(isSupported).toBe(false);
@@ -870,8 +934,10 @@ describe('Institutional selectors', () => {
       const noteToTraderMessage = 'some message';
       const state = {
         metamask: {
-          noteToTraderMessage,
-        },
+          AppStateController: {
+            noteToTraderMessage,
+          },
+        } as Pick<BackgroundStateProxy, 'AppStateController'>,
       };
 
       const token = getNoteToTraderMessage(state);
@@ -881,9 +947,10 @@ describe('Institutional selectors', () => {
 
     it('returns an empty string if noteToTraderMessage does not exist', () => {
       const state = {
-        metamask: {},
+        metamask: { AppStateController: {} },
       };
 
+      // @ts-expect-error Intentionally passing incomplete input for testing
       const token = getNoteToTraderMessage(state);
 
       expect(token).toStrictEqual('');
