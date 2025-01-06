@@ -55,7 +55,7 @@ export const text: UIComponentFactory<TextElement> = ({
       variant:
         element.props.size === 'sm' ? TextVariant.bodySm : TextVariant.bodyMd,
       fontWeight: getFontWeight(element.props.fontWeight),
-      overflowWrap: OverflowWrap.Anywhere,
+      overflowWrap: OverflowWrap.BreakWord,
       color: getTextColor(element.props.color),
       className: 'snap-ui-renderer__text',
       textAlign: element.props.alignment,
