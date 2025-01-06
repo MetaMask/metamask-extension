@@ -41,14 +41,14 @@ type AssetPickerModalNftTabProps = {
 
 export function AssetPickerModalNftTab({
   searchQuery,
-  onClose,
+  // onClose,
   renderSearch,
 }: AssetPickerModalNftTabProps) {
   const t = useI18nContext();
 
   const {
     collections,
-    previouslyOwnedCollection,
+    // previouslyOwnedCollection,
   }: {
     collections: Record<string, Collection>;
     previouslyOwnedCollection: PreviouslyOwnedCollections;
