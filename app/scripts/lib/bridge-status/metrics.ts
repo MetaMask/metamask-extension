@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { TransactionControllerTransactionFailedEvent } from '@metamask/transaction-controller';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../../shared/constants/bridge';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // eslint-disable-next-line import/no-restricted-paths
@@ -39,7 +40,7 @@ type TrackEvent = (
 
 const getCommonProperties = (
   bridgeHistoryItem: BridgeHistoryItem,
-  state: BackgroundState,
+  state: { metamask: BackgroundState },
 ) => {
   const keyring = getCurrentKeyring(state);
   // @ts-expect-error keyring type is possibly wrong
@@ -107,14 +108,15 @@ const getCommonProperties = (
 export const handleBridgeTransactionComplete = async (
   payload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
   {
-    state,
+    backgroundState,
     trackEvent,
   }: {
-    state: BackgroundState;
+    backgroundState: BackgroundState;
     trackEvent: TrackEvent;
   },
 ) => {
   const { bridgeHistoryItem } = payload;
+  const state = { metamask: backgroundState };
 
   const common = getCommonProperties(bridgeHistoryItem, state);
   const {
@@ -163,17 +165,66 @@ export const handleBridgeTransactionComplete = async (
   });
 };
 
+/**
+ * This handles the BridgeStatusController:bridgeTransactionFailed event.
+ * This is to capture bridge txs that fail on the destination chain.
+ * We directly receive the bridgeHistoryItem as a payload here.
+ *
+ * @param payload
+ * @param options0
+ * @param options0.backgroundState
+ * @param options0.trackEvent
+ */
 export const handleBridgeTransactionFailed = async (
   payload: BridgeStatusControllerBridgeTransactionFailedEvent['payload'][0],
   {
-    state,
+    backgroundState,
     trackEvent,
   }: {
-    state: BackgroundState;
+    backgroundState: BackgroundState;
     trackEvent: TrackEvent;
   },
 ) => {
   const { bridgeHistoryItem } = payload;
+  const state = { metamask: backgroundState };
+  const common = getCommonProperties(bridgeHistoryItem, state);
+  const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionFailed] =
+    {
+      ...common,
+    };
+
+  trackEvent({
+    category: MetaMetricsEventCategory.CrossChainSwaps,
+    event: MetaMetricsEventName.ActionFailed,
+    properties,
+  });
+};
+
+/**
+ * This handles the TransactionController:transactionFailed event.
+ * This is mostly to capture bridge txs that fail on the source chain before getting to the bridge.
+ * We do not receive the bridgeHistoryItem as a payload here, so we need to look it up using the txMeta.id.
+ *
+ * @param payload
+ * @param options0
+ * @param options0.backgroundState
+ * @param options0.trackEvent
+ */
+export const handleTransactionFailedTypeBridge = async (
+  payload: TransactionControllerTransactionFailedEvent['payload'][0],
+  {
+    backgroundState,
+    trackEvent,
+  }: {
+    backgroundState: BackgroundState;
+    trackEvent: TrackEvent;
+  },
+) => {
+  const state = { metamask: backgroundState };
+  const { transactionMeta: txMeta } = payload;
+  const bridgeHistoryItem =
+    state.metamask.bridgeStatusState.txHistory[txMeta.id];
+
   const common = getCommonProperties(bridgeHistoryItem, state);
   const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionFailed] =
     {

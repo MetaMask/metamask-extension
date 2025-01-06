@@ -1,4 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { ProviderConfigState } from '../modules/selectors/networks';
 import type { ChainId, Quote, QuoteMetadata, QuoteResponse } from './bridge';
 
 // All fields need to be types not interfaces, same with their children fields
@@ -225,4 +226,9 @@ export type SourceChainTxMetaId = string;
 
 export type BridgeStatusControllerState = {
   txHistory: Record<SourceChainTxMetaId, BridgeHistoryItem>;
+};
+export type BridgeStatusAppState = ProviderConfigState & {
+  metamask: {
+    bridgeStatusState: BridgeStatusControllerState;
+  };
 };

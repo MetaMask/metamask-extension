@@ -382,6 +382,7 @@ import { rejectAllApprovals } from './lib/approval/utils';
 import {
   handleBridgeTransactionComplete,
   handleBridgeTransactionFailed,
+  handleTransactionFailedTypeBridge,
 } from './lib/bridge-status/metrics';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
@@ -6866,7 +6867,7 @@ export default class MetamaskController extends EventEmitter {
       'BridgeStatusController:bridgeTransactionComplete',
       (payload) =>
         handleBridgeTransactionComplete(payload, {
-          state: this.getState(),
+          backgroundState: this.getState(),
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
@@ -6877,7 +6878,18 @@ export default class MetamaskController extends EventEmitter {
       'BridgeStatusController:bridgeTransactionFailed',
       (payload) =>
         handleBridgeTransactionFailed(payload, {
-          state: this.getState(),
+          backgroundState: this.getState(),
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        }),
+    );
+    // Putting this here to keep it colocated with the other bridge events
+    this.controllerMessenger.subscribe(
+      'TransactionController:transactionFailed',
+      (payload) =>
+        handleTransactionFailedTypeBridge(payload, {
+          backgroundState: this.getState(),
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
