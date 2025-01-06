@@ -27,14 +27,12 @@ export const ApproveStaticSimulation = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { decimals: initialDecimals } = useAssetDetails(
+  const { decimals } = useAssetDetails(
     transactionMeta?.txParams?.to,
     transactionMeta?.txParams?.from,
     transactionMeta?.txParams?.data,
     transactionMeta?.chainId,
   );
-
-  const decimals = initialDecimals || '0';
 
   const {
     spendingCap,

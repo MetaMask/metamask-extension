@@ -1891,6 +1891,7 @@
     "watchEthereumAccountEnabled": false,
     "bitcoinSupportEnabled": false,
     "bitcoinTestnetSupportEnabled": false,
+    "solanaSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
