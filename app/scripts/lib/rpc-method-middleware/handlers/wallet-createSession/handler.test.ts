@@ -64,7 +64,7 @@ const baseRequest = {
 const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
-  const requestPermissionApprovalForOrigin = jest.fn().mockResolvedValue({
+  const requestPermissionApproval = jest.fn().mockResolvedValue({
     approvedAccounts: ['0x1', '0x2', '0x3', '0x4'],
     approvedChainIds: ['0x1', '0x5'],
   });
@@ -95,7 +95,7 @@ const createMockedHandler = () => {
   ) =>
     walletCreateSession.implementation(request, response, next, end, {
       findNetworkClientIdByChainId,
-      requestPermissionApprovalForOrigin,
+      requestPermissionApproval,
       grantPermissions,
       addNetwork,
       removeNetwork,
@@ -109,7 +109,7 @@ const createMockedHandler = () => {
     next,
     end,
     findNetworkClientIdByChainId,
-    requestPermissionApprovalForOrigin,
+    requestPermissionApproval,
     grantPermissions,
     addNetwork,
     removeNetwork,
@@ -263,16 +263,13 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
-      1,
-      {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(1, {
+      'eip155:1': {
+        methods: ['eth_chainId'],
+        notifications: ['accountsChanged', 'chainChanged'],
+        accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
       },
-    );
+    });
   });
 
   it('filters the optional scopesObjects', async () => {
@@ -289,16 +286,13 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
-      2,
-      {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(2, {
+      'eip155:1': {
+        methods: ['eth_chainId'],
+        notifications: ['accountsChanged', 'chainChanged'],
+        accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
       },
-    );
+    });
   });
 
   it('buckets the required scopes', async () => {
@@ -383,7 +377,7 @@ describe('wallet_createSession', () => {
   });
 
   it('requests approval for account and permitted chains permission based on the supported eth accounts and eth chains from the supported scopes in the request', async () => {
-    const { handler, listAccounts, requestPermissionApprovalForOrigin } =
+    const { handler, listAccounts, requestPermissionApproval } =
       createMockedHandler();
     listAccounts.mockReturnValue([
       { address: '0x1' },
@@ -415,7 +409,7 @@ describe('wallet_createSession', () => {
       });
     await handler(baseRequest);
 
-    expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
+    expect(requestPermissionApproval).toHaveBeenCalledWith({
       [PermissionNames.eth_accounts]: {
         caveats: [
           {
@@ -436,9 +430,8 @@ describe('wallet_createSession', () => {
   });
 
   it('throws an error when requesting account permission approval fails', async () => {
-    const { handler, requestPermissionApprovalForOrigin, end } =
-      createMockedHandler();
-    requestPermissionApprovalForOrigin.mockImplementation(() => {
+    const { handler, requestPermissionApproval, end } = createMockedHandler();
+    requestPermissionApproval.mockImplementation(() => {
       throw new Error('failed to request account permission approval');
     });
     await handler(baseRequest);
@@ -522,7 +515,7 @@ describe('wallet_createSession', () => {
   });
 
   it('grants the CAIP-25 permission for the supported scopes and accounts that were approved', async () => {
-    const { handler, grantPermissions, requestPermissionApprovalForOrigin } =
+    const { handler, grantPermissions, requestPermissionApproval } =
       createMockedHandler();
     MockMultichain.bucketScopes
       .mockReturnValueOnce({
@@ -547,7 +540,7 @@ describe('wallet_createSession', () => {
         supportableScopes: {},
         unsupportableScopes: {},
       });
-    requestPermissionApprovalForOrigin.mockResolvedValue({
+    requestPermissionApproval.mockResolvedValue({
       approvedAccounts: ['0x1', '0x2'],
       approvedChainIds: ['0x5', '0x64', '0x539'], // 5, 100, 1337
     });
