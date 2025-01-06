@@ -5,10 +5,6 @@
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
-  &__content {
-    margin-bottom: 0 !important;
-  }
-
   &__container {
     & > *:first-child {
       gap: 16px;
