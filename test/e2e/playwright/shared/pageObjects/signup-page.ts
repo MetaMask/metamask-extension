@@ -81,19 +81,16 @@ export class SignUpPage {
 
   private async handleTermsModal() {
     await this.page.waitForSelector('[data-testid="terms-of-use-modal-body"]');
-    await this.page.evaluate(() => {
-      const modalBody = document.querySelector(
-        '[data-testid="terms-of-use-modal-body"]',
-      );
+
+    await this.page.evaluate(`
+      const modalBody = document.querySelector('[data-testid="terms-of-use-modal-body"]');
       if (modalBody) {
-        modalBody.scrollTo({
-          top: modalBody.scrollHeight,
-          behavior: 'instant',
-        });
+        modalBody.scrollTo({ top: modalBody.scrollHeight, behavior: 'instant' });
       }
-    });
+    `);
+
     await this.agreeTandCCheck.click();
-    await this.agreeBtn.click();
+    await this.page.getByTestId('onboarding-terms-accept').click();
   }
 
   async importWallet() {
