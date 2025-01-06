@@ -8,11 +8,9 @@ export const useEIP1559TxFees = (
   maxFeePerGas: string;
   maxPriorityFeePerGas: string;
 } => {
-  const hexMaxFeePerGas =
-    transactionMeta.dappSuggestedGasFees?.maxFeePerGas ||
-    transactionMeta?.txParams?.maxFeePerGas;
+  const hexMaxFeePerGas = transactionMeta?.txParams?.maxFeePerGas;
+
   const hexMaxPriorityFeePerGas =
-    transactionMeta.dappSuggestedGasFees?.maxPriorityFeePerGas ||
     transactionMeta?.txParams?.maxPriorityFeePerGas;
 
   return useMemo(() => {

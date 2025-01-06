@@ -34,6 +34,7 @@ import {
 import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -49,6 +50,7 @@ type AssetPickerAmountProps = OverridingUnion<
     asset: Asset;
     amount: Amount;
     isAmountLoading?: boolean;
+    action?: 'send' | 'receive';
     error?: string;
     /**
      * Callback for when the amount changes; disables the input when undefined
@@ -65,6 +67,7 @@ export const AssetPickerAmount = ({
   asset,
   amount,
   onAmountChange,
+  action,
   isAmountLoading,
   error: passedError,
   ...assetPickerProps
@@ -81,6 +84,7 @@ export const AssetPickerAmount = ({
   const isMaxMode = useSelector(getSendMaxModeState);
   const isNativeSendPossible = useSelector(getIsNativeSendPossible);
 
+  const currentChainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList) as TokenListMap;
@@ -167,6 +171,7 @@ export const AssetPickerAmount = ({
       type: asset.type,
       image: nativeCurrencyImageUrl,
       symbol: nativeCurrencySymbol as string,
+      chainId: currentChainId,
     };
   } else if (asset?.type === AssetType.token && asset?.details?.symbol) {
     standardizedAsset = {
@@ -178,6 +183,7 @@ export const AssetPickerAmount = ({
           tokenList[asset.details.address.toLowerCase()]?.iconUrl),
       symbol: asset.details.symbol,
       address: asset.details.address,
+      chainId: currentChainId,
     };
   } else if (
     asset?.type === AssetType.NFT &&
@@ -210,7 +216,11 @@ export const AssetPickerAmount = ({
         paddingTop={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
         paddingBottom={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
       >
-        <AssetPicker asset={standardizedAsset} {...assetPickerProps} />
+        <AssetPicker
+          action={action}
+          asset={standardizedAsset}
+          {...assetPickerProps}
+        />
         <SwappableCurrencyInput
           onAmountChange={onAmountChange ? handleChange : undefined}
           assetType={asset.type}

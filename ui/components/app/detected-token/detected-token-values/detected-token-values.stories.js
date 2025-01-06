@@ -1,14 +1,16 @@
 import React from 'react';
-
+import { Provider } from 'react-redux';
+import testData from '../../../../../.storybook/test-data';
+import configureStore from '../../../../store/store';
 import DetectedTokenValues from './detected-token-values';
 
 export default {
   title: 'Components/App/DetectedToken/DetectedTokenValues',
-
+  component: DetectedTokenValues,
   argTypes: {
     token: { control: 'object' },
-    handleTokenSelection: { control: 'func' },
-    tokensListDetected: { control: 'array' },
+    handleTokenSelection: { action: 'handleTokenSelection' }, // Action for interactions
+    tokensListDetected: { control: 'object' },
   },
   args: {
     token: {
@@ -73,10 +75,21 @@ export default {
   },
 };
 
-const Template = (args) => {
-  return <DetectedTokenValues {...args} />;
+// Mock store data
+const customData = {
+  ...testData,
+  metamask: {
+    ...testData.metamask,
+  },
 };
 
-export const DefaultStory = Template.bind({});
+const customStore = configureStore(customData);
 
+const Template = (args) => (
+  <Provider store={customStore}>
+    <DetectedTokenValues {...args} />
+  </Provider>
+);
+
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';

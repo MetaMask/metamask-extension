@@ -686,10 +686,6 @@
     "message": "Código: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Detalhes do erro",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "Mensagem: $1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -697,14 +693,6 @@
   "errorName": {
     "message": "Código: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Recarregue a página para tentar novamente ou entre em contato com o suporte $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Feche e reabra o pop-up para tentar novamente ou entre em contato com o suporte $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "A MetaMask encontrou um erro",
@@ -1098,9 +1086,6 @@
   "loading": {
     "message": "Carregando..."
   },
-  "loadingTokens": {
-    "message": "Carregando tokens..."
-  },
   "localhost": {
     "message": "Host local 8545"
   },
@@ -1287,9 +1272,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
-  },
-  "noTransactions": {
-    "message": "Você não tem transações"
   },
   "noWebcamFound": {
     "message": "A webcam do seu computador não foi encontrada. Tente novamente."
@@ -2386,10 +2368,6 @@
   },
   "whatsThis": {
     "message": "O que é isso?"
-  },
-  "xOfYPending": {
-    "message": "$1 de $2 pendente",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."

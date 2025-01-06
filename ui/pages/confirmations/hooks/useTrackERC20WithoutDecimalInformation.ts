@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux';
 import { useContext, useEffect } from 'react';
 import { Hex } from '@metamask/utils';
 
@@ -10,23 +9,23 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getCurrentChainId } from '../../../selectors';
 import { parseTokenDetailDecimals, TokenDetailsERC20 } from '../utils/token';
 
 /**
  * Track event that number of decimals in ERC20 is not obtained
  *
+ * @param chainId
  * @param tokenAddress
  * @param tokenDetails
  * @param metricLocation
  */
 const useTrackERC20WithoutDecimalInformation = (
+  chainId: Hex,
   tokenAddress: Hex | string | undefined,
   tokenDetails?: TokenDetailsERC20,
   metricLocation = MetaMetricsEventLocation.SignatureConfirmation,
 ) => {
   const trackEvent = useContext(MetaMetricsContext);
-  const chainId = useSelector(getCurrentChainId);
 
   useEffect(() => {
     if (chainId === undefined || tokenDetails === undefined) {
@@ -40,7 +39,7 @@ const useTrackERC20WithoutDecimalInformation = (
           event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
           category: MetaMetricsEventCategory.Confirmations,
           properties: {
-            token_decimals_available: false,
+            token_decimals_available: 'not_available',
             asset_address: tokenAddress,
             asset_type: TokenStandard.ERC20,
             chain_id: chainId,

@@ -1,25 +1,53 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { isSnapId } from '@metamask/snaps-utils';
 import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../context/confirm';
+import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../../../components/component-library';
+import Tooltip from '../../../../../../components/ui/tooltip';
+import {
+  AlignItems,
+  BorderColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  IconColor,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../../../../helpers/constants/design-system';
 import {
   hexToText,
   sanitizeString,
 } from '../../../../../../helpers/utils/util';
-import { SignatureRequestType } from '../../../../types/confirm';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
+import { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
-import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
+import { isValidUTF8 } from '../utils';
 import { SIWESignInfo } from './siwe-sign';
+
+const getMessageText = (hexString?: string) => {
+  if (!hexString) {
+    return hexString;
+  }
+  const messageText = sanitizeString(hexToText(hexString));
+  return isValidUTF8(messageText) ? messageText : hexString;
+};
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -32,23 +60,80 @@ const PersonalSignInfo: React.FC = () => {
     return null;
   }
 
-  const { from } = currentConfirmation.msgParams;
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const chainId = currentConfirmation.chainId as string;
-  const messageText = sanitizeString(
-    hexToText(currentConfirmation.msgParams?.data),
+  const messageText = getMessageText(
+    currentConfirmation.msgParams?.data as string,
+  );
+
+  let toolTipMessage;
+  if (!isSIWE) {
+    if (isSnapId(currentConfirmation.msgParams.origin)) {
+      toolTipMessage = t('requestFromInfoSnap');
+    } else {
+      toolTipMessage = t('requestFromInfo');
+    }
+  }
+
+  const SimulationDetailsKey = (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      gap={1}
+    >
+      <Text variant={TextVariant.bodyMdMedium}>
+        {t('simulationDetailsTitle')}
+      </Text>
+      <Tooltip
+        interactive
+        position="top"
+        containerClassName="info-tooltip__tooltip-container"
+        tooltipInnerClassName="info-tooltip__tooltip-content"
+        tooltipArrowClassName="info-tooltip__top-tooltip-arrow"
+        html={t('simulationDetailsTitleTooltip')}
+        theme="tippy-tooltip-info"
+        style={{ display: Display.Flex }}
+      >
+        <Icon
+          name={IconName.Question}
+          marginLeft={1}
+          color={IconColor.iconMuted}
+          size={IconSize.Sm}
+        />
+      </Tooltip>
+    </Box>
+  );
+
+  const SimulationDetailsValue = (
+    <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
+      {t('simulationDetailsNoChanges')}
+    </Text>
   );
 
   return (
     <>
       {isSIWE && useTransactionSimulations && (
         <ConfirmInfoSection>
-          <ConfirmInfoRow
-            label={t('simulationDetailsTitle')}
-            tooltip={t('simulationDetailsTitleTooltip')}
+          <Box
+            data-testid="simulation-details-layout"
+            className="simulation-details-layout"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            borderRadius={BorderRadius.LG}
+            borderColor={BorderColor.transparent}
+            padding={2}
+            gap={3}
           >
-            <ConfirmInfoRowText text={t('siweSignatureSimulationDetailInfo')} />
-          </ConfirmInfoRow>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              {SimulationDetailsKey}
+              {SimulationDetailsValue}
+            </Box>
+          </Box>
         </ConfirmInfoSection>
       )}
       <ConfirmInfoSection>
@@ -56,19 +141,11 @@ const PersonalSignInfo: React.FC = () => {
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={isSIWE ? undefined : t('requestFromInfo')}
+          tooltip={toolTipMessage}
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
-        {isSIWE && (
-          <ConfirmInfoAlertRow
-            alertKey={RowAlertKey.SigningInWith}
-            label={t('signingInWith')}
-            ownerId={currentConfirmation.id}
-          >
-            <ConfirmInfoRowAddress address={from} chainId={chainId} />
-          </ConfirmInfoAlertRow>
-        )}
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         {isSIWE ? (

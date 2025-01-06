@@ -86,6 +86,7 @@ describe('lockdown', function (this: Mocha.Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
+        ignoredConsoleErrors: ['Error: Could not establish connection.'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

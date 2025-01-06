@@ -2,7 +2,7 @@ import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
   importSRPOnboardingFlow,
@@ -90,7 +90,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await createNewWalletOnboardingFlow(driver);
+        await createNewWalletOnboardingFlow({ driver });
 
         // Check no requests are made before completing creat new wallet onboarding
         // Intended delay to ensure we cover at least 1 polling loop of time for the network request
@@ -146,7 +146,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await importSRPOnboardingFlow(driver);
+        await importSRPOnboardingFlow({ driver });
 
         // Check no requests before completing onboarding
         // Intended delay to ensure we cover at least 1 polling loop of time for the network request

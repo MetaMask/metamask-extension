@@ -12,10 +12,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentChainId,
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
   isHardwareWallet,
@@ -48,8 +47,8 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../shared/constants/swaps';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
@@ -143,7 +142,7 @@ export default function AwaitingSwap({
   };
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
-    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
   const blockExplorerUrl = getBlockExplorerLink(
     { hash: txHash, chainId },

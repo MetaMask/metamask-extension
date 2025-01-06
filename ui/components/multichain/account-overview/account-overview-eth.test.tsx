@@ -3,14 +3,43 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   AccountOverviewEth,
   AccountOverviewEthProps,
 } from './account-overview-eth';
 
+jest.mock('../../../store/actions', () => ({
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+  setTokenNetworkFilter: jest.fn(),
+  updateSlides: jest.fn(),
+  removeSlide: jest.fn(),
+}));
+
+// Mock the dispatch function
+const mockDispatch = jest.fn();
+
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useDispatch: () => mockDispatch,
+  };
+});
+
 const render = (props: AccountOverviewEthProps) => {
   const store = configureStore({
-    metamask: mockState.metamask,
+    metamask: {
+      ...mockState.metamask,
+      preferences: {
+        ...mockState.metamask.preferences,
+        tokenNetworkFilter: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
+      },
+    },
   });
 
   return renderWithProvider(<AccountOverviewEth {...props} />, store);
@@ -18,11 +47,14 @@ const render = (props: AccountOverviewEthProps) => {
 
 describe('AccountOverviewEth', () => {
   beforeEach(() => {
-    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
+    setBackgroundConnection({
+      setBridgeFeatureFlags: jest.fn(),
+      tokenBalancesStartPolling: jest.fn(),
+    } as never);
   });
   it('shows all tabs', () => {
     const { queryByTestId } = render({
-      defaultHomeActiveTabName: '',
+      defaultHomeActiveTabName: null,
       onTabClick: jest.fn(),
       setBasicFunctionalityModalOpen: jest.fn(),
       onSupportLinkClick: jest.fn(),

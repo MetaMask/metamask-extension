@@ -1,8 +1,8 @@
-import { BigNumber } from 'ethers';
+import { BigNumber } from 'bignumber.js';
+import { zeroAddress } from 'ethereumjs-util';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import { zeroAddress } from '../../__mocks__/ethereumjs-util';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import * as tokenutil from '../../../shared/lib/token-util';
 import useLatestBalance from './useLatestBalance';
@@ -47,8 +47,8 @@ describe('useLatestBalance', () => {
     global.ethereumProvider = provider as any;
   });
 
-  it('returns formattedBalance for native asset in current chain', async () => {
-    mockGetBalance.mockResolvedValue(BigNumber.from('1000000000000000000'));
+  it('returns balanceAmount for native asset in current chain', async () => {
+    mockGetBalance.mockResolvedValue(new BigNumber('1000000000000000000'));
 
     const { result, waitForNextUpdate } = renderUseLatestBalance(
       { address: zeroAddress(), decimals: 18 },
@@ -57,17 +57,17 @@ describe('useLatestBalance', () => {
     );
 
     await waitForNextUpdate();
-    expect(result.current.formattedBalance).toStrictEqual('1');
+    expect(result.current.balanceAmount).toStrictEqual(new BigNumber('1'));
 
     expect(mockGetBalance).toHaveBeenCalledTimes(1);
     expect(mockGetBalance).toHaveBeenCalledWith(
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
     );
     expect(mockFetchTokenBalance).toHaveBeenCalledTimes(0);
   });
 
-  it('returns formattedBalance for ERC20 asset in current chain', async () => {
-    mockFetchTokenBalance.mockResolvedValueOnce(BigNumber.from('15390000'));
+  it('returns balanceAmount for ERC20 asset in current chain', async () => {
+    mockFetchTokenBalance.mockResolvedValueOnce(new BigNumber('15390000'));
 
     const { result, waitForNextUpdate } = renderUseLatestBalance(
       { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', decimals: '6' },
@@ -76,7 +76,7 @@ describe('useLatestBalance', () => {
     );
 
     await waitForNextUpdate();
-    expect(result.current.formattedBalance).toStrictEqual('15.39');
+    expect(result.current.balanceAmount).toStrictEqual(new BigNumber('15.39'));
 
     expect(mockFetchTokenBalance).toHaveBeenCalledTimes(1);
     expect(mockFetchTokenBalance).toHaveBeenCalledWith(

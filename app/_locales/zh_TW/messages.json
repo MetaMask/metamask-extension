@@ -425,10 +425,6 @@
     "message": "代碼：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "錯誤詳細資訊",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "訊息：$1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -436,14 +432,6 @@
   "errorName": {
     "message": "代碼：$1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "重新整理頁面然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "重新開啟彈跳視窗然後再試一次，或從$1聯絡我們尋求支援。",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask 遭遇錯誤",
@@ -711,9 +699,6 @@
   "loading": {
     "message": "載入..."
   },
-  "loadingTokens": {
-    "message": "載入代幣..."
-  },
   "lock": {
     "message": "鎖定"
   },
@@ -826,9 +811,6 @@
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
-  },
-  "noTransactions": {
-    "message": "尚未有交易"
   },
   "noWebcamFound": {
     "message": "無法搜尋到攝影鏡頭裝置。請再試一次"
@@ -1386,10 +1368,6 @@
   },
   "whatsThis": {
     "message": "這是什麼？"
-  },
-  "xOfYPending": {
-    "message": "$1 之 $2 等待中",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要准許存取攝影鏡頭才能啟用此功能"

@@ -2,9 +2,9 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import ExperimentalSettings from '../../page-objects/pages/experimental-settings';
+import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings-page';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
@@ -56,7 +56,9 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
 
         // Disconnect from Test Dapp and reconnect to Test Dapp
         await testDapp.disconnectAccount(newPublicKey);
-        await testDapp.connectAccount(newPublicKey);
+        await testDapp.connectAccount({
+          publicAddress: newPublicKey,
+        });
 
         // SignTypedDataV4 with Test Dapp
         await signTypedDataV4WithSnapAccount(driver, newPublicKey, false, true);
