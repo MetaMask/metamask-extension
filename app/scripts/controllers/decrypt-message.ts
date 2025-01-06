@@ -10,7 +10,10 @@ import {
   DecryptMessageParams,
   DecryptMessageParamsMetamask,
 } from '@metamask/message-manager';
-import type { DecryptMessageManagerMessenger } from '@metamask/message-manager';
+import type {
+  DecryptMessageManagerMessenger,
+  DecryptMessageManagerState,
+} from '@metamask/message-manager';
 import {
   BaseController,
   RestrictedControllerMessenger,
@@ -86,19 +89,20 @@ export type DecryptMessageControllerState = {
   unapprovedDecryptMsgCount: number;
 };
 
-export type GetDecryptMessageState = {
+export type GetDecryptMessageControllerState = {
   type: `${typeof controllerName}:getState`;
   handler: () => DecryptMessageControllerState;
 };
 
-export type DecryptMessageStateChange = {
+export type DecryptMessageControllerStateChange = {
   type: `${typeof controllerName}:stateChange`;
   payload: [DecryptMessageControllerState, Patch[]];
 };
 
-export type DecryptMessageControllerActions = GetDecryptMessageState;
+export type DecryptMessageControllerActions = GetDecryptMessageControllerState;
 
-export type DecryptMessageControllerEvents = DecryptMessageStateChange;
+export type DecryptMessageControllerEvents =
+  DecryptMessageControllerStateChange;
 
 type AllowedActions =
   | AddApprovalRequest
@@ -106,12 +110,19 @@ type AllowedActions =
   | RejectRequest
   | KeyringControllerDecryptMessageAction;
 
+type DecryptMessageStateChangeEvent = {
+  type: `DecryptMessageManager:stateChange`;
+  payload: [DecryptMessageManagerState, Patch[]];
+};
+
+type AllowedEvents = DecryptMessageStateChangeEvent;
+
 export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   DecryptMessageControllerActions | AllowedActions,
-  DecryptMessageControllerEvents,
+  DecryptMessageControllerEvents | AllowedEvents,
   AllowedActions['type'],
-  never
+  AllowedEvents['type']
 >;
 
 export type DecryptMessageControllerOptions = {
@@ -169,7 +180,8 @@ export default class DecryptMessageController extends BaseController<
     this.hub = new EventEmitter();
 
     this._decryptMessageManager = new DecryptMessageManager({
-      messenger: messenger as unknown as DecryptMessageManagerMessenger,
+      messenger: messenger,
+      name: 'DecryptMessageManager',
       additionalFinishStatuses: ['decrypted'],
     });
 
@@ -185,7 +197,7 @@ export default class DecryptMessageController extends BaseController<
     );
 
     this._subscribeToMessageState(
-      messenger as unknown as DecryptMessageManagerMessenger,
+      messenger,
       (state, newMessages, messageCount) => {
         state.unapprovedDecryptMsgs = newMessages;
         state.unapprovedDecryptMsgCount = messageCount;
@@ -347,7 +359,7 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _subscribeToMessageState(
-    controllerMessenger: DecryptMessageManagerMessenger,
+    controllerMessenger: DecryptMessageControllerMessenger,
     updateState: (
       state: DecryptMessageControllerState,
       newMessages: Record<string, StateMessage>,

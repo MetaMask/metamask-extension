@@ -5793,9 +5793,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:@metamask-previews/message-manager@11.0.3-preview-19e52ec0":
-  version: 11.0.3-preview-19e52ec0
-  resolution: "@metamask-previews/message-manager@npm:11.0.3-preview-19e52ec0"
+"@metamask/message-manager@npm:@metamask-previews/message-manager@11.0.3-preview-9e831370":
+  version: 11.0.3-preview-9e831370
+  resolution: "@metamask-previews/message-manager@npm:11.0.3-preview-9e831370"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
     "@metamask/controller-utils": "npm:^11.4.4"
@@ -5804,11 +5804,11 @@ __metadata:
     "@types/uuid": "npm:^8.3.0"
     jsonschema: "npm:^1.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/9f1327791c2e351f7e2d9d6d9f1cfc4a4e9e91bbe6b8b85ab57238883f00371d0a316a18a43e77bb6ed23a64c58b22b293fca08bc5048f4c4919b596a1b798dd
+  checksum: 10/b9899f4e70681e2dc95827dd09fd7b5f5e8b43e60f7c5eda3c14edbab6ac7b7ba289fc80af1a346ef7308a469101ef8516a8e3f0d2114596766b40aa95f50df2
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^11.0.2":
+"@metamask/message-manager@npm:^11.0.3":
   version: 11.0.3
   resolution: "@metamask/message-manager@npm:11.0.3"
   dependencies:
