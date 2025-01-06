@@ -146,12 +146,13 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getLocalizedSnapManifest,
   stripSnapPrefix,
+  ///: END:ONLY_INCLUDE_IF
+  isSnapId,
 } from '@metamask/snaps-utils';
-///: END:ONLY_INCLUDE_IF
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
@@ -245,8 +246,6 @@ import {
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
-// eslint-disable-next-line import/no-restricted-paths
-import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
