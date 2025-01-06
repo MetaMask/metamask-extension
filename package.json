@@ -250,7 +250,7 @@
     "secp256k1@npm:^4.0.1": "4.0.4",
     "secp256k1@npm:4.0.2": "4.0.4",
     "secp256k1@npm:4.0.3": "4.0.4",
-    "@metamask/accounts-controller@^20.0.2": "npm:@metamask-previews/accounts-controller@20.0.2-preview-28a9753"
+    "@metamask/accounts-controller@^20.0.2": "npm:@metamask-previews/accounts-controller@20.0.2-preview-04aeed55"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
