@@ -133,6 +133,7 @@ export type DecryptMessageControllerOptions = {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
+  managerMessenger: DecryptMessageManagerMessenger;
 };
 
 /**
@@ -167,6 +168,7 @@ export default class DecryptMessageController extends BaseController<
     getState,
     metricsEvent,
     messenger,
+    managerMessenger,
   }: DecryptMessageControllerOptions) {
     super({
       metadata: stateMetadata,
@@ -180,7 +182,7 @@ export default class DecryptMessageController extends BaseController<
     this.hub = new EventEmitter();
 
     this._decryptMessageManager = new DecryptMessageManager({
-      messenger: messenger,
+      messenger: managerMessenger,
       name: 'DecryptMessageManager',
       additionalFinishStatuses: ['decrypted'],
     });

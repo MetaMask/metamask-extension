@@ -10,7 +10,10 @@ import {
   AbstractMessageParamsMetamask,
   OriginalRequest,
 } from '@metamask/message-manager';
-import type { EncryptionPublicKeyManagerMessenger } from '@metamask/message-manager';
+import type {
+  EncryptionPublicKeyManagerMessenger,
+  EncryptionPublicKeyManagerState,
+} from '@metamask/message-manager';
 import {
   BaseController,
   RestrictedControllerMessenger,
@@ -56,30 +59,38 @@ export type EncryptionPublicKeyControllerState = {
   unapprovedEncryptionPublicKeyMsgCount: number;
 };
 
-export type GetEncryptionPublicKeyState = {
+export type GetEncryptionPublicKeyControllerState = {
   type: `${typeof controllerName}:getState`;
   handler: () => EncryptionPublicKeyControllerState;
 };
 
-export type EncryptionPublicKeyStateChange = {
+export type EncryptionPublicKeyControllerStateChange = {
   type: `${typeof controllerName}:stateChange`;
   payload: [EncryptionPublicKeyControllerState, Patch[]];
 };
 
-export type EncryptionPublicKeyControllerActions = GetEncryptionPublicKeyState;
+export type EncryptionPublicKeyControllerActions =
+  GetEncryptionPublicKeyControllerState;
 
 export type EncryptionPublicKeyControllerEvents =
-  EncryptionPublicKeyStateChange;
+  EncryptionPublicKeyControllerStateChange;
+
+type EncryptionPublicKeyManagerStateChange = {
+  type: `EncryptionPublicKeyManager:stateChange`;
+  payload: [EncryptionPublicKeyManagerState, Patch[]];
+};
 
 type AllowedActions = AddApprovalRequest | AcceptRequest | RejectRequest;
+
+type AllowedEvents = EncryptionPublicKeyManagerStateChange;
 
 export type EncryptionPublicKeyControllerMessenger =
   RestrictedControllerMessenger<
     typeof controllerName,
     EncryptionPublicKeyControllerActions | AllowedActions,
-    EncryptionPublicKeyControllerEvents,
+    EncryptionPublicKeyControllerEvents | AllowedEvents,
     AllowedActions['type'],
-    never
+    AllowedEvents['type']
   >;
 
 export type EncryptionPublicKeyControllerOptions = {
@@ -92,6 +103,7 @@ export type EncryptionPublicKeyControllerOptions = {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
+  managerMessenger: EncryptionPublicKeyManagerMessenger;
 };
 
 /**
@@ -130,6 +142,7 @@ export default class EncryptionPublicKeyController extends BaseController<
    */
   constructor({
     messenger,
+    managerMessenger,
     getEncryptionPublicKey,
     getAccountKeyringType,
     getState,
@@ -149,8 +162,9 @@ export default class EncryptionPublicKeyController extends BaseController<
 
     this.hub = new EventEmitter();
     this._encryptionPublicKeyManager = new EncryptionPublicKeyManager({
-      messenger: messenger as unknown as EncryptionPublicKeyManagerMessenger,
       additionalFinishStatuses: ['received'],
+      messenger: managerMessenger,
+      name: 'EncryptionPublicKeyManager',
     });
 
     this._encryptionPublicKeyManager.hub.on('updateBadge', () => {
@@ -337,7 +351,7 @@ export default class EncryptionPublicKeyController extends BaseController<
   }
 
   private _subscribeToMessageState(
-    controllerMessenger: EncryptionPublicKeyManagerMessenger,
+    controllerMessenger: EncryptionPublicKeyControllerMessenger,
     updateState: (
       state: EncryptionPublicKeyControllerState,
       newMessages: Record<string, StateMessage>,
