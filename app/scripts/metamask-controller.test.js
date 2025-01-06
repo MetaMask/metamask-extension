@@ -953,6 +953,66 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#requestPermissionApprovalForOrigin', () => {
+      it('requests permissions for the origin from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue();
+
+        await metamaskController.requestPermissionApprovalForOrigin(
+          'test.com',
+          {
+            eth_accounts: {},
+          },
+        );
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'test.com',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'test.com',
+              },
+              permissions: {
+                eth_accounts: {},
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+
+        const [params] =
+          metamaskController.approvalController.addAndShowApprovalRequest.mock
+            .calls[0];
+        expect(params.id).toStrictEqual(params.requestData.metadata.id);
+      });
+
+      it('returns the result from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue('approvalResult');
+
+        const result =
+          await metamaskController.requestPermissionApprovalForOrigin(
+            'test.com',
+            {
+              eth_accounts: {},
+            },
+          );
+
+        expect(result).toStrictEqual('approvalResult');
+      });
+    });
     describe('#requestCaip25Permission', () => {
       it('requests approval with well formed id and origin', async () => {
         jest
@@ -1484,12 +1544,9 @@ describe('MetaMaskController', () => {
     });
 
     describe('requestApprovalPermittedChainsPermission', () => {
-      it('requests approval with well formed id and origin', async () => {
+      it('requests approval', async () => {
         jest
-          .spyOn(
-            metamaskController.approvalController,
-            'addAndShowApprovalRequest',
-          )
+          .spyOn(metamaskController, 'requestPermissionApprovalForOrigin')
           .mockResolvedValue();
 
         await metamaskController.requestApprovalPermittedChainsPermission(
@@ -1498,43 +1555,22 @@ describe('MetaMaskController', () => {
         );
 
         expect(
-          metamaskController.approvalController.addAndShowApprovalRequest,
-        ).toHaveBeenCalledWith(
-          expect.objectContaining({
-            id: expect.stringMatching(/.{21}/u),
-            origin: 'test.com',
-            requestData: expect.objectContaining({
-              metadata: {
-                id: expect.stringMatching(/.{21}/u),
-                origin: 'test.com',
+          metamaskController.requestPermissionApprovalForOrigin,
+        ).toHaveBeenCalledWith('test.com', {
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              {
+                type: CaveatTypes.restrictNetworkSwitching,
+                value: ['0x1'],
               },
-              permissions: {
-                [PermissionNames.permittedChains]: {
-                  caveats: [
-                    {
-                      type: CaveatTypes.restrictNetworkSwitching,
-                      value: ['0x1'],
-                    },
-                  ],
-                },
-              },
-            }),
-            type: 'wallet_requestPermissions',
-          }),
-        );
-
-        const [params] =
-          metamaskController.approvalController.addAndShowApprovalRequest.mock
-            .calls[0];
-        expect(params.id).toStrictEqual(params.requestData.metadata.id);
+            ],
+          },
+        });
       });
 
       it('throws if the approval is rejected', async () => {
         jest
-          .spyOn(
-            metamaskController.approvalController,
-            'addAndShowApprovalRequest',
-          )
+          .spyOn(metamaskController, 'requestPermissionApprovalForOrigin')
           .mockRejectedValue(new Error('approval rejected'));
 
         await expect(() =>

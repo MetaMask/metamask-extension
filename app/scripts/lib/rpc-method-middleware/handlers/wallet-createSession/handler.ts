@@ -14,7 +14,7 @@ import {
   getSessionScopes,
   NormalizedScopesObject,
   InternalScopeString,
-  filterScopeObjectsSupported,
+  getSupportedScopeObjects,
 } from '@metamask/multichain';
 import {
   Caveat,
@@ -67,7 +67,7 @@ type AbstractPermissionController = PermissionController<
  * @param hooks.removeNetwork
  * @param hooks.addNetwork
  * @param hooks.findNetworkClientIdByChainId
- * @param hooks.requestPermissionApprovalForOrigin
+ * @param hooks.requestPermissionApproval
  * @param hooks.sendMetrics
  * @param hooks.metamaskState
  * @param hooks.metamaskState.metaMetricsId
@@ -88,7 +88,7 @@ async function walletCreateSessionHandler(
     removeNetwork: NetworkController['removeNetwork'];
     addNetwork: NetworkController['addNetwork'];
     findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
-    requestPermissionApprovalForOrigin: (
+    requestPermissionApproval: (
       requestedPermissions: RequestedPermissions,
     ) => Promise<{ approvedAccounts: Hex[]; approvedChainIds: Hex[] }>;
     sendMetrics: (
@@ -132,10 +132,10 @@ async function walletCreateSessionHandler(
       scopedProperties as ScopedProperties,
     );
 
-    const supportedRequiredScopesObjects = filterScopeObjectsSupported(
+    const supportedRequiredScopesObjects = getSupportedScopeObjects(
       normalizedRequiredScopes,
     );
-    const supportedOptionalScopesObjects = filterScopeObjectsSupported(
+    const supportedOptionalScopesObjects = getSupportedScopeObjects(
       normalizedOptionalScopes,
     );
 
@@ -197,7 +197,7 @@ async function walletCreateSessionHandler(
       optionalScopes: supportedOptionalScopes,
     });
 
-    const legacyApproval = await hooks.requestPermissionApprovalForOrigin({
+    const legacyApproval = await hooks.requestPermissionApproval({
       [PermissionNames.eth_accounts]: {
         caveats: [
           {
@@ -316,7 +316,7 @@ export const walletCreateSession = {
     findNetworkClientIdByChainId: true,
     listAccounts: true,
     addNetwork: true,
-    requestPermissionApprovalForOrigin: true,
+    requestPermissionApproval: true,
     grantPermissions: true,
     sendMetrics: true,
     metamaskState: true,

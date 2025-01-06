@@ -143,12 +143,13 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getLocalizedSnapManifest,
   stripSnapPrefix,
+  ///: END:ONLY_INCLUDE_IF
+  isSnapId,
 } from '@metamask/snaps-utils';
-///: END:ONLY_INCLUDE_IF
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
@@ -267,8 +268,6 @@ import {
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { endTrace, trace } from '../../shared/lib/trace';
-// eslint-disable-next-line import/no-restricted-paths
-import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
@@ -5525,37 +5524,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Prompts the user with permittedChains approval for given chainId.
-   *
-   * @param {string} origin - The origin to request approval for.
-   * @param {Hex} chainId - The chainId to add incrementally.
-   */
-  async requestApprovalPermittedChainsPermission(origin, chainId) {
-    const id = nanoid();
-    await this.approvalController.addAndShowApprovalRequest({
-      id,
-      origin,
-      requestData: {
-        metadata: {
-          id,
-          origin,
-        },
-        permissions: {
-          [PermissionNames.permittedChains]: {
-            caveats: [
-              {
-                type: CaveatTypes.restrictNetworkSwitching,
-                value: [chainId],
-              },
-            ],
-          },
-        },
-      },
-      type: MethodNames.RequestPermissions,
-    });
-  }
-
-  /**
    * Requests approval for permissions for the specified origin
    *
    * @param origin - The origin to request approval for.
@@ -5574,6 +5542,25 @@ export default class MetamaskController extends EventEmitter {
         permissions,
       },
       type: MethodNames.RequestPermissions,
+    });
+  }
+
+  /**
+   * Prompts the user with permittedChains approval for given chainId.
+   *
+   * @param {string} origin - The origin to request approval for.
+   * @param {Hex} chainId - The chainId to add incrementally.
+   */
+  async requestApprovalPermittedChainsPermission(origin, chainId) {
+    await this.requestPermissionApprovalForOrigin(origin, {
+      [PermissionNames.permittedChains]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: [chainId],
+          },
+        ],
+      },
     });
   }
 
@@ -5708,20 +5695,10 @@ export default class MetamaskController extends EventEmitter {
       delete permissions[PermissionNames.permittedChains];
     }
 
-    const id = nanoid();
-    const legacyApproval =
-      await this.approvalController.addAndShowApprovalRequest({
-        id,
-        origin,
-        requestData: {
-          metadata: {
-            id,
-            origin,
-          },
-          permissions,
-        },
-        type: MethodNames.RequestPermissions,
-      });
+    const legacyApproval = await this.requestPermissionApprovalForOrigin(
+      origin,
+      permissions,
+    );
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -6875,8 +6852,10 @@ export default class MetamaskController extends EventEmitter {
         removeNetwork: this.networkController.removeNetwork.bind(
           this.networkController,
         ),
-        requestPermissionApprovalForOrigin:
-          this.requestPermissionApprovalForOrigin.bind(this, origin),
+        requestPermissionApproval: this.requestPermissionApprovalForOrigin.bind(
+          this,
+          origin,
+        ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
