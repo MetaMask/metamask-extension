@@ -1,18 +1,16 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
+import { Nft } from '@metamask/assets-controllers';
 import {
   AlignItems,
-  BlockSize,
   Display,
   FlexDirection,
-  FlexWrap,
   JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
@@ -21,28 +19,10 @@ import {
   getUseNftDetection,
   getNftIsStillFetchingIndication,
 } from '../../../../../selectors';
-import {
-  checkAndUpdateAllNftsOwnershipStatus,
-  detectNfts,
-  showImportNftsModal,
-} from '../../../../../store/actions';
-import {
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  IconName,
-  Text,
-} from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
-import NftsItems from '../nfts-items';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
-///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ORIGIN_METAMASK,
-} from '../../../../../../shared/constants/app';
+import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -51,19 +31,13 @@ import { getCurrentLocale } from '../../../../../ducks/locale/locale';
 import Spinner from '../../../../ui/spinner';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
-import { Nft } from '@metamask/assets-controllers';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { Hex } from '@metamask/utils';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { NftItem } from '../../../../multichain/nft-item';
-import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
-  const history = useHistory();
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
@@ -77,18 +51,7 @@ export default function NftsTab() {
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
 
-  const { loading, currentlyOwnedNfts, previouslyOwnedNfts } = useNfts();
-
-  const onEnableAutoDetect = () => {
-    history.push(SECURITY_ROUTE);
-  };
-
-  const onRefresh = () => {
-    if (isMainnet) {
-      dispatch(detectNfts());
-    }
-    checkAndUpdateAllNftsOwnershipStatus();
-  };
+  const { currentlyOwnedNfts } = useNfts();
 
   const hasAnyNfts = Object.keys(collections).length > 0;
   const showNftBanner = hasAnyNfts === false;

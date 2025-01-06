@@ -4,15 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { Hex } from '@metamask/utils';
 import {
-  JustifyContent,
-  AlignItems,
-  IconColor,
   Display,
   FlexWrap,
   BlockSize,
   FlexDirection,
-  TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 // TODO: Remove restricted import
@@ -34,7 +29,7 @@ import { updateNftDropDownState } from '../../../../../store/actions';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Box, Icon, IconName, Text } from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import { NftItem } from '../../../../multichain/nft-item';
 import {
   getSendAnalyticProperties,
@@ -52,7 +47,6 @@ import {
   NFT,
 } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { PreviouslyOwnedCollections } from '../../../../multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-nft-tab';
-import { CollectionImageComponent } from './collection-image.component';
 
 type NftsItemsProps = {
   collections: Record<string, Collection>;
@@ -177,22 +171,6 @@ export default function NftsItems({
 
   const history = useHistory();
 
-  const updateNftDropDownStateKey = (key: Hex, isExpanded: boolean) => {
-    const newCurrentAccountState = {
-      ...nftsDropdownState?.[selectedAddress]?.[chainId],
-      [key]: !isExpanded,
-    };
-
-    const newState = {
-      ...nftsDropdownState,
-      [selectedAddress]: {
-        [chainId]: newCurrentAccountState,
-      },
-    };
-
-    dispatch(updateNftDropDownState(newState));
-  };
-
   const onSendNft = async (nft: NFT) => {
     trackEvent(
       {
@@ -223,9 +201,6 @@ export default function NftsItems({
 
   const renderCollection = ({
     nfts,
-    collectionName,
-    collectionImage,
-    key,
   }: Collection & { key: string; isPreviouslyOwnedCollection: boolean }) => {
     if (!nfts.length) {
       return null;

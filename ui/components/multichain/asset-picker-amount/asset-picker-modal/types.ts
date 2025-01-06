@@ -20,7 +20,7 @@ export type NFT = {
   standard: TokenStandard;
   tokenId: number;
   tokenURI?: string;
-  type: AssetType.NFT;
+  type?: AssetType.NFT;
   symbol?: string;
   imageOriginal?: string;
   ipfsImageUpdated?: string;

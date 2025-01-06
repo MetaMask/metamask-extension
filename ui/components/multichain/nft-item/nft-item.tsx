@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import { Nft } from '@metamask/assets-controllers';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import {
   AvatarNetwork,
@@ -12,7 +13,6 @@ import {
 } from '../../component-library';
 import {
   BackgroundColor,
-  Color,
   Display,
   JustifyContent,
   TextColor,
@@ -23,10 +23,9 @@ import {
   getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
-import { Nft } from '@metamask/assets-controllers';
 
 type NftItemProps = {
-  nft: Nft;
+  nft?: Nft;
   alt: string;
   src: string | undefined;
   name?: string;
@@ -113,14 +112,14 @@ export const NftItem = ({
         </BadgeWrapper>
       </Box>
       <Text variant={TextVariant.bodySm} color={TextColor.textDefault} ellipsis>
-        {nft.name}
+        {nft?.name}
       </Text>
       <Text
         variant={TextVariant.bodySm}
         color={TextColor.textAlternative}
         ellipsis
       >
-        # {nft.tokenId}
+        # {nft?.tokenId}
       </Text>
     </Box>
   );
