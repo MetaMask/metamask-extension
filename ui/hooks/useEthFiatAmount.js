@@ -1,8 +1,11 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getCurrentCurrency, getShouldShowFiat } from '../selectors';
+import { getShouldShowFiat } from '../selectors';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { getConversionRate } from '../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../ducks/metamask/metamask';
 import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
 
 /**

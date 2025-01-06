@@ -3,7 +3,10 @@ import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { createProjectLogger, Hex } from '@metamask/utils';
-import { QuoteMetadata, QuoteResponse } from '../types';
+import type {
+  QuoteMetadata,
+  QuoteResponse,
+} from '../../../../shared/types/bridge';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -16,6 +19,7 @@ import { isHardwareWallet } from '../../../selectors';
 import { getQuoteRequest } from '../../../ducks/bridge/selectors';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
@@ -73,6 +77,7 @@ export default function useSubmitBridgeTransaction() {
     } catch (e) {
       debugLog('Approve transaction failed', e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
+        dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
         await dispatch(setDefaultHomeActiveTabName('activity'));
@@ -108,6 +113,7 @@ export default function useSubmitBridgeTransaction() {
     } catch (e) {
       debugLog('Bridge transaction failed', e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
+        dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
         await dispatch(setDefaultHomeActiveTabName('activity'));
