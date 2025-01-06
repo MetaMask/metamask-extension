@@ -179,7 +179,7 @@ export default class EncryptionPublicKeyController extends BaseController<
     );
 
     this._subscribeToMessageState(
-      messenger as unknown as EncryptionPublicKeyManagerMessenger,
+      messenger,
       (state, newMessages, messageCount) => {
         state.unapprovedEncryptionPublicKeyMsgs = newMessages;
         state.unapprovedEncryptionPublicKeyMsgCount = messageCount;
