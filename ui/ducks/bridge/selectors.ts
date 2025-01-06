@@ -25,7 +25,11 @@ import {
   getProviderConfig,
   getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
-import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
+import {
+  getConversionRate,
+  getGasFeeEstimates,
+  MetaMaskSliceControllerState,
+} from '../metamask/metamask';
 import {
   type L1GasFees,
   type BridgeToken,
@@ -51,25 +55,12 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
-import { BackgroundStateProxy } from '../../../shared/types/metamask';
 import { MetaMaskReduxState } from '../../store/store';
 import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
 } from './utils';
-import { BridgeSlice } from './bridge';
-
-type BridgeAppState = {
-  metamask: Pick<
-    BackgroundStateProxy,
-    | 'BridgeController'
-    | 'NetworkController'
-    | 'PreferencesController'
-    | 'CurrencyController'
-  >;
-  bridge: BridgeSlice;
-};
 
 // only includes networks user has added
 export const getAllBridgeableNetworks = createDeepEqualSelector(
@@ -128,17 +119,17 @@ export const getToChains = createDeepEqualSelector(
 
 export const getToChain = createDeepEqualSelector(
   getToChains,
-  (state: BridgeAppState) => state.bridge.toChainId,
+  (state: Pick<MetaMaskReduxState, 'bridge'>) => state.bridge.toChainId,
   (toChains, toChainId): NetworkConfiguration | AddNetworkFields | undefined =>
     toChains.find(({ chainId }) => chainId === toChainId),
 );
 
 export const getFromTokens = createDeepEqualSelector(
-  (state: BridgeAppState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.srcTokens,
-  (state: BridgeAppState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.srcTopAssets,
-  (state: BridgeAppState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.srcTokensLoadingStatus ===
     RequestStatus.LOADING,
   (fromTokens, fromTopAssets, isLoading) => {
@@ -151,11 +142,11 @@ export const getFromTokens = createDeepEqualSelector(
 );
 
 export const getToTokens = createDeepEqualSelector(
-  (state: BridgeAppState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.destTokens,
-  (state: BridgeAppState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.destTopAssets,
-  (state: BridgeAppState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.destTokensLoadingStatus ===
     RequestStatus.LOADING,
   (toTokens, toTopAssets, isLoading) => {
@@ -168,7 +159,7 @@ export const getToTokens = createDeepEqualSelector(
 );
 
 export const getFromToken = createSelector(
-  (state: BridgeAppState) => state.bridge.fromToken,
+  (state: Pick<MetaMaskReduxState, 'bridge'>) => state.bridge.fromToken,
   getFromChain,
   (fromToken, fromChain): BridgeToken => {
     if (!fromChain?.chainId) {
@@ -193,21 +184,29 @@ export const getFromToken = createSelector(
   },
 );
 
-export const getToToken = (state: BridgeAppState): BridgeToken => {
+export const getToToken = (
+  state: Pick<MetaMaskReduxState, 'bridge'>,
+): BridgeToken => {
   return state.bridge.toToken;
 };
 
-export const getFromAmount = (state: MetaMaskReduxState): string | null =>
-  state.bridge.fromTokenInputValue;
+export const getFromAmount = (
+  state: Pick<MetaMaskReduxState, 'bridge'>,
+): string | null => state.bridge.fromTokenInputValue;
 
-export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
+export const getSlippage = (state: Pick<MetaMaskReduxState, 'bridge'>) =>
+  state.bridge.slippage;
 
-export const getQuoteRequest = (state: BridgeAppState) => {
+export const getQuoteRequest = (
+  state: MetaMaskSliceControllerState<'BridgeController'>,
+) => {
   const { quoteRequest } = state.metamask.BridgeController.bridgeState;
   return quoteRequest;
 };
 
-export const getBridgeQuotesConfig = (state: MetaMaskReduxState) =>
+export const getBridgeQuotesConfig = (
+  state: MetaMaskSliceControllerState<'BridgeController'>,
+) =>
   state.metamask.BridgeController.bridgeState?.bridgeFeatureFlags[
     BridgeFeatureFlagsKey.EXTENSION_CONFIG
   ] ?? {};
@@ -231,7 +230,7 @@ const _getBridgeFeesPerGas = createSelector(
   }),
 );
 
-export const getBridgeSortOrder = (state: MetaMaskReduxState) =>
+export const getBridgeSortOrder = (state: Pick<MetaMaskReduxState, 'bridge'>) =>
   state.bridge.sortOrder;
 
 export const getFromTokenConversionRate = createSelector(
@@ -321,7 +320,7 @@ export const getToTokenConversionRate = createDeepEqualSelector(
 );
 
 const _getQuotesWithMetadata = createSelector(
-  (state: { metamask: Pick<BackgroundStateProxy, 'BridgeController'> }) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.quotes,
   getToTokenConversionRate,
   getFromTokenConversionRate,
@@ -350,7 +349,7 @@ const _getQuotesWithMetadata = createSelector(
         maxPriorityFeePerGasInDecGwei,
         nativeExchangeRate,
       });
-      const relayerFee = calcRelayerFee(quote, nativeExchangeRate);
+      const relayerFee = calcRelayerFee(quote, nativeExchangeRate ?? undefined);
       const totalEstimatedNetworkFee = {
         amount: gasFee.amount.plus(relayerFee.amount),
         valueInCurrency:
@@ -420,9 +419,9 @@ const _getQuoteIdentifier = ({ quote }: QuoteResponse & L1GasFees) =>
   `${quote.bridgeId}-${quote.bridges[0]}-${quote.steps.length}`;
 
 const _getSelectedQuote = createSelector(
-  (state: MetaMaskReduxState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.quotesRefreshCount,
-  (state: MetaMaskReduxState) => state.bridge.selectedQuote,
+  (state: Pick<MetaMaskReduxState, 'bridge'>) => state.bridge.selectedQuote,
   _getSortedQuotesWithMetadata,
   (quotesRefreshCount, selectedQuote, sortedQuotesWithMetadata) =>
     quotesRefreshCount <= 1
@@ -438,15 +437,16 @@ const _getSelectedQuote = createSelector(
 export const getBridgeQuotes = createSelector(
   _getSortedQuotesWithMetadata,
   _getSelectedQuote,
-  (state) => state.metamask.BridgeController.bridgeState.quotesLastFetched,
-  (state) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
+    state.metamask.BridgeController.bridgeState.quotesLastFetched,
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.quotesLoadingStatus ===
     RequestStatus.LOADING,
-  (state: MetaMaskReduxState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.quotesRefreshCount,
-  (state: MetaMaskReduxState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.quotesInitialLoadTime,
-  (state: MetaMaskReduxState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.quoteFetchError,
   getBridgeQuotesConfig,
   getQuoteRequest,
@@ -478,7 +478,8 @@ export const getBridgeQuotes = createSelector(
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,
   getToChain,
-  (state: MetaMaskReduxState) => getIsBridgeEnabled(state),
+  (state: Parameters<typeof getIsBridgeEnabled>[0]) =>
+    getIsBridgeEnabled(state),
   (fromChain, toChain, isBridgeEnabled: boolean) =>
     isBridgeEnabled && toChain && fromChain?.chainId
       ? fromChain.chainId !== toChain.chainId
@@ -487,7 +488,7 @@ export const getIsBridgeTx = createDeepEqualSelector(
 
 const _getValidatedSrcAmount = createSelector(
   getFromToken,
-  (state: MetaMaskReduxState) =>
+  (state: MetaMaskSliceControllerState<'BridgeController'>) =>
     state.metamask.BridgeController.bridgeState.quoteRequest.srcTokenAmount,
   (fromToken, srcTokenAmount) =>
     srcTokenAmount && fromToken?.decimals
@@ -571,6 +572,8 @@ export const getValidationErrors = createDeepEqualSelector(
   },
 );
 
-export const getWasTxDeclined = (state: BridgeAppState): boolean => {
+export const getWasTxDeclined = (
+  state: Pick<MetaMaskReduxState, 'bridge'>,
+): boolean => {
   return state.bridge.wasTxDeclined;
 };
