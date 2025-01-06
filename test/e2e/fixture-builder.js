@@ -1615,6 +1615,69 @@ class FixtureBuilder {
     });
   }
 
+  withPopularNetworks() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        'op-mainnet': {
+          chainId: CHAIN_IDS.OPTIMISM,
+          nickname: 'OP Mainnet',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.optimism.io',
+          ticker: 'ETH',
+          id: 'op-mainnet',
+        },
+        'polygon-mainnet': {
+          chainId: CHAIN_IDS.POLYGON,
+          nickname: 'Polygon Mainnet',
+          rpcPrefs: {},
+          rpcUrl: 'https://polygon-rpc.com',
+          ticker: 'MATIC',
+          id: 'polygon-mainnet',
+        },
+        'arbitrum-one': {
+          chainId: CHAIN_IDS.ARBITRUM,
+          nickname: 'Arbitrum One',
+          rpcPrefs: {},
+          rpcUrl: 'https://arb1.arbitrum.io/rpc',
+          ticker: 'ETH',
+          id: 'arbitrum-one',
+        },
+        'avalanche-mainnet': {
+          chainId: CHAIN_IDS.AVALANCHE,
+          nickname: 'Avalanche Network C-Chain',
+          rpcPrefs: {},
+          rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+          ticker: 'AVAX',
+          id: 'avalanche-mainnet',
+        },
+        'bnb-mainnet': {
+          chainId: CHAIN_IDS.BSC,
+          nickname: 'BNB Chain',
+          rpcPrefs: {},
+          rpcUrl: 'https://bsc-dataseed.binance.org',
+          ticker: 'BNB',
+          id: 'bnb-mainnet',
+        },
+        'base-mainnet': {
+          chainId: CHAIN_IDS.BASE,
+          nickname: 'Base',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.base.org',
+          ticker: 'ETH',
+          id: 'base-mainnet',
+        },
+        'zksync-mainnet': {
+          chainId: CHAIN_IDS.ZKSYNC_ERA,
+          nickname: 'zkSync Era',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.era.zksync.io',
+          ticker: 'ETH',
+          id: 'zksync-mainnet',
+        },
+      },
+    });
+  }
+
   build() {
     this.fixture.meta = {
       version: FIXTURE_STATE_METADATA_VERSION,

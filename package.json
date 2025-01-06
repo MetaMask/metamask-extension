@@ -39,6 +39,7 @@
     "build:test:webpack": "BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn env:e2e webpack --test --browser=chrome --no-cache --lockdown --sentry --snow",
     "test": "yarn lint && yarn test:unit",
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
+    "dapp-multichain": "node development/static-server.js node_modules/@metamask/test-dapp-multichain/build --port 8080",
     "dapp-chain": "GANACHE_ARGS='-b 2' concurrently -k -n ganache,dapp -p '[{time}][{name}]' 'yarn ganache:start' 'sleep 5 && yarn dapp'",
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
@@ -479,6 +480,7 @@
     "@metamask/preferences-controller": "^15.0.1",
     "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "8.13.0",
+    "@metamask/test-dapp-multichain": "^0.5.0",
     "@octokit/core": "^3.6.0",
     "@open-rpc/meta-schema": "^1.14.6",
     "@open-rpc/mock-server": "^1.7.5",
@@ -770,6 +772,7 @@
       "level>classic-level": false,
       "jest-preview": false,
       "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false,
+      "@metamask/test-dapp-multichain>react-scripts>react-app-polyfill>core-js": false,
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
     }
   },
