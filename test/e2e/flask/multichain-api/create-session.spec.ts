@@ -12,7 +12,6 @@ import {
   getExpectedSessionScope,
   addAccountInWalletAndAuthorize,
   updateNetworkCheckboxes,
-  MULTIPLE_GANACHE_OPTIONS,
 } from './testHelpers';
 
 describe('Multichain API', function () {
@@ -76,7 +75,6 @@ describe('Multichain API', function () {
             .withTrezorAccount()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-          ...MULTIPLE_GANACHE_OPTIONS,
         },
         async ({
           driver,
@@ -205,7 +203,6 @@ describe('Multichain API', function () {
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-            ...MULTIPLE_GANACHE_OPTIONS,
           },
           async ({
             driver,
@@ -308,7 +305,6 @@ describe('Multichain API', function () {
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-            ...MULTIPLE_GANACHE_OPTIONS,
           },
           async ({
             driver,
