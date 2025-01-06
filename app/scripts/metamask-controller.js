@@ -5951,6 +5951,9 @@ export default class MetamaskController extends EventEmitter {
       shouldEnqueueRequest: (request) => {
         return methodsThatShouldBeEnqueued.includes(request.method);
       },
+      // This will be removed once we can actually remove useRequestQueue state
+      // i.e. unrevert https://github.com/MetaMask/core/pull/5065
+      useRequestQueue: () => true,
     });
     engine.push(requestQueueMiddleware);
 
