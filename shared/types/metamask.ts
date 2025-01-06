@@ -164,8 +164,8 @@ import AppMetadataController, {
 } from '../../app/scripts/controllers/app-metadata';
 import { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
 
-import { BridgeControllerState } from './bridge';
-import { BridgeStatusControllerState } from './bridge-status';
+import { BridgeControllerState as BridgeState } from './bridge';
+import { BridgeStatusControllerState as BridgeStatusState } from './bridge-status';
 import {
   CustodyControllerState,
   InstitutionalFeaturesControllerState,
@@ -193,8 +193,8 @@ export type ResetOnRestartStoresComposedState = {
   EncryptionPublicKeyController: EncryptionPublicKeyControllerState;
   SignatureController: SignatureControllerState;
   SwapsController: SwapsControllerState;
-  BridgeController: BridgeControllerState;
-  BridgeStatusController: BridgeStatusControllerState;
+  BridgeController: { bridgeState: BridgeState };
+  BridgeStatusController: { bridgeStatus: BridgeStatusState };
   EnsController: EnsControllerState;
   ApprovalController: ApprovalControllerState;
   PPOMController: PPOMState;
