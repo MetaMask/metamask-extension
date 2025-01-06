@@ -79,10 +79,26 @@ export class SignUpPage {
     this.enableBtn = page.locator('button:has-text("Enable")');
   }
 
-  async importWallet() {
+  private async handleTermsModal() {
+    await this.page.waitForSelector('[data-testid="terms-of-use-modal-body"]');
+    await this.page.evaluate(() => {
+      const modalBody = document.querySelector(
+        '[data-testid="terms-of-use-modal-body"]',
+      );
+      if (modalBody) {
+        modalBody.scrollTo({
+          top: modalBody.scrollHeight,
+          behavior: 'instant',
+        });
+      }
+    });
     await this.agreeTandCCheck.click();
-    await this.importWalletBtn.click();
     await this.agreeBtn.click();
+  }
+
+  async importWallet() {
+    await this.importWalletBtn.click();
+    await this.handleTermsModal();
 
     const seeds = SEED_PHRASE?.trim().split(/\s+/u);
     for (const [index, element] of (seeds as string[]).entries()) {
@@ -101,8 +117,8 @@ export class SignUpPage {
   }
 
   async createWallet() {
-    await this.agreeTandCCheck.click();
     await this.createWalletBtn.click();
+    await this.handleTermsModal();
     await this.metametricsBtn.click();
     await this.passwordTxt.fill(ACCOUNT_PASSWORD as string);
     await this.passwordConfirmTxt.fill(ACCOUNT_PASSWORD as string);
