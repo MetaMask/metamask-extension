@@ -3,7 +3,7 @@ name: Close release bug report issue when release branch gets merged
 on:
   pull_request:
     branches:
-      - master
+      - stable
     types:
       - closed
 

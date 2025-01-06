@@ -3,8 +3,8 @@ name: Main
 on:
   push:
     branches:
-      - develop
-      - master
+      - main
+      - stable
   pull_request:
     types:
       - opened

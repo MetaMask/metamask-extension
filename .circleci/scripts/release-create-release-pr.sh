@@ -26,7 +26,7 @@ function install_github_cli ()
 }
 
 version="${CIRCLE_BRANCH/Version-v/}"
-base_branch='master'
+base_branch='stable'
 
 if [[ -n "${CI_PULL_REQUEST:-}" ]]
 then
