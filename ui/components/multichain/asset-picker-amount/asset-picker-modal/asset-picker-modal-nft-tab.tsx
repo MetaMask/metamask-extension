@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import NftsItems from '../../../app/assets/nfts/nfts-items/nfts-items';
+// import NftsItems from '../../../app/assets/nfts/nfts-items/nfts-items';
 import {
   Box,
   Text,
@@ -99,7 +99,7 @@ export function AssetPickerModalNftTab({
     return (
       <Box className="modal-tab__main-view">
         {renderSearch()}
-        <NftsItems
+        {/* <NftsItems
           // @ts-expect-error: Do we want a mapping or an array?
           collections={collectionDataFiltered}
           previouslyOwnedCollection={previouslyOwnedCollection}
@@ -107,7 +107,7 @@ export function AssetPickerModalNftTab({
           onCloseModal={() => onClose()}
           showTokenId={true}
           displayPreviouslyOwnedCollection={false}
-        />
+        /> */}
         {nftsStillFetchingIndication ? (
           <Box className="modal-tab__fetching">
             <Spinner
