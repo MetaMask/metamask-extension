@@ -22,6 +22,12 @@ class ExperimentalSettings {
   private readonly requestQueueToggle =
     '[data-testid="experimental-setting-toggle-request-queue"] label';
 
+  private readonly watchAccountToggleState =
+    '[data-testid="watch-account-toggle"]';
+
+  private readonly watchAccountToggle =
+    '[data-testid="watch-account-toggle-div"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -37,6 +43,15 @@ class ExperimentalSettings {
       throw e;
     }
     console.log('Experimental Settings page is loaded');
+  }
+
+  // Get the state of the Watch Account Toggle, returns true if the toggle is selected
+  async getWatchAccountToggleState(): Promise<boolean> {
+    console.log('Get Watch Account Toggle State');
+    const toggleInput = await this.driver.findElement(
+      this.watchAccountToggleState,
+    );
+    return toggleInput.isSelected();
   }
 
   async toggleBitcoinAccount(): Promise<void> {
@@ -61,6 +76,11 @@ class ExperimentalSettings {
   async toggleRequestQueue(): Promise<void> {
     console.log('Toggle Request Queue on experimental setting page');
     await this.driver.clickElement(this.requestQueueToggle);
+  }
+
+  async toggleWatchAccount(): Promise<void> {
+    console.log('Toggle Watch Account on experimental setting page');
+    await this.driver.clickElement(this.watchAccountToggle);
   }
 }
 

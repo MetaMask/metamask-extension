@@ -250,6 +250,10 @@ import { isSnapId } from '../../ui/helpers/utils/snaps';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
+import {
+  BridgeUserAction,
+  BridgeBackgroundAction,
+} from '../../shared/types/bridge';
 import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -301,6 +305,7 @@ import {
   createUnsupportedMethodMiddleware,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
+import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { NetworkOrderController } from './controllers/network-order';
 import { AccountOrderController } from './controllers/account-order';
@@ -365,10 +370,6 @@ import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
 import { decodeTransactionData } from './lib/transaction/decode/util';
-import {
-  BridgeUserAction,
-  BridgeBackgroundAction,
-} from './controllers/bridge/types';
 import BridgeController from './controllers/bridge/bridge-controller';
 import { BRIDGE_CONTROLLER_NAME } from './controllers/bridge/constants';
 import {
@@ -5804,11 +5805,18 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
+    let mainFrameOrigin = origin;
+    if (sender.tab && sender.tab.url) {
+      // If sender origin is an iframe, then get the top-level frame's origin
+      mainFrameOrigin = new URL(sender.tab.url).origin;
+    }
+
     const engine = this.setupProviderEngineEip1193({
       origin,
       sender,
       subjectType,
       tabId,
+      mainFrameOrigin,
     });
 
     const dupeReqFilterStream = createDupeReqFilterStream();
@@ -5929,12 +5937,24 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {mainFrameOrigin} [options.mainFrameOrigin] - The origin of the main frame if the sender is an iframe
    */
-  setupProviderEngineEip1193({ origin, subjectType, sender, tabId }) {
+  setupProviderEngineEip1193({
+    origin,
+    subjectType,
+    sender,
+    tabId,
+    mainFrameOrigin,
+  }) {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
     engine.push(createOriginMiddleware({ origin }));
+
+    // Append mainFrameOrigin to each request if present
+    if (mainFrameOrigin) {
+      engine.push(createMainFrameOriginMiddleware({ mainFrameOrigin }));
+    }
 
     // Append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
