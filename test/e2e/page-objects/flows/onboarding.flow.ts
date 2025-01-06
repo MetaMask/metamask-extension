@@ -80,7 +80,6 @@ export const importSRPOnboardingFlow = async ({
 
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
-  await startOnboardingPage.checkTermsCheckbox();
   await startOnboardingPage.clickImportWalletButton();
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);

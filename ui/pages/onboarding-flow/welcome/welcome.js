@@ -332,6 +332,7 @@ export default function OnboardingWelcome() {
             </ModalHeader>
             <ModalBody
               ref={modalBodyRef}
+              data-testid="terms-of-use-modal-body"
               borderWidth={1}
               borderStyle={BorderStyle.Solid}
               borderColor={Color.borderDefault}
