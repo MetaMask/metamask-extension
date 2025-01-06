@@ -5524,14 +5524,14 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Prompts the user with permittedChains approval for given chainId.
+   * Requests approval for permissions for the specified origin
    *
-   * @param {string} origin - The origin to request approval for.
-   * @param {Hex} chainId - The chainId to add incrementally.
+   * @param origin - The origin to request approval for.
+   * @param permissions - The permissions to request approval for.
    */
-  async requestApprovalPermittedChainsPermission(origin, chainId) {
+  async requestPermissionApprovalForOrigin(origin, permissions) {
     const id = nanoid();
-    await this.approvalController.addAndShowApprovalRequest({
+    return this.approvalController.addAndShowApprovalRequest({
       id,
       origin,
       requestData: {
@@ -5539,18 +5539,28 @@ export default class MetamaskController extends EventEmitter {
           id,
           origin,
         },
-        permissions: {
-          [PermissionNames.permittedChains]: {
-            caveats: [
-              {
-                type: CaveatTypes.restrictNetworkSwitching,
-                value: [chainId],
-              },
-            ],
-          },
-        },
+        permissions,
       },
       type: MethodNames.RequestPermissions,
+    });
+  }
+
+  /**
+   * Prompts the user with permittedChains approval for given chainId.
+   *
+   * @param {string} origin - The origin to request approval for.
+   * @param {Hex} chainId - The chainId to add incrementally.
+   */
+  async requestApprovalPermittedChainsPermission(origin, chainId) {
+    await this.requestPermissionApprovalForOrigin(origin, {
+      [PermissionNames.permittedChains]: {
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: [chainId],
+          },
+        ],
+      },
     });
   }
 
@@ -5685,20 +5695,10 @@ export default class MetamaskController extends EventEmitter {
       delete permissions[PermissionNames.permittedChains];
     }
 
-    const id = nanoid();
-    const legacyApproval =
-      await this.approvalController.addAndShowApprovalRequest({
-        id,
-        origin,
-        requestData: {
-          metadata: {
-            id,
-            origin,
-          },
-          permissions,
-        },
-        type: MethodNames.RequestPermissions,
-      });
+    const legacyApproval = await this.requestPermissionApprovalForOrigin(
+      origin,
+      permissions,
+    );
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -6852,8 +6852,10 @@ export default class MetamaskController extends EventEmitter {
         removeNetwork: this.networkController.removeNetwork.bind(
           this.networkController,
         ),
-        requestPermissionApprovalForOrigin:
-          this.requestPermissionApprovalForOrigin.bind(this, origin),
+        requestPermissionApproval: this.requestPermissionApprovalForOrigin.bind(
+          this,
+          origin,
+        ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -6977,14 +6979,16 @@ export default class MetamaskController extends EventEmitter {
             this.alertController,
           ),
 
-        requestPermissionApprovalForOrigin:
-          this.requestPermissionApprovalForOrigin.bind(this, origin),
-        updateCaveat: this.permissionController.updateCaveat.bind(
-          this.permissionController,
-        ),
-        grantPermissions: this.permissionController.grantPermissions.bind(
-          this.permissionController,
-        ),
+        requestPermittedChainsPermissionForOrigin: (options) =>
+          this.requestPermittedChainsPermission({
+            ...options,
+            origin,
+          }),
+        requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
+          this.requestPermittedChainsPermissionIncremental({
+            ...options,
+            origin,
+          }),
       }),
     );
 
