@@ -74,7 +74,7 @@ export function createPPOMMiddleware<
 
       const { chainId } =
         getProviderConfig({
-          metamask: networkController.state,
+          metamask: { NetworkController: networkController.state },
         }) ?? {};
       if (!chainId) {
         return;
