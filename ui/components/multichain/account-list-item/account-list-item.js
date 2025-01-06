@@ -63,7 +63,7 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
-import { ConnectedStatus } from '../connected-status/connected-status';
+import { ConnectedStatus } from '../connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 import { useTheme } from '../../../hooks/useTheme';
@@ -377,8 +377,7 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {/* For non-EVM networks we always want to show tokens */}
-          {mappedOrderedTokenList.length > 1 || !isEvmNetwork ? (
+          {mappedOrderedTokenList.length > 1 ? (
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
             <Box
@@ -403,7 +402,7 @@ const AccountListItem = ({
                 <UserPreferencedCurrencyDisplay
                   account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={account.balance}
+                  value={isEvmNetwork ? account.balance : balanceToTranslate}
                   type={SECONDARY}
                   showNative
                   data-testid="second-currency-display"

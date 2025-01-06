@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   AlignItems,
@@ -172,6 +173,11 @@ export const ReviewPermissions = () => {
     setShowAccountToast(true);
   };
 
+  const hideAllToasts = () => {
+    setShowAccountToast(false);
+    setShowNetworkToast(false);
+  };
+
   return (
     <Page
       data-testid="connections-page"
@@ -192,6 +198,7 @@ export const ReviewPermissions = () => {
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
+              hideAllToasts={hideAllToasts}
             />
           ) : (
             <NoConnectionContent />
