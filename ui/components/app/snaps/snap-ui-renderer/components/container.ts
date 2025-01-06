@@ -78,7 +78,6 @@ export const container: UIComponentFactory<BoxElement> = ({
     props: {
       display: Display.Flex,
       flexDirection: FlexDirection.Column,
-      height: BlockSize.Full,
       className: 'snap-ui-renderer__container',
     },
   };
