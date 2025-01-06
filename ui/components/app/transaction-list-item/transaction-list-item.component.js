@@ -99,6 +99,7 @@ function TransactionListItemInner({
   const { bridgeTxHistoryItem, isBridgeComplete, showBridgeTxDetails } =
     useBridgeTxHistoryData({
       transactionGroup,
+      isEarliestNonce,
     });
 
   const {
@@ -329,7 +330,6 @@ function TransactionListItemInner({
             ///: END:ONLY_INCLUDE_IF
             <BadgeWrapper
               anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-              positionObj={{ top: -4, right: -4 }}
               display={Display.Block}
               badge={
                 <AvatarNetwork
@@ -338,7 +338,6 @@ function TransactionListItemInner({
                   size={AvatarNetworkSize.Xs}
                   name={currentChain?.nickname}
                   src={currentChain?.rpcPrefs?.imageUrl}
-                  borderWidth={1}
                   borderColor={BackgroundColor.backgroundDefault}
                   backgroundColor={testNetworkBackgroundColor}
                 />
@@ -460,6 +459,7 @@ function TransactionListItemInner({
             !hasCancelled &&
             !isBridgeTx
           }
+          showErrorBanner={Boolean(error)}
           transactionStatus={() => (
             <TransactionStatusLabel
               isPending={isPending}
@@ -468,6 +468,7 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
               statusOnly
+              shouldShowTooltip={false}
               ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
               custodyStatusDisplayText={

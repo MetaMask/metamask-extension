@@ -117,7 +117,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         {copyEnabled && (
           <CopyIcon
             copyText={copyText ?? ''}
-            style={{ right: isCollapsible ? 32 : 4, top: 4 }}
+            style={{ right: isCollapsible ? 32 : 4 }}
             color={IconColor.iconMuted}
           />
         )}
@@ -130,7 +130,6 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
               cursor: 'pointer',
               position: 'absolute',
               right: 8,
-              top: 4,
             }}
             onClick={() => setExpanded(!expanded)}
             data-testid="sectionCollapseButton"

@@ -12,9 +12,7 @@ import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
   fetchBridgeTokens,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/bridge/bridge.util';
+} from '../../../../shared/modules/bridge-utils/bridge.util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
@@ -23,30 +21,24 @@ import {
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
 import {
-  L1GasFees,
-  QuoteRequest,
-  QuoteResponse,
-  TxData,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/bridge/types';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { isValidQuoteRequest } from '../../../../ui/pages/bridge/utils/quote';
+  type L1GasFees,
+  type QuoteRequest,
+  type QuoteResponse,
+  type TxData,
+  type BridgeControllerState,
+  BridgeFeatureFlagsKey,
+  RequestStatus,
+} from '../../../../shared/types/bridge';
+import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
 import { hasSufficientBalance } from '../../../../shared/modules/bridge-utils/balance';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { REFRESH_INTERVAL_MS } from '../../../../shared/constants/bridge';
 import {
   BRIDGE_CONTROLLER_NAME,
   DEFAULT_BRIDGE_CONTROLLER_STATE,
-  REFRESH_INTERVAL_MS,
-  RequestStatus,
   METABRIDGE_CHAIN_TO_ADDRESS_MAP,
 } from './constants';
-import {
-  BridgeControllerState,
-  BridgeControllerMessenger,
-  BridgeFeatureFlagsKey,
-} from './types';
+import type { BridgeControllerMessenger } from './types';
 
 const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
   bridgeState: {
@@ -224,13 +216,35 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   };
 
   selectSrcNetwork = async (chainId: Hex) => {
-    await this.#setTopAssets(chainId, 'srcTopAssets');
-    await this.#setTokens(chainId, 'srcTokens');
+    this.update((state) => {
+      state.bridgeState.srcTokensLoadingStatus = RequestStatus.LOADING;
+      return state;
+    });
+    try {
+      await this.#setTopAssets(chainId, 'srcTopAssets');
+      await this.#setTokens(chainId, 'srcTokens');
+    } finally {
+      this.update((state) => {
+        state.bridgeState.srcTokensLoadingStatus = RequestStatus.FETCHED;
+        return state;
+      });
+    }
   };
 
   selectDestNetwork = async (chainId: Hex) => {
-    await this.#setTopAssets(chainId, 'destTopAssets');
-    await this.#setTokens(chainId, 'destTokens');
+    this.update((state) => {
+      state.bridgeState.destTokensLoadingStatus = RequestStatus.LOADING;
+      return state;
+    });
+    try {
+      await this.#setTopAssets(chainId, 'destTopAssets');
+      await this.#setTokens(chainId, 'destTokens');
+    } finally {
+      this.update((state) => {
+        state.bridgeState.destTokensLoadingStatus = RequestStatus.FETCHED;
+        return state;
+      });
+    }
   };
 
   #fetchBridgeQuotes = async ({

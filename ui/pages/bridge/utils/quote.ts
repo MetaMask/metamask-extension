@@ -1,7 +1,11 @@
 import { zeroAddress } from 'ethereumjs-util';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { QuoteResponse, QuoteRequest, Quote, L1GasFees } from '../types';
+import type {
+  QuoteResponse,
+  Quote,
+  L1GasFees,
+} from '../../../../shared/types/bridge';
 import {
   hexToDecimal,
   sumDecimals,
@@ -10,43 +14,21 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
+import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 
-export const isNativeAddress = (address?: string) => address === zeroAddress();
-
-export const isValidQuoteRequest = (
-  partialRequest: Partial<QuoteRequest>,
-  requireAmount = true,
-): partialRequest is QuoteRequest => {
-  const STRING_FIELDS = ['srcTokenAddress', 'destTokenAddress'];
-  if (requireAmount) {
-    STRING_FIELDS.push('srcTokenAmount');
-  }
-  const NUMBER_FIELDS = ['srcChainId', 'destChainId', 'slippage'];
-
-  return (
-    STRING_FIELDS.every(
-      (field) =>
-        field in partialRequest &&
-        typeof partialRequest[field as keyof typeof partialRequest] ===
-          'string' &&
-        partialRequest[field as keyof typeof partialRequest] !== undefined &&
-        partialRequest[field as keyof typeof partialRequest] !== '' &&
-        partialRequest[field as keyof typeof partialRequest] !== null,
-    ) &&
-    NUMBER_FIELDS.every(
-      (field) =>
-        field in partialRequest &&
-        typeof partialRequest[field as keyof typeof partialRequest] ===
-          'number' &&
-        partialRequest[field as keyof typeof partialRequest] !== undefined &&
-        !isNaN(Number(partialRequest[field as keyof typeof partialRequest])) &&
-        partialRequest[field as keyof typeof partialRequest] !== null,
-    ) &&
-    (requireAmount
-      ? Boolean((partialRequest.srcTokenAmount ?? '').match(/^[1-9]\d*$/u))
-      : true)
+export const isQuoteExpired = (
+  isQuoteGoingToRefresh: boolean,
+  refreshRate: number,
+  quotesLastFetchedMs?: number,
+) =>
+  Boolean(
+    !isQuoteGoingToRefresh &&
+      quotesLastFetchedMs &&
+      Date.now() - quotesLastFetchedMs > refreshRate,
   );
-};
+
+export const isNativeAddress = (address?: string | null) =>
+  address === zeroAddress() || address === '' || !address;
 
 export const calcToAmount = (
   { destTokenAmount, destAsset }: Quote,
@@ -104,32 +86,35 @@ export const calcRelayerFee = (
   };
 };
 
-export const calcTotalGasFee = (
-  bridgeQuote: QuoteResponse & L1GasFees,
-  estimatedBaseFeeInDecGwei: string,
-  maxPriorityFeePerGasInDecGwei: string,
-  nativeExchangeRate?: number,
-) => {
+const calcTotalGasFee = ({
+  bridgeQuote,
+  feePerGasInDecGwei,
+  priorityFeePerGasInDecGwei,
+  nativeExchangeRate,
+}: {
+  bridgeQuote: QuoteResponse & L1GasFees;
+  feePerGasInDecGwei: string;
+  priorityFeePerGasInDecGwei: string;
+  nativeExchangeRate?: number;
+}) => {
   const { approval, trade, l1GasFeesInHexWei } = bridgeQuote;
+
   const totalGasLimitInDec = sumDecimals(
     trade.gasLimit?.toString() ?? '0',
     approval?.gasLimit?.toString() ?? '0',
   );
-  const feePerGasInDecGwei = sumDecimals(
-    estimatedBaseFeeInDecGwei,
-    maxPriorityFeePerGasInDecGwei,
+  const totalFeePerGasInDecGwei = sumDecimals(
+    feePerGasInDecGwei,
+    priorityFeePerGasInDecGwei,
   );
-
   const l1GasFeesInDecGWei = Numeric.from(
     l1GasFeesInHexWei ?? '0',
     16,
     EtherDenomination.WEI,
   ).toDenomination(EtherDenomination.GWEI);
-
   const gasFeesInDecGwei = totalGasLimitInDec
-    .times(feePerGasInDecGwei)
+    .times(totalFeePerGasInDecGwei)
     .add(l1GasFeesInDecGWei);
-
   const gasFeesInDecEth = new BigNumber(
     gasFeesInDecGwei.shiftedBy(9).toString(),
   );
@@ -140,6 +125,40 @@ export const calcTotalGasFee = (
   return {
     amount: gasFeesInDecEth,
     valueInCurrency: gasFeesInUSD,
+  };
+};
+
+export const calcEstimatedAndMaxTotalGasFee = ({
+  bridgeQuote,
+  estimatedBaseFeeInDecGwei,
+  maxFeePerGasInDecGwei,
+  maxPriorityFeePerGasInDecGwei,
+  nativeExchangeRate,
+}: {
+  bridgeQuote: QuoteResponse & L1GasFees;
+  estimatedBaseFeeInDecGwei: string;
+  maxFeePerGasInDecGwei: string;
+  maxPriorityFeePerGasInDecGwei: string;
+  nativeExchangeRate?: number;
+}) => {
+  const { amount, valueInCurrency } = calcTotalGasFee({
+    bridgeQuote,
+    feePerGasInDecGwei: estimatedBaseFeeInDecGwei,
+    priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
+    nativeExchangeRate,
+  });
+  const { amount: amountMax, valueInCurrency: valueInCurrencyMax } =
+    calcTotalGasFee({
+      bridgeQuote,
+      feePerGasInDecGwei: maxFeePerGasInDecGwei,
+      priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
+      nativeExchangeRate,
+    });
+  return {
+    amount,
+    amountMax,
+    valueInCurrency,
+    valueInCurrencyMax,
   };
 };
 
@@ -168,14 +187,24 @@ export const calcCost = (
       : null,
 });
 
-export const formatEtaInMinutes = (estimatedProcessingTimeInSeconds: number) =>
-  (estimatedProcessingTimeInSeconds / 60).toFixed();
+export const formatEtaInMinutes = (
+  estimatedProcessingTimeInSeconds: number,
+) => {
+  if (estimatedProcessingTimeInSeconds < 60) {
+    return `< 1`;
+  }
+  return (estimatedProcessingTimeInSeconds / 60).toFixed();
+};
 
 export const formatTokenAmount = (
+  locale: string,
   amount: BigNumber,
-  symbol: string,
-  precision: number = 2,
-) => `${amount.toFixed(precision)} ${symbol}`;
+  symbol: string = '',
+) => {
+  const stringifiedAmount = formatAmount(locale, amount);
+
+  return [stringifiedAmount, symbol].join(' ').trim();
+};
 
 export const formatCurrencyAmount = (
   amount: BigNumber | null,
@@ -187,7 +216,7 @@ export const formatCurrencyAmount = (
   }
   if (precision === 0) {
     if (amount.lt(0.01)) {
-      return `<${formatCurrency('0', currency, precision)}`;
+      return '<$0.01';
     }
     if (amount.lt(1)) {
       return formatCurrency(amount.toString(), currency, 2);

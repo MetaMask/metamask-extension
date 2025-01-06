@@ -1,3 +1,4 @@
+import { toUnicode } from 'punycode/punycode.js';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -12,6 +13,7 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -49,6 +51,7 @@ import {
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
   TEST_NETWORK_IDS,
+  FEATURED_NETWORK_CHAIN_IDS,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -104,13 +107,12 @@ import {
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { BridgeFeatureFlagsKey } from '../../app/scripts/controllers/bridge/types';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
+import { BridgeFeatureFlagsKey } from '../../shared/types/bridge';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -125,7 +127,10 @@ import {
   getSubjectMetadata,
 } from './permissions';
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import {
+  getMultichainBalances,
+  getMultichainNetworkProviders,
+} from './multichain';
 
 export function getNetworkIdentifier(state) {
   const { type, nickname, rpcUrl } = getProviderConfig(state);
@@ -264,13 +269,13 @@ export const getMetaMaskAccounts = createSelector(
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
   getMultichainBalances,
-  getMultichainNetwork,
+  getMultichainNetworkProviders,
   (
     internalAccounts,
     balances,
     cachedBalances,
     multichainBalances,
-    multichainNetwork,
+    multichainNetworkProviders,
   ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
@@ -287,11 +292,14 @@ export const getMetaMaskAccounts = createSelector(
           };
         }
       } else {
+        const multichainNetwork = multichainNetworkProviders.find((network) =>
+          network.isAddressCompatible(internalAccount.address),
+        );
         account = {
           ...account,
           balance:
             multichainBalances?.[internalAccount.id]?.[
-              MultichainNativeAssets[multichainNetwork.chainId]
+              MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
             ]?.amount ?? '0',
         };
       }
@@ -724,7 +732,10 @@ export function getAddressBook(state) {
 
 export function getEnsResolutionByAddress(state, address) {
   if (state.metamask.ensResolutionsByAddress[address]) {
-    return state.metamask.ensResolutionsByAddress[address];
+    const ensResolution = state.metamask.ensResolutionsByAddress[address];
+    // ensResolution is a punycode encoded string hence toUnicode is used to decode it from same package
+    const normalizedEnsResolution = toUnicode(ensResolution);
+    return normalizedEnsResolution;
   }
 
   const entry =
@@ -956,16 +967,16 @@ export function getNftIsStillFetchingIndication(state) {
   return state.appState.isNftStillFetchingIndication;
 }
 
-export function getCurrentCurrency(state) {
-  return state.metamask.currentCurrency;
-}
-
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
 }
 
 export function getQueuedRequestCount(state) {
   return state.metamask.queuedRequestCount ?? 0;
+}
+
+export function getSlides(state) {
+  return state.metamask.slides || [];
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -1086,9 +1097,35 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   return false;
 }
 
+/**
+ * Returns an object indicating which networks
+ * tokens should be shown on in the portfolio view.
+ *
+ * @param {*} state
+ * @returns {Record<Hex, boolean>}
+ */
 export function getTokenNetworkFilter(state) {
+  const currentChainId = getCurrentChainId(state);
   const { tokenNetworkFilter } = getPreferences(state);
-  return tokenNetworkFilter || {};
+
+  // Portfolio view not enabled outside popular networks
+  if (
+    !process.env.PORTFOLIO_VIEW ||
+    !FEATURED_NETWORK_CHAIN_IDS.includes(currentChainId)
+  ) {
+    return { [currentChainId]: true };
+  }
+
+  // Portfolio view only enabled on featured networks
+  return Object.entries(tokenNetworkFilter || {}).reduce(
+    (acc, [chainId, value]) => {
+      if (FEATURED_NETWORK_CHAIN_IDS.includes(chainId)) {
+        acc[chainId] = value;
+      }
+      return acc;
+    },
+    {},
+  );
 }
 
 export function getUseTransactionSimulations(state) {
@@ -1295,7 +1332,7 @@ export const getAnySnapUpdateAvailable = createSelector(
 /**
  * Return if the snap branding should show in the UI.
  */
-export const getHideSnapBranding = createSelector(
+export const getHideSnapBranding = createDeepEqualSelector(
   [selectInstalledSnaps, selectSnapId],
   (installedSnaps, snapId) => {
     return installedSnaps[snapId]?.hideSnapBranding;
@@ -1883,6 +1920,19 @@ export const getInsightSnaps = createDeepEqualSelector(
   },
 );
 
+export const getSettingsPageSnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id, preinstalled }) =>
+        subjects[id]?.permissions[SnapEndowments.SettingsPage] &&
+        preinstalled &&
+        !isSnapIgnoredInProd(id),
+    );
+  },
+);
+
 export const getSignatureInsightSnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
@@ -1911,6 +1961,11 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
       .filter(({ id }) => subjects[id]?.permissions['endowment:name-lookup'])
       .map((snap) => snap.id);
   },
+);
+
+export const getSettingsPageSnapsIds = createDeepEqualSelector(
+  getSettingsPageSnaps,
+  (snaps) => snaps.map((snap) => snap.id),
 );
 
 export const getNotifySnaps = createDeepEqualSelector(
@@ -2364,7 +2419,9 @@ export const getAllChainsToPoll = createDeepEqualSelector(
     }
 
     return Object.keys(networkConfigurations).filter(
-      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+      (chainId) =>
+        chainId === currentChainId ||
+        FEATURED_NETWORK_CHAIN_IDS.includes(chainId),
     );
   },
 );
@@ -2386,7 +2443,9 @@ export const getChainIdsToPoll = createDeepEqualSelector(
     }
 
     return Object.keys(networkConfigurations).filter(
-      (chainId) => chainId === currentChainId || !TEST_CHAINS.includes(chainId),
+      (chainId) =>
+        chainId === currentChainId ||
+        FEATURED_NETWORK_CHAIN_IDS.includes(chainId),
     );
   },
 );
@@ -2414,7 +2473,10 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
 
     return Object.entries(networkConfigurations).reduce(
       (acc, [chainId, network]) => {
-        if (chainId === currentChainId || !TEST_CHAINS.includes(chainId)) {
+        if (
+          chainId === currentChainId ||
+          FEATURED_NETWORK_CHAIN_IDS.includes(chainId)
+        ) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,
