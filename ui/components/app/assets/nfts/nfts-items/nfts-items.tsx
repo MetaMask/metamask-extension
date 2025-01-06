@@ -104,6 +104,8 @@ export default function NftsItems({
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
+  console.log('COLLECTIONS: ', collections);
+
   useEffect(() => {
     if (
       chainId !== undefined &&
@@ -242,95 +244,50 @@ export default function NftsItems({
       return found?.ipfsImageUpdated || undefined;
     };
 
-    const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
+    console.log('NFTS: ', nfts);
+
     return (
-      <div className="nfts-items__collection" key={`collection-${key}`}>
-        <button
-          className="nfts-items__collection-wrapper"
-          data-testid="collection-expander-button"
-          onClick={() => {
-            updateNftDropDownStateKey(key as Hex, isExpanded);
-          }}
-        >
-          <Box
-            marginBottom={2}
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
-            className="nfts-items__collection-accordion-title"
-          >
+      <Box display={Display.Flex} flexWrap={FlexWrap.Wrap} gap={4}>
+        {nfts.map((nft, i) => {
+          const { image, address, tokenId, imageOriginal, tokenURI } = nft;
+          const nftImageAlt = getNftImageAlt(nft);
+          const isImageHosted =
+            image?.startsWith('https:') || image?.startsWith('http:');
+
+          const source = isImageHosted ? getSource(isImageHosted, nft) : '';
+
+          const isIpfsURL = (imageOriginal ?? image ?? tokenURI)?.startsWith(
+            'ipfs:',
+          );
+          const handleImageClick = () => {
+            if (isModal) {
+              return onSendNft(nft);
+            }
+            return history.push(
+              `${ASSET_ROUTE}/${currentChain.chainId}/${address}/${tokenId}`,
+            );
+          };
+          return (
             <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              className="nfts-items__collection-header"
+              data-testid="nft-wrapper"
+              width={width(isModal)}
+              key={`nft-${i}`}
+              className="nfts-items__item-wrapper"
             >
-              <CollectionImageComponent
-                collectionImage={collectionImage}
-                collectionName={collectionName}
+              <NftItem
+                alt={nftImageAlt}
+                src={source}
+                networkName={currentChain.nickname}
+                networkSrc={currentChain.rpcPrefs?.imageUrl}
+                onClick={handleImageClick}
+                isIpfsURL={isIpfsURL}
+                clickable
               />
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingSm}
-                margin={2}
-              >
-                {`${collectionName ?? t('unknownCollection')} (${nfts.length})`}
-              </Text>
+              {showTokenId ? <Text>{`${t('id')}: ${tokenId}`}</Text> : null}
             </Box>
-            <Box alignItems={AlignItems.flexEnd}>
-              <Icon
-                name={isExpanded ? IconName.ArrowDown : IconName.ArrowRight}
-                color={IconColor.iconDefault}
-              />
-            </Box>
-          </Box>
-        </button>
-
-        {isExpanded ? (
-          <Box display={Display.Flex} flexWrap={FlexWrap.Wrap} gap={4}>
-            {nfts.map((nft, i) => {
-              const { image, address, tokenId, imageOriginal, tokenURI } = nft;
-              const nftImageAlt = getNftImageAlt(nft);
-              const isImageHosted =
-                image?.startsWith('https:') || image?.startsWith('http:');
-
-              const source = isImageHosted ? getSource(isImageHosted, nft) : '';
-
-              const isIpfsURL = (
-                imageOriginal ??
-                image ??
-                tokenURI
-              )?.startsWith('ipfs:');
-              const handleImageClick = () => {
-                if (isModal) {
-                  return onSendNft(nft);
-                }
-                return history.push(
-                  `${ASSET_ROUTE}/${currentChain.chainId}/${address}/${tokenId}`,
-                );
-              };
-              return (
-                <Box
-                  data-testid="nft-wrapper"
-                  width={width(isModal)}
-                  key={`nft-${i}`}
-                  className="nfts-items__item-wrapper"
-                >
-                  <NftItem
-                    alt={nftImageAlt}
-                    src={source}
-                    networkName={currentChain.nickname}
-                    networkSrc={currentChain.rpcPrefs?.imageUrl}
-                    onClick={handleImageClick}
-                    isIpfsURL={isIpfsURL}
-                    clickable
-                  />
-                  {showTokenId ? <Text>{`${t('id')}: ${tokenId}`}</Text> : null}
-                </Box>
-              );
-            })}
-          </Box>
-        ) : null}
-      </div>
+          );
+        })}
+      </Box>
     );
   };
 

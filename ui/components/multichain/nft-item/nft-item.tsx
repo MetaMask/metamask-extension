@@ -8,19 +8,25 @@ import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
+  Text,
 } from '../../component-library';
 import {
   BackgroundColor,
+  Color,
   Display,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   getIpfsGateway,
   getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
+import { Nft } from '@metamask/assets-controllers';
 
 type NftItemProps = {
+  nft: Nft;
   alt: string;
   src: string | undefined;
   name?: string;
@@ -34,6 +40,7 @@ type NftItemProps = {
 };
 
 export const NftItem = ({
+  nft,
   alt,
   src,
   networkName,
@@ -70,39 +77,51 @@ export const NftItem = ({
     );
 
   return (
-    <Box
-      className="nft-item__container"
-      data-testid="nft-item"
-      as="button"
-      onClick={onClick}
-    >
-      <BadgeWrapper
-        className={classnames(
-          'nft-item__badge-wrapper',
-          badgeWrapperClassname,
-          {
-            'nft-item__badge-wrapper__clickable': Boolean(clickable),
-          },
-        )}
-        anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-        positionObj={{ top: -4, right: -4 }}
-        display={Display.Block}
-        badge={
-          <AvatarNetwork
-            className="nft-item__network-badge"
-            backgroundColor={testNetworkBackgroundColor}
-            data-testid="nft-network-badge"
-            size={AvatarNetworkSize.Sm}
-            name={networkName}
-            src={networkSrc}
-            borderWidth={2}
-            // @ts-expect-error: We are using BackgroundColor.backgroundDefault here because there is no equivalent BorderColor to get the "cutout" effect
-            borderColor={BackgroundColor.backgroundDefault}
-          />
-        }
+    <Box className="nft-item__card">
+      <Box
+        className="nft-item__container"
+        data-testid="nft-item"
+        as="button"
+        onClick={onClick}
       >
-        {nftImageComponentToRender}
-      </BadgeWrapper>
+        <BadgeWrapper
+          className={classnames(
+            'nft-item__badge-wrapper',
+            badgeWrapperClassname,
+            {
+              'nft-item__badge-wrapper__clickable': Boolean(clickable),
+            },
+          )}
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+          positionObj={{ top: -4, right: -4 }}
+          display={Display.Block}
+          badge={
+            <AvatarNetwork
+              className="nft-item__network-badge"
+              backgroundColor={testNetworkBackgroundColor}
+              data-testid="nft-network-badge"
+              size={AvatarNetworkSize.Sm}
+              name={networkName}
+              src={networkSrc}
+              borderWidth={2}
+              // @ts-expect-error: We are using BackgroundColor.backgroundDefault here because there is no equivalent BorderColor to get the "cutout" effect
+              borderColor={BackgroundColor.backgroundDefault}
+            />
+          }
+        >
+          {nftImageComponentToRender}
+        </BadgeWrapper>
+      </Box>
+      <Text variant={TextVariant.bodySm} color={TextColor.textDefault} ellipsis>
+        {nft.name}
+      </Text>
+      <Text
+        variant={TextVariant.bodySm}
+        color={TextColor.textAlternative}
+        ellipsis
+      >
+        # {nft.tokenId}
+      </Text>
     </Box>
   );
 };

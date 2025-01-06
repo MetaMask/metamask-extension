@@ -1,16 +1,17 @@
 .nft-item {
+  &__card {
+    cursor: pointer;
+  }
   &__container {
     width: 100%;
     padding: 0;
     border-radius: 8px;
-    cursor: unset;
   }
 
   &__badge-wrapper {
     max-width: 100%;
     position: relative;
     align-self: center;
-    cursor: unset;
 
     &__clickable {
       cursor: pointer;

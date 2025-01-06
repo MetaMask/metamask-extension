@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
+  FlexWrap,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -37,7 +39,10 @@ import NftsItems from '../nfts-items';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ORIGIN_METAMASK,
+} from '../../../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -45,6 +50,13 @@ import {
 import { getCurrentLocale } from '../../../../../ducks/locale/locale';
 import Spinner from '../../../../ui/spinner';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
+import { useNfts } from '../../../../../hooks/useNfts';
+import { Nft } from '@metamask/assets-controllers';
+import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { Hex } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { NftItem } from '../../../../multichain/nft-item';
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -56,9 +68,16 @@ export default function NftsTab() {
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
+  const currentChain = useSelector(getCurrentNetwork) as {
+    chainId: Hex;
+    nickname: string;
+    rpcPrefs?: { imageUrl: string };
+  };
 
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
+
+  const { loading, currentlyOwnedNfts, previouslyOwnedNfts } = useNfts();
 
   const onEnableAutoDetect = () => {
     history.push(SECURITY_ROUTE);
@@ -125,11 +144,39 @@ export default function NftsTab() {
           </Box>
         ) : null}
         {hasAnyNfts || previouslyOwnedCollection.nfts.length > 0 ? (
-          <Box>
-            <NftsItems
+          <Box display={Display.Grid} gap={4} className="nft-items__wrapper">
+            {/* <NftsItems
               collections={collections}
               previouslyOwnedCollection={previouslyOwnedCollection}
-            />
+            /> */}
+            {currentlyOwnedNfts.map((nft: Nft) => {
+              const { image, imageOriginal, tokenURI } = nft;
+              const nftImageAlt = getNftImageAlt(nft);
+
+              const isIpfsURL = (
+                imageOriginal ??
+                image ??
+                tokenURI
+              )?.startsWith('ipfs:');
+              return (
+                <Box
+                  data-testid="nft-wrapper"
+                  key={tokenURI}
+                  className="nft-items__image-wrapper"
+                >
+                  <NftItem
+                    nft={nft}
+                    alt={nftImageAlt}
+                    src={image ?? ''}
+                    networkName={currentChain.nickname}
+                    networkSrc={currentChain.rpcPrefs?.imageUrl}
+                    onClick={() => console.log('click')}
+                    isIpfsURL={isIpfsURL}
+                    clickable
+                  />
+                </Box>
+              );
+            })}
 
             {nftsStillFetchingIndication ? (
               <Box className="nfts-tab__fetching">
@@ -169,69 +216,10 @@ export default function NftsTab() {
                 >
                   {t('noNFTs')}
                 </Text>
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                  <ButtonLink
-                    size={ButtonLinkSize.Md}
-                    href={ZENDESK_URLS.NFT_TOKENS}
-                    externalLink
-                  >
-                    {t('learnMoreUpperCase')}
-                  </ButtonLink>
-                  ///: END:ONLY_INCLUDE_IF
-                }
               </Box>
             </Box>
           </>
         )}
-        <Box
-          className="nfts-tab__buttons"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexStart}
-          margin={4}
-          gap={2}
-          marginBottom={2}
-        >
-          <ButtonLink
-            size={ButtonLinkSize.Md}
-            data-testid="import-nft-button"
-            startIconName={IconName.Add}
-            onClick={() => {
-              dispatch(showImportNftsModal({}));
-            }}
-          >
-            {t('importNFT')}
-          </ButtonLink>
-          {!isMainnet && Object.keys(collections).length < 1 ? null : (
-            <>
-              <Box
-                className="nfts-tab__link"
-                justifyContent={JustifyContent.flexEnd}
-              >
-                {isMainnet && !useNftDetection ? (
-                  <ButtonLink
-                    size={ButtonLinkSize.Md}
-                    startIconName={IconName.Setting}
-                    data-testid="refresh-list-button"
-                    onClick={onEnableAutoDetect}
-                  >
-                    {t('enableAutoDetect')}
-                  </ButtonLink>
-                ) : (
-                  <ButtonLink
-                    size={ButtonLinkSize.Md}
-                    startIconName={IconName.Refresh}
-                    data-testid="refresh-list-button"
-                    onClick={onRefresh}
-                  >
-                    {t('refreshList')}
-                  </ButtonLink>
-                )}
-              </Box>
-            </>
-          )}
-        </Box>
       </Box>
     </>
   );
