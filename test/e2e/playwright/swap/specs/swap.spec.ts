@@ -61,9 +61,6 @@ test.beforeAll(
     const page = await extension.initExtension();
     page.setDefaultTimeout(15000);
 
-    const wallet = ethers.Wallet.createRandom();
-    await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
-
     const signUp = new SignUpPage(page);
     await signUp.createWallet();
 
@@ -71,12 +68,35 @@ test.beforeAll(
     swapPage = new SwapPage(page);
     activityListPage = new ActivityListPage(page);
     walletPage = new WalletPage(page);
-
-    await networkController.addCustomNetwork(Tenderly.Mainnet);
-    await walletPage.importAccount(wallet.privateKey);
-    expect(walletPage.accountMenu).toHaveText('Account 2', { timeout: 30000 });
   },
 );
+
+test(`Get Mainnet quote`, async () => {
+  await walletPage.selectSwapAction();
+  await walletPage.page.waitForTimeout(3000);
+  await swapPage.enterQuote({
+    from: 'ETH',
+    to: 'USDC',
+    qty: '.01',
+  });
+  await walletPage.page.waitForTimeout(3000);
+  const quoteFound = await swapPage.waitForQuote();
+  expect(quoteFound).toBeTruthy();
+  await swapPage.goBack();
+});
+
+test(`Add Tenderly and import test account`, async () => {
+  const wallet = ethers.Wallet.createRandom();
+  const response = await addFundsToAccount(
+    Tenderly.Mainnet.url,
+    wallet.address,
+  );
+  expect(response.error).toBeUndefined();
+
+  await networkController.addCustomNetwork(Tenderly.Mainnet);
+  await walletPage.importAccount(wallet.privateKey);
+  expect(walletPage.accountMenu).toHaveText('Account 2', { timeout: 30000 });
+});
 
 testSet.forEach((options) => {
   test(`should swap ${options.type} token ${options.source} to ${options.destination} on ${options.network.name}'`, async () => {

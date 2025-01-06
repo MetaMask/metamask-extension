@@ -77,9 +77,9 @@ export class SwapPage {
       .textContent();
     if (balanceString) {
       if (parseFloat(balanceString.split(' ')[1]) <= parseFloat(options.qty)) {
-        await this.goBack();
+        // await this.goBack();
         // not enough balance so cancel out
-        return false;
+        // return false;
       }
     }
 

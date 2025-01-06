@@ -1,5 +1,4 @@
 import axios from 'axios';
-import log from 'loglevel';
 
 export const Tenderly = {
   Mainnet: {
@@ -42,9 +41,5 @@ export async function addFundsToAccount(
     },
   });
 
-  if (response.data.error) {
-    log.error(
-      `\tERROR: RROR: Failed to add funds to Tenderly VirtualTestNet\n${response.data.error}`,
-    );
-  }
+  return response.data;
 }
