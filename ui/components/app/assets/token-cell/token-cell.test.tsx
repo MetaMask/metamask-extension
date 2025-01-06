@@ -5,7 +5,12 @@ import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { getTokenList, getPreferences } from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getTokenList,
+  getPreferences,
+  getCurrencyRates,
+} from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
@@ -116,6 +121,12 @@ describe('Token Cell', () => {
     }
     if (selector === getIntlLocale) {
       return 'en-US';
+    }
+    if (selector === getCurrentCurrency) {
+      return 'usd';
+    }
+    if (selector === getCurrencyRates) {
+      return { POL: '' };
     }
     return undefined;
   });

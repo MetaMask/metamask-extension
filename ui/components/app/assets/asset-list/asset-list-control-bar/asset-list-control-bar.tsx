@@ -2,14 +2,18 @@ import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
-  getNetworkConfigurationsByChainId,
-  getPreferences,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+  getSelectedInternalAccount,
+  getTokenNetworkFilter,
 } from '../../../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,
   ButtonBase,
   ButtonBaseSize,
+  Icon,
   IconName,
+  IconSize,
   Popover,
   PopoverPosition,
 } from '../../../../component-library';
@@ -24,7 +28,10 @@ import {
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { TEST_CHAINS } from '../../../../../../shared/constants/network';
+import {
+  FEATURED_NETWORK_CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -43,6 +50,8 @@ import {
   showImportTokensModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
+import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
+import { getMultichainNetwork } from '../../../../../selectors/multichain';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -55,25 +64,28 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
 
+  const account = useSelector(getSelectedInternalAccount);
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
+
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
   }, [currentNetwork.chainId, TEST_CHAINS]);
 
   const allOpts: Record<string, boolean> = {};
-  Object.keys(allNetworks).forEach((chainId) => {
+  Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
-
-  const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter).length !== Object.keys(allOpts).length;
 
   useEffect(() => {
     if (isTestNetwork) {
@@ -86,8 +98,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter).length === 0) {
+    if (
+      process.env.PORTFOLIO_VIEW &&
+      Object.keys(tokenNetworkFilter).length === 0
+    ) {
       dispatch(setTokenNetworkFilter(allOpts));
+    } else {
+      dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
     }
   }, []);
 
@@ -143,6 +160,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   const handleRefresh = () => {
     dispatch(detectTokens());
     closePopover();
+    trackEvent({
+      category: MetaMetricsEventCategory.Tokens,
+      event: MetaMetricsEventName.TokenListRefreshed,
+    });
   };
 
   return (
@@ -155,19 +176,23 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       <Box
         display={Display.Flex}
         justifyContent={
-          process.env.PORTFOLIO_VIEW
+          process.env.PORTFOLIO_VIEW && isEvmNetwork
             ? JustifyContent.spaceBetween
             : JustifyContent.flexEnd
         }
       >
-        {process.env.PORTFOLIO_VIEW && (
+        {/* TODO: Remove isEvmNetwork check when we are ready to show the network filter in all networks including non-EVM */}
+        {process.env.PORTFOLIO_VIEW && isEvmNetwork ? (
           <ButtonBase
-            data-testid="network-filter"
+            data-testid="sort-by-networks"
             variant={TextVariant.bodyMdMedium}
             className="asset-list-control-bar__button asset-list-control-bar__network_control"
             onClick={toggleNetworkFilterPopover}
             size={ButtonBaseSize.Sm}
-            disabled={isTestNetwork}
+            disabled={
+              isTestNetwork ||
+              !FEATURED_NETWORK_CHAIN_IDS.includes(currentNetwork.chainId)
+            }
             endIconName={IconName.ArrowDown}
             backgroundColor={
               isNetworkFilterPopoverOpen
@@ -178,11 +203,11 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
             marginRight={isFullScreen ? 2 : null}
             ellipsis
           >
-            {allNetworksFilterShown
+            {isTokenNetworkFilterEqualCurrentNetwork
               ? currentNetwork?.nickname ?? t('currentNetwork')
-              : t('allNetworks')}
+              : t('popularNetworks')}
           </ButtonBase>
-        )}
+        ) : null}
 
         <Box
           className="asset-list-control-bar__buttons"
@@ -195,7 +220,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
               className="asset-list-control-bar__button"
               onClick={toggleTokenSortPopover}
               size={ButtonBaseSize.Sm}
-              endIconName={IconName.SwapVertical}
+              startIconName={IconName.Filter}
+              startIconProps={{ marginInlineEnd: 0 }}
               backgroundColor={
                 isTokenSortPopoverOpen
                   ? BackgroundColor.backgroundPressed
@@ -218,13 +244,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isNetworkFilterPopoverOpen}
         position={PopoverPosition.BottomStart}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '250px' : '',
         }}
       >
         <NetworkFilter handleClose={closePopover} />
@@ -234,13 +260,13 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '250px' : '',
         }}
       >
         <SortControl handleClose={closePopover} />
@@ -251,19 +277,25 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={popoverRef.current}
-        matchWidth={!isFullScreen}
+        matchWidth={false}
         style={{
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          minWidth: isFullScreen ? '325px' : '',
+          minWidth: isFullScreen ? '158px' : '',
         }}
       >
         <SelectableListItem onClick={handleImport} testId="importTokens">
+          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
           {t('importTokensCamelCase')}
         </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
+          <Icon
+            name={IconName.Refresh}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
           {t('refreshList')}
         </SelectableListItem>
       </Popover>

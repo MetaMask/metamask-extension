@@ -2,7 +2,9 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import {
   getCurrentCurrency,
-  getNetworkConfigurationsByChainId,
+  getCurrencyRates,
+} from '../ducks/metamask/metamask';
+import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
 } from '../selectors';
@@ -10,9 +12,9 @@ import {
   getValueFromWeiHex,
   sumDecimals,
 } from '../../shared/modules/conversion.utils';
-import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { TokenWithBalance } from '../components/app/assets/asset-list/asset-list';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 
 type AddressBalances = {
   [address: string]: number;

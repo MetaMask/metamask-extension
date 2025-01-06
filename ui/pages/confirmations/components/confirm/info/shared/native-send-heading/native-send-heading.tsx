@@ -3,10 +3,11 @@ import { BigNumber } from 'bignumber.js';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
   TEST_CHAINS,
 } from '../../../../../../../../shared/constants/network';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -32,6 +33,7 @@ import {
 import { getMultichainNetwork } from '../../../../../../../selectors/multichain';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 
 const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
@@ -61,6 +63,13 @@ const NativeSendHeading = () => {
   const multichainNetwork = useSelector(getMultichainNetwork);
   const ticker = multichainNetwork?.network?.ticker;
 
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+
+  const network = networkConfigurationsByChainId?.[transactionMeta.chainId];
+  const { nativeCurrency } = network;
+
   const locale = useSelector(getIntlLocale);
   const roundedTransferValue = formatAmount(locale, nativeAssetTransferValue);
 
@@ -75,12 +84,11 @@ const NativeSendHeading = () => {
   const NetworkImage = (
     <AvatarToken
       src={
-        multichainNetwork?.network?.rpcPrefs?.imageUrl ||
-        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-          transactionMeta.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+        CHAIN_ID_TOKEN_IMAGE_MAP[
+          transactionMeta.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
         ]
       }
-      name={multichainNetwork?.nickname}
+      name={nativeCurrency}
       size={AvatarTokenSize.Xl}
       backgroundColor={BackgroundColor.backgroundDefault}
     />
@@ -113,6 +121,8 @@ const NativeSendHeading = () => {
         {fiatDisplayValue}
       </Text>
     );
+
+  useSendingValueMetric({ transactionMeta, fiatValue });
 
   return (
     <Box

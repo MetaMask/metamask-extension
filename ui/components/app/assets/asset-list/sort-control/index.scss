@@ -4,7 +4,7 @@
 
 .selectable-list-item {
   cursor: pointer;
-  padding: 12px 16px;
+  padding: 16px;
 
   &--selected {
     background: var(--color-primary-muted);
@@ -23,5 +23,10 @@
     position: absolute;
     top: 4px;
     left: 4px;
+  }
+
+  .currency-display-component__text,
+  .currency-display-component__suffix {
+    color: var(--color-text-alternative);
   }
 }

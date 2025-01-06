@@ -6,6 +6,7 @@ const {
   WINDOW_TITLES,
   generateGanacheOptions,
   clickNestedButton,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -28,6 +29,8 @@ describe('Failing contract interaction ', function () {
           smartContract,
         );
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
@@ -69,6 +72,15 @@ describe('Failing contract interaction ', function () {
           css: '.activity-list-item .transaction-status-label',
           text: 'Failed',
         });
+        // inspect transaction details
+        await driver.clickElement({
+          css: '.activity-list-item .transaction-status-label',
+          text: 'Failed',
+        });
+        await driver.waitForSelector('.transaction-list-item-details');
+        await driver.waitForSelector(
+          '[data-testid="transaction-list-item-details-banner-error-message"]',
+        );
       },
     );
   });
@@ -92,6 +104,8 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
           smartContract,
         );
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();

@@ -22,6 +22,7 @@ const middlewares = [thunk];
 
 const mockShowNetworkDropdown = jest.fn();
 const mockHideNetworkDropdown = jest.fn();
+const mockFetchWithCache = jest.fn();
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
@@ -34,6 +35,7 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 jest.mock('../../store/actions', () => ({
+  ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
@@ -90,6 +92,11 @@ jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
 
 jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
+);
+
+jest.mock(
+  '../../../shared/lib/fetch-with-cache',
+  () => () => mockFetchWithCache,
 );
 
 jest.mock('../../hooks/useMultiPolling', () => ({
@@ -205,7 +212,6 @@ describe('toast display', () => {
       announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
-      usedNetworks: [],
       pendingApprovals: {},
       pendingApprovalCount: 0,
       preferences: {
@@ -234,7 +240,6 @@ describe('toast display', () => {
       announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
-      usedNetworks: [],
       pendingApprovals: {},
       pendingApprovalCount: 0,
       swapsState: { swapsFeatureIsLive: true },

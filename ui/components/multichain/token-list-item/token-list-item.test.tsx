@@ -1,12 +1,17 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-
 import { fireEvent, waitFor } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import {
+  getCurrencyRates,
+  getNetworkConfigurationIdByChainId,
+} from '../../../selectors';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { TokenListItem } from '.';
 
 const state = {
@@ -55,6 +60,13 @@ jest.mock(
     }),
   }),
 );
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useSelector: jest.fn(),
+  };
+});
 
 const mockGetIntlLocale = getIntlLocale;
 const mockGetSafeChains = useSafeChains;
@@ -70,9 +82,19 @@ describe('TokenListItem', () => {
     tokenImage: '',
     title: '',
     chainId: '0x1',
+    tokenChainImage: './eth-logo.png',
   };
   it('should render correctly', () => {
     const store = configureMockStore()(state);
+    (useSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getNetworkConfigurationIdByChainId) {
+        return '0x1';
+      }
+      if (selector === getMultichainIsEvm) {
+        return true;
+      }
+      return undefined;
+    });
     const { getByTestId, container } = renderWithProvider(
       <TokenListItem {...props} />,
       store,
@@ -102,15 +124,25 @@ describe('TokenListItem', () => {
       title: '',
       chainId: '0x1',
     };
-    const { getByText } = renderWithProvider(
+    const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('should display warning scam modal', () => {
     const store = configureMockStore()(state);
+    (useSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getCurrencyRates) {
+        return { ETH: '' };
+      }
+      if (selector === getMultichainIsEvm) {
+        return true;
+      }
+      return undefined;
+    });
     const propsToUse = {
       primary: '11.9751 ETH',
       isNativeCurrency: true,
@@ -121,10 +153,11 @@ describe('TokenListItem', () => {
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
     };
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
+    expect(container).toMatchSnapshot();
 
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
@@ -149,11 +182,12 @@ describe('TokenListItem', () => {
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
     };
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
 
+    expect(container).toMatchSnapshot();
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
@@ -178,11 +212,12 @@ describe('TokenListItem', () => {
       chainId: '0x1',
     };
 
-    const { getByText } = renderWithProvider(
+    const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('handles click action and fires onClick', () => {
@@ -201,7 +236,7 @@ describe('TokenListItem', () => {
 
   it('handles clicking staking opens tab', async () => {
     const store = configureMockStore()(state);
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId, container } = renderWithProvider(
       <TokenListItem isStakeable {...props} />,
       store,
     );
@@ -212,6 +247,7 @@ describe('TokenListItem', () => {
 
     expect(stakeButton).toBeInTheDocument();
     expect(stakeButton).not.toBeDisabled();
+    expect(container).toMatchSnapshot();
 
     stakeButton && fireEvent.click(stakeButton);
     expect(openTabSpy).toHaveBeenCalledTimes(1);

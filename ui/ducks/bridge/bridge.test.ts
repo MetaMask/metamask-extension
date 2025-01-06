@@ -7,9 +7,9 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
+} from '../../../shared/types/bridge';
+import * as util from '../../helpers/utils/util';
+import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
 import bridgeReducer from './bridge';
 import {
   setBridgeFeatureFlags,
@@ -22,6 +22,9 @@ import {
   setToChainId,
   updateQuoteRequestParams,
   resetBridgeState,
+  setDestTokenExchangeRates,
+  setWasTxDeclined,
+  setSlippage,
 } from './actions';
 
 const middleware = [thunk];
@@ -32,6 +35,21 @@ describe('Ducks - Bridge', () => {
 
   beforeEach(() => {
     store.clearActions();
+  });
+
+  describe('setSlippage', () => {
+    it('calls the "bridge/setSlippage" action', () => {
+      const state = store.getState().bridge;
+      const actionPayload = 0.1;
+
+      store.dispatch(setSlippage(actionPayload as never) as never);
+
+      // Check redux state
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/setSlippage');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState.slippage).toStrictEqual(actionPayload);
+    });
   });
 
   describe('setToChainId', () => {
@@ -143,10 +161,17 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
+        selectedQuote: null,
         toChainId: null,
         fromToken: null,
         toToken: null,
+        slippage: BRIDGE_DEFAULT_SLIPPAGE,
         fromTokenInputValue: null,
+        sortOrder: 'cost_ascending',
+        toTokenExchangeRate: null,
+        fromTokenExchangeRate: null,
+        wasTxDeclined: false,
+        toTokenUsdExchangeRate: null,
       });
     });
   });
@@ -182,7 +207,9 @@ describe('Ducks - Bridge', () => {
     it('dispatches action to the bridge controller', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore({}, { fromTokenInputValue: '10' }),
+        createBridgeMockStore({
+          bridgeSliceOverrides: { fromTokenInputValue: '10' },
+        }),
       );
       const state = mockStore.getState().bridge;
       const mockResetBridgeState = jest.fn();
@@ -201,11 +228,119 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
-        toChainId: null,
         fromToken: null,
-        toToken: null,
+        fromTokenExchangeRate: null,
         fromTokenInputValue: null,
+        selectedQuote: null,
+        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        sortOrder: 'cost_ascending',
+        toChainId: null,
+        toToken: null,
+        toTokenExchangeRate: null,
+        wasTxDeclined: false,
+        toTokenUsdExchangeRate: null,
       });
+    });
+  });
+
+  describe('setDestTokenExchangeRates', () => {
+    it('fetches token prices and updates dest exchange rates in state, native dest token', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mockStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore(),
+      );
+      const state = mockStore.getState().bridge;
+      const fetchTokenExchangeRatesSpy = jest
+        .spyOn(util, 'fetchTokenExchangeRates')
+        .mockResolvedValue({
+          '0x0000000000000000000000000000000000000000': 0.356628,
+        });
+
+      await mockStore.dispatch(
+        setDestTokenExchangeRates({
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          tokenAddress: zeroAddress(),
+          currency: 'usd',
+        }) as never,
+      );
+
+      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledTimes(1);
+      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledWith(
+        'usd',
+        ['0x0000000000000000000000000000000000000000'],
+        CHAIN_IDS.LINEA_MAINNET,
+      );
+
+      const actions = mockStore.getActions();
+      expect(actions).toHaveLength(2);
+      expect(actions[0].type).toStrictEqual(
+        'bridge/setDestTokenExchangeRates/pending',
+      );
+      expect(actions[1].type).toStrictEqual(
+        'bridge/setDestTokenExchangeRates/fulfilled',
+      );
+      const newState = bridgeReducer(state, actions[1]);
+      expect(newState).toStrictEqual({
+        toChainId: null,
+        toTokenExchangeRate: 0.356628,
+        sortOrder: 'cost_ascending',
+      });
+    });
+
+    it('fetches token prices and updates dest exchange rates in state, erc20 dest token', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mockStore = configureMockStore<any>(middleware)(
+        createBridgeMockStore(),
+      );
+      const state = mockStore.getState().bridge;
+      const fetchTokenExchangeRatesSpy = jest
+        .spyOn(util, 'fetchTokenExchangeRates')
+        .mockResolvedValue({
+          '0x0000000000000000000000000000000000000000': 0.356628,
+          '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359': 0.999881,
+        });
+
+      await mockStore.dispatch(
+        setDestTokenExchangeRates({
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          tokenAddress:
+            '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'.toLowerCase(),
+          currency: 'usd',
+        }) as never,
+      );
+
+      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledTimes(1);
+      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledWith(
+        'usd',
+        ['0x3c499c542cef5e3811e1192ce70d8cc03d5c3359'],
+        CHAIN_IDS.LINEA_MAINNET,
+      );
+
+      const actions = mockStore.getActions();
+      expect(actions).toHaveLength(2);
+      expect(actions[0].type).toStrictEqual(
+        'bridge/setDestTokenExchangeRates/pending',
+      );
+      expect(actions[1].type).toStrictEqual(
+        'bridge/setDestTokenExchangeRates/fulfilled',
+      );
+      const newState = bridgeReducer(state, actions[1]);
+      expect(newState).toStrictEqual({
+        toChainId: null,
+        toTokenExchangeRate: 0.999881,
+        sortOrder: 'cost_ascending',
+      });
+    });
+  });
+
+  describe('setWasTxDeclined', () => {
+    it('sets the wasTxDeclined flag to true', () => {
+      const state = store.getState().bridge;
+      store.dispatch(setWasTxDeclined(true));
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/setWasTxDeclined');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState.wasTxDeclined).toStrictEqual(true);
     });
   });
 });

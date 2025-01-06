@@ -57,9 +57,9 @@ describe('TransactionList', () => {
     jest.clearAllMocks();
   });
 
-  it('renders TransactionList component and shows You have no transactions text', () => {
-    const { getByText } = render();
-    expect(getByText('You have no transactions')).toBeInTheDocument();
+  it('renders TransactionList component and does not show You have no transactions text', () => {
+    const { queryByText } = render();
+    expect(queryByText('You have no transactions')).toBeNull();
   });
 
   it('renders TransactionList component and shows Bitcoin activity is not supported text', () => {
@@ -84,5 +84,72 @@ describe('TransactionList', () => {
         url_domain: blockExplorerDomain,
       },
     });
+  });
+
+  it('renders TransactionList component and does not show Chain ID mismatch text if network name is not available', () => {
+    const store = configureStore(defaultState);
+
+    const { queryByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList tokenChainId="0x89" />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+    expect(
+      queryByText('Please switch network to view transactions'),
+    ).toBeNull();
+  });
+
+  it('renders TransactionList component and shows network name text', () => {
+    const defaultState2 = {
+      metamask: {
+        ...mockState.metamask,
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {
+          '0x1': {
+            blockExplorerUrls: [],
+            chainId: '0x1',
+            defaultRpcEndpointIndex: 0,
+            name: 'Mainnet',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
+              {
+                networkClientId: 'mainnet',
+                type: 'infura',
+                url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+              },
+            ],
+          },
+          '0xe708': {
+            blockExplorerUrls: [],
+            chainId: '0xe708',
+            defaultRpcEndpointIndex: 0,
+            name: 'Linea Mainnet',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
+              {
+                networkClientId: 'linea-mainnet',
+                type: 'infura',
+                url: 'https://linea-mainnet.infura.io/v3/{infuraProjectId}',
+              },
+            ],
+          },
+        },
+        transactions: [],
+      },
+    };
+    const store = configureStore(defaultState2);
+
+    const { queryByText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <TransactionList tokenChainId="0xe708" />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+    expect(
+      queryByText(
+        'Please switch to Linea Mainnet network to view transactions',
+      ),
+    ).toBeNull();
   });
 });

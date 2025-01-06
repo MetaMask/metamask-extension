@@ -28,6 +28,9 @@ const state = {
     url: 'https://metamask.github.io/test-dapp/',
   },
   metamask: {
+    bridgeStatusState: {
+      txHistory: {},
+    },
     announcements: {
       22: {
         id: 22,
@@ -700,6 +703,7 @@ const state = {
     useBlockie: false,
     featureFlags: {},
     welcomeScreenSeen: false,
+    slides: [],
     currentLocale: 'en',
     preferences: {
       showNativeTokenAsMainBalance: true,

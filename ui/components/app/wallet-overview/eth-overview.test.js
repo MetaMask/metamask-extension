@@ -1,12 +1,13 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, act } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import useMultiPolling from '../../../hooks/useMultiPolling';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -40,6 +41,11 @@ jest.mock('../../../store/actions', () => ({
   startNewDraftTransaction: jest.fn(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
+
+jest.mock('../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
 }));
 
 const mockGetIntlLocale = getIntlLocale;
@@ -160,6 +166,23 @@ describe('EthOverview', () => {
 
     beforeEach(() => {
       openTabSpy.mockClear();
+      // Clear previous mock implementations
+      useMultiPolling.mockClear();
+
+      // Mock implementation for useMultiPolling
+      useMultiPolling.mockImplementation(({ input }) => {
+        // Mock startPolling and stopPollingByPollingToken for each input
+        const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
+        const stopPollingByPollingToken = jest.fn();
+
+        input.forEach((inputItem) => {
+          const key = JSON.stringify(inputItem);
+          // Simulate returning a unique token for each input
+          startPolling.mockResolvedValueOnce(`mockToken-${key}`);
+        });
+
+        return { startPolling, stopPollingByPollingToken };
+      });
     });
 
     it('should show the primary balance', async () => {
@@ -230,7 +253,25 @@ describe('EthOverview', () => {
     });
 
     it('should open the Bridge URI when clicking on Bridge button on supported network', async () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const mockedStore = configureMockStore([thunk])({
+        ...store,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: '0xa86a' }),
+          useExternalServices: true,
+          bridgeState: {
+            bridgeFeatureFlags: {
+              extensionConfig: {
+                support: false,
+              },
+            },
+          },
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
 
       const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
 
@@ -238,15 +279,15 @@ describe('EthOverview', () => {
       expect(bridgeButton).not.toBeDisabled();
 
       fireEvent.click(bridgeButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
 
-      await waitFor(() =>
+      await waitFor(() => {
+        expect(openTabSpy).toHaveBeenCalledTimes(1);
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expect.stringContaining(
             '/bridge?metamaskEntry=ext_bridge_button',
           ),
-        }),
-      );
+        });
+      });
     });
 
     it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {
@@ -283,14 +324,16 @@ describe('EthOverview', () => {
       expect(swapButton).toBeInTheDocument();
       expect(swapButton).not.toBeDisabled();
 
-      fireEvent.click(swapButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
+      await act(async () => {
+        fireEvent.click(swapButton);
+      });
 
-      await waitFor(() =>
+      await waitFor(() => {
+        expect(openTabSpy).toHaveBeenCalledTimes(1);
         expect(openTabSpy).toHaveBeenCalledWith({
           url: 'https://metamask-institutional.io/swap',
-        }),
-      );
+        });
+      });
     });
 
     it('should have the Bridge button disabled if chain id is not part of supported chains', () => {
@@ -420,6 +463,7 @@ describe('EthOverview', () => {
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton);
 
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
@@ -514,6 +558,7 @@ describe('EthOverview', () => {
     expect(sendButton).not.toBeDisabled();
     fireEvent.click(sendButton);
 
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
       {
         event: MetaMetricsEventName.NavSendButtonClicked,

@@ -17,12 +17,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   BtcAccountType,
   EthAccountType,
+  SolAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  InternalAccount,
   KeyringAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
@@ -42,12 +43,9 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import {
-  AccountListItem,
-  AccountListItemMenuTypes,
-  CreateEthAccount,
-  ImportAccount,
-} from '..';
+import { AccountListItem } from '../account-list-item';
+import { AccountListItemMenuTypes } from '../account-list-item/account-list-item.types';
+
 import {
   AlignItems,
   BlockSize,
@@ -129,6 +127,8 @@ import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
+import { CreateEthAccount } from '../create-eth-account';
+import { ImportAccount } from '../import-account';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import {
   SOLANA_WALLET_NAME,
@@ -232,6 +232,7 @@ export const AccountListMenu = ({
     EthAccountType.Eoa,
     EthAccountType.Erc4337,
     BtcAccountType.P2wpkh,
+    SolAccountType.DataAccount,
   ],
 }: AccountListMenuProps) => {
   const t = useI18nContext();

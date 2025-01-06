@@ -35,23 +35,18 @@
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-      "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
       "tokenSortConfig": "object",
+      "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": {
-        "0x1": "boolean",
-        "0xaa36a7": "boolean",
-        "0xe705": "boolean",
-        "0xe708": "boolean",
         "0x539": "boolean"
       },
-      "shouldShowAggregatedBalancePopover": "boolean"
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
     "knownMethodData": "object",
     "use4ByteResolution": true,
-    "showIncomingTransactions": "object",
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
     "nextNonce": null,
@@ -61,12 +56,12 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "LineaETH": {
+      "SepoliaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "SepoliaETH": {
+      "LineaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
@@ -93,16 +88,16 @@
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-    "nftsDropdownState": {},
-    "termsOfUseLastAgreed": "number",
-    "qrHardware": {},
-    "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
-    "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
+    "switchedNetworkNeverShowMessage": "boolean",
+    "slides": "object",
+    "qrHardware": {},
+    "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
-    "switchedNetworkNeverShowMessage": "boolean",
     "currentExtensionPopupId": "number",
+    "termsOfUseLastAgreed": "number",
+    "snapsInstallPrivacyWarningShown": true,
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
@@ -141,7 +136,6 @@
     "forgottenPassword": false,
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
-    "isMultiAccountBalancesEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
@@ -151,6 +145,8 @@
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
+    "showIncomingTransactions": "object",
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
@@ -183,7 +179,6 @@
     "tokensChainsCache": {
       "0x539": "object"
     },
-    "tokenBalances": "object",
     "preventPollingOnNetworkRestart": false,
     "tokens": "object",
     "ignoredTokens": "object",
@@ -191,6 +186,7 @@
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {},
+    "tokenBalances": "object",
     "smartTransactionsState": {
       "fees": {},
       "feesByChainId": "object",
@@ -217,7 +213,6 @@
     "database": null,
     "lastUpdated": null,
     "databaseUnavailable": "boolean",
-    "notifications": "object",
     "interfaces": "object",
     "insights": "object",
     "names": "object",
@@ -240,14 +235,16 @@
     "isCheckingAccountsPresence": "boolean",
     "queuedRequestCount": 0,
     "fcmToken": "string",
+    "remoteFeatureFlags": { "feature1": true, "feature2": false },
+    "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",
     "marketData": "object",
-    "signatureRequests": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0,
+    "signatureRequests": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
     "unapprovedPersonalMsgCount": 0,
@@ -282,22 +279,29 @@
     },
     "bridgeState": {
       "bridgeFeatureFlags": {
-        "extensionConfig": "object",
-        "extensionSupport": "boolean",
-        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
-        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
+        "extensionConfig": {
+          "maxRefreshCount": "number",
+          "refreshRate": "number",
+          "support": "boolean",
+          "chains": {
+            "0x1": "object",
+            "0xa4b1": "object",
+            "0xe708": "object"
+          }
+        }
       },
+      "srcTokens": {},
+      "srcTopAssets": {},
       "destTokens": {},
       "destTopAssets": {},
       "quoteRequest": {
-        "slippage": 0.5,
-        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+        "srcTokenAddress": "0x0000000000000000000000000000000000000000",
+        "slippage": 0.5
       },
       "quotes": {},
-      "quotesRefreshCount": 0,
-      "srcTokens": {},
-      "srcTopAssets": {}
+      "quotesRefreshCount": 0
     },
+    "bridgeStatusState": { "txHistory": "object" },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",

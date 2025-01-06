@@ -3,6 +3,7 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -17,7 +18,17 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockImplementation(() => ({
+    decimals: '4',
+  })),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -140,6 +151,10 @@ describe('ERC20 Approve Confirmation', () => {
     const APPROVE_ERC20_HEX_SIG = '0x095ea7b3';
     const APPROVE_ERC20_TEXT_SIG = 'approve(address,uint256)';
     mock4byte(APPROVE_ERC20_HEX_SIG, APPROVE_ERC20_TEXT_SIG);
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -163,10 +178,10 @@ describe('ERC20 Approve Confirmation', () => {
     });
 
     expect(
-      screen.getByText(tEn('confirmTitlePermitTokens') as string),
+      await screen.findByText(tEn('confirmTitlePermitTokens') as string),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
+      await screen.findByText(
         tEn('confirmTitleDescERC20ApproveTransaction') as string,
       ),
     ).toBeInTheDocument();
@@ -183,7 +198,7 @@ describe('ERC20 Approve Confirmation', () => {
       });
     });
 
-    const simulationSection = screen.getByTestId(
+    const simulationSection = await screen.findByTestId(
       'confirmation__simulation_section',
     );
     expect(simulationSection).toBeInTheDocument();
@@ -192,7 +207,9 @@ describe('ERC20 Approve Confirmation', () => {
       tEn('simulationDetailsERC20ApproveDesc') as string,
     );
     expect(simulationSection).toHaveTextContent(tEn('spendingCap') as string);
-    const spendingCapValue = screen.getByTestId('simulation-token-value');
+    const spendingCapValue = await screen.findByTestId(
+      'simulation-token-value',
+    );
     expect(simulationSection).toContainElement(spendingCapValue);
     expect(spendingCapValue).toHaveTextContent('1');
     expect(simulationSection).toHaveTextContent('0x07614...3ad68');
@@ -211,16 +228,18 @@ describe('ERC20 Approve Confirmation', () => {
       });
     });
 
-    const approveDetails = screen.getByTestId('confirmation__approve-details');
+    const approveDetails = await screen.findByTestId(
+      'confirmation__approve-details',
+    );
     expect(approveDetails).toBeInTheDocument();
-    const approveDetailsSpender = screen.getByTestId(
+    const approveDetailsSpender = await screen.findByTestId(
       'confirmation__approve-spender',
     );
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
     expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
     expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
-    const spenderTooltip = screen.getByTestId(
+    const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
     expect(approveDetailsSpender).toContainElement(spenderTooltip);
@@ -231,7 +250,7 @@ describe('ERC20 Approve Confirmation', () => {
     );
     expect(spenderTooltipContent).toBeInTheDocument();
 
-    const approveDetailsRequestFrom = screen.getByTestId(
+    const approveDetailsRequestFrom = await screen.findByTestId(
       'transaction-details-origin-row',
     );
     expect(approveDetails).toContainElement(approveDetailsRequestFrom);
@@ -240,7 +259,7 @@ describe('ERC20 Approve Confirmation', () => {
       'http://localhost:8086/',
     );
 
-    const approveDetailsRequestFromTooltip = screen.getByTestId(
+    const approveDetailsRequestFromTooltip = await screen.findByTestId(
       'transaction-details-origin-row-tooltip',
     );
     expect(approveDetailsRequestFrom).toContainElement(
@@ -266,7 +285,7 @@ describe('ERC20 Approve Confirmation', () => {
       });
     });
 
-    const spendingCapSection = screen.getByTestId(
+    const spendingCapSection = await screen.findByTestId(
       'confirmation__approve-spending-cap-section',
     );
     expect(spendingCapSection).toBeInTheDocument();
@@ -275,14 +294,14 @@ describe('ERC20 Approve Confirmation', () => {
       tEn('accountBalance') as string,
     );
     expect(spendingCapSection).toHaveTextContent('0');
-    const spendingCapGroup = screen.getByTestId(
+    const spendingCapGroup = await screen.findByTestId(
       'confirmation__approve-spending-cap-group',
     );
     expect(spendingCapSection).toContainElement(spendingCapGroup);
     expect(spendingCapGroup).toHaveTextContent(tEn('spendingCap') as string);
     expect(spendingCapGroup).toHaveTextContent('1');
 
-    const spendingCapGroupTooltip = screen.getByTestId(
+    const spendingCapGroupTooltip = await screen.findByTestId(
       'confirmation__approve-spending-cap-group-tooltip',
     );
     expect(spendingCapGroup).toContainElement(spendingCapGroupTooltip);
@@ -308,10 +327,12 @@ describe('ERC20 Approve Confirmation', () => {
       });
     });
 
-    const approveDetails = screen.getByTestId('confirmation__approve-details');
+    const approveDetails = await screen.findByTestId(
+      'confirmation__approve-details',
+    );
     expect(approveDetails).toBeInTheDocument();
 
-    const approveDetailsRecipient = screen.getByTestId(
+    const approveDetailsRecipient = await screen.findByTestId(
       'transaction-details-recipient-row',
     );
     expect(approveDetails).toContainElement(approveDetailsRecipient);
@@ -320,7 +341,7 @@ describe('ERC20 Approve Confirmation', () => {
     );
     expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
 
-    const approveDetailsRecipientTooltip = screen.getByTestId(
+    const approveDetailsRecipientTooltip = await screen.findByTestId(
       'transaction-details-recipient-row-tooltip',
     );
     expect(approveDetailsRecipient).toContainElement(
@@ -338,7 +359,7 @@ describe('ERC20 Approve Confirmation', () => {
     expect(approveDetails).toContainElement(approveMethodData);
     expect(approveMethodData).toHaveTextContent(tEn('methodData') as string);
     expect(approveMethodData).toHaveTextContent('Approve');
-    const approveMethodDataTooltip = screen.getByTestId(
+    const approveMethodDataTooltip = await screen.findByTestId(
       'transaction-details-method-data-row-tooltip',
     );
     expect(approveMethodData).toContainElement(approveMethodDataTooltip);
@@ -348,15 +369,17 @@ describe('ERC20 Approve Confirmation', () => {
     );
     expect(approveMethodDataTooltipContent).toBeInTheDocument();
 
-    const approveDetailsNonce = screen.getByTestId(
+    const approveDetailsNonce = await screen.findByTestId(
       'advanced-details-nonce-section',
     );
     expect(approveDetailsNonce).toBeInTheDocument();
 
-    const dataSection = screen.getByTestId('advanced-details-data-section');
+    const dataSection = await screen.findByTestId(
+      'advanced-details-data-section',
+    );
     expect(dataSection).toBeInTheDocument();
 
-    const dataSectionFunction = screen.getByTestId(
+    const dataSectionFunction = await screen.findByTestId(
       'advanced-details-data-function',
     );
     expect(dataSection).toContainElement(dataSectionFunction);
@@ -365,14 +388,14 @@ describe('ERC20 Approve Confirmation', () => {
     );
     expect(dataSectionFunction).toHaveTextContent('Approve');
 
-    const approveDataParams1 = screen.getByTestId(
+    const approveDataParams1 = await screen.findByTestId(
       'advanced-details-data-param-0',
     );
     expect(dataSection).toContainElement(approveDataParams1);
     expect(approveDataParams1).toHaveTextContent('Param #1');
     expect(approveDataParams1).toHaveTextContent('0x2e0D7...5d09B');
 
-    const approveDataParams2 = screen.getByTestId(
+    const approveDataParams2 = await screen.findByTestId(
       'advanced-details-data-param-1',
     );
     expect(dataSection).toContainElement(approveDataParams2);

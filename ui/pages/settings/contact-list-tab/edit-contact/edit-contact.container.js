@@ -7,7 +7,7 @@ import {
   getInternalAccountByAddress,
   getInternalAccounts,
 } from '../../../../selectors';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../../shared/modules/selectors/networks';
 import {
   CONTACT_VIEW_ROUTE,
   CONTACT_LIST_ROUTE,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -55,7 +55,7 @@ describe('AddContact component', () => {
     expect(getByText('Ethereum public address')).toBeInTheDocument();
   });
 
-  it('should validate the address correctly', () => {
+  it('should validate the address correctly', async () => {
     const store = configureMockStore(middleware)(state);
     const { getByText, getByTestId } = renderWithProvider(
       <AddContact {...props} />,
@@ -64,9 +64,10 @@ describe('AddContact component', () => {
 
     const input = getByTestId('ens-input');
     fireEvent.change(input, { target: { value: 'invalid address' } });
-    setTimeout(() => {
-      expect(getByText('Recipient address is invalid')).toBeInTheDocument();
-    }, 600);
+
+    await waitFor(() =>
+      expect(getByText('Recipient address is invalid')).toBeInTheDocument(),
+    );
   });
 
   it('should get disabled submit button when username field is empty', () => {
@@ -177,12 +178,15 @@ describe('AddContact component', () => {
     expect(saveButton).toBeDisabled();
   });
 
-  it('should display error message when name entered is an existing account name', () => {
+  it('should display error message when name entered is an existing account name', async () => {
     const duplicateName = 'Account 1';
 
     const store = configureMockStore(middleware)(state);
 
-    const { getByText } = renderWithProvider(<AddContact {...props} />, store);
+    const { getByText, findByText } = renderWithProvider(
+      <AddContact {...props} />,
+      store,
+    );
 
     const nameInput = document.getElementById('nickname');
 
@@ -190,7 +194,7 @@ describe('AddContact component', () => {
 
     const saveButton = getByText('Save');
 
-    expect(getByText('Name is already in use')).toBeDefined();
+    expect(await findByText('Name is already in use')).toBeDefined();
     expect(saveButton).toBeDisabled();
   });
 
@@ -211,10 +215,10 @@ describe('AddContact component', () => {
     expect(saveButton).toBeDisabled();
   });
 
-  it('should display error when ENS inserts a name that is already in use', () => {
+  it('should display error when ENS inserts a name that is already in use', async () => {
     const store = configureMockStore(middleware)(state);
 
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, findByText } = renderWithProvider(
       <AddContact {...props} />,
       store,
     );
@@ -230,7 +234,7 @@ describe('AddContact component', () => {
 
     const saveButton = getByText('Save');
 
-    expect(getByText('Name is already in use')).toBeDefined();
+    expect(await findByText('Name is already in use')).toBeDefined();
     expect(saveButton).toBeDisabled();
   });
 });

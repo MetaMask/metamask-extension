@@ -13,8 +13,8 @@ import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
@@ -150,6 +150,7 @@ export default function TransactionList({
   const unfilteredCompletedTransactions = useSelector(
     nonceSortedCompletedTransactionsSelector,
   );
+
   const chainId = useSelector(getCurrentChainId);
   const selectedAccount = useSelector(getSelectedAccount);
 
@@ -344,49 +345,43 @@ export default function TransactionList({
             </Box>
           )}
           <Box className="transaction-list__completed-transactions">
-            {completedTransactions.length > 0 ? (
-              completedTransactions
-                .map(removeIncomingTxsButToAnotherAddress)
-                .map(removeTxGroupsWithNoTx)
-                .filter(dateGroupsWithTransactionGroups)
-                .slice(0, limit)
-                .map((dateGroup) => {
-                  return dateGroup.transactionGroups.map(
-                    (transactionGroup, index) => {
-                      return (
-                        <Fragment
-                          key={`${transactionGroup.nonce}:${
-                            transactionGroup.initialTransaction
-                              ? index
-                              : limit + index - 10
-                          }`}
-                        >
-                          {renderDateStamp(index, dateGroup)}
-                          {transactionGroup.initialTransaction
-                            ?.isSmartTransaction ? (
-                            <SmartTransactionListItem
-                              transactionGroup={transactionGroup}
-                              smartTransaction={
-                                transactionGroup.initialTransaction
-                              }
-                            />
-                          ) : (
-                            <TransactionListItem
-                              transactionGroup={transactionGroup}
-                            />
-                          )}
-                        </Fragment>
-                      );
-                    },
-                  );
-                })
-            ) : (
-              <Box className="transaction-list__empty">
-                <Box className="transaction-list__empty-text">
-                  {t('noTransactions')}
-                </Box>
-              </Box>
-            )}
+            {completedTransactions.length > 0
+              ? completedTransactions
+                  .map(removeIncomingTxsButToAnotherAddress)
+                  .map(removeTxGroupsWithNoTx)
+                  .filter(dateGroupsWithTransactionGroups)
+                  .slice(0, limit)
+                  .map((dateGroup) => {
+                    return dateGroup.transactionGroups.map(
+                      (transactionGroup, index) => {
+                        return (
+                          <Fragment
+                            key={`${transactionGroup.nonce}:${
+                              transactionGroup.initialTransaction
+                                ? index
+                                : limit + index - 10
+                            }`}
+                          >
+                            {renderDateStamp(index, dateGroup)}
+                            {transactionGroup.initialTransaction
+                              ?.isSmartTransaction ? (
+                              <SmartTransactionListItem
+                                transactionGroup={transactionGroup}
+                                smartTransaction={
+                                  transactionGroup.initialTransaction
+                                }
+                              />
+                            ) : (
+                              <TransactionListItem
+                                transactionGroup={transactionGroup}
+                              />
+                            )}
+                          </Fragment>
+                        );
+                      },
+                    );
+                  })
+              : null}
             {completedTransactions.length > limit && (
               <Button
                 className="transaction-list__view-more"
@@ -407,10 +402,12 @@ TransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
   boxProps: PropTypes.object,
+  tokenChainId: PropTypes.string,
 };
 
 TransactionList.defaultProps = {
   hideTokenTransactions: false,
   tokenAddress: undefined,
   boxProps: undefined,
+  tokenChainId: null,
 };
