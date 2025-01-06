@@ -1,6 +1,8 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, openDapp } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const StartOnboardingPage =
+  require('../../page-objects/pages/onboarding/start-onboarding-page').default;
 
 const WALLET_PASSWORD = 'correct horse battery staple';
 
@@ -31,11 +33,10 @@ describe('Incremental Security', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        // agree to terms of use
-        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
         // welcome
-        await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.clickCreateWalletButton();
 
         // metrics
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
