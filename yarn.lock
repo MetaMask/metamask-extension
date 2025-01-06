@@ -5793,18 +5793,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:@metamask-previews/message-manager@11.0.3-preview-9e831370":
-  version: 11.0.3-preview-9e831370
-  resolution: "@metamask-previews/message-manager@npm:11.0.3-preview-9e831370"
+"@metamask/message-manager@npm:@metamask-previews/message-manager@11.0.3-preview-03f094b7":
+  version: 11.0.3-preview-03f094b7
+  resolution: "@metamask-previews/message-manager@npm:11.0.3-preview-03f094b7"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.2"
+    "@metamask/base-controller": "npm:^7.1.0"
     "@metamask/controller-utils": "npm:^11.4.4"
     "@metamask/eth-sig-util": "npm:^8.0.0"
-    "@metamask/utils": "npm:^10.0.0"
+    "@metamask/utils": "npm:^11.0.1"
     "@types/uuid": "npm:^8.3.0"
     jsonschema: "npm:^1.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/b9899f4e70681e2dc95827dd09fd7b5f5e8b43e60f7c5eda3c14edbab6ac7b7ba289fc80af1a346ef7308a469101ef8516a8e3f0d2114596766b40aa95f50df2
+  checksum: 10/4b1498b7e64c6a84f22d7a3bf769a45772eab7a19e9777b017b7241dca7c37cf2c09e6dfdbc8516720e8450cc1267fe49c5556a207d7e48c56ac22cdb8a169d6
   languageName: node
   linkType: hard
 

@@ -3,7 +3,6 @@ import log from 'loglevel';
 import {
   EncryptionPublicKeyManager,
   EncryptionPublicKeyParamsMetamask,
-  AbstractMessageManager,
   AbstractMessage,
   MessageManagerState,
   AbstractMessageParams,
@@ -139,6 +138,7 @@ export default class EncryptionPublicKeyController extends BaseController<
    * @param options.getAccountKeyringType - Callback to get the keyring type.
    * @param options.getState - Callback to retrieve all user state.
    * @param options.metricsEvent - A function for emitting a metric event.
+   * @param options.managerMessenger
    */
   constructor({
     messenger,

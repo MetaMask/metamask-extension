@@ -110,12 +110,12 @@ type AllowedActions =
   | RejectRequest
   | KeyringControllerDecryptMessageAction;
 
-type DecryptMessageStateChangeEvent = {
+type DecryptMessageManagerStateChangeEvent = {
   type: `DecryptMessageManager:stateChange`;
   payload: [DecryptMessageManagerState, Patch[]];
 };
 
-type AllowedEvents = DecryptMessageStateChangeEvent;
+type AllowedEvents = DecryptMessageManagerStateChangeEvent;
 
 export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -129,11 +129,11 @@ export type DecryptMessageControllerOptions = {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;
+  managerMessenger: DecryptMessageManagerMessenger;
   messenger: DecryptMessageControllerMessenger;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
-  managerMessenger: DecryptMessageManagerMessenger;
 };
 
 /**
@@ -163,6 +163,7 @@ export default class DecryptMessageController extends BaseController<
    * @param options.getState - Callback to retrieve all user state.
    * @param options.messenger - A reference to the messaging system.
    * @param options.metricsEvent - A function for emitting a metric event.
+   * @param options.managerMessenger - A reference to the messenger need by the message manager.
    */
   constructor({
     getState,
@@ -327,7 +328,7 @@ export default class DecryptMessageController extends BaseController<
     Object.keys(this._decryptMessageManager.getUnapprovedMessages()).forEach(
       (messageId) => {
         this._cancelAbstractMessage(
-          this._decryptMessageManager as unknown as DecryptMessageManager,
+          this._decryptMessageManager,
           messageId,
           reason,
         );
