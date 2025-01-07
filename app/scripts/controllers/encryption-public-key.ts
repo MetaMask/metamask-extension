@@ -117,8 +117,6 @@ export default class EncryptionPublicKeyController extends BaseController<
   EncryptionPublicKeyControllerState,
   EncryptionPublicKeyControllerMessenger
 > {
-  hub: EventEmitter;
-
   private _getEncryptionPublicKey: (address: string) => Promise<string>;
 
   private _getAccountKeyringType: (account: string) => Promise<string>;
@@ -163,8 +161,6 @@ export default class EncryptionPublicKeyController extends BaseController<
     this._getAccountKeyringType = getAccountKeyringType;
     this._getState = getState;
     this._metricsEvent = metricsEvent;
-
-    this.hub = new EventEmitter();
     this._encryptionPublicKeyManager = new EncryptionPublicKeyManager({
       additionalFinishStatuses: ['received'],
       messenger: managerMessenger,

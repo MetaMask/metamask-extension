@@ -149,8 +149,6 @@ export default class DecryptMessageController extends BaseController<
   DecryptMessageControllerState,
   DecryptMessageControllerMessenger
 > {
-  hub: EventEmitter;
-
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _getState: () => any;
@@ -184,8 +182,6 @@ export default class DecryptMessageController extends BaseController<
     });
     this._getState = getState;
     this._metricsEvent = metricsEvent;
-
-    this.hub = new EventEmitter();
 
     this._decryptMessageManager = new DecryptMessageManager({
       additionalFinishStatuses: ['decrypted'],

@@ -350,38 +350,4 @@ describe('EncryptionPublicKeyController', () => {
       ).toEqual(stateMock);
     });
   });
-
-  describe('message manager events', () => {
-    it('bubbles update badge event from EncryptionPublicKeyManager', () => {
-      const mockListener = jest.fn();
-
-      encryptionPublicKeyController.hub.on('updateBadge', mockListener);
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (encryptionPublicKeyManagerMock.hub.on as any).mock.calls[0][1]();
-
-      expect(mockListener).toHaveBeenCalledTimes(1);
-    });
-
-    it('requires approval on unapproved message event from EncryptionPublicKeyManager', () => {
-      messengerMock.call.mockResolvedValueOnce({});
-
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (encryptionPublicKeyManagerMock.hub.on as any).mock.calls[1][1](
-        messageParamsMock,
-      );
-
-      expect(messengerMock.call).toHaveBeenCalledTimes(1);
-      expect(messengerMock.call).toHaveBeenCalledWith(
-        'ApprovalController:addRequest',
-        {
-          id: messageIdMock,
-          origin: messageParamsMock.origin,
-          type: 'eth_getEncryptionPublicKey',
-        },
-        true,
-      );
-    });
-  });
 });
