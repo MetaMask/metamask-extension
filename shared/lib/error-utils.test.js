@@ -52,9 +52,7 @@ describe('Error utils Tests', function () {
           },
         },
       },
-      metamask: {
-        currentLocale: 'en',
-      },
+      metamask: { PreferencesController: { currentLocale: 'en' } },
     };
 
     fetchLocale.mockReturnValue(mockStore.localeMessages.current);

@@ -17,15 +17,16 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
     showNftDetectionEnablementToast?: boolean;
   };
   metamask: {
-    newPrivacyPolicyToastClickedOrClosed?: boolean;
-    newPrivacyPolicyToastShownDate?: number;
-    onboardingDate?: number;
-    showNftDetectionEnablementToast?: boolean;
-    surveyLinkLastClickedOrClosed?: number;
-    switchedNetworkNeverShowMessage?: boolean;
+    AppStateController: {
+      newPrivacyPolicyToastClickedOrClosed?: boolean;
+      newPrivacyPolicyToastShownDate?: number;
+      onboardingDate?: number;
+      showNftDetectionEnablementToast?: boolean;
+      surveyLinkLastClickedOrClosed?: number;
+      switchedNetworkNeverShowMessage?: boolean;
+    };
   };
 };
-
 /**
  * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
  *
@@ -33,7 +34,7 @@ type State = Omit<MetaMaskReduxState, 'appState'> & {
  * @returns True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
  */
 export function selectShowSurveyToast(state: State): boolean {
-  if (state.metamask?.surveyLinkLastClickedOrClosed) {
+  if (state.metamask?.AppStateController.surveyLinkLastClickedOrClosed) {
     return false;
   }
 
@@ -58,7 +59,7 @@ export function selectShowPrivacyPolicyToast(state: State): {
     newPrivacyPolicyToastClickedOrClosed,
     newPrivacyPolicyToastShownDate,
     onboardingDate,
-  } = state.metamask || {};
+  } = state.metamask.AppStateController || {};
   const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
   const currentDate = new Date(Date.now());
 
@@ -91,7 +92,7 @@ export function selectShowConnectAccountToast(
   return (
     allowShowAccountSetting &&
     account &&
-    state.activeTab?.origin &&
+    state.activeTab?.origin !== undefined &&
     isEvmAccount &&
     connectedAccounts.length > 0 &&
     !connectedAccounts.some((address) => address === account.address)
@@ -105,5 +106,7 @@ export function selectShowConnectAccountToast(
  * @returns Boolean preference value
  */
 export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
-  return Boolean(state.metamask.switchedNetworkNeverShowMessage);
+  return Boolean(
+    state.metamask.AppStateController.switchedNetworkNeverShowMessage,
+  );
 }

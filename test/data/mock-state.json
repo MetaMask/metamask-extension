@@ -76,9 +76,13 @@
         }
       ]
     },
+    "TokenListController": {
+      "tokenList": {}
+    },
     "TokenBalancesController": {
       "tokenBalances": {}
     },
+    "OnboardingController": {},
     "PreferencesController": {
       "solanaSupportEnabled": false,
       "use4ByteResolution": true,

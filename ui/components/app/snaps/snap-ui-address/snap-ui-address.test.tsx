@@ -10,7 +10,9 @@ const mockStoreWithBlockies = configureMockStore([])({
   ...mockState,
   metamask: {
     ...mockState.metamask,
-    useBlockie: true,
+    PreferencesController: {
+      useBlockie: true,
+    },
   },
 });
 

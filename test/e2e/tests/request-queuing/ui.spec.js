@@ -124,7 +124,12 @@ async function switchToDialogPopoverValidateDetails(driver, expectedDetails) {
   );
 
   const {
-    metamask: { selectedNetworkClientId, networkConfigurationsByChainId },
+    metamask: {
+      NetworkController: {
+        selectedNetworkClientId,
+        networkConfigurationsByChainId,
+      },
+    },
   } = notificationWindowState;
 
   const { chainId } = Object.values(networkConfigurationsByChainId).find(
@@ -156,7 +161,12 @@ async function switchToDialogPopoverValidateDetailsRedesign(
   );
 
   const {
-    metamask: { selectedNetworkClientId, networkConfigurationsByChainId },
+    metamask: {
+      NetworkController: {
+        selectedNetworkClientId,
+        networkConfigurationsByChainId,
+      },
+    },
   } = notificationWindowState;
 
   const { chainId } = Object.values(networkConfigurationsByChainId).find(

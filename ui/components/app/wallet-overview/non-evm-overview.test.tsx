@@ -86,36 +86,46 @@ const mockBuyableChainsWithBtc = [...mockBuyableChainsWithoutBtc, mockBtcChain];
 
 const mockMetamaskStore = {
   ...mockState.metamask,
-  internalAccounts: {
-    accounts: {
-      [mockNonEvmAccount.id]: mockNonEvmAccount,
+  AccountsController: {
+    internalAccounts: {
+      accounts: {
+        [mockNonEvmAccount.id]: mockNonEvmAccount,
+      },
+      selectedAccount: mockNonEvmAccount.id,
     },
-    selectedAccount: mockNonEvmAccount.id,
   },
-  // (Multichain) BalancesController
-  balances: {
-    [mockNonEvmAccount.id]: {
-      [MultichainNativeAssets.BITCOIN]: {
-        amount: mockNonEvmBalance,
-        unit: 'BTC',
+  MultichainBalancesController: {
+    // (Multichain) BalancesController
+    balances: {
+      [mockNonEvmAccount.id]: {
+        [MultichainNativeAssets.BITCOIN]: {
+          amount: mockNonEvmBalance,
+          unit: 'BTC',
+        },
       },
     },
   },
-  // (Multichain) RatesController
-  fiatCurrency: 'usd',
-  rates: {
-    [Cryptocurrency.Btc]: {
-      conversionRate: '1.000',
-      conversionDate: 0,
+  MultichainRatesController: {
+    // (Multichain) RatesController
+    fiatCurrency: 'usd',
+    rates: {
+      [Cryptocurrency.Btc]: {
+        conversionRate: '1.000',
+        conversionDate: 0,
+      },
     },
+    cryptocurrencies: [Cryptocurrency.Btc],
   },
-  cryptocurrencies: [Cryptocurrency.Btc],
-  // Required, during onboarding, the extension will assume we're in an "EVM context", meaning
-  // most multichain selectors will not use non-EVM logic despite having a non-EVM
-  // selected account
-  completedOnboarding: true,
-  // Used when clicking on some buttons
-  metaMetricsId: mockMetaMetricsId,
+  OnboardingController: {
+    // Required, during onboarding, the extension will assume we're in an "EVM context", meaning
+    // most multichain selectors will not use non-EVM logic despite having a non-EVM
+    // selected account
+    completedOnboarding: true,
+  },
+  MetaMetricsController: {
+    // Used when clicking on some buttons
+    metaMetricsId: mockMetaMetricsId,
+  },
   // Override state if provided
 };
 const mockRampsStore = {

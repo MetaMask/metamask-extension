@@ -13,7 +13,10 @@ const mockOnCreateNewAccount = jest.fn();
 const mockNewAccountNumber = 2;
 const mockNewMetamaskState = {
   ...mockState.metamask,
-  currentLocale: 'en',
+  PreferencesController: {
+    ...mockState.metamask.PreferencesController,
+    currentLocale: 'en',
+  },
 };
 const mockAddress = '0x1234567890';
 
@@ -46,7 +49,10 @@ const renderModal = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      currentLocale: 'en',
+      PreferencesController: {
+        ...mockState.metamask.PreferencesController,
+        currentLocale: 'en',
+      },
     },
     appState: {
       ...mockState.appState,

@@ -248,24 +248,28 @@ export function createMockInternalAccount({
 export const getSelectedInternalAccountFromMockState = (
   state: MetaMaskReduxState,
 ): InternalAccount => {
-  return state.metamask.internalAccounts.accounts[
-    state.metamask.internalAccounts.selectedAccount
+  return state.metamask.AccountsController.internalAccounts.accounts[
+    state.metamask.AccountsController.internalAccounts.selectedAccount
   ];
 };
 
 export function overrideAccountsFromMockState<
   MockMetaMaskState extends MockState['metamask'],
 >(
-  state: { metamask: MockMetaMaskState },
+  state: {
+    metamask: MockMetaMaskState;
+  },
   accounts: InternalAccount[],
   selectedAccountId?: string,
-): { metamask: MockMetaMaskState } {
+): {
+  metamask: MockMetaMaskState;
+} {
   // First, re-create the accounts mapping and the currently selected account.
   const [{ id: newFirstAccountId }] = accounts;
   const newSelectedAccount = selectedAccountId ?? newFirstAccountId ?? '';
   const newInternalAccounts = accounts.reduce(
     (
-      acc: MetaMaskReduxState['metamask']['internalAccounts']['accounts'],
+      acc: MetaMaskReduxState['metamask']['AccountsController']['internalAccounts']['accounts'],
       account,
     ) => {
       acc[account.id] = account;
@@ -276,8 +280,9 @@ export function overrideAccountsFromMockState<
 
   // Re-create the keyring mapping too, since some selectors are using their internal
   // account list.
-  const newKeyrings: MetaMaskReduxState['metamask']['keyrings'] = [];
-  for (const keyring of state.metamask.keyrings) {
+  const newKeyrings: MetaMaskReduxState['metamask']['KeyringController']['keyrings'] =
+    [];
+  for (const keyring of state.metamask.KeyringController.keyrings) {
     const newAccountsForKeyring = [];
     for (const account of accounts) {
       if (account.metadata.keyring.type === keyring.type) {
@@ -303,12 +308,18 @@ export function overrideAccountsFromMockState<
     ...state,
     metamask: {
       ...state.metamask,
-      internalAccounts: {
-        accounts: newInternalAccounts,
-        selectedAccount: newSelectedAccount,
+      AccountsController: {
+        internalAccounts: {
+          accounts: newInternalAccounts,
+          selectedAccount: newSelectedAccount,
+        },
       },
-      keyrings: newKeyrings,
-      balances: newBalances,
+      KeyringController: {
+        keyrings: newKeyrings,
+      },
+      MultichainBalancesController: {
+        balances: newBalances,
+      },
     },
   };
 }

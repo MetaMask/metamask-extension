@@ -249,8 +249,9 @@ async function initializeUiWithTab(
     }
 
     const state = store.getState();
-    const { metamask: { completedOnboarding } = {} } = state;
-
+    const {
+      metamask: { OnboardingController: { completedOnboarding } = {} },
+    } = state;
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
       global.platform.openExtensionInBrowser();
     }

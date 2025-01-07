@@ -89,27 +89,35 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      ...mockNetworkState({ chainId }),
-      currencyRates: {
-        ETH: {
-          conversionRate: CONVERSION_RATE,
+      NetworkController: {
+        ...mockNetworkState({ chainId }),
+      },
+      CurrencyRateController: {
+        currencyRates: {
+          ETH: {
+            conversionRate: CONVERSION_RATE,
+          },
         },
       },
-      accountsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          [mockSelectedInternalAccount.address]: { balance },
+      AccountTracker: {
+        accountsByChainId: {
+          [CHAIN_IDS.MAINNET]: {
+            [mockSelectedInternalAccount.address]: { balance },
+          },
         },
       },
-      marketData: {
-        [CHAIN_IDS.MAINNET]: {
-          [USDC_CONTRACT]: { price: 0.00062566 },
-          [LINK_CONTRACT]: { price: 0.00423239 },
-          [WBTC_CONTRACT]: { price: 16.66575 },
-        },
-        '0x0': {
-          [USDC_CONTRACT]: { price: 0.00062566 },
-          [LINK_CONTRACT]: { price: 0.00423239 },
-          [WBTC_CONTRACT]: { price: 16.66575 },
+      TokenRatesController: {
+        marketData: {
+          [CHAIN_IDS.MAINNET]: {
+            [USDC_CONTRACT]: { price: 0.00062566 },
+            [LINK_CONTRACT]: { price: 0.00423239 },
+            [WBTC_CONTRACT]: { price: 16.66575 },
+          },
+          '0x0': {
+            [USDC_CONTRACT]: { price: 0.00062566 },
+            [LINK_CONTRACT]: { price: 0.00423239 },
+            [WBTC_CONTRACT]: { price: 16.66575 },
+          },
         },
       },
     },

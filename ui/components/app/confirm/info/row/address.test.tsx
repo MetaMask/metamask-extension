@@ -32,9 +32,12 @@ describe('ConfirmInfoRowAddress', () => {
     const { container } = render({
       metamask: {
         ...mockState.metamask,
-        preferences: {
-          ...mockState.metamask.preferences,
-          petnamesEnabled: true,
+        PreferencesController: {
+          ...mockState.metamask.PreferencesController,
+          preferences: {
+            ...mockState.metamask.PreferencesController.preferences,
+            petnamesEnabled: true,
+          },
         },
       },
     });
@@ -49,16 +52,22 @@ describe('ConfirmInfoRowAddress', () => {
       const { container, getByTestId } = render({
         metamask: {
           ...mockState.metamask,
-          preferences: {
-            ...mockState.metamask.preferences,
-            petnamesEnabled: false,
+          PreferencesController: {
+            ...mockState.metamask.PreferencesController,
+            preferences: {
+              ...mockState.metamask.PreferencesController.preferences,
+              petnamesEnabled: false,
+            },
           },
-          internalAccounts: {
-            accounts: {
-              'test address': {
-                address: TEST_ADDRESS,
-                metadata: {
-                  name: testAccountName,
+          AccountsController: {
+            ...mockState.metamask.AccountsController,
+            internalAccounts: {
+              accounts: {
+                'test address': {
+                  address: TEST_ADDRESS,
+                  metadata: {
+                    name: testAccountName,
+                  },
                 },
               },
             },
@@ -79,16 +88,24 @@ describe('ConfirmInfoRowAddress', () => {
       const { container, getByTestId } = render({
         metamask: {
           ...mockState.metamask,
-          preferences: {
-            ...mockState.metamask.preferences,
-            petnamesEnabled: false,
+          PreferencesController: {
+            ...mockState.metamask.PreferencesController,
+            preferences: {
+              ...mockState.metamask.PreferencesController.preferences,
+              petnamesEnabled: false,
+            },
           },
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-          addressBook: {
-            [CHAIN_IDS.MAINNET]: {
-              [TEST_ADDRESS]: {
-                address: TEST_ADDRESS,
-                name: testAddressBookName,
+          NetworkController: {
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          },
+          AddressBookController: {
+            ...mockState.metamask.AddressBookController,
+            addressBook: {
+              [CHAIN_IDS.MAINNET]: {
+                [TEST_ADDRESS]: {
+                  address: TEST_ADDRESS,
+                  name: testAddressBookName,
+                },
               },
             },
           },
@@ -112,17 +129,22 @@ describe('ConfirmInfoRowAddress', () => {
         {
           metamask: {
             ...mockState.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-            tokenList: {
-              [WBTC.address]: {
-                address: WBTC.address,
-                symbol: 'WBTC',
-                decimals: 8,
-                name: WBTC.name,
-                iconUrl:
-                  'https://s3.amazonaws.com/airswap-token-images/WBTC.png',
-                aggregators: [Array],
-                occurrences: 12,
+            NetworkController: {
+              ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            },
+            TokenListController: {
+              ...mockState.metamask.TokenListController,
+              tokenList: {
+                [WBTC.address]: {
+                  address: WBTC.address,
+                  symbol: 'WBTC',
+                  decimals: 8,
+                  name: WBTC.name,
+                  iconUrl:
+                    'https://s3.amazonaws.com/airswap-token-images/WBTC.png',
+                  aggregators: [Array],
+                  occurrences: 12,
+                },
               },
             },
           },
@@ -143,8 +165,11 @@ describe('ConfirmInfoRowAddress', () => {
       const { container, getByTestId } = render({
         metamask: {
           ...mockState.metamask,
-          ensResolutionsByAddress: {
-            [TEST_ADDRESS]: testENSName,
+          EnsController: {
+            ...mockState.metamask.EnsController,
+            ensResolutionsByAddress: {
+              [TEST_ADDRESS]: testENSName,
+            },
           },
         },
       });

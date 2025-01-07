@@ -46,18 +46,26 @@ const render = (
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      internalAccounts: {
-        accounts: {
-          [mockAccount.id]: mockAccount,
-          [mockNonEvmAccount.id]: mockNonEvmAccount,
+      AccountsController: {
+        ...mockState.metamask.AccountsController,
+        internalAccounts: {
+          accounts: {
+            [mockAccount.id]: mockAccount,
+            [mockNonEvmAccount.id]: mockNonEvmAccount,
+          },
+          selectedAccount: mockAccount.id,
         },
-        selectedAccount: mockAccount.id,
       },
-      ...mockNetworkState({
-        chainId: '0x5',
-        blockExplorerUrl: mockEvmExplorer,
-      }),
-      completedOnboarding: true,
+      NetworkController: {
+        ...mockNetworkState({
+          chainId: '0x5',
+          blockExplorerUrl: mockEvmExplorer,
+        }),
+      },
+      OnboardingController: {
+        ...mockState.metamask.OnboardingController,
+        completedOnboarding: true,
+      },
     },
   });
 

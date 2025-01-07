@@ -19,9 +19,11 @@ const pendingApprovalMock = {
 };
 const storeMock = configureStore({
   metamask: {
-    pendingApprovals: {
-      [OWNER_ID_MOCK]: pendingApprovalMock,
-    },
+    ApprovalController: {
+        pendingApprovals: {
+            [OWNER_ID_MOCK]: pendingApprovalMock,
+        }
+    }
   },
   confirmAlerts: {
     alerts: { [OWNER_ID_MOCK]: baseAlertsMock },

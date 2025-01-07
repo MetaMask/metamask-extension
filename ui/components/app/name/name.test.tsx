@@ -26,7 +26,7 @@ const VARIATION_MOCK = 'testVariation';
 
 const STATE_MOCK = {
   metamask: {
-    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    NetworkController: { ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }) },
   },
 };
 
