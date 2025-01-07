@@ -26,6 +26,9 @@ export enum SignatureType {
   SignTypedData = '#signTypedData',
   SIWE = '#siwe',
   SIWE_BadDomain = '#siweBadDomain',
+  MaliciousApproval = '#maliciousApproval',
+  MaliciousSetApprovalForAll = '#maliciousSetApprovalForAll',
+  MaliciousTradeOrder = '#maliciousTradeOrder',
 }
 
 type AssertSignatureMetricsOptions = {
@@ -365,6 +368,16 @@ export async function openDappAndTriggerDeploy(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }
 
+export async function openDappAndClickButton(
+  driver: Driver,
+  buttonSelector: string,
+) {
+  await unlockWallet(driver);
+  await testDapp.openTestDappPage({ url: DAPP_URL });
+  await driver.clickElement(buttonSelector);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+}
+
 export async function triggerSignature(type: string) {
   switch (type) {
     case SignatureType.PersonalSign:
@@ -390,6 +403,15 @@ export async function triggerSignature(type: string) {
       break;
     case SignatureType.NFTPermit:
       await testDapp.clickERC721Permit();
+      break;
+    case SignatureType.MaliciousApproval:
+      await testDapp.clickMaliciousApproval();
+      break;
+    case SignatureType.MaliciousSetApprovalForAll:
+      await testDapp.clickMaliciousSetApprovalForAll();
+      break;
+    case SignatureType.MaliciousTradeOrder:
+      await testDapp.clickMaliciousTradeOrder();
       break;
     default:
       throw new Error('Invalid signature type');

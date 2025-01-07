@@ -4,15 +4,15 @@ import FixtureBuilder from '../../../fixture-builder';
 import {
   defaultGanacheOptions,
   withFixtures,
-  sendScreenToConfirmScreen,
   logInWithBalanceValidation,
-  WINDOW_TITLES,
 } from '../../../helpers';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from '../constants';
 import { mockServerJsonRpc } from '../mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { createTransactionToAddress } from '../../../page-objects/flows/transaction';
+import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 
-const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
 const mockBenignAddress = '0x50587E46C5B96a3F6f9792922EC647F13E6EFAE4';
 
@@ -27,7 +27,17 @@ const SEND_REQUEST_BASE_MOCK = {
       from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       data: '0x',
       to: mockMaliciousAddress,
-      value: '0xde0b6b3a7640000',
+      value: '0x0',
+    },
+  ],
+};
+
+const SEND_REQUEST_MALICIOUS_MOCK = {
+  ...SEND_REQUEST_BASE_MOCK,
+  params: [
+    {
+      ...SEND_REQUEST_BASE_MOCK.params[0],
+      value: '0xf43fc2c04ee0000',
     },
   ],
 };
@@ -61,7 +71,8 @@ async function mockBenignResponses(mockServer: MockttpServer): Promise<void> {
 async function mockMaliciousResponses(
   mockServer: MockttpServer,
 ): Promise<void> {
-  await mockRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
+  await mockInfura(mockServer);
+  await mockRequest(mockServer, SEND_REQUEST_MALICIOUS_MOCK, {
     block: 20733277,
     result_type: 'Malicious',
     reason: 'transfer_farming',
@@ -81,10 +92,8 @@ async function mockInfuraWithFailedResponses(
       ...SEND_REQUEST_BASE_MOCK,
       params: [
         {
-          from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          data: '0x',
-          to: '0xb8c77482e45f1f44de1745f52c74426c631bdd52',
-          value: '0xf43fc2c04ee0000',
+          ...SEND_REQUEST_BASE_MOCK.params[0],
+          value: '0x16345785d8a0000',
         },
       ],
     },
@@ -108,7 +117,6 @@ describe('Security Alerts API - Simple Send @no-mmi', function () {
   it('should not show security alerts banner for benign requests', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPreferencesController({
@@ -121,28 +129,29 @@ describe('Security Alerts API - Simple Send @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+        const confirmation = new Confirmation(driver);
+        await loginWithBalanceValidation(driver);
 
-        await sendScreenToConfirmScreen(driver, mockBenignAddress, '0');
+        await createTransactionToAddress({
+          driver,
+          recipientAddress: mockBenignAddress,
+          amount: '0',
+        });
 
-        await driver.assertElementNotPresent('.loading-indicator');
+        await confirmation.checkLoadingSpinner();
 
-        await driver.assertElementNotPresent(bannerAlertSelector);
+        await confirmation.checkBannerAlertIsNotPresent();
       },
     );
   });
 
   it('should show security alerts banner for malicious requests', async function () {
     await withFixtures(
-      // we need to use localhost instead of the ip
-      // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp({
-            useLocalhostHostname: true,
-          })
+          .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
@@ -153,32 +162,32 @@ describe('Security Alerts API - Simple Send @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+        const confirmation = new Confirmation(driver);
+        await loginWithBalanceValidation(driver);
 
-        await driver.openNewPage('http://localhost:8080');
-
-        await driver.clickElement('#maliciousRawEthButton');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.assertElementNotPresent('.loading-indicator');
-
-        await driver.waitForSelector({
-          css: '.mm-text--body-lg-medium',
-          text: expectedMaliciousTitle,
+        await createTransactionToAddress({
+          driver,
+          recipientAddress: mockMaliciousAddress,
+          amount: '1.1',
         });
 
-        await driver.waitForSelector({
-          css: '.mm-text--body-md',
-          text: expectedMaliciousDescription,
+        await confirmation.checkLoadingSpinner();
+
+        await confirmation.validateBannerAlert({
+          expectedTitle: expectedMaliciousTitle,
+          expectedDescription: expectedMaliciousDescription,
         });
       },
     );
   });
 
   it('should show "Be careful" if the Security Alerts API fails to check transaction', async function () {
+    const expectedTitle = 'Be careful';
+    const expectedDescription =
+      "Because of an error, we couldn't check for security alerts. Only continue if you trust every address involved";
+
     await withFixtures(
       {
-        dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPreferencesController({
@@ -191,24 +200,20 @@ describe('Security Alerts API - Simple Send @no-mmi', function () {
       },
 
       async ({ driver }) => {
+        const confirmation = new Confirmation(driver);
         await logInWithBalanceValidation(driver);
 
-        await sendScreenToConfirmScreen(
+        await createTransactionToAddress({
           driver,
-          '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
-          '1.1',
-        );
-
-        await driver.assertElementNotPresent('.loading-indicator');
-
-        await driver.waitForSelector({
-          css: '.mm-text--body-lg-medium',
-          text: 'Be careful',
+          recipientAddress: mockMaliciousAddress,
+          amount: '0.1',
         });
 
-        await driver.waitForSelector({
-          css: '.mm-text--body-md',
-          text: `Because of an error, we couldn't check for security alerts. Only continue if you trust every address involved`,
+        await confirmation.checkLoadingSpinner();
+
+        await confirmation.validateBannerAlert({
+          expectedTitle,
+          expectedDescription,
         });
       },
     );

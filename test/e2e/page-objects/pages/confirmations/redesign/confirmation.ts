@@ -26,6 +26,10 @@ class Confirmation {
 
   private navigationTitle: RawLocator;
 
+  private loadingSpinner: RawLocator;
+
+  private bannerAlert: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
 
@@ -38,10 +42,8 @@ class Confirmation {
     this.previousPageButton =
       '[data-testid="confirm-nav__previous-confirmation"]';
     this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
-  }
-
-  async clickScrollToBottomButton() {
-    await this.driver.clickElementSafe(this.scrollToBottomButton);
+    this.loadingSpinner = '.loading-indicator';
+    this.bannerAlert = '[data-testid="confirm-banner-alert"]';
   }
 
   async clickFooterConfirmButton() {
@@ -90,6 +92,34 @@ class Confirmation {
       console.log('Timeout while waiting for navigation page numbers', e);
       throw e;
     }
+  }
+
+  async checkLoadingSpinner(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.loadingSpinner);
+  }
+
+  async checkBannerAlertIsNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.bannerAlert);
+  }
+
+  async validateBannerAlert({
+    expectedTitle,
+    expectedDescription,
+  }: {
+    expectedTitle: string;
+    expectedDescription: string;
+  }): Promise<void> {
+    await this.driver.findElement(this.bannerAlert);
+
+    await this.driver.waitForSelector({
+      css: '.mm-text--body-lg-medium',
+      text: expectedTitle,
+    });
+
+    await this.driver.waitForSelector({
+      css: '.mm-text--body-md',
+      text: expectedDescription,
+    });
   }
 }
 

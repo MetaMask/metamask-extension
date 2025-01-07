@@ -170,6 +170,12 @@ class TestDapp {
 
   private sign721PermitResultV = '#sign721PermitResultV';
 
+  private maliciousApprovalButton = '#maliciousApprovalButton';
+
+  private maliciousSetApprovalForAllButton = '#maliciousSetApprovalForAll';
+
+  private maliciousTradeOrder = '#maliciousTradeOrder';
+
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
 
   private readonly transactionRequestMessage = {
@@ -689,6 +695,18 @@ class TestDapp {
 
   async clickERC721Permit() {
     await this.driver.clickElement(this.sign721PermitButton);
+  }
+
+  async clickMaliciousApproval() {
+    await this.driver.clickElement(this.maliciousApprovalButton);
+  }
+
+  async clickMaliciousSetApprovalForAll() {
+    await this.driver.clickElement(this.maliciousSetApprovalForAllButton);
+  }
+
+  async clickMaliciousTradeOrder() {
+    await this.driver.clickElement(this.maliciousTradeOrder);
   }
 
   /**
