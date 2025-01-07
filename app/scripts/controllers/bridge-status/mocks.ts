@@ -5,6 +5,7 @@ import {
   StatusTypes,
   ActionTypes,
   StartPollingForBridgeTxStatusArgsSerialized,
+  BridgeHistoryItem,
 } from '../../../../shared/types/bridge-status';
 
 export const MockStatusResponse = {
@@ -257,7 +258,7 @@ export const MockTxHistory = {
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
-  } = {}) => ({
+  } = {}): Record<string, BridgeHistoryItem> => ({
     [txMetaId]: {
       txMetaId,
       quote: getMockQuote({ srcChainId, destChainId }),
@@ -268,6 +269,9 @@ export const MockTxHistory = {
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
       initialDestAssetBalance: undefined,
       pricingData: { amountSent: '1.234' },
+      status: MockStatusResponse.getPending({
+        srcChainId,
+      }),
     },
   }),
   getInit: ({
@@ -275,7 +279,7 @@ export const MockTxHistory = {
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
-  } = {}) => ({
+  } = {}): Record<string, BridgeHistoryItem> => ({
     [txMetaId]: {
       txMetaId,
       quote: getMockQuote({ srcChainId, destChainId }),
@@ -286,6 +290,9 @@ export const MockTxHistory = {
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
       initialDestAssetBalance: undefined,
       pricingData: { amountSent: '1.234' },
+      status: MockStatusResponse.getPending({
+        srcChainId,
+      }),
     },
   }),
   getPending: ({
@@ -294,7 +301,7 @@ export const MockTxHistory = {
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
-  } = {}) => ({
+  } = {}): Record<string, BridgeHistoryItem> => ({
     [txMetaId]: {
       txMetaId,
       quote: getMockQuote({ srcChainId, destChainId }),
@@ -317,18 +324,24 @@ export const MockTxHistory = {
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
-  } = {}) => ({
+  } = {}): Record<string, BridgeHistoryItem> => ({
     [txMetaId]: {
       txMetaId,
       quote: getMockQuote({ srcChainId, destChainId }),
       startTime: 1729964825189,
+      completionTime: 1736277625746,
       estimatedProcessingTimeInSeconds: 15,
       slippagePercentage: 0,
       account,
       status: MockStatusResponse.getComplete({ srcTxHash }),
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
       initialDestAssetBalance: undefined,
-      pricingData: { amountSent: '1.234' },
+      pricingData: {
+        amountSent: '1.234',
+        amountSentInUsd: undefined,
+        quotedGasInUsd: undefined,
+        quotedReturnInUsd: undefined,
+      },
     },
   }),
 };
