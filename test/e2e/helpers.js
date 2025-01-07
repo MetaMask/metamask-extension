@@ -724,7 +724,10 @@ async function clickSignOnSignatureConfirmation({
     // so we have to add a small delay as the last alternative to avoid flakiness.
     await driver.delay(regularDelayMs);
   }
-
+  await driver.waitForSelector(
+    { text: 'Sign', tag: 'button' },
+    { state: 'enabled' },
+  );
   await driver.clickElement({ text: 'Sign', tag: 'button' });
 }
 
