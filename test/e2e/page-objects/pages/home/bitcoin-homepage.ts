@@ -4,10 +4,7 @@ class BitcoinHomepage extends HomePage {
   protected readonly balance =
     '[data-testid="coin-overview__primary-currency"]';
 
-  private readonly bridgeButton = {
-    text: 'Bridge',
-    tag: 'button',
-  };
+  protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
   private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
@@ -15,10 +12,7 @@ class BitcoinHomepage extends HomePage {
 
   protected readonly sendButton = '[data-testid="coin-overview-send"]';
 
-  private readonly swapButton = {
-    text: 'Swap',
-    tag: 'button',
-  };
+  protected readonly swapButton = '[data-testid="coin-overview-swap"]';
 
   async check_pageIsLoaded(): Promise<void> {
     try {
