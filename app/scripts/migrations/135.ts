@@ -1,9 +1,4 @@
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import {
-  BtcAccountType,
-  EthAccountType,
-  EthScopes,
-} from '@metamask/keyring-api';
+import { EthAccountType, EthScopes } from '@metamask/keyring-api';
 import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject, isString, isArray } from 'lodash';
 
