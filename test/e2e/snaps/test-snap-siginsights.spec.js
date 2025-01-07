@@ -175,6 +175,7 @@ describe('Test Snap Signature Insights', function () {
           // switch back to MetaMask window and switch to tx insights pane
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+          await driver.waitForSelector('.fa-arrow-down');
           // click down arrow
           await driver.clickElementSafe('.fa-arrow-down');
 
