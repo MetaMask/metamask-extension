@@ -29,11 +29,9 @@ function transformState(
   if (
     hasProperty(state, 'PreferencesController') &&
     isObject(state.PreferencesController) &&
-    hasProperty(state.PreferencesController, 'preferences') &&
-    isObject(state.PreferencesController.preferences) &&
-    hasProperty(state.PreferencesController.preferences, 'useRequestQueue')
+    hasProperty(state.PreferencesController, 'useRequestQueue')
   ) {
-    delete state.PreferencesController.preferences.useRequestQueue;
+    delete state.PreferencesController.useRequestQueue;
   }
   return state;
 }

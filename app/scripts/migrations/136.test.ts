@@ -17,15 +17,14 @@ describe(`migration #${version}`, () => {
         meta: { version: oldVersion },
         data: {
           PreferencesController: {
-            preferences: {
-              useRequestQueue: true,
-            },
+            useRequestQueue: true,
+            otherPreference: true,
           },
         },
       };
       const expectedData = {
         PreferencesController: {
-          preferences: {},
+          otherPreference: true,
         },
       };
       const newStorage = await migrate(oldStorage);
@@ -33,38 +32,19 @@ describe(`migration #${version}`, () => {
       expect(newStorage.data).toStrictEqual(expectedData);
     });
 
-    it('does nothing if the preferences does not have a useRequestQueue preference', async () => {
+    it('does nothing to other PreferencesController state if there is a useRequestQueue preference', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
           PreferencesController: {
-            preferences: {},
-          },
-        },
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual(oldStorage.data);
-    });
-
-    it('does nothing to other preferences if they exist without a useRequestQueue preference', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {
-          PreferencesController: {
-            preferences: {
-              existingPreference: true,
-            },
+            existingPreference: true,
           },
         },
       };
 
       const expectedData = {
         PreferencesController: {
-          preferences: {
-            existingPreference: true,
-          },
+          existingPreference: true,
         },
       };
 
