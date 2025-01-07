@@ -1555,7 +1555,7 @@ describe('MetaMaskController', () => {
           }),
         ).rejects.toThrow(
           new Error(
-            'cannot request permittedChains permission for snaps with origin "npm:snap"',
+            'cannot request permittedChains permission for Snaps with origin "npm:snap"',
           ),
         );
       });
@@ -1678,7 +1678,7 @@ describe('MetaMaskController', () => {
           }),
         ).rejects.toThrow(
           new Error(
-            'cannot request permittedChains permission for snaps with origin "npm:snap"',
+            'cannot request permittedChains permission for Snaps with origin "npm:snap"',
           ),
         );
       });
