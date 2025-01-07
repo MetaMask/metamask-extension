@@ -13,6 +13,7 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { RpcEndpointType } from '@metamask/network-controller';
+import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -111,6 +112,7 @@ import { BridgeFeatureFlagsKey } from '../../shared/types/bridge';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -1918,6 +1920,19 @@ export const getInsightSnaps = createDeepEqualSelector(
   },
 );
 
+export const getSettingsPageSnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id, preinstalled }) =>
+        subjects[id]?.permissions[SnapEndowments.SettingsPage] &&
+        preinstalled &&
+        !isSnapIgnoredInProd(id),
+    );
+  },
+);
+
 export const getSignatureInsightSnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
@@ -1946,6 +1961,11 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
       .filter(({ id }) => subjects[id]?.permissions['endowment:name-lookup'])
       .map((snap) => snap.id);
   },
+);
+
+export const getSettingsPageSnapsIds = createDeepEqualSelector(
+  getSettingsPageSnaps,
+  (snaps) => snaps.map((snap) => snap.id),
 );
 
 export const getNotifySnaps = createDeepEqualSelector(
