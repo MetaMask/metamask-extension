@@ -12,6 +12,7 @@ import {
 import type {
   EncryptionPublicKeyManagerMessenger,
   EncryptionPublicKeyManagerState,
+  EncryptionPublicKeyManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
 import {
   BaseController,
@@ -28,6 +29,7 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
 const controllerName = 'EncryptionPublicKeyController';
+const managerName = 'EncryptionPublicKeyManager';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
 
 const stateMetadata = {
@@ -58,7 +60,7 @@ export type EncryptionPublicKeyControllerState = {
   unapprovedEncryptionPublicKeyMsgCount: number;
 };
 
-export type GetEncryptionPublicKeyControllerState = {
+export type EncryptionPublicKeyControllerGetState = {
   type: `${typeof controllerName}:getState`;
   handler: () => EncryptionPublicKeyControllerState;
 };
@@ -69,7 +71,7 @@ export type EncryptionPublicKeyControllerStateChange = {
 };
 
 export type EncryptionPublicKeyControllerActions =
-  GetEncryptionPublicKeyControllerState;
+  EncryptionPublicKeyControllerGetState;
 
 export type EncryptionPublicKeyControllerEvents =
   EncryptionPublicKeyControllerStateChange;
@@ -81,7 +83,9 @@ type EncryptionPublicKeyManagerStateChange = {
 
 type AllowedActions = AddApprovalRequest | AcceptRequest | RejectRequest;
 
-type AllowedEvents = EncryptionPublicKeyManagerStateChange;
+type AllowedEvents =
+  | EncryptionPublicKeyManagerStateChange
+  | EncryptionPublicKeyManagerUnapprovedMessageAddedEvent;
 
 export type EncryptionPublicKeyControllerMessenger =
   RestrictedControllerMessenger<
@@ -164,18 +168,11 @@ export default class EncryptionPublicKeyController extends BaseController<
     this._encryptionPublicKeyManager = new EncryptionPublicKeyManager({
       additionalFinishStatuses: ['received'],
       messenger: managerMessenger,
-      name: 'EncryptionPublicKeyManager',
     });
 
-    this._encryptionPublicKeyManager.hub.on('updateBadge', () => {
-      this.hub.emit('updateBadge');
-    });
-
-    this._encryptionPublicKeyManager.hub.on(
-      'unapprovedMessage',
-      (msgParams: AbstractMessageParamsMetamask) => {
-        this._requestApproval(msgParams, methodNameGetEncryptionPublicKey);
-      },
+    this.messagingSystem.subscribe(
+      `${managerName}:unapprovedMessage`,
+      this._requestApproval,
     );
 
     this._subscribeToMessageState(
@@ -359,7 +356,7 @@ export default class EncryptionPublicKeyController extends BaseController<
     ) => void,
   ) {
     controllerMessenger.subscribe(
-      'EncryptionPublicKeyManager:stateChange',
+      `${managerName}:stateChange`,
       (state: MessageManagerState<AbstractMessage>) => {
         const newMessages = this._migrateMessages(
           // TODO: Replace `any` with type
@@ -401,10 +398,7 @@ export default class EncryptionPublicKeyController extends BaseController<
     return stateMessage;
   }
 
-  private _requestApproval(
-    msgParams: AbstractMessageParamsMetamask,
-    type: string,
-  ) {
+  private _requestApproval(msgParams: AbstractMessageParamsMetamask) {
     const id = msgParams.metamaskId as string;
     const origin = msgParams.origin || ORIGIN_METAMASK;
 
@@ -414,7 +408,7 @@ export default class EncryptionPublicKeyController extends BaseController<
         {
           id,
           origin,
-          type,
+          type: methodNameGetEncryptionPublicKey,
         },
         true,
       )

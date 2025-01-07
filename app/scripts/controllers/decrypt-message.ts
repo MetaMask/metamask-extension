@@ -13,6 +13,7 @@ import {
 import type {
   DecryptMessageManagerMessenger,
   DecryptMessageManagerState,
+  DecryptMessageManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
 import {
   BaseController,
@@ -36,6 +37,8 @@ const stateMetadata = {
   unapprovedDecryptMsgs: { persist: false, anonymous: false },
   unapprovedDecryptMsgCount: { persist: false, anonymous: false },
 };
+
+export const managerName = 'DecryptMessageManager';
 
 /**
  * Type guard that checks for the presence of the required properties
@@ -115,7 +118,9 @@ type DecryptMessageManagerStateChangeEvent = {
   payload: [DecryptMessageManagerState, Patch[]];
 };
 
-type AllowedEvents = DecryptMessageManagerStateChangeEvent;
+type AllowedEvents =
+  | DecryptMessageManagerStateChangeEvent
+  | DecryptMessageManagerUnapprovedMessageAddedEvent
 
 export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -183,20 +188,13 @@ export default class DecryptMessageController extends BaseController<
     this.hub = new EventEmitter();
 
     this._decryptMessageManager = new DecryptMessageManager({
-      messenger: managerMessenger,
-      name: 'DecryptMessageManager',
       additionalFinishStatuses: ['decrypted'],
+      messenger: managerMessenger,
     });
 
-    this._decryptMessageManager.hub.on('updateBadge', () => {
-      this.hub.emit('updateBadge');
-    });
-
-    this._decryptMessageManager.hub.on(
-      'unapprovedMessage',
-      (messageParams: AbstractMessageParamsMetamask) => {
-        this._requestApproval(messageParams);
-      },
+    messenger.subscribe(
+      `${managerName}:unapprovedMessage`,
+      this._requestApproval,
     );
 
     this._subscribeToMessageState(
@@ -370,7 +368,7 @@ export default class DecryptMessageController extends BaseController<
     ) => void,
   ) {
     controllerMessenger.subscribe(
-      'DecryptMessageManager:stateChange',
+      `${managerName}:stateChange`,
       (state: MessageManagerState<AbstractMessage>) => {
         const newMessages = this._migrateMessages(
           // TODO: Replace `any` with type
