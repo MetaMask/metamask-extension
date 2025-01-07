@@ -39,7 +39,7 @@ export const getPermissionsHandler = {
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.getPermissionsForOrigin - The specific method hook needed for this method implementation
- * @param options.getAccounts
+ * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
  * @returns A promise that resolves to nothing
  */
 async function getPermissionsImplementation(

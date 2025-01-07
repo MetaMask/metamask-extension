@@ -60,9 +60,9 @@ const locks = new Set();
  * @param options.sendMetrics - A hook that helps track metric events.
  * @param options.metamaskState - The MetaMask app state.
  * @param options.requestCaip25PermissionForOrigin - A hook that requests the CAIP-25 permission for the origin.
- * @param options.metamaskState.metaMetricsId
- * @param options.metamaskState.permissionHistory
- * @param options.metamaskState.accounts
+ * @param options.metamaskState.metaMetricsId - The MetaMetrics ID.
+ * @param options.metamaskState.permissionHistory - The permission history keyed by origin.
+ * @param options.metamaskState.accounts - The accounts available in the wallet keyed by address.
  * @returns A promise that resolves to nothing
  */
 async function requestEthereumAccountsHandler(

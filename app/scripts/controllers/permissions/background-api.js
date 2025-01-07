@@ -11,9 +11,9 @@ import {
   getPermittedEthChainIds,
   setPermittedEthChainIds,
 } from '@metamask/multichain';
+import { isSnapId } from '@metamask/snaps-utils';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionNames } from './specifications';
-import { isSnapId } from '@metamask/snaps-utils';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
