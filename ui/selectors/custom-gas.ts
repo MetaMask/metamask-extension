@@ -1,13 +1,11 @@
-import { Hex } from '@metamask/utils';
-import { MetaMaskReduxState } from '../store/store';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatETHFee } from '../helpers/utils/formatters';
-import { getGasPrice, LegacyGasPriceEstimate } from '../ducks/send';
+
+import { getGasPrice } from '../ducks/send';
 import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
   getGasEstimateType,
@@ -19,139 +17,130 @@ import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 import { getIsMainnet } from './selectors';
 
-export function getCustomGasLimit(state: Pick<MetaMaskReduxState, 'gas'>) {
+export function getCustomGasLimit(state) {
   return state.gas.customData.limit;
 }
 
-export function getCustomGasPrice(state: Pick<MetaMaskReduxState, 'gas'>) {
+export function getCustomGasPrice(state) {
   return state.gas.customData.price;
 }
 
+export function getBasicGasEstimateLoadingStatus(state) {
+  return getIsGasEstimatesFetched(state) === false;
+}
+
+export function getAveragePriceEstimateInHexWEI(state) {
+  const averagePriceEstimate = getAverageEstimate(state);
+
+  return getGasPriceInHexWei(averagePriceEstimate);
+}
+
+export function getFastPriceEstimateInHexWEI(state) {
+  const fastPriceEstimate = getFastPriceEstimate(state);
+  return getGasPriceInHexWei(fastPriceEstimate || '0x0');
+}
+
 export function getDefaultActiveButtonIndex(
-  gasButtonInfo: { priceInHexWei: string | undefined }[],
-  customGasPriceInHex: Hex,
-  gasPrice: string,
+  gasButtonInfo,
+  customGasPriceInHex,
+  gasPrice,
 ) {
   return gasButtonInfo
     .map(({ priceInHexWei }) => priceInHexWei)
     .lastIndexOf(addHexPrefix(customGasPriceInHex || gasPrice));
 }
 
-export const getSafeLowEstimate = createDeepEqualSelector(
-  getGasFeeEstimates,
-  getGasEstimateType,
-  (gasFeeEstimates, gasEstimateType) => {
-    return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
-      ? (gasFeeEstimates as LegacyGasPriceEstimate)?.low
-      : null;
-  },
-);
+export function getSafeLowEstimate(state) {
+  const gasFeeEstimates = getGasFeeEstimates(state);
+  const gasEstimateType = getGasEstimateType(state);
 
-export const getAverageEstimate = createDeepEqualSelector(
-  getGasFeeEstimates,
-  getGasEstimateType,
-  (gasFeeEstimates, gasEstimateType) => {
-    return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
-      ? (gasFeeEstimates as LegacyGasPriceEstimate)?.medium
-      : null;
-  },
-);
+  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
+    ? gasFeeEstimates?.low
+    : null;
+}
 
-export const getAveragePriceEstimateInHexWEI = createDeepEqualSelector(
-  getAverageEstimate,
-  (averagePriceEstimate) => getGasPriceInHexWei(averagePriceEstimate ?? '0'),
-);
+export function getAverageEstimate(state) {
+  const gasFeeEstimates = getGasFeeEstimates(state);
+  const gasEstimateType = getGasEstimateType(state);
 
-export const getFastPriceEstimate = createDeepEqualSelector(
-  getGasFeeEstimates,
-  getGasEstimateType,
-  (gasFeeEstimates, gasEstimateType) => {
-    return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
-      ? (gasFeeEstimates as LegacyGasPriceEstimate)?.high
-      : null;
-  },
-);
+  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
+    ? gasFeeEstimates?.medium
+    : null;
+}
 
-export const getFastPriceEstimateInHexWEI = createDeepEqualSelector(
-  getFastPriceEstimate,
-  (fastPriceEstimate) => getGasPriceInHexWei(fastPriceEstimate || '0x0'),
-);
-export const isCustomPriceSafe = createDeepEqualSelector(
-  getSafeLowEstimate,
-  getCustomGasPrice,
-  (safeLow, customGasPrice) => {
-    if (!customGasPrice) {
-      return true;
-    }
+export function getFastPriceEstimate(state) {
+  const gasFeeEstimates = getGasFeeEstimates(state);
 
-    if (!safeLow) {
-      return false;
-    }
+  const gasEstimateType = getGasEstimateType(state);
 
-    const customPriceSafe = new Numeric(
-      customGasPrice,
-      16,
-      EtherDenomination.WEI,
-    )
-      .toDenomination(EtherDenomination.GWEI)
-      .greaterThan(safeLow, 10);
+  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
+    ? gasFeeEstimates?.high
+    : null;
+}
 
-    return customPriceSafe;
-  },
-);
+export function isCustomPriceSafe(state) {
+  const safeLow = getSafeLowEstimate(state);
 
-export const isCustomPriceSafeForCustomNetwork = createDeepEqualSelector(
-  getAverageEstimate,
-  getCustomGasPrice,
-  (estimatedPrice, customGasPrice) => {
-    if (!customGasPrice) {
-      return true;
-    }
+  const customGasPrice = getCustomGasPrice(state);
 
-    if (!estimatedPrice) {
-      return false;
-    }
+  if (!customGasPrice) {
+    return true;
+  }
 
-    const customPriceSafe = new Numeric(
-      customGasPrice,
-      16,
-      EtherDenomination.WEI,
-    )
-      .toDenomination(EtherDenomination.GWEI)
-      .greaterThan(estimatedPrice, 10);
+  if (!safeLow) {
+    return false;
+  }
 
-    return customPriceSafe;
-  },
-);
+  const customPriceSafe = new Numeric(customGasPrice, 16, EtherDenomination.WEI)
+    .toDenomination(EtherDenomination.GWEI)
+    .greaterThan(safeLow, 10);
 
-export const isCustomPriceExcessive = createDeepEqualSelector(
-  getGasPrice,
-  getCustomGasPrice,
-  getFastPriceEstimate,
-  (_state: Record<never, never>, checkSend: boolean = false) => checkSend,
-  (gasPrice, customGasPrice, fastPrice, checkSend) => {
-    const customPrice = checkSend ? gasPrice : customGasPrice;
+  return customPriceSafe;
+}
 
-    if (!customPrice || !fastPrice) {
-      return false;
-    }
+export function isCustomPriceSafeForCustomNetwork(state) {
+  const estimatedPrice = getAverageEstimate(state);
 
-    // Custom gas should be considered excessive when it is 1.5 times greater than the fastest estimate.
-    const customPriceExcessive = new Numeric(
-      customPrice,
-      16,
-      EtherDenomination.WEI,
-    )
-      .toDenomination(EtherDenomination.GWEI)
-      .greaterThan(Math.floor(Number(fastPrice ?? 0) * 1.5), 10);
+  const customGasPrice = getCustomGasPrice(state);
 
-    return customPriceExcessive;
-  },
-);
+  if (!customGasPrice) {
+    return true;
+  }
+
+  if (!estimatedPrice) {
+    return false;
+  }
+
+  const customPriceSafe = new Numeric(customGasPrice, 16, EtherDenomination.WEI)
+    .toDenomination(EtherDenomination.GWEI)
+    .greaterThan(estimatedPrice, 10);
+
+  return customPriceSafe;
+}
+
+export function isCustomPriceExcessive(state, checkSend = false) {
+  const customPrice = checkSend ? getGasPrice(state) : getCustomGasPrice(state);
+  const fastPrice = getFastPriceEstimate(state);
+
+  if (!customPrice || !fastPrice) {
+    return false;
+  }
+
+  // Custom gas should be considered excessive when it is 1.5 times greater than the fastest estimate.
+  const customPriceExcessive = new Numeric(
+    customPrice,
+    16,
+    EtherDenomination.WEI,
+  )
+    .toDenomination(EtherDenomination.GWEI)
+    .greaterThan(Math.floor(fastPrice * 1.5), 10);
+
+  return customPriceExcessive;
+}
 
 export function basicPriceEstimateToETHTotal(
-  estimate: string,
-  gasLimit: string,
+  estimate,
+  gasLimit,
   numberOfDecimals = 9,
 ) {
   return new Numeric(
@@ -165,8 +154,8 @@ export function basicPriceEstimateToETHTotal(
 }
 
 export function getRenderableEthFee(
-  estimate: string,
-  gasLimit: string,
+  estimate,
+  gasLimit,
   numberOfDecimals = 9,
   nativeCurrency = 'ETH',
 ) {
@@ -176,10 +165,10 @@ export function getRenderableEthFee(
 }
 
 export function getRenderableConvertedCurrencyFee(
-  estimate: string,
-  gasLimit: string,
-  convertedCurrency: string,
-  conversionRate: number,
+  estimate,
+  gasLimit,
+  convertedCurrency,
+  conversionRate,
 ) {
   const value = new Numeric(estimate, 10).toBase(16).toString();
   const fee = basicPriceEstimateToETHTotal(value, gasLimit);
@@ -191,59 +180,43 @@ export function getRenderableConvertedCurrencyFee(
   return formatCurrency(feeInCurrency, convertedCurrency);
 }
 
-export function priceEstimateToWei(priceEstimate: string) {
+export function priceEstimateToWei(priceEstimate) {
   return new Numeric(priceEstimate, 16, EtherDenomination.GWEI)
     .toDenomination(EtherDenomination.WEI)
     .round(9)
     .toString();
 }
 
-export function getGasPriceInHexWei(price: string) {
+export function getGasPriceInHexWei(price) {
   const value = new Numeric(price, 10).toBase(16).toString();
   return addHexPrefix(priceEstimateToWei(value));
 }
 
-export const getIsEthGasPriceFetched = createDeepEqualSelector(
-  getGasEstimateType,
-  getIsMainnet,
-  (gasEstimateType, isMainnet) => {
-    return (
-      gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ethGasPrice &&
-      isMainnet
-    );
-  },
-);
+export function getIsEthGasPriceFetched(state) {
+  const gasEstimateType = getGasEstimateType(state);
+  return (
+    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ethGasPrice &&
+    getIsMainnet(state)
+  );
+}
 
-export const getIsCustomNetworkGasPriceFetched = createDeepEqualSelector(
-  getGasEstimateType,
-  getIsMainnet,
-  (gasEstimateType, isMainnet) => {
-    return (
-      gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ethGasPrice &&
-      !isMainnet
-    );
-  },
-);
+export function getIsCustomNetworkGasPriceFetched(state) {
+  const gasEstimateType = getGasEstimateType(state);
+  return (
+    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ethGasPrice &&
+    !getIsMainnet(state)
+  );
+}
 
-export const getNoGasPriceFetched = createDeepEqualSelector(
-  getGasEstimateType,
-  (gasEstimateType) =>
-    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none,
-);
+export function getNoGasPriceFetched(state) {
+  const gasEstimateType = getGasEstimateType(state);
+  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none;
+}
 
-export const getIsGasEstimatesFetched = createDeepEqualSelector(
-  getGasEstimateType,
-  isEIP1559Network,
-  (gasEstimateType, isEIP1559) => {
-    if (isEIP1559) {
-      return false;
-    }
-    return gasEstimateType !== GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none;
-  },
-);
-
-export function getBasicGasEstimateLoadingStatus(
-  state: Parameters<typeof getIsGasEstimatesFetched>[0],
-) {
-  return getIsGasEstimatesFetched(state) === false;
+export function getIsGasEstimatesFetched(state) {
+  const gasEstimateType = getGasEstimateType(state);
+  if (isEIP1559Network(state)) {
+    return false;
+  }
+  return gasEstimateType !== GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none;
 }
