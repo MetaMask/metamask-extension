@@ -11,19 +11,16 @@ import {
   getPermittedEthChainIds,
   setPermittedEthChainIds,
 } from '@metamask/multichain';
+import { isSnapId } from '@metamask/snaps-utils';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionNames } from './specifications';
-
-const snapsPrefixes = ['npm:', 'local:'];
-const isSnap = (origin) =>
-  snapsPrefixes.some((prefix) => origin.startsWith(prefix));
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
   approvalController,
 }) {
-  // To add more than one account when already connected to the dapp
-  const addMoreAccounts = (origin, accounts) => {
+  // Returns the CAIP-25 caveat or undefined if it does not exist
+  const getCaip25Caveat = (origin) => {
     let caip25Caveat;
     try {
       caip25Caveat = permissionController.getCaveat(
@@ -39,7 +36,12 @@ export function getPermissionBackgroundApiMethods({
         throw err;
       }
     }
+    return caip25Caveat;
+  };
 
+  // To add more than one account when already connected to the dapp
+  const addMoreAccounts = (origin, accounts) => {
+    const caip25Caveat = getCaip25Caveat(origin);
     if (!caip25Caveat) {
       throw new Error(
         `Cannot add account permissions for origin "${origin}": no permission currently exists for this origin.`,
@@ -66,22 +68,7 @@ export function getPermissionBackgroundApiMethods({
   };
 
   const addMoreChains = (origin, chainIds) => {
-    let caip25Caveat;
-    try {
-      caip25Caveat = permissionController.getCaveat(
-        origin,
-        Caip25EndowmentPermissionName,
-        Caip25CaveatType,
-      );
-    } catch (err) {
-      if (err instanceof PermissionDoesNotExistError) {
-        // suppress expected error in case that the origin
-        // does not have the target permission yet
-      } else {
-        throw err;
-      }
-    }
-
+    const caip25Caveat = getCaip25Caveat(origin);
     if (!caip25Caveat) {
       throw new Error(
         `Cannot add chain permissions for origin "${origin}": no permission currently exists for this origin.`,
@@ -177,22 +164,7 @@ export function getPermissionBackgroundApiMethods({
       addMoreAccounts(origin, accounts),
 
     removePermittedAccount: (origin, account) => {
-      let caip25Caveat;
-      try {
-        caip25Caveat = permissionController.getCaveat(
-          origin,
-          Caip25EndowmentPermissionName,
-          Caip25CaveatType,
-        );
-      } catch (err) {
-        if (err instanceof PermissionDoesNotExistError) {
-          // suppress expected error in case that the origin
-          // does not have the target permission yet
-        } else {
-          throw err;
-        }
-      }
-
+      const caip25Caveat = getCaip25Caveat(origin);
       if (!caip25Caveat) {
         throw new Error(
           `Cannot remove account "${account}": No permissions exist for origin "${origin}".`,
@@ -233,22 +205,7 @@ export function getPermissionBackgroundApiMethods({
     addPermittedChains: (origin, chainIds) => addMoreChains(origin, chainIds),
 
     removePermittedChain: (origin, chainId) => {
-      let caip25Caveat;
-      try {
-        caip25Caveat = permissionController.getCaveat(
-          origin,
-          Caip25EndowmentPermissionName,
-          Caip25CaveatType,
-        );
-      } catch (err) {
-        if (err instanceof PermissionDoesNotExistError) {
-          // suppress expected error in case that the origin
-          // does not have the target permission yet
-        } else {
-          throw err;
-        }
-      }
-
+      const caip25Caveat = getCaip25Caveat(origin);
       if (!caip25Caveat) {
         throw new Error(
           `Cannot remove permission for chainId "${chainId}": No permissions exist for origin "${origin}".`,
@@ -265,7 +222,7 @@ export function getPermissionBackgroundApiMethods({
         return;
       }
 
-      if (remainingChainIds.length === 0 && !isSnap(origin)) {
+      if (remainingChainIds.length === 0 && !isSnapId(origin)) {
         permissionController.revokePermission(
           origin,
           Caip25EndowmentPermissionName,
