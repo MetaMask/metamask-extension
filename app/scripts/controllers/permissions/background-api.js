@@ -13,10 +13,7 @@ import {
 } from '@metamask/multichain';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionNames } from './specifications';
-
-const snapsPrefixes = ['npm:', 'local:'];
-const isSnap = (origin) =>
-  snapsPrefixes.some((prefix) => origin.startsWith(prefix));
+import { isSnapId } from '@metamask/snaps-utils';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
@@ -225,7 +222,7 @@ export function getPermissionBackgroundApiMethods({
         return;
       }
 
-      if (remainingChainIds.length === 0 && !isSnap(origin)) {
+      if (remainingChainIds.length === 0 && !isSnapId(origin)) {
         permissionController.revokePermission(
           origin,
           Caip25EndowmentPermissionName,
