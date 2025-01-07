@@ -8,7 +8,7 @@ import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
 export const selectBridgeStatusState = (state: {
   metamask: Pick<BackgroundStateProxy, 'BridgeStatusController'>;
-}) => state.metamask.BridgeStatusController.bridgeStatusState;
+}) => state.metamask.BridgeStatusController.bridgeStatus;
 
 /**
  * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address

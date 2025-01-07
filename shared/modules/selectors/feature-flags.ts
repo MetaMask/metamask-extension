@@ -1,21 +1,30 @@
 import { BackgroundStateProxy } from '../../types/metamask';
 import { getNetworkNameByChainId } from '../feature-flags';
 import { getCurrentChainId } from './networks';
+import { createDeepEqualSelector } from './util';
 
-export function getFeatureFlagsByChainId(state: {
-  metamask: BackgroundStateProxy;
-}) {
-  const chainId = getCurrentChainId(state);
-  const networkName = getNetworkNameByChainId(chainId);
-  const featureFlags =
-    state.metamask.SwapsController.swapsState?.swapsFeatureFlags;
-  if (!featureFlags?.[networkName]) {
-    return null;
-  }
-  return {
-    smartTransactions: {
-      ...featureFlags.smartTransactions,
-      ...featureFlags[networkName].smartTransactions,
-    },
-  };
-}
+export const getFeatureFlagsByChainId = createDeepEqualSelector(
+  getCurrentChainId,
+  (state: { metamask: Pick<BackgroundStateProxy, 'SwapsController'> }) =>
+    state.metamask.SwapsController.swapsState?.swapsFeatureFlags,
+  (chainId, featureFlags) => {
+    const networkName = getNetworkNameByChainId(chainId);
+    if (
+      !(networkName in featureFlags) ||
+      !featureFlags?.[networkName as keyof typeof featureFlags]
+    ) {
+      return null;
+    }
+    const networkFeatureFlags =
+      featureFlags[networkName as keyof typeof featureFlags] ?? {};
+    return {
+      smartTransactions: {
+        ...featureFlags.smartTransactions,
+        ...(typeof networkFeatureFlags === 'object' &&
+        'smartTransactions' in networkFeatureFlags
+          ? networkFeatureFlags.smartTransactions
+          : {}),
+      },
+    };
+  },
+);
