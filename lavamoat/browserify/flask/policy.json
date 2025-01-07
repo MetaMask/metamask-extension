@@ -2364,8 +2364,14 @@
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/util": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
         "@metamask/smart-transactions-controller>@ethereumjs/util": true,
-        "@trezor/connect-web>@trezor/connect>@ethereumjs/common": true
+        "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/util": {
@@ -2614,6 +2620,7 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
+        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
@@ -2626,7 +2633,6 @@
         "@metamask/name-controller>async-mutex": true,
         "@metamask/network-controller": true,
         "@metamask/rpc-errors": true,
-        "@metamask/transaction-controller>@ethereumjs/common": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/utils": true,
         "bn.js": true,
@@ -2635,14 +2641,6 @@
         "fast-json-patch": true,
         "lodash": true,
         "uuid": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/transaction-controller>@ethereumjs/common": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "browserify>buffer": true,
         "webpack>events": true
       }
     },
@@ -3098,23 +3096,6 @@
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
       "globals": {
         "define": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@ethereumjs/common": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@ethereumjs/common>@ethereumjs/util": true,
-        "webpack>events": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@ethereumjs/common>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true,
-        "fetch": true
-      },
-      "packages": {
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": true,
-        "webpack>events": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
