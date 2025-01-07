@@ -505,6 +505,53 @@ class FixtureBuilder {
     });
   }
 
+  withPermissionControllerConnectedToTestDappMultichain({
+    account = '',
+    useLocalhostHostname = false,
+  } = {}) {
+    const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
+    const subjects = {
+      [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+        origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1337': {
+                      accounts: [
+                        `eip155:1337:${selectedAccount.toLowerCase()}`,
+                      ],
+                    },
+                    'wallet:eip155': {
+                      accounts: [
+                        `wallet:eip155:${selectedAccount.toLowerCase()}`,
+                      ],
+                    },
+                    wallet: {
+                      accounts: [],
+                    },
+                  },
+                  isMultichainOrigin: true,
+                },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
+    });
+  }
+
   withPermissionControllerConnectedToTestDappWithTwoAccounts() {
     const subjects = {
       [DAPP_URL]: {
