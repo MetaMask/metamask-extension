@@ -378,10 +378,12 @@ describe('Bridge quote utils', () => {
     ) => {
       const result = calcAdjustedReturn(
         {
+          amount: new BigNumber(1),
           valueInCurrency: destTokenAmountInCurrency,
           usd: destTokenAmountInCurrency,
         },
         {
+          amount: new BigNumber(1),
           valueInCurrency: totalNetworkFeeInCurrency,
           usd: totalNetworkFeeInCurrency,
         },
