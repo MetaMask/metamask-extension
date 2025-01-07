@@ -120,7 +120,7 @@ type DecryptMessageManagerStateChangeEvent = {
 
 type AllowedEvents =
   | DecryptMessageManagerStateChangeEvent
-  | DecryptMessageManagerUnapprovedMessageAddedEvent
+  | DecryptMessageManagerUnapprovedMessageAddedEvent;
 
 export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
