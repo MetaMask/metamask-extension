@@ -1,4 +1,6 @@
 import log from 'loglevel';
+import { TransactionDescription } from '@ethersproject/abi';
+import { Nft, NftContract, Token } from '@metamask/assets-controllers';
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
@@ -11,7 +13,11 @@ import { formatCurrency } from './confirm-tx.util';
 
 const DEFAULT_SYMBOL = '';
 
-async function getSymbolFromContract(tokenAddress) {
+type TokenMap = {
+  [address: string]: Pick<Token, 'symbol' | 'decimals' | 'name'>;
+};
+
+async function getSymbolFromContract(tokenAddress: string) {
   const token = util.getContractAtAddress(tokenAddress);
   try {
     const result = await token.symbol();
@@ -25,7 +31,7 @@ async function getSymbolFromContract(tokenAddress) {
   }
 }
 
-async function getNameFromContract(tokenAddress) {
+async function getNameFromContract(tokenAddress: string) {
   const token = util.getContractAtAddress(tokenAddress);
   try {
     const [name] = await token.name();
@@ -39,7 +45,7 @@ async function getNameFromContract(tokenAddress) {
   }
 }
 
-async function getDecimalsFromContract(tokenAddress) {
+async function getDecimalsFromContract(tokenAddress: string) {
   const token = util.getContractAtAddress(tokenAddress);
 
   try {
@@ -55,11 +61,11 @@ async function getDecimalsFromContract(tokenAddress) {
   }
 }
 
-export function getTokenMetadata(tokenAddress, tokenList) {
+export function getTokenMetadata(tokenAddress: string, tokenList: TokenMap) {
   return tokenAddress && tokenList[tokenAddress.toLowerCase()];
 }
 
-async function getSymbol(tokenAddress, tokenList) {
+async function getSymbol(tokenAddress: string, tokenList: TokenMap) {
   let symbol = await getSymbolFromContract(tokenAddress);
 
   if (!symbol) {
@@ -73,7 +79,7 @@ async function getSymbol(tokenAddress, tokenList) {
   return symbol;
 }
 
-async function getName(tokenAddress, tokenList) {
+async function getName(tokenAddress: string, tokenList: TokenMap) {
   let name = await getNameFromContract(tokenAddress);
 
   if (!name) {
@@ -87,7 +93,7 @@ async function getName(tokenAddress, tokenList) {
   return name;
 }
 
-async function getDecimals(tokenAddress, tokenList) {
+async function getDecimals(tokenAddress: string, tokenList: TokenMap) {
   let decimals = await getDecimalsFromContract(tokenAddress);
 
   if (!decimals || decimals === '0') {
@@ -101,7 +107,10 @@ async function getDecimals(tokenAddress, tokenList) {
   return decimals;
 }
 
-export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
+export async function getSymbolAndDecimalsAndName(
+  tokenAddress: string,
+  tokenList: TokenMap,
+) {
   let symbol, decimals, name;
 
   try {
@@ -130,9 +139,14 @@ export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
 }
 
 export function tokenInfoGetter() {
-  const tokens = {};
+  const tokens: TokenMap = {};
 
-  return async (address, tokenList) => {
+  return async (
+    address: string,
+    tokenList: {
+      [address: string]: Pick<Token, 'symbol' | 'decimals' | 'name'>;
+    },
+  ) => {
     if (tokens[address]) {
       return tokens[address];
     }
@@ -146,15 +160,24 @@ export function tokenInfoGetter() {
  * Attempts to get the address parameter of the given token transaction data
  * (i.e. function call) per the Human Standard Token ABI, in the following
  * order:
- *   - The '_to' parameter, if present
- *   - The first parameter, if present
+ * - The '_to' parameter, if present
+ * - The first parameter, if present
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A lowercase address string.
+ * @param tokenData - ethers Interface token data.
+ * @returns A lowercase address string or undefined.
  */
-export function getTokenAddressParam(tokenData = {}) {
-  const value =
-    tokenData?.args?._to || tokenData?.args?.to || tokenData?.args?.[0];
+export function getTokenAddressParam(
+  tokenData: Partial<TransactionDescription> = {},
+) {
+  const { args = [] } = tokenData;
+  let value: unknown;
+  if ('_to' in args) {
+    value = args._to;
+  } else if ('to' in args) {
+    value = args.to;
+  } else if (Array.isArray(args)) {
+    value = args[0];
+  }
   return value?.toString().toLowerCase();
 }
 
@@ -162,18 +185,20 @@ export function getTokenAddressParam(tokenData = {}) {
  * Gets the '_value' parameter of the given token transaction data
  * (i.e function call) per the Human Standard Token ABI, if present.
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A decimal string value.
+ * @param tokenData - ethers Interface token data.
+ * @returns A decimal string value or undefined.
  */
 /**
  * Gets either the '_tokenId' parameter or the 'id' param of the passed token transaction data.,
  * These are the parsed tokenId values returned by `parseStandardTokenTransactionData` as defined
  * in the ERC721 and ERC1155 ABIs from metamask-eth-abis (https://github.com/MetaMask/metamask-eth-abis/tree/main/src/abis)
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A decimal string value.
+ * @param tokenData - ethers Interface token data.
+ * @returns A decimal string value or undefined.
  */
-export function getTokenIdParam(tokenData = {}) {
+export function getTokenIdParam(
+  tokenData: Partial<TransactionDescription> = {},
+) {
   return (
     tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
   );
@@ -183,31 +208,37 @@ export function getTokenIdParam(tokenData = {}) {
  * Gets the '_approved' parameter of the given token transaction data
  * (i.e function call) per the Human Standard Token ABI, if present.
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {boolean | undefined} A boolean indicating whether the function is being called to approve or revoke access.
+ * @param tokenData - ethers Interface token data.
+ * @returns A boolean indicating whether the function is being called to approve or revoke access, or undefined if the '_approved` parameter is not present.
  */
-export function getTokenApprovedParam(tokenData = {}) {
-  return tokenData?.args?._approved;
+export function getTokenApprovedParam(
+  tokenData: Partial<TransactionDescription> = {},
+) {
+  const { args = {} } = tokenData;
+  if (!('_approved' in args)) {
+    return undefined;
+  }
+  return Boolean(args._approved);
 }
 
 /**
  * Get the token balance converted to fiat and optionally formatted for display
  *
- * @param {number} [contractExchangeRate] - The exchange rate between the current token and the native currency
- * @param {number} conversionRate - The exchange rate between the current fiat currency and the native currency
- * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
- * @param {string} [tokenAmount] - The current token balance
- * @param {string} [tokenSymbol] - The token symbol
- * @param {boolean} [formatted] - Whether the return value should be formatted or not
- * @param {boolean} [hideCurrencySymbol] - excludes the currency symbol in the result if true
- * @returns {string|undefined} The token amount in the user's chosen fiat currency, optionally formatted and localize
+ * @param [contractExchangeRate] - The exchange rate between the current token and the native currency
+ * @param conversionRate - The exchange rate between the current fiat currency and the native currency
+ * @param currentCurrency - The currency code for the user's chosen fiat currency
+ * @param [tokenAmount] - The current token balance
+ * @param [tokenSymbol] - The token symbol
+ * @param [formatted] - Whether the return value should be formatted or not
+ * @param [hideCurrencySymbol] - excludes the currency symbol in the result if true
+ * @returns The token amount in the user's chosen fiat currency, optionally formatted and localize, or undefined
  */
 export function getTokenFiatAmount(
-  contractExchangeRate,
-  conversionRate,
-  currentCurrency,
-  tokenAmount,
-  tokenSymbol,
+  contractExchangeRate: number | string,
+  conversionRate: number,
+  currentCurrency: string,
+  tokenAmount: string,
+  tokenSymbol: string,
   formatted = true,
   hideCurrencySymbol = false,
 ) {
@@ -217,21 +248,20 @@ export function getTokenFiatAmount(
   if (
     conversionRate <= 0 ||
     !contractExchangeRate ||
-    tokenAmount === undefined ||
-    tokenAmount === false
+    tokenAmount === undefined
   ) {
     return undefined;
   }
 
-  const currentTokenToFiatRate = new Numeric(contractExchangeRate, 10)
-    .times(new Numeric(conversionRate, 10))
-    .toString();
+  const currentTokenToFiatRate = new Numeric(contractExchangeRate, 10).times(
+    new Numeric(conversionRate, 10),
+  );
 
-  let currentTokenInFiat = new Numeric(tokenAmount, 10);
+  let currentTokenInFiat: Numeric | string = new Numeric(tokenAmount, 10);
 
   if (tokenSymbol !== currentCurrency.toUpperCase() && currentTokenToFiatRate) {
     currentTokenInFiat = currentTokenInFiat.applyConversionRate(
-      currentTokenToFiatRate,
+      currentTokenToFiatRate.toNumber(),
     );
   }
 
@@ -247,14 +277,14 @@ export function getTokenFiatAmount(
   } else {
     result = currentTokenInFiat;
   }
-  return result;
+  return result.toString();
 }
 
 export async function getAssetDetails(
-  tokenAddress,
-  currentUserAddress,
-  transactionData,
-  existingNfts,
+  tokenAddress: string,
+  currentUserAddress: string,
+  transactionData: string,
+  existingNfts: (Nft & NftContract)[],
 ) {
   const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
@@ -306,7 +336,7 @@ export async function getAssetDetails(
     tokenDecimals &&
     calcTokenAmount(tokenValue, tokenDecimals).toString(10);
 
-  const decimals = tokenDecimals && Number(tokenDecimals?.toString(10));
+  const decimals = tokenDecimals && Number(tokenDecimals);
 
   if (tokenDetails?.standard === TokenStandard.ERC20) {
     tokenId = undefined;

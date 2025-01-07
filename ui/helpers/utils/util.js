@@ -299,6 +299,12 @@ export function shortenAddress(address = '') {
   });
 }
 
+/**
+ *
+ * @param {(import('@metamask/keyring-internal-api').InternalAccount | import('../../selectors/selectors.types').InternalAccountWithBalance)[]} accounts - The internal accounts list.
+ * @param {string} targetAddress
+ * @returns {import('@metamask/keyring-internal-api').InternalAccount | import('../../selectors/selectors.types').InternalAccountWithBalance | undefined}
+ */
 export function getAccountByAddress(accounts = [], targetAddress) {
   return accounts.find(({ address }) => address === targetAddress);
 }

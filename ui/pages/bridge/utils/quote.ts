@@ -95,7 +95,7 @@ const calcTotalGasFee = ({
   bridgeQuote: QuoteResponse & L1GasFees;
   feePerGasInDecGwei: string;
   priorityFeePerGasInDecGwei: string;
-  nativeExchangeRate?: number;
+  nativeExchangeRate?: number | null;
 }) => {
   const { approval, trade, l1GasFeesInHexWei } = bridgeQuote;
 
@@ -139,7 +139,7 @@ export const calcEstimatedAndMaxTotalGasFee = ({
   estimatedBaseFeeInDecGwei: string;
   maxFeePerGasInDecGwei: string;
   maxPriorityFeePerGasInDecGwei: string;
-  nativeExchangeRate?: number;
+  nativeExchangeRate?: number | null;
 }) => {
   const { amount, valueInCurrency } = calcTotalGasFee({
     bridgeQuote,

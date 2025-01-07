@@ -1,4 +1,5 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { MetaMaskSliceControllerState } from '../ducks/metamask/metamask';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -7,15 +8,18 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../helpers/constants/routes';
 
+export type OnboardingState =
+  MetaMaskSliceControllerState<'OnboardingController'>;
+
 /**
  * When the user unlocks the wallet but onboarding has not fully completed we
  * must direct the user to the appropriate step in the onboarding process.
  *
- * @param {object} state - MetaMask state tree
- * @returns {string} Route to redirect the user to
+ * @param state - MetaMask state tree
+ * @returns Route to redirect the user to
  */
-export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
-  const { firstTimeFlowType } = state.metamask;
+export function getFirstTimeFlowTypeRouteAfterUnlock(state: OnboardingState) {
+  const { firstTimeFlowType } = state.metamask.OnboardingController;
 
   if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_CREATE_PASSWORD_ROUTE;
@@ -36,11 +40,13 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
  * restore option because the restore option is atypical from the other two
  * options and removes an entire screen from the onboarding flow.
  *
- * @param {object} state - MetaMask state tree
- * @returns {string} Route to redirect the user to
+ * @param state - MetaMask state tree
+ * @returns Route to redirect the user to
  */
-export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
-  const { firstTimeFlowType } = state.metamask;
+export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(
+  state: OnboardingState,
+) {
+  const { firstTimeFlowType } = state.metamask.OnboardingController;
 
   if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_CREATE_PASSWORD_ROUTE;
@@ -52,12 +58,12 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   return DEFAULT_ROUTE;
 }
 
-export const getFirstTimeFlowType = (state) => {
-  return state.metamask.firstTimeFlowType;
+export const getFirstTimeFlowType = (state: OnboardingState) => {
+  return state.metamask.OnboardingController.firstTimeFlowType;
 };
 
-export const getOnboardingInitiator = (state) => {
-  const { onboardingTabs } = state.metamask;
+export const getOnboardingInitiator = (state: OnboardingState) => {
+  const { onboardingTabs } = state.metamask.OnboardingController;
 
   if (!onboardingTabs || Object.keys(onboardingTabs).length !== 1) {
     return null;

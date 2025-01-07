@@ -1,37 +1,30 @@
+import { BackgroundStateProxy } from '../../types/metamask';
 import { getNetworkNameByChainId } from '../feature-flags';
-import { ProviderConfigState, getCurrentChainId } from './networks';
+import { getCurrentChainId } from './networks';
+import { createDeepEqualSelector } from './util';
 
-type FeatureFlagsMetaMaskState = {
-  metamask: {
-    swapsState: {
-      swapsFeatureFlags: {
-        [key: string]: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-          smartTransactions: {
-            expectedDeadline?: number;
-            maxDeadline?: number;
-            extensionReturnTxHashAsap?: boolean;
-          };
-        };
-      };
+export const getFeatureFlagsByChainId = createDeepEqualSelector(
+  getCurrentChainId,
+  (state: { metamask: Pick<BackgroundStateProxy, 'SwapsController'> }) =>
+    state.metamask.SwapsController.swapsState?.swapsFeatureFlags,
+  (chainId, featureFlags) => {
+    const networkName = getNetworkNameByChainId(chainId);
+    if (
+      !(networkName in featureFlags) ||
+      !featureFlags?.[networkName as keyof typeof featureFlags]
+    ) {
+      return null;
+    }
+    const networkFeatureFlags =
+      featureFlags[networkName as keyof typeof featureFlags] ?? {};
+    return {
+      smartTransactions: {
+        ...featureFlags.smartTransactions,
+        ...(typeof networkFeatureFlags === 'object' &&
+        'smartTransactions' in networkFeatureFlags
+          ? networkFeatureFlags.smartTransactions
+          : {}),
+      },
     };
-  };
-};
-
-export function getFeatureFlagsByChainId(
-  state: ProviderConfigState & FeatureFlagsMetaMaskState,
-) {
-  const chainId = getCurrentChainId(state);
-  const networkName = getNetworkNameByChainId(chainId);
-  const featureFlags = state.metamask.swapsState?.swapsFeatureFlags;
-  if (!featureFlags?.[networkName]) {
-    return null;
-  }
-  return {
-    smartTransactions: {
-      ...featureFlags.smartTransactions,
-      ...featureFlags[networkName].smartTransactions,
-    },
-  };
-}
+  },
+);

@@ -240,7 +240,7 @@ export const DEPRECATED_NETWORKS = [
   CHAIN_IDS.OPTIMISM_GOERLI,
   CHAIN_IDS.POLYGON_TESTNET,
   CHAIN_IDS.LINEA_GOERLI,
-];
+] as const;
 
 /**
  * The largest possible chain ID we can handle.
@@ -405,7 +405,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
   WETHIO: 'ZYN',
   CHZ: 'CHZ',
-};
+} as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const LINEA_GOERLI_TOKEN_IMAGE_URL = './images/linea-logo-testnet.png';
@@ -519,7 +519,7 @@ export const TEST_NETWORK_TICKER_MAP: {
   }`,
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
-};
+} as const;
 
 /**
  * Map of all build-in Infura networks to their network, ticker and chain IDs.
@@ -963,12 +963,12 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     domain: 'gnosisscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
   },
-};
+} as const;
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
   [CHAIN_IDS.OPTIMISM]: 1,
   [CHAIN_IDS.OPTIMISM_TESTNET]: 1,
-};
+} as const;
 
 /**
  * Ethereum JSON-RPC methods that are known to exist but that we intentionally
@@ -982,7 +982,7 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
 
-export const FEATURED_RPCS: AddNetworkFields[] = [
+export const FEATURED_RPCS = [
   {
     chainId: CHAIN_IDS.LINEA_MAINNET,
     name: LINEA_MAINNET_DISPLAY_NAME,
@@ -1095,14 +1095,14 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     blockExplorerUrls: ['https://basescan.org'],
     defaultBlockExplorerUrlIndex: 0,
   },
-];
+] as const satisfies AddNetworkFields[];
 
 export const FEATURED_NETWORK_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
-];
+] as const;
 
-export const infuraChainIdsTestNets: string[] = [
+export const infuraChainIdsTestNets = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.HOLESKY,
   CHAIN_IDS.LINEA_SEPOLIA,
@@ -1119,7 +1119,7 @@ export const infuraChainIdsTestNets: string[] = [
   CHAIN_IDS.OPBNB_TESTNET,
   CHAIN_IDS.SCROLL_SEPOLIA,
   CHAIN_IDS.UNICHAIN_SEPOLIA,
-];
+] as const satisfies string[];
 
 export const allowedInfuraHosts = [
   // Ethereum
@@ -1152,7 +1152,7 @@ export const allowedInfuraHosts = [
   'opbnb-mainnet.infura.io',
   // Scroll
   'scroll-mainnet.infura.io',
-];
+] as const;
 
 /**
  * Represents the availability state of the currently selected network.
@@ -1186,7 +1186,7 @@ export const TEST_NETWORKS = [
   SEPOLIA_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,
   LINEA_SEPOLIA_DISPLAY_NAME,
-];
+] as const;
 
 export const TEST_NETWORK_IDS = [
   CHAIN_IDS.GOERLI,
@@ -1194,4 +1194,4 @@ export const TEST_NETWORK_IDS = [
   CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.ARBITRUM_SEPOLIA,
-];
+] as const;

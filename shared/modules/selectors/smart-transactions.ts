@@ -10,48 +10,11 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { MetaMaskReduxState } from '../../../ui/store/store';
 import { isProduction } from '../environment';
-import { getCurrentChainId, NetworkState } from './networks';
-
-type SmartTransactionsMetaMaskState = {
-  metamask: {
-    preferences: {
-      smartTransactionsOptInStatus?: boolean;
-    };
-    internalAccounts: {
-      selectedAccount: string;
-      accounts: {
-        [key: string]: {
-          metadata: {
-            keyring: {
-              type: string;
-            };
-          };
-        };
-      };
-    };
-    swapsState: {
-      swapsFeatureFlags: {
-        ethereum: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-          smartTransactions: {
-            expectedDeadline?: number;
-            maxDeadline?: number;
-            extensionReturnTxHashAsap?: boolean;
-          };
-        };
-        smartTransactions: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-        };
-      };
-    };
-    smartTransactionsState: {
-      liveness: boolean;
-    };
-  };
-};
+import { getCurrentChainId } from './networks';
 
 /**
  * Returns the user's explicit opt-in status for the smart transactions feature.
@@ -84,7 +47,6 @@ export const getSmartTransactionsOptInStatusInternal = createSelector(
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => optInStatus,
@@ -97,7 +59,6 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @param state
  * @returns
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => {
@@ -109,13 +70,13 @@ export const getSmartTransactionsPreferenceEnabled = createSelector(
 );
 
 export const getCurrentChainSupportsSmartTransactions = (
-  state: NetworkState,
+  state: MetaMaskReduxState,
 ): boolean => {
   const chainId = getCurrentChainId(state);
   return getAllowedSmartTransactionsChainIds().includes(chainId);
 };
 
-const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
+const getIsAllowedRpcUrlForSmartTransactions = (state: MetaMaskReduxState) => {
   const chainId = getCurrentChainId(state);
   if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
     // Allow any STX RPC URL in development and testing environments or for specific chain IDs.
@@ -131,15 +92,15 @@ const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
 };
 
 export const getSmartTransactionsEnabled = (
-  state: SmartTransactionsMetaMaskState & NetworkState,
+  state: MetaMaskReduxState,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
   // TODO: Create a new proxy service only for MM feature flags.
   const smartTransactionsFeatureFlagEnabled =
-    state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
+    state.metamask.SwapsController.swapsState?.swapsFeatureFlags
       ?.extensionActive;
   const smartTransactionsLiveness =
-    state.metamask.smartTransactionsState?.liveness;
+    state.metamask.SmartTransactionsController.smartTransactionsState?.liveness;
   return Boolean(
     getCurrentChainSupportsSmartTransactions(state) &&
       getIsAllowedRpcUrlForSmartTransactions(state) &&
@@ -149,9 +110,7 @@ export const getSmartTransactionsEnabled = (
   );
 };
 
-export const getIsSmartTransaction = (
-  state: SmartTransactionsMetaMaskState & NetworkState,
-): boolean => {
+export const getIsSmartTransaction = (state: MetaMaskReduxState): boolean => {
   const smartTransactionsPreferenceEnabled =
     getSmartTransactionsPreferenceEnabled(state);
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);

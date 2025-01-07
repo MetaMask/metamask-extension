@@ -1,14 +1,14 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { UserOperationControllerState } from '@metamask/user-operation-controller';
 import { createSelector } from 'reselect';
+import { MetaMaskSliceControllerState } from '../ducks/metamask/metamask';
 
-export type AccountAbstractionState = {
-  confirmTransaction?: { txData?: TransactionMeta };
-  metamask: UserOperationControllerState;
-};
+export type AccountAbstractionState =
+  MetaMaskSliceControllerState<'UserOperationController'> & {
+    confirmTransaction?: { txData?: TransactionMeta };
+  };
 
 export function getUserOperations(state: AccountAbstractionState) {
-  return state.metamask.userOperations || {};
+  return state.metamask.UserOperationController.userOperations ?? {};
 }
 
 export const selectUserOperationMetadata = createSelector(

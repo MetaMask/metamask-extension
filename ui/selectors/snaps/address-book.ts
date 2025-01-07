@@ -1,15 +1,12 @@
-import { AddressBookController } from '@metamask/address-book-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { MetaMaskSliceControllerState } from '../../ducks/metamask/metamask';
 
 /**
  * The Metamask state for the address book controller.
  */
-export type AddressBookMetaMaskState = {
-  metamask: {
-    addressBook: AddressBookController['state']['addressBook'];
-  };
-};
+export type AddressBookMetaMaskState =
+  MetaMaskSliceControllerState<'AddressBookController'>;
 
 /**
  * Get the full address book.
@@ -18,7 +15,7 @@ export type AddressBookMetaMaskState = {
  * @returns The full address book.
  */
 export const getFullAddressBook = (state: AddressBookMetaMaskState) =>
-  state.metamask.addressBook;
+  state.metamask.AddressBookController.addressBook;
 
 /**
  * Get the memoized full address book.
