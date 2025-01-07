@@ -33,6 +33,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import {
+  hexToDecimal,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
@@ -229,10 +230,17 @@ export const handleTransactionConfirmed = async (
 
   extraParams.gas_used = txReceipt?.gasUsed;
 
-  const { submittedTime } = transactionMeta;
+  const { submittedTime, blockTimestamp } = transactionMeta;
 
   if (submittedTime) {
     extraParams.completion_time = getTransactionCompletionTime(submittedTime);
+  }
+
+  if (submittedTime && blockTimestamp) {
+    extraParams.completion_time_onchain = getTransactionOnchainCompletionTime(
+      submittedTime,
+      blockTimestamp,
+    );
   }
 
   if (txReceipt?.status === '0x0') {
@@ -1131,6 +1139,30 @@ function getGasValuesInGWEI(gasParams: Record<string, any>) {
 
 function getTransactionCompletionTime(submittedTime: number) {
   return Math.round((Date.now() - submittedTime) / 1000).toString();
+}
+
+/**
+ * Returns number of seconds (rounded to the hundredths) between submitted time
+ * and the block timestamp.
+ *
+ * @param submittedTime - The UNIX timestamp in milliseconds in which the
+ * transaction has been submitted
+ * @param blockTimestamp - The UNIX timestamp in seconds in hexadecimal in which
+ * the transaction has been confirmed in a block
+ */
+function getTransactionOnchainCompletionTime(
+  submittedTime: number,
+  blockTimestamp: string,
+): string {
+  const DECIMAL_DIGITS = 2;
+
+  return (
+    Math.round(
+      (Number(hexToDecimal(blockTimestamp)) - submittedTime / 1000) *
+        10 ** DECIMAL_DIGITS,
+    ) /
+    10 ** DECIMAL_DIGITS
+  ).toString();
 }
 
 /**
