@@ -124,6 +124,10 @@ export function AssetPicker({
 
   const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
 
+  if (!asset) {
+    return null
+  }
+
   return (
     <>
       {networkProps && (
