@@ -99,6 +99,12 @@ export default function NftsTab() {
     }
   }, [nftsLoading, nftsStillFetchingIndication]);
 
+  const handleNftClick = (nft: NFT) => {
+    history.push(
+      `${ASSET_ROUTE}/${currentChain.chainId}/${nft.address}/${nft.tokenId}`,
+    );
+  };
+
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
       <Box className="nfts-tab__loading">
@@ -120,7 +126,10 @@ export default function NftsTab() {
         ) : null}
         {hasAnyNfts || previouslyOwnedCollection.nfts.length > 0 ? (
           <Box>
-            <NftGrid />
+            <NftGrid
+              nfts={currentlyOwnedNfts}
+              handleNftClick={handleNftClick}
+            />
             <Box
               className="nfts-tab__buttons"
               display={Display.Flex}

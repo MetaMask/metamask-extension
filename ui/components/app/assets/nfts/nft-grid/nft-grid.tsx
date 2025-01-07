@@ -1,23 +1,24 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library';
 import Spinner from '../../../../ui/spinner';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
-import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   getCurrentNetwork,
   getNftIsStillFetchingIndication,
 } from '../../../../../selectors';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { useNfts } from '../../../../../hooks/useNfts';
 
-export default function NftGrid() {
-  const history = useHistory();
-
+export default function NftGrid({
+  nfts,
+  handleNftClick,
+}: {
+  nfts: NFT[];
+  handleNftClick: (nft: NFT) => void;
+}) {
   const currentChain = useSelector(getCurrentNetwork) as {
     chainId: Hex;
     nickname: string;
@@ -27,28 +28,11 @@ export default function NftGrid() {
     getNftIsStillFetchingIndication,
   );
 
-  const { currentlyOwnedNfts } = useNfts();
-
   return (
-    <Box
-      display={Display.Grid}
-      gap={4}
-      className="nft-items__wrapper"
-      // style={{ outline: 'solid red 2px' }}
-    >
-      {currentlyOwnedNfts.map((nft: NFT, index: number) => {
-        console.log('NFT: ', nft);
-        const handleImageClick = () => {
-          // if (isModal) {
-          //   return onSendNft(nft);
-          // }
-          return history.push(
-            `${ASSET_ROUTE}/${currentChain.chainId}/${nft.address}/${nft.tokenId}`,
-          );
-        };
+    <Box display={Display.Grid} gap={4} className="nft-items__wrapper">
+      {nfts.map((nft: NFT) => {
         const { image, imageOriginal, tokenURI } = nft;
         const nftImageAlt = getNftImageAlt(nft);
-
         const isIpfsURL = (imageOriginal ?? image ?? tokenURI)?.startsWith(
           'ipfs:',
         );
@@ -64,7 +48,7 @@ export default function NftGrid() {
               src={image ?? ''}
               networkName={currentChain.nickname}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
-              onClick={handleImageClick}
+              onClick={() => handleNftClick(nft)}
               isIpfsURL={isIpfsURL}
               clickable
             />
