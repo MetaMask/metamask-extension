@@ -16,12 +16,14 @@ import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
 import { LedgerInfo } from '../components/confirm/ledger-info';
 import { NetworkChangeToast } from '../components/confirm/network-change-toast';
+import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
 import { ConfirmNav } from '../components/confirm/nav/nav';
+import { Box } from '../../../components/component-library';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -53,6 +55,9 @@ const Confirm = () => (
           <Page className="confirm_wrapper">
             <ConfirmNav />
             <Header />
+            <Box className="transaction-alerts">
+              <SmartTransactionsBannerAlert marginType="noTop" />
+            </Box>
             <ScrollToBottom>
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
