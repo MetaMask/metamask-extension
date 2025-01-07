@@ -1045,12 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Demande de transaction"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Pour protéger vos actifs et vos informations de connexion, nous vous suggérons de rejeter la demande."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Cette demande est suspecte"
-  },
   "confirmed": {
     "message": "Confirmé"
   },

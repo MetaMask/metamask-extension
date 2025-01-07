@@ -68,7 +68,7 @@ describe('ConfirmAlertModal', () => {
       mockStore,
     );
 
-    expect(getByText('This request is suspicious')).toBeInTheDocument();
+    expect(getByText('High risk request')).toBeInTheDocument();
   });
 
   it('disables submit button when confirm modal is not acknowledged', () => {

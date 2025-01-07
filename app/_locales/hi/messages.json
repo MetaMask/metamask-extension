@@ -1045,12 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "ट्रांसेक्शन अनुरोध"
   },
-  "confirmationAlertModalDetails": {
-    "message": "आपकी एसेट्स और लॉगिन जानकारी की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "यह अनुरोध संदिग्ध है"
-  },
   "confirmed": {
     "message": "कन्फर्म किया गया"
   },

@@ -1045,12 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Αίτημα συναλλαγής"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία και τις πληροφορίες σύνδεσης, σας προτείνουμε να απορρίψετε το αίτημα."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Αυτό το αίτημα είναι ύποπτο"
-  },
   "confirmed": {
     "message": "Επιβεβαιωμένο"
   },

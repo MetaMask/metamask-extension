@@ -1045,12 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "交易请求"
   },
-  "confirmationAlertModalDetails": {
-    "message": "为了保护您的资产和登录信息，我们建议您拒绝该请求。"
-  },
-  "confirmationAlertModalTitle": {
-    "message": "此请求可疑"
-  },
   "confirmed": {
     "message": "已确认"
   },

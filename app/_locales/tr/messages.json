@@ -1045,12 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "İşlem talebi"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Varlıklarınızı ve oturum açma bilgilerinizi korumak için talebi reddetmenizi öneririz."
-  },
-  "confirmationAlertModalTitle": {
-    "message": "Bu talep şüphelidir"
-  },
   "confirmed": {
     "message": "Onaylandı"
   },

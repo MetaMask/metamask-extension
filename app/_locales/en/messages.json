@@ -1183,11 +1183,11 @@
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
-  "confirmationAlertModalDetails": {
-    "message": "To protect your assets and login information, we suggest you reject the request."
+  "confirmationAlertDetails": {
+    "message": "We suggest you reject this request. If you continue, you might put your assets at risk."
   },
-  "confirmationAlertModalTitle": {
-    "message": "This request is suspicious"
+  "confirmationAlertTitle": {
+    "message": "High risk request"
   },
   "confirmed": {
     "message": "Confirmed"

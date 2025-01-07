@@ -87,7 +87,7 @@ function ConfirmDetails({
     <>
       <Box alignItems={AlignItems.center} textAlign={TextAlign.Center}>
         <Text variant={TextVariant.bodyMd}>
-          {t('confirmationAlertModalDetails')}
+          {t('confirmationAlertDetails')}
         </Text>
         <ButtonLink
           marginTop={4}
@@ -176,7 +176,7 @@ export function ConfirmAlertModal({
       onAcknowledgeClick={onClose}
       alertKey={selectedAlert.key}
       onClose={onClose}
-      customTitle={t('confirmationAlertModalTitle')}
+      customTitle={t('confirmationAlertTitle')}
       customDetails={
         <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
       }
