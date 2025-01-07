@@ -24,7 +24,10 @@ export function ConfirmStoryTemplate(
     ...metamaskState,
     metamask: {
       ...metamaskState.metamask,
-      useTransactionSimulations: true,
+      PreferencesController: {
+        ...metamaskState.metamask.PreferencesController,
+        useTransactionSimulations: true,
+      },
     },
   });
 

@@ -3,69 +3,57 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import InteractiveReplacementTokenModal from '.';
-
 describe('Interactive Replacement Token Modal', function () {
-  const mockStore = {
-    ...testData,
-    metamask: {
-      ...testData.metamask,
-      mmiConfiguration: {
-        portfolio: {
-          enabled: true,
-          url: 'https://dev.metamask-institutional.io/',
+    const mockStore = {
+        mmiConfiguration: {
+            portfolio: {
+                enabled: true,
+                url: 'https://dev.metamask-institutional.io/',
+            },
+            features: {
+                websocketApi: true,
+            },
+            custodians: [
+                {
+                    refreshTokenUrl: 'https://saturn-custody.dev.metamask-institutional.io/oauth/token',
+                    name: 'saturn-dev',
+                    displayName: 'Saturn Custody',
+                    enabled: true,
+                    mmiApiUrl: 'https://api.dev.metamask-institutional.io/v1',
+                    websocketApiUrl: 'wss://websocket.dev.metamask-institutional.io/v1/ws',
+                    apiBaseUrl: 'https://saturn-custody.dev.metamask-institutional.io/eth',
+                    iconUrl: 'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
+                    isNoteToTraderSupported: true,
+                },
+            ],
         },
-        features: {
-          websocketApi: true,
+        custodyAccountDetails: {
+            '0xAddress': {
+                address: '0xAddress',
+                details: 'details',
+                custodyType: 'testCustody - Saturn',
+                custodianName: 'saturn-dev',
+            },
         },
-        custodians: [
-          {
-            refreshTokenUrl:
-              'https://saturn-custody.dev.metamask-institutional.io/oauth/token',
-            name: 'saturn-dev',
-            displayName: 'Saturn Custody',
-            enabled: true,
-            mmiApiUrl: 'https://api.dev.metamask-institutional.io/v1',
-            websocketApiUrl:
-              'wss://websocket.dev.metamask-institutional.io/v1/ws',
-            apiBaseUrl:
-              'https://saturn-custody.dev.metamask-institutional.io/eth',
-            iconUrl:
-              'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
-            isNoteToTraderSupported: true,
-          },
-        ],
-      },
-      custodyAccountDetails: {
-        '0xAddress': {
-          address: '0xAddress',
-          details: 'details',
-          custodyType: 'testCustody - Saturn',
-          custodianName: 'saturn-dev',
+        KeyringController: {
+            isUnlocked: true
         },
-      },
-      isUnlocked: true,
-      interactiveReplacementToken: {
-        oldRefreshToken: 'abc',
-        url: 'https://saturn-custody-ui.dev.metamask-institutional.io',
-      },
-      preferences: {},
-    },
-  };
-
-  const store = configureMockStore()(mockStore);
-
-  it('should render the interactive-replacement-token-modal', () => {
-    global.platform = {
-      closeCurrentWindow: jest.fn(),
-      openTab: jest.fn(),
+        interactiveReplacementToken: {
+            oldRefreshToken: 'abc',
+            url: 'https://saturn-custody-ui.dev.metamask-institutional.io',
+        },
+        PreferencesController: {
+            preferences: {}
+        }
     };
-
-    const { getByText, getByTestId } = renderWithProvider(
-      <InteractiveReplacementTokenModal />,
-      store,
-    );
-
-    expect(getByTestId('interactive-replacement-token-modal')).toBeVisible();
-    expect(getByText('Your custodian session has expired')).toBeInTheDocument();
-  });
+    const store = configureMockStore()(mockStore);
+    it('should render the interactive-replacement-token-modal', () => {
+        global.platform = {
+            closeCurrentWindow: jest.fn(),
+            openTab: jest.fn(),
+        };
+        const { getByText, getByTestId } = renderWithProvider(<InteractiveReplacementTokenModal>/>,, store);
+        expect(getByTestId('interactive-replacement-token-modal')).toBeVisible();
+        expect(getByText('Your custodian session has expired')).toBeInTheDocument();
+    });
 });

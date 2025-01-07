@@ -7,29 +7,29 @@ describe('Redux actionConstants', () => {
     it('updates the metadata.name value of an internal account property of the state to the action.value.label', () => {
       const initialState = {
         metamask: {
-          internalAccounts: {
-            accounts: {
-              mockId: {
-                address: 'foo',
-                id: 'mockid',
-                metadata: {
-                  name: 'bar',
-                  keyring: {
-                    type: 'HD Key Tree',
+          AccountsController: {
+            internalAccounts: {
+              accounts: {
+                mockId: {
+                  address: 'foo',
+                  id: 'mockid',
+                  metadata: {
+                    name: 'bar',
+                    keyring: { type: 'HD Key Tree' },
                   },
+                  options: {},
+                  methods: [
+                    'personal_sign',
+                    'eth_signTransaction',
+                    'eth_signTypedData_v1',
+                    'eth_signTypedData_v3',
+                    'eth_signTypedData_v4',
+                  ],
+                  type: 'eip155:eoa',
                 },
-                options: {},
-                methods: [
-                  'personal_sign',
-                  'eth_signTransaction',
-                  'eth_signTypedData_v1',
-                  'eth_signTypedData_v3',
-                  'eth_signTypedData_v4',
-                ],
-                type: 'eip155:eoa',
               },
+              selectedAccount: 'mockid',
             },
-            selectedAccount: 'mockid',
           },
         },
       };
@@ -46,7 +46,8 @@ describe('Redux actionConstants', () => {
 
       const resultingState = reducers(initialState, action);
       expect(
-        resultingState.metamask.internalAccounts.accounts.mockid.metadata.name,
+        resultingState.metamask.AccountsController.internalAccounts.accounts
+          .mockid.metadata.name,
       ).toStrictEqual(action.value.label);
     });
   });

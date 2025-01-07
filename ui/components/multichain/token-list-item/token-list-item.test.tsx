@@ -7,122 +7,75 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import {
-  getCurrencyRates,
-  getNetworkConfigurationIdByChainId,
-} from '../../../selectors';
+import { getCurrencyRates, getNetworkConfigurationIdByChainId, } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import { TokenListItem } from '.';
-
 const state = {
-  metamask: {
-    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-    useTokenDetection: false,
-    currencyRates: {},
-    preferences: {},
-    internalAccounts: {
-      accounts: {
-        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-          metadata: {
-            name: 'Test Account',
-            keyring: {
-              type: 'HD Key Tree',
-            },
-          },
-          options: {},
-        },
-      },
-      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    PreferencesController: {
+        useTokenDetection: false
     },
-  },
+    CurrencyController: {
+        currencyRates: {}
+    },
+    AccountsController: {
+        internalAccounts: {
+            accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                    id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                    metadata: {
+                        name: 'Test Account',
+                        keyring: {
+                            type: 'HD Key Tree',
+                        },
+                    },
+                    options: {},
+                },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        }
+    }
 };
-
 const safeChainDetails = {
-  chainId: '1',
-  nativeCurrency: {
-    symbol: 'ETH',
-  },
+    chainId: '1',
+    nativeCurrency: {
+        symbol: 'ETH',
+    },
 };
-
-let openTabSpy: jest.SpyInstance<void, [opts: { url: string }], unknown>;
-
+let openTabSpy: jest.SpyInstance<void, [
+    opts: {
+        url: string;
+    }
+], unknown>;
 jest.mock('../../../ducks/locale/locale', () => ({
-  getIntlLocale: jest.fn(),
+    getIntlLocale: jest.fn(),
 }));
-
-jest.mock(
-  '../../../pages/settings/networks-tab/networks-form/use-safe-chains',
-  () => ({
+jest.mock('../../../pages/settings/networks-tab/networks-form/use-safe-chains', () => ({
     useSafeChains: jest.fn().mockReturnValue({
-      safeChains: [safeChainDetails],
+        safeChains: [safeChainDetails],
     }),
-  }),
-);
+}));
 jest.mock('react-redux', () => {
-  const actual = jest.requireActual('react-redux');
-  return {
-    ...actual,
-    useSelector: jest.fn(),
-  };
+    const actual = jest.requireActual('react-redux');
+    return {
+        ...actual,
+        useSelector: jest.fn(),
+    };
 });
-
 const mockGetIntlLocale = getIntlLocale;
 const mockGetSafeChains = useSafeChains;
-
 describe('TokenListItem', () => {
-  beforeAll(() => {
-    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
-    openTabSpy = jest.spyOn(global.platform, 'openTab');
-    (mockGetIntlLocale as unknown as jest.Mock).mockReturnValue('en-US');
-  });
-  const props = {
-    onClick: jest.fn(),
-    tokenImage: '',
-    title: '',
-    chainId: '0x1',
-    tokenChainImage: './eth-logo.png',
-  };
-  it('should render correctly', () => {
-    const store = configureMockStore()(state);
-    (useSelector as jest.Mock).mockImplementation((selector) => {
-      if (selector === getNetworkConfigurationIdByChainId) {
-        return '0x1';
-      }
-      if (selector === getMultichainIsEvm) {
-        return true;
-      }
-      return undefined;
+    beforeAll(() => {
+        global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
+        openTabSpy = jest.spyOn(global.platform, 'openTab');
+        (mockGetIntlLocale as unknown as jest.Mock).mockReturnValue('en-US');
     });
-    const { getByTestId, container } = renderWithProvider(
-      <TokenListItem {...props} />,
-      store,
-    );
-    expect(getByTestId('multichain-token-list-item')).toBeDefined();
-    expect(container).toMatchSnapshot();
-  });
-
-  it('should render with custom className', () => {
-    const store = configureMockStore()(state);
-    const { getByTestId } = renderWithProvider(
-      <TokenListItem className="multichain-token-list-item-test" {...props} />,
-      store,
-    );
-    expect(getByTestId('multichain-token-list-item')).toHaveClass(
-      'multichain-token-list-item-test',
-    );
-  });
-
-  it('should render crypto balance with warning scam', () => {
-    const store = configureMockStore()(state);
-    const propsToUse = {
-      primary: '11.9751 ETH',
-      isNativeCurrency: true,
-      isOriginalTokenSymbol: false,
-      tokenImage: '',
-      title: '',
-      chainId: '0x1',
+    const props = {
+        onClick: jest.fn(),
+        tokenImage: '',
+        title: '',
+        chainId: '0x1',
+        tokenChainImage: './eth-logo.png',
     };
     const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,

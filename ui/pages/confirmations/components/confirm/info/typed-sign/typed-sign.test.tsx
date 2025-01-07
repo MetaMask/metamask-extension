@@ -19,12 +19,9 @@ import {
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import TypedSignInfo from './typed-sign';
-
-jest.mock(
-  '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
-  () => ({
+jest.mock('../../../../../../components/app/alert-system/contexts/alertMetricsContext', () => ({
     useAlertMetrics: jest.fn(() => ({
-      trackAlertMetrics: jest.fn(),
+        trackAlertMetrics: jest.fn(),
     })),
   }),
 );

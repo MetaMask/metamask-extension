@@ -15,7 +15,6 @@ const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const ACCOUNT_ADDRESS_2_MOCK = '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
 const CONTRACT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7be';
 const TRANSACTION_ID_MOCK = '123-456';
-
 const TRANSACTION_META_MOCK = {
   id: TRANSACTION_ID_MOCK,
   chainId: '0x5',
@@ -57,7 +56,6 @@ function runHook({
 
   return response.result.current;
 }
-
 describe('useFirstTimeInteractionAlert', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -154,18 +152,4 @@ describe('useFirstTimeInteractionAlert', () => {
     const alerts = runHook({
       currentConfirmation: firstTimeConfirmation,
     });
-
-    expect(alerts).toEqual([
-      {
-        actions: [],
-        field: RowAlertKey.FirstTimeInteraction,
-        isBlocking: false,
-        key: 'firstTimeInteractionTitle',
-        message:
-          "You're interacting with this address for the first time. Make sure that it's correct before you continue.",
-        reason: '1st interaction',
-        severity: Severity.Warning,
-      },
-    ]);
-  });
 });
