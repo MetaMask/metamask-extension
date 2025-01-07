@@ -552,30 +552,40 @@ describe('Bridge selectors', () => {
       const recommendedQuoteMetadata = {
         adjustedReturn: {
           valueInCurrency: expect.any(Object),
+          usd: expect.any(Object),
         },
-        cost: { valueInCurrency: new BigNumber('0.15656287141025952') },
+        cost: {
+          valueInCurrency: new BigNumber('0.15656287141025952'),
+          usd: new BigNumber('0.15656287141025952'),
+        },
         sentAmount: {
           valueInCurrency: new BigNumber('14'),
           amount: new BigNumber('14'),
+          usd: new BigNumber('14'),
         },
         swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
           valueInCurrency: new BigNumber('13.8444372'),
+          usd: new BigNumber('13.8444372'),
           amount: new BigNumber('13.98428'),
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
           amountMax: new BigNumber('9.933761952e-8'),
+          usd: new BigNumber('7.141025952e-8'),
+          usdMax: new BigNumber('9.933761952e-8'),
           valueInCurrency: new BigNumber('7.141025952e-8'),
           valueInCurrencyMax: new BigNumber('9.933761952e-8'),
         },
         totalMaxNetworkFee: {
           amount: new BigNumber('0.00100009933761952'),
           valueInCurrency: new BigNumber('0.00100009933761952'),
+          usd: new BigNumber('0.00100009933761952'),
         },
         totalNetworkFee: {
           valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
+          usd: new BigNumber('0.00100007141025952'),
         },
       };
 
@@ -632,6 +642,7 @@ describe('Bridge selectors', () => {
           currencyRates: {
             ETH: {
               conversionRate: 1,
+              usdConversionRate: 20,
             },
             POL: {
               conversionRate: 0.354073,
@@ -652,36 +663,52 @@ describe('Bridge selectors', () => {
       const recommendedQuoteMetadata = {
         adjustedReturn: {
           valueInCurrency: new BigNumber('13.843437128589739081572'),
+          usd: new BigNumber('39.080515131939180597564'),
         },
-        cost: { valueInCurrency: new BigNumber('0.156562871410260918428') },
+        cost: {
+          valueInCurrency: new BigNumber('0.156562871410260918428'),
+          usd: new BigNumber('240.919484868060819402436'),
+        },
         sentAmount: {
           valueInCurrency: new BigNumber('14'),
           amount: new BigNumber('14'),
+          usd: new BigNumber('280'),
         },
         swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
           valueInCurrency: new BigNumber('13.844437199999998601572'),
           amount: new BigNumber('13.98428'),
+          usd: new BigNumber('39.100516560144370997564'),
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
           amountMax: new BigNumber('9.933761952e-8'),
           valueInCurrency: new BigNumber('7.141025952e-8'),
           valueInCurrencyMax: new BigNumber('9.933761952e-8'),
+          usd: new BigNumber('0.0000014282051904'),
+          usdMax: new BigNumber('0.0000019867523904'),
         },
         totalNetworkFee: {
           valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
+          usd: new BigNumber('0.0200014282051904'),
         },
         totalMaxNetworkFee: {
           valueInCurrency: new BigNumber('0.00100009933761952'),
           amount: new BigNumber('0.00100009933761952'),
+          usd: new BigNumber('0.0200019867523904'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
-        { valueInCurrency: new BigNumber('0.156562871410260918428') },
-        { valueInCurrency: new BigNumber('0.33900008283534602') },
+        {
+          valueInCurrency: new BigNumber('0.156562871410260918428'),
+          usd: new BigNumber('240.919484868060819402436'),
+        },
+        {
+          valueInCurrency: new BigNumber('0.33900008283534602'),
+          usd: new BigNumber('241.43473816584484486'),
+        },
       ];
       result.sortedQuotes.forEach(
         (quote: QuoteMetadata & QuoteResponse, idx: number) => {
@@ -739,6 +766,7 @@ describe('Bridge selectors', () => {
           currencyRates: {
             ETH: {
               conversionRate: 1,
+              usdConversionRate: 20,
             },
             POL: {
               conversionRate: 1,
@@ -759,36 +787,52 @@ describe('Bridge selectors', () => {
       const recommendedQuoteMetadata = {
         adjustedReturn: {
           valueInCurrency: new BigNumber('13.84343712858974048'),
+          usd: new BigNumber('13.8244357717948096'),
         },
-        cost: { valueInCurrency: new BigNumber('0.15656287141025952') },
+        cost: {
+          valueInCurrency: new BigNumber('0.15656287141025952'),
+          usd: new BigNumber('266.1755642282051904'),
+        },
         sentAmount: {
           valueInCurrency: new BigNumber('14'),
           amount: new BigNumber('14'),
+          usd: new BigNumber('280'),
         },
         swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
           valueInCurrency: new BigNumber('13.8444372'),
           amount: new BigNumber('13.98428'),
+          usd: new BigNumber('13.8444372'),
         },
         gasFee: {
           amount: new BigNumber('7.141025952e-8'),
           amountMax: new BigNumber('9.933761952e-8'),
           valueInCurrency: new BigNumber('7.141025952e-8'),
           valueInCurrencyMax: new BigNumber('9.933761952e-8'),
+          usd: new BigNumber('0.0000014282051904'),
+          usdMax: new BigNumber('0.0000019867523904'),
         },
         totalNetworkFee: {
           valueInCurrency: new BigNumber('0.00100007141025952'),
           amount: new BigNumber('0.00100007141025952'),
+          usd: new BigNumber('0.0200014282051904'),
         },
         totalMaxNetworkFee: {
           valueInCurrency: new BigNumber('0.00100009933761952'),
           amount: new BigNumber('0.00100009933761952'),
+          usd: new BigNumber('0.0200019867523904'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
-        { valueInCurrency: new BigNumber('0.15656287141025952') },
-        { valueInCurrency: new BigNumber('0.33900008283534464') },
+        {
+          valueInCurrency: new BigNumber('0.15656287141025952'),
+          usd: new BigNumber('266.1755642282051904'),
+        },
+        {
+          valueInCurrency: new BigNumber('0.33900008283534464'),
+          usd: new BigNumber('266.3580016567068928'),
+        },
       ];
       result.sortedQuotes.forEach(
         (quote: QuoteMetadata & QuoteResponse, idx: number) => {
