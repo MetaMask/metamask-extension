@@ -128,12 +128,9 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
     [key: `0x${string}`]: Token[];
   } = useSelector(getAllDetectedTokensForSelectedAddress);
 
-  const multichainDetectedTokensLength = Object.keys(
+  const multichainDetectedTokensLength = Object.values(
     detectedTokensMultichain || {},
-  ).reduce(
-    (sum, key) => sum + detectedTokensMultichain[key as `0x${string}`].length,
-    0,
-  );
+  ).reduce((acc, tokens) => acc + tokens.length, 0);
 
   // Add detected tokens to sate
   useEffect(() => {
