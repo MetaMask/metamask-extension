@@ -1,5 +1,8 @@
 {
-  "ignorePaths": ["app/images", "package.json"],
+  "ignorePaths": [
+    "app/images",
+    "package.json"
+  ],
   "ignoreWords": [
     "acitores",
     "autofetch",
@@ -50,6 +53,7 @@
     "FONTCONFIG",
     "hardfork",
     "hexstring",
+    "Interactable",
     "jazzicon",
     "keccak",
     "lavadome",
@@ -69,6 +73,7 @@
     "pipefail",
     "quickstart",
     "recompiles",
+    "retryable",
     "shellcheck",
     "SIWE",
     "sourcemaps",
