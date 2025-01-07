@@ -261,7 +261,6 @@ async function main() {
           // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
-          'wallet_registerOnboarding', // this is currently removed from the Multichain API JSON-RPC pipeline
         ],
         rules: [
           new JsonSchemaFakerRule({
