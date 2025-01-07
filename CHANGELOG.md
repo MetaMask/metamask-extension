@@ -128,6 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - refactor: remove global network from transaction controller ([#28449](https://github.com/MetaMask/metamask-extension/pull/28449))
 - test: [POM]  fix change language flaky tests and migrate tests to Page Object Model ([#28777](https://github.com/MetaMask/metamask-extension/pull/28777))
 - fix: Correct preferences controller usage for `isOnPhishingList` hook ([#28803](https://github.com/MetaMask/metamask-extension/pull/28803))
+
 ## [12.9.3]
 ### Fixed
 - Fix some cases where users were incorrectly seeing 0 token balances ([#29361](https://github.com/MetaMask/metamask-extension/pull/29361))
