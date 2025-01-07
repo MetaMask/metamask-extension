@@ -1,18 +1,15 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-
 import {
-  goHome,
-  encryptionPublicKeyMsg,
-  cancelEncryptionPublicKeyMsg,
+    goHome,
+    encryptionPublicKeyMsg,
+    cancelEncryptionPublicKeyMsg
 } from '../../store/actions';
-
 import {
-  unconfirmedTransactionsListSelector,
-  getTargetAccountWithSendEtherInfo,
+    unconfirmedTransactionsListSelector,
+    getTargetAccountWithSendEtherInfo
 } from '../../selectors';
-
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
@@ -48,24 +45,22 @@ function mapStateToProps(state, ownProps) {
     nativeCurrency: getNativeCurrency(state),
   };
 }
-
 function mapDispatchToProps(dispatch) {
-  return {
-    goHome: () => dispatch(goHome()),
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    encryptionPublicKey: (msgData, event) => {
-      const params = { data: msgData.msgParams, metamaskId: msgData.id };
-      event.stopPropagation();
-      return dispatch(encryptionPublicKeyMsg(params));
-    },
-    cancelEncryptionPublicKey: (msgData, event) => {
-      event.stopPropagation();
-      return dispatch(cancelEncryptionPublicKeyMsg(msgData));
-    },
-  };
+    return {
+        goHome: () => dispatch(goHome()),
+        clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+        encryptionPublicKey: (msgData, event) => {
+            const params = {
+                data: msgData.msgParams,
+                metamaskId: msgData.id
+            };
+            event.stopPropagation();
+            return dispatch(encryptionPublicKeyMsg(params));
+        },
+        cancelEncryptionPublicKey: (msgData, event) => {
+            event.stopPropagation();
+            return dispatch(cancelEncryptionPublicKeyMsg(msgData));
+        }
+    };
 }
-
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
-)(ConfirmEncryptionPublicKey);
+export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(ConfirmEncryptionPublicKey);

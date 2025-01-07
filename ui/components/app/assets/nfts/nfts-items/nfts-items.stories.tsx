@@ -20,64 +20,56 @@ const mockStore = configureStore([thunk, ensurePlainObjectMiddleware]);
 
 const createMockState = () => ({
   metamask: {
-    nftsDropdownState: {
-      '0x123': {
-        '0x1': {
-          '0x123': true, // This sets isExpanded to true for the specific collection
-          previouslyOwned: true, // Expanded previously owned collection
+    AppStateController: {
+      nftsDropdownState: {
+        '0x123': {
+          '0x1': {
+            '0x123': true, // This sets isExpanded to true for the specific collection
+            previouslyOwned: true, // Expanded previously owned collection
+          },
         },
       },
     },
-    selectedAddress: '0x123',
-    selectedAccount: {
-      address: '0x123',
-      id: 'selected-account-id',
-      balance: '0x0',
-      name: 'Account 1',
+    PreferencesController: {
+      selectedAddress: '0x123',
+      useRequestQueue: true,
     },
-    internalAccounts: {
-      selectedAccount: 'selected-account-id',
-      accounts: {
-        'selected-account-id': {
-          address: '0x123',
-          id: 'selected-account-id',
-          balance: '0x0',
-          name: 'Account 1',
-          metadata: {
-            keyring: {
-              type: 'HD Key Tree',
+    AccountsController: {
+      internalAccounts: {
+        selectedAccount: 'selected-account-id',
+        accounts: {
+          'selected-account-id': {
+            address: '0x123',
+            id: 'selected-account-id',
+            balance: '0x0',
+            name: 'Account 1',
+            metadata: {
+              keyring: {
+                type: 'HD Key Tree',
+              },
             },
           },
         },
       },
     },
-    accounts: {
-      '0x123': {
-        address: '0x123',
-        balance: '0x0',
+    AccountTracker: {
+      accounts: {
+        '0x123': {
+          address: '0x123',
+          balance: '0x0',
+        },
       },
     },
-    identities: {
-      '0x123': {
-        address: '0x123',
-        name: 'Account 1',
-      },
+    CurrencyController: {
+      currentCurrency: 'usd',
     },
-    chainId: '0x1',
-    ipfsGateway: 'https://ipfs.io/ipfs/',
-    openSeaEnabled: true,
-    nativeCurrency: 'ETH',
-    currentCurrency: 'usd',
-    provider: {
-      type: 'mainnet',
-      chainId: '0x1',
-      nickname: 'Ethereum Mainnet',
+    NetworkController: {
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     },
-    network: '1',
-    nftContracts: [],
-    nfts: [],
-    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-    useRequestQueue: true,
+    NftController: {
+      allNftContracts: [],
+      allNfts: [],
+    },
   },
   appState: {
     isLoading: false,

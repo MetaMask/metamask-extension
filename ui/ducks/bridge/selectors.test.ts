@@ -98,70 +98,69 @@ describe('Bridge selectors', () => {
         nativeCurrency: 'ETH',
       });
     });
-  });
-
-  describe('getAllBridgeableNetworks', () => {
-    it('returns list of ALLOWED_BRIDGE_CHAIN_IDS networks', () => {
-      const state = createBridgeMockStore({
-        metamaskStateOverrides: {
-          ...mockNetworkState(...FEATURED_RPCS),
-        },
-      });
-      const result = getAllBridgeableNetworks(state as never);
-
-      expect(result).toHaveLength(8);
-      expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
-      );
-      expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: FEATURED_RPCS[1].chainId }),
-      );
-      FEATURED_RPCS.forEach((rpcDefinition, idx) => {
-        expect(result[idx]).toStrictEqual(
-          expect.objectContaining({
-            ...rpcDefinition,
-            blockExplorerUrls: [
-              `https://localhost/blockExplorer/${rpcDefinition.chainId}`,
-            ],
-            name: expect.anything(),
-            rpcEndpoints: [
-              {
-                networkClientId: expect.anything(),
-                type: 'custom',
-                url: `https://localhost/rpc/${rpcDefinition.chainId}`,
-              },
-            ],
-          }),
-        );
-      });
-      result.forEach(({ chainId }) => {
-        expect(ALLOWED_BRIDGE_CHAIN_IDS).toContain(chainId);
-      });
+    describe('getAllBridgeableNetworks', () => {
+        it('returns list of ALLOWED_BRIDGE_CHAIN_IDS networks', () => {
+            const state = createBridgeMockStore({
+                metamaskStateOverrides: {
+                    ...mockNetworkState(...FEATURED_RPCS),
+                },
+            });
+            const result = getAllBridgeableNetworks(state as never);
+            expect(result).toHaveLength(8);
+            expect(result[0]).toStrictEqual(expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }));
+            expect(result[1]).toStrictEqual(expect.objectContaining({ chainId: FEATURED_RPCS[1].chainId }));
+            FEATURED_RPCS.forEach((rpcDefinition, idx) => {
+                expect(result[idx]).toStrictEqual(expect.objectContaining({
+                    ...rpcDefinition,
+                    blockExplorerUrls: [
+                        `https://localhost/blockExplorer/${rpcDefinition.chainId}`,
+                    ],
+                    name: expect.anything(),
+                    rpcEndpoints: [
+                        {
+                            networkClientId: expect.anything(),
+                            type: 'custom',
+                            url: `https://localhost/rpc/${rpcDefinition.chainId}`,
+                        },
+                    ],
+                }));
+            });
+            result.forEach(({ chainId }) => {
+                expect(ALLOWED_BRIDGE_CHAIN_IDS).toContain(chainId);
+            });
+        });
+        it('returns network if included in ALLOWED_BRIDGE_CHAIN_IDS', () => {
+            const state = {};
+            const result = getAllBridgeableNetworks(state as never);
+            expect(result).toHaveLength(2);
+            expect(result[0]).toStrictEqual(expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }));
+            expect(result[1]).toStrictEqual(expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }));
+            expect(result.find(({ chainId }) => chainId === CHAIN_IDS.MOONBEAM)).toStrictEqual(undefined);
+        });
     });
-
-    it('returns network if included in ALLOWED_BRIDGE_CHAIN_IDS', () => {
-      const state = {
-        ...createBridgeMockStore(),
-        metamask: {
-          ...mockNetworkState(
-            { chainId: CHAIN_IDS.MAINNET },
-            { chainId: CHAIN_IDS.LINEA_MAINNET },
-            { chainId: CHAIN_IDS.MOONBEAM },
-          ),
-        },
-      };
-      const result = getAllBridgeableNetworks(state as never);
-
-      expect(result).toHaveLength(2);
-      expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
-      );
-      expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
-      );
-      expect(
-        result.find(({ chainId }) => chainId === CHAIN_IDS.MOONBEAM),
-      ).toStrictEqual(undefined);
+    describe('getFromChains', () => {
+        it('excludes disabled chains from options', () => {
+            const state = createBridgeMockStore({
+                featureFlagOverrides: {
+                    srcNetworkAllowlist: [
+                        CHAIN_IDS.MAINNET,
+                        CHAIN_IDS.LINEA_MAINNET,
+                        CHAIN_IDS.OPTIMISM,
+                        CHAIN_IDS.POLYGON,
+                    ],
+                },
+                bridgeSliceOverrides: { toChainId: CHAIN_IDS.LINEA_MAINNET },
+            });
+            const result = getFromChains(state as never);
+            expect(result).toHaveLength(2);
+            expect(result[0]).toStrictEqual(expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }));
+            expect(result[1]).toStrictEqual(expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }));
+        });
+        it('returns empty list when bridgeFeatureFlags are not set', () => {
+            const state = createBridgeMockStore();
+            const result = getFromChains(state as never);
+            expect(result).toHaveLength(0);
+        });
     });
   });
 
@@ -193,12 +192,83 @@ describe('Bridge selectors', () => {
         expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       );
     });
-
-    it('returns empty list when bridgeFeatureFlags are not set', () => {
-      const state = createBridgeMockStore();
-      const result = getFromChains(state as never);
-
-      expect(result).toHaveLength(0);
+    describe('getIsBridgeTx', () => {
+        it('returns false if bridge is not enabled', () => {
+            const state = createBridgeMockStore({
+                featureFlagOverrides: {
+                    extensionSupport: false,
+                    srcNetworkAllowlist: ['0x1'],
+                    destNetworkAllowlist: ['0x38'],
+                },
+                bridgeSliceOverrides: { toChainId: '0x38' },
+                metamaskStateOverrides: {
+                    ...mockNetworkState({ chainId: '0x1' }),
+                },
+            });
+            const result = getIsBridgeTx(state as never);
+            expect(result).toBe(false);
+        });
+        it('returns false if toChainId is null', () => {
+            const state = createBridgeMockStore({
+                featureFlagOverrides: {
+                    extensionSupport: true,
+                    srcNetworkAllowlist: ['0x1'],
+                    destNetworkAllowlist: ['0x1'],
+                },
+                bridgeSliceOverrides: { toChainId: null },
+                metamaskStateOverrides: {
+                    ...mockNetworkState({ chainId: '0x1' }),
+                },
+            });
+            const result = getIsBridgeTx(state as never);
+            expect(result).toBe(false);
+        });
+        it('returns false if fromChain and toChainId have the same chainId', () => {
+            const state = createBridgeMockStore({
+                featureFlagOverrides: {
+                    extensionSupport: true,
+                    srcNetworkAllowlist: ['0x1'],
+                    destNetworkAllowlist: ['0x1'],
+                },
+                bridgeSliceOverrides: { toChainId: '0x1' },
+                metamaskStateOverrides: {
+                    ...mockNetworkState({ chainId: '0x1' }),
+                },
+            });
+            const result = getIsBridgeTx(state as never);
+            expect(result).toBe(false);
+        });
+        it('returns false if useExternalServices is not enabled', () => {
+            const state = createBridgeMockStore({
+                featureFlagOverrides: {
+                    extensionSupport: true,
+                    srcNetworkAllowlist: ['0x1'],
+                    destNetworkAllowlist: ['0x38'],
+                },
+                bridgeSliceOverrides: { toChainId: '0x38' },
+                metamaskStateOverrides: {
+                    ...mockNetworkState({ chainId: '0x1' }),
+                },
+            });
+            const result = getIsBridgeTx(state as never);
+            expect(result).toBe(false);
+        });
+        it('returns true if bridge is enabled and fromChain and toChainId have different chainIds', () => {
+            const state = createBridgeMockStore({
+                featureFlagOverrides: {
+                    extensionSupport: true,
+                    srcNetworkAllowlist: ['0x1'],
+                    destNetworkAllowlist: ['0x38'],
+                },
+                bridgeSliceOverrides: { toChainId: '0x38' },
+                metamaskStateOverrides: {
+                    ...mockNetworkState(...Object.values(BUILT_IN_NETWORKS), ...FEATURED_RPCS.filter((network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET)),
+                    useExternalServices: true,
+                },
+            });
+            const result = getIsBridgeTx(state as never);
+            expect(result).toBe(true);
+        });
     });
   });
 
@@ -242,12 +312,23 @@ describe('Bridge selectors', () => {
         expect.objectContaining({ chainId: CHAIN_IDS.POLYGON }),
       );
     });
-
-    it('returns empty list when bridgeFeatureFlags are not set', () => {
-      const state = createBridgeMockStore();
-      const result = getToChains(state as never);
-
-      expect(result).toHaveLength(0);
+    describe('getToToken', () => {
+        it('returns toToken', () => {
+            const state = createBridgeMockStore({
+                bridgeSliceOverrides: {
+                    toToken: { address: '0x123', symbol: 'TEST' },
+                },
+            });
+            const result = getToToken(state as never);
+            expect(result).toStrictEqual({ address: '0x123', symbol: 'TEST' });
+        });
+        it('returns undefined if toToken is undefined', () => {
+            const state = createBridgeMockStore({
+                bridgeSliceOverrides: { toToken: null },
+            });
+            const result = getToToken(state as never);
+            expect(result).toStrictEqual(null);
+        });
     });
   });
 
@@ -365,18 +446,222 @@ describe('Bridge selectors', () => {
 
       expect(result).toBe(true);
     });
-  });
-
-  describe('getFromToken', () => {
-    it('returns fromToken', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: { address: '0x123', symbol: 'TEST' },
-        },
-      });
-      const result = getFromToken(state as never);
-
-      expect(result).toStrictEqual({ address: '0x123', symbol: 'TEST' });
+    describe('getBridgeQuotes', () => {
+        it('returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=5', () => {
+            const state = createBridgeMockStore({
+                featureFlagOverrides: { extensionConfig: { maxRefreshCount: 5 } },
+                bridgeSliceOverrides: {
+                    toChainId: '0x1',
+                    fromTokenExchangeRate: 1,
+                    toTokenExchangeRate: 0.99,
+                    toNativeExchangeRate: 0.354073,
+                },
+                bridgeStateOverrides: {
+                    quoteRequest: { insufficientBal: false },
+                    quotes: mockErc20Erc20Quotes,
+                    quotesFetchStatus: 1,
+                    quotesRefreshCount: 5,
+                    quotesLastFetched: 100,
+                    srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+                    srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+                },
+                metamaskStateOverrides: {
+                    currencyRates: {
+                        ETH: {
+                            conversionRate: 1,
+                        },
+                    },
+                },
+            });
+            const recommendedQuoteMetadata = {
+                adjustedReturn: {
+                    fiat: expect.any(Object),
+                },
+                cost: { fiat: new BigNumber('0.15656287141025952') },
+                sentAmount: {
+                    fiat: new BigNumber('14'),
+                    amount: new BigNumber('14'),
+                },
+                swapRate: new BigNumber('0.998877142857142857142857142857142857'),
+                toTokenAmount: {
+                    fiat: new BigNumber('13.8444372'),
+                    amount: new BigNumber('13.98428'),
+                },
+                gasFee: {
+                    amount: new BigNumber('7.141025952e-8'),
+                    fiat: new BigNumber('7.141025952e-8'),
+                },
+                totalNetworkFee: {
+                    fiat: new BigNumber('0.00100007141025952'),
+                    amount: new BigNumber('0.00100007141025952'),
+                },
+            };
+            const result = getBridgeQuotes(state as never);
+            expect(result.sortedQuotes).toHaveLength(2);
+            expect(result).toStrictEqual({
+                sortedQuotes: expect.any(Array),
+                recommendedQuote: {
+                    ...mockErc20Erc20Quotes[0],
+                    ...recommendedQuoteMetadata,
+                },
+                activeQuote: {
+                    ...mockErc20Erc20Quotes[0],
+                    ...recommendedQuoteMetadata,
+                },
+                quotesLastFetchedMs: 100,
+                isLoading: false,
+                quotesRefreshCount: 5,
+                isQuoteGoingToRefresh: false,
+            });
+        });
+        it('returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=2', () => {
+            const state = createBridgeMockStore({
+                featureFlagOverrides: { extensionConfig: { maxRefreshCount: 5 } },
+                bridgeSliceOverrides: {
+                    toChainId: '0x1',
+                    fromTokenExchangeRate: 1,
+                    toTokenExchangeRate: 0.99,
+                    toNativeExchangeRate: 0.354073,
+                },
+                bridgeStateOverrides: {
+                    quoteRequest: { insufficientBal: false },
+                    quotes: mockErc20Erc20Quotes,
+                    quotesFetchStatus: 1,
+                    quotesRefreshCount: 2,
+                    quotesLastFetched: 100,
+                    srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+                    srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+                },
+                metamaskStateOverrides: {
+                    currencyRates: {
+                        ETH: {
+                            conversionRate: 1,
+                        },
+                    },
+                },
+            });
+            const result = getBridgeQuotes(state as never);
+            const recommendedQuoteMetadata = {
+                adjustedReturn: {
+                    fiat: new BigNumber('13.84343712858974048'),
+                },
+                cost: { fiat: new BigNumber('0.15656287141025952') },
+                sentAmount: {
+                    fiat: new BigNumber('14'),
+                    amount: new BigNumber('14'),
+                },
+                swapRate: new BigNumber('0.998877142857142857142857142857142857'),
+                toTokenAmount: {
+                    fiat: new BigNumber('13.8444372'),
+                    amount: new BigNumber('13.98428'),
+                },
+                gasFee: {
+                    amount: new BigNumber('7.141025952e-8'),
+                    fiat: new BigNumber('7.141025952e-8'),
+                },
+                totalNetworkFee: {
+                    fiat: new BigNumber('0.00100007141025952'),
+                    amount: new BigNumber('0.00100007141025952'),
+                },
+            };
+            expect(result.sortedQuotes).toHaveLength(2);
+            const EXPECTED_SORTED_COSTS = [
+                { fiat: new BigNumber('0.15656287141025952') },
+                { fiat: new BigNumber('0.33900008283534464') },
+            ];
+            result.sortedQuotes.forEach((quote, idx) => {
+                expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
+            });
+            expect(result).toStrictEqual({
+                sortedQuotes: expect.any(Array),
+                recommendedQuote: {
+                    ...mockErc20Erc20Quotes[0],
+                    ...recommendedQuoteMetadata,
+                },
+                activeQuote: {
+                    ...mockErc20Erc20Quotes[0],
+                    ...recommendedQuoteMetadata,
+                },
+                quotesLastFetchedMs: 100,
+                isLoading: false,
+                quotesRefreshCount: 2,
+                isQuoteGoingToRefresh: true,
+            });
+        });
+        it('returns quote list and fetch data, insufficientBal=true', () => {
+            const state = createBridgeMockStore({
+                featureFlagOverrides: { extensionConfig: { maxRefreshCount: 5 } },
+                bridgeSliceOverrides: {
+                    toChainId: '0x1',
+                    fromTokenExchangeRate: 1,
+                    toTokenExchangeRate: 0.99,
+                    toNativeExchangeRate: 0.354073,
+                },
+                bridgeStateOverrides: {
+                    quoteRequest: { insufficientBal: true },
+                    quotes: mockErc20Erc20Quotes,
+                    quotesFetchStatus: 1,
+                    quotesRefreshCount: 1,
+                    quotesLastFetched: 100,
+                    srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+                    srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+                },
+                metamaskStateOverrides: {
+                    currencyRates: {
+                        ETH: {
+                            conversionRate: 1,
+                        },
+                    },
+                },
+            });
+            const result = getBridgeQuotes(state as never);
+            const recommendedQuoteMetadata = {
+                adjustedReturn: {
+                    fiat: new BigNumber('13.84343712858974048'),
+                },
+                cost: { fiat: new BigNumber('0.15656287141025952') },
+                sentAmount: {
+                    fiat: new BigNumber('14'),
+                    amount: new BigNumber('14'),
+                },
+                swapRate: new BigNumber('0.998877142857142857142857142857142857'),
+                toTokenAmount: {
+                    fiat: new BigNumber('13.8444372'),
+                    amount: new BigNumber('13.98428'),
+                },
+                gasFee: {
+                    amount: new BigNumber('7.141025952e-8'),
+                    fiat: new BigNumber('7.141025952e-8'),
+                },
+                totalNetworkFee: {
+                    fiat: new BigNumber('0.00100007141025952'),
+                    amount: new BigNumber('0.00100007141025952'),
+                },
+            };
+            expect(result.sortedQuotes).toHaveLength(2);
+            const EXPECTED_SORTED_COSTS = [
+                { fiat: new BigNumber('0.15656287141025952') },
+                { fiat: new BigNumber('0.33900008283534464') },
+            ];
+            result.sortedQuotes.forEach((quote, idx) => {
+                expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
+            });
+            expect(result).toStrictEqual({
+                sortedQuotes: expect.any(Array),
+                recommendedQuote: {
+                    ...mockErc20Erc20Quotes[0],
+                    ...recommendedQuoteMetadata,
+                },
+                activeQuote: {
+                    ...mockErc20Erc20Quotes[0],
+                    ...recommendedQuoteMetadata,
+                },
+                quotesLastFetchedMs: 100,
+                isLoading: false,
+                quotesRefreshCount: 1,
+                isQuoteGoingToRefresh: false,
+            });
+        });
     });
 
     it('returns defaultToken if fromToken has no address', () => {

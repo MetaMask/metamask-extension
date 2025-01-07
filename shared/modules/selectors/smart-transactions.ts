@@ -14,8 +14,19 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { MetaMaskReduxState } from '../../../ui/store/store';
 import { isProduction } from '../environment';
+import { BackgroundStateProxy } from '../../types/metamask';
 import { getCurrentChainId } from './networks';
 
+export type SmartTransactionsMetaMaskState = {
+  metamask: Pick<
+    BackgroundStateProxy,
+    | 'PreferencesController'
+    | 'AccountsController'
+    | 'KeyringController'
+    | 'SwapsController'
+    | 'SmartTransactionsController'
+  >;
+};
 /**
  * Returns the user's explicit opt-in status for the smart transactions feature.
  * This should only be used for reading the user's internal opt-in status, and

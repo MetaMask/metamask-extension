@@ -1,41 +1,28 @@
 import React from 'react';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
 import { TextColor } from '../../../../helpers/constants/design-system';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { AssetBalanceText } from './asset-balance-text';
 
-const store = configureStore({
-  ...mockSendState,
-  metamask: {
-    ...mockSendState.metamask,
-  },
-  appState: { ...mockSendState.appState, sendInputCurrencySwitched: false },
-});
-
+const store = configureStore({});
 const mockUseTokenTracker = jest.fn();
 const mockUseCurrencyDisplay = jest.fn();
 const mockUseTokenFiatAmount = jest.fn();
 const mockUseIsOriginalTokenSymbol = jest.fn();
 const mockGetIsFiatPrimary = jest.fn();
-
 jest.mock('../../../../hooks/useTokenTracker', () => ({
   useTokenTracker: () => mockUseTokenTracker(),
 }));
-
 jest.mock('../../../../hooks/useCurrencyDisplay', () => ({
   useCurrencyDisplay: () => mockUseCurrencyDisplay(),
 }));
-
 jest.mock('../../../../hooks/useTokenFiatAmount', () => ({
   useTokenFiatAmount: () => mockUseTokenFiatAmount(),
 }));
-
 jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => ({
   useIsOriginalTokenSymbol: () => mockUseIsOriginalTokenSymbol(),
 }));
-
 jest.mock('../utils', () => ({
   getIsFiatPrimary: () => mockGetIsFiatPrimary(),
 }));

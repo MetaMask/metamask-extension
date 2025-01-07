@@ -25,31 +25,35 @@ const customData = {
   },
   metamask: {
     ...testData.metamask,
-    mmiConfiguration: {
-      custodians: [
-        {
-          refreshTokenUrl:
-            'https://saturn-custody.dev.metamask-institutional.io/oauth/token',
-          name: 'saturn-dev',
-          displayName: 'Saturn Custody',
-          enabled: true,
-          mmiApiUrl: 'https://api.dev.metamask-institutional.io/v1',
-          websocketApiUrl:
-            'wss://websocket.dev.metamask-institutional.io/v1/ws',
-          apiBaseUrl:
-            'https://saturn-custody.dev.metamask-institutional.io/eth',
-          iconUrl:
-            'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
-          isNoteToTraderSupported: true,
+    MmiConfigurationController: {
+      mmiConfiguration: {
+        custodians: [
+          {
+            refreshTokenUrl:
+              'https://saturn-custody.dev.metamask-institutional.io/oauth/token',
+            name: 'saturn-dev',
+            displayName: 'Saturn Custody',
+            enabled: true,
+            mmiApiUrl: 'https://api.dev.metamask-institutional.io/v1',
+            websocketApiUrl:
+              'wss://websocket.dev.metamask-institutional.io/v1/ws',
+            apiBaseUrl:
+              'https://saturn-custody.dev.metamask-institutional.io/eth',
+            iconUrl:
+              'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
+            isNoteToTraderSupported: true,
+          },
+        ],
+      },
+      CustodyController: {
+        custodyAccountDetails: {
+          '0xAddress': {
+            address: '0xAddress',
+            details: 'details',
+            custodyType: 'testCustody - Saturn',
+            custodianName: 'saturn-dev',
+          },
         },
-      ],
-    },
-    custodyAccountDetails: {
-      '0xAddress': {
-        address: '0xAddress',
-        details: 'details',
-        custodyType: 'testCustody - Saturn',
-        custodianName: 'saturn-dev',
       },
     },
   },

@@ -42,53 +42,58 @@ const SOURCE_ID_2_MOCK = 'some_snap';
 const PROPOSED_NAME_MOCK = 'TestProposedName';
 const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
 const VARIATION_MOCK = CHAIN_ID_MOCK;
-
 const STATE_MOCK = {
   metamask: {
-    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-    nameSources: {
-      [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+    NetworkController: {
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     },
-    names: {
-      [NameType.ETHEREUM_ADDRESS]: {
-        [ADDRESS_SAVED_NAME_MOCK]: {
-          [CHAIN_ID_MOCK]: {
-            proposedNames: {
-              [SOURCE_ID_MOCK]: {
-                proposedNames: [PROPOSED_NAME_MOCK],
-                lastRequestTime: null,
-                retryDelay: null,
+    NameController: {
+      nameSources: {
+        [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+      },
+      names: {
+        [NameType.ETHEREUM_ADDRESS]: {
+          [ADDRESS_SAVED_NAME_MOCK]: {
+            [CHAIN_ID_MOCK]: {
+              proposedNames: {
+                [SOURCE_ID_MOCK]: {
+                  proposedNames: [PROPOSED_NAME_MOCK],
+                  lastRequestTime: null,
+                  retryDelay: null,
+                },
+                [SOURCE_ID_2_MOCK]: {
+                  proposedNames: [PROPOSED_NAME_2_MOCK],
+                  lastRequestTime: null,
+                  retryDelay: null,
+                },
               },
-              [SOURCE_ID_2_MOCK]: {
-                proposedNames: [PROPOSED_NAME_2_MOCK],
-                lastRequestTime: null,
-                retryDelay: null,
-              },
+              name: SAVED_NAME_MOCK,
+              sourceId: SOURCE_ID_MOCK,
             },
-            name: SAVED_NAME_MOCK,
-            sourceId: SOURCE_ID_MOCK,
           },
-        },
-        [ADDRESS_NO_NAME_MOCK]: {
-          [CHAIN_ID_MOCK]: {
-            proposedNames: {
-              [SOURCE_ID_MOCK]: {
-                proposedNames: [PROPOSED_NAME_MOCK],
-                lastRequestTime: null,
-                retryDelay: null,
+          [ADDRESS_NO_NAME_MOCK]: {
+            [CHAIN_ID_MOCK]: {
+              proposedNames: {
+                [SOURCE_ID_MOCK]: {
+                  proposedNames: [PROPOSED_NAME_MOCK],
+                  lastRequestTime: null,
+                  retryDelay: null,
+                },
+                [SOURCE_ID_2_MOCK]: {
+                  proposedNames: [PROPOSED_NAME_2_MOCK],
+                  lastRequestTime: null,
+                  retryDelay: null,
+                },
               },
-              [SOURCE_ID_2_MOCK]: {
-                proposedNames: [PROPOSED_NAME_2_MOCK],
-                lastRequestTime: null,
-                retryDelay: null,
-              },
+              name: null,
             },
-            name: null,
           },
         },
       },
     },
-    useTokenDetection: true,
+    PreferencesController: {
+      useTokenDetection: true,
+    },
     tokensChainsCache: {
       [VARIATION_MOCK]: {
         data: {

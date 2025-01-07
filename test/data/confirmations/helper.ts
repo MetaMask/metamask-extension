@@ -7,6 +7,7 @@ import {
   SignatureRequestType,
 } from '../../../ui/pages/confirmations/types/confirm';
 import mockState from '../mock-state.json';
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 import { genUnapprovedContractInteractionConfirmation } from './contract-interaction';
 import { unapprovedPersonalSignMsg } from './personal_sign';
 import { genUnapprovedSetApprovalForAllConfirmation } from './set-approval-for-all';
@@ -14,10 +15,7 @@ import { genUnapprovedApproveConfirmation } from './token-approve';
 import { genUnapprovedTokenTransferConfirmation } from './token-transfer';
 import { unapprovedTypedSignMsgV4 } from './typed_sign';
 
-type RootState = { metamask: Record<string, unknown> } & Record<
-  string,
-  unknown
->;
+type RootState = { metamask: Partial<BackgroundStateProxy> };
 
 export const getMockTypedSignConfirmState = (
   args: RootState = { metamask: {} },
@@ -27,20 +25,29 @@ export const getMockTypedSignConfirmState = (
   metamask: {
     ...mockState.metamask,
     ...args.metamask,
-    preferences: {
-      ...mockState.metamask.preferences,
-      redesignedTransactionsEnabled: true,
-      redesignedConfirmationsEnabled: true,
-      isRedesignedConfirmationsDeveloperEnabled: true,
-    },
-    pendingApprovals: {
-      [unapprovedTypedSignMsgV4.id]: {
-        id: unapprovedTypedSignMsgV4.id,
-        type: ApprovalType.EthSignTypedData,
+    PreferencesController: {
+      ...mockState.metamask.PreferencesController,
+      preferences: {
+        ...mockState.metamask.PreferencesController.preferences,
+        redesignedTransactionsEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        isRedesignedConfirmationsDeveloperEnabled: true,
       },
     },
-    unapprovedTypedMessages: {
-      [unapprovedTypedSignMsgV4.id]: unapprovedTypedSignMsgV4,
+    ApprovalController: {
+      ...mockState.metamask.ApprovalController,
+      pendingApprovals: {
+        [unapprovedTypedSignMsgV4.id]: {
+          id: unapprovedTypedSignMsgV4.id,
+          type: ApprovalType.EthSignTypedData,
+        },
+      },
+    },
+    SignatureController: {
+      ...mockState.metamask.SignatureController,
+      unapprovedTypedMessages: {
+        [unapprovedTypedSignMsgV4.id]: unapprovedTypedSignMsgV4,
+      },
     },
   },
 });
@@ -54,18 +61,27 @@ export const getMockTypedSignConfirmStateForRequest = (
   metamask: {
     ...mockState.metamask,
     ...args.metamask,
-    preferences: {
-      ...mockState.metamask.preferences,
-      redesignedTransactionsEnabled: true,
-      redesignedConfirmationsEnabled: true,
-      isRedesignedConfirmationsDeveloperEnabled: true,
+    PreferencesController: {
+      ...mockState.metamask.PreferencesController,
+      preferences: {
+        ...mockState.metamask.PreferencesController.preferences,
+        redesignedTransactionsEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        isRedesignedConfirmationsDeveloperEnabled: true,
+      },
     },
+  },
+  ApprovalController: {
+    ...mockState.metamask.ApprovalController,
     pendingApprovals: {
       [signature.id]: {
         id: signature.id,
         type: ApprovalType.EthSignTypedData,
       },
     },
+  },
+  SignatureController: {
+    ...mockState.metamask.SignatureController,
     unapprovedTypedMessages: {
       [signature.id]: signature,
     },
@@ -80,20 +96,29 @@ export const getMockPersonalSignConfirmState = (
   metamask: {
     ...mockState.metamask,
     ...args.metamask,
-    preferences: {
-      ...mockState.metamask.preferences,
-      redesignedTransactionsEnabled: true,
-      redesignedConfirmationsEnabled: true,
-      isRedesignedConfirmationsDeveloperEnabled: true,
-    },
-    pendingApprovals: {
-      [unapprovedPersonalSignMsg.id]: {
-        id: unapprovedPersonalSignMsg.id,
-        type: ApprovalType.PersonalSign,
+    PreferencesController: {
+      ...mockState.metamask.PreferencesController,
+      preferences: {
+        ...mockState.metamask.PreferencesController.preferences,
+        redesignedTransactionsEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        isRedesignedConfirmationsDeveloperEnabled: true,
       },
     },
-    unapprovedPersonalMsgs: {
-      [unapprovedPersonalSignMsg.id]: unapprovedPersonalSignMsg,
+    ApprovalController: {
+      ...mockState.metamask.ApprovalController,
+      pendingApprovals: {
+        [unapprovedPersonalSignMsg.id]: {
+          id: unapprovedPersonalSignMsg.id,
+          type: ApprovalType.PersonalSign,
+        },
+      },
+    },
+    SignatureController: {
+      ...mockState.metamask.SignatureController,
+      unapprovedPersonalMsgs: {
+        [unapprovedPersonalSignMsg.id]: unapprovedPersonalSignMsg,
+      },
     },
   },
 });
@@ -107,20 +132,29 @@ export const getMockPersonalSignConfirmStateForRequest = (
   metamask: {
     ...mockState.metamask,
     ...args.metamask,
-    preferences: {
-      ...mockState.metamask.preferences,
-      redesignedTransactionsEnabled: true,
-      redesignedConfirmationsEnabled: true,
-      isRedesignedConfirmationsDeveloperEnabled: true,
-    },
-    pendingApprovals: {
-      [signature.id]: {
-        id: signature.id,
-        type: ApprovalType.PersonalSign,
+    PreferencesController: {
+      ...mockState.metamask.PreferencesController,
+      preferences: {
+        ...mockState.metamask.PreferencesController.preferences,
+        redesignedTransactionsEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        isRedesignedConfirmationsDeveloperEnabled: true,
       },
     },
-    unapprovedPersonalMsgs: {
-      [signature.id]: signature,
+    ApprovalController: {
+      ...mockState.metamask.ApprovalController,
+      pendingApprovals: {
+        [signature.id]: {
+          id: signature.id,
+          type: ApprovalType.PersonalSign,
+        },
+      },
+    },
+    SignatureController: {
+      ...mockState.metamask.SignatureController,
+      unapprovedPersonalMsgs: {
+        [signature.id]: signature,
+      },
     },
   },
 });
@@ -131,12 +165,15 @@ export const getMockConfirmState = (args: RootState = { metamask: {} }) => ({
   metamask: {
     ...mockState.metamask,
     ...args.metamask,
-    preferences: {
-      ...mockState.metamask.preferences,
-      ...(args.metamask?.preferences as Record<string, unknown>),
-      redesignedTransactionsEnabled: true,
-      redesignedConfirmationsEnabled: true,
-      isRedesignedConfirmationsDeveloperEnabled: true,
+    PreferencesController: {
+      ...mockState.metamask.PreferencesController,
+      preferences: {
+        ...mockState.metamask.PreferencesController.preferences,
+        ...args.metamask.PreferencesController?.preferences,
+        redesignedTransactionsEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        isRedesignedConfirmationsDeveloperEnabled: true,
+      },
     },
   },
 });
@@ -150,13 +187,17 @@ export const getMockConfirmStateForTransaction = (
       {
         metamask: {
           ...args.metamask,
-          pendingApprovals: {
-            [transaction.id]: {
-              id: transaction.id,
-              type: ApprovalType.Transaction,
+          ApprovalController: {
+            pendingApprovals: {
+              [transaction.id]: {
+                id: transaction.id,
+                type: ApprovalType.Transaction,
+              },
             },
           },
-          transactions: [transaction],
+          TxController: {
+            transactions: [transaction],
+          },
         },
       },
       args,

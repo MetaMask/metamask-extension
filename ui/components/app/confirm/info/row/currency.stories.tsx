@@ -10,9 +10,12 @@ import { ConfirmInfoRowCurrency } from './currency';
 const store = configureStore({
   metamask: {
     ...mockState.metamask,
-    preferences: {
-      ...mockState.metamask.preferences,
-      showNativeTokenAsMainBalance: false,
+    PreferencesController: {
+      ...mockState.metamask.PreferencesController,
+      preferences: {
+        ...mockState.metamask.PreferencesController.preferences,
+        showNativeTokenAsMainBalance: false,
+      },
     },
   },
 });

@@ -16,9 +16,11 @@ describe('#getShowSurveyToast', () => {
     Date.now = () =>
       new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
     const result = selectShowSurveyToast({
-      // @ts-expect-error: intentionally passing incomplete input
       metamask: {
-        surveyLinkLastClickedOrClosed: undefined,
+        AppStateController: {
+          // @ts-expect-error: intentionally passing incomplete input
+          surveyLinkLastClickedOrClosed: undefined,
+        },
       },
     });
     expect(result).toStrictEqual(true);
@@ -28,9 +30,11 @@ describe('#getShowSurveyToast', () => {
     Date.now = () =>
       new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
     const result = selectShowSurveyToast({
-      // @ts-expect-error: intentionally passing incomplete input
       metamask: {
-        surveyLinkLastClickedOrClosed: 123456789,
+        // @ts-expect-error: intentionally passing incomplete input
+        AppStateController: {
+          surveyLinkLastClickedOrClosed: 123456789,
+        },
       },
     });
     expect(result).toStrictEqual(false);
@@ -40,9 +44,11 @@ describe('#getShowSurveyToast', () => {
     Date.now = () =>
       new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
     const result = selectShowSurveyToast({
-      // @ts-expect-error: intentionally passing incomplete input
       metamask: {
-        surveyLinkLastClickedOrClosed: undefined,
+        AppStateController: {
+          // @ts-expect-error: intentionally passing incomplete input
+          surveyLinkLastClickedOrClosed: undefined,
+        },
       },
     });
     expect(result).toStrictEqual(false);
@@ -52,9 +58,11 @@ describe('#getShowSurveyToast', () => {
     Date.now = () =>
       new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
     const result = selectShowSurveyToast({
-      // @ts-expect-error: intentionally passing incomplete input
       metamask: {
-        surveyLinkLastClickedOrClosed: undefined,
+        AppStateController: {
+          // @ts-expect-error: intentionally passing incomplete input
+          surveyLinkLastClickedOrClosed: undefined,
+        },
       },
     });
     expect(result).toStrictEqual(false);
@@ -80,12 +88,14 @@ describe('#getShowPrivacyPolicyToast', () => {
 
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
       const result = selectShowPrivacyPolicyToast({
-        // @ts-expect-error: intentionally passing incomplete input
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: false,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-          ),
+          // @ts-expect-error: intentionally passing incomplete input
+          AppStateController: {
+            newPrivacyPolicyToastClickedOrClosed: false,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
+          },
         },
       });
       expect(result.showPrivacyPolicyToast).toBe(true);
@@ -93,12 +103,14 @@ describe('#getShowPrivacyPolicyToast', () => {
 
     it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
       const result = selectShowPrivacyPolicyToast({
-        // @ts-expect-error: intentionally passing incomplete input
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: true,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-          ),
+          // @ts-expect-error: intentionally passing incomplete input
+          AppStateController: {
+            newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
+          },
         },
       });
       expect(result.showPrivacyPolicyToast).toBe(false);
@@ -106,10 +118,12 @@ describe('#getShowPrivacyPolicyToast', () => {
 
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
       const result = selectShowPrivacyPolicyToast({
-        // @ts-expect-error: intentionally passing incomplete input
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: false,
-          onboardingDate: undefined,
+          AppStateController: {
+            newPrivacyPolicyToastClickedOrClosed: false,
+            // @ts-expect-error: intentionally passing incomplete input
+            onboardingDate: undefined,
+          },
         },
       });
       expect(result.showPrivacyPolicyToast).toBe(true);
@@ -129,12 +143,14 @@ describe('#getShowPrivacyPolicyToast', () => {
 
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is before the policy date', () => {
       const result = selectShowPrivacyPolicyToast({
-        // @ts-expect-error: intentionally passing incomplete input
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: false,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-          ),
+          // @ts-expect-error: intentionally passing incomplete input
+          AppStateController: {
+            newPrivacyPolicyToastClickedOrClosed: false,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
+          },
         },
       });
       expect(result.showPrivacyPolicyToast).toBe(true);
@@ -142,12 +158,14 @@ describe('#getShowPrivacyPolicyToast', () => {
 
     it('does not show the privacy policy toast when seen, even if on or after the policy date and onboardingDate is before the policy date', () => {
       const result = selectShowPrivacyPolicyToast({
-        // @ts-expect-error: intentionally passing incomplete input
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: true,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-          ),
+          // @ts-expect-error: intentionally passing incomplete input
+          AppStateController: {
+            newPrivacyPolicyToastClickedOrClosed: true,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
+          },
         },
       });
       expect(result.showPrivacyPolicyToast).toBe(false);
@@ -155,10 +173,12 @@ describe('#getShowPrivacyPolicyToast', () => {
 
     it('shows the privacy policy toast when not yet seen, on or after the policy date, and onboardingDate is not set', () => {
       const result = selectShowPrivacyPolicyToast({
-        // @ts-expect-error: intentionally passing incomplete input
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: false,
-          onboardingDate: undefined,
+          AppStateController: {
+            newPrivacyPolicyToastClickedOrClosed: false,
+            // @ts-expect-error: intentionally passing incomplete input
+            onboardingDate: undefined,
+          },
         },
       });
       expect(result.showPrivacyPolicyToast).toBe(true);
@@ -181,12 +201,14 @@ describe('#getShowPrivacyPolicyToast', () => {
 
     it('does not show the privacy policy toast before the policy date', () => {
       const result = selectShowPrivacyPolicyToast({
-        // @ts-expect-error: intentionally passing incomplete input
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: false,
-          onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
-            new Date(PRIVACY_POLICY_DATE).getDate() - 2,
-          ),
+          // @ts-expect-error: intentionally passing incomplete input
+          AppStateController: {
+            newPrivacyPolicyToastClickedOrClosed: false,
+            onboardingDate: new Date(PRIVACY_POLICY_DATE).setDate(
+              new Date(PRIVACY_POLICY_DATE).getDate() - 2,
+            ),
+          },
         },
       });
       expect(result.showPrivacyPolicyToast).toBe(false);
@@ -194,10 +216,12 @@ describe('#getShowPrivacyPolicyToast', () => {
 
     it('does not show the privacy policy toast before the policy date even if onboardingDate is not set', () => {
       const result = selectShowPrivacyPolicyToast({
-        // @ts-expect-error: intentionally passing incomplete input
         metamask: {
-          newPrivacyPolicyToastClickedOrClosed: false,
-          onboardingDate: undefined,
+          AppStateController: {
+            newPrivacyPolicyToastClickedOrClosed: false,
+            // @ts-expect-error: intentionally passing incomplete input
+            onboardingDate: undefined,
+          },
         },
       });
       expect(result.showPrivacyPolicyToast).toBe(false);

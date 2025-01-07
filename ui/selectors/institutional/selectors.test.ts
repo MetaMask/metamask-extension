@@ -36,25 +36,23 @@ import {
 } from './selectors';
 
 const custodianMock = {
-  type: 'saturn',
-  envName: 'custodian1',
-  apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
-  iconUrl: 'images/saturn.svg',
-  displayName: 'Saturn Custody',
-  production: true,
-  refreshTokenUrl: 'test',
-  isNoteToTraderSupported: true,
-  version: 1,
-  name: 'Saturn',
-  onboardingUrl:
-    'https://onboarding.saturn-custody.dev.metamask-institutional.io',
-  website: 'https://saturn-custody.dev.metamask-institutional.io',
-  apiVersion: 'v1',
-  websocketApiUrl: 'wss://saturn-custody.dev.metamask-institutional.io',
-  isQRCodeSupported: true,
-  custodianPublishesTransaction: true,
+    type: 'saturn',
+    envName: 'custodian1',
+    apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
+    iconUrl: 'images/saturn.svg',
+    displayName: 'Saturn Custody',
+    production: true,
+    refreshTokenUrl: 'test',
+    isNoteToTraderSupported: true,
+    version: 1,
+    name: 'Saturn',
+    onboardingUrl: 'https://onboarding.saturn-custody.dev.metamask-institutional.io',
+    website: 'https://saturn-custody.dev.metamask-institutional.io',
+    apiVersion: 'v1',
+    websocketApiUrl: 'wss://saturn-custody.dev.metamask-institutional.io',
+    isQRCodeSupported: true,
+    custodianPublishesTransaction: true,
 };
-
 function buildState(overrides = {}) {
   const defaultState = {
     metamask: {
@@ -292,303 +290,434 @@ describe('Institutional selectors', () => {
 
       expect(isSupported).toBe(true);
     });
-
-    it('returns false if the current keyring type is "custody" and the currently selected chain ID is not in the list of supported chain IDs', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Custody Account A',
-                  keyring: {
-                    type: 'Custody',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-                code: '0x',
-                balance: '0x47c9d71831c76efe',
-                nonce: '0x1b',
-                address: accountAddress,
-              },
-            },
-          },
-          custodianSupportedChains: {
-            [accountAddress]: {
-              supportedChains: ['4'],
-            },
-          },
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
-      });
-
-      const isSupported = getIsCustodianSupportedChain(state);
-
-      expect(isSupported).toBe(false);
+    describe('getTransactionStatusMap', () => {
+        it('extracts a state property', () => {
+            const state = buildState();
+            const result = getTransactionStatusMap(state);
+            expect(result).toStrictEqual(state.metamask.custodyStatusMaps);
+        });
     });
-
-    it('returns true if the current keyring type is not "custody"', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          keyrings: [
-            {
-              type: 'SomethingElse',
-              accounts: [accountAddress],
-            },
-          ],
-          custodianSupportedChains: {
-            [accountAddress]: {
-              supportedChains: ['4'],
-            },
-          },
-          internalAccounts: {
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                address: accountAddress,
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Test Account',
-                  keyring: {
-                    type: 'HD Key Tree',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-              },
-            },
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-          },
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
-      });
-
-      const isSupported = getIsCustodianSupportedChain(state);
-
-      expect(isSupported).toBe(true);
+    describe('getCustodyAccountSupportedChains', () => {
+        it('extracts a state property', () => {
+            const state = buildState();
+            const result = getCustodyAccountSupportedChains(state, '0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275');
+            expect(result).toStrictEqual((state.metamask.custodianSupportedChains as Record<string, {
+                supportedChains: string[];
+                custodianName: string;
+            }>)[toChecksumAddress('0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275')]);
+        });
     });
-
-    it('throws an error if accountType is null', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-          internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Custody Account A',
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-                code: '0x',
-                balance: '0x47c9d71831c76efe',
-                nonce: '0x1b',
-                address: accountAddress,
-              },
-            },
-          },
-          keyrings: [],
-          custodianSupportedChains: {},
-          networkConfigurationsByChainId: {
-            [toHex(1)]: {
-              chainId: toHex(1),
-              rpcEndpoints: [{}],
-            },
-          },
-        },
-      });
-
-      expect(() => getIsCustodianSupportedChain(state)).toThrow(
-        'Invalid state',
-      );
+    describe('getMmiPortfolioEnabled', () => {
+        it('extracts a state property', () => {
+            const state = buildState();
+            const result = getMmiPortfolioEnabled(state);
+            expect(result).toStrictEqual(state.metamask.mmiConfiguration.portfolio.enabled);
+        });
     });
-
-    it('returns true if supportedChains is null', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Custody Account A',
-                  keyring: {
-                    type: 'Custody',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-                code: '0x',
-                balance: '0x47c9d71831c76efe',
-                nonce: '0x1b',
-                address: accountAddress,
-              },
-            },
-          },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
-            },
-          ],
-          custodianSupportedChains: {
-            [accountAddress]: null,
-          },
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
-      });
-
-      const isSupported = getIsCustodianSupportedChain(state);
-
-      expect(isSupported).toBe(true);
+    describe('getMmiPortfolioUrl', () => {
+        it('extracts a state property', () => {
+            const state = buildState();
+            const result = getMmiPortfolioUrl(state);
+            expect(result).toStrictEqual(state.metamask.mmiConfiguration.portfolio.url);
+        });
     });
-
-    it('returns false if the supportedChains array is empty', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Custody Account A',
-                  keyring: {
-                    type: 'Custody',
-                  },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-                code: '0x',
-                balance: '0x47c9d71831c76efe',
-                nonce: '0x1b',
-                address: accountAddress,
-              },
-            },
-          },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
-            },
-          ],
-          custodianSupportedChains: {
-            [accountAddress]: {
-              supportedChains: [],
-            },
-          },
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        },
-      });
-
-      const isSupported = getIsCustodianSupportedChain(state);
-
-      expect(isSupported).toBe(false);
+    describe('getConfiguredCustodians', () => {
+        it('extracts a state property', () => {
+            const state = buildState();
+            const result = getConfiguredCustodians(state);
+            expect(result).toStrictEqual(state.metamask.mmiConfiguration.custodians);
+        });
     });
-
-    it('throws an error if chain ID is not a string', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Custody Account A',
-                  keyring: {
-                    type: 'Custody',
-                  },
+    describe('getCustodianIconForAddress', () => {
+        it('extracts a state property', () => {
+            const newState = {
+                custodyAccountDetails: {
+                    '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
+                        custodianName: 'custodian1',
+                    },
                 },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-                code: '0x',
-                balance: '0x47c9d71831c76efe',
-                nonce: '0x1b',
-                address: accountAddress,
-              },
-            },
-          },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
-            },
-          ],
-          custodianSupportedChains: {
-            [accountAddress]: {
-              supportedChains: ['1'],
-            },
-          },
-          ...mockNetworkState({ chainId: 1 as unknown as Hex }),
-        },
-      });
-
-      expect(() => getIsCustodianSupportedChain(state)).toThrow(
-        'Chain ID must be a string',
-      );
+                mmiConfiguration: {
+                    custodians: [custodianMock],
+                }
+            };
+            const state = buildState(newState);
+            const result = getCustodianIconForAddress(state, '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275');
+            expect(result).toStrictEqual(state.metamask.mmiConfiguration.custodians[0].iconUrl);
+        });
     });
-
-    it('throws an error if chain ID is not a hexadecimal number', () => {
-      const accountAddress = '0x1';
-      const state = buildState({
-        metamask: {
-          internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Custody Account A',
-                  keyring: {
-                    type: 'Custody',
-                  },
+    describe('getIsCustodianSupportedChain', () => {
+        it('returns true if the current keyring type is "custody" and currently selected chain ID is in the list of supported chain IDs', () => {
+            const accountAddress = '0x1';
+            const state = buildState({
+                AccountsController: {
+                    internalAccounts: {
+                        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                        accounts: {
+                            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                                metadata: {
+                                    name: 'Custody Account A',
+                                    keyring: {
+                                        type: 'Custody',
+                                    },
+                                },
+                                options: {},
+                                methods: ETH_EOA_METHODS,
+                                type: EthAccountType.Eoa,
+                                code: '0x',
+                                balance: '0x47c9d71831c76efe',
+                                nonce: '0x1b',
+                                address: accountAddress,
+                            },
+                        },
+                    }
                 },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
-                code: '0x',
-                balance: '0x47c9d71831c76efe',
-                nonce: '0x1b',
+                custodianSupportedChains: {
+                    [accountAddress]: {
+                        supportedChains: ['1', '2', '3'],
+                    },
+                }
+            });
+            const isSupported = getIsCustodianSupportedChain(state);
+            expect(isSupported).toBe(true);
+        });
+        it('returns false if the current keyring type is "custody" and the currently selected chain ID is not in the list of supported chain IDs', () => {
+            const accountAddress = '0x1';
+            const state = buildState({
+                AccountsController: {
+                    internalAccounts: {
+                        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                        accounts: {
+                            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                                metadata: {
+                                    name: 'Custody Account A',
+                                    keyring: {
+                                        type: 'Custody',
+                                    },
+                                },
+                                options: {},
+                                methods: ETH_EOA_METHODS,
+                                type: EthAccountType.Eoa,
+                                code: '0x',
+                                balance: '0x47c9d71831c76efe',
+                                nonce: '0x1b',
+                                address: accountAddress,
+                            },
+                        },
+                    }
+                },
+                custodianSupportedChains: {
+                    [accountAddress]: {
+                        supportedChains: ['4'],
+                    },
+                }
+            });
+            const isSupported = getIsCustodianSupportedChain(state);
+            expect(isSupported).toBe(false);
+        });
+        it('returns true if the current keyring type is not "custody"', () => {
+            const accountAddress = '0x1';
+            const state = buildState({
+                KeyringController: {
+                    keyrings: [
+                        {
+                            type: 'SomethingElse',
+                            accounts: [accountAddress],
+                        },
+                    ]
+                },
+                custodianSupportedChains: {
+                    [accountAddress]: {
+                        supportedChains: ['4'],
+                    },
+                },
+                AccountsController: {
+                    internalAccounts: {
+                        accounts: {
+                            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                                address: accountAddress,
+                                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                                metadata: {
+                                    name: 'Test Account',
+                                    keyring: {
+                                        type: 'HD Key Tree',
+                                    },
+                                },
+                                options: {},
+                                methods: ETH_EOA_METHODS,
+                                type: EthAccountType.Eoa,
+                            },
+                        },
+                        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                    }
+                }
+            });
+            const isSupported = getIsCustodianSupportedChain(state);
+            expect(isSupported).toBe(true);
+        });
+        it('throws an error if accountType is null', () => {
+            const accountAddress = '0x1';
+            const state = buildState({
+                AccountsController: {
+                    internalAccounts: {
+                        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                        accounts: {
+                            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                                metadata: {
+                                    name: 'Custody Account A',
+                                },
+                                options: {},
+                                methods: ETH_EOA_METHODS,
+                                type: EthAccountType.Eoa,
+                                code: '0x',
+                                balance: '0x47c9d71831c76efe',
+                                nonce: '0x1b',
+                                address: accountAddress,
+                            },
+                        },
+                    }
+                },
+                KeyringController: {
+                    keyrings: []
+                },
+                custodianSupportedChains: {},
+                networkConfigurationsByChainId: {
+                    [toHex(1)]: {
+                        chainId: toHex(1),
+                        rpcEndpoints: [{}],
+                    },
+                }
+            });
+            expect(() => getIsCustodianSupportedChain(state)).toThrow('Invalid state');
+        });
+        it('returns true if supportedChains is null', () => {
+            const accountAddress = '0x1';
+            const state = buildState({
+                AccountsController: {
+                    internalAccounts: {
+                        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                        accounts: {
+                            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                                metadata: {
+                                    name: 'Custody Account A',
+                                    keyring: {
+                                        type: 'Custody',
+                                    },
+                                },
+                                options: {},
+                                methods: ETH_EOA_METHODS,
+                                type: EthAccountType.Eoa,
+                                code: '0x',
+                                balance: '0x47c9d71831c76efe',
+                                nonce: '0x1b',
+                                address: accountAddress,
+                            },
+                        },
+                    }
+                },
+                KeyringController: {
+                    keyrings: [
+                        {
+                            type: 'Custody',
+                            accounts: [accountAddress],
+                        },
+                    ]
+                },
+                custodianSupportedChains: {
+                    [accountAddress]: null,
+                }
+            });
+            const isSupported = getIsCustodianSupportedChain(state);
+            expect(isSupported).toBe(true);
+        });
+        it('returns false if the supportedChains array is empty', () => {
+            const accountAddress = '0x1';
+            const state = buildState({
+                AccountsController: {
+                    internalAccounts: {
+                        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                        accounts: {
+                            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                                metadata: {
+                                    name: 'Custody Account A',
+                                    keyring: {
+                                        type: 'Custody',
+                                    },
+                                },
+                                options: {},
+                                methods: ETH_EOA_METHODS,
+                                type: EthAccountType.Eoa,
+                                code: '0x',
+                                balance: '0x47c9d71831c76efe',
+                                nonce: '0x1b',
+                                address: accountAddress,
+                            },
+                        },
+                    }
+                },
+                KeyringController: {
+                    keyrings: [
+                        {
+                            type: 'Custody',
+                            accounts: [accountAddress],
+                        },
+                    ]
+                },
+                custodianSupportedChains: {
+                    [accountAddress]: {
+                        supportedChains: [],
+                    },
+                }
+            });
+            const isSupported = getIsCustodianSupportedChain(state);
+            expect(isSupported).toBe(false);
+        });
+        it('throws an error if chain ID is not a string', () => {
+            const accountAddress = '0x1';
+            const state = buildState({
+                AccountsController: {
+                    internalAccounts: {
+                        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                        accounts: {
+                            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                                metadata: {
+                                    name: 'Custody Account A',
+                                    keyring: {
+                                        type: 'Custody',
+                                    },
+                                },
+                                options: {},
+                                methods: ETH_EOA_METHODS,
+                                type: EthAccountType.Eoa,
+                                code: '0x',
+                                balance: '0x47c9d71831c76efe',
+                                nonce: '0x1b',
+                                address: accountAddress,
+                            },
+                        },
+                    }
+                },
+                KeyringController: {
+                    keyrings: [
+                        {
+                            type: 'Custody',
+                            accounts: [accountAddress],
+                        },
+                    ]
+                },
+                custodianSupportedChains: {
+                    [accountAddress]: {
+                        supportedChains: ['1'],
+                    },
+                }
+            });
+            expect(() => getIsCustodianSupportedChain(state)).toThrow('Chain ID must be a string');
+        });
+        it('throws an error if chain ID is not a hexadecimal number', () => {
+            const accountAddress = '0x1';
+            const state = buildState({
+                AccountsController: {
+                    internalAccounts: {
+                        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                        accounts: {
+                            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                                metadata: {
+                                    name: 'Custody Account A',
+                                    keyring: {
+                                        type: 'Custody',
+                                    },
+                                },
+                                options: {},
+                                methods: ETH_EOA_METHODS,
+                                type: EthAccountType.Eoa,
+                                code: '0x',
+                                balance: '0x47c9d71831c76efe',
+                                nonce: '0x1b',
+                                address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+                            },
+                        },
+                    }
+                },
+                KeyringController: {
+                    keyrings: [
+                        {
+                            type: 'Custody',
+                            accounts: [accountAddress],
+                        },
+                    ]
+                },
+                custodianSupportedChains: {
+                    [accountAddress]: {
+                        supportedChains: ['1'],
+                    },
+                }
+            });
+            expect(() => getIsCustodianSupportedChain(state)).toThrow('Chain ID must be a hexadecimal number');
+        });
+    });
+    describe('getMMIAddressFromModalOrAddress', () => {
+        it('returns modalAddress if it exists', () => {
+            const state = {
+                AccountsController: {
+                    internalAccounts: {
+                        accounts: {},
+                        selectedAccount: '',
+                    }
+                }
+            };
+            const address = getMMIAddressFromModalOrAddress(state);
+            expect(address).toBe('modalAddress');
+        });
+        it('returns selectedAccount if modalAddress does not exist', () => {
+            const mockInternalAccount: InternalAccount = {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
-              },
-            },
-          },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
-            },
-          ],
-          custodianSupportedChains: {
-            [accountAddress]: {
-              supportedChains: ['1'],
-            },
-          },
-          ...mockNetworkState({ chainId: 'not a hex number' as Hex }),
-        },
-      });
-
-      expect(() => getIsCustodianSupportedChain(state)).toThrow(
-        'Chain ID must be a hexadecimal number',
-      );
+                metadata: {
+                    name: 'Custody Account A',
+                    importTime: Date.now(),
+                    keyring: {
+                        type: 'Custody',
+                    },
+                    snap: undefined,
+                },
+                options: {},
+                methods: ['EthMethod1'],
+                type: EthAccountType.Eoa,
+                code: '0x',
+                balance: '0x47c9d71831c76efe',
+                nonce: '0x1b',
+            };
+            const state: State = {
+                AccountsController: {
+                    internalAccounts: {
+                        accounts: {
+                            [mockInternalAccount.id]: mockInternalAccount,
+                        },
+                        selectedAccount: mockInternalAccount.id,
+                    }
+                }
+            };
+            const address = getMMIAddressFromModalOrAddress(state);
+            expect(address).toBe(mockInternalAccount.address);
+        });
+        it('returns undefined if neither modalAddress nor selectedAccount exist', () => {
+            const state = {
+                AccountsController: {
+                    internalAccounts: {
+                        accounts: {},
+                        selectedAccount: '',
+                    }
+                }
+            };
+            const address = getMMIAddressFromModalOrAddress(state);
+            expect(address).toBeUndefined();
+        });
     });
   });
 

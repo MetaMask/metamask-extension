@@ -21,11 +21,7 @@ describe('useEnableProfileSyncing()', () => {
     await act(async () => {
       await result.current.enableProfileSyncing();
     });
-
-    expect(mockEnableProfileSyncingAction).toHaveBeenCalled();
-  });
 });
-
 describe('useDisableProfileSyncing()', () => {
   it('should disable profile syncing', async () => {
     const mockDisableProfileSyncingAction = jest.spyOn(

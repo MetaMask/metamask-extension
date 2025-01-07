@@ -43,36 +43,43 @@ const PROPOSED_NAMES_MOCK = {
     retryDelay: null,
   },
 };
-
 const STATE_MOCK = {
   ...mockState,
   metamask: {
     ...mockState.metamask,
-    useTokenDetection: true,
-    tokensChainsCache: {},
-    names: {
-      [NameType.ETHEREUM_ADDRESS]: {
-        [ADDRESS_MOCK]: {
-          [VARIATION_MOCK]: {
-            proposedNames: PROPOSED_NAMES_MOCK,
+    PreferencesController: {
+      ...mockState.metamask.PreferencesController,
+      useTokenDetection: true,
+    },
+    TokenListController: {
+      ...mockState.metamask.TokenListController,
+      tokensChainsCache: {},
+    },
+    NameController: {
+      ...mockState.metamask.NameController,
+      names: {
+        [NameType.ETHEREUM_ADDRESS]: {
+          [ADDRESS_MOCK]: {
+            [VARIATION_MOCK]: {
+              proposedNames: PROPOSED_NAMES_MOCK,
+            },
           },
-        },
-        [ADDRESS_NFT_MOCK]: {
-          [VARIATION_MOCK]: {
-            proposedNames: PROPOSED_NAMES_MOCK,
+          [ADDRESS_NFT_MOCK]: {
+            [VARIATION_MOCK]: {
+              proposedNames: PROPOSED_NAMES_MOCK,
+            },
           },
-        },
-        [ADDRESS_FIRST_PARTY_MOCK]: {
-          [VARIATION_MOCK]: {
-            proposedNames: PROPOSED_NAMES_MOCK,
+          [ADDRESS_FIRST_PARTY_MOCK]: {
+            [VARIATION_MOCK]: {
+              proposedNames: PROPOSED_NAMES_MOCK,
+            },
           },
         },
       },
+      nameSources: {},
     },
-    nameSources: {},
   },
 };
-
 /**
  * Displays the saved name for a raw value such as an Ethereum address.<br/><br/>
  * Clicking the component will display a modal to select a proposed name or enter a custom name.<br/><br/>
@@ -145,9 +152,9 @@ export const SavedNameStory = {
     type: NameType.ETHEREUM_ADDRESS,
     variation: VARIATION_MOCK,
     state: (state) => {
-      state.metamask.names[NameType.ETHEREUM_ADDRESS][ADDRESS_MOCK][
-        VARIATION_MOCK
-      ].name = NAME_MOCK;
+      state.metamask.NameController.names[NameType.ETHEREUM_ADDRESS][
+        ADDRESS_MOCK
+      ][VARIATION_MOCK].name = NAME_MOCK;
     },
   },
 };
@@ -163,7 +170,7 @@ export const DefaultTokenNameStory = {
     type: NameType.ETHEREUM_ADDRESS,
     variation: VARIATION_MOCK,
     state: (state) => {
-      state.metamask.tokensChainsCache = {
+      state.metamask.TokenListController.tokensChainsCache = {
         [VARIATION_MOCK]: {
           data: {
             [ADDRESS_MOCK]: {
@@ -191,7 +198,7 @@ export const DefaultWatchedNFTNameStory = {
     type: NameType.ETHEREUM_ADDRESS,
     variation: VARIATION_MOCK,
     state: (state) => {
-      state.metamask.allNftContracts = {
+      state.metamask.NftController.allNftContracts = {
         '0x123': {
           [VARIATION_MOCK]: [
             {

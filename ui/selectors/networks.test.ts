@@ -3,7 +3,6 @@ import mockState from '../../test/data/mock-state.json';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import * as networks from '../../shared/modules/selectors/networks';
-
 describe('Network Selectors', () => {
   describe('#getNetworkConfigurationsByChainId', () => {
     it('returns networkConfigurationsByChainId', () => {
@@ -72,5 +71,4 @@ describe('Network Selectors', () => {
       isInfuraBlocked = networks.getInfuraBlocked(modifiedMockState);
       expect(isInfuraBlocked).toBe(true);
     });
-  });
 });

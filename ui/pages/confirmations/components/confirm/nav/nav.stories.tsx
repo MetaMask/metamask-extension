@@ -80,7 +80,6 @@ const Story = {
     ),
   ],
 };
-
 export default Story;
 
 export const DefaultStory = () => <ConfirmNav />;

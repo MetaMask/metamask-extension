@@ -18,11 +18,9 @@ jest.mock('./PendingTransactionAlertMessage', () => ({
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TRANSACTION_ID_MOCK = '123-456';
-
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
-  chainId: '0x5',
+    chainId: '0x5',
 }) as TransactionMeta;
-
 const TRANSACTION_META_MOCK = {
   id: TRANSACTION_ID_MOCK,
   chainId: '0x5',
@@ -68,7 +66,6 @@ function runHook({
 
   return response.result.current;
 }
-
 describe('usePendingTransactionAlerts', () => {
   beforeEach(() => {
     jest.resetAllMocks();

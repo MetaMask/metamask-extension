@@ -181,3 +181,40 @@ describe('useAccountSettingsProps() tests', () => {
     });
   });
 });
+it('should check account presence', async () => {
+    const { result } = renderHook(() => useSwitchAccountNotifications(), {
+        wrapper: ({ children }) => (<Provider>store) = { store } >
+            <MetamaskNotificationsProvider>{ children }
+            < /MetamaskNotificationsProvider>
+            < /Provider>
+    });
+});
+await act(async () => {
+    await result.current.switchAccountNotifications(['0x123']);
+});
+expect(actions.checkAccountsPresence).toHaveBeenCalledWith(['0x123']);
+;
+it('should handle account notification changes', async () => {
+    const { result } = renderHook(() => useSwitchAccountNotificationsChange(), {
+        wrapper: ({ children }) => (<Provider>store) = { store } >
+            <MetamaskNotificationsProvider>{ children }
+            < /MetamaskNotificationsProvider>
+            < /Provider>
+    });
+});
+// Test enabling notifications
+await act(async () => {
+    await result.current.onChange(['0x123'], true);
+});
+expect(actions.updateOnChainTriggersByAccount).toHaveBeenCalledWith([
+    '0x123',
+]);
+// Test disabling notifications
+await act(async () => {
+    await result.current.onChange(['0x123'], false);
+});
+expect(actions.deleteOnChainTriggersByAccount).toHaveBeenCalledWith([
+    '0x123',
+]);
+;
+;

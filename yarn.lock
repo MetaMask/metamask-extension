@@ -10427,6 +10427,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/estraverse@npm:^5":
+  version: 5.1.7
+  resolution: "@types/estraverse@npm:5.1.7"
+  dependencies:
+    "@types/estree": "npm:*"
+  checksum: 10/e598a73ec90c0b1989b55d55271742a7abfaa873ebe5041bfb1fbfe44fa5e64e5d759a60f4cb0a3f24b90c4ba98d87955aa836a8eea796ad4d880e4def92c23d
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:*, @types/estree@npm:^1.0.6":
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
@@ -26733,6 +26742,7 @@ __metadata:
     "@types/browserify": "npm:^12.0.37"
     "@types/chrome": "npm:^0.0.268"
     "@types/currency-formatter": "npm:^1.5.1"
+    "@types/estraverse": "npm:^5"
     "@types/fs-extra": "npm:^9.0.13"
     "@types/gulp": "npm:^4.0.9"
     "@types/gulp-autoprefixer": "npm:^0.0.33"
@@ -26771,6 +26781,7 @@ __metadata:
     "@whitespace/storybook-addon-html": "npm:^5.1.6"
     "@zxing/browser": "npm:^0.1.4"
     "@zxing/library": "npm:0.20.0"
+    acorn: "npm:^8.14.0"
     addons-linter: "npm:^6.28.0"
     autoprefixer: "npm:^10.4.19"
     await-semaphore: "npm:^0.1.1"
@@ -26809,6 +26820,7 @@ __metadata:
     detect-port: "npm:^1.5.1"
     dotenv: "npm:^16.4.5"
     duplexify: "npm:^4.1.1"
+    escodegen: "npm:^2.1.0"
     eslint: "patch:eslint@npm%3A8.57.0#~/.yarn/patches/eslint-npm-8.57.0-4286e12a3a.patch"
     eslint-config-prettier: "npm:^8.5.0"
     eslint-import-resolver-node: "npm:^0.3.4"
@@ -26822,6 +26834,7 @@ __metadata:
     eslint-plugin-react: "npm:^7.23.1"
     eslint-plugin-react-hooks: "npm:^4.2.0"
     eslint-plugin-storybook: "npm:^0.6.15"
+    estraverse: "npm:^5.3.0"
     eta: "npm:^3.2.0"
     eth-chainlist: "npm:~0.0.498"
     eth-ens-namehash: "npm:^2.0.8"
