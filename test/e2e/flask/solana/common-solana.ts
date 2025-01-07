@@ -65,12 +65,10 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
       method: 'getBalance',
     })
     .thenCallback(() => {
-      console.log('Entra y returning ', response);
       return response;
     });
 }
 export async function mockGetSignaturesForAddress(mockServer: Mockttp) {
-  console.log('Mocking getSignaturesForAddress call');
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
     .withBodyIncluding('getSignaturesForAddress')
