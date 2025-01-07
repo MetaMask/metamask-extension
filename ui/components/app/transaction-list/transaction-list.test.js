@@ -57,9 +57,9 @@ describe('TransactionList', () => {
     jest.clearAllMocks();
   });
 
-  it('renders TransactionList component and shows You have no transactions text', () => {
-    const { getByText } = render();
-    expect(getByText('You have no transactions')).toBeInTheDocument();
+  it('renders TransactionList component and does not show You have no transactions text', () => {
+    const { queryByText } = render();
+    expect(queryByText('You have no transactions')).toBeNull();
   });
 
   it('renders TransactionList component and shows Bitcoin activity is not supported text', () => {
@@ -86,18 +86,18 @@ describe('TransactionList', () => {
     });
   });
 
-  it('renders TransactionList component and shows Chain ID mismatch text if network name is not available', () => {
+  it('renders TransactionList component and does not show Chain ID mismatch text if network name is not available', () => {
     const store = configureStore(defaultState);
 
-    const { getByText } = renderWithProvider(
+    const { queryByText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <TransactionList tokenChainId="0x89" />
       </MetaMetricsContext.Provider>,
       store,
     );
     expect(
-      getByText('Please switch network to view transactions'),
-    ).toBeInTheDocument();
+      queryByText('Please switch network to view transactions'),
+    ).toBeNull();
   });
 
   it('renders TransactionList component and shows network name text', () => {
@@ -140,14 +140,16 @@ describe('TransactionList', () => {
     };
     const store = configureStore(defaultState2);
 
-    const { getByText } = renderWithProvider(
+    const { queryByText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <TransactionList tokenChainId="0xe708" />
       </MetaMetricsContext.Provider>,
       store,
     );
     expect(
-      getByText('Please switch to Linea Mainnet network to view transactions'),
-    ).toBeInTheDocument();
+      queryByText(
+        'Please switch to Linea Mainnet network to view transactions',
+      ),
+    ).toBeNull();
   });
 });
