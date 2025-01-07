@@ -5532,7 +5532,7 @@ export default class MetamaskController extends EventEmitter {
    * @param origin - The origin to request approval for.
    * @param permissions - The permissions to request approval for.
    */
-  async requestPermissionApprovalForOrigin(origin, permissions) {
+  async requestPermissionApproval(origin, permissions) {
     const id = nanoid();
     return this.approvalController.addAndShowApprovalRequest({
       id,
@@ -5555,7 +5555,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {Hex} chainId - The chainId to add incrementally.
    */
   async requestApprovalPermittedChainsPermission(origin, chainId) {
-    await this.requestPermissionApprovalForOrigin(origin, {
+    await this.requestPermissionApproval(origin, {
       [PermissionNames.permittedChains]: {
         caveats: [
           {
@@ -5698,7 +5698,7 @@ export default class MetamaskController extends EventEmitter {
       delete permissions[PermissionNames.permittedChains];
     }
 
-    const legacyApproval = await this.requestPermissionApprovalForOrigin(
+    const legacyApproval = await this.requestPermissionApproval(
       origin,
       permissions,
     );
@@ -6855,7 +6855,7 @@ export default class MetamaskController extends EventEmitter {
         removeNetwork: this.networkController.removeNetwork.bind(
           this.networkController,
         ),
-        requestPermissionApproval: this.requestPermissionApprovalForOrigin.bind(
+        requestPermissionApprovalForOrigin: this.requestPermissionApproval.bind(
           this,
           origin,
         ),

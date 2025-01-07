@@ -953,7 +953,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#requestPermissionApprovalForOrigin', () => {
+    describe('#requestPermissionApproval', () => {
       it('requests permissions for the origin from the ApprovalController', async () => {
         jest
           .spyOn(
@@ -962,7 +962,7 @@ describe('MetaMaskController', () => {
           )
           .mockResolvedValue();
 
-        await metamaskController.requestPermissionApprovalForOrigin(
+        await metamaskController.requestPermissionApproval(
           'test.com',
           {
             eth_accounts: {},
@@ -1003,7 +1003,7 @@ describe('MetaMaskController', () => {
           .mockResolvedValue('approvalResult');
 
         const result =
-          await metamaskController.requestPermissionApprovalForOrigin(
+          await metamaskController.requestPermissionApproval(
             'test.com',
             {
               eth_accounts: {},
@@ -1546,7 +1546,7 @@ describe('MetaMaskController', () => {
     describe('requestApprovalPermittedChainsPermission', () => {
       it('requests approval', async () => {
         jest
-          .spyOn(metamaskController, 'requestPermissionApprovalForOrigin')
+          .spyOn(metamaskController, 'requestPermissionApproval')
           .mockResolvedValue();
 
         await metamaskController.requestApprovalPermittedChainsPermission(
@@ -1555,7 +1555,7 @@ describe('MetaMaskController', () => {
         );
 
         expect(
-          metamaskController.requestPermissionApprovalForOrigin,
+          metamaskController.requestPermissionApproval,
         ).toHaveBeenCalledWith('test.com', {
           [PermissionNames.permittedChains]: {
             caveats: [
@@ -1570,7 +1570,7 @@ describe('MetaMaskController', () => {
 
       it('throws if the approval is rejected', async () => {
         jest
-          .spyOn(metamaskController, 'requestPermissionApprovalForOrigin')
+          .spyOn(metamaskController, 'requestPermissionApproval')
           .mockRejectedValue(new Error('approval rejected'));
 
         await expect(() =>
