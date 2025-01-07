@@ -2,7 +2,7 @@ import HomePage from './homepage';
 
 class SolanaHomepage extends HomePage {
   protected readonly solanaBalance =
-    '.coin-overview__primary-balance';
+    '[data-testid="coin-overview__primary-currency"]';
 
   private readonly bridgeButton = {
     text: 'Bridge',
@@ -49,18 +49,8 @@ class SolanaHomepage extends HomePage {
     return true;
   }
 
-  /**
-   * Checks if the swap button is enabled on bitcoin account homepage.
-   */
-  async check_isSwapButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.swapButton, 1000);
-    } catch (e) {
-      console.log('Swap button not enabled', e);
-      return false;
-    }
-    console.log('Swap button is enabled');
-    return true;
+  async clickOnSend(): Promise<void> {
+    await this.driver.clickElement(this.sendButton)
   }
 }
 
