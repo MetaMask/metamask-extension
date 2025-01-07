@@ -1,18 +1,18 @@
-.nft-items {
-  &__wrapper {
-    margin: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)); // Flexible column width
-  }
+// .nft-items {
+//   &__wrapper {
+//     margin: 16px;
+//     grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)); // Flexible column width
+//   }
 
-  &__image-wrapper {
-    cursor: pointer;
-    width: 100%;
-    aspect-ratio: 1;
+//   &__image-wrapper {
+//     cursor: pointer;
+//     width: 100%;
+//     aspect-ratio: 1;
 
-    &-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-}
+//     &-image {
+//       width: 100%;
+//       height: 100%;
+//       object-fit: cover;
+//     }
+//   }
+// }

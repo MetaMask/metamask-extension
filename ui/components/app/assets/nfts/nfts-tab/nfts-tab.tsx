@@ -42,6 +42,7 @@ import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { showImportNftsModal } from '../../../../../store/actions';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
+import NftGrid from '../nft-grid/nft-grid';
 
 export default function NftsTab() {
   const history = useHistory();
@@ -118,56 +119,8 @@ export default function NftsTab() {
           </Box>
         ) : null}
         {hasAnyNfts || previouslyOwnedCollection.nfts.length > 0 ? (
-          <Box display={Display.Grid} gap={4} className="nft-items__wrapper">
-            {/* <NftsItems
-              collections={collections}
-              previouslyOwnedCollection={previouslyOwnedCollection}
-            /> */}
-            {currentlyOwnedNfts.map((nft: NFT) => {
-              const handleImageClick = () => {
-                // if (isModal) {
-                //   return onSendNft(nft);
-                // }
-                return history.push(
-                  `${ASSET_ROUTE}/${currentChain.chainId}/${nft.address}/${nft.tokenId}`,
-                );
-              };
-              const { image, imageOriginal, tokenURI } = nft;
-              const nftImageAlt = getNftImageAlt(nft);
-
-              const isIpfsURL = (
-                imageOriginal ??
-                image ??
-                tokenURI
-              )?.startsWith('ipfs:');
-              return (
-                <Box
-                  data-testid="nft-wrapper"
-                  key={tokenURI}
-                  className="nft-items__image-wrapper"
-                >
-                  <NftItem
-                    nft={nft}
-                    alt={nftImageAlt}
-                    src={image ?? ''}
-                    networkName={currentChain.nickname}
-                    networkSrc={currentChain.rpcPrefs?.imageUrl}
-                    onClick={handleImageClick}
-                    isIpfsURL={isIpfsURL}
-                    clickable
-                  />
-                </Box>
-              );
-            })}
-
-            {nftsStillFetchingIndication ? (
-              <Box className="nfts-tab__fetching">
-                <Spinner
-                  color="var(--color-warning-default)"
-                  className="loading-overlay__spinner"
-                />
-              </Box>
-            ) : null}
+          <Box>
+            <NftGrid />
             <Box
               className="nfts-tab__buttons"
               display={Display.Flex}
