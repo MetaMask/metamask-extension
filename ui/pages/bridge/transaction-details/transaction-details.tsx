@@ -39,6 +39,8 @@ import {
   AlignItems,
   Display,
   FlexDirection,
+  FlexWrap,
+  JustifyContent,
   TextColor,
   TextTransform,
 } from '../../../helpers/constants/design-system';
@@ -364,6 +366,8 @@ const CrossChainSwapTxDetails = () => {
                   display={Display.Flex}
                   gap={1}
                   alignItems={AlignItems.center}
+                  flexWrap={FlexWrap.Wrap}
+                  justifyContent={JustifyContent.flexEnd}
                 >
                   {srcNetworkIconName}
                   <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
@@ -395,6 +399,8 @@ const CrossChainSwapTxDetails = () => {
                   display={Display.Flex}
                   gap={1}
                   alignItems={AlignItems.center}
+                  flexWrap={FlexWrap.Wrap}
+                  justifyContent={JustifyContent.flexEnd}
                 >
                   {t('bridgeTxDetailsTokenAmountOnChain', [
                     bridgeAmountSent,
@@ -411,6 +417,8 @@ const CrossChainSwapTxDetails = () => {
                   display={Display.Flex}
                   gap={1}
                   alignItems={AlignItems.center}
+                  flexWrap={FlexWrap.Wrap}
+                  justifyContent={JustifyContent.flexEnd}
                 >
                   {t('bridgeTxDetailsTokenAmountOnChain', [
                     bridgeAmountReceived,
