@@ -34,7 +34,7 @@ const testSet = [
   {
     quantity: '10',
     source: 'DAI',
-    type: 'native',
+    type: 'unapproved',
     destination: 'USDC',
     network: Tenderly.Linea,
   },
