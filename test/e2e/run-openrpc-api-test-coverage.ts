@@ -83,6 +83,11 @@ async function main() {
           new ConfirmationsRejectRule({
             driver,
             only: methodsWithConfirmations,
+            requiresEthAccountsPermission: [
+              'personal_sign',
+              'eth_signTypedData_v4',
+              'eth_getEncryptionPublicKey',
+            ]
           }),
         ],
       });

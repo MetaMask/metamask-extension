@@ -9,7 +9,7 @@ import {
 import { MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
-import { IOptions } from '@open-rpc/test-coverage/build/coverage';
+import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
 import { InternalScopeString } from '@metamask/multichain';
 import { Driver, PAGES } from './webdriver/driver';
 
@@ -35,29 +35,10 @@ import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 const mockServer = require('@open-rpc/mock-server/build/index').default;
 
 async function main() {
+  let testCoverageResults: Call[] = [];
   const port = 8545;
   const chainId = 1337;
-  await withFixtures(
-    {
-      dapp: true,
-      fixtures: new FixtureBuilder().build(),
-      disableGanache: true,
-      title: 'api-specs coverage',
-    },
-    async ({
-      driver,
-      extensionId,
-    }: {
-      driver: Driver;
-      extensionId: string;
-    }) => {
-      await unlockWallet(driver);
 
-      // Navigate to extension home screen
-      await driver.navigate(PAGES.HOME);
-
-      // Open Dapp
-      await openDapp(driver, undefined, DAPP_URL);
 
       const doc = await parseOpenRPCDocument(
         MultiChainOpenRPCDocument as OpenrpcDocument,
@@ -83,7 +64,6 @@ async function main() {
         'net_version',
       ];
 
-      const transport = createMultichainDriverTransport(driver, extensionId);
       const [transformedDoc, filteredMethods, methodsWithConfirmations] =
         transformOpenRPCDocument(
           MetaMaskOpenRPCDocument as OpenrpcDocument,
@@ -117,6 +97,29 @@ async function main() {
         },
         {} as { [method: string]: string },
       );
+
+  // Multichain API excluding `wallet_invokeMethod`
+  await withFixtures(
+    {
+      dapp: true,
+      fixtures: new FixtureBuilder().build(),
+      disableGanache: true,
+      title: 'api-specs-multichain coverage',
+    },
+    async ({
+      driver,
+      extensionId,
+    }: {
+      driver: Driver;
+      extensionId: string;
+    }) => {
+      await unlockWallet(driver);
+
+      // Navigate to extension home screen
+      await driver.navigate(PAGES.HOME);
+
+      // Open Dapp
+      await openDapp(driver, undefined, DAPP_URL);
 
       // fix the example for wallet_createSession
       (providerAuthorize as MethodObject).examples = [
@@ -191,9 +194,9 @@ async function main() {
         },
       ];
 
-      const testCoverageResults = await testCoverage({
+      const results = await testCoverage({
         openrpcDocument: doc,
-        transport,
+        transport: createMultichainDriverTransport(driver, extensionId),
         reporters: ['console-streaming'],
         skip: ['wallet_invokeMethod'],
         rules: [
@@ -210,7 +213,34 @@ async function main() {
         ],
       });
 
-      const testCoverageResultsCaip27 = await testCoverage({
+      testCoverageResults = testCoverageResults.concat(results)
+    },
+  );
+
+  // requests made via wallet_invokeMethod
+  await withFixtures(
+    {
+      dapp: true,
+      fixtures: new FixtureBuilder().withPermissionControllerConnectedToTestDappMultichain().build(),
+      disableGanache: true,
+      title: 'api-specs-multichain coverage (wallet_invokeMethod)',
+    },
+    async ({
+      driver,
+      extensionId,
+    }: {
+      driver: Driver;
+      extensionId: string;
+    }) => {
+      await unlockWallet(driver);
+
+      // Navigate to extension home screen
+      await driver.navigate(PAGES.HOME);
+
+      // Open Dapp
+      await openDapp(driver, undefined, DAPP_URL);
+
+      const results = await testCoverage({
         openrpcDocument: MetaMaskOpenRPCDocument as OpenrpcDocument,
         transport: createCaip27DriverTransport(
           driver,
@@ -230,6 +260,7 @@ async function main() {
           // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
+          'wallet_registerOnboarding' // this is currently removed from the Multichain API JSON-RPC pipeline
         ],
         rules: [
           new JsonSchemaFakerRule({
@@ -244,36 +275,33 @@ async function main() {
           new ConfirmationsRejectRule({
             driver,
             only: confirmationMethods,
+            requiresEthAccountsPermission: [],
           }),
         ],
       });
 
-      const joinedResults = testCoverageResults.concat(
-        testCoverageResultsCaip27,
-      );
-
-      // fix ids for html reporter
-      joinedResults.forEach((r, index) => {
-        r.id = index;
-      });
-
-      const htmlReporter = new HtmlReporter({
-        autoOpen: !process.env.CI,
-        destination: `${process.cwd()}/html-report-multichain`,
-      });
-
-      await htmlReporter.onEnd({} as IOptions, joinedResults);
-
-      await driver.quit();
-
-      // if any of the tests failed, exit with a non-zero code
-      if (joinedResults.every((r) => r.valid)) {
-        process.exit(0);
-      } else {
-        process.exit(1);
-      }
+      testCoverageResults = testCoverageResults.concat(results)
     },
   );
+
+  // fix ids for html reporter
+  testCoverageResults.forEach((r, index) => {
+    r.id = index;
+  });
+
+  const htmlReporter = new HtmlReporter({
+    autoOpen: !process.env.CI,
+    destination: `${process.cwd()}/html-report-multichain`,
+  });
+
+  await htmlReporter.onEnd({} as IOptions, testCoverageResults);
+
+  // if any of the tests failed, exit with a non-zero code
+  if (testCoverageResults.every((r) => r.valid)) {
+    process.exit(0);
+  } else {
+    process.exit(1);
+  }
 }
 
 main();
