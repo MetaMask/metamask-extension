@@ -46,6 +46,10 @@ class Confirmation {
     this.bannerAlert = '[data-testid="confirm-banner-alert"]';
   }
 
+  async clickScrollToBottomButton() {
+    await this.driver.clickElementSafe(this.scrollToBottomButton);
+  }
+
   async clickFooterConfirmButton() {
     await this.driver.clickElement(this.footerConfirmButton);
   }
