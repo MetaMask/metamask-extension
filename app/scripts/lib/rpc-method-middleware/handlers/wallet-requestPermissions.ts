@@ -54,9 +54,9 @@ type GrantedPermissions = Awaited<
  * @param _next - JsonRpcEngine next() callback - unused
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
- * @param options.getAccounts
- * @param options.requestCaip25PermissionForOrigin
- * @param options.requestPermissionsForOrigin
+ * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
+ * @param options.requestCaip25PermissionForOrigin - A hook that requests the CAIP-25 permission for the origin.
+ * @param options.requestPermissionsForOrigin - A hook that requests permissions for the origin.
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
