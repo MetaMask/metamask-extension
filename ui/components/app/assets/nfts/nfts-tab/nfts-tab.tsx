@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import {
   AlignItems,
@@ -40,8 +41,10 @@ import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { showImportNftsModal } from '../../../../../store/actions';
+import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 
 export default function NftsTab() {
+  const history = useHistory();
   const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
@@ -121,6 +124,14 @@ export default function NftsTab() {
               previouslyOwnedCollection={previouslyOwnedCollection}
             /> */}
             {currentlyOwnedNfts.map((nft: NFT) => {
+              const handleImageClick = () => {
+                // if (isModal) {
+                //   return onSendNft(nft);
+                // }
+                return history.push(
+                  `${ASSET_ROUTE}/${currentChain.chainId}/${nft.address}/${nft.tokenId}`,
+                );
+              };
               const { image, imageOriginal, tokenURI } = nft;
               const nftImageAlt = getNftImageAlt(nft);
 
@@ -141,7 +152,7 @@ export default function NftsTab() {
                     src={image ?? ''}
                     networkName={currentChain.nickname}
                     networkSrc={currentChain.rpcPrefs?.imageUrl}
-                    onClick={() => console.log('click')}
+                    onClick={handleImageClick}
                     isIpfsURL={isIpfsURL}
                     clickable
                   />
