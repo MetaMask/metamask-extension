@@ -375,9 +375,6 @@
   "loading": {
     "message": "লোড হচ্ছে..."
   },
-  "loadingTokens": {
-    "message": "টোকেনগুলি লোড করছে..."
-  },
   "localhost": {
     "message": "লোকালহোস্ট 8545"
   },
@@ -439,9 +436,6 @@
   },
   "noConversionRateAvailable": {
     "message": "কোনো বিনিময় হার উপলভ্য নয়"
-  },
-  "noTransactions": {
-    "message": "আপনার কোনো লেনদেন নেই"
   },
   "noWebcamFound": {
     "message": "আপনার কম্পিউটারের ওয়েবক্যাম খুঁজে পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"

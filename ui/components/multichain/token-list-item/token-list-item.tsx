@@ -40,7 +40,6 @@ import {
 } from '../../component-library';
 import {
   getMetaMetricsId,
-  getTestNetworkBackgroundColor,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
   getMarketData,
@@ -228,7 +227,6 @@ export const TokenListItem = ({
   );
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   return (
     <Box
@@ -285,7 +283,8 @@ export const TokenListItem = ({
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
               src={tokenChainImage || undefined}
-              backgroundColor={testNetworkBackgroundColor}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              borderWidth={2}
               className="multichain-token-list-item__badge__avatar-network"
             />
           }

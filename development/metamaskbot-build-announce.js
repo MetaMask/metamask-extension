@@ -144,9 +144,6 @@ async function start() {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
-  const coverageLink = `<a href="${coverageUrl}">Report</a>`;
-
   const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
@@ -156,12 +153,6 @@ async function start() {
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
-  const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/initialisation/background/index.html`;
-  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
-  const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/initialisation/ui/index.html`;
-  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
-  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/load_time/index.html`;
-  const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
   const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
   const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
@@ -178,12 +169,8 @@ async function start() {
     `builds (test): ${testBuildLinks}`,
     `builds (test-flask): ${testFlaskBuildLinks}`,
     `build viz: ${depVizLink}`,
-    `mv3: ${moduleInitStatsBackgroundLink}`,
-    `mv3: ${moduleInitStatsUILink}`,
-    `mv3: ${moduleLoadStatsLink}`,
     `mv3: ${bundleSizeStatsLink}`,
     `mv2: ${userActionsStatsLink}`,
-    `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
