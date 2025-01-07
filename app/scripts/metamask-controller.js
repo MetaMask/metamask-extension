@@ -5458,7 +5458,7 @@ export default class MetamaskController extends EventEmitter {
   }) {
     if (isSnapId(origin)) {
       throw new Error(
-        `cannot request permittedChains permission for snaps with origin "${origin}"`,
+        `Cannot request permittedChains permission for Snaps with origin "${origin}"`,
       );
     }
 
