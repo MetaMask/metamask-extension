@@ -1,7 +1,7 @@
 .nft-items {
   &__wrapper {
     margin: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); // Flexible column width
+    grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)); // Flexible column width
   }
 
   &__image-wrapper {

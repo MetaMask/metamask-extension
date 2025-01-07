@@ -98,8 +98,6 @@ export default function NftsItems({
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
-  console.log('COLLECTIONS: ', collections);
-
   useEffect(() => {
     if (
       chainId !== undefined &&

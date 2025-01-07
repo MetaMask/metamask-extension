@@ -26,6 +26,7 @@ import {
 } from '../../../../selectors';
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
+import NftsItems from '../../../app/assets/nfts/nfts-items';
 import { Collection, NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
@@ -41,12 +42,14 @@ type AssetPickerModalNftTabProps = {
 
 export function AssetPickerModalNftTab({
   searchQuery,
+  onClose,
   renderSearch,
 }: AssetPickerModalNftTabProps) {
   const t = useI18nContext();
 
   const {
     collections,
+    previouslyOwnedCollection,
   }: {
     collections: Record<string, Collection>;
     previouslyOwnedCollection: PreviouslyOwnedCollections;
@@ -97,7 +100,7 @@ export function AssetPickerModalNftTab({
     return (
       <Box className="modal-tab__main-view">
         {renderSearch()}
-        {/* <NftsItems
+        <NftsItems
           // @ts-expect-error: Do we want a mapping or an array?
           collections={collectionDataFiltered}
           previouslyOwnedCollection={previouslyOwnedCollection}
@@ -105,7 +108,8 @@ export function AssetPickerModalNftTab({
           onCloseModal={() => onClose()}
           showTokenId={true}
           displayPreviouslyOwnedCollection={false}
-        /> */}
+        />
+        <Text>Hello</Text>
         {nftsStillFetchingIndication ? (
           <Box className="modal-tab__fetching">
             <Spinner
