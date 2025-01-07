@@ -1,7 +1,12 @@
 import { zeroAddress } from 'ethereumjs-util';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { QuoteResponse, Quote, L1GasFees, TokenAmountValues } from '../types';
+import {
+  QuoteResponse,
+  Quote,
+  L1GasFees,
+  TokenAmountValues,
+} from '../../../../shared/types/bridge';
 import {
   hexToDecimal,
   sumDecimals,
