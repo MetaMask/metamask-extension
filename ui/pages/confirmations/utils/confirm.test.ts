@@ -83,8 +83,20 @@ describe('confirm util', () => {
       expect(isValidASCIIURL('https://www.google.com')).toEqual(true);
     });
 
-    it('returns false for URL containing special character', () => {
+    it('returns true for URL with a path containing ASCII characters', () => {
+      expect(
+        isValidASCIIURL('https://infura.io/gnosis?x=xn--ifura-dig.io'),
+      ).toStrictEqual(true);
+    });
+
+    it('returns false for URL containing non-ASCII characters', () => {
       expect(isValidASCIIURL('https://iոfura.io/gnosis')).toStrictEqual(false);
+    });
+
+    it('returns false for URL containing non-ASCII characters in its path', () => {
+      expect(
+        isValidASCIIURL('https://infura.io/gnosis?x=iոfura.io'),
+      ).toStrictEqual(false);
     });
   });
 

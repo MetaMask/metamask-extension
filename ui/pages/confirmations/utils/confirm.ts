@@ -71,7 +71,11 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
 
 export const isValidASCIIURL = (urlString?: string) => {
   try {
-    return urlString?.includes(new URL(urlString).host);
+    if (!urlString) {
+      return false;
+    }
+
+    return new URL(urlString).href.includes(urlString);
   } catch (exp: unknown) {
     console.error(exp);
     return false;
