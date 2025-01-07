@@ -4,7 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
-import { ACCOUNT_TYPE } from '../../page-objects/common';
+import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { DEFAULT_SOL_CONVERSION_RATE } from '../../constants';
 import { withFixturesOptions } from '../../tests/swaps/shared';
@@ -223,7 +223,10 @@ export async function withSolanaAccountSnap(
       const headerComponen = new HeaderNavbar(driver);
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.addAccount(ACCOUNT_TYPE.Solana, 'Solana 1');
+      await accountListPage.addAccount({
+        accountType: ACCOUNT_TYPE.Solana,
+        accountName: 'Solana 1',
+      });
       await test(driver, mockServer);
     },
   );

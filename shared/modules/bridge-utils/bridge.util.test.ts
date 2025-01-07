@@ -1,8 +1,8 @@
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { zeroAddress } from 'ethereumjs-util';
+import fetchWithCache from '../../lib/fetch-with-cache';
+import { CHAIN_IDS } from '../../constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
-import { zeroAddress } from '../../__mocks__/ethereumjs-util';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,

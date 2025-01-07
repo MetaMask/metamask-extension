@@ -9,6 +9,8 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
 
@@ -18,6 +20,9 @@ class HeaderNavbar {
 
   private readonly mmiPortfolioButton =
     '[data-testid="global-menu-mmi-portfolio"]';
+
+  private readonly openAccountDetailsButton =
+    '[data-testid="account-list-menu-details"]';
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
@@ -50,6 +55,12 @@ class HeaderNavbar {
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
     await this.driver.waitForSelector('.multichain-account-menu-popover__list');
+  }
+
+  async openAccountDetailsModal(): Promise<void> {
+    console.log('Open account details modal');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.openAccountDetailsButton);
   }
 
   async openThreeDotMenu(): Promise<void> {
@@ -97,6 +108,21 @@ class HeaderNavbar {
       await (await this.driver.findElement(this.networkPicker)).isEnabled(),
       clickable,
     );
+  }
+
+  /**
+   * Verifies that the displayed account address in header matches the expected address.
+   *
+   * @param expectedAddress - The expected address of the account.
+   */
+  async check_accountAddress(expectedAddress: string): Promise<void> {
+    console.log(
+      `Verify the displayed account address in header is: ${expectedAddress}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.copyAddressButton,
+      text: expectedAddress,
+    });
   }
 
   /**
