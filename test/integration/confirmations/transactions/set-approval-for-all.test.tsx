@@ -246,7 +246,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
     expect(approveDetailsSpender).toHaveTextContent(
       tEn('permissionFor') as string,
     );
-    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
