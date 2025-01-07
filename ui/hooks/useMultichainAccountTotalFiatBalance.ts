@@ -55,7 +55,7 @@ export const useMultichainAccountTotalFiatBalance = (
     getMultichainConversionRate,
     account,
   );
-  const nativeCurrencyImage: string = useMultichainSelector(
+  const nativeCurrencyImage: string | undefined = useMultichainSelector(
     getMultichainCurrencyImage,
     account,
   );
@@ -87,7 +87,7 @@ export const useMultichainAccountTotalFiatBalance = (
 
   // Create an object with native token info. NOTE: Native token info is fetched from a separate controller
   const nativeTokenValues = {
-    iconUrl: nativeCurrencyImage,
+    iconUrl: nativeCurrencyImage ?? '',
     symbol: ticker,
     fiatBalance: totalFiatBalance,
   };

@@ -16,7 +16,7 @@ export type UseDisplayNameRequest = {
   preferContractSymbol?: boolean;
   type: NameType;
   value: string;
-  variation: string;
+  variation: Hex;
 };
 
 export type UseDisplayNameResponse = {
