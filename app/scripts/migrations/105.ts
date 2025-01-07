@@ -1,8 +1,8 @@
 import { EthAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { sha256FromString } from 'ethereumjs-util';
 import { v4 as uuid } from 'uuid';
 import { cloneDeep } from 'lodash';
+import { Json } from '@metamask/utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 
 type VersionedData = {
@@ -10,10 +10,26 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-type Identity = {
+export type Identity = {
   name: string;
   address: string;
   lastSelected?: number;
+};
+
+export type InternalAccount = {
+  type: string;
+  id: string;
+  options: Record<string, Json>;
+  metadata: {
+    name: string;
+    importTime: number;
+    keyring: {
+      type: string;
+    };
+    lastSelected?: number;
+  };
+  address: string;
+  methods: string[];
 };
 
 export const version = 105;
