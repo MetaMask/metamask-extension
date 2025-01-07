@@ -30,7 +30,6 @@ export const LAMPORTS_PER_SOL = 1_000_000_000;
 
 export async function mockMultiCoinPrice(mockServer: Mockttp) {
   return await mockServer.forGet(SOLANA_BITCOIN_MIN_API).thenCallback(() => {
-    console.log('Entra en api min ');
     return {
       statusCode: 200,
       json: {

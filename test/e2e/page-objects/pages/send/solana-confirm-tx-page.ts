@@ -1,16 +1,16 @@
-import { strict as assert } from 'assert';
+import { strict as assert, constructor } from 'assert';
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
-class SendSolanaPage {
+class ConfirmSolanaTxPage {
   private driver: Driver;
 
   private readonly sendAmountInput = '#send-amount-input';
 
   private readonly toAddressInput = '#send-to'
 
-  private readonly continueButton = {
-    text: 'Continue',
+  private readonly sendButton = {
+    text: 'Send',
     tag: 'button',
   };
 
@@ -23,8 +23,25 @@ class SendSolanaPage {
     this.driver = driver;
   }
 
-  async setAmount(amount: string): Promise<void> {
-    await this.driver.pasteIntoField(this.sendAmountInput,  amount)
+  async checkAmountDisplayed(amount: string): Promise<boolean> {
+    try {
+    await this.driver.findElement({
+      text: `Sending ${amount} SOL`,
+      tag: 'h2',
+    });
+    return true;
+  } catch (err) {
+    console.log('Amount summary text incorrect');
+    return false;
+    }
+  }
+
+  async isTrancsactionDetailDisplayed(text: string): Promise<boolean> {
+    const detail = await this.driver.findElement({
+      text,
+      tag: 'p',
+    }, 200)
+    return await detail.isDisplayed();
   }
 
   async setToAddress(toAddress: string): Promise<void> {
@@ -32,22 +49,18 @@ class SendSolanaPage {
   }
 
   async clickOnContinue(): Promise<void> {
-    await this.driver.clickElement({
-      text: 'Continue',
-      tag: 'span',
-    })
+    await this.driver.clickElement(this.continueButton)
   }
 
   async isContinueButtonEnabled(): Promise<boolean> {
     try {
-      const continueButton = await this.driver.findClickableElement(this.continueButton, 2000);
-      await this.driver.delay(2000)
-      console.log('Aqui que dice ', await continueButton.isEnabled())
-      return await continueButton.isEnabled();
+      await this.driver.findClickableElement(this.continueButton, 1000);
     } catch (e) {
       console.log('Continue button not enabled', e);
       return false;
     }
+    console.log('Continue button is enabled');
+    return true;
   }
 
   async isInsufficientBalanceDisplayed(): Promise<boolean> {
@@ -65,4 +78,4 @@ class SendSolanaPage {
   }
 }
 
-export default SendSolanaPage;
+export default ConfirmSolanaTxPage;
