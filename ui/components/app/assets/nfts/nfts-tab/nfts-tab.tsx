@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
   AlignItems,
@@ -18,7 +18,13 @@ import {
   getUseNftDetection,
   getNftIsStillFetchingIndication,
 } from '../../../../../selectors';
-import { Box, Text } from '../../../../component-library';
+import {
+  Box,
+  ButtonLink,
+  ButtonLinkSize,
+  IconName,
+  Text,
+} from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
@@ -33,8 +39,10 @@ import { useNfts } from '../../../../../hooks/useNfts';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
+import { showImportNftsModal } from '../../../../../store/actions';
 
 export default function NftsTab() {
+  const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const t = useI18nContext();
@@ -149,6 +157,56 @@ export default function NftsTab() {
                 />
               </Box>
             ) : null}
+            <Box
+              className="nfts-tab__buttons"
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexStart}
+              margin={4}
+              gap={2}
+              marginBottom={2}
+            >
+              <ButtonLink
+                size={ButtonLinkSize.Md}
+                data-testid="import-nft-button"
+                startIconName={IconName.Add}
+                onClick={() => {
+                  dispatch(showImportNftsModal({}));
+                }}
+              >
+                {t('importNFT')}
+              </ButtonLink>
+              {!isMainnet && Object.keys(collections).length < 1 ? null : (
+                <>
+                  <Box
+                    className="nfts-tab__link"
+                    justifyContent={JustifyContent.flexEnd}
+                  >
+                    {isMainnet && !useNftDetection ? (
+                      <ButtonLink
+                        size={ButtonLinkSize.Md}
+                        startIconName={IconName.Setting}
+                        data-testid="refresh-list-button"
+                        // onClick={onEnableAutoDetect}
+                        onClick={() => console.log('enable autodetect')}
+                      >
+                        {t('enableAutoDetect')}
+                      </ButtonLink>
+                    ) : (
+                      <ButtonLink
+                        size={ButtonLinkSize.Md}
+                        startIconName={IconName.Refresh}
+                        data-testid="refresh-list-button"
+                        // onClick={onRefresh}
+                        onClick={() => console.log('refresh list')}
+                      >
+                        {t('refreshList')}
+                      </ButtonLink>
+                    )}
+                  </Box>
+                </>
+              )}
+            </Box>
           </Box>
         ) : (
           <>
