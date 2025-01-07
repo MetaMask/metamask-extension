@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "네트워크 추가"
   },
-  "addingTokens": {
-    "message": "토큰 추가"
-  },
   "additionalNetworks": {
     "message": "추가 네트워크"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "지갑에서 토큰을 자동으로 감지하고, NFT를 표시하며, 계정 잔액을 일괄 업데이트하세요."
   },
-  "attemptSendingAssets": {
-    "message": "다른 네트워크로 자산을 직접 전송하면 자산이 영구적으로 손실될 수 있습니다. 브릿지를 이용하여 네트워크 간에 자금을 안전하게 전송하세요."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "다른 네트워크에서 자산을 전송하려고 하면 자산이 손실될 수 있습니다. $1 같은 브릿지를 사용하여 네트워크 간에 자산을 안전하게 전송하세요."
-  },
   "attemptToCancelSwapForFree": {
     "message": "무료 스왑 취소 시도"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "계산 중..."
   },
-  "bridgeDontSend": {
-    "message": "전송하지 마세요, 브릿지 하세요"
-  },
   "bridgeEnterAmount": {
     "message": "금액 입력"
   },
@@ -858,7 +846,6 @@
   "bridgeTo": {
     "message": "브릿지 대상"
   },
-
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
@@ -954,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "WebHID를 통해 Ledger를 연결하려면 여기를 클릭하세요.",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "토큰은 언제든지 직접 추가할 수 있습니다."
   },
   "close": {
     "message": "닫기"
@@ -2139,9 +2123,6 @@
   "gasFee": {
     "message": "가스비"
   },
-  "gasIsETH": {
-    "message": "가스는 $1입니다 "
-  },
   "gasLimit": {
     "message": "가스 한도"
   },
@@ -2703,9 +2684,6 @@
   "learnScamRisk": {
     "message": "사기 및 보안 위험"
   },
-  "learnToBridge": {
-    "message": "브릿지 알아보기"
-  },
   "leaveMetaMask": {
     "message": "MetaMask를 나가시겠습니까?"
   },
@@ -2796,9 +2774,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Snap에서 트랜잭션을 완료하세요."
-  },
-  "loadingTokens": {
-    "message": "토큰 불러오는 중..."
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -2900,9 +2875,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "현재 지갑 알림이 꺼져 있습니다."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps 점검 중입니다. 나중에 다시 확인하세요."
@@ -3047,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1에서 다음 승인을 요청합니다:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "이 네트워크의 네이티브 토큰은 $1입니다. 이는 가스비 지불에 사용하는 토큰입니다. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "네트워크 세부 정보 편집"
@@ -3335,9 +3303,6 @@
   },
   "noThanks": {
     "message": "괜찮습니다"
-  },
-  "noTransactions": {
-    "message": "트랜잭션이 없습니다."
   },
   "noWebcamFound": {
     "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도하세요."
@@ -5941,9 +5906,6 @@
     "message": "$1 계정이 현재 $2 네트워크에서 활성화되어 있습니다",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "다음을 사용 중입니다:"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "네트워크를 전환하면 대기 중인 모든 컨펌 작업이 취소됩니다."
   },
@@ -5979,9 +5941,6 @@
   },
   "themeDescription": {
     "message": "원하는 MetaMask 테마를 선택하세요."
-  },
-  "thingsToKeep": {
-    "message": "유의 사항:"
   },
   "thirdPartySoftware": {
     "message": "타사 소프트웨어 알림",
@@ -6063,9 +6022,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "토큰 사기 및 보안 위험"
-  },
-  "tokenShowUp": {
-    "message": "토큰이 지갑에 자동으로 표시되지 않을 수 있습니다. "
   },
   "tokenStandard": {
     "message": "토큰 표준"
@@ -6378,9 +6334,6 @@
   },
   "use4ByteResolution": {
     "message": "스마트 계약 디코딩"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "인터렉션하는 스마트 계약에 따라 메시지를 이용하여 활동 탭을 사용자 맞춤하여 사용자 경험을 개선합니다. MetaMask는 4byte.directory라는 서비스를 통해 데이터를 디코딩하여 스마트 계약을 읽기 쉬운 버전으로 보여 줍니다. 이는 악의적인 스마트 계약을 승인할 가능성을 줄이는 데 도움이 되지만 IP 주소가 공유될 수 있습니다."
   },
   "useMultiAccountBalanceChecker": {
     "message": "일괄 계정 잔액 요청"

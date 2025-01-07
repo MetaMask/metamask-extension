@@ -8,14 +8,14 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccounts } from '../../../../../selectors';
+import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
 
 export function useFirstTimeInteractionAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const internalAccounts = useSelector(getInternalAccounts);
-
-  const { txParams, isFirstTimeInteraction } = currentConfirmation ?? {};
-  const { to } = txParams ?? {};
+  const to = useTransferRecipient();
+  const { isFirstTimeInteraction } = currentConfirmation ?? {};
 
   const isInternalAccount = internalAccounts.some(
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
