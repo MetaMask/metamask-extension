@@ -2241,7 +2241,10 @@ export default class MetamaskController extends EventEmitter {
     const smartTransactionsControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'SmartTransactionsController',
-        allowedActions: ['NetworkController:getNetworkClientById'],
+        allowedActions: [
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+        ],
         allowedEvents: ['NetworkController:stateChange'],
       });
     this.smartTransactionsController = new SmartTransactionsController({
