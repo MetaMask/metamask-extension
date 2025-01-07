@@ -15,8 +15,8 @@ export type OnboardingState =
  * When the user unlocks the wallet but onboarding has not fully completed we
  * must direct the user to the appropriate step in the onboarding process.
  *
- * @param {object} state - MetaMask state tree
- * @returns {string} Route to redirect the user to
+ * @param state - MetaMask state tree
+ * @returns Route to redirect the user to
  */
 export function getFirstTimeFlowTypeRouteAfterUnlock(state: OnboardingState) {
   const { firstTimeFlowType } = state.metamask.OnboardingController;
@@ -40,8 +40,8 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state: OnboardingState) {
  * restore option because the restore option is atypical from the other two
  * options and removes an entire screen from the onboarding flow.
  *
- * @param {object} state - MetaMask state tree
- * @returns {string} Route to redirect the user to
+ * @param state - MetaMask state tree
+ * @returns Route to redirect the user to
  */
 export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(
   state: OnboardingState,

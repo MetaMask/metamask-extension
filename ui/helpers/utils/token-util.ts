@@ -1,4 +1,6 @@
 import log from 'loglevel';
+import { TransactionDescription } from '@ethersproject/abi';
+import { Nft, NftContract, Token } from '@metamask/assets-controllers';
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
@@ -8,8 +10,6 @@ import { calcTokenAmount } from '../../../shared/lib/transactions-controller-uti
 import { Numeric } from '../../../shared/modules/Numeric';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
-import { Nft, NftContract, Token } from '@metamask/assets-controllers';
-import { TransactionDescription } from '@ethersproject/abi';
 
 const DEFAULT_SYMBOL = '';
 
@@ -160,17 +160,24 @@ export function tokenInfoGetter() {
  * Attempts to get the address parameter of the given token transaction data
  * (i.e. function call) per the Human Standard Token ABI, in the following
  * order:
- *   - The '_to' parameter, if present
- *   - The first parameter, if present
+ * - The '_to' parameter, if present
+ * - The first parameter, if present
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A lowercase address string.
+ * @param tokenData - ethers Interface token data.
+ * @returns A lowercase address string or undefined.
  */
 export function getTokenAddressParam(
   tokenData: Partial<TransactionDescription> = {},
 ) {
-  const value =
-    tokenData?.args?._to || tokenData?.args?.to || tokenData?.args?.[0];
+  const { args = [] } = tokenData;
+  let value: unknown;
+  if ('_to' in args) {
+    value = args._to;
+  } else if ('to' in args) {
+    value = args.to;
+  } else if (Array.isArray(args)) {
+    value = args[0];
+  }
   return value?.toString().toLowerCase();
 }
 
@@ -178,16 +185,16 @@ export function getTokenAddressParam(
  * Gets the '_value' parameter of the given token transaction data
  * (i.e function call) per the Human Standard Token ABI, if present.
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A decimal string value.
+ * @param tokenData - ethers Interface token data.
+ * @returns A decimal string value or undefined.
  */
 /**
  * Gets either the '_tokenId' parameter or the 'id' param of the passed token transaction data.,
  * These are the parsed tokenId values returned by `parseStandardTokenTransactionData` as defined
  * in the ERC721 and ERC1155 ABIs from metamask-eth-abis (https://github.com/MetaMask/metamask-eth-abis/tree/main/src/abis)
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A decimal string value.
+ * @param tokenData - ethers Interface token data.
+ * @returns A decimal string value or undefined.
  */
 export function getTokenIdParam(
   tokenData: Partial<TransactionDescription> = {},
@@ -201,26 +208,30 @@ export function getTokenIdParam(
  * Gets the '_approved' parameter of the given token transaction data
  * (i.e function call) per the Human Standard Token ABI, if present.
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {boolean | undefined} A boolean indicating whether the function is being called to approve or revoke access.
+ * @param tokenData - ethers Interface token data.
+ * @returns A boolean indicating whether the function is being called to approve or revoke access, or undefined if the '_approved` parameter is not present.
  */
 export function getTokenApprovedParam(
   tokenData: Partial<TransactionDescription> = {},
 ) {
-  return tokenData?.args?._approved;
+  const { args = {} } = tokenData;
+  if (!('_approved' in args)) {
+    return undefined;
+  }
+  return Boolean(args._approved);
 }
 
 /**
  * Get the token balance converted to fiat and optionally formatted for display
  *
- * @param {number | string} [contractExchangeRate] - The exchange rate between the current token and the native currency
- * @param {number} conversionRate - The exchange rate between the current fiat currency and the native currency
- * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
- * @param {string} [tokenAmount] - The current token balance
- * @param {string} [tokenSymbol] - The token symbol
- * @param {boolean} [formatted] - Whether the return value should be formatted or not
- * @param {boolean} [hideCurrencySymbol] - excludes the currency symbol in the result if true
- * @returns {string|undefined} The token amount in the user's chosen fiat currency, optionally formatted and localize
+ * @param [contractExchangeRate] - The exchange rate between the current token and the native currency
+ * @param conversionRate - The exchange rate between the current fiat currency and the native currency
+ * @param currentCurrency - The currency code for the user's chosen fiat currency
+ * @param [tokenAmount] - The current token balance
+ * @param [tokenSymbol] - The token symbol
+ * @param [formatted] - Whether the return value should be formatted or not
+ * @param [hideCurrencySymbol] - excludes the currency symbol in the result if true
+ * @returns The token amount in the user's chosen fiat currency, optionally formatted and localize, or undefined
  */
 export function getTokenFiatAmount(
   contractExchangeRate: number | string,

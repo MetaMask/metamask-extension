@@ -5,6 +5,7 @@ import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { InternalAccountWithBalance } from '../selectors.types';
 import { MetaMaskReduxState } from '../../store/store';
+import { BackgroundStateProxy } from '../../../shared/types/metamask';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
 import {
@@ -33,7 +34,6 @@ import {
   getNoteToTraderMessage,
   getIsNoteToTraderSupported,
 } from './selectors';
-import { BackgroundStateProxy } from '../../../shared/types/metamask';
 
 const custodianMock = {
   type: 'saturn',
