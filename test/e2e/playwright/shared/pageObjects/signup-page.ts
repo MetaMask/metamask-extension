@@ -80,17 +80,26 @@ export class SignUpPage {
   }
 
   private async handleTermsModal() {
+    console.log('Waiting for terms modal...');
     await this.page.waitForSelector('[data-testid="terms-of-use-modal-body"]');
+    console.log('Found terms modal');
 
+    console.log('Scrolling modal to bottom...');
     await this.page.evaluate(`
       const modalBody = document.querySelector('[data-testid="terms-of-use-modal-body"]');
       if (modalBody) {
         modalBody.scrollTo({ top: modalBody.scrollHeight, behavior: 'instant' });
+        console.log('Modal scrolled');
+      } else {
+        console.log('Modal body not found');
       }
     `);
 
+    console.log('Clicking terms checkbox...');
     await this.agreeTandCCheck.click();
+    console.log('Clicking accept button...');
     await this.page.getByTestId('onboarding-terms-accept').click();
+    console.log('Terms accepted');
   }
 
   async importWallet() {
