@@ -181,6 +181,7 @@ describe('AssetPickerModal', () => {
           type: AssetType.NFT,
           tokenId: 5,
           image: 'nft image',
+          address: '',
         }}
         sendingAsset={undefined}
       />,

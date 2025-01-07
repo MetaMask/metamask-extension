@@ -19,13 +19,16 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
 import AssetComponent from './Asset';
-import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
+import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
 type AssetListProps = {
   handleAssetChange: (
     token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => void;
-  asset?: ERC20Asset | NativeAsset;
+  asset?:
+    | ERC20Asset
+    | NativeAsset
+    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
   tokenList: (
     | AssetWithDisplayData<ERC20Asset>
     | AssetWithDisplayData<NativeAsset>

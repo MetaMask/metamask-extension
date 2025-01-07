@@ -52,7 +52,7 @@ export type AssetPickerProps = {
   asset?:
     | ERC20Asset
     | NativeAsset
-    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol'>
+    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>
     | undefined;
   /**
    * Needs to be wrapped in a callback

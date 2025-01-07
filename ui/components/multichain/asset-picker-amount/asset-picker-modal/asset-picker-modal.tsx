@@ -68,7 +68,10 @@ type AssetPickerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   action?: 'send' | 'receive';
-  asset?: ERC20Asset | NativeAsset | Pick<NFT, 'type' | 'tokenId' | 'image'>;
+  asset?:
+    | ERC20Asset
+    | NativeAsset
+    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
   onAssetChange: (
     asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => void;

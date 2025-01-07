@@ -191,6 +191,7 @@ export const AssetPickerAmount = ({
       tokenId: asset.details.tokenId,
       image: asset.details.image,
       symbol: asset.details.symbol,
+      address: asset.details.address,
     };
   }
 
