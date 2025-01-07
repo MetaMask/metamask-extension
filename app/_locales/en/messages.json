@@ -5288,6 +5288,15 @@
   "smartTransactions": {
     "message": "Smart Transactions"
   },
+  "smartTransactionsEnabledDescription": {
+    "message": " and MEV protection. Now on by default."
+  },
+  "smartTransactionsEnabledLink": {
+    "message": "Higher success rates"
+  },
+  "smartTransactionsEnabledTitle": {
+    "message": "Transactions just got smarter"
+  },
   "snapAccountCreated": {
     "message": "Account created"
   },
