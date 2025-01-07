@@ -397,22 +397,25 @@ const CrossChainSwapTxDetails = () => {
                   </Box>
                 }
               />
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsYouReceived')}
-                value={
-                  <Box
-                    display={Display.Flex}
-                    gap={1}
-                    alignItems={AlignItems.center}
-                  >
-                    {t('bridgeTxDetailsTokenAmountOnChain', [
-                      bridgeAmountReceived,
-                      bridgeHistoryItem?.quote.destAsset.symbol,
-                    ])}
-                    {destNetworkIconName}
-                  </Box>
-                }
-              />
+              {bridgeAmountReceived &&
+                bridgeHistoryItem?.quote.destAsset.symbol && (
+                  <TransactionDetailRow
+                    title={t('bridgeTxDetailsYouReceived')}
+                    value={
+                      <Box
+                        display={Display.Flex}
+                        gap={1}
+                        alignItems={AlignItems.center}
+                      >
+                        {t('bridgeTxDetailsTokenAmountOnChain', [
+                          bridgeAmountReceived,
+                          bridgeHistoryItem.quote.destAsset.symbol,
+                        ])}
+                        {destNetworkIconName}
+                      </Box>
+                    }
+                  />
+                )}
               <TransactionDetailRow
                 title={t('bridgeTxDetailsTotalGasFee')}
                 value={
