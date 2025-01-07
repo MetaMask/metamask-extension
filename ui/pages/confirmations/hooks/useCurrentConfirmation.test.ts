@@ -59,6 +59,7 @@ function buildState({
   redesignedTransactionsEnabled,
   transaction,
   isRedesignedConfirmationsDeveloperEnabled,
+  isDecodingEnabled,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   message?: Partial<AbstractMessage & { msgParams: any }>;
@@ -67,6 +68,7 @@ function buildState({
   redesignedTransactionsEnabled?: boolean;
   transaction?: Partial<TransactionMeta>;
   isRedesignedConfirmationsDeveloperEnabled?: boolean;
+  isDecodingEnabled?: boolean;
 }) {
   return {
     ...mockState,
@@ -83,6 +85,7 @@ function buildState({
       unapprovedPersonalMsgs: message
         ? { [message.id as string]: message }
         : {},
+      use4ByteResolution: isDecodingEnabled ?? true,
     },
   };
 }
@@ -288,6 +291,19 @@ describe('useCurrentConfirmation', () => {
     });
 
     expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
+  });
+
+  it('returns undefined if transaction type correct and redesign enabled but decoding disabled', () => {
+    const currentConfirmation = runHook({
+      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
+      redesignedConfirmationsEnabled: true,
+      transaction: TRANSACTION_MOCK,
+      redesignedTransactionsEnabled: true,
+      isRedesignedConfirmationsDeveloperEnabled: false,
+      isDecodingEnabled: false,
+    });
+
+    expect(currentConfirmation).toBeUndefined();
   });
 
   describe('useCurrentConfirmation with env var', () => {

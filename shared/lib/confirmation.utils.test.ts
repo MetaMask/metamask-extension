@@ -43,6 +43,17 @@ describe('confirmation.utils', () => {
           }),
         ).toBe(false);
       });
+
+      it('should return false if decoding is disabled', () => {
+        expect(
+          shouldUseRedesignForTransactions({
+            transactionMetadataType: unsupportedTransactionType,
+            isRedesignedTransactionsUserSettingEnabled: true, // user setting enabled
+            isRedesignedConfirmationsDeveloperEnabled: false, // developer mode disabled
+            isDecodingEnabled: false,
+          }),
+        ).toBe(false);
+      });
     });
 
     describe('when developer mode is enabled', () => {
@@ -90,6 +101,17 @@ describe('confirmation.utils', () => {
             transactionMetadataType: unsupportedTransactionType,
             isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
             isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
+          }),
+        ).toBe(false);
+      });
+
+      it('should return false if decoding is disabled', () => {
+        expect(
+          shouldUseRedesignForTransactions({
+            transactionMetadataType: unsupportedTransactionType,
+            isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
+            isRedesignedConfirmationsDeveloperEnabled: true, // developer mode enabled
+            isDecodingEnabled: false,
           }),
         ).toBe(false);
       });
