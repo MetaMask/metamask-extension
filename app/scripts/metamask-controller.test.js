@@ -962,12 +962,9 @@ describe('MetaMaskController', () => {
           )
           .mockResolvedValue();
 
-        await metamaskController.requestPermissionApproval(
-          'test.com',
-          {
-            eth_accounts: {},
-          },
-        );
+        await metamaskController.requestPermissionApproval('test.com', {
+          eth_accounts: {},
+        });
 
         expect(
           metamaskController.approvalController.addAndShowApprovalRequest,
@@ -1002,13 +999,12 @@ describe('MetaMaskController', () => {
           )
           .mockResolvedValue('approvalResult');
 
-        const result =
-          await metamaskController.requestPermissionApproval(
-            'test.com',
-            {
-              eth_accounts: {},
-            },
-          );
+        const result = await metamaskController.requestPermissionApproval(
+          'test.com',
+          {
+            eth_accounts: {},
+          },
+        );
 
         expect(result).toStrictEqual('approvalResult');
       });

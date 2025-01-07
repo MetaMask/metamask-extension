@@ -263,16 +263,13 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
-      1,
-      {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(1, {
+      'eip155:1': {
+        methods: ['eth_chainId'],
+        notifications: ['accountsChanged', 'chainChanged'],
+        accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
       },
-    );
+    });
   });
 
   it('filters the optional scopesObjects', async () => {
@@ -289,16 +286,13 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(
-      2,
-      {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
+    expect(MockMultichain.getSupportedScopeObjects).toHaveBeenNthCalledWith(2, {
+      'eip155:1': {
+        methods: ['eth_chainId'],
+        notifications: ['accountsChanged', 'chainChanged'],
+        accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
       },
-    );
+    });
   });
 
   it('buckets the required scopes', async () => {

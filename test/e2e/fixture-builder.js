@@ -531,7 +531,7 @@ class FixtureBuilder {
                         `wallet:eip155:${selectedAccount.toLowerCase()}`,
                       ],
                     },
-                    'wallet': {
+                    wallet: {
                       accounts: [],
                     },
                   },

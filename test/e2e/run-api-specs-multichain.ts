@@ -39,64 +39,63 @@ async function main() {
   const port = 8545;
   const chainId = 1337;
 
+  const doc = await parseOpenRPCDocument(
+    MultiChainOpenRPCDocument as OpenrpcDocument,
+  );
+  const providerAuthorize = doc.methods.find(
+    (m) => (m as MethodObject).name === 'wallet_createSession',
+  );
 
-      const doc = await parseOpenRPCDocument(
-        MultiChainOpenRPCDocument as OpenrpcDocument,
-      );
-      const providerAuthorize = doc.methods.find(
-        (m) => (m as MethodObject).name === 'wallet_createSession',
-      );
+  const walletRpcMethods: string[] = [
+    'wallet_registerOnboarding',
+    'wallet_scanQRCode',
+  ];
+  const walletEip155Methods = ['wallet_addEthereumChain'];
 
-      const walletRpcMethods: string[] = [
-        'wallet_registerOnboarding',
-        'wallet_scanQRCode',
-      ];
-      const walletEip155Methods = ['wallet_addEthereumChain'];
+  const ignoreMethods = [
+    'wallet_switchEthereumChain',
+    'wallet_getPermissions',
+    'wallet_requestPermissions',
+    'wallet_revokePermissions',
+    'eth_requestAccounts',
+    'eth_accounts',
+    'eth_coinbase',
+    'net_version',
+  ];
 
-      const ignoreMethods = [
-        'wallet_switchEthereumChain',
-        'wallet_getPermissions',
-        'wallet_requestPermissions',
-        'wallet_revokePermissions',
-        'eth_requestAccounts',
-        'eth_accounts',
-        'eth_coinbase',
-        'net_version',
-      ];
+  const [transformedDoc, filteredMethods, methodsWithConfirmations] =
+    transformOpenRPCDocument(
+      MetaMaskOpenRPCDocument as OpenrpcDocument,
+      chainId,
+      ACCOUNT_1,
+    );
+  const ethereumMethods = transformedDoc.methods
+    .map((m) => (m as MethodObject).name)
+    .filter((m) => {
+      const match =
+        walletRpcMethods.includes(m) ||
+        walletEip155Methods.includes(m) ||
+        ignoreMethods.includes(m);
+      return !match;
+    });
+  const confirmationMethods = methodsWithConfirmations.filter(
+    (m) => !ignoreMethods.includes(m),
+  );
+  const scopeMap: Record<InternalScopeString, string[]> = {
+    [`eip155:${chainId}`]: ethereumMethods,
+    'wallet:eip155': walletEip155Methods,
+    wallet: walletRpcMethods,
+  };
 
-      const [transformedDoc, filteredMethods, methodsWithConfirmations] =
-        transformOpenRPCDocument(
-          MetaMaskOpenRPCDocument as OpenrpcDocument,
-          chainId,
-          ACCOUNT_1,
-        );
-      const ethereumMethods = transformedDoc.methods
-        .map((m) => (m as MethodObject).name)
-        .filter((m) => {
-          const match =
-            walletRpcMethods.includes(m) ||
-            walletEip155Methods.includes(m) ||
-            ignoreMethods.includes(m);
-          return !match;
-        });
-      const confirmationMethods = methodsWithConfirmations.filter(
-        (m) => !ignoreMethods.includes(m),
-      );
-      const scopeMap: Record<InternalScopeString, string[]> = {
-        [`eip155:${chainId}`]: ethereumMethods,
-        'wallet:eip155': walletEip155Methods,
-        wallet: walletRpcMethods,
-      };
-
-      const reverseScopeMap = Object.entries(scopeMap).reduce(
-        (acc, [scope, methods]: [string, string[]]) => {
-          methods.forEach((method) => {
-            acc[method] = scope;
-          });
-          return acc;
-        },
-        {} as { [method: string]: string },
-      );
+  const reverseScopeMap = Object.entries(scopeMap).reduce(
+    (acc, [scope, methods]: [string, string[]]) => {
+      methods.forEach((method) => {
+        acc[method] = scope;
+      });
+      return acc;
+    },
+    {} as { [method: string]: string },
+  );
 
   // Multichain API excluding `wallet_invokeMethod`
   await withFixtures(
@@ -213,7 +212,7 @@ async function main() {
         ],
       });
 
-      testCoverageResults = testCoverageResults.concat(results)
+      testCoverageResults = testCoverageResults.concat(results);
     },
   );
 
@@ -221,7 +220,9 @@ async function main() {
   await withFixtures(
     {
       dapp: true,
-      fixtures: new FixtureBuilder().withPermissionControllerConnectedToTestDappMultichain().build(),
+      fixtures: new FixtureBuilder()
+        .withPermissionControllerConnectedToTestDappMultichain()
+        .build(),
       disableGanache: true,
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',
     },
@@ -260,7 +261,7 @@ async function main() {
           // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
-          'wallet_registerOnboarding' // this is currently removed from the Multichain API JSON-RPC pipeline
+          'wallet_registerOnboarding', // this is currently removed from the Multichain API JSON-RPC pipeline
         ],
         rules: [
           new JsonSchemaFakerRule({
@@ -280,7 +281,7 @@ async function main() {
         ],
       });
 
-      testCoverageResults = testCoverageResults.concat(results)
+      testCoverageResults = testCoverageResults.concat(results);
     },
   );
 
