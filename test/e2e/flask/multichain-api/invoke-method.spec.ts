@@ -147,7 +147,6 @@ describe('Multichain API', function () {
               tag: 'button',
             });
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             for (const i of GANACHE_SCOPES.keys()) {
               await driver.delay(largeDelayMs);
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -263,7 +262,7 @@ describe('Multichain API', function () {
 
               assert.notStrictEqual(
                 currentBalance,
-                `"${DEFAULT_INITIAL_BALANCE_HEX}"`, // default initial hex balance
+                `"${DEFAULT_INITIAL_BALANCE_HEX}"`,
                 `${scope} scope balance should be different after eth_sendTransaction due to gas`,
               );
             }
