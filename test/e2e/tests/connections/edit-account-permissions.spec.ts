@@ -1,6 +1,10 @@
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
+import {
+  ACCOUNT_TYPE,
+  DEFAULT_FIXTURE_ACCOUNT,
+  DAPP_HOST_ADDRESS,
+} from '../../constants';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -36,14 +40,20 @@ describe('Edit Accounts Permissions', function () {
         // create second account with custom label
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccount(accountLabel2);
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Ethereum,
+          accountName: accountLabel2,
+        });
         const homepage = new Homepage(driver);
         await homepage.check_expectedBalanceIsDisplayed();
 
         // create third account with custom label
         await homepage.headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccount(accountLabel3);
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Ethereum,
+          accountName: accountLabel3,
+        });
         await homepage.check_expectedBalanceIsDisplayed();
 
         // go to connections permissions page
