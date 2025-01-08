@@ -83,7 +83,7 @@ export class BridgePage {
   };
 
   verifySwapPage = async (expectedHandleCount: number) => {
-    await this.driver.delay(4000);
+    await this.driver.delay(1000);
     assert.equal(
       (await this.driver.getAllWindowHandles()).length,
       IS_FIREFOX || !isManifestV3
@@ -91,6 +91,20 @@ export class BridgePage {
         : expectedHandleCount + 1,
     );
     assert.match(await this.driver.getCurrentUrl(), /.+cross-chain\/swaps/u);
+  };
+
+  getBridgeQuote = async (fromAmount: string, toNetwork: string) => {
+    await this.driver.clickElement('[data-testid="asset-picker-button-from"]');
+    await this.driver.clickElement(
+      `[data-testid="multichain-token-list-button"]`,
+    );
+    await this.driver.fill('[data-testid="from-amount"]', fromAmount);
+
+    await this.driver.clickElement('[data-testid="asset-picker-button-to"]');
+    await this.driver.clickElement(`[data-testid="${toNetwork}"]`);
+    await this.driver.clickElement(
+      `[data-testid="multichain-token-list-button"]`,
+    );
   };
 }
 

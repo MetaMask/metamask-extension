@@ -168,6 +168,7 @@ export const BridgeInputGroup = ({
                 paddingRight={6}
                 fontWeight={FontWeight.Normal}
                 style={{ whiteSpace: 'nowrap' }}
+                data-testid="asset-picker-button-to"
               >
                 {t('bridgeTo')}
               </Button>
@@ -177,6 +178,7 @@ export const BridgeInputGroup = ({
                 networkImageSrc={networkImageSrc}
                 asset={(token as never) ?? undefined}
                 networkProps={networkProps}
+                data-testid="asset-picker-button-from"
               />
             )
           }
