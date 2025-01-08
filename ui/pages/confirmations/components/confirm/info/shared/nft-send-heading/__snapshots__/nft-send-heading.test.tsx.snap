@@ -9,31 +9,43 @@ exports[`<NFTSendHeading /> renders component 1`] = `
       class="mm-box"
       style="width: 48px;"
     >
-      <button
-        class="mm-box nft-item__container"
-        data-testid="nft-item"
+      <div
+        class="mm-box nft-item__card"
       >
-        <div
-          class="mm-box mm-badge-wrapper nft-item__badge-wrapper mm-box--display-block"
+        <button
+          class="mm-box nft-item__container"
+          data-testid="nft-item"
         >
           <div
-            class="mm-box nft-item__default-image nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
-            data-testid="nft-default-image"
-            tabindex="0"
-          />
-          <div
-            class="mm-box mm-badge-wrapper__badge-container"
-            style="top: -4px; right: -4px;"
+            class="mm-box mm-badge-wrapper nft-item__badge-wrapper mm-box--display-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
-              data-testid="nft-network-badge"
+              class="mm-box nft-item__default-image nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
+              data-testid="nft-default-image"
+              tabindex="0"
+            />
+            <div
+              class="mm-box mm-badge-wrapper__badge-container"
+              style="top: -4px; right: -4px;"
             >
-              G
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                data-testid="nft-network-badge"
+              >
+                G
+              </div>
             </div>
           </div>
-        </div>
-      </button>
+        </button>
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+        />
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+        >
+          # 
+        </p>
+      </div>
     </div>
     <h2
       class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--margin-top-3 mm-box--color-inherit"

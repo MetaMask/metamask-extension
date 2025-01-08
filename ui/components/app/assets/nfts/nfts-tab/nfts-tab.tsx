@@ -38,8 +38,15 @@ import Spinner from '../../../../ui/spinner';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
-import { showImportNftsModal } from '../../../../../store/actions';
-import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  checkAndUpdateAllNftsOwnershipStatus,
+  detectNfts,
+  showImportNftsModal,
+} from '../../../../../store/actions';
+import {
+  ASSET_ROUTE,
+  SECURITY_ROUTE,
+} from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
@@ -105,6 +112,17 @@ export default function NftsTab() {
     );
   };
 
+  const onEnableAutoDetect = () => {
+    history.push(SECURITY_ROUTE);
+  };
+
+  const onRefresh = () => {
+    if (isMainnet) {
+      dispatch(detectNfts());
+    }
+    checkAndUpdateAllNftsOwnershipStatus();
+  };
+
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
       <Box className="nfts-tab__loading">
@@ -161,8 +179,7 @@ export default function NftsTab() {
                         size={ButtonLinkSize.Md}
                         startIconName={IconName.Setting}
                         data-testid="refresh-list-button"
-                        // onClick={onEnableAutoDetect}
-                        onClick={() => console.log('enable autodetect')}
+                        onClick={onEnableAutoDetect}
                       >
                         {t('enableAutoDetect')}
                       </ButtonLink>
@@ -171,8 +188,7 @@ export default function NftsTab() {
                         size={ButtonLinkSize.Md}
                         startIconName={IconName.Refresh}
                         data-testid="refresh-list-button"
-                        // onClick={onRefresh}
-                        onClick={() => console.log('refresh list')}
+                        onClick={onRefresh}
                       >
                         {t('refreshList')}
                       </ButtonLink>
@@ -265,8 +281,7 @@ export default function NftsTab() {
                         size={ButtonLinkSize.Md}
                         startIconName={IconName.Refresh}
                         data-testid="refresh-list-button"
-                        // onClick={onRefresh}
-                        onClick={() => console.log('refresh list')}
+                        onClick={onRefresh}
                       >
                         {t('refreshList')}
                       </ButtonLink>
