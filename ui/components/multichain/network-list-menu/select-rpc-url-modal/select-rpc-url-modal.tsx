@@ -21,13 +21,18 @@ import {
   grantPermittedChain,
   setActiveNetwork,
   setEditedNetwork,
+  setNetworkClientIdForDomain,
+  showPermittedNetworkToast,
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
 import {
+  getAllDomains,
   getOriginOfCurrentTab,
   getPermittedAccountsForSelectedTab,
+  getPermittedChainsForSelectedTab,
+  getUseRequestQueue,
 } from '../../../../selectors';
 
 export const SelectRpcUrlModal = ({
@@ -41,10 +46,15 @@ export const SelectRpcUrlModal = ({
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
       networkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
+  const useRequestQueue = useSelector(getUseRequestQueue);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const permittedAccountAddresses = useSelector((state) =>
     getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
   );
+  const permittedChainIds = useSelector((state) =>
+    getPermittedChainsForSelectedTab(state, selectedTabOrigin),
+  );
+  const domains = useSelector(getAllDomains);
   return (
     <Box>
       <Box display={Display.Flex}>
@@ -92,6 +102,19 @@ export const SelectRpcUrlModal = ({
               grantPermittedChain(
                 selectedTabOrigin,
                 networkConfiguration.chainId,
+              );
+              if (!permittedChainIds.includes(networkConfiguration.chainId)) {
+                dispatch(showPermittedNetworkToast());
+              }
+            }
+            if (
+              useRequestQueue &&
+              selectedTabOrigin &&
+              domains[selectedTabOrigin]
+            ) {
+              setNetworkClientIdForDomain(
+                selectedTabOrigin,
+                rpcEndpoint.networkClientId,
               );
             }
           }}
