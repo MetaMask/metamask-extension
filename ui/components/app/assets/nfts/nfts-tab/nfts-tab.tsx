@@ -37,8 +37,6 @@ import { getCurrentLocale } from '../../../../../ducks/locale/locale';
 import Spinner from '../../../../ui/spinner';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { showImportNftsModal } from '../../../../../store/actions';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
@@ -60,8 +58,7 @@ export default function NftsTab() {
     rpcPrefs?: { imageUrl: string };
   };
 
-  const { nftsLoading, collections, previouslyOwnedCollection } =
-    useNftsCollections();
+  const { nftsLoading, collections } = useNftsCollections();
 
   const { currentlyOwnedNfts, previouslyOwnedNfts } = useNfts();
 
@@ -124,7 +121,7 @@ export default function NftsTab() {
             <NFTsDetectionNoticeNFTsTab />
           </Box>
         ) : null}
-        {hasAnyNfts || previouslyOwnedCollection.nfts.length > 0 ? (
+        {hasAnyNfts || previouslyOwnedNfts.length > 0 ? (
           <Box>
             <NftGrid
               nfts={currentlyOwnedNfts}
@@ -150,6 +147,7 @@ export default function NftsTab() {
               >
                 {t('importNFT')}
               </ButtonLink>
+
               {!isMainnet && Object.keys(collections).length < 1 ? null : (
                 <>
                   <Box
@@ -212,6 +210,57 @@ export default function NftsTab() {
                   {t('noNFTs')}
                 </Text>
               </Box>
+            </Box>
+            <Box
+              className="nfts-tab__buttons"
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexStart}
+              margin={4}
+              gap={2}
+              marginBottom={2}
+            >
+              <ButtonLink
+                size={ButtonLinkSize.Md}
+                data-testid="import-nft-button"
+                startIconName={IconName.Add}
+                onClick={() => {
+                  dispatch(showImportNftsModal({}));
+                }}
+              >
+                {t('importNFT')}
+              </ButtonLink>
+
+              {!isMainnet && Object.keys(collections).length < 1 ? null : (
+                <>
+                  <Box
+                    className="nfts-tab__link"
+                    justifyContent={JustifyContent.flexEnd}
+                  >
+                    {isMainnet && !useNftDetection ? (
+                      <ButtonLink
+                        size={ButtonLinkSize.Md}
+                        startIconName={IconName.Setting}
+                        data-testid="refresh-list-button"
+                        // onClick={onEnableAutoDetect}
+                        onClick={() => console.log('enable autodetect')}
+                      >
+                        {t('enableAutoDetect')}
+                      </ButtonLink>
+                    ) : (
+                      <ButtonLink
+                        size={ButtonLinkSize.Md}
+                        startIconName={IconName.Refresh}
+                        data-testid="refresh-list-button"
+                        // onClick={onRefresh}
+                        onClick={() => console.log('refresh list')}
+                      >
+                        {t('refreshList')}
+                      </ButtonLink>
+                    )}
+                  </Box>
+                </>
+              )}
             </Box>
           </>
         )}
