@@ -635,11 +635,12 @@ async function unlockWallet(
 
   await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
-
   if (waitLoginSuccess) {
-    await driver.assertElementNotPresent('[data-testid="unlock-page"]', {
-      findElementGuard: '[data-testid="account-value-and-suffix"]',
-    });
+    if (navigate) {
+      await driver.findElement('[data-testid="account-value-and-suffix"]');
+    }
+
+    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
 }
 
