@@ -49,7 +49,6 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import {
   conversionRateSelector,
   getSelectedAccount,
-  getCurrentCurrency,
   getTokenExchangeRates,
   getSwapsDefaultToken,
   isHardwareWallet,
@@ -62,7 +61,11 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
-import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getTokens,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import {
   setCustomApproveTxData,
   showModal,

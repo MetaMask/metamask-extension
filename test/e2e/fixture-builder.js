@@ -688,6 +688,15 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerSmartTransactionsOptedOut() {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
+        tokenNetworkFilter: {},
+      },
+    });
+  }
+
   withPreferencesControllerAndFeatureFlag(flags) {
     merge(this.fixture.data.PreferencesController, flags);
     return this;

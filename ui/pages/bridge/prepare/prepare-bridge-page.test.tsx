@@ -1,6 +1,7 @@
 import React from 'react';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
+import { zeroAddress } from 'ethereumjs-util';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/jest/mock-store';
@@ -42,6 +43,34 @@ describe('PrepareBridgePage', () => {
           },
         },
       },
+      metamaskStateOverrides: {
+        completedOnboarding: true,
+        allDetectedTokens: {
+          '0x1': {
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
+              {
+                address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+                decimals: 6,
+              }, // USDC
+            ],
+          },
+        },
+      },
+      bridgeStateOverrides: {
+        srcTokens: {
+          '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2': {
+            address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
+          }, // UNI,
+          [zeroAddress()]: { address: zeroAddress() },
+          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+            address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+            decimals: 6,
+          }, // USDC
+        },
+        srcTopAssets: [
+          { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984' },
+        ],
+      },
     });
     const { container, getByRole, getByTestId } = renderWithProvider(
       <PrepareBridgePage />,
@@ -51,14 +80,13 @@ describe('PrepareBridgePage', () => {
     expect(container).toMatchSnapshot();
 
     expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /Select token/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
     await act(() => {
       fireEvent.change(getByTestId('from-amount'), { target: { value: '2' } });
     });
-    expect(getByTestId('from-amount').closest('input')).toHaveValue(2);
+    expect(getByTestId('from-amount').closest('input')).toHaveValue('2');
 
     expect(getByTestId('to-amount')).toBeInTheDocument();
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
@@ -127,21 +155,25 @@ describe('PrepareBridgePage', () => {
     expect(container).toMatchSnapshot();
 
     expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /UNI/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /Bridge to/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
-    expect(getByTestId('from-amount').closest('input')).toHaveValue(1);
+
+    await act(() => {
+      fireEvent.change(getByTestId('from-amount'), { target: { value: '1' } });
+    });
+    expect(getByTestId('from-amount').closest('input')).toHaveValue('1');
 
     await act(() => {
       fireEvent.change(getByTestId('from-amount'), { target: { value: '2' } });
     });
-    expect(getByTestId('from-amount').closest('input')).toHaveValue(2);
+    expect(getByTestId('from-amount').closest('input')).toHaveValue('2');
 
     expect(getByTestId('to-amount')).toBeInTheDocument();
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
 
-    expect(getByTestId('switch-tokens').closest('button')).not.toBeDisabled();
+    expect(getByTestId('switch-tokens').closest('button')).toBeDisabled();
   });
 
   it('should throw an error if token decimals are not defined', async () => {
@@ -167,6 +199,7 @@ describe('PrepareBridgePage', () => {
           iconUrl: 'http://url',
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          decimals: 6,
         },
         toChainId: CHAIN_IDS.LINEA_MAINNET,
       },

@@ -5,6 +5,7 @@ import TokenCell from '../token-cell';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
+  getChainIdsToPoll,
   getCurrencyRates,
   getCurrentNetwork,
   getIsTestnet,
@@ -27,7 +28,6 @@ import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances } from '../../../../hooks/useTokenBalances';
 import { setTokenNetworkFilter } from '../../../../store/actions';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getMultichainShouldShowFiat } from '../../../../selectors/multichain';
 
@@ -84,7 +84,6 @@ export default function TokenList({
   onTokenClick,
   nativeToken,
 }: TokenListProps) {
-  const t = useI18nContext();
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
@@ -93,6 +92,7 @@ export default function TokenList({
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
+  const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
     shallowEqual,
@@ -103,7 +103,9 @@ export default function TokenList({
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
 
-  const { tokenBalances } = useTokenBalances();
+  const { tokenBalances } = useTokenBalances({
+    chainIds: chainIdsToPoll as Hex[],
+  });
   const selectedAccountTokenBalancesAcrossChains =
     tokenBalances[selectedAccount.address];
 
@@ -228,12 +230,6 @@ export default function TokenList({
   // Displays nativeToken if provided
   if (nativeToken) {
     return React.cloneElement(nativeToken as React.ReactElement);
-  }
-
-  // TODO: We can remove this string. However it will result in a huge file 50+ file diff
-  // Lets remove it in a separate PR
-  if (sortedFilteredTokens === undefined) {
-    console.log(t('loadingTokens'));
   }
 
   const shouldShowFiat = useMultichainSelector(
