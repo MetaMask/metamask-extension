@@ -169,6 +169,8 @@ export const CHAIN_IDS = {
   B3_TESTNET: '0x7c9',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
+  EVM_ON_FLOW_MAINNET: '0x2eb',
+  EVM_ON_FLOW_TESTNET: '0x221',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -267,6 +269,8 @@ export const PALM_DISPLAY_NAME = 'Palm';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
+export const EVM_ON_FLOW_MAINNET_DISPLAY_NAME = 'EVM on Flow Mainnet';
+export const EVM_ON_FLOW_TESTNET_DISPLAY_NAME = 'EVM on Flow Testnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CRONOS_DISPLAY_NAME = 'Cronos';
@@ -333,6 +337,7 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  FLOW: 'FLOW',
 } as const;
 
 // Non-EVM currency symbols
@@ -400,6 +405,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   ACALA_NETWORK: 'ACA',
   IOTEX_MAINNET: 'IOTX',
   APE: 'APE',
+  EVM_ON_FLOW: 'FLOW',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -423,6 +429,7 @@ export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 export const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
+export const FLOW_IMAGE_URL = './images/flow.svg';
 export const BASE_TOKEN_IMAGE_URL = './images/base.svg';
 export const ACALA_TOKEN_IMAGE_URL = './images/acala-network-logo.svg';
 export const ARBITRUM_NOVA_IMAGE_URL = './images/arbitrum-nova-logo.svg';
@@ -591,6 +598,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
   [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_DISPLAY_NAME,
+  [CHAIN_IDS.EVM_ON_FLOW_MAINNET]: EVM_ON_FLOW_MAINNET_DISPLAY_NAME,
+  [CHAIN_IDS.EVM_ON_FLOW_TESTNET]: EVM_ON_FLOW_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.BERACHAIN]: BERACHAIN_DISPLAY_NAME,
   [CHAIN_IDS.METACHAIN_ONE]: METACHAIN_ONE_DISPLAY_NAME,
 } as const;
@@ -710,6 +719,10 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
   [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.IOTEX_MAINNET,
+  [CHAINLIST_CHAIN_IDS_MAP.EVM_ON_FLOW_MAINNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.FLOW,
+  [CHAINLIST_CHAIN_IDS_MAP.EVM_ON_FLOW_TESTNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.FLOW,
 } as const;
 
 /**
@@ -765,6 +778,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.EVM_ON_FLOW_MAINNET]: FLOW_IMAGE_URL,
+  [CHAIN_IDS.EVM_ON_FLOW_TESTNET]: FLOW_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]: ACALA_TOKEN_IMAGE_URL,
@@ -1079,6 +1094,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://explorer.zksync.io/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.EVM_ON_FLOW_MAINNET,
+    name: EVM_ON_FLOW_MAINNET_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.FLOW,
+    rpcEndpoints: [
+      {
+        url: `https://mainnet.evm.nodes.onflow.org`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://evm.flowscan.io/'],
     defaultBlockExplorerUrlIndex: 0,
   },
   {
