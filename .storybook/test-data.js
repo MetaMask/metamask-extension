@@ -1628,6 +1628,7 @@ const state = {
     isAccountMenuOpen: false,
     welcomeScreenSeen: false,
     pendingTokens: {},
+    confirmationExchangeRates: {},
     customNonceValue: '',
     nextNonce: 71,
     shouldClose: false,
