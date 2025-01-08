@@ -373,7 +373,7 @@ export function isEIP1559Network(state, networkClientId) {
   return (
     state.metamask.networksMetadata?.[
       networkClientId ?? selectedNetworkClientId
-    ].EIPS[1559] === true
+    ]?.EIPS[1559] === true
   );
 }
 
@@ -603,4 +603,8 @@ export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
+}
+
+export function getCurrentCurrency(state) {
+  return state.metamask.currentCurrency;
 }

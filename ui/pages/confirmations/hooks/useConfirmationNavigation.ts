@@ -19,7 +19,7 @@ import {
 import { isSignatureTransactionType } from '../utils';
 import {
   getApprovalFlows,
-  pendingApprovalsSortedSelector,
+  selectPendingApprovalsForNavigation,
 } from '../../../selectors';
 
 const CONNECT_APPROVAL_TYPES = [
@@ -30,7 +30,7 @@ const CONNECT_APPROVAL_TYPES = [
 ];
 
 export function useConfirmationNavigation() {
-  const confirmations = useSelector(pendingApprovalsSortedSelector, isEqual);
+  const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const history = useHistory();
 

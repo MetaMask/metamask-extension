@@ -62,7 +62,6 @@ async function getFlagsFromPrBody(): Promise<ManifestFlags> {
       hasProperty(error, 'code') &&
       error.code === 'ENOENT'
     ) {
-      console.debug('No pr-body.txt, ignoring flags');
       return {};
     }
     throw error;
