@@ -126,7 +126,6 @@ export default function NftsTab() {
           <Box>
             <NftGrid
               nfts={currentlyOwnedNfts}
-              prevNfts={previouslyOwnedNfts}
               handleNftClick={handleNftClick}
             />
             <Box

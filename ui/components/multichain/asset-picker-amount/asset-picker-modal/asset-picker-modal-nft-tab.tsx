@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -26,9 +27,7 @@ import {
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftGrid from '../../../app/assets/nfts/nft-grid/nft-grid';
 import { useNfts } from '../../../../hooks/useNfts';
-import { NFT } from './types';
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
-import { useHistory } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -39,6 +38,7 @@ import {
   getSendAnalyticProperties,
   updateSendAsset,
 } from '../../../../ducks/send';
+import { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
   collectionName: string;

@@ -1,10 +1,8 @@
 import React from 'react';
-import {
-  Display,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../component-library';
+import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
+import { Display } from '../../../../../helpers/constants/design-system';
+import { Box } from '../../../../component-library';
 import Spinner from '../../../../ui/spinner';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
@@ -13,20 +11,14 @@ import {
   getCurrentNetwork,
   getNftIsStillFetchingIndication,
 } from '../../../../../selectors';
-import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export default function NftGrid({
   nfts,
-  prevNfts,
   handleNftClick,
 }: {
   nfts: NFT[];
-  prevNfts: NFT[];
   handleNftClick: (nft: NFT) => void;
 }) {
-  const t = useI18nContext();
   const currentChain = useSelector(getCurrentNetwork) as {
     chainId: Hex;
     nickname: string;
