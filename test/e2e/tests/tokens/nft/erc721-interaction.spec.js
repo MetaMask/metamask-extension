@@ -79,7 +79,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await clickNestedButton(driver, 'NFTs');
-          await driver.findElement({ text: 'TestDappNFTs (5)' });
           const nftsListItemsFirstCheck = await driver.findElements(
             '.nft-item__container',
           );
@@ -167,8 +166,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await clickNestedButton(driver, 'NFTs');
-          // Changed this check from 3 to 6, because after mint all nfts has been added to state,
-          await driver.findElement({ text: 'TestDappNFTs (6)' });
           const nftsListItemsFirstCheck = await driver.findElements(
             '.nft-item__container',
           );
@@ -202,7 +199,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await clickNestedButton(driver, 'NFTs');
-          await driver.findElement({ text: 'TestDappNFTs (6)' });
           const nftsListItemsSecondCheck = await driver.findElements(
             '.nft-item__container',
           );
@@ -303,7 +299,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await clickNestedButton(driver, 'NFTs');
-          await driver.findElement({ text: 'TestDappNFTs (5)' });
           const nftsListItemsSecondCheck = await driver.findElements(
             '.nft-item__container',
           );
@@ -622,7 +617,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await clickNestedButton(driver, 'NFTs');
-          await driver.findElement({ text: 'TestDappNFTs (5)' });
           const nftsListItemsFirstCheck = await driver.findElements(
             '.nft-item__container',
           );
@@ -704,8 +698,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await clickNestedButton(driver, 'NFTs');
-          // Changed this check from 3 to 6, because after mint all nfts has been added to state,
-          await driver.findElement({ text: 'TestDappNFTs (6)' });
           const nftsListItemsFirstCheck = await driver.findElements(
             '.nft-item__container',
           );
@@ -834,7 +826,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await clickNestedButton(driver, 'NFTs');
-          await driver.findElement({ text: 'TestDappNFTs (5)' });
           const nftsListItemsSecondCheck = await driver.findElements(
             '.nft-item__container',
           );
