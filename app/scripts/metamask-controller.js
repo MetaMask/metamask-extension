@@ -154,12 +154,6 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-<<<<<<< HEAD
-||||||| cd0e2d1377
-import { toCaipChainId } from '@metamask/utils';
-=======
-import { hexToBigInt, toCaipChainId } from '@metamask/utils';
->>>>>>> caip25-permission-migration
 import {
   AuthenticationController,
   UserStorageController,
@@ -3164,22 +3158,20 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.methods.includes('eth_subscribe')
             ) {
               // for each tabId
-              Object.values(this.connections[origin]).forEach(
-                ({ tabId }) => {
-                  const subscriptionManager =
-                    this.multichainSubscriptionManager.subscribe({
-                      scope,
-                      origin,
-                      tabId,
-                    });
-                  this.multichainMiddlewareManager.addMiddleware({
+              Object.values(this.connections[origin]).forEach(({ tabId }) => {
+                const subscriptionManager =
+                  this.multichainSubscriptionManager.subscribe({
                     scope,
                     origin,
                     tabId,
-                    middleware: subscriptionManager.middleware,
                   });
-                },
-              );
+                this.multichainMiddlewareManager.addMiddleware({
+                  scope,
+                  origin,
+                  tabId,
+                  middleware: subscriptionManager.middleware,
+                });
+              });
             } else {
               this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
                 scope,
