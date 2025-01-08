@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "Yêu cầu giao dịch"
   },
+  "confirmationAlertModalTitle": {
+    "message": "Yêu cầu này có dấu hiệu đáng ngờ"
+  },
   "confirmed": {
     "message": "Đã xác nhận"
   },

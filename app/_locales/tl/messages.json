@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "Hiling na Transaksyon"
   },
+  "confirmationAlertModalTitle": {
+    "message": "Kahina-hinala ang kahilingang ito"
+  },
   "confirmed": {
     "message": "Nakumpirma"
   },

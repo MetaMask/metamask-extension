@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "Запрос транзакции"
   },
+  "confirmationAlertModalTitle": {
+    "message": "Этот запрос подозрительный"
+  },
   "confirmed": {
     "message": "Подтвержден(-а/о)"
   },

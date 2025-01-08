@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "Solicitud de transacción"
   },
+  "confirmationAlertModalTitle": {
+    "message": "Esta solicitud es sospechosa"
+  },
   "confirmed": {
     "message": "Confirmado"
   },

@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "トランザクションの要求"
   },
+  "confirmationAlertModalTitle": {
+    "message": "この要求は不審です"
+  },
   "confirmed": {
     "message": "確認されました"
   },

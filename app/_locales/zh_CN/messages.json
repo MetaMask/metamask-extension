@@ -1048,6 +1048,9 @@
   "confirmed": {
     "message": "已确认"
   },
+  "confirmationAlertModalTitle": {
+    "message": "此请求可疑"
+  },
   "confusableUnicode": {
     "message": "'$1' 与 '$2' 相似。"
   },

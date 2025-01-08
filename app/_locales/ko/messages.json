@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "트랜젝션 요청"
   },
+  "confirmationAlertModalTitle": {
+    "message": "의심스러운 요청입니다"
+  },
   "confirmed": {
     "message": "컨펌됨"
   },

@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "ट्रांसेक्शन अनुरोध"
   },
+  "confirmationAlertModalTitle": {
+    "message": "यह अनुरोध संदिग्ध है"
+  },
   "confirmed": {
     "message": "कन्फर्म किया गया"
   },

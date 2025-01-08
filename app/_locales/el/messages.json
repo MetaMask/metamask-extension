@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "Αίτημα συναλλαγής"
   },
+  "confirmationAlertModalTitle": {
+    "message": "Αυτό το αίτημα είναι ύποπτο"
+  },
   "confirmed": {
     "message": "Επιβεβαιωμένο"
   },

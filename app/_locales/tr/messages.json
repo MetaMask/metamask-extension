@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "İşlem talebi"
   },
+  "confirmationAlertModalTitle": {
+    "message": "Bu talep şüphelidir"
+  },
   "confirmed": {
     "message": "Onaylandı"
   },

@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "Transaktionsanfrage"
   },
+  "confirmationAlertModalTitle": {
+    "message": "Diese Anfrage scheint verdächtig"
+  },
   "confirmed": {
     "message": "Bestätigt"
   },

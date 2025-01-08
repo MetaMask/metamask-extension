@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "Permintaan transaksi"
   },
+  "confirmationAlertModalTitle": {
+    "message": "Permintaan ini mencurigakan"
+  },
   "confirmed": {
     "message": "Dikonfirmasikan"
   },
