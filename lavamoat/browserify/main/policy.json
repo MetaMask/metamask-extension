@@ -550,7 +550,7 @@
         "console": true
       },
       "packages": {
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger>tslib": true
+        "tslib": true
       }
     },
     "@metamask/notification-services-controller>firebase>@firebase/messaging": {
@@ -584,7 +584,7 @@
         "@metamask/notification-services-controller>firebase>@firebase/installations": true,
         "@metamask/notification-services-controller>firebase>@firebase/util": true,
         "@metamask/notification-services-controller>firebase>@firebase/app>idb": true,
-        "@metamask/notification-services-controller>firebase>@firebase/messaging>tslib": true
+        "tslib": true
       }
     },
     "@metamask/notification-services-controller>firebase>@firebase/util": {
@@ -634,7 +634,7 @@
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "buffer": true,
         "browserify>buffer": true,
-        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>tslib": true
+        "tslib": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
@@ -2932,7 +2932,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/name-controller>async-mutex>tslib": true
+        "tslib": true
       }
     },
     "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
@@ -5363,38 +5363,6 @@
         "define": true
       }
     },
-    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "@metamask/notification-services-controller>firebase>@firebase/messaging>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "@metamask/name-controller>async-mutex>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
     "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex>tslib": {
       "globals": {
         "AsyncIterator": true,
@@ -5404,14 +5372,6 @@
       }
     },
     "react-focus-lock>focus-lock>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "react-focus-lock>use-sidecar>tslib": {
       "globals": {
         "AsyncIterator": true,
         "Iterator": true,
@@ -5501,7 +5461,7 @@
       "packages": {
         "react-focus-lock>use-sidecar>detect-node-es": true,
         "react": true,
-        "react-focus-lock>use-sidecar>tslib": true
+        "tslib": true
       }
     },
     "readable-stream>util-deprecate": {
