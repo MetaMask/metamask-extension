@@ -1,7 +1,7 @@
 import React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -18,12 +18,17 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
+  grantPermittedChain,
   setActiveNetwork,
   setEditedNetwork,
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
+import {
+  getOriginOfCurrentTab,
+  getPermittedAccountsForSelectedTab,
+} from '../../../../selectors';
 
 export const SelectRpcUrlModal = ({
   networkConfiguration,
@@ -36,7 +41,10 @@ export const SelectRpcUrlModal = ({
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
       networkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
-
+  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const permittedAccountAddresses = useSelector((state) =>
+    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
+  );
   return (
     <Box>
       <Box display={Display.Flex}>
@@ -76,8 +84,16 @@ export const SelectRpcUrlModal = ({
               }),
             );
             dispatch(setActiveNetwork(rpcEndpoint.networkClientId));
-            dispatch(setEditedNetwork());
+            dispatch(
+              setEditedNetwork({ chainId: networkConfiguration.chainId }),
+            );
             dispatch(toggleNetworkMenu());
+            if (permittedAccountAddresses.length > 0) {
+              grantPermittedChain(
+                selectedTabOrigin,
+                networkConfiguration.chainId,
+              );
+            }
           }}
           className={classnames('select-rpc-url__item', {
             'select-rpc-url__item--selected':
