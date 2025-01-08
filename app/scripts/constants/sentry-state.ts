@@ -42,6 +42,11 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AuthenticationController: {
     isSignedIn: false,
+    sessionData: {
+      profile: true,
+      accessToken: false,
+      expiresIn: true,
+    },
   },
   NetworkOrderController: {
     orderedNetworkList: [],

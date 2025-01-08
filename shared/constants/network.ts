@@ -169,6 +169,8 @@ export const CHAIN_IDS = {
   B3_TESTNET: '0x7c9',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
+  INK_SEPOLIA: '0xba5eD',
+  INK: '0xdef1',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -229,6 +231,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   APE: '0x8173',
   GRAVITY_ALPHA_MAINNET: '0x659',
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
+  INK_SEPOLIA: '0xba5ed',
+  INK: '0xdef1',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -278,6 +282,8 @@ export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
+export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
+export const INK_DISPLAY_NAME = 'Ink Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -483,6 +489,8 @@ export const B3_IMAGE_URL = './images/b3.svg';
 export const APE_IMAGE_URL = './images/ape.svg';
 export const GRAVITY_ALPHA_MAINNET_IMAGE_URL = './images/gravity.svg';
 export const GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL = './images/gravity.svg';
+export const INK_SEPOLIA_IMAGE_URL = './images/ink-sepolia.svg';
+export const INK_IMAGE_URL = './images/ink.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -827,6 +835,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
     GRAVITY_ALPHA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.GRAVITY_ALPHA_TESTNET_SEPOLIA]:
     GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.INK_SEPOLIA]: INK_SEPOLIA_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.INK]: INK_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -867,6 +877,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.GRAVITY_ALPHA_MAINNET]: GRAVITY_ALPHA_MAINNET_IMAGE_URL,
   [CHAIN_IDS.GRAVITY_ALPHA_TESTNET_SEPOLIA]:
     GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.INK]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

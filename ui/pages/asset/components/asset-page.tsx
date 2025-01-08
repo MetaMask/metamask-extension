@@ -21,6 +21,7 @@ import {
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
+  AlignItems,
   Display,
   FlexDirection,
   IconColor,
@@ -29,6 +30,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -54,7 +57,11 @@ import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
+import {
+  getImageForChainId,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetChart from './chart/asset-chart';
@@ -75,7 +82,7 @@ export type Asset = (
       /** The number of decimal places to move left when displaying balances */
       decimals: number;
       /** An array of token list sources the asset appears in, e.g. [1inch,Sushiswap]  */
-      aggregators?: [];
+      aggregators?: string[];
     }
 ) & {
   /** The hexadecimal chain id */
@@ -168,7 +175,7 @@ const AssetPage = ({
 
   // Market and conversion rate data
   const baseCurrency = marketData[chainId]?.[address]?.currency;
-  const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
+  const tokenMarketPrice = marketData[chainId]?.[address]?.price || undefined;
   const tokenExchangeRate =
     type === AssetType.native
       ? currencyRates[symbol]?.conversionRate
@@ -213,6 +220,12 @@ const AssetPage = ({
       ),
     [account.address, isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId],
   );
+
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+  const networkName = networkConfigurationsByChainId[chainId]?.name;
+  const tokenChainImage = getImageForChainId(chainId);
 
   return (
     <Box
@@ -284,7 +297,9 @@ const AssetPage = ({
           chainId={chainId}
           symbol={symbol}
           image={image}
-          tokenFiatAmount={showFiat ? tokenFiatAmount : null}
+          tokenFiatAmount={
+            showFiat && tokenMarketPrice ? tokenFiatAmount : null
+          }
           string={balance?.toString()}
         />
         <Box
@@ -308,6 +323,22 @@ const AssetPage = ({
                 flexDirection={FlexDirection.Column}
                 gap={2}
               >
+                {renderRow(
+                  t('network'),
+                  <Text
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    gap={1}
+                    data-testid="asset-network"
+                  >
+                    <AvatarNetwork
+                      src={tokenChainImage}
+                      name={networkName}
+                      size={AvatarNetworkSize.Sm}
+                    />
+                    {networkName}
+                  </Text>,
+                )}
                 {type === AssetType.token && (
                   <Box>
                     {renderRow(
@@ -332,7 +363,13 @@ const AssetPage = ({
                           >
                             {t('tokenList')}
                           </Text>
-                          <Text>{asset.aggregators.join(', ')}</Text>
+                          <Text>
+                            {asset.aggregators
+                              .map((agg) =>
+                                agg.replace(/^metamask$/iu, 'MetaMask'),
+                              )
+                              .join(', ')}
+                          </Text>
                         </Box>
                       )}
                     </Box>
@@ -430,9 +467,9 @@ const AssetPage = ({
               {t('yourActivity')}
             </Text>
             {type === AssetType.native ? (
-              <TransactionList hideTokenTransactions tokenChainId={chainId} />
+              <TransactionList hideTokenTransactions />
             ) : (
-              <TransactionList tokenAddress={address} tokenChainId={chainId} />
+              <TransactionList tokenAddress={address} />
             )}
           </Box>
         </Box>
