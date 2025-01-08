@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import type { RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
@@ -21,10 +21,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
-import {
-  MultichainTransactionsControllerState,
-  Transaction,
-} from '../../shared/types/multichain/transactions';
+import { MultichainTransactionsControllerState } from '../../shared/types/multichain/transactions';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -376,7 +373,7 @@ export function getMultichainTransactions(
 export function getSelectedAccountMultichainTransactions(
   state: MultichainState,
 ):
-  | { data: Transaction[]; next: string | null; lastUpdated: number }
+  | { transactions: Transaction[]; next: string | null; lastUpdated: number }
   | undefined {
   const selectedAccount = getSelectedInternalAccount(state);
 

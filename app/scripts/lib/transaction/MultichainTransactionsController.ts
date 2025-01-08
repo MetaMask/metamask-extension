@@ -10,6 +10,7 @@ import {
   BtcAccountType,
   isEvmAccountType,
   SolAccountType,
+  Transaction,
 } from '@metamask/keyring-api';
 import { KeyringClient } from '@metamask/keyring-snap-client';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
@@ -22,7 +23,6 @@ import type {
   AccountsControllerAccountRemovedEvent,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
-import type { Transaction } from '../../../../shared/types/multichain/transactions';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { MultichainTransactionsTracker } from './MultichainTransactionsTracker';
 
@@ -38,11 +38,7 @@ export type PaginationOptions = {
  */
 export type MultichainTransactionsControllerState = {
   nonEvmTransactions: {
-    [accountId: string]: {
-      data: Transaction[];
-      next: string | null;
-      lastUpdated: number;
-    };
+    [accountId: string]: TransactionStateEntry;
   };
 };
 
@@ -144,8 +140,8 @@ const TRANSACTIONS_CHECK_INTERVALS = {
 /**
  * The state of transactions for a specific account.
  */
-type TransactionStateEntry = {
-  data: Transaction[];
+export type TransactionStateEntry = {
+  transactions: Transaction[];
   next: string | null;
   lastUpdated: number;
 };
@@ -240,18 +236,19 @@ export class MultichainTransactionsController extends BaseController<
       );
 
       /**
-       * Filter mainnet transactions based on chain prefix
-       * For now, we don't look at the current network, but we will in the future
+       * Filter only Solana transactions to ensure they're mainnet
+       * All other chain transactions are included as-is
        */
-      const mainnetTransactions = response.data.filter(
-        (tx) =>
-          tx.chain.startsWith(MultichainNetworks.SOLANA) ||
-          tx.chain.startsWith(MultichainNetworks.BITCOIN),
-      );
+      const transactions = response.data.filter((tx) => {
+        if (tx.chain.startsWith(MultichainNetworks.SOLANA)) {
+          return tx.chain === MultichainNetworks.SOLANA;
+        }
+        return true;
+      });
 
       this.update((state: Draft<MultichainTransactionsControllerState>) => {
         const entry: TransactionStateEntry = {
-          data: mainnetTransactions,
+          transactions,
           next: response.next,
           lastUpdated: Date.now(),
         };

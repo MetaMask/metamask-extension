@@ -75,6 +75,13 @@ import {
   getMultichainNetwork,
   getSelectedAccountMultichainTransactions,
 } from '../../../selectors/multichain';
+import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
+import {
+  MULTICHAIN_PROVIDER_CONFIGS,
+  MultichainNetworks,
+  SOLANA_TOKEN_IMAGE_URL,
+  BITCOIN_TOKEN_IMAGE_URL,
+} from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -130,15 +137,19 @@ const getFilteredTransactionGroups = (
   return transactionGroups;
 };
 
-const groupTransactionsByDate = (transactionGroups) => {
+const groupTransactionsByDate = (
+  transactionGroups,
+  getTransactionTimestamp,
+) => {
   const groupedTransactions = [];
 
+  if (!transactionGroups) {
+    return groupedTransactions;
+  }
+
   transactionGroups.forEach((transactionGroup) => {
-    const date = formatDateWithYearContext(
-      transactionGroup.primaryTransaction.time,
-      'MMM d, y',
-      'MMM d',
-    );
+    const timestamp = getTransactionTimestamp(transactionGroup);
+    const date = formatDateWithYearContext(timestamp, 'MMM d, y', 'MMM d');
 
     const existingGroup = groupedTransactions.find(
       (group) => group.date === date,
@@ -149,7 +160,7 @@ const groupTransactionsByDate = (transactionGroups) => {
     } else {
       groupedTransactions.push({
         date,
-        dateMillis: transactionGroup.primaryTransaction.time,
+        dateMillis: timestamp,
         transactionGroups: [transactionGroup],
       });
     }
@@ -158,6 +169,18 @@ const groupTransactionsByDate = (transactionGroups) => {
 
   return groupedTransactions;
 };
+
+const groupEvmTransactionsByDate = (transactionGroups) =>
+  groupTransactionsByDate(
+    transactionGroups,
+    (transactionGroup) => transactionGroup.primaryTransaction.time,
+  );
+
+const groupNonEvmTransactionsByDate = (transactions) =>
+  groupTransactionsByDate(
+    transactions?.data,
+    (transaction) => transaction.timestamp * 1000,
+  );
 
 export default function TransactionList({
   hideTokenTransactions,
@@ -171,6 +194,8 @@ export default function TransactionList({
   const nonEvmTransactions = useSelector(
     getSelectedAccountMultichainTransactions,
   );
+
+  const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
   ///: END:ONLY_INCLUDE_IF
 
   const unfilteredPendingTransactions = useSelector(
@@ -212,7 +237,7 @@ export default function TransactionList({
 
   const pendingTransactions = useMemo(
     () =>
-      groupTransactionsByDate(
+      groupEvmTransactionsByDate(
         getFilteredTransactionGroups(
           unfilteredPendingTransactions,
           hideTokenTransactions,
@@ -230,7 +255,7 @@ export default function TransactionList({
 
   const completedTransactions = useMemo(
     () =>
-      groupTransactionsByDate(
+      groupEvmTransactionsByDate(
         getFilteredTransactionGroups(
           unfilteredCompletedTransactions,
           hideTokenTransactions,
@@ -299,34 +324,6 @@ export default function TransactionList({
 
   const trackEvent = useContext(MetaMetricsContext);
 
-  const groupNonEvmTransactionsByDate = (transactions) => {
-    const groupedTransactions = [];
-
-    transactions.data.forEach((transaction) => {
-      const timestamp = transaction.timestamp * 1000;
-
-      const date = formatDateWithYearContext(timestamp, 'MMM d, y', 'MMM d');
-
-      const existingGroup = groupedTransactions.find(
-        (group) => group.date === date,
-      );
-
-      if (existingGroup) {
-        existingGroup.transactions.push(transaction);
-      } else {
-        groupedTransactions.push({
-          date,
-          dateMillis: transaction.timestamp,
-          transactions: [transaction],
-        });
-      }
-    });
-
-    groupedTransactions.sort((a, b) => b.dateMillis - a.dateMillis);
-
-    return groupedTransactions;
-  };
-
   if (!isEvmAccountType(selectedAccount.type)) {
     const addressLink = getMultichainAccountUrl(
       selectedAccount.address,
@@ -336,6 +333,7 @@ export default function TransactionList({
     const metricsLocation = 'Activity Tab';
     return (
       <Box className="transaction-list" {...boxProps}>
+        {/* TODO: Non-EVM transactions are not paginated for now. */}
         <Box className="transaction-list__transactions">
           {nonEvmTransactions.data.length > 0 ? (
             <Box className="transaction-list__completed-transactions">
@@ -364,9 +362,21 @@ export default function TransactionList({
                                 borderWidth={1}
                                 className="activity-tx__network-badge"
                                 data-testid="activity-tx-network-badge"
-                                name="Solana"
+                                name={
+                                  isSolanaAccount
+                                    ? MULTICHAIN_PROVIDER_CONFIGS[
+                                        MultichainNetworks.SOLANA
+                                      ].nickname
+                                    : MULTICHAIN_PROVIDER_CONFIGS[
+                                        MultichainNetworks.BITCOIN
+                                      ].nickname
+                                }
                                 size="xs"
-                                src="./images/solana-logo.svg"
+                                src={
+                                  isSolanaAccount
+                                    ? SOLANA_TOKEN_IMAGE_URL
+                                    : BITCOIN_TOKEN_IMAGE_URL
+                                }
                               />
                             }
                             display="block"
