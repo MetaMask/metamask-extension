@@ -168,7 +168,7 @@ export default class EncryptionPublicKeyController extends BaseController<
 
     this.messagingSystem.subscribe(
       `${managerName}:unapprovedMessage`,
-      this._requestApproval,
+      this._requestApproval.bind(this),
     );
 
     this._subscribeToMessageState(

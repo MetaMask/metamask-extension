@@ -2066,7 +2066,10 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
           `${this.keyringController.name}:decryptMessage`,
         ],
-        allowedEvents: ['DecryptMessageManager:stateChange'],
+        allowedEvents: [
+          'DecryptMessageManager:stateChange',
+          'DecryptMessageManager:unapprovedMessage',
+        ],
       }),
       managerMessenger: this.controllerMessenger.getRestricted({
         name: 'DecryptMessageManager',
@@ -2084,7 +2087,10 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
         ],
-        allowedEvents: ['EncryptionPublicKeyManager:stateChange'],
+        allowedEvents: [
+          'EncryptionPublicKeyManager:stateChange',
+          'EncryptionPublicKeyManager:unapprovedMessage',
+        ],
       }),
       managerMessenger: this.controllerMessenger.getRestricted({
         name: 'EncryptionPublicKeyManager',

@@ -190,7 +190,7 @@ export default class DecryptMessageController extends BaseController<
 
     messenger.subscribe(
       `${managerName}:unapprovedMessage`,
-      this._requestApproval,
+      this._requestApproval.bind(this),
     );
 
     this._subscribeToMessageState(
