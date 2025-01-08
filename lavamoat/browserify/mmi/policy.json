@@ -3033,7 +3033,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex>tslib": true
+        "tslib": true
       }
     },
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
@@ -3935,7 +3935,7 @@
         "setTimeout": true
       },
       "packages": {
-        "react-focus-lock>focus-lock>tslib": true
+        "tslib": true
       }
     },
     "browserify>util>which-typed-array>for-each": {
@@ -5451,22 +5451,6 @@
     },
     "tslib": {
       "globals": {
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "react-focus-lock>focus-lock>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }
