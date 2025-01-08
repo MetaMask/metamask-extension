@@ -1,18 +1,15 @@
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import FixtureBuilder from '../../fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
+import TestDapp from '../../page-objects/pages/test-dapp';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
-import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-const accountLabel2 = '2nd custom name';
-const accountLabel3 = '3rd custom name';
-describe('Edit Accounts Flow', function () {
-  it('should be able to edit accounts', async function () {
+describe('Edit Networks Permissions', function () {
+  it('should be able to edit networks', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -24,6 +21,7 @@ describe('Edit Accounts Flow', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.check_pageIsLoaded();
+
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
@@ -31,33 +29,20 @@ describe('Edit Accounts Flow', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await new Homepage(driver).check_pageIsLoaded();
-        new HeaderNavbar(driver).openAccountMenu();
 
-        // create second account with custom label
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccount(accountLabel2);
-        const homepage = new Homepage(driver);
-        await homepage.check_expectedBalanceIsDisplayed();
-
-        // create third account with custom label
-        await homepage.headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccount(accountLabel3);
-        await homepage.check_expectedBalanceIsDisplayed();
-
-        // go to connections permissions page
-        await homepage.headerNavbar.openPermissionsPage();
+        // Open permission page for dapp
+        new HeaderNavbar(driver).openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.check_pageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
         const sitePermissionPage = new SitePermissionPage(driver);
         await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
-        await sitePermissionPage.editPermissionsForAccount([
-          accountLabel2,
-          accountLabel3,
+
+        // Disconnect Mainnet
+        await sitePermissionPage.editPermissionsForNetwork([
+          'Ethereum Mainnet',
         ]);
-        await sitePermissionPage.check_connectedAccountsNumber(3);
+        await sitePermissionPage.check_connectedNetworksNumber(2);
       },
     );
   });
