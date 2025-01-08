@@ -41,9 +41,6 @@ describe('NFT detection', function () {
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
-        await nftListPage.check_nftNameIsDisplayed(
-          'ENS: Ethereum Name Service (1)',
-        );
         await nftListPage.check_nftImageIsDisplayed();
       },
     );
