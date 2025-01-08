@@ -154,7 +154,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { toCaipChainId } from '@metamask/utils';
+import { hexToBigInt, toCaipChainId } from '@metamask/utils';
 import {
   AuthenticationController,
   UserStorageController,
@@ -5296,7 +5296,7 @@ export default class MetamaskController extends EventEmitter {
       (existingScopes) =>
         Caip25CaveatMutators[Caip25CaveatType].removeScope(
           existingScopes,
-          toCaipChainId('eip155', parseInt(targetChainId, 16).toString()),
+          toCaipChainId('eip155', hexToBigInt(targetChainId).toString(10)),
         ),
     );
   }
