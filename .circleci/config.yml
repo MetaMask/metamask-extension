@@ -168,7 +168,7 @@ workflows:
           requires:
             - prep-deps
       - test-e2e-chrome-webpack:
-          <<: *develop_master_rc_only
+          <<: *main_master_rc_only
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
@@ -177,7 +177,7 @@ workflows:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
-          <<: *develop_master_rc_only
+          <<: *main_master_rc_only
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
