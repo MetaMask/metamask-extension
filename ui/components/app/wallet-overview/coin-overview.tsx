@@ -226,19 +226,22 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
 
   const renderPercentageAndAmountChange = () => {
-    const renderPortfolioButton = () => (
+    const renderPortfolioButton = () => {
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      <ButtonLink
-        endIconName={IconName.Export}
-        onClick={handlePortfolioOnClick}
-        as="a"
-        data-testid="portfolio-link"
-        textProps={{ variant: TextVariant.bodyMdMedium }}
-      >
-        {t('portfolio')}
-      </ButtonLink>
+      return (
+        <ButtonLink
+          endIconName={IconName.Export}
+          onClick={handlePortfolioOnClick}
+          as="a"
+          data-testid="portfolio-link"
+          textProps={{ variant: TextVariant.bodyMdMedium }}
+        >
+          {t('portfolio')}
+        </ButtonLink>
+      );
       ///: END:ONLY_INCLUDE_IF
-    );
+      return null;
+    };
 
     const renderNativeTokenView = () => (
       <Box className="wallet-overview__currency-wrapper">
