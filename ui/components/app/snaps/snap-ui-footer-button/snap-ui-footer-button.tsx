@@ -84,6 +84,7 @@ export const SnapUIFooterButton: FunctionComponent<
         alignItems: AlignItems.center,
         flexDirection: FlexDirection.Row,
       }}
+      data-theme={null}
     >
       {isSnapAction && !hideSnapBranding && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
