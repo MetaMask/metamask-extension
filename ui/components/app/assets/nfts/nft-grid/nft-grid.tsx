@@ -63,38 +63,6 @@ export default function NftGrid({
           </Box>
         );
       })}
-      <Text
-        variant={TextVariant.headingSm}
-        color={TextColor.textDefault}
-        margin={2}
-      >
-        {t('nftsPreviouslyOwned')}
-      </Text>
-      {prevNfts.map((nft: NFT) => {
-        const { image, imageOriginal, tokenURI } = nft;
-        const nftImageAlt = getNftImageAlt(nft);
-        const isIpfsURL = (imageOriginal ?? image ?? tokenURI)?.startsWith(
-          'ipfs:',
-        );
-        return (
-          <Box
-            data-testid="nft-wrapper"
-            key={tokenURI}
-            className="nft-items__image-wrapper"
-          >
-            <NftItem
-              nft={nft}
-              alt={nftImageAlt}
-              src={image ?? ''}
-              networkName={currentChain.nickname}
-              networkSrc={currentChain.rpcPrefs?.imageUrl}
-              onClick={() => handleNftClick(nft)}
-              isIpfsURL={isIpfsURL}
-              clickable
-            />
-          </Box>
-        );
-      })}
       {nftsStillFetchingIndication ? (
         <Box className="nfts-tab__fetching">
           <Spinner
