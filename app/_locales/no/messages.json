@@ -431,9 +431,6 @@
   "noConversionRateAvailable": {
     "message": "Ingen konverteringsrate tilgjengelig "
   },
-  "noTransactions": {
-    "message": "Du har ingen transaksjoner"
-  },
   "noWebcamFound": {
     "message": "Datamaskinens webkamera ble ikke funnet. Vennligst prøv igjen."
   },

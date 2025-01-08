@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
@@ -27,7 +28,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import { isSnapId } from '../../../../../../helpers/utils/snaps';
 import {
   hexToText,
   sanitizeString,

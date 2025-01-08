@@ -443,9 +443,6 @@
   "noConversionRateAvailable": {
     "message": "Немає доступного обмінного курсу"
   },
-  "noTransactions": {
-    "message": "У вас немає транзакцій"
-  },
   "noWebcamFound": {
     "message": "Веб-камеру комп’ютера не знайдено. Повторіть спробу."
   },
