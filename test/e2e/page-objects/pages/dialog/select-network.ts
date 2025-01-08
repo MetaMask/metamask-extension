@@ -31,8 +31,6 @@ class SelectNetwork {
     this.driver = driver;
   }
 
-
-
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([

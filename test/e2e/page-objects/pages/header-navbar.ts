@@ -141,7 +141,7 @@ class HeaderNavbar {
   }
 
   async isNetworkPickerEnabled(): Promise<boolean> {
-    let element = await this.driver.findElement(this.switchNetworkDropDown);
+    const element = await this.driver.findElement(this.switchNetworkDropDown);
     return await element.isEnabled();
   }
 }

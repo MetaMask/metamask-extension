@@ -4,12 +4,12 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
-import { ACCOUNT_TYPE } from '../../constants';
+import { ACCOUNT_TYPE, DEFAULT_SOL_CONVERSION_RATE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { DEFAULT_SOL_CONVERSION_RATE } from '../../constants';
 import { withFixturesOptions } from '../../tests/swaps/shared';
 
 const SOLANA_URL_REGEX = /^https:\/\/.*\..*/u;
+const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';
 const SOLANA_PRICE_REGEX =
   /^https:\/\/price-api\.metamask-institutional\.io\/v2\/chains\/solana:/u;
 const SOLANA_BITCOIN_MIN_API =
@@ -59,7 +59,7 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
     },
   };
   return await mockServer
-    .forPost('https://api.devnet.solana.com/')
+    .forPost(SOLANA_RPC_PROVIDER)
     .withJsonBodyIncluding({
       method: 'getBalance',
     })
@@ -145,6 +145,26 @@ export async function mockGetSignaturesForAddress(mockServer: Mockttp) {
     });
 }
 
+export async function mockSendSolanaTransaction(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result:
+        '3nqGKH1ef8WkTgKXZ8q3xKsvjktWmHHhJpZMSdbB6hBqy5dA7aLVSAUjw5okezZjKMHiNg2MF5HAqtpmsesQtnpj',
+      id: 1337,
+    },
+  };
+  console.log('Entra aqui con ', response.json);
+  return await mockServer
+    .forPost(SOLANA_RPC_PROVIDER)
+    .withJsonBodyIncluding({
+      method: 'sendTransaction',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
 export async function mockSolanaRatesCall(mockServer: Mockttp) {
   return await mockServer
     .forGet(SOLANA_PRICE_REGEX)
@@ -183,11 +203,13 @@ export async function withSolanaAccountSnap(
     solanaSupportEnabled,
     showNativeTokenAsMainBalance,
     mockCalls,
+    mockSendTransaction,
   }: {
     title?: string;
     solanaSupportEnabled?: boolean;
     showNativeTokenAsMainBalance?: boolean;
     mockCalls?: boolean;
+    mockSendTransaction?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -205,15 +227,21 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
-      testSpecificMock: async (mockServer: Mockttp) =>
-        mockCalls
-          ? [
-              await mockSolanaBalanceQuote(mockServer),
-              await mockSolanaRatesCall(mockServer),
-              await mockGetSignaturesForAddress(mockServer),
-              await mockMultiCoinPrice(mockServer),
-            ]
-          : [],
+      testSpecificMock: async (mockServer: Mockttp) => {
+        const mockList = [];
+        if (mockCalls) {
+          mockList.push([
+            await mockSolanaBalanceQuote(mockServer),
+            await mockSolanaRatesCall(mockServer),
+            await mockGetSignaturesForAddress(mockServer),
+            await mockMultiCoinPrice(mockServer),
+          ]);
+        }
+        if (mockSendTransaction) {
+          mockList.push(await mockSendSolanaTransaction(mockServer));
+        }
+        return mockList;
+      },
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithBalanceValidation(driver);

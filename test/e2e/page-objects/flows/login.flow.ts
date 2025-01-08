@@ -43,7 +43,7 @@ export const loginWithBalanceValidation = async (
       localBlockchainServer,
     );
   } else {
-    console.log('Entra aqui')
+    console.log('Entra aqui');
     await homePage.check_expectedBalanceIsDisplayed('0', 'SOL');
   }
 };

@@ -4,11 +4,6 @@ class SolanaHomepage extends HomePage {
   protected readonly solanaBalance =
     '[data-testid="coin-overview__primary-currency"]';
 
-  private readonly bridgeButton = {
-    text: 'Bridge',
-    tag: 'button',
-  };
-
   private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
   private readonly receiveButton = '[data-testid="coin-overview-receive"]';
@@ -26,31 +21,31 @@ class SolanaHomepage extends HomePage {
    * @param expectedBalance - The expected bitcoin balance to be displayed. Defaults to '0'.
    */
   async getSolanaBalance(): Promise<string> {
-    console.log(
-      `Getting Solana balance`,
-    );
-    const balanceValue = await this.driver.waitForSelector(this.solanaBalance, { timeout: 120000 })
+    console.log(`Getting Solana balance`);
+    const balanceValue = await this.driver.waitForSelector(this.solanaBalance, {
+      timeout: 120000,
+    });
     const singleBalanceText = await balanceValue.getText();
-    const trimmedBalance = singleBalanceText.replaceAll(/\s+/g, ' ').trim()
-    return trimmedBalance
+    const trimmedBalance = singleBalanceText.replaceAll(/\s+/g, ' ').trim();
+    return trimmedBalance;
   }
 
-  /**
+    /**
    * Checks if the receive button is enabled on bitcoin account homepage.
    */
-  async check_isReceiveButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.receiveButton, 1000);
-    } catch (e) {
-      console.log('Receive button not enabled', e);
-      return false;
+    async check_isReceiveButtonEnabled(): Promise<boolean> {
+      try {
+        await this.driver.findClickableElement(this.receiveButton, 1000);
+      } catch (e) {
+        console.log('Receive button not enabled', e);
+        return false;
+      }
+      console.log('Receive button is enabled');
+      return true;
     }
-    console.log('Receive button is enabled');
-    return true;
-  }
 
   async clickOnSend(): Promise<void> {
-    await this.driver.clickElement(this.sendButton)
+    await this.driver.clickElement(this.sendButton);
   }
 }
 

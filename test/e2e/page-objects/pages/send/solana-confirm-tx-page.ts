@@ -1,22 +1,18 @@
-import { strict as assert, constructor } from 'assert';
-import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class ConfirmSolanaTxPage {
   private driver: Driver;
 
-  private readonly sendAmountInput = '#send-amount-input';
-
-  private readonly toAddressInput = '#send-to'
+  private readonly toAddressInput = '#send-to';
 
   private readonly sendButton = {
     text: 'Send',
-    tag: 'button',
+    tag: 'span',
   };
 
   private readonly cancelButton = {
     text: 'Cancel',
-    tag: 'button',
+    tag: 'span',
   };
 
   constructor(driver: Driver) {
@@ -25,50 +21,56 @@ class ConfirmSolanaTxPage {
 
   async checkAmountDisplayed(amount: string): Promise<boolean> {
     try {
-    await this.driver.findElement({
-      text: `Sending ${amount} SOL`,
-      tag: 'h2',
-    });
-    return true;
-  } catch (err) {
-    console.log('Amount summary text incorrect');
-    return false;
+      await this.driver.findElement({
+        text: `Sending ${amount} SOL`,
+        tag: 'h2',
+      });
+      return true;
+    } catch (err) {
+      console.log('Amount summary text incorrect');
+      return false;
     }
   }
 
   async isTrancsactionDetailDisplayed(text: string): Promise<boolean> {
-    const detail = await this.driver.findElement({
-      text,
-      tag: 'p',
-    }, 200)
+    const detail = await this.driver.findElement(
+      {
+        text,
+        tag: 'p',
+      },
+      200,
+    );
     return await detail.isDisplayed();
   }
 
   async setToAddress(toAddress: string): Promise<void> {
-    await this.driver.pasteIntoField(this.toAddressInput, toAddress)
+    await this.driver.pasteIntoField(this.toAddressInput, toAddress);
   }
 
-  async clickOnContinue(): Promise<void> {
-    await this.driver.clickElement(this.continueButton)
+  async clickOnSend(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
   }
 
-  async isContinueButtonEnabled(): Promise<boolean> {
+  async isSendButtonEnabled(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.continueButton, 1000);
+      await this.driver.findClickableElement(this.sendButton, 1000);
     } catch (e) {
-      console.log('Continue button not enabled', e);
+      console.log('Send button not enabled', e);
       return false;
     }
-    console.log('Continue button is enabled');
+    console.log('Send button is enabled');
     return true;
   }
 
   async isInsufficientBalanceDisplayed(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement({
-        text: 'Insufficient balance',
-        tag: 'p',
-      }, 1000);
+      await this.driver.findClickableElement(
+        {
+          text: 'Insufficient balance',
+          tag: 'p',
+        },
+        1000,
+      );
     } catch (e) {
       console.log('Insufficient balance message not displayed', e);
       return false;
