@@ -730,8 +730,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await clickNestedButton(driver, 'NFTs');
-          await driver.findElement({ text: 'TestDappNFTs (6)' });
           const nftsListItemsSecondCheck = await driver.findElements(
             '.nft-item__container',
           );
