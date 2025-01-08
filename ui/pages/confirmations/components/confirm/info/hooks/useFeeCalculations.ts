@@ -157,9 +157,12 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       minimumFeePerGas = decimalToHex(maxFeePerGas);
     }
 
+    // We want to pick gasLimitNoBuffer to show minimum network fee
+    const minimumGasLimit = transactionMeta?.gasLimitNoBuffer || gasLimit;
+
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),
-      gasLimit as Hex,
+      minimumGasLimit as Hex,
     );
 
     return getFeesFromHex(estimatedFee);
