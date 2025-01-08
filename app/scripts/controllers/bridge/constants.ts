@@ -20,10 +20,7 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
       chains: {},
     },
   },
-  srcTokens: {},
-  srcTokensLoadingStatus: undefined,
   destTokensLoadingStatus: undefined,
-  srcTopAssets: [],
   destTokens: {},
   destTopAssets: [],
   quoteRequest: {
