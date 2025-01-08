@@ -26,6 +26,7 @@ import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { Token } from '../../components/app/assets/token-list/token-list';
 import { useMultichainBalances } from '../useMultichainBalances';
+import { getToTokens } from '../../ducks/bridge/selectors';
 
 type FilterPredicate = (
   symbol: string,
@@ -42,15 +43,9 @@ type FilterPredicate = (
  * - popularity
  * - all other tokens
  *
- * @param tokenList - a mapping of token addresses in the selected chainId to token metadata from the bridge-api
- * @param topTokens - a list of top tokens from the swap-api
  * @param chainId - the selected src/dest chainId
  */
-export const useTokensWithFiltering = (
-  tokenList: Record<string, SwapsTokenObject>,
-  topTokens: { address: string }[],
-  chainId?: ChainId | Hex,
-) => {
+export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
   const { token: tokenAddressFromUrl } = useParams();
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
@@ -100,6 +95,13 @@ export const useTokensWithFiltering = (
       address: token.address || zeroAddress(),
     };
   };
+
+  // TODO only fetch tken list if network is not imported
+  const {
+    toTokens: tokenList,
+    toTopAssets: topTokens,
+    isLoading,
+  } = useSelector(getToTokens);
 
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
@@ -201,6 +203,5 @@ export const useTokensWithFiltering = (
       allDetectedTokens,
     ],
   );
-
-  return filteredTokenListGenerator;
+  return { filteredTokenListGenerator, isLoading };
 };
