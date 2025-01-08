@@ -154,6 +154,12 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import { isEvmAccountType } from '@metamask/keyring-api';
+<<<<<<< HEAD
+||||||| cd0e2d1377
+import { toCaipChainId } from '@metamask/utils';
+=======
+import { hexToBigInt, toCaipChainId } from '@metamask/utils';
+>>>>>>> caip25-permission-migration
 import {
   AuthenticationController,
   UserStorageController,
