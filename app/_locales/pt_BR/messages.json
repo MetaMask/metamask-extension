@@ -1086,9 +1086,6 @@
   "loading": {
     "message": "Carregando..."
   },
-  "loadingTokens": {
-    "message": "Carregando tokens..."
-  },
   "localhost": {
     "message": "Host local 8545"
   },
@@ -1275,9 +1272,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
-  },
-  "noTransactions": {
-    "message": "Você não tem transações"
   },
   "noWebcamFound": {
     "message": "A webcam do seu computador não foi encontrada. Tente novamente."
@@ -2374,10 +2368,6 @@
   },
   "whatsThis": {
     "message": "O que é isso?"
-  },
-  "xOfYPending": {
-    "message": "$1 de $2 pendente",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."

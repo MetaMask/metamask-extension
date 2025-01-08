@@ -42,15 +42,16 @@
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-    "nftsDropdownState": {},
-    "termsOfUseLastAgreed": "number",
-    "qrHardware": {},
-    "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
+    "switchedNetworkNeverShowMessage": "boolean",
+    "slides": "object",
+    "qrHardware": {},
+    "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
-    "switchedNetworkNeverShowMessage": "boolean",
-    "currentExtensionPopupId": "number"
+    "currentExtensionPopupId": "number",
+    "termsOfUseLastAgreed": "number",
+    "snapsInstallPrivacyWarningShown": true
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -61,10 +62,12 @@
   "BridgeController": {
     "bridgeState": {
       "bridgeFeatureFlags": {
-        "extensionConfig": "object",
-        "extensionSupport": "boolean",
-        "srcNetworkAllowlist": { "0": "string", "1": "string", "2": "string" },
-        "destNetworkAllowlist": { "0": "string", "1": "string", "2": "string" }
+        "extensionConfig": {
+          "refreshRate": "number",
+          "maxRefreshCount": "number",
+          "support": "boolean",
+          "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
+        }
       },
       "srcTokens": {},
       "srcTopAssets": {},
@@ -235,15 +238,10 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": {
-        "0x1": "boolean",
-        "0xaa36a7": "boolean",
-        "0xe705": "boolean",
-        "0xe708": "boolean",
-        "0x539": "boolean"
-      },
+      "tokenNetworkFilter": { "0x539": "boolean" },
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean"
+      "redesignedTransactionsEnabled": "boolean",
+      "smartTransactionsMigrationApplied": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -327,11 +325,7 @@
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
     "tokenList": "object",
-    "tokensChainsCache": {
-      "0x1": "object",
-      "0xe708": "object",
-      "0x539": "object"
-    },
+    "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": { "marketData": "object" },

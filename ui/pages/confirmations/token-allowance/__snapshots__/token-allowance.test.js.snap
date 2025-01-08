@@ -40,11 +40,11 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
           <div
             class="confirm-page-container-navigation__navtext"
           >
-            0
+            1
              
             of
              
-            0
+            1
           </div>
           <div
             class="confirm-page-container-navigation__longtext"
