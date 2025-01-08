@@ -24,6 +24,11 @@ class AssetListPage {
 
   private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
+  private readonly customTokenModalOption = {
+    text: 'Custom token',
+    tag: 'button',
+  };
+
   private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
 
   private readonly hideTokenConfirmationButton =
@@ -43,15 +48,41 @@ class AssetListPage {
 
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
+  private sortByAlphabetically = '[data-testid="sortByAlphabetically"]';
+
+  private sortByDecliningBalance = '[data-testid="sortByDecliningBalance"]';
+
+  private sortByPopoverToggle = '[data-testid="sort-by-popover-toggle"]';
+
+  private readonly tokenAddressInput =
+    '[data-testid="import-tokens-modal-custom-address"]';
+
   private readonly tokenAmountValue =
     '[data-testid="multichain-token-list-item-value"]';
+
+  private readonly tokenImportedSuccessMessage = {
+    text: 'Token imported',
+    tag: 'h6',
+  };
 
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
 
   private readonly tokenOptionsButton = '[data-testid="import-token-button"]';
 
+  private tokenPercentage(address: string): string {
+    return `[data-testid="token-increase-decrease-percentage-${address}"]`;
+  }
+
   private readonly tokenSearchInput = 'input[placeholder="Search tokens"]';
+
+  private readonly tokenSymbolInput =
+    '[data-testid="import-tokens-modal-custom-symbol"]';
+
+  private readonly modalWarningBanner = 'div.mm-banner-alert--severity-warning';
+
+  private readonly tokenIncreaseDecreaseValue =
+    '[data-testid="token-increase-decrease-value"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -81,15 +112,6 @@ class AssetListPage {
     throw new Error(`${assetName} button not found`);
   }
 
-  async getAllNetworksOptionTotal(): Promise<string> {
-    console.log(`Retrieving the "All networks" option fiat value`);
-    const allNetworksValueElement = await this.driver.findElement(
-      this.allNetworksTotal,
-    );
-    const value = await allNetworksValueElement.getText();
-    return value;
-  }
-
   async getCurrentNetworksOptionTotal(): Promise<string> {
     console.log(`Retrieving the "Current network" option fiat value`);
     const allNetworksValueElement = await this.driver.findElement(
@@ -112,6 +134,29 @@ class AssetListPage {
     return assets.length;
   }
 
+  async getTokenListNames(): Promise<string[]> {
+    console.log(`Retrieving the list of token names`);
+    const tokenElements = await this.driver.findElements(this.tokenListItem);
+    const tokenNames = await Promise.all(
+      tokenElements.map(async (element) => {
+        return await element.getText();
+      }),
+    );
+    return tokenNames;
+  }
+
+  async sortTokenList(
+    sortBy: 'alphabetically' | 'decliningBalance',
+  ): Promise<void> {
+    console.log(`Sorting the token list by ${sortBy}`);
+    await this.driver.clickElement(this.sortByPopoverToggle);
+    if (sortBy === 'alphabetically') {
+      await this.driver.clickElement(this.sortByAlphabetically);
+    } else if (sortBy === 'decliningBalance') {
+      await this.driver.clickElement(this.sortByDecliningBalance);
+    }
+  }
+
   /**
    * Hides a token by clicking on the token name, and confirming the hide modal.
    *
@@ -119,13 +164,29 @@ class AssetListPage {
    */
   async hideToken(tokenName: string): Promise<void> {
     console.log(`Hide token ${tokenName} on homepage`);
-    await this.driver.clickElement({ text: tokenName, tag: 'span' });
+    await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.assetOptionsButton);
     await this.driver.clickElement(this.hideTokenButton);
     await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
     await this.driver.clickElementAndWaitToDisappear(
       this.hideTokenConfirmationButton,
     );
+  }
+
+  async importCustomToken(tokenAddress: string, symbol: string): Promise<void> {
+    console.log(`Creating custom token ${symbol} on homepage`);
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.importTokensButton);
+    await this.driver.waitForSelector(this.importTokenModalTitle);
+    await this.driver.clickElement(this.customTokenModalOption);
+    await this.driver.waitForSelector(this.modalWarningBanner);
+    await this.driver.fill(this.tokenAddressInput, tokenAddress);
+    await this.driver.fill(this.tokenSymbolInput, symbol);
+    await this.driver.clickElement(this.importTokensNextButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmImportTokenButton,
+    );
+    await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
   async importTokenBySearch(tokenName: string) {
@@ -137,6 +198,24 @@ class AssetListPage {
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.confirmImportTokenMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmImportTokenButton,
+    );
+  }
+
+  async importMultipleTokensBySearch(tokenNames: string[]) {
+    console.log(
+      `Importing tokens ${tokenNames.join(', ')} on homepage by search`,
+    );
+    await this.driver.clickElement(this.tokenOptionsButton);
+    await this.driver.clickElement(this.importTokensButton);
+    await this.driver.waitForSelector(this.importTokenModalTitle);
+
+    for (const name of tokenNames) {
+      await this.driver.fill(this.tokenSearchInput, name);
+      await this.driver.clickElement({ text: name, tag: 'p' });
+    }
+    await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
@@ -156,30 +235,6 @@ class AssetListPage {
     );
   }
 
-  async selectNetworkFilterAllNetworks(): Promise<void> {
-    console.log(`Selecting "All networks" from the network filter`);
-    await this.driver.clickElement(this.allNetworksOption);
-    await this.driver.waitUntil(
-      async () => {
-        const label = await this.getNetworksFilterLabel();
-        return label === 'All networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
-  async selectNetworkFilterCurrentNetwork(): Promise<void> {
-    console.log(`Selecting "Current network" from the network filter`);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const label = await this.getNetworksFilterLabel();
-        return label !== 'All networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
   async waitUntilFilterLabelIs(label: string): Promise<void> {
     console.log(`Waiting until the filter label is ${label}`);
     await this.driver.waitUntil(
@@ -189,17 +244,6 @@ class AssetListPage {
       },
       { timeout: 5000, interval: 100 },
     );
-  }
-
-  async check_ifAssetIsVisible(assetName: string): Promise<boolean> {
-    const assets = await this.driver.findElements(this.tokenListItem);
-    for (const asset of assets) {
-      const text = await asset.getText();
-      if (text.includes(assetName)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   async check_networkFilterText(expectedText: string): Promise<void> {
@@ -249,6 +293,21 @@ class AssetListPage {
   }
 
   /**
+   * This function checks if the specified token is displayed in the token list by its name.
+   *
+   * @param tokenName - The name of the token to check for.
+   * @returns A promise that resolves if the specified token is displayed.
+   */
+  async check_tokenIsDisplayed(tokenName: string): Promise<void> {
+    console.log(`Waiting for token ${tokenName} to be displayed`);
+    await this.driver.waitForSelector({
+      text: tokenName,
+      tag: 'p',
+    });
+    console.log(`Token ${tokenName} is displayed.`);
+  }
+
+  /**
    * This function checks if the specified number of token items is displayed in the token list.
    *
    * @param expectedNumber - The number of token items expected to be displayed. Defaults to 1.
@@ -263,6 +322,71 @@ class AssetListPage {
     console.log(
       `Expected number of token items ${expectedNumber} is displayed.`,
     );
+  }
+
+  /**
+   * Checks if the token's general increase or decrease percentage is displayed correctly
+   *
+   * @param address - The token address to check
+   * @param expectedChange - The expected change percentage value (e.g. '+0.02%' or '-0.03%')
+   */
+  async check_tokenGeneralChangePercentage(
+    address: string,
+    expectedChange: string,
+  ): Promise<void> {
+    console.log(
+      `Checking token general change percentage for address ${address}`,
+    );
+    const isPresent = await this.driver.isElementPresentAndVisible({
+      css: this.tokenPercentage(address),
+      text: expectedChange,
+    });
+    if (!isPresent) {
+      throw new Error(
+        `Token general change percentage ${expectedChange} not found for address ${address}`,
+      );
+    }
+  }
+
+  /**
+   * Checks if the token's percentage change element does not exist
+   *
+   * @param address - The token address to check
+   */
+  async check_tokenGeneralChangePercentageNotPresent(
+    address: string,
+  ): Promise<void> {
+    console.log(
+      `Checking token general change percentage is not present for address ${address}`,
+    );
+    const isPresent = await this.driver.isElementPresent({
+      css: this.tokenPercentage(address),
+    });
+    if (isPresent) {
+      throw new Error(
+        `Token general change percentage element should not exist for address ${address}`,
+      );
+    }
+  }
+
+  /**
+   * Checks if the token's general increase or decrease value is displayed correctly
+   *
+   * @param expectedChangeValue - The expected change value (e.g. '+$50.00' or '-$30.00')
+   */
+  async check_tokenGeneralChangeValue(
+    expectedChangeValue: string,
+  ): Promise<void> {
+    console.log(`Checking token general change value ${expectedChangeValue}`);
+    const isPresent = await this.driver.isElementPresentAndVisible({
+      css: this.tokenIncreaseDecreaseValue,
+      text: expectedChangeValue,
+    });
+    if (!isPresent) {
+      throw new Error(
+        `Token general change value ${expectedChangeValue} not found`,
+      );
+    }
   }
 }
 

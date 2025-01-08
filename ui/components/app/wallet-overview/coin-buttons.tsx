@@ -24,7 +24,8 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -463,10 +464,11 @@ const CoinButtons = ({
     });
   }, [chainId, defaultSwapsToken]);
 
-  const handleBridgeOnClick = useCallback(() => {
+  const handleBridgeOnClick = useCallback(async () => {
     if (!defaultSwapsToken) {
       return;
     }
+    await setCorrectChain();
     openBridgeExperience(
       'Home',
       defaultSwapsToken,

@@ -1,254 +1,187 @@
-import { cloneDeep } from 'lodash';
-import { NetworkState } from '@metamask/network-controller';
-import { infuraProjectId } from '../../../shared/constants/network';
-import { migrate, version } from './135';
+import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import { migrate, VersionedData } from './135';
 
-const oldVersion = 134;
-const BASE_CHAIN_ID = '0x2105';
+const prevVersion = 134;
 
 describe('migration #135', () => {
-  it('updates the version metadata', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
+  const mockSmartTransaction: SmartTransaction = {
+    uuid: 'test-uuid',
+  };
+
+  it('should update the version metadata', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: prevVersion },
       data: {},
     };
 
-    const newStorage = await migrate(cloneDeep(oldStorage));
-
-    expect(newStorage.meta).toStrictEqual({ version });
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.meta).toStrictEqual({ version: 135 });
   });
 
-  describe('Base Network Migration', () => {
-    it('does nothing if networkConfigurationsByChainId is not in state', async () => {
-      const oldState = {
-        OtherController: {},
-      };
+  it('should set stx opt-in to true and migration flag when stx opt-in status is null', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: prevVersion },
+      data: {
+        PreferencesController: {
+          preferences: {
+            smartTransactionsOptInStatus: null,
+          },
+        },
+      },
+    };
 
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: cloneDeep(oldState),
-      });
+    const newStorage = await migrate(oldStorage);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
+    ).toBe(true);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsMigrationApplied,
+    ).toBe(true);
+  });
 
-      expect(transformedState.data).toEqual(oldState);
-    });
+  it('should set stx opt-in to true and migration flag when stx opt-in status is undefined', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: prevVersion },
+      data: {
+        PreferencesController: {},
+      },
+    };
 
-    it('does nothing if no Infura RPC endpoints are used', async () => {
-      const oldState = {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': {
-              rpcEndpoints: [
-                {
-                  url: 'https://custom.rpc',
-                  type: 'custom',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
+    const newStorage = await migrate(oldStorage);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
+    ).toBe(true);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsMigrationApplied,
+    ).toBe(true);
+  });
+
+  it('should set stx opt-in to true and migration flag when stx opt-in is false and no existing mainnet smart transactions', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: prevVersion },
+      data: {
+        PreferencesController: {
+          preferences: {
+            smartTransactionsOptInStatus: false,
+          },
+        },
+        SmartTransactionsController: {
+          smartTransactionsState: {
+            smartTransactions: {
+              '0x1': [], // Empty mainnet transactions
+              '0xAA36A7': [mockSmartTransaction], // Sepolia has transactions
             },
           },
         },
-      };
+      },
+    };
 
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: cloneDeep(oldState),
-      });
+    const newStorage = await migrate(oldStorage);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
+    ).toBe(true);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsMigrationApplied,
+    ).toBe(true);
+  });
 
-      expect(transformedState.data).toEqual(oldState);
-    });
-
-    it('does nothing if Base network configuration is missing', async () => {
-      const oldState = {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': {
-              rpcEndpoints: [
-                {
-                  url: `https://mainnet.infura.io/v3/${infuraProjectId}`,
-                  type: 'infura',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
+  it('should not change stx opt-in when stx opt-in is false but has existing smart transactions, but should set migration flag', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: prevVersion },
+      data: {
+        PreferencesController: {
+          preferences: {
+            smartTransactionsOptInStatus: false,
+          },
+        },
+        SmartTransactionsController: {
+          smartTransactionsState: {
+            smartTransactions: {
+              '0x1': [mockSmartTransaction],
             },
           },
         },
-      };
+      },
+    };
 
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: cloneDeep(oldState),
-      });
+    const newStorage = await migrate(oldStorage);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
+    ).toBe(false);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsMigrationApplied,
+    ).toBe(true);
+  });
 
-      expect(transformedState.data).toEqual(oldState);
-    });
-
-    it('replaces "https://mainnet.base.org" if the default RPC endpoint is Infura', async () => {
-      const oldState = {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            [BASE_CHAIN_ID]: {
-              rpcEndpoints: [
-                {
-                  url: 'https://mainnet.base.org',
-                  type: 'custom',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
-            '0x1': {
-              rpcEndpoints: [
-                {
-                  url: `https://mainnet.infura.io/v3/${infuraProjectId}`,
-                  type: 'infura',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
+  it('should not change stx opt-in when stx opt-in is already true, but should set migration flag', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: prevVersion },
+      data: {
+        PreferencesController: {
+          preferences: {
+            smartTransactionsOptInStatus: true,
           },
         },
-      };
+      },
+    };
 
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: cloneDeep(oldState),
-      });
+    const newStorage = await migrate(oldStorage);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
+    ).toBe(true);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsMigrationApplied,
+    ).toBe(true);
+  });
 
-      const updatedNetworkController = transformedState.data
-        .NetworkController as NetworkState;
-
-      expect(
-        updatedNetworkController.networkConfigurationsByChainId[BASE_CHAIN_ID]
-          .rpcEndpoints[0].url,
-      ).toEqual(`https://base-mainnet.infura.io/v3/${infuraProjectId}`);
-    });
-
-    it('does not modify RPC endpoints if the default RPC endpoint is not Infura', async () => {
-      const oldState = {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            [BASE_CHAIN_ID]: {
-              rpcEndpoints: [
-                {
-                  url: 'https://other.rpc',
-                  type: 'custom',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
-            '0x1': {
-              rpcEndpoints: [
-                {
-                  url: 'https://custom.rpc',
-                  type: 'custom',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
+  it('should initialize preferences object if it does not exist', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: prevVersion },
+      data: {
+        PreferencesController: {
+          preferences: {
+            smartTransactionsOptInStatus: true,
           },
         },
-      };
+      },
+    };
 
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: cloneDeep(oldState),
-      });
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data.PreferencesController?.preferences).toBeDefined();
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsMigrationApplied,
+    ).toBe(true);
+  });
 
-      const updatedNetworkController = transformedState.data
-        .NetworkController as NetworkState;
+  it('should capture exception if PreferencesController state is invalid', async () => {
+    const sentryCaptureExceptionMock = jest.fn();
+    global.sentry = {
+      captureException: sentryCaptureExceptionMock,
+    };
 
-      expect(
-        updatedNetworkController.networkConfigurationsByChainId[BASE_CHAIN_ID]
-          .rpcEndpoints[0].url,
-      ).toEqual('https://other.rpc');
-    });
+    const oldStorage = {
+      meta: { version: prevVersion },
+      data: {
+        PreferencesController: 'invalid',
+      },
+    } as unknown as VersionedData;
 
-    it('keeps defaultRpcEndpointIndex unchanged when replacing "https://mainnet.base.org"', async () => {
-      const oldState = {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            [BASE_CHAIN_ID]: {
-              rpcEndpoints: [
-                {
-                  url: 'https://mainnet.base.org',
-                  type: 'custom',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
-            '0x1': {
-              rpcEndpoints: [
-                {
-                  url: `https://mainnet.infura.io/v3/${infuraProjectId}`,
-                  type: 'infura',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
-          },
-        },
-      };
+    await migrate(oldStorage);
 
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: cloneDeep(oldState),
-      });
-
-      const updatedNetworkController = transformedState.data
-        .NetworkController as NetworkState;
-
-      expect(
-        updatedNetworkController.networkConfigurationsByChainId[BASE_CHAIN_ID]
-          .defaultRpcEndpointIndex,
-      ).toEqual(0);
-    });
-
-    it('does nothing if Linea mainnet is excluded', async () => {
-      const oldState = {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            [BASE_CHAIN_ID]: {
-              rpcEndpoints: [
-                {
-                  url: 'https://mainnet.base.org',
-                  type: 'custom',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
-            '0x1': {
-              rpcEndpoints: [
-                {
-                  url: `https://mainnet.infura.io/v3/${infuraProjectId}`,
-                  type: 'infura',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
-            '0x13881': {
-              rpcEndpoints: [
-                {
-                  url: 'https://rpc.goerli.linea.io',
-                  type: 'custom',
-                },
-              ],
-              defaultRpcEndpointIndex: 0,
-            },
-          },
-        },
-      };
-
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: cloneDeep(oldState),
-      });
-
-      const updatedNetworkController = transformedState.data
-        .NetworkController as NetworkState;
-
-      expect(
-        updatedNetworkController.networkConfigurationsByChainId['0x13881']
-          .rpcEndpoints[0].url,
-      ).toEqual('https://rpc.goerli.linea.io');
-    });
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error('Invalid PreferencesController state: string'),
+    );
   });
 });

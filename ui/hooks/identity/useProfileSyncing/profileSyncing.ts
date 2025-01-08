@@ -2,23 +2,15 @@ import { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
 import { useMetamaskNotificationsContext } from '../../../contexts/metamask-notifications/metamask-notifications';
+import { getParticipateInMetaMetrics } from '../../../selectors';
+import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 import {
   disableProfileSyncing as disableProfileSyncingAction,
   enableProfileSyncing as enableProfileSyncingAction,
   setIsProfileSyncingEnabled as setIsProfileSyncingEnabledAction,
   hideLoadingIndication,
+  performSignOut,
 } from '../../../store/actions';
-
-import { selectIsSignedIn } from '../../../selectors/identity/authentication';
-import {
-  selectIsAccountSyncingReadyToBeDispatched,
-  selectIsProfileSyncingEnabled,
-} from '../../../selectors/identity/profile-syncing';
-import { getUseExternalServices } from '../../../selectors';
-import {
-  getIsUnlocked,
-  getCompletedOnboarding,
-} from '../../../ducks/metamask/metamask';
 
 /**
  * Custom hook to enable profile syncing. This hook handles the process of signing in
@@ -64,6 +56,8 @@ export function useDisableProfileSyncing(): {
 } {
   const dispatch = useDispatch();
   const { listNotifications } = useMetamaskNotificationsContext();
+  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const isSignedIn = useSelector(selectIsSignedIn);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -73,6 +67,11 @@ export function useDisableProfileSyncing(): {
     try {
       // disable profile syncing
       await dispatch(disableProfileSyncingAction());
+
+      // sign out the user if MetaMetrics is not enabled and the user is signed in
+      if (!isMetaMetricsEnabled && isSignedIn) {
+        await dispatch(performSignOut());
+      }
 
       // list notifications to update the counter
       await listNotifications();
@@ -115,35 +114,3 @@ export function useSetIsProfileSyncingEnabled(): {
 
   return { setIsProfileSyncingEnabled, error };
 }
-
-/**
- * A utility used internally to decide if syncing features should be dispatched
- * Considers factors like basic functionality; unlocked; finished onboarding, and is logged in
- *
- * @returns a boolean if internally we can perform syncing features or not.
- */
-export const useShouldDispatchProfileSyncing = () => {
-  const isAccountSyncingReadyToBeDispatched = useSelector(
-    selectIsAccountSyncingReadyToBeDispatched,
-  );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const basicFunctionality: boolean | undefined = useSelector(
-    getUseExternalServices,
-  );
-  const isUnlocked: boolean | undefined = useSelector(getIsUnlocked);
-  const isSignedIn = useSelector(selectIsSignedIn);
-  const completedOnboarding: boolean | undefined = useSelector(
-    getCompletedOnboarding,
-  );
-
-  const shouldDispatchProfileSyncing: boolean = Boolean(
-    basicFunctionality &&
-      isProfileSyncingEnabled &&
-      isUnlocked &&
-      isSignedIn &&
-      completedOnboarding &&
-      isAccountSyncingReadyToBeDispatched,
-  );
-
-  return shouldDispatchProfileSyncing;
-};

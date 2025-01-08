@@ -1,128 +1,84 @@
 import { hasProperty, isObject } from '@metamask/utils';
-import { RpcEndpointType } from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
-import {
-  allowedInfuraHosts,
-  CHAIN_IDS,
-  infuraChainIdsTestNets,
-  infuraProjectId,
-} from '../../../shared/constants/network';
+import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+
+export type VersionedData = {
+  meta: {
+    version: number;
+  };
+  data: {
+    PreferencesController?: {
+      preferences?: {
+        smartTransactionsOptInStatus?: boolean | null;
+        smartTransactionsMigrationApplied?: boolean;
+      };
+    };
+    SmartTransactionsController?: {
+      smartTransactionsState: {
+        smartTransactions: Record<string, SmartTransaction[]>;
+      };
+    };
+  };
+};
 
 export const version = 135;
-const BASE_CHAIN_ID = '0x2105';
 
-/**
- * Replace all occurrences of "https://mainnet.base.org" with
- * "https://base-mainnet.infura.io/v3/${infuraProjectId}" in the Base network configuration,
- * if the user already relies on at least one Infura RPC endpoint.
- *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by
- * controller.
- * @returns Updated versioned MetaMask extension state.
- */
-export async function migrate(originalVersionedData: {
-  meta: { version: number };
-  data: Record<string, unknown>;
-}) {
-  const versionedData = cloneDeep(originalVersionedData);
-  versionedData.meta.version = version;
-  versionedData.data = transformState(versionedData.data);
-  return versionedData;
-}
-
-function transformState(state: Record<string, unknown>) {
+function transformState(state: VersionedData['data']) {
   if (
-    hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController) &&
-    hasProperty(state.NetworkController, 'networkConfigurationsByChainId') &&
-    isObject(state.NetworkController.networkConfigurationsByChainId)
+    !hasProperty(state, 'PreferencesController') ||
+    !isObject(state.PreferencesController)
   ) {
-    const { networkConfigurationsByChainId } = state.NetworkController;
+    global.sentry?.captureException?.(
+      new Error(
+        `Invalid PreferencesController state: ${typeof state.PreferencesController}`,
+      ),
+    );
+    return state;
+  }
 
-    // Check if at least one network uses an Infura RPC endpoint, excluding testnets
-    const usesInfura = Object.entries(networkConfigurationsByChainId)
-      .filter(
-        ([chainId]) =>
-          ![...infuraChainIdsTestNets, CHAIN_IDS.LINEA_MAINNET].includes(
-            chainId,
-          ),
-      )
-      .some(([, networkConfig]) => {
-        if (
-          !isObject(networkConfig) ||
-          !Array.isArray(networkConfig.rpcEndpoints) ||
-          typeof networkConfig.defaultRpcEndpointIndex !== 'number'
-        ) {
-          return false;
-        }
+  const { PreferencesController } = state;
 
-        // Get the default RPC endpoint used by the network
-        const defaultRpcEndpoint =
-          networkConfig?.rpcEndpoints?.[networkConfig?.defaultRpcEndpointIndex];
+  const currentOptInStatus =
+    PreferencesController.preferences?.smartTransactionsOptInStatus;
 
-        if (
-          !isObject(defaultRpcEndpoint) ||
-          typeof defaultRpcEndpoint.url !== 'string'
-        ) {
-          return false;
-        }
-
-        try {
-          const urlHost = new URL(defaultRpcEndpoint.url).host;
-          return (
-            defaultRpcEndpoint.type === RpcEndpointType.Infura ||
-            allowedInfuraHosts.includes(urlHost)
-          );
-        } catch {
-          return false;
-        }
-      });
-
-    if (!usesInfura) {
-      // If no Infura endpoints are used, return the state unchanged
-      return state;
-    }
-
-    // Check for Base network configuration (chainId 8453 / 0x2105)
-    const baseNetworkConfig = networkConfigurationsByChainId[BASE_CHAIN_ID];
-    if (isObject(baseNetworkConfig)) {
-      const { rpcEndpoints } = baseNetworkConfig;
-
-      if (Array.isArray(rpcEndpoints)) {
-        // Find the first occurrence of "https://mainnet.base.org"
-        const index = rpcEndpoints.findIndex(
-          (endpoint) =>
-            isObject(endpoint) && endpoint.url === 'https://mainnet.base.org',
-        );
-
-        if (index !== -1) {
-          // Replace the URL with the new Infura URL
-          rpcEndpoints[index] = {
-            ...rpcEndpoints[index],
-            url: `https://base-mainnet.infura.io/v3/${infuraProjectId}`,
-          };
-
-          // Update the configuration
-          networkConfigurationsByChainId[BASE_CHAIN_ID] = {
-            ...baseNetworkConfig,
-            rpcEndpoints,
-          };
-
-          return {
-            ...state,
-            NetworkController: {
-              ...state.NetworkController,
-              networkConfigurationsByChainId,
-            },
-          };
-        }
-      }
-    }
+  if (
+    currentOptInStatus === undefined ||
+    currentOptInStatus === null ||
+    (currentOptInStatus === false && !hasExistingSmartTransactions(state))
+  ) {
+    state.PreferencesController.preferences = {
+      ...state.PreferencesController.preferences,
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: true,
+    };
+  } else {
+    state.PreferencesController.preferences = {
+      ...state.PreferencesController.preferences,
+      smartTransactionsMigrationApplied: true,
+    };
   }
 
   return state;
+}
+
+function hasExistingSmartTransactions(state: VersionedData['data']): boolean {
+  const smartTransactions =
+    state?.SmartTransactionsController?.smartTransactionsState
+      ?.smartTransactions;
+
+  if (!isObject(smartTransactions)) {
+    return false;
+  }
+
+  return (smartTransactions[CHAIN_IDS.MAINNET] || []).length > 0;
+}
+
+export async function migrate(
+  originalVersionedData: VersionedData,
+): Promise<VersionedData> {
+  const versionedData = cloneDeep(originalVersionedData);
+  versionedData.meta.version = version;
+  transformState(versionedData.data);
+  return versionedData;
 }
