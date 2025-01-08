@@ -1045,6 +1045,9 @@
   "confirmTitleTransaction": {
     "message": "Demande de transaction"
   },
+  "confirmationAlertModalTitle": {
+    "message": "Cette demande est suspecte"
+  },
   "confirmed": {
     "message": "Confirmé"
   },

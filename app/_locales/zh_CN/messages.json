@@ -1045,11 +1045,11 @@
   "confirmTitleTransaction": {
     "message": "交易请求"
   },
-  "confirmed": {
-    "message": "已确认"
-  },
   "confirmationAlertModalTitle": {
     "message": "此请求可疑"
+  },
+  "confirmed": {
+    "message": "已确认"
   },
   "confusableUnicode": {
     "message": "'$1' 与 '$2' 相似。"
