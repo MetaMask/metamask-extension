@@ -75,7 +75,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
         justifyContent: 'inherit',
         textAlign: 'inherit',
         height: 'inherit',
-        minHeight: '32px',
+        minHeight: '48px',
         maxHeight: '64px',
       }}
     >
@@ -155,7 +155,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             justifyContent: 'inherit',
             textAlign: 'inherit',
             height: 'inherit',
-            minHeight: '32px',
+            minHeight: '48px',
             maxHeight: '64px',
           }}
         >
