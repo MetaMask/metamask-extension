@@ -1,20 +1,11 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
-import SolanaHomepage from '../../page-objects/pages/home/solana-homepage';
+
 import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
-import {
-  LAMPORTS_PER_SOL,
-  SOL_BALANCE,
-  SOL_TO_USD_RATE,
-  USD_BALANCE,
-  withSolanaAccountSnap,
-} from './common-solana';
-
-const EXPECTED_MAINNET_BALANCE_USD = `$${USD_BALANCE}`;
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import { withSolanaAccountSnap } from './common-solana';
 
 describe('Send SOL flow', function (this: Suite) {
   this.timeout(120000);
@@ -23,7 +14,7 @@ describe('Send SOL flow', function (this: Suite) {
       { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
       async (driver) => {
         await driver.refresh();
-        const homePage = new SolanaHomepage(driver);
+        const homePage = new NonEvmHomepage(driver);
         assert.equal(await homePage.check_ifSendButtonIsClickable(), true);
         assert.equal(await homePage.check_ifSwapButtonIsClickable(), false);
         assert.equal(await homePage.check_ifBridgeButtonIsClickable(), false);
@@ -53,7 +44,7 @@ describe('Send SOL flow', function (this: Suite) {
       },
       async (driver) => {
         await driver.refresh();
-        const homePage = new SolanaHomepage(driver);
+        const homePage = new NonEvmHomepage(driver);
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
@@ -201,7 +192,7 @@ describe('Send SOL flow', function (this: Suite) {
       },
       async (driver) => {
         await driver.refresh();
-        const homePage = new SolanaHomepage(driver);
+        const homePage = new NonEvmHomepage(driver);
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,

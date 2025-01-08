@@ -4,9 +4,8 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
-import { ACCOUNT_TYPE, DEFAULT_SOL_CONVERSION_RATE } from '../../constants';
+import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixturesOptions } from '../../tests/swaps/shared';
 
 const SOLANA_URL_REGEX = /^https:\/\/.*\..*/u;
 const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';

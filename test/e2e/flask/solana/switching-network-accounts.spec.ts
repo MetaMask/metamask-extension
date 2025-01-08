@@ -7,26 +7,10 @@ import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Switching between account from different networks', function (this: Suite) {
-  beforeEach(async function () {
-    // Setup code to run before each test
-    // For example, you can reset the application state or create a fresh environment
-  });
-
-  afterEach(async function () {
-    // Teardown code to run after each test
-    // For example, you can clean up any data created during the test
-  });
   it('Switch from Solana account to another Network account', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
-        const logs = await driver.driver
-          .manage()
-          .logs()
-          .get(logging.Type.BROWSER);
-        logs.forEach((log) => {
-          console.log(`[${log.level.name}] ${log.message}`);
-        });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.check_accountLabel('Solana 1');

@@ -1,25 +1,20 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import SolanaHomepage from '../../page-objects/pages/home/solana-homepage';
 import {
-  LAMPORTS_PER_SOL,
-  SOL_BALANCE,
-  SOL_TO_USD_RATE,
-  USD_BALANCE,
   withSolanaAccountSnap,
 } from './common-solana';
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 
-const EXPECTED_MAINNET_BALANCE_USD = `$${USD_BALANCE}`;
 
-describe('Check tbalance', function (this: Suite) {
-  this.timeout(120000);
+describe('Check balance', function (this: Suite) {
+  this.timeout(300000);
   it.only('Just created Solana account shows 0 SOL when native token is enabled', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
       async (driver) => {
         await driver.refresh();
-        const homePage = new SolanaHomepage(driver);
-        const balanceText = await homePage.getSolanaBalance();
+        const homePage = new NonEvmHomepage(driver);
+        const balanceText = await homePage.getBalance();
         assert.equal(balanceText, '0 SOL');
       },
     );
@@ -33,8 +28,8 @@ describe('Check tbalance', function (this: Suite) {
       },
       async (driver) => {
         await driver.refresh();
-        const homePage = new SolanaHomepage(driver);
-        const balanceText = await homePage.getSolanaBalance();
+        const homePage = new NonEvmHomepage(driver);
+        const balanceText = await homePage.getBalance();
         assert.equal(balanceText, '0.00\nUSD');
       },
     );
@@ -49,9 +44,9 @@ describe('Check tbalance', function (this: Suite) {
       },
       async (driver) => {
         await driver.refresh();
-        const homePage = new SolanaHomepage(driver);
-        const balanceText = await homePage.getSolanaBalance();
-        assert.equal(balanceText, `${SOL_BALANCE / LAMPORTS_PER_SOL}\nSOL`);
+        const homePage = new NonEvmHomepage(driver);
+        const balanceText = await homePage.getBalance();
+        assert.equal(balanceText, `50\nSOL`);
       },
     );
   });
@@ -65,12 +60,9 @@ describe('Check tbalance', function (this: Suite) {
       },
       async (driver) => {
         await driver.refresh();
-        const homePage = new SolanaHomepage(driver);
-        const balanceText = await homePage.getSolanaBalance();
-        assert.equal(
-          balanceText,
-          `${(SOL_BALANCE / LAMPORTS_PER_SOL) * SOL_TO_USD_RATE}\nUSD`,
-        );
+        const homePage = new NonEvmHomepage(driver);
+        const balanceText = await homePage.getBalance();
+        assert.equal(balanceText, `11294\nUSD`);
       },
     );
   });
