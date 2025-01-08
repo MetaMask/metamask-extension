@@ -349,7 +349,7 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "^19.0.0",
     "@metamask/signature-controller": "^23.1.0",
-    "@metamask/smart-transactions-controller": "^16.0.0",
+    "@metamask/smart-transactions-controller": "^16.0.1",
     "@metamask/snaps-controllers": "^9.16.0",
     "@metamask/snaps-execution-environments": "^6.11.0",
     "@metamask/snaps-rpc-methods": "^11.8.0",
