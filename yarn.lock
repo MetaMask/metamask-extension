@@ -5694,9 +5694,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@19.0.2-preview-579728ba":
-  version: 19.0.2-preview-579728ba
-  resolution: "@metamask-previews/keyring-controller@npm:19.0.2-preview-579728ba"
+"@metamask/keyring-controller@file:.yalc/@metamask/keyring-controller::locator=metamask-crx%40workspace%3A.":
+  version: 19.0.2
+  resolution: "@metamask/keyring-controller@file:.yalc/@metamask/keyring-controller#.yalc/@metamask/keyring-controller::hash=5a1aca&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5713,7 +5713,7 @@ __metadata:
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
     ulid: "npm:^2.3.0"
-  checksum: 10/61f696bfbef2dd421dae4c79e9759df469049f317282475259140c81d69f170400e0c8e835a5ed247d62d9648ec1a7a8f09fc1229ecd4183da57f399d4250a40
+  checksum: 10/05df32c92dbbf3d2db103985d3ea08a0be69ce78c51c0e6471fa228da923f5d3c08b1f664cc32bc4ddb725d2aa7917d90768744a60c007e43abb6573b486fe0b
   languageName: node
   linkType: hard
 
@@ -26726,7 +26726,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^10.1.0"
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.0.2-preview-579728ba"
+    "@metamask/keyring-controller": "file:.yalc/@metamask/keyring-controller"
     "@metamask/logging-controller": "npm:^6.0.0"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^11.0.0"

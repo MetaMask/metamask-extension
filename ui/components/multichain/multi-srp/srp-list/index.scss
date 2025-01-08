@@ -1,15 +1,23 @@
 @use "design-system";
+.srp-list {
+  &__divider {
+    height: 1px;
+    background-color: var(--color-border-muted);
+  }
 
-.srp-list-divider {
-  height: 1px;
-  background-color: var(--color-border-muted);
-}
+  &__show-accounts {
+    color: var(--color-primary-default);
+    cursor: pointer;
 
-.srp-list-show-accounts {
-  color: var(--color-primary-default);
-  cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 
-  &:hover {
-    text-decoration: underline;
+  &__account-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 80px;
   }
 }

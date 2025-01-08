@@ -33,7 +33,7 @@ export const SelectSRP = ({
         onClick={onClick}
         paddingTop={1}
         paddingBottom={1}
-        className="select-srp-container"
+        className="select-srp__container"
       >
         <Box
           display={Display.Flex}

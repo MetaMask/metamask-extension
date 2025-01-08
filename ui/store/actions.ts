@@ -514,7 +514,7 @@ export function importNewAccount(
 
 export function addNewAccount(
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  keyringId?: string,
+  keyringIndex?: number,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
@@ -525,13 +525,11 @@ export function addNewAccount(
     );
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     const keyrings = getMetaMaskKeyrings(getState());
-    const primaryKeyring = keyrings.find(
+    const hdKeyrings = keyrings.filter(
       (keyring) => keyring.type === KeyringTypes.hd,
     );
-    const selectedKeyring = keyrings.find(
-      (keyring) => keyring.id === keyringId,
-    );
-    oldAccounts = selectedKeyring?.accounts || primaryKeyring?.accounts;
+    const selectedKeyring = hdKeyrings[keyringIndex];
+    oldAccounts = selectedKeyring?.accounts || hdKeyrings[0]?.accounts;
     ///: END:ONLY_INCLUDE_IF
 
     dispatch(showLoadingIndication());
@@ -541,7 +539,7 @@ export function addNewAccount(
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        keyringId || primaryKeyring?.id,
+        keyringIndex || 0,
         ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {

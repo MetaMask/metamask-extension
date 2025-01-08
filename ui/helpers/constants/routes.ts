@@ -64,6 +64,11 @@ PATH_NAME_MAP[`${CONTACT_VIEW_ROUTE}/:address`] = 'View Contact Settings Page';
 
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
 PATH_NAME_MAP[`${SNAP_SETTINGS_ROUTE}/:snapId`] = 'Snap Settings Page';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+export const REVEAL_SRP_LIST_ROUTE =
+  '/settings/security-and-privacy/reveal-srp-list';
+PATH_NAME_MAP[REVEAL_SRP_LIST_ROUTE] = 'Reveal Secret Recovery Phrase';
+///: END:ONLY_INCLUDE_IF
 
 export const REVEAL_SEED_ROUTE = '/seed';
 PATH_NAME_MAP[`${REVEAL_SEED_ROUTE}/:typeIndex`] =

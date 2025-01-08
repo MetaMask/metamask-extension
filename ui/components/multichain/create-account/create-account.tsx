@@ -58,7 +58,7 @@ type Props = {
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   onSelectSRP: () => void;
-  selectedKeyringId: string;
+  selectedKeyringIndex: number;
   ///: END:ONLY_INCLUDE_IF
 };
 
@@ -77,7 +77,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         onCreateAccount,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         onSelectSRP,
-        selectedKeyringId,
+        selectedKeyringIndex,
         ///: END:ONLY_INCLUDE_IF
         onActionComplete,
       }: CreateAccountProps<C>,
@@ -120,9 +120,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           ),
         [keyrings],
       );
-      const selectedKeyring = hdKeyrings.find(
-        (keyring: KeyringObject) => keyring.id === selectedKeyringId,
-      );
+      const selectedKeyring = hdKeyrings[selectedKeyringIndex];
       ///: END:ONLY_INCLUDE_IF(multi-srp)
 
       const onSubmit = useCallback(
@@ -181,7 +179,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               <Box marginBottom={3}>
                 <SelectSRP
                   onClick={onSelectSRP}
-                  srpName={`Secret Phrase ${selectedKeyring.typeIndex || 1}`}
+                  srpName={`Secret Phrase ${selectedKeyringIndex + 1}`}
                   srpAccounts={selectedKeyring.accounts.length}
                 />
               </Box>

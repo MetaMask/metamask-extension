@@ -3068,12 +3068,10 @@ export function getKeyringSnapAccounts(state) {
 export function getHdKeyringTypeIndex(state, account) {
   const selectedAccount =
     getInternalAccount(state, account) ?? getSelectedInternalAccount(state);
-  console.log('selectedAccount', selectedAccount);
   const keyrings = getMetaMaskKeyrings(state);
+  const hdKeyrings = keyrings.filter((kr) => kr.type === KeyringType.hdKeyTree);
 
-  const keyring = keyrings.find((kr) =>
-    kr.accounts.includes(selectedAccount.address),
+  return hdKeyrings.findIndex((kr) =>
+    kr.accounts.find((address) => address === selectedAccount.address),
   );
-
-  return keyring?.typeIndex;
 }
