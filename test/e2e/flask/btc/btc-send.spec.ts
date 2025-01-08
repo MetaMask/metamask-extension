@@ -14,6 +14,9 @@ describe('BTC Account - Send', function (this: Suite) {
       async (driver, mockServer) => {
         const homePage = new BitcoinHomepage(driver);
         await homePage.check_pageIsLoaded();
+        await homePage.check_isExpectedBitcoinBalanceDisplayed(
+          DEFAULT_BTC_BALANCE,
+        );
         await homePage.startSendFlow();
 
         // Set the recipient address and amount
@@ -55,6 +58,9 @@ describe('BTC Account - Send', function (this: Suite) {
       async (driver, mockServer) => {
         const homePage = new BitcoinHomepage(driver);
         await homePage.check_pageIsLoaded();
+        await homePage.check_isExpectedBitcoinBalanceDisplayed(
+          DEFAULT_BTC_BALANCE,
+        );
         await homePage.startSendFlow();
 
         // Use the max spendable amount of that account
