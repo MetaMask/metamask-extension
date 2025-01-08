@@ -1,9 +1,14 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
-import { largeDelayMs, WINDOW_TITLES, withFixtures } from '../../helpers';
+import {
+  largeDelayMs,
+  WINDOW_TITLES,
+  withFixtures,
+  ACCOUNT_1,
+  ACCOUNT_2,
+} from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import {
   initCreateSessionScopes,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -15,11 +20,6 @@ import {
 } from './testHelpers';
 
 describe('Multichain API', function () {
-  /**
-   * check {@link FixtureBuilder.withPreferencesControllerAdditionalAccountIdentities} for second injected account address.
-   */
-  const SECOND_INJECTED_ACCOUNT = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
-
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the user’s enabled networks', function () {
     it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(
@@ -219,7 +219,7 @@ describe('Multichain API', function () {
             await initCreateSessionScopes(
               driver,
               ['eip155:1337', 'eip155:1338'],
-              [DEFAULT_FIXTURE_ACCOUNT],
+              [ACCOUNT_1],
             );
 
             await addAccountInWalletAndAuthorize(driver);
@@ -241,11 +241,9 @@ describe('Multichain API', function () {
 
             assert.deepEqual(
               getSessionScopesResult.sessionScopes['eip155:1337'].accounts,
-              getExpectedSessionScope('eip155:1337', [
-                DEFAULT_FIXTURE_ACCOUNT,
-                SECOND_INJECTED_ACCOUNT,
-              ]).accounts,
-              `Should add account ${SECOND_INJECTED_ACCOUNT} to scope`,
+              getExpectedSessionScope('eip155:1337', [ACCOUNT_1, ACCOUNT_2])
+                .accounts,
+              `Should add account ${ACCOUNT_2} to scope`,
             );
           },
         );
@@ -331,10 +329,8 @@ describe('Multichain API', function () {
 
             assert.deepEqual(
               getSessionScopesResult.sessionScopes['eip155:1'].accounts,
-              getExpectedSessionScope('eip155:1', [
-                DEFAULT_FIXTURE_ACCOUNT,
-                SECOND_INJECTED_ACCOUNT,
-              ]).accounts,
+              getExpectedSessionScope('eip155:1', [ACCOUNT_1, ACCOUNT_2])
+                .accounts,
               'The dapp should receive a response that includes permissions for the accounts that were selected for sharing',
             );
           },
