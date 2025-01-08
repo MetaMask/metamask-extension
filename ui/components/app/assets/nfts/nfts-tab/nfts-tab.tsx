@@ -41,7 +41,9 @@ import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-mod
 import { showImportNftsModal } from '../../../../../store/actions';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
+///: END:ONLY_INCLUDE_IF
 
 export default function NftsTab() {
   const history = useHistory();
