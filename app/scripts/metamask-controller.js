@@ -3164,8 +3164,8 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.methods.includes('eth_subscribe')
             ) {
               // for each tabId
-              Object.entries(this.connections[origin]).forEach(
-                ([_, { tabId }]) => {
+              Object.values(this.connections[origin]).forEach(
+                ({ tabId }) => {
                   const subscriptionManager =
                     this.multichainSubscriptionManager.subscribe({
                       scope,
