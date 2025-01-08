@@ -10,6 +10,7 @@ import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
+import { type TokenListMap } from '@metamask/assets-controllers';
 import {
   setFromChain,
   setFromToken,
@@ -27,7 +28,6 @@ import {
   getFromChain,
   getFromChains,
   getFromToken,
-  getFromTokens,
   getQuoteRequest,
   getSlippage,
   getToChain,
@@ -91,7 +91,7 @@ import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
-import { getCurrentKeyring, getLocale } from '../../../selectors';
+import { getCurrentKeyring, getLocale, getTokenList } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
@@ -104,11 +104,11 @@ const PrepareBridgePage = () => {
   const t = useI18nContext();
 
   const fromToken = useSelector(getFromToken);
-  const {
-    fromTokens,
-    fromTopAssets,
-    isLoading: isFromTokensLoading,
-  } = useSelector(getFromTokens);
+  const fromTokens = useSelector(getTokenList) as TokenListMap;
+  const isFromTokensLoading = useMemo(
+    () => Object.keys(fromTokens).length === 0,
+    [fromTokens],
+  );
 
   const toToken = useSelector(getToToken);
   const {
@@ -176,12 +176,6 @@ const PrepareBridgePage = () => {
   );
 
   const tokenAddressAllowlistByChainId = useBridgeTokens();
-  const fromTokenListGenerator = useTokensWithFiltering(
-    fromTokens,
-    fromTopAssets,
-    tokenAddressAllowlistByChainId,
-    fromChain?.chainId,
-  );
   const toTokenListGenerator = useTokensWithFiltering(
     toTokens,
     toTopAssets,
@@ -326,7 +320,7 @@ const PrepareBridgePage = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (!fromChain?.chainId || Object.keys(fromTokens).length === 0) {
+    if (!fromChain?.chainId || isFromTokensLoading) {
       return;
     }
 
@@ -363,7 +357,7 @@ const PrepareBridgePage = () => {
         removeTokenFromUrl();
         break;
     }
-  }, [fromChain, fromToken, fromTokens, search]);
+  }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
   return (
     <Column className="prepare-bridge-page" gap={8}>
@@ -411,9 +405,6 @@ const PrepareBridgePage = () => {
           header: t('yourNetworks'),
         }}
         isMultiselectEnabled
-        customTokenListGenerator={
-          fromTokens && fromTopAssets ? fromTokenListGenerator : undefined
-        }
         onMaxButtonClick={(value: string) => {
           dispatch(setFromTokenInputValue(value));
         }}
