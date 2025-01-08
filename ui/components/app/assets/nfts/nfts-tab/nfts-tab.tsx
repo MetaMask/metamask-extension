@@ -63,7 +63,7 @@ export default function NftsTab() {
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
 
-  const { currentlyOwnedNfts } = useNfts();
+  const { currentlyOwnedNfts, previouslyOwnedNfts } = useNfts();
 
   const hasAnyNfts = Object.keys(collections).length > 0;
   const showNftBanner = hasAnyNfts === false;
@@ -128,6 +128,7 @@ export default function NftsTab() {
           <Box>
             <NftGrid
               nfts={currentlyOwnedNfts}
+              prevNfts={previouslyOwnedNfts}
               handleNftClick={handleNftClick}
             />
             <Box
