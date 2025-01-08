@@ -23,7 +23,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { KeyringObject } from '@metamask/keyring-controller';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
@@ -74,9 +73,6 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
@@ -143,7 +139,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSRP } from '../multi-srp/import-srp';
 import { SRPList } from '../multi-srp/srp-list';
-import { KeyringType } from '../../../../shared/constants/keyring';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
@@ -412,7 +407,7 @@ export const AccountListMenu = ({
                 }
               }}
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-              selectedKeyringId={selectedKeyringId}
+              selectedKeyringIndex={selectedKeyringIndex}
               onSelectSRP={() => setActionMode(ACTION_MODES.SELECT_SRP)}
               ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
@@ -462,8 +457,8 @@ export const AccountListMenu = ({
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
           actionMode === ACTION_MODES.SELECT_SRP && (
             <SRPList
-              onActionComplete={(keyringId: string) => {
-                setSelectedKeyringId(keyringId);
+              onActionComplete={(keyringIndex: number) => {
+                setSelectedKeyringIndex(keyringIndex);
                 setActionMode(ACTION_MODES.ADD);
               }}
             />
