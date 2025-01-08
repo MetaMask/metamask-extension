@@ -62,7 +62,7 @@ export const SnapUIInput: FunctionComponent<
       id={name}
       value={value}
       onChange={handleChange}
-      {...(label ? { label } : {})}
+      label={label}
       {...props}
     />
   );
