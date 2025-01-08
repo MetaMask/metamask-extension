@@ -176,11 +176,13 @@ const groupEvmTransactionsByDate = (transactionGroups) =>
     (transactionGroup) => transactionGroup.primaryTransaction.time,
   );
 
-const groupNonEvmTransactionsByDate = (transactions) =>
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+const groupNonEvmTransactionsByDate = (nonEvmTransactions) =>
   groupTransactionsByDate(
-    transactions?.data,
+    nonEvmTransactions?.transactions,
     (transaction) => transaction.timestamp * 1000,
   );
+///: END:ONLY_INCLUDE_IF
 
 export default function TransactionList({
   hideTokenTransactions,
@@ -335,7 +337,7 @@ export default function TransactionList({
       <Box className="transaction-list" {...boxProps}>
         {/* TODO: Non-EVM transactions are not paginated for now. */}
         <Box className="transaction-list__transactions">
-          {nonEvmTransactions.data.length > 0 ? (
+          {nonEvmTransactions.transactions.length > 0 ? (
             <Box className="transaction-list__completed-transactions">
               {groupNonEvmTransactionsByDate(nonEvmTransactions).map(
                 (dateGroup) => (
@@ -348,7 +350,7 @@ export default function TransactionList({
                     >
                       {dateGroup.date}
                     </Text>
-                    {dateGroup.transactions.map((transaction, index) => (
+                    {dateGroup.transactionGroups.map((transaction, index) => (
                       <ActivityListItem
                         key={`${transaction.account}:${index}`}
                         className="custom-class"

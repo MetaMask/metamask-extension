@@ -176,7 +176,7 @@ describe('MultichainTransactionsController', () => {
     expect(controller.state).toEqual({
       nonEvmTransactions: {
         [mockBtcAccount.id]: {
-          data: mockTransactionResult.data,
+          transactions: mockTransactionResult.data,
           next: null,
           lastUpdated: expect.any(Number),
         },
@@ -200,7 +200,7 @@ describe('MultichainTransactionsController', () => {
     expect(controller.state).toEqual({
       nonEvmTransactions: {
         [mockBtcAccount.id]: {
-          data: mockTransactionResult.data,
+          transactions: mockTransactionResult.data,
           next: null,
           lastUpdated: expect.any(Number),
         },
@@ -217,7 +217,7 @@ describe('MultichainTransactionsController', () => {
     expect(controller.state).toEqual({
       nonEvmTransactions: {
         [mockBtcAccount.id]: {
-          data: mockTransactionResult.data,
+          transactions: mockTransactionResult.data,
           next: null,
           lastUpdated: expect.any(Number),
         },
@@ -256,7 +256,7 @@ describe('MultichainTransactionsController', () => {
     await controller.updateTransactionsForAccount(mockBtcAccount.id);
 
     expect(controller.state.nonEvmTransactions[mockBtcAccount.id]).toEqual({
-      data: mockTransactionResult.data,
+      transactions: mockTransactionResult.data,
       next: null,
       lastUpdated: expect.any(Number),
     });
