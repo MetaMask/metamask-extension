@@ -105,22 +105,6 @@ async function requestPermissionsImplementation(
     Object.keys(requestedPermissions).length > 0;
 
   let grantedPermissions: GrantedPermissions = {};
-  let didGrantOtherPermissions;
-
-  if (hasOtherRequestedPermissions || !hasCaip25EquivalentPermissions) {
-    try {
-      const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
-        requestedPermissions,
-      );
-      // permissions are frozen and must be cloned before modified
-      grantedPermissions = { ...frozenGrantedPermissions };
-      didGrantOtherPermissions = true;
-    } catch (error) {
-      if (!hasCaip25EquivalentPermissions) {
-        return end(error as unknown as Error);
-      }
-    }
-  }
 
   let caip25Endowment;
   let caip25CaveatValue;
@@ -168,7 +152,23 @@ async function requestPermissionsImplementation(
         };
       }
     } catch (error) {
-      if (!didGrantOtherPermissions) {
+      if (!hasOtherRequestedPermissions) {
+        return end(error as unknown as Error);
+      }
+    }
+  }
+
+  if (hasOtherRequestedPermissions || !hasCaip25EquivalentPermissions) {
+    try {
+      const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
+        requestedPermissions,
+      );
+      grantedPermissions = {
+        ...grantedPermissions,
+        ...frozenGrantedPermissions,
+      };
+    } catch (error) {
+      if (Object.keys(grantedPermissions).length === 0) {
         return end(error as unknown as Error);
       }
     }

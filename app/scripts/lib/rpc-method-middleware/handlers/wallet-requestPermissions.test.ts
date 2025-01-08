@@ -446,8 +446,6 @@ describe('requestPermissionsHandler', () => {
           }),
         );
         expect(response.result).toStrictEqual([
-          { foo: 'bar' },
-          { hello: true },
           {
             caveats: [
               {
@@ -468,6 +466,8 @@ describe('requestPermissionsHandler', () => {
             id: 'new',
             parentCapability: PermissionNames.permittedChains,
           },
+          { foo: 'bar' },
+          { hello: true },
         ]);
       });
     });
@@ -582,7 +582,7 @@ describe('requestPermissionsHandler', () => {
     });
 
     describe('both CAIP-25 equivalent permissions and other permissions are not granted', () => {
-      it('returns the error from the rejected CAIP-25 permission grant', async () => {
+      it('returns the error from the rejected other permissions grant', async () => {
         const {
           handler,
           requestPermissionsForOrigin,
@@ -610,7 +610,7 @@ describe('requestPermissionsHandler', () => {
         );
 
         expect(end).toHaveBeenCalledWith(
-          new Error('caip25 permission rejected'),
+          new Error('other permissions rejected'),
         );
       });
     });
