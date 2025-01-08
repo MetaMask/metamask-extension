@@ -18,12 +18,12 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
 
 import {
-  getSelectedAccount,
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
 } from '../../selectors/selectors';
+import { getSelectedAccount } from '../../selectors/getMetaMaskAccounts';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   getQuotes,

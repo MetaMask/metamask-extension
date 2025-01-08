@@ -11,7 +11,8 @@ import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getTargetSubjectMetadata,
-} from './selectors';
+  getSubjectMetadata,
+} from './getMetaMaskAccounts';
 import { getSelectedInternalAccount } from './accounts';
 
 // selectors
@@ -117,10 +118,6 @@ export function getPermittedChainsByOrigin(state) {
     }
     return acc;
   }, {});
-}
-
-export function getSubjectMetadata(state) {
-  return state.metamask.subjectMetadata;
 }
 
 /**
@@ -352,43 +349,6 @@ export function getAccountToConnectToActiveTab(state) {
   }
 
   return undefined;
-}
-
-export function getOrderedConnectedAccountsForActiveTab(state) {
-  const {
-    activeTab,
-    metamask: { permissionHistory },
-  } = state;
-
-  const permissionHistoryByAccount =
-    // eslint-disable-next-line camelcase
-    permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
-  const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-
-  return orderedAccounts
-    .filter((account) => connectedAccounts.includes(account.address))
-    .filter((account) => isEvmAccountType(account.type))
-    .map((account) => ({
-      ...account,
-      metadata: {
-        ...account.metadata,
-        lastActive: permissionHistoryByAccount?.[account.address],
-      },
-    }))
-    .sort(
-      ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
-        if (lastSelectedA === lastSelectedB) {
-          return 0;
-        } else if (lastSelectedA === undefined) {
-          return 1;
-        } else if (lastSelectedB === undefined) {
-          return -1;
-        }
-
-        return lastSelectedB - lastSelectedA;
-      },
-    );
 }
 
 export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {

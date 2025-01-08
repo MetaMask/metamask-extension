@@ -27,8 +27,22 @@ jest.mock('../../../selectors', () => ({
   getRpcPrefsForCurrentProvider: () => {
     return {};
   },
-  getMetaMaskAccountsConnected: () => [],
   getMetaMaskAccounts: () => {
+    return {};
+  },
+}));
+
+jest.mock('../../../selectors/getMetaMaskAccounts', () => ({
+  getMetaMaskAccountsConnected: () => {
+    return {};
+  },
+  getMetaMaskAccounts: () => {
+    return {};
+  },
+  getTargetSubjectMetadata: () => {
+    return {};
+  },
+  getSubjectMetadata: () => {
     return {};
   },
 }));

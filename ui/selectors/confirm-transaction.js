@@ -35,9 +35,9 @@ import {
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import {
   checkNetworkAndAccountSupports1559,
-  getMetaMaskAccounts,
   getTokenExchangeRates,
 } from './selectors';
+import { getMetaMaskAccounts } from './getMetaMaskAccounts';
 import {
   getUnapprovedTransactions,
   selectTransactionMetadata,

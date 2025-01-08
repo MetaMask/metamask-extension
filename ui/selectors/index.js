@@ -8,3 +8,6 @@ export * from './selectors';
 export * from './transactions';
 export * from './approvals';
 export * from './accounts';
+export * from './getMetaMaskAccounts';
+export * from './getUpdatedAndSortedAccounts';
+export * from './getOrderedConnectedAccountsForActiveTab';

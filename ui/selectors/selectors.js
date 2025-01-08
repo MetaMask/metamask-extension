@@ -6,7 +6,6 @@ import {
   getLocalizedSnapManifest,
   SnapStatus,
 } from '@metamask/snaps-utils';
-import { memoize } from 'lodash';
 import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
@@ -107,12 +106,20 @@ import {
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { BridgeFeatureFlagsKey } from '../../shared/types/bridge';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import {
+  getMetaMaskAccountsOrdered,
+  getTargetSubjectMetadata,
+  getOriginOfCurrentTab,
+  getMetaMaskAccounts,
+  getSelectedAccount,
+  getMetaMaskCachedBalances,
+  getMetaMaskAccountBalances,
+} from './getMetaMaskAccounts';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -122,15 +129,9 @@ import {
 import {
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
-  getOrderedConnectedAccountsForActiveTab,
   getOrderedConnectedAccountsForConnectedDapp,
-  getSubjectMetadata,
 } from './permissions';
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
-import {
-  getMultichainBalances,
-  getMultichainNetworkProviders,
-} from './multichain';
 
 /** `appState` slice selectors */
 
@@ -387,64 +388,6 @@ export function getAccountTypeForKeyring(keyring) {
 }
 
 /**
- * Get MetaMask accounts, including account name and balance.
- */
-export const getMetaMaskAccounts = createSelector(
-  getInternalAccounts,
-  getMetaMaskAccountBalances,
-  getMetaMaskCachedBalances,
-  getMultichainBalances,
-  getMultichainNetworkProviders,
-  (
-    internalAccounts,
-    balances,
-    cachedBalances,
-    multichainBalances,
-    multichainNetworkProviders,
-  ) =>
-    Object.values(internalAccounts).reduce((accounts, internalAccount) => {
-      // TODO: mix in the identity state here as well, consolidating this
-      // selector with `accountsWithSendEtherInfoSelector`
-      let account = internalAccount;
-
-      // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
-      // We should consolidate the format to either hex or number
-      if (isEvmAccountType(internalAccount.type)) {
-        if (balances?.[internalAccount.address]) {
-          account = {
-            ...account,
-            ...balances[internalAccount.address],
-          };
-        }
-      } else {
-        const multichainNetwork = multichainNetworkProviders.find((network) =>
-          network.isAddressCompatible(internalAccount.address),
-        );
-        account = {
-          ...account,
-          balance:
-            multichainBalances?.[internalAccount.id]?.[
-              MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
-            ]?.amount ?? '0',
-        };
-      }
-
-      if (account.balance === null || account.balance === undefined) {
-        account = {
-          ...account,
-          balance:
-            (cachedBalances && cachedBalances[internalAccount.address]) ??
-            '0x0',
-        };
-      }
-
-      return {
-        ...accounts,
-        [internalAccount.address]: account,
-      };
-    }, {}),
-);
-/**
  * Returns the address of the selected InternalAccount from the Metamask state.
  *
  * @param state - The Metamask state object.
@@ -486,10 +429,6 @@ export function getSelectedInternalAccountWithBalance(state) {
   return selectedAccountWithBalance;
 }
 
-export function getInternalAccount(state, accountId) {
-  return state.metamask.internalAccounts.accounts[accountId];
-}
-
 export const getEvmInternalAccounts = createSelector(
   getInternalAccounts,
   (accounts) => {
@@ -507,61 +446,9 @@ export const getSelectedEvmInternalAccount = createSelector(
   },
 );
 
-/**
- * Returns an array of internal accounts sorted by keyring.
- *
- * @param keyrings - The array of keyrings.
- * @param accounts - The object containing the accounts.
- * @returns The array of internal accounts sorted by keyring.
- */
-export const getInternalAccountsSortedByKeyring = createSelector(
-  getMetaMaskKeyrings,
-  getMetaMaskAccounts,
-  (keyrings, accounts) => {
-    // keep existing keyring order
-    const internalAccounts = keyrings
-      .map(({ accounts: addresses }) => addresses)
-      .flat()
-      .map((address) => {
-        return accounts[address];
-      });
-
-    return internalAccounts;
-  },
-);
-
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
   return tokens ? tokens.length : 0;
-}
-
-export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings;
-}
-
-/**
- * Get account balances state.
- *
- * @param {object} state - Redux state
- * @returns {object} A map of account addresses to account objects (which includes the account balance)
- */
-export function getMetaMaskAccountBalances(state) {
-  return state.metamask.accounts;
-}
-
-export function getMetaMaskCachedBalances(state) {
-  const chainId = getCurrentChainId(state);
-
-  if (state.metamask.accountsByChainId?.[chainId]) {
-    return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
-      (accumulator, [key, value]) => {
-        accumulator[key] = value.balance;
-        return accumulator;
-      },
-      {},
-    );
-  }
-  return {};
 }
 
 export function getCrossChainMetaMaskCachedBalances(state) {
@@ -688,32 +575,6 @@ function getNativeTokenInfo(state, chainId) {
   return { symbol: AssetType.native, decimals: 18, name: 'Native Token' };
 }
 
-/**
- *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
- */
-
-/**
- * Get ordered (by keyrings) accounts with InternalAccount and balance
- *
- * @returns {InternalAccountWithBalance} An array of internal accounts with balance
- */
-export const getMetaMaskAccountsOrdered = createSelector(
-  getInternalAccountsSortedByKeyring,
-  getMetaMaskAccounts,
-  (internalAccounts, accounts) => {
-    return internalAccounts.map((internalAccount) => ({
-      ...internalAccount,
-      ...accounts[internalAccount.address],
-    }));
-  },
-);
-
-export const getMetaMaskAccountsConnected = createSelector(
-  getMetaMaskAccountsOrdered,
-  (connectedAccounts) =>
-    connectedAccounts.map(({ address }) => address.toLowerCase()),
-);
-
 export function isBalanceCached(state) {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const selectedAccountBalance =
@@ -761,21 +622,6 @@ export const selectAllTokensFlat = createSelector(
 export function getAllDomains(state) {
   return state.metamask.domains;
 }
-
-export const getSelectedAccount = createDeepEqualSelector(
-  getMetaMaskAccounts,
-  getSelectedInternalAccount,
-  (accounts, selectedAccount) => {
-    // At the time of onboarding there is no selected account
-    if (selectedAccount) {
-      return {
-        ...selectedAccount,
-        ...accounts[selectedAccount.address],
-      };
-    }
-    return undefined;
-  },
-);
 
 export const getWatchedToken = (transactionMeta) =>
   createSelector(
@@ -1300,28 +1146,6 @@ export function getUseNonceField(state) {
 }
 
 /**
- * @param {string} svgString - The raw SVG string to make embeddable.
- * @returns {string} The embeddable SVG string.
- */
-const getEmbeddableSvg = memoize(
-  (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
-);
-
-export function getTargetSubjectMetadata(state, origin) {
-  const metadata = getSubjectMetadata(state)[origin];
-
-  if (metadata?.subjectType === SubjectType.Snap) {
-    const { svgIcon, ...remainingMetadata } = metadata;
-    return {
-      ...remainingMetadata,
-      iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
-    };
-  }
-
-  return metadata;
-}
-
-/**
  * Input selector for reusing the same state object.
  * Used in memoized selectors created with createSelector
  * when raw state is needed to be passed to other selectors
@@ -1573,10 +1397,6 @@ export function getKnownMethodData(state, data) {
 
 export function getFeatureFlags(state) {
   return state.metamask.featureFlags;
-}
-
-export function getOriginOfCurrentTab(state) {
-  return state.activeTab.origin;
 }
 
 export function getDefaultHomeActiveTabName(state) {
@@ -2126,14 +1946,6 @@ export function getSortedAnnouncementsToShow(state) {
  */
 export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
-}
-
-export function getPinnedAccountsList(state) {
-  return state.metamask.pinnedAccountList;
-}
-
-export function getHiddenAccountsList(state) {
-  return state.metamask.hiddenAccountList;
 }
 
 export function getShowRecoveryPhraseReminder(state) {
@@ -2868,76 +2680,17 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
-export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
-  getMetaMaskAccountsOrdered,
-  getPinnedAccountsList,
-  getHiddenAccountsList,
-  getOrderedConnectedAccountsForActiveTab,
-  (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
-    connectedAccounts.forEach((connection) => {
-      // Find if the connection exists in accounts
-      const matchingAccount = accounts.find(
-        (account) => account.id === connection.id,
-      );
+export function getOnboardedInThisUISession(state) {
+  return state.appState.onboardedInThisUISession;
+}
 
-      // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
-      if (matchingAccount && connection.metadata) {
-        matchingAccount.connections = true;
-        matchingAccount.lastSelected = connection.metadata.lastSelected;
-      }
-    });
+export function getShowBasicFunctionalityModal(state) {
+  return state.appState.showBasicFunctionalityModal;
+}
 
-    // Find the account with the most recent lastSelected timestamp among accounts with metadata
-    const accountsWithLastSelected = accounts.filter(
-      (account) => account.connections && account.lastSelected,
-    );
-
-    const mostRecentAccount =
-      accountsWithLastSelected.length > 0
-        ? accountsWithLastSelected.reduce((prev, current) =>
-            prev.lastSelected > current.lastSelected ? prev : current,
-          )
-        : null;
-
-    accounts.forEach((account) => {
-      account.pinned = Boolean(pinnedAddresses.includes(account.address));
-      account.hidden = Boolean(hiddenAddresses.includes(account.address));
-      account.active = Boolean(
-        mostRecentAccount && account.id === mostRecentAccount.id,
-      );
-    });
-
-    const sortedPinnedAccounts = pinnedAddresses
-      ?.map((address) =>
-        accounts.find((account) => account.address === address),
-      )
-      .filter((account) =>
-        Boolean(
-          account &&
-            pinnedAddresses.includes(account.address) &&
-            !hiddenAddresses?.includes(account.address),
-        ),
-      );
-
-    const notPinnedAccounts = accounts.filter(
-      (account) =>
-        !pinnedAddresses.includes(account.address) &&
-        !hiddenAddresses.includes(account.address),
-    );
-
-    const filteredHiddenAccounts = accounts.filter((account) =>
-      hiddenAddresses.includes(account.address),
-    );
-
-    const sortedSearchResults = [
-      ...sortedPinnedAccounts,
-      ...notPinnedAccounts,
-      ...filteredHiddenAccounts,
-    ];
-
-    return sortedSearchResults;
-  },
-);
+export function getExternalServicesOnboardingToggleState(state) {
+  return state.appState.externalServicesOnboardingToggleState;
+}
 
 export const useSafeChainsListValidationSelector = (state) => {
   return state.metamask.useSafeChainsListValidation;
