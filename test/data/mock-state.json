@@ -92,19 +92,10 @@
             "suggestedMaxFeePerGas": "100"
           },
           "estimatedBaseFee": "50",
-          "historicalBaseFeeRange": [
-            "28.533098435",
-            "70.351148354"
-          ],
+          "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
           "baseFeeTrend": "up",
-          "latestPriorityFeeRange": [
-            "1",
-            "40"
-          ],
-          "historicalPriorityFeeRange": [
-            "0.1458417",
-            "700.156384646"
-          ],
+          "latestPriorityFeeRange": ["1", "40"],
+          "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
           "priorityFeeTrend": "down",
           "networkCongestion": 0.90625
         }
@@ -131,19 +122,10 @@
         "suggestedMaxFeePerGas": "100"
       },
       "estimatedBaseFee": "50",
-      "historicalBaseFeeRange": [
-        "28.533098435",
-        "70.351148354"
-      ],
+      "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
       "baseFeeTrend": "up",
-      "latestPriorityFeeRange": [
-        "1",
-        "40"
-      ],
-      "historicalPriorityFeeRange": [
-        "0.1458417",
-        "700.156384646"
-      ],
+      "latestPriorityFeeRange": ["1", "40"],
+      "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
       "priorityFeeTrend": "down",
       "networkCongestion": 0.90625
     },
@@ -589,27 +571,19 @@
       },
       {
         "type": "Ledger Hardware",
-        "accounts": [
-          "0xc42edfcc21ed14dda456aa0756c153f7985d8813"
-        ]
+        "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"]
       },
       {
         "type": "Simple Key Pair",
-        "accounts": [
-          "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
-        ]
+        "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
       },
       {
         "type": "Snap Keyring",
-        "accounts": [
-          "0xb552685e3d2790efd64a175b00d51f02cdafee5d"
-        ]
+        "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
       },
       {
         "type": "Custody test",
-        "accounts": [
-          "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
-        ]
+        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
       }
     ],
     "identities": {
@@ -666,15 +640,10 @@
         "snapTitle": "Metamask Simple Keyring",
         "snapSlug": "Secure your account with MetaMask Mobile",
         "snapDescription": "A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.",
-        "tags": [
-          "EOA"
-        ],
+        "tags": ["EOA"],
         "developer": "Metamask",
         "website": "https://www.consensys.io/",
-        "auditUrls": [
-          "auditUrl1",
-          "auditUrl2"
-        ],
+        "auditUrls": ["auditUrl1", "auditUrl2"],
         "version": "1.1.6",
         "lastUpdated": "September 26, 2024"
       }
@@ -1997,9 +1966,7 @@
               {
                 "type": "rpcOrigin",
                 "value": {
-                  "allowedOrigins": [
-                    "npm:@metamask/json-rpc-example-snap"
-                  ],
+                  "allowedOrigins": ["npm:@metamask/json-rpc-example-snap"],
                   "dapps": true
                 }
               }
