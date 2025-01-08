@@ -77,7 +77,9 @@ export const isValidASCIIURL = (urlString?: string) => {
 
     return new URL(urlString).href.includes(urlString);
   } catch (exp: unknown) {
-    console.error(exp);
+    console.error(
+      `Failed to detect if URL contains non-ASCII characters: ${urlString}. Error: ${exp}`,
+    );
     return false;
   }
 };
