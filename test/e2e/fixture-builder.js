@@ -785,6 +785,7 @@ class FixtureBuilder {
             options: {},
             methods: [
               'personal_sign',
+              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -793,18 +794,20 @@ class FixtureBuilder {
             type: 'eip155:eoa',
             metadata: {
               name: 'Account 1',
+              importTime: 1724486724986,
               lastSelected: 1665507600000,
               keyring: {
                 type: 'HD Key Tree',
               },
             },
           },
-          'e9976a84-110e-46c3-9811-e2da7b5528d3': {
-            id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
-            address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+          '221ecb67-0d29-4c04-83b2-dff07c263634': {
+            id: '221ecb67-0d29-4c04-83b2-dff07c263634',
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
             options: {},
             methods: [
               'personal_sign',
+              'eth_sign',
               'eth_signTransaction',
               'eth_signTypedData_v1',
               'eth_signTypedData_v3',
@@ -812,16 +815,17 @@ class FixtureBuilder {
             ],
             type: 'eip155:eoa',
             metadata: {
-              name: 'Account 2',
-              lastSelected: 1665507800000,
+              name: 'Trezor 1',
+              importTime: 1724486729079,
               keyring: {
-                type: 'HD Key Tree',
+                type: 'Trezor Hardware',
               },
+              lastSelected: 1724486729083,
             },
           },
         },
       },
-      selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+      selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
     });
   }
 
@@ -1510,6 +1514,14 @@ class FixtureBuilder {
   }
 
   build() {
+    if (
+      this.fixture.meta?.version !== undefined &&
+      this.fixture.meta.version !== FIXTURE_STATE_METADATA_VERSION
+    ) {
+      throw new Error(
+        `Fixture state version mismatch. Expected version ${FIXTURE_STATE_METADATA_VERSION} but got ${this.fixture.meta.version}`,
+      );
+    }
     this.fixture.meta = {
       version: FIXTURE_STATE_METADATA_VERSION,
     };
