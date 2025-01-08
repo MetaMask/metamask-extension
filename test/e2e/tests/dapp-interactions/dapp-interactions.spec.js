@@ -29,7 +29,7 @@ describe('Dapp interactions', function () {
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await unlockWallet(driver, { navigate: false });
+        await unlockWallet(driver);
         const notification = await driver.isElementPresent({
           text: 'Add Localhost 8546',
           tag: 'h3',
