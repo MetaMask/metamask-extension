@@ -3044,3 +3044,14 @@ export function getKeyringSnapRemovalResult(state) {
 }
 
 ///: END:ONLY_INCLUDE_IF
+
+export function getHdKeyringTypeIndex(state, account) {
+  const selectedAccount =
+    getInternalAccount(state, account) ?? getSelectedInternalAccount(state);
+  const keyrings = getMetaMaskKeyrings(state);
+  const hdKeyrings = keyrings.filter((kr) => kr.type === KeyringType.hdKeyTree);
+
+  return hdKeyrings.findIndex((kr) =>
+    kr.accounts.find((address) => address === selectedAccount.address),
+  );
+}

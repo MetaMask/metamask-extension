@@ -1417,6 +1417,9 @@
   "create": {
     "message": "Create"
   },
+  "createNewSRP": {
+    "message": "Create a new SRP"
+  },
   "createNewWallet": {
     "message": "Create a new wallet"
   },
@@ -4728,6 +4731,9 @@
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
+  },
+  "revealSecretRecoveryPhrase": {
+    "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"

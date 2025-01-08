@@ -2734,4 +2734,27 @@ describe('Actions', () => {
       expect(store.getActions()).toStrictEqual([]);
     });
   });
+
+  describe('generateNewHdKeyring', () => {
+    it('calls generateNewMnemonicAndAddToVault in the background', async () => {
+      const store = mockStore();
+
+      background.getApi.returns({
+        generateNewMnemonicAndAddToVault: sinon
+          .stub()
+          .callsFake((cb) => cb(null, {})),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.generateNewHdKeyring());
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
 });

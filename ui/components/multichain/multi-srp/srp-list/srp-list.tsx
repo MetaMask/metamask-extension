@@ -22,47 +22,60 @@ import {
   BlockSize,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { getMetaMaskKeyrings } from '../../../../selectors/selectors';
+import {
+  getMetaMaskCachedBalances,
+  getMetaMaskKeyrings,
+} from '../../../../selectors/selectors';
 import { getInternalAccounts } from '../../../../selectors/accounts';
+import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import { Numeric } from '../../../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../../../shared/constants/common';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { getMultichainConversionRate } from '../../../../selectors/multichain';
 
-export const SRPList = ({ onActionComplete }: { onActionComplete: (id: string) => void }) => {
-
+export const SRPList = ({
+  onActionComplete,
+  hideShowAccounts,
+}: {
+  onActionComplete: (id: number) => void;
+  hideShowAccounts?: boolean;
+}) => {
   const keyrings: (EthKeyring<Json> & {
-    id: string;
-    typeIndex: number;
     accounts: string[];
   })[] = useSelector(getMetaMaskKeyrings);
   const accounts: InternalAccount[] = useSelector(getInternalAccounts);
-  const accountNameByAddress: Record<string, string> = useMemo(
+  const accountBalances: Record<string, string> = useSelector(
+    getMetaMaskCachedBalances,
+  );
+  const conversionRate = useMultichainSelector(getMultichainConversionRate);
+
+  const accountByAddress: Record<string, InternalAccount> = useMemo(
     () =>
       accounts.reduce(
-        (acc: Record<string, string>, account: InternalAccount) => ({
+        (acc: Record<string, InternalAccount>, account: InternalAccount) => ({
           ...acc,
-          [account.address]: account.metadata.name,
+          [account.address]: account,
         }),
         {},
       ),
     [accounts],
   );
-  const nonEmptyHDKeyrings = useMemo(
-    () =>
-      keyrings.filter(
-        (keyring) =>
-          keyring.type === KeyringTypes.hd && keyring.accounts.length > 0,
-      ),
+  const hdKeyrings = useMemo(
+    () => keyrings.filter((keyring) => keyring.type === KeyringTypes.hd),
     [keyrings],
   );
 
   const showAccountsInitState = useMemo(
     () =>
-      nonEmptyHDKeyrings.reduce(
-        (acc: Record<string, boolean>, keyring) => ({
+      hdKeyrings.reduce(
+        (acc: Record<string, boolean>, _, index) => ({
           ...acc,
-          [keyring.id]: false,
+          [index]: Boolean(hideShowAccounts), // if hideShowAccounts is true, show all accounts by default
         }),
         {},
       ),
-    [nonEmptyHDKeyrings],
+    [hdKeyrings],
   );
 
   const [showAccounts, setShowAccounts] = useState<Record<string, boolean>>(
@@ -71,10 +84,10 @@ export const SRPList = ({ onActionComplete }: { onActionComplete: (id: string) =
 
   return (
     <Box padding={4}>
-      {nonEmptyHDKeyrings.map((keyring) => (
+      {hdKeyrings.map((keyring, index) => (
         <Card
-          onClick={() => onActionComplete(keyring.id)}
-          className="select-srp-container"
+          onClick={() => onActionComplete(index)}
+          className="select-srp__container"
           marginBottom={3}
         >
           <Box
@@ -85,31 +98,33 @@ export const SRPList = ({ onActionComplete }: { onActionComplete: (id: string) =
             paddingLeft={4}
           >
             <Box>
-              <Text>Secret Phrase {keyring.typeIndex}</Text>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.primaryDefault}
-                className="srp-list-show-accounts"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowAccounts({
-                    ...showAccounts,
-                    [keyring.id]: !showAccounts[keyring.id],
-                  });
-                }}
-              >
-                {showAccounts[keyring.id] ? 'Hide' : 'Show'}{' '}
-                {keyring.accounts.length} account
-                {keyring.accounts.length > 1 ? 's' : ''}
-              </Text>
+              <Text>Secret Phrase {index + 1}</Text>
+              {!hideShowAccounts && (
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.primaryDefault}
+                  className="srp-list__show-accounts"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAccounts({
+                      ...showAccounts,
+                      [index]: !showAccounts[index],
+                    });
+                  }}
+                >
+                  {showAccounts[index] ? 'Hide' : 'Show'}{' '}
+                  {keyring.accounts.length} account
+                  {keyring.accounts.length > 1 ? 's' : ''}
+                </Text>
+              )}
             </Box>
             <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
           </Box>
-          {showAccounts[keyring.id] && (
+          {showAccounts[index] && (
             <Box>
               <Box
                 width={BlockSize.Full}
-                className="srp-list-divider"
+                className="srp-list__divider"
                 marginTop={2}
                 marginBottom={2}
               />
@@ -118,17 +133,50 @@ export const SRPList = ({ onActionComplete }: { onActionComplete: (id: string) =
                   display={Display.Flex}
                   flexDirection={FlexDirection.Row}
                   alignItems={AlignItems.center}
+                  justifyContent={JustifyContent.spaceBetween}
                 >
-                  <AvatarAccount
-                    address={address}
-                    size={AvatarAccountSize.Xs}
-                  />
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textAlternative}
-                    paddingLeft={3}
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Row}
+                    alignItems={AlignItems.center}
                   >
-                    {accountNameByAddress[address]}
+                    <AvatarAccount
+                      address={address}
+                      size={AvatarAccountSize.Xs}
+                    />
+                    <Text
+                      className="srp-list__account-name"
+                      variant={TextVariant.bodySm}
+                      paddingLeft={3}
+                    >
+                      {accountByAddress[address].metadata.name}
+                    </Text>
+                    <Text
+                      variant={TextVariant.bodySm}
+                      color={TextColor.textAlternative}
+                      marginLeft={1}
+                    >
+                      {shortenAddress(address)}
+                    </Text>
+                  </Box>
+                  <Text variant={TextVariant.bodySm}>
+                    <UserPreferencedCurrencyDisplay
+                      value={new Numeric(
+                        accountBalances[address],
+                        16,
+                        EtherDenomination.WEI,
+                      )
+                        .toDenomination(EtherDenomination.ETH)
+                        .toBase(10)
+                        .times(new Numeric(conversionRate, 10))
+                        .toString()}
+                      type="PRIMARY"
+                      ethNumberOfDecimals={4}
+                      hideTitle
+                      showFiat
+                      isAggregatedFiatOverviewBalance
+                      hideLabel
+                    />
                   </Text>
                 </Box>
               ))}

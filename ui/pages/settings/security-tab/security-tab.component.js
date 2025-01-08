@@ -23,7 +23,6 @@ import {
   SECURITY_ALERTS_LEARN_MORE_LINK,
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
-import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
   BUTTON_SIZES,
@@ -45,7 +44,10 @@ import {
   TextVariant,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
+import {
+  ADD_POPULAR_CUSTOM_NETWORK,
+  REVEAL_SRP_LIST_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
@@ -109,7 +111,6 @@ export default class SecurityTab extends PureComponent {
   state = {
     ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
-    srpQuizModalVisible: false,
     showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
   };
@@ -160,10 +161,9 @@ export default class SecurityTab extends PureComponent {
     toggleMethod(!value);
   }
 
-  hideSrpQuizModal = () => this.setState({ srpQuizModalVisible: false });
-
   renderSeedWords() {
     const { t } = this.context;
+    const { history } = this.props;
 
     return (
       <>
@@ -196,17 +196,13 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
-              this.setState({ srpQuizModalVisible: true });
+              history.push({
+                pathname: REVEAL_SRP_LIST_ROUTE,
+              });
             }}
           >
             {t('revealSeedWords')}
           </Button>
-          {this.state.srpQuizModalVisible && (
-            <SRPQuiz
-              isOpen={this.state.srpQuizModalVisible}
-              onClose={this.hideSrpQuizModal}
-            />
-          )}
         </div>
       </>
     );

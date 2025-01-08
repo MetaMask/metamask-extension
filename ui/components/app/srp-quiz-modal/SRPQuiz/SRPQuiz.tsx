@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -30,6 +31,7 @@ import { ModalContent } from '../../../component-library/modal-content/deprecate
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import QuizContent from '../QuizContent';
 import { JSXDict, QuizStage } from '../types';
+import { getHdKeyringTypeIndex } from '../../../../selectors';
 
 const wrongAnswerIcon = (
   <Icon
@@ -57,14 +59,21 @@ const openSupportArticle = (): void => {
   });
 };
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function SRPQuiz(props: any) {
+export type SRPQuizProps = {
+  accountId: string; // The account id will be used to determine which HD keyring to use.
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const t = useI18nContext();
+  const typeIndex = useSelector((state) =>
+    getHdKeyringTypeIndex(state, props.accountId),
+  );
 
   // This should not be a state variable, because it's derivable from the state variable `stage`
   // (Making it a state variable forces the component to render twice)
@@ -218,7 +227,7 @@ export default function SRPQuiz(props: any) {
         buttons={[
           {
             label: t('continue'),
-            onClick: () => history.push(REVEAL_SEED_ROUTE),
+            onClick: () => history.push(`${REVEAL_SEED_ROUTE}/${typeIndex}`),
             variant: ButtonVariant.Primary,
             size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-continue',

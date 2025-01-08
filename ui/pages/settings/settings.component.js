@@ -21,6 +21,7 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  REVEAL_SRP_LIST_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -53,6 +54,7 @@ import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
+import { RevealSRPList } from './security-tab/reveal-srp-list';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -437,6 +439,7 @@ class SettingsPage extends PureComponent {
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
         />
+        <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSRPList} />
         <Route
           render={(routeProps) => (
             <SettingsTab

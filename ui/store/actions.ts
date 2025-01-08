@@ -268,6 +268,36 @@ export function addNewMnemonicToVault(
       });
   };
 }
+
+export function generateNewHdKeyring(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.generateNewMnemonicAndAddToVault`);
+
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod('generateNewMnemonicAndAddToVault', [], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    })
+      .then(async () => {
+        dispatch(hideLoadingIndication());
+      })
+      .catch((err) => {
+        dispatch(displayWarning(err));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
+}
 ///: END:ONLY_INCLUDE_IF
 export function createNewVaultAndGetSeedPhrase(
   password: string,
@@ -355,16 +385,17 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function getSeedPhrase(password: string) {
+export async function getSeedPhrase(password: string, typeIndex: string) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
     'getSeedPhrase',
-    [password],
+    [password, typeIndex],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
 export function requestRevealSeedWords(
   password: string,
+  typeIndex: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -372,7 +403,7 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await getSeedPhrase(password);
+      const seedPhrase = await getSeedPhrase(password, typeIndex);
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -483,7 +514,7 @@ export function importNewAccount(
 
 export function addNewAccount(
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  keyringId?: string,
+  keyringIndex?: number,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
@@ -494,13 +525,11 @@ export function addNewAccount(
     );
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     const keyrings = getMetaMaskKeyrings(getState());
-    const primaryKeyring = keyrings.find(
+    const hdKeyrings = keyrings.filter(
       (keyring) => keyring.type === KeyringTypes.hd,
     );
-    const selectedKeyring = keyrings.find(
-      (keyring) => keyring.id === keyringId,
-    );
-    oldAccounts = selectedKeyring?.accounts || primaryKeyring?.accounts;
+    const selectedKeyring = hdKeyrings[keyringIndex];
+    oldAccounts = selectedKeyring?.accounts || hdKeyrings[0]?.accounts;
     ///: END:ONLY_INCLUDE_IF
 
     dispatch(showLoadingIndication());
@@ -510,7 +539,7 @@ export function addNewAccount(
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        keyringId || primaryKeyring?.id,
+        keyringIndex || 0,
         ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {

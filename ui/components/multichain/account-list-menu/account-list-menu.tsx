@@ -24,7 +24,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { KeyringObject } from '@metamask/keyring-controller';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
@@ -76,11 +75,11 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  getMetaMaskKeyrings,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import {
+  generateNewHdKeyring,
+  setSelectedAccount,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -142,7 +141,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { ImportSRP } from '../multi-srp/import-srp';
 import { SRPList } from '../multi-srp/srp-list';
-import { KeyringType } from '../../../../shared/constants/keyring';
 ///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
@@ -164,6 +162,7 @@ const ACTION_MODES = {
   // Displays the import account form controls
   IMPORT: 'import',
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  CREATE_SRP: 'create-srp',
   IMPORT_SRP: 'import-srp',
   SELECT_SRP: 'select-srp',
   ///: END:ONLY_INCLUDE_IF
@@ -194,6 +193,8 @@ export const getActionTitle = (
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    case ACTION_MODES.CREATE_SRP:
+      return t('createSecretRecoveryPhrase');
     case ACTION_MODES.IMPORT_SRP:
       return t('importSecretRecoveryPhrase');
     case ACTION_MODES.SELECT_SRP:
@@ -348,13 +349,7 @@ export const AccountListMenu = ({
 
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  const keyrings = useSelector(getMetaMaskKeyrings);
-  const primaryKeyring = keyrings.find(
-    (keyring: KeyringObject) => keyring.type === KeyringType.hdKeyTree,
-  );
-  const [selectedKeyringId, setSelectedKeyringId] = useState(
-    primaryKeyring?.id,
-  );
+  const [selectedKeyringIndex, setSelectedKeyringIndex] = useState(0);
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -445,7 +440,7 @@ export const AccountListMenu = ({
                 }
               }}
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-              selectedKeyringId={selectedKeyringId}
+              selectedKeyringIndex={selectedKeyringIndex}
               onSelectSRP={() => setActionMode(ACTION_MODES.SELECT_SRP)}
               ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
@@ -495,8 +490,8 @@ export const AccountListMenu = ({
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
           actionMode === ACTION_MODES.SELECT_SRP && (
             <SRPList
-              onActionComplete={(keyringId: string) => {
-                setSelectedKeyringId(keyringId);
+              onActionComplete={(keyringIndex: number) => {
+                setSelectedKeyringIndex(keyringIndex);
                 setActionMode(ACTION_MODES.ADD);
               }}
             />
@@ -616,6 +611,21 @@ export const AccountListMenu = ({
             }
             {
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Import}
+                  onClick={async () => {
+                    await dispatch(generateNewHdKeyring());
+                    onClose();
+                  }}
+                  data-testid="multichain-account-menu-popover-create-new-srp"
+                >
+                  {t('createNewSRP')}
+                </ButtonLink>
+              </Box>
+            }
+            {
               <Box marginTop={4}>
                 <ButtonLink
                   size={ButtonLinkSize.Sm}
