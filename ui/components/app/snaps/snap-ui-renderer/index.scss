@@ -87,7 +87,7 @@
 
   &__form {
     .snap-ui-renderer__panel {
-      .mm-box--display-flex.mm-box--flex-direction-column {
+      .snap-ui-renderer__field {
         flex: 1 1 50%; // Ensure that adjacent form elements take up to 50% width
       }
     }
