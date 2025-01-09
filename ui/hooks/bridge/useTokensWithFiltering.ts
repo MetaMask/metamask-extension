@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
-  getSelectedInternalAccountWithBalance,
   getTokenExchangeRates,
   selectERC20TokensByChain,
 } from '../../selectors';
@@ -15,7 +14,10 @@ import {
   getConversionRate,
   getCurrentCurrency,
 } from '../../ducks/metamask/metamask';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
+import {
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  SwapsTokenObject,
+} from '../../../shared/constants/swaps';
 import {
   AssetWithDisplayData,
   ERC20Asset,
@@ -24,7 +26,6 @@ import {
 import { AssetType } from '../../../shared/constants/transaction';
 import { isNativeAddress } from '../../pages/bridge/utils/quote';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { Token } from '../../components/app/assets/token-list/token-list';
 import { useMultichainBalances } from '../useMultichainBalances';
 import { useAsyncResult } from '../useAsyncResult';
@@ -55,12 +56,9 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
     getAllDetectedTokensForSelectedAddress,
   );
 
-  const { balance } = useSelector(getSelectedInternalAccountWithBalance);
-
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const currentChainId = useSelector(getCurrentChainId);
 
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
@@ -110,8 +108,9 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
           CHAIN_ID_TOKEN_IMAGE_MAP[
             chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
           ],
-        balance: currentChainId === chainId ? balance : '',
-        string: currentChainId === chainId ? balance : '',
+        // Only unimported native assets are processed here so hardcode balance to 0
+        balance: '0',
+        string: '0',
       };
     }
 
@@ -168,6 +167,25 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
           ) {
             // If there's no address, set it to the native address in swaps/bridge
             yield { ...token, address: token.address || zeroAddress() };
+          }
+        }
+
+        // Yield the native token for the selected chain
+        const nativeToken =
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
+            chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+          ];
+        if (
+          nativeToken &&
+          shouldAddToken(
+            nativeToken.symbol,
+            nativeToken.address ?? undefined,
+            chainId,
+          )
+        ) {
+          const tokenWithData = buildTokenData(nativeToken);
+          if (tokenWithData) {
+            yield tokenWithData;
           }
         }
 
