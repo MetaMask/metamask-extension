@@ -34,7 +34,7 @@ describe('Send SOL flow', function (this: Suite) {
       },
     );
   });
-  it.only('with a positive balance account', async function () {
+  it('with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
