@@ -8,6 +8,7 @@ import {
   DEFAULT_BTC_FEES_RATE,
   DEFAULT_BTC_TRANSACTION_ID,
   DEFAULT_BTC_CONVERSION_RATE,
+  DEFAULT_BTC_BLOCK_NUMBER,
   SATS_IN_1_BTC,
 } from '../../constants';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
@@ -119,7 +120,7 @@ export async function mockGetUTXO(mockServer: Mockttp) {
               txid: DEFAULT_BTC_TRANSACTION_ID,
               vout: 0,
               value: btcToSats(DEFAULT_BTC_BALANCE).toString(),
-              height: 101100110,
+              height: DEFAULT_BTC_BLOCK_NUMBER,
               confirmations: 6,
             },
           ],
@@ -188,6 +189,16 @@ export async function mockBtcSatProtectionService(
   mockServer: Mockttp,
   address: string = DEFAULT_BTC_ACCOUNT,
 ) {
+  // NOTE: This endpoint is also used to compute the total balance if Sat Protection is enabled, so we have
+  // to compute the set of UTXOS here too.
+  const utxos = [
+    {
+      output: `${DEFAULT_BTC_TRANSACTION_ID}:0`,
+      value: btcToSats(DEFAULT_BTC_BALANCE),
+      block_number: DEFAULT_BTC_BLOCK_NUMBER,
+    },
+  ];
+
   return await mockServer
     .forGet(`${SIMPLEHASH_URL}/api/v0/custom/wallet_assets_by_utxo/${address}`)
     .withQuery({
@@ -196,7 +207,10 @@ export async function mockBtcSatProtectionService(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: { count: 0, utxos: [] },
+        json: {
+          count: utxos.length,
+          utxos,
+        },
       };
     });
 }
