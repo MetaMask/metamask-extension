@@ -68,6 +68,8 @@ const PermitSimulation: React.FC<object> = () => {
       tokenContract={token}
       value={amount}
       chainId={chainId}
+      message={message}
+      canDisplayValueAsUnlimited
     />
   );
 
@@ -97,6 +99,8 @@ const PermitSimulation: React.FC<object> = () => {
             value={message.value}
             tokenId={message.tokenId}
             chainId={chainId}
+            message={message}
+            canDisplayValueAsUnlimited
           />
         )}
       </Box>
@@ -108,7 +112,11 @@ const PermitSimulation: React.FC<object> = () => {
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
       description={t(
-        isNFT ? 'simulationDetailsApproveDesc' : 'permitSimulationDetailInfo',
+        isNFT
+          ? 'simulationDetailsApproveDesc'
+          : message.allowed === true
+          ? 'permitSimulationDetailInfo'
+          : 'permitRevokeSimulationDetailInfo',
       )}
       simulationElements={SpendingCapRow}
     />

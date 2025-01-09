@@ -31,6 +31,8 @@ import {
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
 
+const DAI_CONTRACT_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */
   chainId: Hex;
@@ -51,6 +53,9 @@ type PermitSimulationValueDisplayParams = {
   /** The tokenId for NFT */
   tokenId?: string;
 
+  /** The permit message */
+  message?: { allowed?: boolean | null };
+
   /** True if value is being credited to wallet */
   credit?: boolean;
 
@@ -69,6 +74,7 @@ const PermitSimulationValueDisplay: React.FC<
   tokenContract,
   tokenId,
   value,
+  message,
   credit,
   debit,
   canDisplayValueAsUnlimited,
@@ -96,22 +102,30 @@ const PermitSimulationValueDisplay: React.FC<
 
   const { tokenValue, tokenValueMaxPrecision, shouldShowUnlimitedValue } =
     useMemo(() => {
+      const isDAIPermit = tokenContract === DAI_CONTRACT_ADDRESS;
+      const isPermitAllowed = message?.allowed === true;
+      const showUnlimitedDueToDAIContract = isDAIPermit && isPermitAllowed;
+
       if (!value || tokenId) {
         return {
           tokenValue: null,
           tokenValueMaxPrecision: null,
-          shouldShowUnlimitedValue: false,
+          shouldShowUnlimitedValue:
+            canDisplayValueAsUnlimited && showUnlimitedDueToDAIContract,
         };
       }
 
       const tokenAmount = calcTokenAmount(value, tokenDecimals);
+
+      const showUnlimitedDueToPermitValue =
+        Number(value) > TOKEN_VALUE_UNLIMITED_THRESHOLD;
 
       return {
         tokenValue: formatAmount('en-US', tokenAmount),
         tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
         shouldShowUnlimitedValue:
           canDisplayValueAsUnlimited &&
-          Number(value) > TOKEN_VALUE_UNLIMITED_THRESHOLD,
+          (showUnlimitedDueToPermitValue || showUnlimitedDueToDAIContract),
       };
     }, [tokenDecimals, tokenId, value]);
 
