@@ -131,7 +131,6 @@ describe('Send SOL flow', function (this: Suite) {
         );
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
-        assert(transaction !== undefined);
         assert.equal(
           await sentTxPage.checkTransactionStatusText('0.1', true),
           true,
