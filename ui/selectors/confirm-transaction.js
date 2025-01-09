@@ -216,7 +216,7 @@ export const transactionFeeSelector = function (state, txData) {
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
-    gasLimitNoBuffer: txData?.gasLimitNoBuffer
+    gasLimitNoBuffer: txData.gasLimitNoBuffer
   };
 
   if (networkAndAccountSupportsEIP1559) {
