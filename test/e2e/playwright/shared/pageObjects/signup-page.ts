@@ -50,6 +50,7 @@ export class SignUpPage {
   readonly skipSrpBackupBtn: Locator;
 
   readonly termsModalBody: Locator;
+  readonly popOverBtn: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -80,6 +81,7 @@ export class SignUpPage {
     this.agreeBtn = page.locator('button:has-text("I agree")');
     this.enableBtn = page.locator('button:has-text("Enable")');
     this.termsModalBody = page.getByTestId('terms-of-use-modal-body');
+    this.popOverBtn = page.getByTestId('popover-close');
   }
 
   private async handleTermsModal() {
@@ -125,5 +127,6 @@ export class SignUpPage {
     await this.gotItBtn.click();
     await this.nextBtn.click();
     await this.doneBtn.click();
+    await this.popOverBtn.click();
   }
 }
