@@ -25,6 +25,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -36,7 +37,6 @@ import {
   METRICS_STATUS_FAILED,
   TransactionMetricsRequest,
 } from './metrics';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 
 const providerResultStub = {
   eth_getCode: '0x123',
