@@ -39,7 +39,8 @@ const createMockedHandler = () => {
       '0x3': {},
     },
   };
-  const requestCaip25PermissionForOrigin = jest.fn().mockResolvedValue({});
+  const requestCaip25ApprovalForOrigin = jest.fn().mockResolvedValue({});
+  const grantPermissionsForOrigin = jest.fn().mockReturnValue({});
   const response: PendingJsonRpcResponse<string[]> = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -53,7 +54,8 @@ const createMockedHandler = () => {
       getUnlockPromise,
       sendMetrics,
       metamaskState,
-      requestCaip25PermissionForOrigin,
+      requestCaip25ApprovalForOrigin,
+      grantPermissionsForOrigin,
     });
 
   return {
@@ -64,7 +66,8 @@ const createMockedHandler = () => {
     getUnlockPromise,
     sendMetrics,
     metamaskState,
-    requestCaip25PermissionForOrigin,
+    requestCaip25ApprovalForOrigin,
+    grantPermissionsForOrigin,
     handler,
   };
 };
@@ -127,23 +130,35 @@ describe('requestEthereumAccountsHandler', () => {
   });
 
   describe('eip155 account permissions do not exist', () => {
-    it('requests the CAIP-25 permission', async () => {
-      const { handler, requestCaip25PermissionForOrigin } =
-        createMockedHandler();
+    it('requests the CAIP-25 approval', async () => {
+      const { handler, requestCaip25ApprovalForOrigin } = createMockedHandler();
 
       await handler({ ...baseRequest, origin: 'http://test.com' });
-      expect(requestCaip25PermissionForOrigin).toHaveBeenCalledWith();
+      expect(requestCaip25ApprovalForOrigin).toHaveBeenCalledWith();
     });
 
-    it('throws an error if the CAIP-25 permission approval is rejected', async () => {
-      const { handler, requestCaip25PermissionForOrigin, end } =
+    it('throws an error if the CAIP-25 approval is rejected', async () => {
+      const { handler, requestCaip25ApprovalForOrigin, end } =
         createMockedHandler();
-      requestCaip25PermissionForOrigin.mockRejectedValue(
+      requestCaip25ApprovalForOrigin.mockRejectedValue(
         new Error('approval rejected'),
       );
 
       await handler(baseRequest);
       expect(end).toHaveBeenCalledWith(new Error('approval rejected'));
+    });
+
+    it('grants the CAIP-25 approval', async () => {
+      const {
+        handler,
+        requestCaip25ApprovalForOrigin,
+        grantPermissionsForOrigin,
+      } = createMockedHandler();
+
+      requestCaip25ApprovalForOrigin.mockResolvedValue({ foo: 'bar' });
+
+      await handler({ ...baseRequest, origin: 'http://test.com' });
+      expect(grantPermissionsForOrigin).toHaveBeenCalledWith({ foo: 'bar' });
     });
 
     it('returns the newly granted and properly ordered eth accounts', async () => {
