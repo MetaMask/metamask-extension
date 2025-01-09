@@ -18,7 +18,6 @@ describe('Request Queueing', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
