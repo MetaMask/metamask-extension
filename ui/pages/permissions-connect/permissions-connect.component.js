@@ -180,8 +180,8 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { permissionsRequest, lastConnectedInfo } = this.props;
-    const { redirecting, origin } = this.state;
+    const { permissionsRequest, lastConnectedInfo, origin } = this.props;
+    const { redirecting } = this.state;
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
       const accountsLastApprovedTime =
@@ -288,8 +288,8 @@ export default class PermissionConnect extends Component {
         ) : (
           <PermissionConnectHeader
             requestId={permissionsRequestId}
-            origin={targetSubjectMetadata.origin}
-            iconUrl={targetSubjectMetadata.iconUrl}
+            origin={this.props.origin}
+            iconUrl={this.props.targetSubjectMetadata.iconUrl}
           />
         )}
       </Box>
