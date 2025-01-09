@@ -220,6 +220,7 @@
     "isProfileSyncingUpdateLoading": "boolean",
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
+    "isAccountSyncingInProgress": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",
