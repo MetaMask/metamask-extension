@@ -103,8 +103,7 @@ const PermitSimulationValueDisplay: React.FC<
   const { tokenValue, tokenValueMaxPrecision, shouldShowUnlimitedValue } =
     useMemo(() => {
       const isDAIPermit = tokenContract === DAI_CONTRACT_ADDRESS;
-      const isPermitAllowed = message?.allowed === true;
-      const showUnlimitedDueToDAIContract = isDAIPermit && isPermitAllowed;
+      const showUnlimitedDueToDAIContract = isDAIPermit;
 
       if (!value || tokenId) {
         return {
