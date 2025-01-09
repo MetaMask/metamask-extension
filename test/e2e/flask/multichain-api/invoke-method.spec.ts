@@ -3,6 +3,7 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
   largeDelayMs,
+  regularDelayMs,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
@@ -13,6 +14,7 @@ import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   openMultichainDappAndConnectWalletWithExternallyConnectable,
   addAccountInWalletAndAuthorize,
+  escapeColon,
 } from './testHelpers';
 
 describe('Multichain API', function () {
@@ -61,11 +63,8 @@ describe('Multichain API', function () {
               [GANACHE_SCOPES[2]]: '0x77359400',
             };
 
-            const scopeCards = await driver.findElements('.scope-card');
-
-            for (const i of scopeCards.keys()) {
-              const scope = GANACHE_SCOPES[i];
-              const invokeMethod = TEST_METHODS[GANACHE_SCOPES[i]];
+            for (const scope of GANACHE_SCOPES) {
+              const invokeMethod = TEST_METHODS[scope];
               await driver.clickElementSafe(
                 `[data-testid="${scope}-${invokeMethod}-option"]`,
               );
@@ -74,14 +73,8 @@ describe('Multichain API', function () {
                 `[data-testid="invoke-method-${scope}-btn"]`,
               );
 
-              /**
-               * We need to escape colon character on the scope, otherwise selenium will treat this as an invalid selector
-               */
               const resultElement = await driver.findElement(
-                `#invoke-method-${scope.replace(
-                  ':',
-                  '\\:',
-                )}-${invokeMethod}-result-0`,
+                `#invoke-method-${escapeColon(scope)}-${invokeMethod}-result-0`,
               );
 
               const result = await resultElement.getText();
@@ -129,9 +122,7 @@ describe('Multichain API', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
 
-            const scopeCards = await driver.findElements('.scope-card');
-            for (const i of scopeCards.keys()) {
-              const scope = GANACHE_SCOPES[i];
+            for (const [i, scope] of GANACHE_SCOPES.entries()) {
               await driver.clickElementSafe(
                 `[data-testid="${scope}-eth_sendTransaction-option"]`,
               );
@@ -148,7 +139,7 @@ describe('Multichain API', function () {
             });
 
             for (const i of GANACHE_SCOPES.keys()) {
-              await driver.delay(largeDelayMs);
+              await driver.delay(regularDelayMs);
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
               const accountWebElement = await driver.findElement(
@@ -202,10 +193,7 @@ describe('Multichain API', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
 
-            const scopeCards = await driver.findElements('.scope-card');
-
-            for (const i of scopeCards.keys()) {
-              const scope = GANACHE_SCOPES[i];
+            for (const [i, scope] of GANACHE_SCOPES.entries()) {
               await driver.clickElementSafe(
                 `[data-testid="${scope}-eth_sendTransaction-option"]`,
               );
@@ -221,8 +209,8 @@ describe('Multichain API', function () {
               tag: 'button',
             });
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            for (const _ of GANACHE_SCOPES) {
+            const totalNumberOfScopes = GANACHE_SCOPES.length;
+            for (let i = 0; i < totalNumberOfScopes; i++) {
               await driver.delay(largeDelayMs);
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
               await driver.clickElement({
@@ -241,8 +229,7 @@ describe('Multichain API', function () {
               tag: 'button',
             });
 
-            for (const i of scopeCards.keys()) {
-              const scope = GANACHE_SCOPES[i];
+            for (const scope of GANACHE_SCOPES) {
               await driver.clickElementSafe(
                 `[data-testid="${scope}-eth_getBalance-option"]`,
               );
@@ -253,10 +240,7 @@ describe('Multichain API', function () {
               );
 
               const resultWebElement = await driver.findElement(
-                `#invoke-method-${scope.replace(
-                  ':',
-                  '\\:',
-                )}-eth_getBalance-result-0`,
+                `#invoke-method-${escapeColon(scope)}-eth_getBalance-result-0`,
               );
               const currentBalance = await resultWebElement.getText();
 

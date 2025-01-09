@@ -196,3 +196,12 @@ export const updateNetworkCheckboxes = async (
   }
   await driver.clickElement({ text: 'Update', tag: 'button' });
 };
+
+/**
+ * Sometimes we need to escape colon character when using {@link Driver.findElement}, otherwise selenium will treat this as an invalid selector.
+ *
+ * @param selector - string to manipulate.
+ * @returns string with escaped colon char.
+ */
+export const escapeColon = (selector: string): string =>
+  selector.replace(':', '\\:');
