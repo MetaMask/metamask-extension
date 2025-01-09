@@ -38,6 +38,7 @@ import {
  * @param options.maxPriorityFeePerGas
  * @param options.minimumGasLimit
  * @param options.transaction
+ * @param options.gasLimit
  * @returns {GasEstimatesReturnType} The gas estimates.
  */
 export function useGasEstimates({

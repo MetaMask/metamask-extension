@@ -43,8 +43,7 @@ export function getMaximumGasTotalInHexWei({
  * transaction will cost. For gasPrice types this is the same as max.
  *
  * @param {object} options - gas fee parameters object
- * @param {string} [options.gasLimit] - the maximum amount of gas to allow this
- *  transaction to consume. Value is a hex string
+ * @param {string} [options.gasLimitNoBuffer] - gas limit without buffer
  * @param {string} [options.gasPrice] - The fee in wei to pay per gas used.
  *  gasPrice is only set on Legacy type transactions. Value is hex string
  * @param {string} [options.maxFeePerGas] - The maximum fee in wei to pay per
@@ -55,6 +54,7 @@ export function getMaximumGasTotalInHexWei({
  *  pay a miner to include this transaction.
  * @param {string} [options.baseFeePerGas] - The estimated block baseFeePerGas
  *  that will be burned. Introduced in EIP 1559. Value in hex wei.
+ * @param options.gasLimitNoBuffer
  * @returns {string} The minimum total cost of transaction in hex wei string
  */
 export function getMinimumGasTotalInHexWei({
