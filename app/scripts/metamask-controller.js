@@ -4526,7 +4526,7 @@ export default class MetamaskController extends EventEmitter {
             tokenId,
           );
       } catch (e) {
-        log.error(`Failed to get token standard and details. Error: ${e}`);
+        log.warn(`Failed to get token standard and details. Error: ${e}`);
       }
     }
 
