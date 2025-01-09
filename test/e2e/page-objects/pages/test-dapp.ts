@@ -69,11 +69,6 @@ class TestDapp {
 
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
 
-  private readonly localhostNetworkMessage = {
-    css: '#chainId',
-    text: '0x539',
-  };
-
   private readonly mmlogo = '#mm-logo';
 
   private readonly personalSignButton = '#personalSign';
@@ -311,13 +306,16 @@ class TestDapp {
    * @param options - Options for connecting account to test dapp.
    * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
    * @param options.publicAddress - The public address to connect to test dapp.
+   * @param [options.networkId] - The network to connect to, defaults to 0x539.
    */
   async connectAccount({
     connectAccountButtonEnabled = true,
     publicAddress,
+    networkId = '0x539',
   }: {
     connectAccountButtonEnabled?: boolean;
     publicAddress?: string;
+    networkId?: string;
   }) {
     console.log('Connect account to test dapp');
     await this.driver.clickElement(this.connectAccountButton);
@@ -333,7 +331,10 @@ class TestDapp {
     }
     if (publicAddress) {
       await this.check_connectedAccounts(publicAddress);
-      await this.driver.waitForSelector(this.localhostNetworkMessage);
+      await this.driver.waitForSelector({
+        css: '#chainId',
+        text: networkId,
+      });
     }
   }
 
