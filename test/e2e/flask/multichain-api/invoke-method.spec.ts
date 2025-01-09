@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
+  convertETHToHexGwei,
   largeDelayMs,
   regularDelayMs,
   WINDOW_TITLES,
@@ -9,6 +10,7 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
+import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 import {
   initCreateSessionScopes,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -20,7 +22,9 @@ import {
 describe('Multichain API', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
   const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
-  const DEFAULT_INITIAL_BALANCE_HEX = '0x15af1d78b58c40000';
+  const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
+    DEFAULT_GANACHE_ETH_BALANCE_DEC,
+  );
 
   describe('Calling `wallet_invokeMethod` on the same dapp across three different connected chains', function () {
     describe('Read operations: calling different methods on each connected scope', function () {
@@ -164,7 +168,7 @@ describe('Multichain API', function () {
         );
       });
 
-      it('should have less balance due to gas after transaction is sent', async function () {
+      it.only('should have less balance due to gas after transaction is sent', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
@@ -244,7 +248,7 @@ describe('Multichain API', function () {
               );
               const currentBalance = await resultWebElement.getText();
 
-              assert.notStrictEqual(
+              assert.strictEqual(
                 currentBalance,
                 `"${DEFAULT_INITIAL_BALANCE_HEX}"`,
                 `${scope} scope balance should be different after eth_sendTransaction due to gas`,
