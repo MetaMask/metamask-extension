@@ -3158,22 +3158,20 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.methods.includes('eth_subscribe')
             ) {
               // for each tabId
-              Object.values(this.connections[origin]).forEach(
-                ({ tabId }) => {
-                  const subscriptionManager =
-                    this.multichainSubscriptionManager.subscribe({
-                      scope,
-                      origin,
-                      tabId,
-                    });
-                  this.multichainMiddlewareManager.addMiddleware({
+              Object.values(this.connections[origin]).forEach(({ tabId }) => {
+                const subscriptionManager =
+                  this.multichainSubscriptionManager.subscribe({
                     scope,
                     origin,
                     tabId,
-                    middleware: subscriptionManager.middleware,
                   });
-                },
-              );
+                this.multichainMiddlewareManager.addMiddleware({
+                  scope,
+                  origin,
+                  tabId,
+                  middleware: subscriptionManager.middleware,
+                });
+              });
             } else {
               this.multichainMiddlewareManager.removeMiddlewareByScopeAndOrigin(
                 scope,

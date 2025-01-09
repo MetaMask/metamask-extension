@@ -1,4 +1,4 @@
-import { hasProperty, isObject } from '@metamask/utils';
+import { hasProperty, hexToBigInt, isObject } from '@metamask/utils';
 import type { CaipChainId, CaipAccountId, Json, Hex } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import type {
@@ -284,7 +284,7 @@ function transformState(state: Record<string, unknown>) {
     const scopeStrings: CaipChainId[] = isSnap
       ? []
       : chainIds.map<CaipChainId>(
-          (chainId) => `eip155:${parseInt(chainId, 16)}`,
+          (chainId) => `eip155:${hexToBigInt(chainId).toString(10)}`,
         );
     scopeStrings.push('wallet:eip155');
 
