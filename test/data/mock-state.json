@@ -1115,6 +1115,7 @@
           "gas": "0x5208",
           "gasPrice": "0x3b9aca00"
         },
+        "gasLimitNoBuffer": "0x5208",
         "history": [
           {
             "id": 8393540981007587,
@@ -1164,6 +1165,7 @@
           "gasPrice": "0x3b9aca00",
           "nonce": "0xb5"
         },
+        "gasLimitNoBuffer": "0xcf08",
         "history": [
           {
             "id": 3387511061307736,
@@ -1296,6 +1298,7 @@
           "gasPrice": "0x3b9aca00",
           "nonce": "0xb6"
         },
+        "gasLimitNoBuffer": "0xcf08",
         "history": [
           {
             "id": 3387511061307737,
@@ -1428,6 +1431,7 @@
           "gasPrice": "0x12a05f200",
           "nonce": "0xb7"
         },
+        "gasLimitNoBuffer": "0xcf08",
         "history": [
           {
             "id": 3387511061307738,
@@ -1561,6 +1565,7 @@
           "gas": "0x6169e",
           "nonce": "0xb8"
         },
+        "gasLimitNoBuffer": "0x6169e",
         "history": [
           {
             "id": 3387511061307739,
@@ -1698,6 +1703,7 @@
           "gasPrice": "0x3b9aca00",
           "nonce": "0xb9"
         },
+        "gasLimitNoBuffer": "0xd508",
         "history": [
           {
             "id": 3387511061307740,
@@ -1830,6 +1836,7 @@
           "gasPrice": "0x3b9aca00",
           "gas": "0x5208"
         },
+        "gasLimitNoBuffer": "0x5208",
         "history": [
           {
             "id": 3387511061307741,
