@@ -4663,21 +4663,20 @@ export default class MetamaskController extends EventEmitter {
       await this.keyringController.withKeyring(
         { type: KeyringTypes.hd },
         async (hdKeyring) => {
-          let balance = '0x0';
+          let lastAddressHasBalance = false;
           do {
             const [address] = hdKeyring.addAccounts(1);
 
+            let balance = '0x0';
             try {
               balance = await this.getBalance(address, ethQuery);
             } catch (error) {
               // Errors are gracefully handled so that `withKeyring`
               // will not rollback the primary keyring, and accounts
               // created in previous loop iterations will remain in place.
-              // The balance is set to zero in case of previous iterations,
-              // so that token balances are checked anyway.
-              balance = '0x0';
             }
 
+            let hasTokens = false;
             if (balance === '0x0') {
               // This account has no balance, so check for tokens
               await this.tokenDetectionController.detectTokens({
@@ -4691,18 +4690,20 @@ export default class MetamaskController extends EventEmitter {
                 this.tokensController.state.allDetectedTokens?.[chainId]?.[
                   address
                 ];
+              hasTokens = tokens?.length > 0 || detectedTokens?.length > 0;
 
-              if (
-                (tokens?.length ?? 0) === 0 &&
-                (detectedTokens?.length ?? 0) === 0
-              ) {
+              if (!hasTokens) {
                 // This account has no balance or tokens
                 // remove extra zero balance account we just added and break the loop
                 hdKeyring.removeAccount?.(address);
                 break;
               }
             }
-          } while (balance !== '0x0');
+
+            if (balance !== '0x0' || hasTokens) {
+              lastAddressHasBalance = true;
+            }
+          } while (lastAddressHasBalance);
         },
       );
     } catch (e) {
