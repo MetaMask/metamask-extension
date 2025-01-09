@@ -1,5 +1,6 @@
 [
   "*.btc*.quiknode.pro",
+  "*solana*.mainnet.rpcpool.com",
   "accounts.api.cx.metamask.io",
   "acl.execution.metamask.io",
   "api.blockchair.com",
