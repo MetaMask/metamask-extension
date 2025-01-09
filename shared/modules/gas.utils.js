@@ -58,14 +58,12 @@ export function getMaximumGasTotalInHexWei({
  * @returns {string} The minimum total cost of transaction in hex wei string
  */
 export function getMinimumGasTotalInHexWei({
-  gasLimit = '0x0',
-  gasLimitNoBuffer,
+  gasLimitNoBuffer = '0x0',
   gasPrice,
   maxPriorityFeePerGas,
   maxFeePerGas,
   baseFeePerGas,
 } = {}) {
-  const minimumGasLimit = gasLimitNoBuffer ?? gasLimit;
   const isEIP1559Estimate = Boolean(
     maxFeePerGas || maxPriorityFeePerGas || baseFeePerGas,
   );
@@ -94,7 +92,7 @@ export function getMinimumGasTotalInHexWei({
   }
   if (isEIP1559Estimate === false) {
     return getMaximumGasTotalInHexWei({
-      gasLimit: minimumGasLimit,
+      gasLimit: gasLimitNoBuffer,
       gasPrice,
     });
   }
@@ -104,11 +102,11 @@ export function getMinimumGasTotalInHexWei({
 
   if (new Numeric(minimumFeePerGas, 16).greaterThan(maxFeePerGas, 16)) {
     return getMaximumGasTotalInHexWei({
-      gasLimit: minimumGasLimit,
+      gasLimit: gasLimitNoBuffer,
       maxFeePerGas,
     });
   }
-  return new Numeric(minimumGasLimit, 16)
+  return new Numeric(gasLimitNoBuffer, 16)
     .times(new Numeric(minimumFeePerGas, 16))
     .toPrefixedHexString();
 }

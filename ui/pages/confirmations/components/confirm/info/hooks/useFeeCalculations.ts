@@ -115,15 +115,15 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   );
 
   // Max fee
-  const gasLimit = transactionMeta?.txParams?.gas || HEX_ZERO;
+  const gasLimitNoBuffer = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
   const gasPrice = transactionMeta?.txParams?.gasPrice || HEX_ZERO;
 
   const maxFee = useMemo(() => {
     return multiplyHexes(
       supportsEIP1559 ? (decimalToHex(maxFeePerGas) as Hex) : (gasPrice as Hex),
-      gasLimit as Hex,
+      gasLimitNoBuffer as Hex,
     );
-  }, [supportsEIP1559, maxFeePerGas, gasLimit, gasPrice]);
+  }, [supportsEIP1559, maxFeePerGas, gasLimitNoBuffer, gasPrice]);
 
   const {
     currentCurrencyFee: maxFeeFiat,
@@ -157,12 +157,9 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       minimumFeePerGas = decimalToHex(maxFeePerGas);
     }
 
-    // We want to pick gasLimitNoBuffer to show minimum network fee
-    const minimumGasLimit = transactionMeta?.gasLimitNoBuffer || gasLimit;
-
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),
-      minimumGasLimit as Hex,
+      gasLimitNoBuffer as Hex,
     );
 
     return getFeesFromHex(estimatedFee);
