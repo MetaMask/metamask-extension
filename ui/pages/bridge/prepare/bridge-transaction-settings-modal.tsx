@@ -16,6 +16,9 @@ import {
   Text,
   TextField,
   TextFieldType,
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -26,6 +29,7 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
+  SEVERITIES,
 } from '../../../helpers/constants/design-system';
 import { getSlippage } from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
@@ -50,12 +54,31 @@ export const BridgeTransactionSettingsModal = ({
   const [localSlippage, setLocalSlippage] = useState<number | undefined>(
     slippage,
   );
-  const [customSlippage, setCustomSlippage] = useState<number | undefined>(
+  const [customSlippage, setCustomSlippage] = useState<string | undefined>(
     slippage && HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)
       ? undefined
-      : slippage,
+      : slippage.toString(),
   );
   const [showCustomButton, setShowCustomButton] = useState(true);
+
+  const getNotificationConfig = () => {
+    if (!customSlippage) {
+      return null;
+    }
+
+    const slippageValue = Number(customSlippage);
+    if (slippageValue < 0.5) {
+      return {
+        severity: SEVERITIES.WARNING,
+        text: t('swapSlippageLowDescription', [slippageValue]),
+        title: t('swapSlippageLowTitle'),
+      };
+    }
+
+    return null;
+  };
+
+  const notificationConfig = getNotificationConfig();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="bridge-settings-modal">
@@ -156,47 +179,48 @@ export const BridgeTransactionSettingsModal = ({
                 type={TextFieldType.Text}
                 value={customSlippage}
                 onChange={(e) => {
-                  // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
-                  const cleanedValue = e.target.value.replace(/[^0-9.]+/gu, '');
-                  setLocalSlippage(undefined);
-                  setCustomSlippage(
-                    cleanedValue.length > 0 ? Number(cleanedValue) : undefined,
-                  );
+                  const value = e.target.value;
+                  if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                    setLocalSlippage(undefined);
+                    setCustomSlippage(value);
+                  }
                 }}
                 autoFocus={true}
                 onBlur={() => {
-                  console.log('====blur');
                   setShowCustomButton(true);
                 }}
                 onFocus={() => {
-                  console.log('====focus');
                   setShowCustomButton(false);
-                }}
-                onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
-                  // Only allow numbers and at most one decimal point
-                  if (
-                    e &&
-                    !/^[0-9]*\.{0,1}[0-9]*$/u.test(
-                      `${customSlippage ?? ''}${e.key}`,
-                    )
-                  ) {
-                    e.preventDefault();
-                  }
                 }}
                 endAccessory={<Text variant={TextVariant.bodyMd}>%</Text>}
               />
             )}
           </Row>
+          {notificationConfig && (
+            <Box marginTop={5}>
+              <BannerAlert
+                severity={notificationConfig.severity as BannerAlertSeverity}
+                title={notificationConfig.title}
+                titleProps={{ 'data-testid': 'swaps-banner-title' }}
+              >
+                <Text>{notificationConfig.text}</Text>
+              </BannerAlert>
+            </Box>
+          )}
         </Column>
         <ModalFooter>
           <ButtonPrimary
             width={BlockSize.Full}
             size={ButtonPrimarySize.Md}
             variant={TextVariant.bodyMd}
-            disabled={(localSlippage || customSlippage) === slippage}
+            disabled={
+              (customSlippage !== undefined &&
+                Number(customSlippage) === slippage) ||
+              (localSlippage !== undefined && localSlippage === slippage)
+            }
             onClick={() => {
-              const newSlippage = localSlippage || customSlippage;
-              newSlippage &&
+              const newSlippage = localSlippage ?? Number(customSlippage);
+              if (newSlippage) {
                 trackCrossChainSwapsEvent({
                   event: MetaMetricsEventName.InputChanged,
                   properties: {
@@ -204,8 +228,9 @@ export const BridgeTransactionSettingsModal = ({
                     value: newSlippage.toString(),
                   },
                 });
-              dispatch(setSlippage(newSlippage));
-              onClose();
+                dispatch(setSlippage(newSlippage));
+                onClose();
+              }
             }}
           >
             {t('submit')}
