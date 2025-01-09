@@ -168,7 +168,7 @@ describe('Multichain API', function () {
         );
       });
 
-      it.only('should have less balance due to gas after transaction is sent', async function () {
+      it('should have less balance due to gas after transaction is sent', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
