@@ -36,7 +36,7 @@ const requestEthereumAccounts = {
     sendMetrics: true,
     metamaskState: true,
     requestCaip25ApprovalForOrigin: true,
-    grantPermissionsForOrigin: true
+    grantPermissionsForOrigin: true,
   },
 };
 export default requestEthereumAccounts;
@@ -94,11 +94,12 @@ async function requestEthereumAccountsHandler(
     requestCaip25ApprovalForOrigin: (
       requestedPermissions?: RequestedPermissions,
     ) => Promise<RequestedPermissions>;
-    grantPermissionsForOrigin: (approvedPermissions: RequestedPermissions) =>
-    ({ [Caip25EndowmentPermissionName]: ValidPermission<
-      typeof Caip25EndowmentPermissionName,
-      Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
-    >})
+    grantPermissionsForOrigin: (approvedPermissions: RequestedPermissions) => {
+      [Caip25EndowmentPermissionName]: ValidPermission<
+        typeof Caip25EndowmentPermissionName,
+        Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
+      >;
+    };
   },
 ) {
   const { origin } = req;

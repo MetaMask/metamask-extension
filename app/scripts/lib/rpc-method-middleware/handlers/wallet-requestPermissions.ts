@@ -78,12 +78,13 @@ async function requestPermissionsImplementation(
     requestCaip25ApprovalForOrigin: (
       requestedPermissions?: RequestedPermissions,
     ) => Promise<RequestedPermissions>;
-    grantPermissionsForOrigin: (approvedPermissions: RequestedPermissions) =>
-      ({ [Caip25EndowmentPermissionName]: ValidPermission<
+    grantPermissionsForOrigin: (approvedPermissions: RequestedPermissions) => {
+      [Caip25EndowmentPermissionName]: ValidPermission<
         typeof Caip25EndowmentPermissionName,
         Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
-      >})
-    },
+      >;
+    };
+  },
 ) {
   const { params } = req;
 
@@ -115,9 +116,7 @@ async function requestPermissionsImplementation(
         caip25EquivalentPermissions,
       );
     } catch (error) {
-      if (!hasOtherRequestedPermissions) {
-        return end(error as unknown as Error);
-      }
+      return end(error as unknown as Error);
     }
   }
 
@@ -126,20 +125,16 @@ async function requestPermissionsImplementation(
       const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
         requestedPermissions,
       );
-      grantedPermissions = {
-        ...grantedPermissions,
-        ...frozenGrantedPermissions,
-      };
+      grantedPermissions = { ...frozenGrantedPermissions };
     } catch (error) {
-      if (Object.keys(grantedPermissions).length === 0) {
-        return end(error as unknown as Error);
-      }
+      return end(error as unknown as Error);
     }
   }
 
   if (caip25Approval) {
-    const grantedCaip25Permissions = grantPermissionsForOrigin(caip25Approval)
-    const caip25Endowment = grantedCaip25Permissions[Caip25EndowmentPermissionName];
+    const grantedCaip25Permissions = grantPermissionsForOrigin(caip25Approval);
+    const caip25Endowment =
+      grantedCaip25Permissions[Caip25EndowmentPermissionName];
 
     const caip25CaveatValue = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
