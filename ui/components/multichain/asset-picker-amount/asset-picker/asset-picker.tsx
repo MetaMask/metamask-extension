@@ -178,10 +178,6 @@ export function AssetPicker({
     onClick?.();
   };
 
-  if (!asset) {
-    return null;
-  }
-
   return (
     <>
       {networkProps && (
