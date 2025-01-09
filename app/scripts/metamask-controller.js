@@ -4673,6 +4673,9 @@ export default class MetamaskController extends EventEmitter {
               // Errors are gracefully handled so that `withKeyring`
               // will not rollback the primary keyring, and accounts
               // created in previous loop iterations will remain in place.
+              // The balance is set to zero in case of previous iterations,
+              // so that token balances are checked anyway.
+              balance = '0x0';
             }
 
             if (balance === '0x0') {
