@@ -21,19 +21,24 @@ export default function TransactionDetailRow({
 }: TransactionDetailRowProps) {
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-      <Box width={BlockSize.OneFourth} paddingRight={1}>
-        <Text variant={TextVariant.bodyMd}>{title}</Text>
-      </Box>
-      <Box
+      <Text
+        width={BlockSize.OneFourth}
+        paddingRight={1}
+        variant={TextVariant.bodyMd}
+      >
+        {title}
+      </Text>
+      <Text
         display={Display.Flex}
         width={BlockSize.ThreeFourths}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexEnd}
         textAlign={TextAlign.Right}
         paddingLeft={1}
+        variant={TextVariant.bodyMd}
       >
-        <Text variant={TextVariant.bodyMd}>{value}</Text>
-      </Box>
+        {value}
+      </Text>
     </Box>
   );
 }
