@@ -51,6 +51,7 @@ import NftGrid from '../nft-grid/nft-grid';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
+import { sortAssets } from '../../util/sort';
 
 export default function NftsTab() {
   const history = useHistory();
@@ -123,6 +124,12 @@ export default function NftsTab() {
     checkAndUpdateAllNftsOwnershipStatus();
   };
 
+  const sortedNfts = sortAssets(currentlyOwnedNfts, {
+    key: 'collection.name',
+    order: 'asc',
+    sortCallback: 'alphaNumeric',
+  });
+
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
       <Box className="nfts-tab__loading">
@@ -144,10 +151,7 @@ export default function NftsTab() {
         ) : null}
         {hasAnyNfts || previouslyOwnedNfts.length > 0 ? (
           <Box>
-            <NftGrid
-              nfts={currentlyOwnedNfts}
-              handleNftClick={handleNftClick}
-            />
+            <NftGrid nfts={sortedNfts} handleNftClick={handleNftClick} />
             <Box
               className="nfts-tab__buttons"
               display={Display.Flex}

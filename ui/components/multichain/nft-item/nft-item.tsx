@@ -119,7 +119,7 @@ export const NftItem = ({
         color={TextColor.textAlternative}
         ellipsis
       >
-        # {nft?.tokenId}
+        {nft?.collection?.name}
       </Text>
     </Box>
   );

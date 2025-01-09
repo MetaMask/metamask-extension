@@ -24,6 +24,7 @@ export type NFT = {
   symbol?: string;
   imageOriginal?: string;
   ipfsImageUpdated?: string;
+  collection?: Record<string, string | number | boolean>;
 };
 
 /**
