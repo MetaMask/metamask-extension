@@ -84,9 +84,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               />
               <p
                 class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
-              >
-                # 
-              </p>
+              />
             </div>
           </div>
         </div>
