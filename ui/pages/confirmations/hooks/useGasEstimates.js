@@ -33,7 +33,6 @@ import {
  * @param options.editGasMode
  * @param options.gasEstimateType
  * @param options.gasFeeEstimates
- * @param options.gasLimit
  * @param options.gasPrice
  * @param options.maxFeePerGas
  * @param options.maxPriorityFeePerGas
