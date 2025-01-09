@@ -36,7 +36,7 @@ jest.mock('react-redux', () => {
 const useGasEstimatesHook = (props) =>
   useGasEstimates({
     transaction: {
-      gasLimitNoBuffer: '21000',
+      gasLimitNoBuffer: '0x5208',
       txParams: { type: '0x2', value: '100' },
     },
     gasLimit: '21000',
