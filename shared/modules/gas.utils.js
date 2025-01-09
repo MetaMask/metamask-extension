@@ -54,7 +54,6 @@ export function getMaximumGasTotalInHexWei({
  *  pay a miner to include this transaction.
  * @param {string} [options.baseFeePerGas] - The estimated block baseFeePerGas
  *  that will be burned. Introduced in EIP 1559. Value in hex wei.
- * @param options.gasLimitNoBuffer
  * @returns {string} The minimum total cost of transaction in hex wei string
  */
 export function getMinimumGasTotalInHexWei({
