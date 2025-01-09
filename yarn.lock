@@ -4890,9 +4890,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@20.0.2-preview-04aeed55":
-  version: 20.0.2-preview-04aeed55
-  resolution: "@metamask-previews/accounts-controller@npm:20.0.2-preview-04aeed55"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@20.0.2-preview-2ebcbae7":
+  version: 20.0.2-preview-2ebcbae7
+  resolution: "@metamask-previews/accounts-controller@npm:20.0.2-preview-2ebcbae7"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/base-controller": "npm:^7.1.0"
@@ -4911,7 +4911,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.7.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/67cb95a9640dbf6b87219ae708fd16a7f1629d2a7934d7182aac46f27ae1a09c64a8a4816aff204f228a11b45a601456398c5a80d74a782d0fe8e2d115890653
+  checksum: 10/efb24cda059b74dc5ecf69687de86eca6a89b6bae1d99e81a85edc946a63d344945d5eb13fb3efdaa81f5090f4472bc5e37ea953847e0b06ab96223c250b468c
   languageName: node
   linkType: hard
 
