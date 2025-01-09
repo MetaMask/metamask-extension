@@ -249,7 +249,15 @@
     "secp256k1@npm:^4.0.0": "4.0.4",
     "secp256k1@npm:^4.0.1": "4.0.4",
     "secp256k1@npm:4.0.2": "4.0.4",
-    "secp256k1@npm:4.0.3": "4.0.4"
+    "secp256k1@npm:4.0.3": "4.0.4",
+    "tslib@npm:^2.0.0": "~2.6.0",
+    "tslib@npm:^2.0.1": "~2.6.0",
+    "tslib@npm:^2.0.3": "~2.6.0",
+    "tslib@npm:^2.1.0": "~2.6.0",
+    "tslib@npm:^2.3.0": "~2.6.0",
+    "tslib@npm:^2.3.1": "~2.6.0",
+    "tslib@npm:^2.4.0": "~2.6.0",
+    "tslib@npm:^2.6.2": "~2.6.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -301,7 +309,7 @@
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^7.0.0",
     "@metamask/eth-token-tracker": "^9.0.0",
-    "@metamask/eth-trezor-keyring": "^3.1.3",
+    "@metamask/eth-trezor-keyring": "^6.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/ethjs": "^0.6.0",
     "@metamask/ethjs-contract": "^0.4.1",
@@ -432,6 +440,7 @@
     "simple-git": "^3.20.0",
     "single-call-balance-checker-abi": "^1.0.0",
     "ts-mixer": "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch",
+    "tslib": "~2.6.0",
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
