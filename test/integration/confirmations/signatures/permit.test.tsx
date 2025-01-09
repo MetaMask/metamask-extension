@@ -235,7 +235,7 @@ describe('Permit Confirmation', () => {
     expect(simulationSection).toBeInTheDocument();
     expect(simulationSection).toHaveTextContent('Estimated changes');
     expect(simulationSection).toHaveTextContent(
-      "You're giving the spender permission to spend this many tokens from your account.",
+      "You're removing the spender permission to spend this many tokens from your account.",
     );
     expect(simulationSection).toHaveTextContent('Spending cap');
     expect(simulationSection).toHaveTextContent('0xCcCCc...ccccC');

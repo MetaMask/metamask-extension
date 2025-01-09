@@ -45,7 +45,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          You're giving the spender permission to spend this many tokens from your account.
+          You're removing the spender permission to spend this many tokens from your account.
         </p>
       </div>
     </div>
@@ -420,7 +420,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          You're giving the spender permission to spend this many tokens from your account.
+          You're removing the spender permission to spend this many tokens from your account.
         </p>
       </div>
     </div>

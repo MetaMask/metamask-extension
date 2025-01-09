@@ -107,17 +107,20 @@ const PermitSimulation: React.FC<object> = () => {
     </ConfirmInfoRow>
   );
 
+  let descriptionKey;
+  if (isNFT) {
+    descriptionKey = 'simulationDetailsApproveDesc';
+  } else if (message.allowed === true) {
+    descriptionKey = 'permitSimulationDetailInfo';
+  } else {
+    descriptionKey = 'permitRevokeSimulationDetailInfo';
+  }
+
   return (
     <StaticSimulation
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
-      description={t(
-        isNFT
-          ? 'simulationDetailsApproveDesc'
-          : message.allowed === true
-          ? 'permitSimulationDetailInfo'
-          : 'permitRevokeSimulationDetailInfo',
-      )}
+      description={t(descriptionKey)}
       simulationElements={SpendingCapRow}
     />
   );

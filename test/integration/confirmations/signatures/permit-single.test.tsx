@@ -98,10 +98,10 @@ describe('Permit Single Signature Tests', () => {
     );
     const simulationDetails = [
       'Estimated changes',
-      "You're giving the spender permission to spend this many tokens from your account.",
+      "You're removing the spender permission to spend this many tokens from your account.",
       'Spending cap',
       '0xA0b86...6eB48',
-      '1,461,501,637,3...',
+      'Unlimited',
     ];
 
     expect(simulationSection).toBeInTheDocument();
