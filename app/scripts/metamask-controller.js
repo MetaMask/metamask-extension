@@ -4521,39 +4521,46 @@ export default class MetamaskController extends EventEmitter {
     // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
     // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
     if (details === undefined) {
-      details = await this.assetsContractController.getTokenStandardAndDetails(
-        address,
-        userAddress,
-        tokenId,
-      );
+      try {
+        details =
+          await this.assetsContractController.getTokenStandardAndDetails(
+            address,
+            userAddress,
+            tokenId,
+          );
+      } catch (e) {
+        log.warn(`Failed to get token standard and details. Error: ${e}`);
+      }
     }
 
-    const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
-      details.standard,
-      TokenStandard.ERC1155,
-    );
+    if (details) {
+      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
+        details.standard,
+        TokenStandard.ERC1155,
+      );
 
-    if (tokenDetailsStandardIsERC1155) {
-      try {
-        const balance = await fetchERC1155Balance(
-          address,
-          userAddress,
-          tokenId,
-          this.provider,
-        );
+      if (tokenDetailsStandardIsERC1155) {
+        try {
+          const balance = await fetchERC1155Balance(
+            address,
+            userAddress,
+            tokenId,
+            this.provider,
+          );
 
-        const balanceToUse = balance?._hex
-          ? parseInt(balance._hex, 16).toString()
-          : null;
+          const balanceToUse = balance?._hex
+            ? parseInt(balance._hex, 16).toString()
+            : null;
 
-        details = {
-          ...details,
-          balance: balanceToUse,
-        };
-      } catch (e) {
-        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warn('Failed to get token balance. Error:', e);
+          details = {
+            ...details,
+            balance: balanceToUse,
+          };
+        } catch (e) {
+          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+          // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
+          log.warn('Failed to get token balance. Error:', e);
+        }
       }
     }
 
