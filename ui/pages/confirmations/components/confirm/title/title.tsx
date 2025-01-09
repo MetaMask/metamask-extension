@@ -5,6 +5,7 @@ import {
 import React, { memo, useMemo } from 'react';
 
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
+import { parseTypedDataMessage } from '../../../../../../shared/modules/transaction.utils';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -16,15 +17,14 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
+import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
-import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
-import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
-import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
-import { parseTypedDataMessage } from '../../../../../../shared/modules/transaction.utils';
 import { DAI_CONTRACT_ADDRESS } from '../info/typed-sign/typed-sign-v4-simulation/value-display/value-display';
+import { getIsRevokeSetApprovalForAll } from '../info/utils';
+import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const { generalAlerts } = useAlerts(ownerId);

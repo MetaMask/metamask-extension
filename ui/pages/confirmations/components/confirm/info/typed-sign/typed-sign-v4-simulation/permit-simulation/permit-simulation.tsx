@@ -13,8 +13,6 @@ import { useConfirmContext } from '../../../../../../context/confirm';
 import { SignatureRequestType } from '../../../../../../types/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from '../value-display/value-display';
-import Name from '../../../../../../../../components/app/name';
-import { NameType } from '@metamask/name-controller';
 
 function extractTokenDetailsByPrimaryType(
   message: Record<string, unknown>,
