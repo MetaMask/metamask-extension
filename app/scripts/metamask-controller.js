@@ -22,6 +22,7 @@ import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
 import {
   KeyringController,
+  KeyringTypes,
   keyringBuilderFactory,
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
@@ -4658,39 +4659,49 @@ export default class MetamaskController extends EventEmitter {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
       const ethQuery = new EthQuery(this.provider);
-      const accounts = await this.keyringController.getAccounts();
-      let address = accounts[accounts.length - 1];
 
-      for (let count = accounts.length; ; count++) {
-        const balance = await this.getBalance(address, ethQuery);
+      await this.keyringController.withKeyring(
+        { type: KeyringTypes.hd },
+        async (hdKeyring) => {
+          let balance = '0x0';
+          do {
+            const [address] = hdKeyring.addAccounts(1);
 
-        if (balance === '0x0') {
-          // This account has no balance, so check for tokens
-          await this.tokenDetectionController.detectTokens({
-            chainIds: [chainId],
-            selectedAddress: address,
-          });
-
-          const tokens =
-            this.tokensController.state.allTokens?.[chainId]?.[address];
-          const detectedTokens =
-            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
-
-          if (
-            (tokens?.length ?? 0) === 0 &&
-            (detectedTokens?.length ?? 0) === 0
-          ) {
-            // This account has no balance or tokens
-            if (count !== 1) {
-              await this.removeAccount(address);
+            try {
+              balance = await this.getBalance(address, ethQuery);
+            } catch (error) {
+              // Errors are gracefully handled so that `withKeyring`
+              // will not rollback the primary keyring, and accounts
+              // created in previous loop iterations will remain in place.
             }
-            break;
-          }
-        }
 
-        // This account has assets, so check the next one
-        address = await this.keyringController.addNewAccount(count);
-      }
+            if (balance === '0x0') {
+              // This account has no balance, so check for tokens
+              await this.tokenDetectionController.detectTokens({
+                chainIds: [chainId],
+                selectedAddress: address,
+              });
+
+              const tokens =
+                this.tokensController.state.allTokens?.[chainId]?.[address];
+              const detectedTokens =
+                this.tokensController.state.allDetectedTokens?.[chainId]?.[
+                  address
+                ];
+
+              if (
+                (tokens?.length ?? 0) === 0 &&
+                (detectedTokens?.length ?? 0) === 0
+              ) {
+                // This account has no balance or tokens
+                // remove extra zero balance account we just added and break the loop
+                hdKeyring.removeAccount?.(address);
+                break;
+              }
+            }
+          } while (balance !== '0x0');
+        },
+      );
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
