@@ -879,7 +879,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      describe('getHardwareDeviceName', () => {
+      describe('getDeviceNameForMetric', () => {
         const hdPath = "m/44'/60'/0'/0/0";
 
         it('should return the correct device name for Ledger', async () => {
@@ -889,6 +889,7 @@ describe('MetaMaskController', () => {
             deviceName,
             hdPath,
           );
+
           expect(result).toBe('ledger');
         });
 
@@ -899,49 +900,60 @@ describe('MetaMaskController', () => {
             deviceName,
             hdPath,
           );
+
           expect(result).toBe('lattice');
         });
 
         it('should return the correct device name for Trezor', async () => {
           const deviceName = 'trezor';
           jest
-            .spyOn(metamaskController, 'getKeyringForDevice')
-            .mockResolvedValue({
-              bridge: {
-                minorVersion: 1,
-                model: 'T',
-              },
-            });
+            .spyOn(metamaskController, 'withKeyringForDevice')
+            .mockImplementation((_, operation) =>
+              operation({
+                bridge: {
+                  minorVersion: 1,
+                  model: 'T',
+                },
+              }),
+            );
+
           const result = await metamaskController.getDeviceNameForMetric(
             deviceName,
             hdPath,
           );
+
           expect(result).toBe('trezor');
         });
 
         it('should return undefined for unknown device name', async () => {
           const deviceName = 'unknown';
+
           const result = await metamaskController.getDeviceNameForMetric(
             deviceName,
             hdPath,
           );
+
           expect(result).toBe(deviceName);
         });
 
         it('should handle special case for OneKeyDevice via Trezor', async () => {
           const deviceName = 'trezor';
           jest
-            .spyOn(metamaskController, 'getKeyringForDevice')
-            .mockResolvedValue({
-              bridge: {
-                model: 'T',
-                minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION,
-              },
-            });
+            .spyOn(metamaskController, 'withKeyringForDevice')
+            .mockImplementation((_, operation) =>
+              operation({
+                bridge: {
+                  model: 'T',
+                  minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION,
+                },
+              }),
+            );
+
           const result = await metamaskController.getDeviceNameForMetric(
             deviceName,
             hdPath,
           );
+
           expect(result).toBe('OneKey via Trezor');
         });
       });

@@ -5031,16 +5031,22 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>}
    */
   async getDeviceNameForMetric(deviceName, hdPath) {
-    if (deviceName === HardwareDeviceNames.trezor) {
-      const keyring = await this.getKeyringForDevice(deviceName, hdPath);
-      const { minorVersion } = keyring.bridge;
-      // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
-      if (minorVersion && minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION) {
-        return HardwareDeviceNames.oneKeyViaTrezor;
-      }
+    if (deviceName !== HardwareDeviceNames.trezor) {
+      return deviceName;
     }
 
-    return deviceName;
+    return await this.withKeyringForDevice(
+      { name: deviceName, hdPath },
+      (keyring) => {
+        const { minorVersion } = keyring.bridge;
+        // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
+        if (minorVersion && minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION) {
+          return HardwareDeviceNames.oneKeyViaTrezor;
+        }
+
+        return deviceName;
+      },
+    );
   }
 
   /**
