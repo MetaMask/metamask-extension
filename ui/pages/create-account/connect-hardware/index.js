@@ -128,6 +128,7 @@ class ConnectHardwareForm extends Component {
   async checkIfUnlocked() {
     for (const device of [
       HardwareDeviceNames.trezor,
+      HardwareDeviceNames.oneKeyViaTrezor,
       HardwareDeviceNames.ledger,
       HardwareDeviceNames.lattice,
     ]) {

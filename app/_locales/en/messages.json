@@ -5676,6 +5676,13 @@
     "message": "Download, set up, and enter your password to unlock $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
+  "step1OnekeyWallet": {
+    "message": "Connect your OneKey"
+  },
+  "step1OnekeyWalletMsg": {
+    "message": "Plug your OneKey directly into your computer and unlock it. Make sure you use the correct passphrase.",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "step1TrezorWallet": {
     "message": "Connect your Trezor"
   },
