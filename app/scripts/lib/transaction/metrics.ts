@@ -1145,24 +1145,24 @@ function getTransactionCompletionTime(submittedTime: number) {
  * Returns number of seconds (rounded to the hundredths) between submitted time
  * and the block timestamp.
  *
- * @param submittedTime - The UNIX timestamp in milliseconds in which the
+ * @param submittedTimeMs - The UNIX timestamp in milliseconds in which the
  * transaction has been submitted
- * @param blockTimestamp - The UNIX timestamp in seconds in hexadecimal in which
+ * @param blockTimestampHex - The UNIX timestamp in seconds in hexadecimal in which
  * the transaction has been confirmed in a block
  */
 function getTransactionOnchainCompletionTime(
-  submittedTime: number,
-  blockTimestamp: string,
+  submittedTimeMs: number,
+  blockTimestampHex: string,
 ): string {
   const DECIMAL_DIGITS = 2;
 
-  return (
-    Math.round(
-      (Number(hexToDecimal(blockTimestamp)) - submittedTime / 1000) *
-        10 ** DECIMAL_DIGITS,
-    ) /
-    10 ** DECIMAL_DIGITS
-  ).toString();
+  const blockTimestampSeconds = Number(hexToDecimal(blockTimestampHex));
+  const completionTimeSeconds = blockTimestampSeconds - submittedTimeMs / 1000;
+  const completionTimeSecondsRoundedToThousands =
+    Math.round(completionTimeSeconds * 10 ** DECIMAL_DIGITS) /
+    10 ** DECIMAL_DIGITS;
+
+  return completionTimeSecondsRoundedToThousands.toString();
 }
 
 /**
