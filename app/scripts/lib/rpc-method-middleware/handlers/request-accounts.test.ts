@@ -81,7 +81,7 @@ describe('requestEthereumAccountsHandler', () => {
     const { handler, getAccounts } = createMockedHandler();
 
     await handler(baseRequest);
-    expect(getAccounts).toHaveBeenCalledWith(true);
+    expect(getAccounts).toHaveBeenCalledWith({ ignoreLock: true });
   });
 
   describe('eip155 account permissions exist', () => {

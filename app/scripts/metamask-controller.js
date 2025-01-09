@@ -5252,11 +5252,12 @@ export default class MetamaskController extends EventEmitter {
    * return permissioned accounts to the dapp when the wallet is locked.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @param {boolean} ignoreLock - If accounts should be returned even if the wallet is locked.
+   * @param {object} [options] - The options object
+   * @param {boolean} [options.ignoreLock] - If accounts should be returned even if the wallet is locked.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  getPermittedAccounts(origin, ignoreLock) {
+  getPermittedAccounts(origin, { ignoreLock } = {}) {
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(

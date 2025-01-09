@@ -874,7 +874,9 @@ describe('MetaMaskController', () => {
             });
 
           expect(
-            metamaskController.getPermittedAccounts('test.com', false),
+            metamaskController.getPermittedAccounts('test.com', {
+              ignoreLock: false,
+            }),
           ).toStrictEqual([]);
         });
 
@@ -896,7 +898,9 @@ describe('MetaMaskController', () => {
             .mockReturnValue(['not_empty']);
 
           expect(
-            metamaskController.getPermittedAccounts('test.com', true),
+            metamaskController.getPermittedAccounts('test.com', {
+              ignoreLock: true,
+            }),
           ).toStrictEqual(['not_empty']);
         });
       });
