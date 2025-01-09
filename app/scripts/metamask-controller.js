@@ -1304,13 +1304,13 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.SelectedNetworkController,
-      useRequestQueuePreference:
-        this.preferencesController.state.useRequestQueue,
-      onPreferencesStateChange: (listener) => {
-        preferencesMessenger.subscribe(
-          'PreferencesController:stateChange',
-          listener,
-        );
+      useRequestQueuePreference: true,
+      onPreferencesStateChange: () => {
+        // noop
+        // we have removed the ability to toggle the useRequestQueue preference
+        // both useRequestQueue and onPreferencesStateChange will be removed
+        // once mobile supports per dapp network selection
+        // see https://github.com/MetaMask/core/pull/5065#issue-2736965186
       },
       domainProxyMap: new WeakRefObjectMap(),
     });
@@ -3326,9 +3326,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[] }>} An object with relevant state properties.
    */
   async getProviderState(origin) {
-    const providerNetworkState = await this.getProviderNetworkState(
-      this.preferencesController.getUseRequestQueue() ? origin : undefined,
-    );
+    const providerNetworkState = await this.getProviderNetworkState(origin);
 
     return {
       isUnlocked: this.isUnlocked(),
@@ -3483,9 +3481,6 @@ export default class MetamaskController extends EventEmitter {
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
-      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
-      ),
       getProviderConfig: () =>
         getProviderConfig({
           metamask: this.networkController.state,
@@ -3535,7 +3530,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseTransactionSimulations.bind(
           preferencesController,
         ),
-      setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -4490,39 +4484,46 @@ export default class MetamaskController extends EventEmitter {
     // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
     // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
     if (details === undefined) {
-      details = await this.assetsContractController.getTokenStandardAndDetails(
-        address,
-        userAddress,
-        tokenId,
-      );
+      try {
+        details =
+          await this.assetsContractController.getTokenStandardAndDetails(
+            address,
+            userAddress,
+            tokenId,
+          );
+      } catch (e) {
+        log.warn(`Failed to get token standard and details. Error: ${e}`);
+      }
     }
 
-    const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
-      details.standard,
-      TokenStandard.ERC1155,
-    );
+    if (details) {
+      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
+        details.standard,
+        TokenStandard.ERC1155,
+      );
 
-    if (tokenDetailsStandardIsERC1155) {
-      try {
-        const balance = await fetchERC1155Balance(
-          address,
-          userAddress,
-          tokenId,
-          this.provider,
-        );
+      if (tokenDetailsStandardIsERC1155) {
+        try {
+          const balance = await fetchERC1155Balance(
+            address,
+            userAddress,
+            tokenId,
+            this.provider,
+          );
 
-        const balanceToUse = balance?._hex
-          ? parseInt(balance._hex, 16).toString()
-          : null;
+          const balanceToUse = balance?._hex
+            ? parseInt(balance._hex, 16).toString()
+            : null;
 
-        details = {
-          ...details,
-          balance: balanceToUse,
-        };
-      } catch (e) {
-        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warn('Failed to get token balance. Error:', e);
+          details = {
+            ...details,
+            balance: balanceToUse,
+          };
+        } catch (e) {
+          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+          // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
+          log.warn('Failed to get token balance. Error:', e);
+        }
       }
     }
 
@@ -5730,14 +5731,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   //=============================================================================
-  // REQUEST QUEUE
-  //=============================================================================
-
-  setUseRequestQueue(value) {
-    this.preferencesController.setUseRequestQueue(value);
-  }
-
-  //=============================================================================
   // SETUP
   //=============================================================================
 
@@ -6229,12 +6222,12 @@ export default class MetamaskController extends EventEmitter {
       enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
         this.queuedRequestController,
       ),
-      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
-      ),
       shouldEnqueueRequest: (request) => {
         return methodsThatShouldBeEnqueued.includes(request.method);
       },
+      // This will be removed once we can actually remove useRequestQueue state
+      // i.e. unrevert https://github.com/MetaMask/core/pull/5065
+      useRequestQueue: () => true,
     });
     engine.push(requestQueueMiddleware);
 
@@ -7439,31 +7432,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _notifyChainChange() {
-    if (this.preferencesController.getUseRequestQueue()) {
-      this.notifyAllConnections(async (origin) => ({
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
-      }));
-    } else {
-      this.notifyAllConnections({
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(),
-      });
-    }
+    this.notifyAllConnections(async (origin) => ({
+      method: NOTIFICATION_NAMES.chainChanged,
+      params: await this.getProviderNetworkState(origin),
+    }));
   }
 
   async _notifyChainChangeForConnection(connection, origin) {
-    if (this.preferencesController.getUseRequestQueue()) {
-      this.notifyConnection(connection, {
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
-      });
-    } else {
-      this.notifyConnection(connection, {
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(),
-      });
-    }
+    this.notifyConnection(connection, {
+      method: NOTIFICATION_NAMES.chainChanged,
+      params: await this.getProviderNetworkState(origin),
+    });
   }
 
   async _onFinishedTransaction(transactionMeta) {
