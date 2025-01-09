@@ -49,20 +49,20 @@ class SolanaTxresultPage {
       ? `${amount} SOL was successfully sent`
       : `Unable to send ${amount} SOL`;
     const txStatusText = {
-        text: displayedText,
-        tag: 'p',
-      }
+      text: displayedText,
+      tag: 'p',
+    };
     try {
       await this.driver.waitForSelector(
         txStatusText,
         { timeout: 5000 }, // even the tx is being mock, there is an spinner that sometimes is slow to disappear
       );
-      await this.driver.findElement(
-        txStatusText,
-      )
+      await this.driver.findElement(txStatusText);
       return true;
     } catch (err) {
-      console.log(`Transaction status text incorrect, expected ${displayedText} did not match`);
+      console.log(
+        `Transaction status text incorrect, expected ${displayedText} did not match`,
+      );
       return false;
     }
   }

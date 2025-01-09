@@ -22,7 +22,7 @@ class NonEvmHomepage extends HomePage {
       timeout: 120000,
     });
     const singleBalanceText = await balanceValue.getText();
-    const trimmedBalance = singleBalanceText.replaceAll(/\s+/u, ' ').trim();
+    const trimmedBalance = singleBalanceText.replaceAll(/\s+/gu, ' ').trim();
     return trimmedBalance;
   }
 
