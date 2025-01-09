@@ -16,6 +16,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
+const SIMPLEHASH_URL = 'https://api.simplehash.com';
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
 
 export enum SendFlowPlaceHolders {
@@ -183,6 +184,23 @@ export async function mockRampsDynamicFeatureFlag(
     }));
 }
 
+export async function mockBtcSatProtectionService(
+  mockServer: Mockttp,
+  address: string = DEFAULT_BTC_ACCOUNT,
+) {
+  return await mockServer
+    .forGet(`${SIMPLEHASH_URL}/api/v0/custom/wallet_assets_by_utxo/${address}`)
+    .withQuery({
+      without_inscriptions_runes_raresats: '1',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { count: 0, utxos: [] },
+      };
+    });
+}
+
 export async function withBtcAccountSnap(
   {
     title,
@@ -210,6 +228,8 @@ export async function withBtcAccountSnap(
         await mockBtcFeeCallQuote(mockServer),
         await mockGetUTXO(mockServer),
         await mockSendTransaction(mockServer),
+        // Sat Protection
+        await mockBtcSatProtectionService(mockServer),
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
