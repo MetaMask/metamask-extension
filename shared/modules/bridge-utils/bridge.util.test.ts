@@ -149,7 +149,7 @@ describe('Bridge utils', () => {
 
       (fetchWithCache as jest.Mock).mockRejectedValue(mockError);
 
-      await expect(fetchBridgeFeatureFlags()).rejects.toThrowError(mockError);
+      await expect(fetchBridgeFeatureFlags()).rejects.toThrow(mockError);
     });
   });
 
@@ -223,7 +223,7 @@ describe('Bridge utils', () => {
 
       (fetchWithCache as jest.Mock).mockRejectedValue(mockError);
 
-      await expect(fetchBridgeTokens('0xa')).rejects.toThrowError(mockError);
+      await expect(fetchBridgeTokens('0xa')).rejects.toThrow(mockError);
     });
   });
 
