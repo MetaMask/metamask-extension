@@ -109,28 +109,6 @@ const PermitSimulation: React.FC<object> = () => {
     </ConfirmInfoRow>
   );
 
-  const SpenderRow = (
-    <ConfirmInfoRow label={t('spender')}>
-      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
-        <Box display={Display.Flex}>
-          <Name
-            value={message.spender as string}
-            type={NameType.ETHEREUM_ADDRESS}
-            preferContractSymbol
-            variation={chainId}
-          />
-        </Box>
-      </Box>
-    </ConfirmInfoRow>
-  );
-
-  const SimulationElements = (
-    <>
-      {SpendingCapRow}
-      {message.allowed === false && SpenderRow}
-    </>
-  );
-
   let descriptionKey;
   if (isNFT) {
     descriptionKey = 'simulationDetailsApproveDesc';
@@ -146,7 +124,7 @@ const PermitSimulation: React.FC<object> = () => {
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
       description={t(descriptionKey)}
-      simulationElements={SimulationElements}
+      simulationElements={SpendingCapRow}
     />
   );
 };
