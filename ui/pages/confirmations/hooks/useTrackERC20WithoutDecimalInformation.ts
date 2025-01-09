@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { Hex } from '@metamask/utils';
 
 import {
@@ -26,32 +26,41 @@ const useTrackERC20WithoutDecimalInformation = (
   metricLocation = MetaMetricsEventLocation.SignatureConfirmation,
 ) => {
   const trackEvent = useContext(MetaMetricsContext);
+  const hasTracked = useRef(false);
 
   useEffect(() => {
-    if (chainId === undefined || tokenDetails === undefined) {
+    if (
+      chainId === undefined ||
+      tokenDetails === undefined ||
+      hasTracked.current
+    ) {
       return;
     }
+
     const { decimals, standard } = tokenDetails || {};
-    if (standard === TokenStandard.ERC20) {
-      const parsedDecimals = parseTokenDetailDecimals(decimals);
-      if (parsedDecimals === undefined) {
-        trackEvent({
-          event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
-          category: MetaMetricsEventCategory.Confirmations,
-          properties: {
-            token_decimals_available: 'not_available',
-            asset_address: tokenAddress,
-            asset_type: TokenStandard.ERC20,
-            chain_id: chainId,
-            location: metricLocation,
-            ui_customizations: [
-              MetaMetricsEventUiCustomization.RedesignedConfirmation,
-            ],
-          },
-        });
-      }
+    if (standard !== TokenStandard.ERC20) {
+      return;
     }
-  }, [tokenDetails, chainId, tokenAddress, trackEvent]);
+
+    const parsedDecimals = parseTokenDetailDecimals(decimals);
+    if (parsedDecimals === undefined) {
+      trackEvent({
+        event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
+        category: MetaMetricsEventCategory.Confirmations,
+        properties: {
+          token_decimals_available: 'not_available',
+          asset_address: tokenAddress,
+          asset_type: TokenStandard.ERC20,
+          chain_id: chainId,
+          location: metricLocation,
+          ui_customizations: [
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+          ],
+        },
+      });
+      hasTracked.current = true;
+    }
+  }, [tokenDetails, chainId, metricLocation, tokenAddress, trackEvent]);
 };
 
 export default useTrackERC20WithoutDecimalInformation;

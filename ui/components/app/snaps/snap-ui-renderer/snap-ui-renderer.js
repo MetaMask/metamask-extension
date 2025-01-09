@@ -131,6 +131,10 @@ const SnapUIRendererComponent = ({
         className="snap-ui-renderer__content"
         height={BlockSize.Full}
         backgroundColor={contentBackgroundColor}
+        style={{
+          overflowY: 'auto',
+          marginBottom: useFooter ? '80px' : '0',
+        }}
       >
         <MetaMaskTemplateRenderer sections={sections} />
       </Box>
