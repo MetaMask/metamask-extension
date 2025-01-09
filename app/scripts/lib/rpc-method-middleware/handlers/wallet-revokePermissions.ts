@@ -81,12 +81,13 @@ function revokePermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
+  const caip25EquivalentPermissions: string[] = [
+    RestrictedMethods.eth_accounts,
+    PermissionNames.permittedChains,
+  ];
   const relevantPermissionKeys = permissionKeys.filter(
     (name: string) =>
-      ![
-        RestrictedMethods.eth_accounts as string,
-        PermissionNames.permittedChains as string,
-      ].includes(name),
+      !caip25EquivalentPermissions.includes(name),
   );
 
   const shouldRevokeLegacyPermission =
