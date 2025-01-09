@@ -55,7 +55,8 @@ type GrantedPermissions = Awaited<
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
- * @param options.requestCaip25PermissionForOrigin - A hook that requests the CAIP-25 permission for the origin.
+ * @param options.requestCaip25ApprovalForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
+ * @param options.grantPermissionsForOrigin - A hook that grants permission for the approved permissions for the origin.
  * @param options.requestPermissionsForOrigin - A hook that requests permissions for the origin.
  * @returns A promise that resolves to nothing
  */
@@ -67,21 +68,22 @@ async function requestPermissionsImplementation(
   {
     getAccounts,
     requestPermissionsForOrigin,
-    requestCaip25PermissionForOrigin,
+    requestCaip25ApprovalForOrigin,
+    grantPermissionsForOrigin,
   }: {
     getAccounts: () => string[];
     requestPermissionsForOrigin: (
       requestedPermissions: RequestedPermissions,
     ) => Promise<[GrantedPermissions]>;
-    requestCaip25PermissionForOrigin: (
+    requestCaip25ApprovalForOrigin: (
       requestedPermissions?: RequestedPermissions,
-    ) => Promise<
-      ValidPermission<
+    ) => Promise<RequestedPermissions>;
+    grantPermissionsForOrigin: (approvedPermissions: RequestedPermissions) =>
+      ({ [Caip25EndowmentPermissionName]: ValidPermission<
         typeof Caip25EndowmentPermissionName,
         Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
-      >
-    >;
-  },
+      >})
+    },
 ) {
   const { params } = req;
 
@@ -106,51 +108,12 @@ async function requestPermissionsImplementation(
 
   let grantedPermissions: GrantedPermissions = {};
 
-  let caip25Endowment;
-  let caip25CaveatValue;
+  let caip25Approval;
   if (hasCaip25EquivalentPermissions) {
     try {
-      caip25Endowment = await requestCaip25PermissionForOrigin(
+      caip25Approval = await requestCaip25ApprovalForOrigin(
         caip25EquivalentPermissions,
       );
-      caip25CaveatValue = caip25Endowment?.caveats?.find(
-        ({ type }) => type === Caip25CaveatType,
-      )?.value as Caip25CaveatValue | undefined;
-
-      if (!caip25CaveatValue) {
-        throw new Error(
-          `could not find ${Caip25CaveatType} in granted ${Caip25EndowmentPermissionName} permission.`,
-        );
-      }
-
-      // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
-      // because the accounts will not be in order of lastSelected
-      const ethAccounts = getAccounts();
-
-      grantedPermissions[RestrictedMethods.eth_accounts] = {
-        ...caip25Endowment,
-        parentCapability: RestrictedMethods.eth_accounts,
-        caveats: [
-          {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ethAccounts,
-          },
-        ],
-      };
-
-      const ethChainIds = getPermittedEthChainIds(caip25CaveatValue);
-      if (ethChainIds.length > 0) {
-        grantedPermissions[PermissionNames.permittedChains] = {
-          ...caip25Endowment,
-          parentCapability: PermissionNames.permittedChains,
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: ethChainIds,
-            },
-          ],
-        };
-      }
     } catch (error) {
       if (!hasOtherRequestedPermissions) {
         return end(error as unknown as Error);
@@ -171,6 +134,50 @@ async function requestPermissionsImplementation(
       if (Object.keys(grantedPermissions).length === 0) {
         return end(error as unknown as Error);
       }
+    }
+  }
+
+  if (caip25Approval) {
+    const grantedCaip25Permissions = grantPermissionsForOrigin(caip25Approval)
+    const caip25Endowment = grantedCaip25Permissions[Caip25EndowmentPermissionName];
+
+    const caip25CaveatValue = caip25Endowment?.caveats?.find(
+      ({ type }) => type === Caip25CaveatType,
+    )?.value as Caip25CaveatValue | undefined;
+
+    if (!caip25CaveatValue) {
+      throw new Error(
+        `could not find ${Caip25CaveatType} in granted ${Caip25EndowmentPermissionName} permission.`,
+      );
+    }
+
+    // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
+    // because the accounts will not be in order of lastSelected
+    const ethAccounts = getAccounts();
+
+    grantedPermissions[RestrictedMethods.eth_accounts] = {
+      ...caip25Endowment,
+      parentCapability: RestrictedMethods.eth_accounts,
+      caveats: [
+        {
+          type: CaveatTypes.restrictReturnedAccounts,
+          value: ethAccounts,
+        },
+      ],
+    };
+
+    const ethChainIds = getPermittedEthChainIds(caip25CaveatValue);
+    if (ethChainIds.length > 0) {
+      grantedPermissions[PermissionNames.permittedChains] = {
+        ...caip25Endowment,
+        parentCapability: PermissionNames.permittedChains,
+        caveats: [
+          {
+            type: CaveatTypes.restrictNetworkSwitching,
+            value: ethChainIds,
+          },
+        ],
+      };
     }
   }
 

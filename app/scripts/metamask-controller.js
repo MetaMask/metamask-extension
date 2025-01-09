@@ -5498,14 +5498,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Requests CAIP-25 for permissions for the specified origin
-   * and replaces any existing CAIP-25 permission with a new one.
+   * Requests user approval for the CAIP-25 permission for the specified origin
+   * and returns a permissions object that must be passed to
+   * PermissionController.grantPermissions() to complete the permission granting.
    *
    * @param {string} origin - The origin to request approval for.
    * @param requestedPermissions - The legacy permissions to request approval for.
-   * @returns the granted CAIP-25 Permission.
+   * @returns the approved permissions object that must then be granted by calling the PermissionController.
    */
-  async requestCaip25Permission(origin, requestedPermissions = {}) {
+  async requestCaip25Approval(origin, requestedPermissions = {}) {
     const permissions = pick(requestedPermissions, [
       RestrictedMethods.eth_accounts,
       PermissionNames.permittedChains,
@@ -5563,22 +5564,36 @@ export default class MetamaskController extends EventEmitter {
       legacyApproval.approvedAccounts,
     );
 
-    const grantedPermissions = this.permissionController.grantPermissions({
-      subject: { origin },
-      approvedPermissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caveatValueWithAccounts,
-            },
-          ],
-        },
+    return {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: caveatValueWithAccounts,
+          },
+        ],
       },
-    });
-
-    return grantedPermissions[Caip25EndowmentPermissionName];
+    }
   }
+
+  // /**
+  //  * Requests CAIP-25 for permissions for the specified origin
+  //  * and replaces any existing CAIP-25 permission with a new one.
+  //  *
+  //  * @param {string} origin - The origin to request approval for.
+  //  * @param requestedPermissions - The legacy permissions to request approval for.
+  //  * @returns the granted CAIP-25 Permission.
+  //  */
+  // async requestCaip25Permission(origin, requestedPermissions = {}) {
+  //   const approvedPermissions = await this.requestCaip25Approval(origin, requestedPermissions)
+
+  //   const grantedPermissions = this.permissionController.grantPermissions({
+  //     subject: { origin },
+  //     approvedPermissions
+  //   });
+
+  //   return grantedPermissions[Caip25EndowmentPermissionName];
+  // }
 
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
@@ -6374,10 +6389,16 @@ export default class MetamaskController extends EventEmitter {
         ),
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        requestCaip25PermissionForOrigin: this.requestCaip25Permission.bind(
+        requestCaip25ApprovalForOrigin: this.requestCaip25Approval.bind(
           this,
           origin,
         ),
+        grantPermissionsForOrigin: (approvedPermissions) => {
+          return this.permissionController.grantPermissions({
+            subject: { origin },
+            approvedPermissions
+          })
+        },
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
