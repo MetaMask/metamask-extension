@@ -52,7 +52,7 @@ class SolanaTxresultPage {
       await this.driver.findElement({
         text: displayedText,
         tag: 'p',
-      });
+      }, 2000);
       return true;
     } catch (err) {
       console.log('Transaction failed text incorrect');
