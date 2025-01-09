@@ -49,6 +49,8 @@ export class SignUpPage {
 
   readonly skipSrpBackupBtn: Locator;
 
+  readonly termsModalBody: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.getStartedBtn = page.locator('button:has-text("Get started")');
@@ -77,29 +79,16 @@ export class SignUpPage {
     this.nextBtn = page.getByTestId('pin-extension-next');
     this.agreeBtn = page.locator('button:has-text("I agree")');
     this.enableBtn = page.locator('button:has-text("Enable")');
+    this.termsModalBody = page.getByTestId('terms-of-use-modal-body');
   }
 
   private async handleTermsModal() {
-    console.log('Waiting for terms modal...');
-    await this.page.waitForSelector('[data-testid="terms-of-use-modal-body"]');
-    console.log('Found terms modal');
-
-    console.log('Scrolling modal to bottom...');
-    await this.page.evaluate(`
-      const modalBody = document.querySelector('[data-testid="terms-of-use-modal-body"]');
-      if (modalBody) {
-        modalBody.scrollTo({ top: modalBody.scrollHeight, behavior: 'instant' });
-        console.log('Modal scrolled');
-      } else {
-        console.log('Modal body not found');
-      }
-    `);
-
-    console.log('Clicking terms checkbox...');
+    await this.termsModalBody.waitFor({ state: 'visible' });
+    for (let i = 0; i < 1000; i++) {
+      await this.termsModalBody.press('ArrowDown');
+    }
     await this.agreeTandCCheck.click();
-    console.log('Clicking accept button...');
     await this.page.getByTestId('onboarding-terms-accept').click();
-    console.log('Terms accepted');
   }
 
   async importWallet() {
