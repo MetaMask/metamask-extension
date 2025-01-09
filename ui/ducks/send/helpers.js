@@ -2,6 +2,8 @@ import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import { getErrorMessage } from '../../../shared/modules/error';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
@@ -90,12 +92,12 @@ export async function estimateGasLimitForSend({
     paramsForGasEstimate.to = sendToken.address;
   } else {
     if (!data) {
-      // eth.getCode will return the compiled smart contract code at the
+      // eth_getCode will return the compiled smart contract code at the
       // address. If this returns 0x, 0x0 or a nullish value then the address
       // is an externally owned account (NOT a contract account). For these
       // types of transactions the gasLimit will always be 21,000 or 0x5208
       const { isContractAddress } = to
-        ? await readAddressAsContract(global.eth, to)
+        ? await readAddressAsContract(global.ethereumProvider, to)
         : {};
       if (!isContractAddress && !isNonStandardEthChain) {
         return GAS_LIMITS.SIMPLE;
@@ -406,7 +408,11 @@ export function getRoundedGasPrice(gasPriceEstimate) {
 }
 
 export async function getERC20Balance(token, accountAddress) {
-  const contract = global.eth.contract(abi).at(token.address);
+  const contract = new Contract(
+    token.address,
+    abi,
+    new Web3Provider(global.ethereumProvider),
+  );
   const usersToken = (await contract.balanceOf(accountAddress)) ?? null;
   if (!usersToken) {
     return '0x0';
