@@ -151,7 +151,6 @@ workflows:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
-          <<: *main_master_rc_only
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -282,10 +281,14 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-mv2
-            - trigger-beta-build
             - prep-build-mmi
             - prep-build-flask
             - prep-build-flask-mv2
+            - prep-build-test
+            - prep-build-test-mv2
+            - prep-build-test-flask
+            - prep-build-test-flask-mv2
+            - trigger-beta-build
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
             - benchmark
@@ -700,10 +703,10 @@ jobs:
           name: Build extension for testing
           command: yarn build:test:flask:mv2
       - run:
-          name: Move test build to 'dist-test-flask' to avoid conflict with production build
+          name: Move test build to 'dist-test-flask-mv2' to avoid conflict with production build
           command: mv ./dist ./dist-test-flask-mv2
       - run:
-          name: Move test zips to 'builds-test-flask' to avoid conflict with production build
+          name: Move test zips to 'builds-test-flask-mv2' to avoid conflict with production build
           command: mv ./builds ./builds-test-flask-mv2
       - persist_to_workspace:
           root: .
@@ -1306,7 +1309,11 @@ jobs:
       - store_artifacts:
           path: builds-test
       - store_artifacts:
+          path: builds-test-mv2
+      - store_artifacts:
           path: builds-test-flask
+      - store_artifacts:
+          path: builds-test-flask-mv2
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
