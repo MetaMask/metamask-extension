@@ -115,15 +115,15 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   );
 
   // Max fee
-  const gasLimitNoBuffer = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
+  const gasLimit = transactionMeta?.txParams?.gas || HEX_ZERO;
   const gasPrice = transactionMeta?.txParams?.gasPrice || HEX_ZERO;
 
   const maxFee = useMemo(() => {
     return multiplyHexes(
       supportsEIP1559 ? (decimalToHex(maxFeePerGas) as Hex) : (gasPrice as Hex),
-      gasLimitNoBuffer as Hex,
+      gasLimit as Hex,
     );
-  }, [supportsEIP1559, maxFeePerGas, gasLimitNoBuffer, gasPrice]);
+  }, [supportsEIP1559, maxFeePerGas, gasLimit, gasPrice]);
 
   const {
     currentCurrencyFee: maxFeeFiat,
@@ -157,6 +157,8 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       minimumFeePerGas = decimalToHex(maxFeePerGas);
     }
 
+
+    const gasLimitNoBuffer = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
     const estimatedFee = multiplyHexes(
       supportsEIP1559 ? (minimumFeePerGas as Hex) : (gasPrice as Hex),
       gasLimitNoBuffer as Hex,
