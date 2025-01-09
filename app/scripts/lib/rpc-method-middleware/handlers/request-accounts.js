@@ -1,29 +1,8 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
-  Caip25CaveatType,
-  Caip25CaveatValue,
-  Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
-import {
-  Caveat,
-  RequestedPermissions,
-  ValidPermission,
-} from '@metamask/permission-controller';
-import {
-  JsonRpcParams,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
-import {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
 
@@ -62,16 +41,13 @@ const locks = new Set();
  * @param options.metamaskState - The MetaMask app state.
  * @param options.requestCaip25ApprovalForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
  * @param options.grantPermissionsForOrigin - A hook that grants permission for the approved permissions for the origin.
- * @param options.metamaskState.metaMetricsId - The MetaMetrics ID.
- * @param options.metamaskState.permissionHistory - The permission history keyed by origin.
- * @param options.metamaskState.accounts - The accounts available in the wallet keyed by address.
  * @returns A promise that resolves to nothing
  */
 async function requestEthereumAccountsHandler(
-  req: JsonRpcRequest<JsonRpcParams> & { origin: string },
-  res: PendingJsonRpcResponse<string[]>,
-  _next: JsonRpcEngineNextCallback,
-  end: JsonRpcEngineEndCallback,
+  req,
+  res,
+  _next,
+  end,
   {
     getAccounts,
     getUnlockPromise,
@@ -79,27 +55,6 @@ async function requestEthereumAccountsHandler(
     metamaskState,
     requestCaip25ApprovalForOrigin,
     grantPermissionsForOrigin,
-  }: {
-    getAccounts: (options?: { ignoreLock?: boolean }) => string[];
-    getUnlockPromise: (shouldShowUnlockRequest: true) => Promise<void>;
-    sendMetrics: (
-      payload: MetaMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ) => void;
-    metamaskState: {
-      metaMetricsId: string;
-      permissionHistory: Record<string, unknown>;
-      accounts: Record<string, unknown>;
-    };
-    requestCaip25ApprovalForOrigin: (
-      requestedPermissions?: RequestedPermissions,
-    ) => Promise<RequestedPermissions>;
-    grantPermissionsForOrigin: (approvedPermissions: RequestedPermissions) => {
-      [Caip25EndowmentPermissionName]: ValidPermission<
-        typeof Caip25EndowmentPermissionName,
-        Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
-      >;
-    };
   },
 ) {
   const { origin } = req;
@@ -121,7 +76,7 @@ async function requestEthereumAccountsHandler(
       res.result = ethAccounts;
       end();
     } catch (error) {
-      end(error as unknown as Error);
+      end(error);
     } finally {
       locks.delete(origin);
     }
@@ -132,7 +87,7 @@ async function requestEthereumAccountsHandler(
     const caip25Approval = await requestCaip25ApprovalForOrigin();
     await grantPermissionsForOrigin(caip25Approval);
   } catch (error) {
-    return end(error as unknown as Error);
+    return end(error);
   }
 
   // We cannot derive ethAccounts directly from the CAIP-25 permission
