@@ -92,7 +92,7 @@ const PermitSimulationValueDisplay: React.FC<
       return exchangeRate.times(tokenAmount).toNumber();
     }
     return undefined;
-  }, [exchangeRate, tokenDecimals, value]);
+  }, [exchangeRate, tokenDecimals, tokenId, value]);
 
   const { tokenValue, tokenValueMaxPrecision, shouldShowUnlimitedValue } =
     useMemo(() => {
@@ -113,7 +113,7 @@ const PermitSimulationValueDisplay: React.FC<
           canDisplayValueAsUnlimited &&
           Number(value) > TOKEN_VALUE_UNLIMITED_THRESHOLD,
       };
-    }, [tokenDecimals, value]);
+    }, [tokenDecimals, tokenId, value]);
 
   /** Temporary error capturing as we are building out Permit Simulations */
   if (!tokenContract) {
