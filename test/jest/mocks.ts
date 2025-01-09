@@ -3,17 +3,22 @@ import {
   EthMethod,
   BtcMethod,
   BtcAccountType,
-  InternalAccount,
+  isEvmAccountType,
 } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
+import { Json } from '@metamask/utils';
 import {
   DraftTransaction,
   draftTransactionInitialState,
   initialState,
 } from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
+import mockState from '../data/mock-state.json';
+
+export type MockState = typeof mockState;
 
 export const MOCK_DEFAULT_ADDRESS =
   '0xd5e099c71b797516c10ed0f0d895f429c2781111';
@@ -180,17 +185,21 @@ export function createMockInternalAccount({
   address = MOCK_DEFAULT_ADDRESS,
   type = EthAccountType.Eoa,
   keyringType = KeyringTypes.hd,
+  lastSelected = 0,
   snapOptions = undefined,
+  options = undefined,
 }: {
   name?: string;
   address?: string;
   type?: string;
   keyringType?: string;
+  lastSelected?: number;
   snapOptions?: {
     enabled: boolean;
     name: string;
     id: string;
   };
+  options?: Record<string, Json>;
 } = {}) {
   let methods;
 
@@ -212,7 +221,7 @@ export function createMockInternalAccount({
       ];
       break;
     case BtcAccountType.P2wpkh:
-      methods = [BtcMethod.SendMany];
+      methods = [BtcMethod.SendBitcoin];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);
@@ -228,8 +237,9 @@ export function createMockInternalAccount({
         type: keyringType,
       },
       snap: snapOptions,
+      lastSelected,
     },
-    options: {},
+    options: options ?? {},
     methods,
     type,
   };
@@ -242,3 +252,63 @@ export const getSelectedInternalAccountFromMockState = (
     state.metamask.internalAccounts.selectedAccount
   ];
 };
+
+export function overrideAccountsFromMockState<
+  MockMetaMaskState extends MockState['metamask'],
+>(
+  state: { metamask: MockMetaMaskState },
+  accounts: InternalAccount[],
+  selectedAccountId?: string,
+): { metamask: MockMetaMaskState } {
+  // First, re-create the accounts mapping and the currently selected account.
+  const [{ id: newFirstAccountId }] = accounts;
+  const newSelectedAccount = selectedAccountId ?? newFirstAccountId ?? '';
+  const newInternalAccounts = accounts.reduce(
+    (
+      acc: MetaMaskReduxState['metamask']['internalAccounts']['accounts'],
+      account,
+    ) => {
+      acc[account.id] = account;
+      return acc;
+    },
+    {},
+  );
+
+  // Re-create the keyring mapping too, since some selectors are using their internal
+  // account list.
+  const newKeyrings: MetaMaskReduxState['metamask']['keyrings'] = [];
+  for (const keyring of state.metamask.keyrings) {
+    const newAccountsForKeyring = [];
+    for (const account of accounts) {
+      if (account.metadata.keyring.type === keyring.type) {
+        newAccountsForKeyring.push(account.address);
+      }
+    }
+    newKeyrings.push({
+      type: keyring.type,
+      accounts: newAccountsForKeyring,
+    });
+  }
+
+  // Compute balances for EVM addresses:
+  // FIXME: Looks like there's no `balances` type in `MetaMaskReduxState`.
+  const newBalances: Record<string, string> = {};
+  for (const account of accounts) {
+    if (isEvmAccountType(account.type)) {
+      newBalances[account.address] = '0x0';
+    }
+  }
+
+  return {
+    ...state,
+    metamask: {
+      ...state.metamask,
+      internalAccounts: {
+        accounts: newInternalAccounts,
+        selectedAccount: newSelectedAccount,
+      },
+      keyrings: newKeyrings,
+      balances: newBalances,
+    },
+  };
+}

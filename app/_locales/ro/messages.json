@@ -375,9 +375,6 @@
   "loading": {
     "message": "Se încarcă…"
   },
-  "loadingTokens": {
-    "message": "Se încarcă token-urile..."
-  },
   "lock": {
     "message": "Deconectați-vă"
   },
@@ -437,9 +434,6 @@
   "noConversionRateAvailable": {
     "message": "Nici o rată de conversie disponibilă"
   },
-  "noTransactions": {
-    "message": "Nu aveți tranzacții"
-  },
   "noWebcamFound": {
     "message": "Webcam-ul computerului dvs. nu a fost găsit. Vă rugăm să încercați din nou."
   },
@@ -494,12 +488,6 @@
   },
   "prev": {
     "message": "Ant"
-  },
-  "primaryCurrencySetting": {
-    "message": "Moneda principală"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selectați nativ pentru a prioritiza valorile afișate în moneda nativă a lanțului (ex. ETH). Selectați Fiat pentru a prioritiza valorile afișate în moneda selectată fiat."
   },
   "privacyMsg": {
     "message": "Politica de Confidențialitate"
@@ -745,9 +733,6 @@
   },
   "unlockMessage": {
     "message": "Web-ul descentralizat așteaptă"
-  },
-  "updatedWithDate": {
-    "message": "Actualizat $1"
   },
   "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."

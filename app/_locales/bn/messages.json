@@ -241,10 +241,6 @@
   "fast": {
     "message": "দ্রুত"
   },
-  "fiat": {
-    "message": "ফিয়াট",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ফাইল আমদানি কাজ করছে না? এখানে ক্লিক করুন!",
     "description": "Helps user import their account from a JSON file"
@@ -379,9 +375,6 @@
   "loading": {
     "message": "লোড হচ্ছে..."
   },
-  "loadingTokens": {
-    "message": "টোকেনগুলি লোড করছে..."
-  },
   "localhost": {
     "message": "লোকালহোস্ট 8545"
   },
@@ -444,9 +437,6 @@
   "noConversionRateAvailable": {
     "message": "কোনো বিনিময় হার উপলভ্য নয়"
   },
-  "noTransactions": {
-    "message": "আপনার কোনো লেনদেন নেই"
-  },
   "noWebcamFound": {
     "message": "আপনার কম্পিউটারের ওয়েবক্যাম খুঁজে পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
   },
@@ -501,12 +491,6 @@
   },
   "prev": {
     "message": "পূর্ববর্তী"
-  },
-  "primaryCurrencySetting": {
-    "message": "প্রাথমিক মুদ্রা"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "চেনটিতে (যেমন ETH) দেশীয় মুদ্রায় মানগুলি প্রদর্শনকে অগ্রাধিকার দিতে দেশীয় নির্বাচন করুন। আপনার নির্দেশিত মুদ্রায় মানগুলির প্রদর্শনকে অগ্রাধিকার দিতে নির্দেশিত নির্বাচন করুন।"
   },
   "privacyMsg": {
     "message": "সম্মত হয়েছেন"
@@ -758,9 +742,6 @@
   },
   "unlockMessage": {
     "message": "ছড়িয়ে ছিটিয়ে থাকা ওয়েব অপেক্ষা করছে"
-  },
-  "updatedWithDate": {
-    "message": "আপডেট করা $1"
   },
   "urlErrorMsg": {
     "message": "URI গুলির যথাযথ HTTP/HTTPS প্রেফিক্সের প্রয়োজন।"

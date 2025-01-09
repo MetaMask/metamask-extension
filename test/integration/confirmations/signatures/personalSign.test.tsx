@@ -1,22 +1,34 @@
-import { fireEvent, waitFor } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName,
   MetaMetricsEventLocation,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { shortenAddress } from '../../../../ui/helpers/utils/util';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
+import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -34,6 +46,7 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
     unapprovedPersonalMsgs: {
       [pendingPersonalSignId]: {
         id: pendingPersonalSignId,
+        chainId: CHAIN_IDS.SEPOLIA,
         status: 'unapproved',
         time: pendingPersonalSignTime,
         type: MESSAGE_TYPE.PERSONAL_SIGN,
@@ -66,6 +79,10 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
 describe('PersonalSign Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   it('displays the header account modal with correct data', async () => {
@@ -80,17 +97,20 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     );
 
-    const { getByTestId, queryByTestId } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
-    });
+    const { findByTestId, getByTestId, queryByTestId } =
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
 
-    expect(getByTestId('header-account-name')).toHaveTextContent(accountName);
-    expect(getByTestId('header-network-display-name')).toHaveTextContent(
+    expect(await findByTestId('header-account-name')).toHaveTextContent(
+      accountName,
+    );
+    expect(await findByTestId('header-network-display-name')).toHaveTextContent(
       'Sepolia',
     );
 
-    fireEvent.click(getByTestId('header-info__account-details-button'));
+    fireEvent.click(await findByTestId('header-info__account-details-button'));
 
     await waitFor(() => {
       expect(
@@ -99,13 +119,13 @@ describe('PersonalSign Confirmation', () => {
     });
 
     expect(
-      getByTestId('confirmation-account-details-modal__account-name'),
+      await findByTestId('confirmation-account-details-modal__account-name'),
     ).toHaveTextContent(accountName);
-    expect(getByTestId('address-copy-button-text')).toHaveTextContent(
+    expect(await findByTestId('address-copy-button-text')).toHaveTextContent(
       '0x0DCD5...3E7bc',
     );
     expect(
-      getByTestId('confirmation-account-details-modal__account-balance'),
+      await findByTestId('confirmation-account-details-modal__account-balance'),
     ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
@@ -135,7 +155,7 @@ describe('PersonalSign Confirmation', () => {
     );
 
     fireEvent.click(
-      getByTestId('confirmation-account-details-modal__close-button'),
+      await findByTestId('confirmation-account-details-modal__close-button'),
     );
 
     await waitFor(() => {
@@ -156,14 +176,16 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     );
 
-    const { getByText } = await integrationTestRender({
-      preloadedState: mockedMetaMaskState,
-      backgroundConnection: backgroundConnectionMocked,
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
     });
 
-    expect(getByText('Signature request')).toBeInTheDocument();
+    expect(await screen.findByText('Signature request')).toBeInTheDocument();
     expect(
-      getByText('Review request details before you confirm.'),
+      await screen.findByText('Review request details before you confirm.'),
     ).toBeInTheDocument();
   });
 
@@ -182,7 +204,7 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     );
 
-    const { getByText } = await integrationTestRender({
+    const { findByText } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
       backgroundConnection: backgroundConnectionMocked,
     });
@@ -193,6 +215,6 @@ describe('PersonalSign Confirmation', () => {
       account.address,
     )})`;
 
-    expect(getByText(mismatchAccountText)).toBeInTheDocument();
+    expect(await findByText(mismatchAccountText)).toBeInTheDocument();
   });
 });

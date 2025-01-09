@@ -40,7 +40,7 @@
       "all_frames": true
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
@@ -50,7 +50,9 @@
     "http://localhost:8545/",
     "file://*/*",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "ws://*/*",
+    "wss://*/*"
   ],
   "icons": {
     "16": "images/icon-16.png",

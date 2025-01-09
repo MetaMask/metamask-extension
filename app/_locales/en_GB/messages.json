@@ -289,6 +289,9 @@
   "addNewBitcoinTestnetAccount": {
     "message": "Add a new Bitcoin account (Testnet)"
   },
+  "addNewSolanaAccount": {
+    "message": "Add a new Solana account (Beta)"
+  },
   "addNewToken": {
     "message": "Add new token"
   },
@@ -400,12 +403,6 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Update gas options"
   },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "If you approve this request, a third party known for scams might take all your assets."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Multiple alerts!"
-  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
@@ -418,26 +415,17 @@
   "alertMessageGasTooLow": {
     "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
   },
-  "alertMessageInsufficientBalance": {
-    "message": "You do not have enough ETH in your account to pay for transaction fees."
-  },
   "alertMessageNetworkBusy": {
     "message": "Gas prices are high and estimates are less accurate."
   },
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
   },
-  "alertMessagePendingTransactions": {
-    "message": "This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "The site making the request is not the site you’re signing into. This could be an attempt to steal your login credentials."
   },
   "alertMessageSignInWrongAccount": {
     "message": "This site is asking you to sign in using the wrong account."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "This transaction will only go through once your previous transaction is complete."
   },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
@@ -474,18 +462,6 @@
   },
   "alertReasonWrongAccount": {
     "message": "Wrong account"
-  },
-  "alertSettingsUnconnectedAccount": {
-    "message": "Browsing a website with an unconnected account selected"
-  },
-  "alertSettingsUnconnectedAccountDescription": {
-    "message": "This alert is shown in the popup when you are browsing a connected web3 site, but the currently selected account is not connected."
-  },
-  "alertSettingsWeb3ShimUsage": {
-    "message": "When a website tries to use the removed window.web3 API"
-  },
-  "alertSettingsWeb3ShimUsageDescription": {
-    "message": "This alert is shown in the popup when you are browsing a site that tries to use the removed window.web3 API, and may be broken as a result."
   },
   "alerts": {
     "message": "Alerts"
@@ -1728,9 +1704,6 @@
   "effortlesslyNavigateYourDigitalAssets": {
     "message": "Effortlessly navigate your digital assets"
   },
-  "enable": {
-    "message": "Enable"
-  },
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
@@ -1816,10 +1789,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Error details",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
   },
@@ -1830,14 +1799,6 @@
   "errorName": {
     "message": "Code: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Try again by reloading the page, or contact support $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Try again by closing and reopening the popup, or contact support $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask encountered an error",
@@ -1933,10 +1894,6 @@
   },
   "feeDetails": {
     "message": "Fee details"
-  },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "File import not working? Click here!",
@@ -2684,9 +2641,6 @@
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
   },
-  "loadingTokens": {
-    "message": "Loading tokens..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -3166,9 +3120,6 @@
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
-  "noConversionDateAvailable": {
-    "message": "No currency conversion date available"
-  },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
@@ -3189,9 +3140,6 @@
   },
   "noThanks": {
     "message": "No thanks"
-  },
-  "noTransactions": {
-    "message": "You have no transactions"
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
@@ -4007,12 +3955,6 @@
   "priceUnavailable": {
     "message": "price unavailable"
   },
-  "primaryCurrencySetting": {
-    "message": "Primary currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
-  },
   "primaryType": {
     "message": "Primary type"
   },
@@ -4748,17 +4690,11 @@
   "signingInWith": {
     "message": "Signing in with"
   },
-  "simulationDetailsFailed": {
-    "message": "There was an error loading your estimation."
-  },
   "simulationDetailsFiatNotAvailable": {
     "message": "Not Available"
   },
   "simulationDetailsIncomingHeading": {
     "message": "You receive"
-  },
-  "simulationDetailsNoBalanceChanges": {
-    "message": "No changes predicted for your wallet"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "You send"
@@ -4797,9 +4733,6 @@
   "siweResources": {
     "message": "Resources"
   },
-  "siweSignatureSimulationDetailInfo": {
-    "message": "You’re signing into a site and there are no predicted changes to your account."
-  },
   "siweURI": {
     "message": "URL"
   },
@@ -4834,7 +4767,7 @@
     "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
   },
   "smartTransactionPending": {
-    "message": "Submitting your transaction"
+    "message": "Your transaction was submitted"
   },
   "smartTransactionSuccess": {
     "message": "Your transaction is complete"
@@ -4848,25 +4781,6 @@
   },
   "smartTransactions": {
     "message": "Smart Transactions"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "99.5% success rate"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Saves you money"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Real-time updates"
-  },
-  "smartTransactionsDescription": {
-    "message": "Unlock higher success rates, frontrunning protection, and better visibility with Smart Transactions."
-  },
-  "smartTransactionsDescription2": {
-    "message": "Only available on Ethereum. Enable or disable any time in settings. $1",
-    "description": "$1 is an external link to learn more about Smart Transactions"
-  },
-  "smartTransactionsOptItModalTitle": {
-    "message": "Enhanced Transaction Protection"
   },
   "snapAccountCreated": {
     "message": "Account created"
@@ -5375,10 +5289,6 @@
   "swapAreYouStillThereDescription": {
     "message": "We’re ready to show you the latest quotes when you want to continue"
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "No tokens available matching $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
   },
@@ -5443,9 +5353,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Error fetching quotes"
   },
-  "swapFetchingTokens": {
-    "message": "Fetching tokens..."
-  },
   "swapFromTo": {
     "message": "The swap of $1 to $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -5465,9 +5372,6 @@
   },
   "swapHighSlippage": {
     "message": "High slippage"
-  },
-  "swapHighSlippageWarning": {
-    "message": "Slippage amount is very high."
   },
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",
@@ -5489,9 +5393,6 @@
   },
   "swapLowSlippage": {
     "message": "Low slippage"
-  },
-  "swapLowSlippageError": {
-    "message": "Transaction may fail, max slippage too low."
   },
   "swapMaxSlippage": {
     "message": "Max slippage"
@@ -5526,9 +5427,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Price difference of ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "Price impact is the difference between the current market price and the amount received during transaction execution. Price impact is a function of the size of your trade relative to the size of the liquidity pool."
   },
   "swapPriceUnavailableDescription": {
     "message": "Price impact could not be determined due to lack of market price data. Please confirm that you are comfortable with the amount of tokens you are about to receive before swapping."
@@ -5576,12 +5474,6 @@
   "swapRequestForQuotation": {
     "message": "Request for quotation"
   },
-  "swapReviewSwap": {
-    "message": "Review swap"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Search name or paste address"
-  },
   "swapSelect": {
     "message": "Select"
   },
@@ -5613,9 +5505,6 @@
   },
   "swapSlippageLowTitle": {
     "message": "Low slippage"
-  },
-  "swapSlippageNegative": {
-    "message": "Slippage must be greater or equal to zero"
   },
   "swapSlippageNegativeDescription": {
     "message": "Slippage must be greater or equal to zero"
@@ -5685,20 +5574,6 @@
     "message": "Swap $1 to $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "This token has been added manually."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Always confirm the token address on $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Only verified on 1 source."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Verified on $1 sources.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTokenVerifiedOn1SourceDescription": {
     "message": "$1 is only verified on 1 source. Consider verifying it on $2 before proceeding.",
     "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5719,29 +5594,11 @@
   "swapUnknown": {
     "message": "Unknown"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Multiple tokens can use the same name and symbol. Check $1 to verify this is the token you're looking for.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 available to swap",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0% Slippage"
   },
-  "swapsAdvancedOptions": {
-    "message": "Advanced options"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%."
-  },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "Not enough $1 to complete this transaction",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsNotEnoughToken": {
     "message": "Not enough $1",
@@ -6225,9 +6082,6 @@
   "updateRequest": {
     "message": "Update request"
   },
-  "updatedWithDate": {
-    "message": "Updated $1"
-  },
   "uploadDropFile": {
     "message": "Drop your file here"
   },
@@ -6291,14 +6145,6 @@
   },
   "verifyContractDetails": {
     "message": "Verify third-party details"
-  },
-  "verifyThisTokenOn": {
-    "message": "Verify this token on $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Verify this token on $1 and make sure this is the token you want to trade.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "version": {
     "message": "Version"
@@ -6451,10 +6297,6 @@
   },
   "wrongNetworkName": {
     "message": "According to our records, the network name may not correctly match this chain ID."
-  },
-  "xOfYPending": {
-    "message": "$1 of $2 pending",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Yes"

@@ -31,6 +31,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
+import { trace, TraceName } from '../../../../shared/lib/trace';
 
 export const AccountPicker = ({
   address,
@@ -58,7 +59,10 @@ export const AccountPicker = ({
     <ButtonBase
       className={classnames('multichain-account-picker', className)}
       data-testid="account-menu-icon"
-      onClick={onClick}
+      onClick={() => {
+        trace({ name: TraceName.AccountList });
+        onClick();
+      }}
       backgroundColor={BackgroundColor.transparent}
       borderRadius={BorderRadius.LG}
       ellipsis

@@ -42,12 +42,6 @@
       "trezorModel": null,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "usedNetworks": {
-        "0x1": true,
-        "0xe708": true,
-        "0x5": true,
-        "0x539": true
-      },
       "snapsInstallPrivacyWarningShown": true
     },
     "CurrencyController": {
@@ -80,11 +74,11 @@
     },
     "NetworkController": {
       "selectedNetworkClientId": "string",
+      "networkConfigurations": "object",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
       },
-      "providerConfig": "object",
-      "networkConfigurations": "object"
+      "providerConfig": "object"
     },
     "OnboardingController": {
       "completedOnboarding": true,
@@ -98,6 +92,7 @@
       "currentLocale": "en",
       "useExternalServices": "boolean",
       "dismissSeedBackUpReminder": true,
+      "overrideContentSecurityPolicyHeader": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
@@ -111,12 +106,15 @@
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
-        "smartTransactionsOptInStatus": false,
-        "useNativeCurrencyAsPrimaryCurrency": true,
+        "smartTransactionsOptInStatus": true,
+        "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "showConfirmationAdvancedDetails": false,
         "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-        "showMultiRpcModal": "boolean"
+        "showConfirmationAdvancedDetails": false,
+        "tokenSortConfig": "object",
+        "tokenNetworkFilter": {},
+        "showMultiRpcModal": "boolean",
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -127,32 +125,37 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": true
+      "useRequestQueue": true,
+      "isMultiAccountBalancesEnabled": "boolean",
+      "showIncomingTransactions": "object"
     },
     "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
         "fees": {},
+        "feesByChainId": "object",
         "liveness": true,
+        "livenessByChainId": "object",
         "smartTransactions": "object"
       }
     },
     "BridgeController": {
       "bridgeState": {
         "bridgeFeatureFlags": {
-          "extensionSupport": "boolean",
-          "srcNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          },
-          "destNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
+          "extensionConfig": {
+            "support": "boolean",
+            "chains": {
+              "0x1": "object",
+              "0xa": "object",
+              "0xe708": "object"
+            }
           }
-        }
+        },
+        "destTokens": {},
+        "destTopAssets": {},
+        "srcTokens": {},
+        "srcTopAssets": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

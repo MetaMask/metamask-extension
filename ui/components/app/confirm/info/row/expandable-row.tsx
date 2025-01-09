@@ -40,19 +40,19 @@ export const ConfirmInfoExpandableRow = (
     <>
       <ConfirmInfoRow {...rowProps}>
         <Box display={Display.Flex}>
-          {children}
           <ButtonIcon
             marginLeft={1}
             className={classnames({
               expandIcon: true,
               expanded,
             })}
-            iconName={IconName.ArrowLeft}
+            iconName={IconName.ArrowDown}
             color={IconColor.primaryDefault}
             size={ButtonIconSize.Sm}
             onClick={handleClick}
             ariaLabel="expand"
           />
+          {children}
         </Box>
       </ConfirmInfoRow>
       <Box

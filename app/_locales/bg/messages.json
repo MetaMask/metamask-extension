@@ -381,9 +381,6 @@
   "loading": {
     "message": "Зарежда се..."
   },
-  "loadingTokens": {
-    "message": "Зареждане на жетони..."
-  },
   "localhost": {
     "message": "Локален хост 8545"
   },
@@ -446,9 +443,6 @@
   "noConversionRateAvailable": {
     "message": "Няма наличен процент на преобръщане"
   },
-  "noTransactions": {
-    "message": "Нямате транзакции"
-  },
   "noWebcamFound": {
     "message": "Уеб камерата на компютърa Ви не беше намерена. Моля, опитайте отново."
   },
@@ -503,12 +497,6 @@
   },
   "prev": {
     "message": "Предишен"
-  },
-  "primaryCurrencySetting": {
-    "message": "Основна валута"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Изберете местна, за да приоритизирате показването на стойности в основната валута на веригата (например ETH). Изберете Fiat, за да поставите приоритет на показването на стойности в избраната от вас fiat валута."
   },
   "privacyMsg": {
     "message": "Политика за поверителност"
@@ -760,9 +748,6 @@
   },
   "unlockMessage": {
     "message": "Децентрализираната мрежа очаква"
-  },
-  "updatedWithDate": {
-    "message": "Актуализирано $1 "
   },
   "urlErrorMsg": {
     "message": "URI изискват съответния HTTP / HTTPS префикс."

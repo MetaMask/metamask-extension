@@ -84,10 +84,6 @@
   "failed": {
     "message": "mislukt"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Bestandsimport werkt niet? Klik hier!",
     "description": "Helps user import their account from a JSON file"
@@ -153,9 +149,6 @@
   "loading": {
     "message": "Bezig met laden..."
   },
-  "loadingTokens": {
-    "message": "Tokens laden ..."
-  },
   "lock": {
     "message": "Uitloggen"
   },
@@ -189,9 +182,6 @@
   },
   "next": {
     "message": "volgende"
-  },
-  "noTransactions": {
-    "message": "Geen transacties"
   },
   "pastePrivateKey": {
     "message": "Plak hier uw privésleutelstring:",

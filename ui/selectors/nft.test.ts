@@ -38,6 +38,7 @@ describe('NFT Selectors', () => {
               [chainIdMock2]: [contractMock5],
             },
           },
+          allNfts: {},
         },
       };
 
@@ -80,6 +81,7 @@ describe('NFT Selectors', () => {
               [chainIdMock2]: [contractMock5],
             },
           },
+          allNfts: {},
         },
       };
 

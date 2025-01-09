@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import browser from 'webextension-polyfill';
 
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -55,7 +55,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { CONNECTIONS } from '../../../helpers/constants/routes';
+import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { MultichainNetwork } from '../../../selectors/multichain';
 
 type AppHeaderUnlockedContentProps = {
@@ -119,7 +119,7 @@ export const AppHeaderUnlockedContent = ({
   };
 
   const handleConnectionsRoute = () => {
-    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+    history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
 
   return (

@@ -19,14 +19,10 @@ import { getInstitutionalConnectRequests } from '../../ducks/institutional/insti
 import {
   activeTabHasPermissions,
   getUseExternalServices,
-  getFirstPermissionRequest,
-  getFirstSnapInstallOrUpdateRequest,
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
-  getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
-  getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
@@ -38,21 +34,18 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
-  getSuggestedTokens,
-  getSuggestedNfts,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
   getQueuedRequestCount,
   getEditedNetwork,
-  getPrioritizedUnapprovedTemplatedConfirmations,
+  selectPendingApprovalsForNavigation,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
-
+import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
   closeNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -94,7 +87,6 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
-import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -116,9 +108,7 @@ const mapStateToProps = (state) => {
   const totalUnapprovedAndQueuedRequestCount =
     totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
-  const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
-  const pendingConfirmationsPrioritized =
-    getPrioritizedUnapprovedTemplatedConfirmations(state);
+  const pendingApprovals = selectPendingApprovalsForNavigation(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
@@ -128,17 +118,6 @@ const mapStateToProps = (state) => {
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
-  let firstPermissionsRequest, firstPermissionsRequestId;
-  firstPermissionsRequest = getFirstPermissionRequest(state);
-  firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
-
-  // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
-
-  if (!firstPermissionsRequest) {
-    firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
-    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
-  }
-
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
     isPopup &&
@@ -146,10 +125,6 @@ const mapStateToProps = (state) => {
     activeTabHasPermissions(state) &&
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       Web3ShimUsageAlertStates.recorded;
-
-  const hasWatchTokenPendingApprovals = getSuggestedTokens(state).length > 0;
-
-  const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
 
   const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -169,16 +144,12 @@ const mapStateToProps = (state) => {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
-    hasWatchTokenPendingApprovals,
-    hasWatchNftPendingApprovals,
     swapsEnabled,
-    hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
     dataCollectionForMarketing,
     selectedAddress,
-    firstPermissionsRequestId,
     totalUnapprovedCount,
     totalUnapprovedAndQueuedRequestCount,
     participateInMetaMetrics,
@@ -193,8 +164,7 @@ const mapStateToProps = (state) => {
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-    pendingConfirmations,
-    pendingConfirmationsPrioritized,
+    pendingApprovals,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
@@ -223,8 +193,6 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
-    isSmartTransactionsOptInModalAvailable:
-      getIsSmartTransactionsOptInModalAvailable(state),
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };

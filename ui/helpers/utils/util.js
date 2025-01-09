@@ -1,7 +1,7 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import * as ethUtil from 'ethereumjs-util';
+import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -168,10 +168,10 @@ export function isOriginContractAddress(to, sendTokenAddress) {
 // Takes wei Hex, returns wei BN, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new ethUtil.BN(0, 16);
+    return new BN(0, 16);
   }
   const stripped = stripHexPrefix(balance);
-  return new ethUtil.BN(stripped, 16);
+  return new BN(stripped, 16);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
@@ -301,6 +301,25 @@ export function shortenAddress(address = '') {
 
 export function getAccountByAddress(accounts = [], targetAddress) {
   return accounts.find(({ address }) => address === targetAddress);
+}
+
+/**
+ * Sort the given list of account their selecting order (descending). Meaning the
+ * first account of the sorted list will be the last selected account.
+ *
+ * @param {import('@metamask/keyring-api').InternalAccount[]} accounts - The internal accounts list.
+ * @returns {import('@metamask/keyring-api').InternalAccount[]} The sorted internal account list.
+ */
+export function sortSelectedInternalAccounts(accounts) {
+  // This logic comes from the `AccountsController`:
+  // TODO: Expose a free function from this controller and use it here
+  return accounts.sort((accountA, accountB) => {
+    // Sort by `.lastSelected` in descending order
+    return (
+      (accountB.metadata.lastSelected ?? 0) -
+      (accountA.metadata.lastSelected ?? 0)
+    );
+  });
 }
 
 /**
@@ -822,4 +841,19 @@ export const getFilteredSnapPermissions = (
   }
 
   return filteredPermissions;
+};
+/**
+ * Helper function to calculate the token amount 1dAgo using price percentage a day ago.
+ *
+ * @param {*} tokenFiatBalance - current token fiat balance
+ * @param {*} tokenPricePercentChange1dAgo - price percentage 1day ago
+ * @returns token amount 1day ago
+ */
+export const getCalculatedTokenAmount1dAgo = (
+  tokenFiatBalance,
+  tokenPricePercentChange1dAgo,
+) => {
+  return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
+    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+    : tokenFiatBalance ?? 0;
 };

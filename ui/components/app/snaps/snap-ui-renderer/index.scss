@@ -1,4 +1,10 @@
+@use "design-system";
+
 .snap-ui-renderer {
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
   &__content {
     margin-bottom: 0 !important;
   }
@@ -6,12 +12,8 @@
   &__container {
     & > *:first-child {
       gap: 16px;
-      padding: 16px;
+      margin: 16px;
     }
-  }
-
-  &__error {
-    margin-top: 0 !important;
   }
 
   &__spinner {
@@ -28,6 +30,10 @@
     border-radius: 8px;
     border-color: var(--color-border-muted);
 
+    & .mm-icon {
+      top: 0;
+    }
+
     .mm-text--overflow-wrap-anywhere {
       overflow-wrap: normal;
     }
@@ -42,10 +48,6 @@
 
   &__panel {
     gap: 8px;
-
-    .mm-icon--size-inherit {
-      top: 0;
-    }
   }
 
   &__text {
@@ -69,5 +71,25 @@
 
   &__footer {
     margin-top: auto;
+
+    @include design-system.screen-sm-min {
+      max-width: $width-screen-sm-min;
+    }
+
+    @include design-system.screen-md-min {
+      max-width: $width-screen-md-min;
+    }
+
+    @include design-system.screen-lg-min {
+      max-width: $width-screen-lg-min;
+    }
+  }
+
+  &__form {
+    .snap-ui-renderer__panel {
+      .snap-ui-renderer__field {
+        flex: 1 1 50%; // Ensure that adjacent form elements take up to 50% width
+      }
+    }
   }
 }

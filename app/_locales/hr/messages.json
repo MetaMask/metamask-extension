@@ -381,9 +381,6 @@
   "loading": {
     "message": "Učitavanje..."
   },
-  "loadingTokens": {
-    "message": "Učitavanje tokena..."
-  },
   "lock": {
     "message": "Odjava"
   },
@@ -443,9 +440,6 @@
   "noConversionRateAvailable": {
     "message": "Nijedan konverzijski tečaj nije dostupan"
   },
-  "noTransactions": {
-    "message": "Nemate transkacija"
-  },
   "noWebcamFound": {
     "message": "Mrežna kamera vašeg računala nije pronađena. Pokušajte ponovno."
   },
@@ -500,12 +494,6 @@
   },
   "prev": {
     "message": "Prethodno"
-  },
-  "primaryCurrencySetting": {
-    "message": "Glavna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Odaberite da se prvo prikazuju valute u osnovnoj valuti bloka (npr. ETH). Odaberite mogućnost Fiat za prikazivanje valuta u odabranoj valuti Fiat."
   },
   "privacyMsg": {
     "message": "Pravilnik o zaštiti privatnosti"
@@ -754,9 +742,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizirani internet čeka"
-  },
-  "updatedWithDate": {
-    "message": "Ažurirano $1"
   },
   "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."

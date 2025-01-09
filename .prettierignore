@@ -1,10 +1,11 @@
 *.scss
 .nyc_output/**/*
 node_modules/**/*
+# Exclude lottie json files
+/app/images/animations/**/*.json
 /app/vendor/**
 /builds/**/*
 /coverage/**/*
-/development/charts/**
 /development/chromereload.js
 /development/ts-migration-dashboard/filesToConvert.json
 /development/ts-migration-dashboard/build/**

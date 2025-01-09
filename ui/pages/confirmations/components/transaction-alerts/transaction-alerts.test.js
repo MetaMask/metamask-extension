@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import sinon from 'sinon';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import { renderWithProvider } from '../../../../../test/jest';
 import { submittedPendingTransactionsSelector } from '../../../../selectors/transactions';
@@ -9,6 +10,9 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as txUtil from '../../../../../shared/modules/transaction.utils';
 import * as metamaskControllerUtils from '../../../../../shared/lib/metamask-controller-utils';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { AlertTypes } from '../../../../../shared/constants/alerts';
+import { ALERT_STATE } from '../../../../ducks/alerts/enums';
 import TransactionAlerts from './transaction-alerts';
 
 jest.mock('../../../../selectors/transactions', () => {
@@ -22,17 +26,36 @@ jest.mock('../../../../contexts/gasFee');
 
 jest.mock('../../../../selectors/account-abstraction');
 
+const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
+
+const STATE_MOCK = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    ...mockNetworkState({
+      chainId: CHAIN_ID_MOCK,
+    }),
+    preferences: {
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: true,
+    },
+  },
+  [AlertTypes.smartTransactionsMigration]: {
+    state: ALERT_STATE.OPEN,
+  },
+};
+
 function render({
   componentProps = {},
   useGasFeeContextValue = {},
   submittedPendingTransactionsSelectorValue = null,
-  mockedStore = mockState,
+  state = STATE_MOCK,
 }) {
   useGasFeeContext.mockReturnValue(useGasFeeContextValue);
   submittedPendingTransactionsSelector.mockReturnValue(
     submittedPendingTransactionsSelectorValue,
   );
-  const store = configureStore(mockedStore);
+  const store = configureStore(state);
   return renderWithProvider(<TransactionAlerts {...componentProps} />, store);
 }
 
@@ -41,6 +64,7 @@ describe('TransactionAlerts', () => {
     const { getByText } = render({
       componentProps: {
         txData: {
+          chainId: CHAIN_ID_MOCK,
           securityAlertResponse: {
             resultType: 'Malicious',
             reason: 'blur_farming',
@@ -64,6 +88,7 @@ describe('TransactionAlerts', () => {
     const { queryByText } = render({
       componentProps: {
         txData: {
+          chainId: CHAIN_ID_MOCK,
           securityProviderResponse: {
             flagAsDangerous: '?',
             reason: 'Some reason...',
@@ -89,6 +114,7 @@ describe('TransactionAlerts', () => {
     const { queryByText } = render({
       componentProps: {
         txData: {
+          chainId: CHAIN_ID_MOCK,
           securityProviderResponse: {
             flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
           },
@@ -118,6 +144,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -141,6 +168,7 @@ describe('TransactionAlerts', () => {
             },
             componentProps: {
               txData: {
+                chainId: CHAIN_ID_MOCK,
                 txParams: {
                   value: '0x1',
                 },
@@ -160,6 +188,7 @@ describe('TransactionAlerts', () => {
             componentProps: {
               setUserAcknowledgedGasMissing,
               txData: {
+                chainId: CHAIN_ID_MOCK,
                 txParams: {
                   value: '0x1',
                 },
@@ -181,6 +210,7 @@ describe('TransactionAlerts', () => {
             componentProps: {
               userAcknowledgedGasMissing: true,
               txData: {
+                chainId: CHAIN_ID_MOCK,
                 txParams: {
                   value: '0x1',
                 },
@@ -199,6 +229,7 @@ describe('TransactionAlerts', () => {
         const { queryByText } = render({
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -220,6 +251,7 @@ describe('TransactionAlerts', () => {
           submittedPendingTransactionsSelectorValue: [{ some: 'transaction' }],
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -242,6 +274,7 @@ describe('TransactionAlerts', () => {
           ],
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -261,6 +294,7 @@ describe('TransactionAlerts', () => {
           submittedPendingTransactionsSelectorValue: [],
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -282,6 +316,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -301,6 +336,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -322,6 +358,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -345,6 +382,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -367,6 +405,7 @@ describe('TransactionAlerts', () => {
           submittedPendingTransactionsSelectorValue: [{ some: 'transaction' }],
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -388,6 +427,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -407,6 +447,7 @@ describe('TransactionAlerts', () => {
           },
           componentProps: {
             txData: {
+              chainId: CHAIN_ID_MOCK,
               txParams: {
                 value: '0x1',
               },
@@ -445,6 +486,7 @@ describe('TransactionAlerts', () => {
       const { getByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x0',
             },
@@ -461,6 +503,7 @@ describe('TransactionAlerts', () => {
       const { getByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x0',
             },
@@ -478,6 +521,7 @@ describe('TransactionAlerts', () => {
       const { queryByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x5af3107a4000',
             },
@@ -492,6 +536,7 @@ describe('TransactionAlerts', () => {
       const { queryByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x0',
             },
@@ -508,6 +553,7 @@ describe('TransactionAlerts', () => {
       const { getByText } = render({
         componentProps: {
           txData: {
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               value: '0x1',
             },
@@ -520,5 +566,66 @@ describe('TransactionAlerts', () => {
         getByText('The gas for this transaction will be paid by a paymaster.'),
       ).toBeInTheDocument();
     });
+  });
+});
+
+describe('Smart Transactions Migration Alert', () => {
+  it('shows when alert is enabled, opted in, and migration applied', () => {
+    const { getByTestId } = render({
+      componentProps: {
+        txData: {
+          chainId: CHAIN_ID_MOCK,
+          txParams: { value: '0x1' },
+        },
+      },
+      state: {
+        ...STATE_MOCK,
+        metamask: {
+          ...STATE_MOCK.metamask,
+          networkConfigurationsByChainId: {
+            [CHAIN_ID_MOCK]: {
+              chainId: CHAIN_ID_MOCK,
+            },
+          },
+          alertEnabledness: {
+            [AlertTypes.smartTransactionsMigration]: true,
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+            smartTransactionsMigrationApplied: true,
+          },
+        },
+      },
+    });
+    expect(getByTestId('smart-transactions-banner-alert')).toBeInTheDocument();
+  });
+
+  it('does not show when alert is disabled', () => {
+    const closedState = {
+      ...STATE_MOCK,
+      metamask: {
+        ...STATE_MOCK.metamask,
+        alertEnabledness: {
+          [AlertTypes.smartTransactionsMigration]: false,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
+          smartTransactionsMigrationApplied: true,
+        },
+      },
+    };
+    const store = configureStore(closedState);
+    const { queryByTestId } = renderWithProvider(
+      <TransactionAlerts
+        txData={{
+          chainId: CHAIN_ID_MOCK,
+          txParams: { value: '0x1' },
+        }}
+      />,
+      store,
+    );
+    expect(
+      queryByTestId('smart-transactions-banner-alert'),
+    ).not.toBeInTheDocument();
   });
 });

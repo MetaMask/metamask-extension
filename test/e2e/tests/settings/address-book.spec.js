@@ -5,6 +5,7 @@ const {
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
+  openMenuSafe,
   unlockWallet,
 } = require('../../helpers');
 const { shortenAddress } = require('../../../../ui/helpers/utils/util');
@@ -38,12 +39,11 @@ describe('Address Book', function () {
 
         await driver.clickElement({ css: 'button', text: 'Contacts' });
 
-        const recipientTitle = await driver.findElement(
-          '.address-list-item__label',
-        );
+        await driver.waitForSelector({
+          css: '.address-list-item__label',
+          text: 'Test Name 1',
+        });
 
-        const recipientRowTitleString = await recipientTitle.getText();
-        assert.equal(recipientRowTitleString, 'Test Name 1');
         await driver.clickElement('.address-list-item__label');
 
         await driver.fill('input[placeholder="0"]', '2');
@@ -69,6 +69,44 @@ describe('Address Book', function () {
       },
     );
   });
+
+  it('Adds a new contact to the address book', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await openMenuSafe(driver);
+
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+
+        await driver.clickElement('.address-book__link');
+
+        await driver.fill('#nickname', 'Test User');
+
+        await driver.fill(
+          '[data-testid="ens-input"]',
+          '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
+        );
+
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
+
+        await driver.waitForSelector({
+          text: 'Test User',
+          css: '.address-list-item__label',
+        });
+        await driver.waitForSelector({
+          css: '[data-testid="address-list-item-address"]',
+          text: '0x56A35...9Cc2A',
+        });
+      },
+    );
+  });
+
   it('Edit entry in address book', async function () {
     await withFixtures(
       {
@@ -92,10 +130,8 @@ describe('Address Book', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+        await openMenuSafe(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
         await driver.clickElement({
@@ -112,25 +148,15 @@ describe('Address Book', function () {
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
-        const recipientUsername = await driver.findElement({
+        await driver.waitForSelector({
           text: 'Test Name Edit',
           css: '.address-list-item__label',
         });
 
-        assert.equal(
-          await recipientUsername.getText(),
-          'Test Name Edit',
-          'Username is not edited correctly',
-        );
-
-        const recipientAddress = await driver.findElement(
-          '[data-testid="address-list-item-address"]',
-        );
-        assert.equal(
-          await recipientAddress.getText(),
-          shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
-          'Recipient address is not edited correctly',
-        );
+        await driver.waitForSelector({
+          css: '[data-testid="address-list-item-address"]',
+          text: shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
+        });
       },
     );
   });
@@ -159,9 +185,8 @@ describe('Address Book', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
 

@@ -65,50 +65,34 @@ async function start() {
   // build the github comment content
 
   // links to extension builds
-  const platforms = ['chrome', 'firefox'];
-  const buildLinks = platforms
-    .map((platform) => {
-      const url =
-        platform === 'firefox'
-          ? `${BUILD_LINK_BASE}/builds-mv2/metamask-${platform}-${VERSION}.zip`
-          : `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`;
+  const buildMap = {
+    builds: {
+      chrome: `${BUILD_LINK_BASE}/builds/metamask-chrome-${VERSION}.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-mv2/metamask-firefox-${VERSION}.zip`,
+    },
+    'builds (flask)': {
+      chrome: `${BUILD_LINK_BASE}/builds-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+    },
+    'builds (MMI)': {
+      chrome: `${BUILD_LINK_BASE}/builds-mmi/metamask-mmi-chrome-${VERSION}-mmi.0.zip`,
+    },
+    'builds (test)': {
+      chrome: `${BUILD_LINK_BASE}/builds-test/metamask-chrome-${VERSION}.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-test-mv2/metamask-firefox-${VERSION}.zip`,
+    },
+    'builds (test-flask)': {
+      chrome: `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+    },
+  };
+
+  const buildContentRows = Object.entries(buildMap).map(([label, builds]) => {
+    const buildLinks = Object.entries(builds).map(([platform, url]) => {
       return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
-  const betaBuildLinks = `<a href="${BUILD_LINK_BASE}/builds-beta/metamask-beta-chrome-${VERSION}.zip">chrome</a>`;
-  const flaskBuildLinks = platforms
-    .map((platform) => {
-      const url =
-        platform === 'firefox'
-          ? `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-${platform}-${VERSION}-flask.0.zip`
-          : `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
-  const mmiBuildLinks = platforms
-    .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-mmi/metamask-mmi-${platform}-${VERSION}-mmi.0.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
-  const testBuildLinks = platforms
-    .map((platform) => {
-      const url =
-        platform === 'firefox'
-          ? `${BUILD_LINK_BASE}/builds-test-mv2/metamask-${platform}-${VERSION}.zip`
-          : `${BUILD_LINK_BASE}/builds-test/metamask-${platform}-${VERSION}.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
-  const testFlaskBuildLinks = platforms
-    .map((platform) => {
-      const url =
-        platform === 'firefox'
-          ? `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-${platform}-${VERSION}-flask.0.zip`
-          : `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
+    });
+    return `${label}: ${buildLinks.join(', ')}`;
+  });
 
   // links to bundle browser builds
   const bundles = {};
@@ -144,9 +128,6 @@ async function start() {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
-  const coverageLink = `<a href="${coverageUrl}">Report</a>`;
-
   const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
@@ -156,12 +137,6 @@ async function start() {
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
-  const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/initialisation/background/index.html`;
-  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
-  const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/initialisation/ui/index.html`;
-  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
-  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/load_time/index.html`;
-  const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
   const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
   const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
@@ -171,19 +146,10 @@ async function start() {
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
 
   const contentRows = [
-    `builds: ${buildLinks}`,
-    `builds (beta): ${betaBuildLinks}`,
-    `builds (flask): ${flaskBuildLinks}`,
-    `builds (MMI): ${mmiBuildLinks}`,
-    `builds (test): ${testBuildLinks}`,
-    `builds (test-flask): ${testFlaskBuildLinks}`,
+    ...buildContentRows,
     `build viz: ${depVizLink}`,
-    `mv3: ${moduleInitStatsBackgroundLink}`,
-    `mv3: ${moduleInitStatsUILink}`,
-    `mv3: ${moduleLoadStatsLink}`,
     `mv3: ${bundleSizeStatsLink}`,
     `mv2: ${userActionsStatsLink}`,
-    `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
@@ -198,8 +164,9 @@ async function start() {
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
 
+  const benchmarkPlatforms = ['chrome'];
   const benchmarkResults = {};
-  for (const platform of platforms) {
+  for (const platform of benchmarkPlatforms) {
     const benchmarkPath = path.resolve(
       __dirname,
       '..',

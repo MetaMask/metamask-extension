@@ -4,14 +4,24 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import nock from 'nock';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import useMultiPolling from '../../../hooks/useMultiPolling';
 import AssetPage from './asset-page';
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+}));
 
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({ Line: () => null }));
@@ -33,6 +43,13 @@ jest.mock('../../../../shared/constants/network', () => ({
   },
 }));
 
+jest.mock('../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
+const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+
 describe('AssetPage', () => {
   const mockStore = {
     localeMessages: {
@@ -40,23 +57,41 @@ describe('AssetPage', () => {
     },
     metamask: {
       tokenList: {},
+      tokenBalances: {
+        [selectedAccountAddress]: {
+          [CHAIN_IDS.MAINNET]: {},
+        },
+      },
+      marketData: {},
+      allTokens: {},
+      accountsByChainId: {
+        '0x1': {
+          [selectedAccountAddress]: {
+            address: selectedAccountAddress,
+            balance: '0x00',
+          },
+        },
+      },
       currentCurrency: 'usd',
       accounts: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       currencyRates: {
+        TEST: {
+          conversionRate: 123,
+          ticker: 'ETH',
+        },
         ETH: {
           conversionRate: 123,
+          ticker: 'ETH',
         },
       },
       useCurrencyRateCheck: true,
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       internalAccounts: {
         accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: '0x1',
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          [selectedAccountAddress]: {
+            address: selectedAccountAddress,
+            id: selectedAccountAddress,
             metadata: {
               name: 'Test Account',
               keyring: {
@@ -68,7 +103,7 @@ describe('AssetPage', () => {
             type: EthAccountType.Eoa,
           },
         },
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        selectedAccount: selectedAccountAddress,
       },
       keyrings: [
         {
@@ -121,6 +156,23 @@ describe('AssetPage', () => {
         formatRangeToParts: jest.fn(),
       };
     });
+    // Clear previous mock implementations
+    (useMultiPolling as jest.Mock).mockClear();
+
+    // Mock implementation for useMultiPolling
+    (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
+      // Mock startPolling and stopPollingByPollingToken for each input
+      const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
+      const stopPollingByPollingToken = jest.fn();
+
+      input.forEach((inputItem: string) => {
+        const key = JSON.stringify(inputItem);
+        // Simulate returning a unique token for each input
+        startPolling.mockResolvedValueOnce(`mockToken-${key}`);
+      });
+
+      return { startPolling, stopPollingByPollingToken };
+    });
   });
 
   afterEach(() => {
@@ -137,7 +189,9 @@ describe('AssetPage', () => {
     balance: {
       value: '0',
       display: '0',
+      fiat: '',
     },
+    decimals: 18,
   } as const;
 
   const token = {
@@ -150,6 +204,7 @@ describe('AssetPage', () => {
     balance: {
       value: '0',
       display: '0',
+      fiat: '',
     },
   } as const;
 
@@ -239,13 +294,13 @@ describe('AssetPage', () => {
     expect(bridgeButton).not.toBeDisabled();
 
     fireEvent.click(bridgeButton as HTMLElement);
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
 
-    await waitFor(() =>
+    await waitFor(() => {
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
       expect(openTabSpy).toHaveBeenCalledWith({
         url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
-      }),
-    );
+      });
+    });
   });
 
   it('should not show the Bridge button if chain id is not supported', async () => {
@@ -275,11 +330,27 @@ describe('AssetPage', () => {
     expect(mmiPortfolioButton).toBeInTheDocument();
   });
 
+  it('should render the network name', async () => {
+    const mockedStore = configureMockStore([thunk])(mockStore);
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      mockedStore,
+    );
+    const networkNode = queryByTestId('asset-network');
+    expect(networkNode).toBeInTheDocument();
+    expect(networkNode?.textContent).toBe(MAINNET_DISPLAY_NAME);
+  });
+
   it('should render a native asset', () => {
     const { container } = renderWithProvider(
       <AssetPage asset={native} optionsButton={null} />,
       store,
     );
+    const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
+    dynamicImages.forEach((img) => {
+      img.setAttribute('alt', 'static-logo');
+    });
     expect(container).toMatchSnapshot();
   });
 
@@ -315,54 +386,67 @@ describe('AssetPage', () => {
       expect(chart).toBeNull();
     });
 
+    const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
+    dynamicImages.forEach((img) => {
+      img.setAttribute('alt', 'static-logo');
+    });
+    const elementsWithAria = container.querySelectorAll('[aria-describedby]');
+    elementsWithAria.forEach((el) =>
+      el.setAttribute('aria-describedby', 'static-tooltip-id'),
+    );
+
     expect(container).toMatchSnapshot();
   });
 
   it('should render an ERC20 token with prices', async () => {
-    // jest.useFakeTimers();
-    try {
-      const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
-      const marketCap = 456;
+    const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
+    const marketCap = 456;
 
-      // Mock price history
-      nock('https://price.api.cx.metamask.io')
-        .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
-        .query(true)
-        .reply(200, { prices: [[1, 1]] });
+    // Mock price history
+    nock('https://price.api.cx.metamask.io')
+      .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+      .query(true)
+      .reply(200, { prices: [[1, 1]] });
 
-      const { queryByTestId, container } = renderWithProvider(
-        <AssetPage asset={{ ...token, address }} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            marketData: {
-              [CHAIN_IDS.MAINNET]: {
-                [address]: {
-                  price: 123,
-                  marketCap,
-                },
+    const { queryByTestId, container } = renderWithProvider(
+      <AssetPage asset={{ ...token, address }} optionsButton={null} />,
+      configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          marketData: {
+            [CHAIN_IDS.MAINNET]: {
+              [address]: {
+                price: 123,
+                marketCap,
+                currency: 'ETH',
               },
             },
           },
-        }),
-      );
+        },
+      }),
+    );
 
-      // Verify chart is rendered
-      await waitFor(() => {
-        const chart = queryByTestId('asset-price-chart');
-        expect(chart).toHaveClass('mm-box--background-color-transparent');
-      });
+    // Verify chart is rendered
+    await waitFor(() => {
+      const chart = queryByTestId('asset-price-chart');
+      expect(chart).toHaveClass('mm-box--background-color-transparent');
+    });
 
-      // Verify market data is rendered
-      const marketCapElement = queryByTestId('asset-market-cap');
-      expect(marketCapElement).toHaveTextContent(
-        `${marketCap * mockStore.metamask.currencyRates.ETH.conversionRate}`,
-      );
+    // Verify market data is rendered
+    const marketCapElement = queryByTestId('asset-market-cap');
+    expect(marketCapElement).toHaveTextContent(
+      `${marketCap * mockStore.metamask.currencyRates.ETH.conversionRate}`,
+    );
 
-      expect(container).toMatchSnapshot();
-    } finally {
-      // jest.useRealTimers();
-    }
+    const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
+    dynamicImages.forEach((img) => {
+      img.setAttribute('alt', 'static-logo');
+    });
+    const elementsWithAria = container.querySelectorAll('[aria-describedby]');
+    elementsWithAria.forEach((el) =>
+      el.setAttribute('aria-describedby', 'static-tooltip-id'),
+    );
+    expect(container).toMatchSnapshot();
   });
 });

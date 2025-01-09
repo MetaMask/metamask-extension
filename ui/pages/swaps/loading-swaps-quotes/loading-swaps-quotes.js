@@ -6,7 +6,7 @@ import { shuffle } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import {
-  navigateBackToBuildQuote,
+  navigateBackToPrepareSwap,
   getFetchParams,
   getQuotesFetchStartTime,
   getCurrentSmartTransactionsEnabled,
@@ -16,8 +16,8 @@ import {
   getHardwareWalletType,
 } from '../../../selectors/selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -51,7 +51,7 @@ export default function LoadingSwapsQuotes({
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
@@ -183,7 +183,7 @@ export default function LoadingSwapsQuotes({
         submitText={t('back')}
         onSubmit={async () => {
           trackEvent(quotesRequestCancelledEventConfig);
-          await dispatch(navigateBackToBuildQuote(history));
+          await dispatch(navigateBackToPrepareSwap(history));
         }}
         hideCancel
       />

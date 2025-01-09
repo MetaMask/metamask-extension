@@ -129,10 +129,6 @@
   "fast": {
     "message": "வேகமான"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "கோப்பு இறக்குமதி வேலை செய்யவில்லையா? இங்கே கிளிக் செய்யவும்!",
     "description": "Helps user import their account from a JSON file"
@@ -213,9 +209,6 @@
   "loading": {
     "message": "ஏற்றுகிறது…"
   },
-  "loadingTokens": {
-    "message": "டோக்கன்களை ஏற்றுகிறது ..."
-  },
   "localhost": {
     "message": "லோக்கல் ஹோஸ்ட் 8545"
   },
@@ -259,9 +252,6 @@
   },
   "next": {
     "message": "அடுத்தது"
-  },
-  "noTransactions": {
-    "message": "பரிவர்த்தனைகள் இல்லை"
   },
   "off": {
     "message": "ஆஃப்"

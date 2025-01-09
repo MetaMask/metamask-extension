@@ -17,9 +17,7 @@ jest.mock('../../../store/institutional/institution-background', () => ({
 describe('Confirm Add Custodian Token', () => {
   const mockStore = {
     metamask: {
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       institutionalFeatures: {
         connectRequests: [
           {
@@ -50,9 +48,7 @@ describe('Confirm Add Custodian Token', () => {
   it('tries to connect to custodian with empty token', async () => {
     const customMockedStore = {
       metamask: {
-        preferences: {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        },
+        preferences: {},
         institutionalFeatures: {
           connectRequests: [
             {

@@ -86,7 +86,12 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration(),
+      Sentry.browserTracingIntegration({
+        shouldCreateSpanForRequest: (url) => {
+          // Do not create spans for outgoing requests to a 'sentry.io' domain.
+          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
+        },
+      }),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
@@ -115,8 +120,19 @@ function getTracesSampleRate(sentryTarget) {
 
   const flags = getManifestFlags();
 
+  // Grab the tracesSampleRate that may have come in from a git message
+  // 0 is a valid value, so must explicitly check for undefined
+  if (flags.sentry?.tracesSampleRate !== undefined) {
+    return flags.sentry.tracesSampleRate;
+  }
+
   if (flags.circleci) {
-    return 0.003;
+    // Report very frequently on main branch, and never on other branches
+    // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
+    if (flags.circleci.branch === 'main') {
+      return 0.015;
+    }
+    return 0;
   }
 
   if (METAMASK_DEBUG) {
@@ -227,8 +243,8 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
-    getManifestFlags().doNotForceSentryForThisTest ||
-    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+    process.env.IN_TEST &&
+    (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
   ) {
     return SENTRY_DSN_FAKE;
   }
@@ -261,7 +277,7 @@ async function getMetaMetricsEnabled() {
 
   if (
     METAMASK_BUILD_TYPE === 'mmi' ||
-    (flags.circleci && !flags.doNotForceSentryForThisTest)
+    (flags.circleci && flags.sentry.forceEnable)
   ) {
     return true;
   }
@@ -291,7 +307,7 @@ async function getMetaMetricsEnabled() {
 
 function setSentryClient() {
   const clientOptions = getClientOptions();
-  const { dsn, environment, release } = clientOptions;
+  const { dsn, environment, release, tracesSampleRate } = clientOptions;
 
   /**
    * Sentry throws on initialization as it wants to avoid polluting the global namespace and
@@ -311,6 +327,7 @@ function setSentryClient() {
     environment,
     dsn,
     release,
+    tracesSampleRate,
   });
 
   Sentry.registerSpanErrorInstrumentation();
@@ -412,12 +429,17 @@ export function rewriteReport(report) {
     if (!report.extra) {
       report.extra = {};
     }
-
-    report.extra.appState = appState;
-    if (browser.runtime && browser.runtime.id) {
-      report.extra.extensionId = browser.runtime.id;
+    if (!report.tags) {
+      report.tags = {};
     }
-    report.extra.installType = installType;
+
+    Object.assign(report.extra, {
+      appState,
+      installType,
+      extensionId: browser.runtime?.id,
+    });
+
+    report.tags.installType = installType;
   } catch (err) {
     log('Error rewriting report', err);
   }

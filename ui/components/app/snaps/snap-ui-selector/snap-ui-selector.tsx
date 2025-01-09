@@ -3,6 +3,7 @@ import React, {
   useEffect,
   MouseEvent as ReactMouseEvent,
 } from 'react';
+import classnames from 'classnames';
 import {
   Box,
   ButtonBase,
@@ -75,7 +76,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
         justifyContent: 'inherit',
         textAlign: 'inherit',
         height: 'inherit',
-        minHeight: '32px',
+        minHeight: '48px',
         maxHeight: '64px',
       }}
     >
@@ -102,7 +103,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue !== undefined && initialValue !== null) {
       setSelectedOption(initialValue);
     }
   }, [initialValue]);
@@ -128,7 +129,13 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
 
   return (
     <>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        className={classnames({
+          'snap-ui-renderer__field': label !== undefined,
+        })}
+      >
         {label && <Label htmlFor={name}>{label}</Label>}
         <ButtonBase
           className="snap-ui-renderer__selector"
@@ -155,7 +162,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             justifyContent: 'inherit',
             textAlign: 'inherit',
             height: 'inherit',
-            minHeight: '32px',
+            minHeight: '48px',
             maxHeight: '64px',
           }}
         >

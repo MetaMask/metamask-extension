@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -17,6 +18,10 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+} from '../../shared/constants/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -77,6 +82,10 @@ describe('Actions', () => {
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
     background.getStatePatches = sinon.stub().callsFake((cb) => cb(null, []));
+    background.removePermittedChain = sinon.stub();
+    background.requestAccountsAndChainPermissionsWithId = sinon.stub();
+    background.grantPermissions = sinon.stub();
+    background.grantPermissionsIncremental = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -469,6 +478,50 @@ describe('Actions', () => {
 
       await expect(
         store.dispatch(actions.checkHardwareStatus()),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#getDeviceNameForMetric', () => {
+    const deviceName = 'ledger';
+    const hdPath = "m/44'/60'/0'/0/0";
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getDeviceNameForMetric in background', async () => {
+      const store = mockStore();
+
+      const mockGetDeviceName = background.getDeviceNameForMetric.callsFake(
+        (_, __, cb) => cb(),
+      );
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath));
+      expect(mockGetDeviceName.callCount).toStrictEqual(1);
+    });
+
+    it('shows loading indicator and displays error', async () => {
+      const store = mockStore();
+
+      background.getDeviceNameForMetric.callsFake((_, __, cb) =>
+        cb(new Error('error')),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await expect(
+        store.dispatch(actions.getDeviceNameForMetric(deviceName, hdPath)),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -960,7 +1013,9 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.getApi.returns({
-        ignoreTokens: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
+        ignoreTokens: sinon
+          .stub()
+          .callsFake((_, __, cb) => cb(new Error('error'))),
         getStatePatches: sinon.stub().callsFake((cb) => cb(null, [])),
       });
 
@@ -2206,7 +2261,7 @@ describe('Actions', () => {
 
       const fetchAndUpdateMetamaskNotificationsStub = sinon
         .stub()
-        .callsFake((cb) => cb());
+        .callsFake((_, cb) => cb());
       const forceUpdateMetamaskStateStub = sinon.stub().callsFake((cb) => cb());
 
       background.getApi.returns({
@@ -2228,7 +2283,7 @@ describe('Actions', () => {
 
       const fetchAndUpdateMetamaskNotificationsStub = sinon
         .stub()
-        .callsFake((cb) => cb(error));
+        .callsFake((_, cb) => cb(error));
       const forceUpdateMetamaskStateStub = sinon
         .stub()
         .callsFake((cb) => cb(error));
@@ -2528,6 +2583,155 @@ describe('Actions', () => {
       expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
         true,
       );
+    });
+  });
+
+  describe('deleteAccountSyncingDataFromUserStorage', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls deleteAccountSyncingDataFromUserStorage in the background', async () => {
+      const store = mockStore();
+
+      const deleteAccountSyncingDataFromUserStorageStub = sinon
+        .stub()
+        .callsFake((_, cb) => {
+          return cb();
+        });
+
+      background.getApi.returns({
+        deleteAccountSyncingDataFromUserStorage:
+          deleteAccountSyncingDataFromUserStorageStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
+      expect(
+        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith(
+          USER_STORAGE_FEATURE_NAMES.accounts,
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('removePermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removePermittedChain in the background', async () => {
+      const store = mockStore();
+
+      background.removePermittedChain.callsFake((_, __, cb) => cb());
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.removePermittedChain('test.com', '0x1'));
+
+      expect(
+        background.removePermittedChain.calledWith(
+          'test.com',
+          '0x1',
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('requestAccountsAndChainPermissionsWithId', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls requestAccountsAndChainPermissionsWithId in the background', async () => {
+      const store = mockStore();
+
+      background.requestAccountsAndChainPermissionsWithId.callsFake((_, cb) =>
+        cb(),
+      );
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.requestAccountsAndChainPermissionsWithId('test.com'),
+      );
+
+      expect(
+        background.requestAccountsAndChainPermissionsWithId.calledWith(
+          'test.com',
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls grantPermissionsIncremental in the background', async () => {
+      const store = mockStore();
+
+      background.grantPermissionsIncremental.callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChain('test.com', '0x1');
+      expect(
+        background.grantPermissionsIncremental.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [EndowmentTypes.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x1'],
+                  },
+                ],
+              },
+            },
+          },
+          sinon.match.func,
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('grantPermittedChains', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls grantPermissions in the background', async () => {
+      const store = mockStore();
+
+      background.grantPermissions.callsFake((_, cb) => cb());
+      setBackgroundConnection(background);
+
+      await actions.grantPermittedChains('test.com', ['0x1', '0x2']);
+      expect(
+        background.grantPermissions.calledWith(
+          {
+            subject: { origin: 'test.com' },
+            approvedPermissions: {
+              [EndowmentTypes.permittedChains]: {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictNetworkSwitching,
+                    value: ['0x1', '0x2'],
+                  },
+                ],
+              },
+            },
+          },
+          sinon.match.func,
+        ),
+      ).toBe(true);
+
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 });

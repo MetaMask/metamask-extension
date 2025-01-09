@@ -1,3 +1,6 @@
+const {
+  ETHERSCAN_SUPPORTED_CHAIN_IDS,
+} = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
@@ -112,21 +115,33 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         trezorModel: null,
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
-        usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
-        },
         snapsInstallPrivacyWarningShown: true,
       },
       BridgeController: {
         bridgeState: {
           bridgeFeatureFlags: {
-            extensionSupport: false,
-            srcNetworkAllowlist: ['0x1', '0xa', '0xe708'],
-            destNetworkAllowlist: ['0x1', '0xa', '0xe708'],
+            extensionConfig: {
+              support: false,
+              chains: {
+                '0x1': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+                '0xa': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+                '0xe708': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+              },
+            },
           },
+          destTokens: {},
+          destTopAssets: [],
+          srcTokens: {},
+          srcTopAssets: [],
         },
       },
       CurrencyController: {
@@ -186,6 +201,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         currentLocale: 'en',
         useExternalServices: true,
         dismissSeedBackUpReminder: true,
+        overrideContentSecurityPolicyHeader: true,
         featureFlags: {},
         forgottenPassword: false,
         identities: {
@@ -205,12 +221,19 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
-          smartTransactionsOptInStatus: false,
-          useNativeCurrencyAsPrimaryCurrency: true,
+          smartTransactionsOptInStatus: true,
+          showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
           isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
+          tokenSortConfig: {
+            key: 'tokenFiatAmount',
+            order: 'dsc',
+            sortCallback: 'stringNumeric',
+          },
+          shouldShowAggregatedBalancePopover: true,
+          tokenNetworkFilter: {},
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
@@ -222,6 +245,29 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         useRequestQueue: true,
+        isMultiAccountBalancesEnabled: true,
+        showIncomingTransactions: {
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+        },
       },
       QueuedRequestController: {
         queuedRequestCount: 0,
@@ -232,7 +278,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       SmartTransactionsController: {
         smartTransactionsState: {
           fees: {},
+          feesByChainId: {},
           liveness: true,
+          livenessByChainId: {},
           smartTransactions: {
             [CHAIN_IDS.MAINNET]: [],
           },

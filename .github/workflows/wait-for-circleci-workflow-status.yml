@@ -1,0 +1,35 @@
+name: Wait for CircleCI workflow status
+
+on:
+  workflow_call:
+
+jobs:
+  wait-for-circleci-workflow-status:
+    name: Wait for CircleCI workflow status
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for CircleCI workflow status
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          # For a `push` event, the HEAD commit hash is `github.sha`.
+          # For a `pull_request` event, `github.sha` is instead the base branch commit hash. The
+          # HEAD commit hash is `pull_request.head.sha`.
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq -r ".items | map(select(.vcs.revision == \"${HEAD_COMMIT_HASH}\" )) | first | .id")
+          echo "Waiting for pipeline '${pipeline_id}' for commit hash '${HEAD_COMMIT_HASH}'"
+          workflow_status=$(curl --silent "https://circleci.com/api/v2/pipeline/$pipeline_id/workflow" | jq -r ".items[0].status")
+
+          if [ "$workflow_status" == "running" ]; then
+            while [ "$workflow_status" == "running" ]; do
+              sleep 30
+              workflow_status=$(curl --silent "https://circleci.com/api/v2/pipeline/$pipeline_id/workflow" | jq -r ".items[0].status")
+            done
+          fi
+
+          if [ "$workflow_status" != "success" ]; then
+            echo "::error::Workflow status is '$workflow_status'. Exiting with error."
+            exit 1
+          fi

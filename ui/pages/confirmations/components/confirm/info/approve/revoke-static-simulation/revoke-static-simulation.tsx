@@ -12,9 +12,10 @@ import StaticSimulation from '../../shared/static-simulation/static-simulation';
 export const RevokeStaticSimulation = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+
+  const { chainId } = transactionMeta;
 
   const TokenContractRow = (
     <ConfirmInfoRow label={t('spendingCap')}>
@@ -23,6 +24,8 @@ export const RevokeStaticSimulation = () => {
           <Name
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
+            preferContractSymbol
+            variation={chainId}
           />
         </Box>
       </Box>
@@ -36,6 +39,8 @@ export const RevokeStaticSimulation = () => {
           <Name
             value={transactionMeta.txParams.from as string}
             type={NameType.ETHEREUM_ADDRESS}
+            preferContractSymbol
+            variation={chainId}
           />
         </Box>
       </Box>

@@ -2,36 +2,37 @@ import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import {
-  DAPP_HOST_ADDRESS,
-  openDapp,
-  unlockWallet,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
-  mockSignatureApproved,
-  mockSignatureRejected,
+  mockPermitDecoding,
+  mockSignatureApprovedWithDecoding,
+  mockSignatureRejectedWithDecoding,
   scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
+  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  initializePages,
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
@@ -41,24 +42,26 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
+        await initializePages(driver);
 
         await openDappAndTriggerSignature(driver, SignatureType.Permit);
 
         await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
-        await assertAccountDetailsMetrics(
-          driver,
-          mockedEndpoints as MockedEndpoint[],
-          'eth_signTypedData_v4',
-        );
+        await assertHeaderInfoBalance();
 
         await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
+        await assertPastedAddress();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
         await driver.delay(1000);
+
+        await assertAccountDetailsMetrics(
+          driver,
+          mockedEndpoints as MockedEndpoint[],
+          'eth_signTypedData_v4',
+        );
 
         await assertSignatureConfirmedMetrics({
           driver,
@@ -66,38 +69,37 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
+          decodingChangeTypes: ['LISTING', 'RECEIVE'],
+          decodingResponse: 'CHANGE',
+          decodingDescription: null,
         });
 
         await assertVerifiedResults(driver, publicAddress);
       },
-      mockSignatureApproved,
+      mockSignatureApprovedWithDecoding,
     );
   });
 
   it('initiates and rejects and emits the correct events', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
         await unlockWallet(driver);
         await openDapp(driver);
-        await driver.clickElement('#signPermit');
+        await testDapp.clickPermit();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement('#signPermitResult');
-        assert.equal(
-          await rejectionResult.getText(),
-          'Error: User rejected the request.',
-        );
+        await assertRejectedSignature();
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -106,70 +108,71 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           location: 'confirmation',
+          decodingChangeTypes: ['LISTING', 'RECEIVE'],
+          decodingResponse: 'CHANGE',
+          decodingDescription: null,
         });
       },
-      mockSignatureRejected,
+      mockSignatureRejectedWithDecoding,
+    );
+  });
+
+  it('display decoding information if available', async function () {
+    await withTransactionEnvelopeTypeFixtures(
+      this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
+      async ({ driver }: TestSuiteArguments) => {
+        await initializePages(driver);
+        await openDappAndTriggerSignature(driver, SignatureType.Permit);
+
+        const simulationSection = driver.findElement({
+          text: 'Estimated changes',
+        });
+        const receiveChange = driver.findElement({ text: 'Listing price' });
+        const listChange = driver.findElement({ text: 'You list' });
+        const listChangeValue = driver.findElement({ text: '#2101' });
+
+        assert.ok(await simulationSection, 'Estimated changes');
+        assert.ok(await receiveChange, 'Listing price');
+        assert.ok(await listChange, 'You list');
+        assert.ok(await listChangeValue, '#2101');
+
+        await driver.delay(10000);
+      },
+      mockPermitDecoding,
     );
   });
 });
 
 async function assertInfoValues(driver: Driver) {
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const contractPetName = driver.findElement({
-    css: '.name__value',
-    text: '0xCcCCc...ccccC',
-  });
-
-  const primaryType = driver.findElement({ text: 'Permit' });
-  const owner = driver.findElement({ css: '.name__name', text: 'Account 1' });
-  const spender = driver.findElement({
-    css: '.name__value',
-    text: '0x5B38D...eddC4',
-  });
-  const value = driver.findElement({ text: '3,000' });
-  const nonce = driver.findElement({ text: '0' });
-  const deadline = driver.findElement({ text: '09 June 3554, 16:53' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await contractPetName, 'contractPetName');
-  assert.ok(await primaryType, 'primaryType');
-  assert.ok(await owner, 'owner');
-  assert.ok(await spender, 'spender');
-  assert.ok(await value, 'value');
-  assert.ok(await nonce, 'nonce');
-  assert.ok(await deadline, 'deadline');
+  const permitConfirmation = new PermitConfirmation(driver);
+  await permitConfirmation.clickCollapseSectionButton();
+  await permitConfirmation.verifyOrigin();
+  await permitConfirmation.verifyContractPetName();
+  await permitConfirmation.verifyPrimaryType();
+  await permitConfirmation.verifyOwner();
+  await permitConfirmation.verifySpender();
+  await permitConfirmation.verifyValue();
+  await permitConfirmation.verifyNonce();
+  await permitConfirmation.verifyDeadline();
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  const testDapp = new TestDapp(driver);
+  const expectedSignature =
+    '0xf6555e4cc39bdec3397c357af876f87de00667c942f22dec555c28d290ed7d730103fe85c9d7c66d808a0a972f69ae00741a11df449475280772e7d9a232ea491b';
+  const expectedR =
+    '0xf6555e4cc39bdec3397c357af876f87de00667c942f22dec555c28d290ed7d73';
+  const expectedS =
+    '0x0103fe85c9d7c66d808a0a972f69ae00741a11df449475280772e7d9a232ea49';
+  const expectedV = '27';
+
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signPermitVerify');
 
-  const verifyResult = await driver.findElement('#signPermitResult');
-  const verifyResultR = await driver.findElement('#signPermitResultR');
-  const verifyResultS = await driver.findElement('#signPermitResultS');
-  const verifyResultV = await driver.findElement('#signPermitResultV');
-
-  await driver.waitForSelector({
-    css: '#signPermitVerifyResult',
-    text: publicAddress,
-  });
-  const verifyRecoverAddress = await driver.findElement(
-    '#signPermitVerifyResult',
-  );
-
-  assert.equal(
-    await verifyResult.getText(),
-    '0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee1c',
-  );
-  assert.equal(
-    await verifyResultR.getText(),
-    'r: 0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f',
-  );
-  assert.equal(
-    await verifyResultS.getText(),
-    's: 0x43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee',
-  );
-  assert.equal(await verifyResultV.getText(), 'v: 28');
-  assert.equal(await verifyRecoverAddress.getText(), publicAddress);
+  await testDapp.check_successSignPermit(publicAddress);
+  await testDapp.verifySignPermitResult(expectedSignature);
+  await testDapp.verifySignPermitResultR(expectedR);
+  await testDapp.verifySignPermitResultS(expectedS);
+  await testDapp.verifySignPermitResultV(expectedV);
 }

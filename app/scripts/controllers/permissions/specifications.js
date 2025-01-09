@@ -1,7 +1,6 @@
 import {
   constructPermission,
   PermissionType,
-  SubjectType,
 } from '@metamask/permission-controller';
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
@@ -10,6 +9,7 @@ import {
 import { isValidHexAddress } from '@metamask/utils';
 import {
   CaveatTypes,
+  EndowmentTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 
@@ -25,7 +25,7 @@ import {
  */
 export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
-  permittedChains: 'endowment:permitted-chains',
+  ...EndowmentTypes,
 });
 
 /**
@@ -47,7 +47,7 @@ export const CaveatFactories = Object.freeze({
  * PermissionController.
  *
  * @param {{
- *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
+ *   getInternalAccounts: () => Record<string, import('@metamask/keyring-internal-api').InternalAccount>,
  * }} options - Options bag.
  */
 export const getCaveatSpecifications = ({
@@ -96,7 +96,7 @@ export const getCaveatSpecifications = ({
  *
  * @param {{
  *   getAllAccounts: () => Promise<string[]>,
- *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
+ *   getInternalAccounts: () => Record<string, import('@metamask/keyring-internal-api').InternalAccount>,
  * }} options - Options bag.
  * @param options.getAllAccounts - A function that returns all Ethereum accounts
  * in the current MetaMask instance.
@@ -209,9 +209,13 @@ export const getPermissionSpecifications = ({
       permissionType: PermissionType.Endowment,
       targetName: PermissionNames.permittedChains,
       allowedCaveats: [CaveatTypes.restrictNetworkSwitching],
-      subjectTypes: [SubjectType.Website],
 
       factory: (permissionOptions, requestData) => {
+        if (requestData === undefined) {
+          return constructPermission({
+            ...permissionOptions,
+          });
+        }
         if (!requestData.approvedChainIds) {
           throw new Error(
             `${PermissionNames.permittedChains}: No approved networks specified.`,
@@ -250,7 +254,7 @@ export const getPermissionSpecifications = ({
  * corresponds to a PreferencesController identity.
  *
  * @param {string[]} accounts - The accounts associated with the caveat.
- * @param {() => Record<string, import('@metamask/keyring-api').InternalAccount>} getInternalAccounts -
+ * @param {() => Record<string, import('@metamask/keyring-internal-api').InternalAccount>} getInternalAccounts -
  * Gets all AccountsController InternalAccounts.
  */
 function validateCaveatAccounts(accounts, getInternalAccounts) {
@@ -408,7 +412,9 @@ export const unrestrictedMethods = Object.freeze([
   'snap_createInterface',
   'snap_updateInterface',
   'snap_getInterfaceState',
+  'snap_getInterfaceContext',
   'snap_resolveInterface',
+  'snap_getCurrencyRate',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   'metamaskinstitutional_authenticate',
   'metamaskinstitutional_reauthenticate',

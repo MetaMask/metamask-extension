@@ -114,7 +114,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
           text: 'Add',
         });
 
-        await driver.clickElement({ tag: 'a', text: 'View all details' });
+        await driver.clickElement({ tag: 'a', text: 'See details' });
 
         await driver.clickElement({ tag: 'button', text: 'Close' });
         await driver.clickElement({ tag: 'button', text: 'Approve' });

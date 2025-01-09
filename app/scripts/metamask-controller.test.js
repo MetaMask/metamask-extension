@@ -21,7 +21,10 @@ import {
 } from '@metamask/keyring-api';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { TransactionController } from '@metamask/transaction-controller';
+import {
+  CHAIN_IDS,
+  TransactionController,
+} from '@metamask/transaction-controller';
 import {
   RatesController,
   TokenListController,
@@ -39,13 +42,18 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
+import { ENVIRONMENT } from '../../development/build/constants';
+import { SECOND } from '../../shared/constants/time';
 import {
   BalancesController as MultichainBalancesController,
-  BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
+  BTC_BALANCES_UPDATE_TIME as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from './lib/accounts/BalancesController';
 import { BalancesTracker as MultichainBalancesTracker } from './lib/accounts/BalancesTracker';
 import { deferredPromise } from './lib/util';
-import MetaMaskController from './metamask-controller';
+import { METAMASK_COOKIE_HANDLER } from './constants/stream';
+import MetaMaskController, {
+  ONE_KEY_VIA_TREZOR_MINOR_VERSION,
+} from './metamask-controller';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -113,22 +121,6 @@ const rpcMethodMiddlewareMock = {
   },
 };
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
-
-jest.mock(
-  './controllers/preferences-controller',
-  () =>
-    function (...args) {
-      const PreferencesController = jest.requireActual(
-        './controllers/preferences-controller',
-      ).default;
-      const controller = new PreferencesController(...args);
-      // jest.spyOn gets hoisted to the top of this function before controller is initialized.
-      // This forces us to replace the function directly with a jest stub instead.
-      // eslint-disable-next-line jest/prefer-spy-on
-      controller.store.subscribe = jest.fn();
-      return controller;
-    },
-);
 
 const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
@@ -219,8 +211,6 @@ const TEST_INTERNAL_ACCOUNT = {
   type: EthAccountType.Eoa,
 };
 
-const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
-
 const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
 
@@ -260,17 +250,6 @@ const firstTimeState = {
         blockExplorerUrl: undefined,
       },
     ),
-  },
-  NotificationController: {
-    notifications: {
-      [NOTIFICATION_ID]: {
-        id: NOTIFICATION_ID,
-        origin: 'local:http://localhost:8086/',
-        createdDate: 1652967897732,
-        readDate: null,
-        message: 'Hello, http://localhost:8086!',
-      },
-    },
   },
   PhishingController: {
     phishingLists: [
@@ -357,10 +336,10 @@ describe('MetaMaskController', () => {
     let metamaskController;
 
     async function simulatePreferencesChange(preferences) {
-      metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+      metamaskController.controllerMessenger.publish(
+        'PreferencesController:stateChange',
         preferences,
       );
-
       await flushPromises();
     }
 
@@ -517,6 +496,51 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#getAddTransactionRequest', () => {
+      it('formats the transaction for submission', () => {
+        const transactionParams = { from: '0xa', to: '0xb' };
+        const transactionOptions = { foo: true };
+        const result = metamaskController.getAddTransactionRequest({
+          transactionParams,
+          transactionOptions,
+        });
+        expect(result).toStrictEqual({
+          internalAccounts:
+            metamaskController.accountsController.listAccounts(),
+          dappRequest: undefined,
+          networkClientId:
+            metamaskController.networkController.state.selectedNetworkClientId,
+          selectedAccount:
+            metamaskController.accountsController.getAccountByAddress(
+              transactionParams.from,
+            ),
+          transactionController: expect.any(Object),
+          transactionOptions,
+          transactionParams,
+          userOperationController: expect.any(Object),
+          chainId: '0x1',
+          ppomController: expect.any(Object),
+          securityAlertsEnabled: expect.any(Boolean),
+          updateSecurityAlertResponse: expect.any(Function),
+        });
+      });
+      it('passes through any additional params to the object', () => {
+        const transactionParams = { from: '0xa', to: '0xb' };
+        const transactionOptions = { foo: true };
+        const result = metamaskController.getAddTransactionRequest({
+          transactionParams,
+          transactionOptions,
+          test: '123',
+        });
+
+        expect(result).toMatchObject({
+          transactionParams,
+          transactionOptions,
+          test: '123',
+        });
+      });
+    });
+
     describe('submitPassword', () => {
       it('removes any identities that do not correspond to known accounts.', async () => {
         const fakeAddress = '0xbad0';
@@ -559,8 +583,7 @@ describe('MetaMaskController', () => {
         await localMetaMaskController.submitPassword(password);
 
         const identities = Object.keys(
-          localMetaMaskController.preferencesController.store.getState()
-            .identities,
+          localMetaMaskController.preferencesController.state.identities,
         );
         const addresses =
           await localMetaMaskController.keyringController.getAccounts();
@@ -738,19 +761,23 @@ describe('MetaMaskController', () => {
     });
 
     describe('#getBalance', () => {
-      it('should return the balance known by accountTracker', async () => {
+      it('should return the balance known by accountTrackerController', async () => {
         const accounts = {};
         const balance = '0x14ced5122ce0a000';
         accounts[TEST_ADDRESS] = { balance };
 
-        metamaskController.accountTracker.store.putState({ accounts });
+        jest
+          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
+          .mockReturnValue({
+            accounts,
+          });
 
         const gotten = await metamaskController.getBalance(TEST_ADDRESS);
 
         expect(balance).toStrictEqual(gotten);
       });
 
-      it('should ask the network for a balance when not known by accountTracker', async () => {
+      it('should ask the network for a balance when not known by accountTrackerController', async () => {
         const accounts = {};
         const balance = '0x14ced5122ce0a000';
         const ethQuery = new EthQuery();
@@ -758,7 +785,11 @@ describe('MetaMaskController', () => {
           callback(undefined, balance);
         });
 
-        metamaskController.accountTracker.store.putState({ accounts });
+        jest
+          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
+          .mockReturnValue({
+            accounts,
+          });
 
         const gotten = await metamaskController.getBalance(
           TEST_ADDRESS,
@@ -848,6 +879,73 @@ describe('MetaMaskController', () => {
         );
       });
 
+      describe('getHardwareDeviceName', () => {
+        const hdPath = "m/44'/60'/0'/0/0";
+
+        it('should return the correct device name for Ledger', async () => {
+          const deviceName = 'ledger';
+
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('ledger');
+        });
+
+        it('should return the correct device name for Lattice', async () => {
+          const deviceName = 'lattice';
+
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('lattice');
+        });
+
+        it('should return the correct device name for Trezor', async () => {
+          const deviceName = 'trezor';
+          jest
+            .spyOn(metamaskController, 'getKeyringForDevice')
+            .mockResolvedValue({
+              bridge: {
+                minorVersion: 1,
+                model: 'T',
+              },
+            });
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('trezor');
+        });
+
+        it('should return undefined for unknown device name', async () => {
+          const deviceName = 'unknown';
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe(deviceName);
+        });
+
+        it('should handle special case for OneKeyDevice via Trezor', async () => {
+          const deviceName = 'trezor';
+          jest
+            .spyOn(metamaskController, 'getKeyringForDevice')
+            .mockResolvedValue({
+              bridge: {
+                model: 'T',
+                minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION,
+              },
+            });
+          const result = await metamaskController.getDeviceNameForMetric(
+            deviceName,
+            hdPath,
+          );
+          expect(result).toBe('OneKey via Trezor');
+        });
+      });
+
       describe('forgetDevice', () => {
         it('should throw if it receives an unknown device name', async () => {
           const result = metamaskController.forgetDevice(
@@ -874,8 +972,7 @@ describe('MetaMaskController', () => {
 
           expect(
             Object.keys(
-              metamaskController.preferencesController.store.getState()
-                .identities,
+              metamaskController.preferencesController.state.identities,
             ),
           ).not.toContain(hardwareKeyringAccount);
           expect(
@@ -1087,7 +1184,10 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           metamaskController.txController.wipeTransactions,
-        ).toHaveBeenCalledWith(false, selectedAddressMock);
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          chainId: CHAIN_IDS.MAINNET,
+        });
         expect(
           metamaskController.smartTransactionsController.wipeSmartTransactions,
         ).toHaveBeenCalledWith({
@@ -1133,6 +1233,129 @@ describe('MetaMaskController', () => {
       });
       it('should return address', async () => {
         expect(ret).toStrictEqual('0x1');
+      });
+    });
+    describe('#setupPhishingCommunication', () => {
+      beforeEach(() => {
+        jest.spyOn(metamaskController, 'safelistPhishingDomain');
+        jest.spyOn(metamaskController, 'backToSafetyPhishingWarning');
+        metamaskController.preferencesController.setUsePhishDetect(true);
+      });
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('creates a phishing stream with safelistPhishingDomain and backToSafetyPhishingWarning handler', async () => {
+        const safelistPhishingDomainRequest = {
+          name: 'metamask-phishing-safelist',
+          data: {
+            id: 1,
+            method: 'safelistPhishingDomain',
+            params: ['mockHostname'],
+          },
+        };
+        const backToSafetyPhishingWarningRequest = {
+          name: 'metamask-phishing-safelist',
+          data: { id: 2, method: 'backToSafetyPhishingWarning', params: [] },
+        };
+
+        const { promise, resolve } = deferredPromise();
+        const { promise: promiseStream, resolve: resolveStream } =
+          deferredPromise();
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.name !== 'metamask-phishing-safelist') {
+            cb();
+            return;
+          }
+          resolve();
+          cb(null, chunk);
+        });
+
+        metamaskController.setupPhishingCommunication({
+          connectionStream: streamTest,
+        });
+
+        streamTest.write(safelistPhishingDomainRequest, null, () => {
+          expect(
+            metamaskController.safelistPhishingDomain,
+          ).toHaveBeenCalledWith('mockHostname');
+        });
+        streamTest.write(backToSafetyPhishingWarningRequest, null, () => {
+          expect(
+            metamaskController.backToSafetyPhishingWarning,
+          ).toHaveBeenCalled();
+          resolveStream();
+        });
+
+        await promise;
+        streamTest.end();
+        await promiseStream;
+      });
+    });
+
+    describe('#setUpCookieHandlerCommunication', () => {
+      let localMetaMaskController;
+      beforeEach(() => {
+        localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            MetaMetricsController: {
+              metaMetricsId: 'MOCK_METRICS_ID',
+              participateInMetaMetrics: true,
+              dataCollectionForMarketing: true,
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+        jest.spyOn(localMetaMaskController, 'getCookieFromMarketingPage');
+      });
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('creates a cookie handler communication stream with getCookieFromMarketingPage handler', async () => {
+        const attributionRequest = {
+          name: METAMASK_COOKIE_HANDLER,
+          data: {
+            id: 1,
+            method: 'getCookieFromMarketingPage',
+            params: [{ ga_client_id: 'XYZ.ABC' }],
+          },
+        };
+
+        const { promise, resolve } = deferredPromise();
+        const { promise: promiseStream, resolve: resolveStream } =
+          deferredPromise();
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.name !== METAMASK_COOKIE_HANDLER) {
+            cb();
+            return;
+          }
+          resolve();
+          cb(null, chunk);
+        });
+
+        localMetaMaskController.setUpCookieHandlerCommunication({
+          connectionStream: streamTest,
+        });
+
+        streamTest.write(attributionRequest, null, () => {
+          expect(
+            localMetaMaskController.getCookieFromMarketingPage,
+          ).toHaveBeenCalledWith({ ga_client_id: 'XYZ.ABC' });
+          resolveStream();
+        });
+
+        await promise;
+        streamTest.end();
+        await promiseStream;
       });
     });
 
@@ -1653,21 +1876,27 @@ describe('MetaMaskController', () => {
 
       it('should do nothing if there are no keyrings in state', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
         await metamaskController._onKeyringControllerUpdate({ keyrings: [] });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).not.toHaveBeenCalled();
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('should sync addresses if there are keyrings in state', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
@@ -1680,14 +1909,17 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('should NOT update selected address if already unlocked', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
@@ -1701,14 +1933,17 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('filter out non-EVM addresses prior to calling syncWithAddresses', async () => {
         jest
-          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .spyOn(
+            metamaskController.accountTrackerController,
+            'syncWithAddresses',
+          )
           .mockReturnValue();
 
         const oldState = metamaskController.getState();
@@ -1725,26 +1960,9 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.accountTracker.syncWithAddresses,
+          metamaskController.accountTrackerController.syncWithAddresses,
         ).toHaveBeenCalledWith(accounts);
         expect(metamaskController.getState()).toStrictEqual(oldState);
-      });
-    });
-
-    describe('markNotificationsAsRead', () => {
-      it('marks the notification as read', () => {
-        metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
-        const readNotification =
-          metamaskController.getState().notifications[NOTIFICATION_ID];
-        expect(readNotification.readDate).not.toBeNull();
-      });
-    });
-
-    describe('dismissNotifications', () => {
-      it('deletes the notification from state', () => {
-        metamaskController.dismissNotifications([NOTIFICATION_ID]);
-        const state = metamaskController.getState().notifications;
-        expect(Object.values(state)).not.toContain(NOTIFICATION_ID);
       });
     });
 
@@ -2151,124 +2369,16 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('token list controller', () => {
-      it('stops polling if petnames, simulations, and token detection disabled', async () => {
-        expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-        expect(
-          TokenListController.prototype.clearingTokenListData,
-        ).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useTransactionSimulations: false,
-          useTokenDetection: false,
-          preferences: {
-            petnamesEnabled: false,
-          },
-        });
-
-        expect(TokenListController.prototype.stop).toHaveBeenCalledTimes(1);
-
-        expect(
-          TokenListController.prototype.clearingTokenListData,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it.each([
-        [
-          'petnames',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: true,
-            useTransactionSimulations: true,
-          },
-        ],
-        [
-          'simulations',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: true,
-            useTransactionSimulations: false,
-          },
-        ],
-        [
-          'token detection',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: false,
-            useTransactionSimulations: true,
-          },
-        ],
-      ])(
-        'does not stop polling if only %s disabled',
-        async (_, preferences) => {
-          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-          expect(
-            TokenListController.prototype.clearingTokenListData,
-          ).not.toHaveBeenCalled();
-
-          await simulatePreferencesChange(preferences);
-
-          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
-
-          expect(
-            TokenListController.prototype.clearingTokenListData,
-          ).not.toHaveBeenCalled();
-        },
-      );
-
-      it.each([
-        [
-          'petnames',
-          {
-            preferences: { petnamesEnabled: true },
-            useTokenDetection: false,
-            useTransactionSimulations: false,
-          },
-        ],
-        [
-          'simulations',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: false,
-            useTransactionSimulations: true,
-          },
-        ],
-        [
-          'token detection',
-          {
-            preferences: { petnamesEnabled: false },
-            useTokenDetection: true,
-            useTransactionSimulations: false,
-          },
-        ],
-      ])('starts polling if only %s enabled', async (_, preferences) => {
-        expect(TokenListController.prototype.start).not.toHaveBeenCalled();
-
-        await simulatePreferencesChange({
-          useTransactionSimulations: false,
-          useTokenDetection: false,
-          preferences: {
-            petnamesEnabled: false,
-          },
-        });
-
-        await simulatePreferencesChange(preferences);
-
-        expect(TokenListController.prototype.start).toHaveBeenCalledTimes(1);
-      });
-    });
-
     describe('MultichainRatesController start/stop', () => {
       const mockEvmAccount = createMockInternalAccount();
       const mockNonEvmAccount = {
         ...mockEvmAccount,
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendMany],
+        methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       };
+      const mockCurrency = 'CAD';
 
       beforeEach(() => {
         jest.spyOn(metamaskController.multichainRatesController, 'start');
@@ -2366,6 +2476,43 @@ describe('MetaMaskController', () => {
           localMetamaskController.multichainRatesController.start,
         ).toHaveBeenCalled();
       });
+
+      it('calls setFiatCurrency when the `currentCurrency` has changed', async () => {
+        jest.spyOn(RatesController.prototype, 'setFiatCurrency');
+        const localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            AccountsController: {
+              internalAccounts: {
+                accounts: {
+                  [mockNonEvmAccount.id]: mockNonEvmAccount,
+                  [mockEvmAccount.id]: mockEvmAccount,
+                },
+                selectedAccount: mockNonEvmAccount.id,
+              },
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        metamaskController.controllerMessenger.publish(
+          'CurrencyRateController:stateChange',
+          { currentCurrency: mockCurrency },
+        );
+
+        expect(
+          localMetamaskController.multichainRatesController.setFiatCurrency,
+        ).toHaveBeenCalledWith(mockCurrency);
+      });
     });
 
     describe('MultichainBalancesController', () => {
@@ -2374,7 +2521,7 @@ describe('MetaMaskController', () => {
         ...mockEvmAccount,
         id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
         type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendMany],
+        methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
         // We need to have a "Snap account" account here, since the MultichainBalancesController will
         // filter it out otherwise!
@@ -2465,6 +2612,181 @@ describe('MetaMaskController', () => {
         );
       });
     });
+
+    describe('RemoteFeatureFlagController', () => {
+      let localMetamaskController;
+
+      beforeEach(() => {
+        localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            PreferencesController: {
+              useExternalServices: false,
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should initialize RemoteFeatureFlagController in disabled state when useExternalServices is false', async () => {
+        const { remoteFeatureFlagController, preferencesController } =
+          localMetamaskController;
+
+        expect(preferencesController.state.useExternalServices).toBe(false);
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should disable feature flag fetching when useExternalServices is disabled', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+
+        // First enable external services
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        // Then disable them
+        await simulatePreferencesChange({
+          useExternalServices: false,
+        });
+
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should handle errors during feature flag updates', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+        const mockError = new Error('Failed to fetch');
+
+        jest
+          .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
+          .mockRejectedValue(mockError);
+
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should maintain feature flag state across preference toggles', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+        const mockFlags = { testFlag: true };
+
+        jest
+          .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
+          .mockResolvedValue(mockFlags);
+
+        // Enable external services
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        // Disable external services
+        await simulatePreferencesChange({
+          useExternalServices: false,
+        });
+
+        // Verify state is cleared
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+    });
+
+    describe('_getConfigForRemoteFeatureFlagRequest', () => {
+      it('returns config in mapping', async () => {
+        const result =
+          await metamaskController._getConfigForRemoteFeatureFlagRequest();
+        expect(result).toStrictEqual({
+          distribution: 'main',
+          environment: 'dev',
+        });
+      });
+
+      it('returna config when not matching default mapping', async () => {
+        process.env.METAMASK_BUILD_TYPE = 'beta';
+        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
+
+        const result =
+          await metamaskController._getConfigForRemoteFeatureFlagRequest();
+        expect(result).toStrictEqual({
+          distribution: 'main',
+          environment: 'rc',
+        });
+      });
+    });
+  });
+
+  describe('onFeatureFlagResponseReceived', () => {
+    const metamaskController = new MetaMaskController({
+      showUserConfirmation: noop,
+      encryptor: mockEncryptor,
+      initState: cloneDeep(firstTimeState),
+      initLangCode: 'en_US',
+      platform: {
+        showTransactionNotification: () => undefined,
+        getVersion: () => 'foo',
+      },
+      browser: browserPolyfillMock,
+      infuraProjectId: 'foo',
+      isFirstMetaMaskControllerSetup: true,
+    });
+
+    beforeEach(() => {
+      jest.spyOn(
+        metamaskController.tokenBalancesController,
+        'setIntervalLength',
+      );
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should not set the interval length if the pollInterval is 0', () => {
+      metamaskController.onFeatureFlagResponseReceived({
+        multiChainAssets: {
+          pollInterval: 0,
+        },
+      });
+      expect(
+        metamaskController.tokenBalancesController.setIntervalLength,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should set the interval length if the pollInterval is greater than 0', () => {
+      const pollInterval = 10;
+      metamaskController.onFeatureFlagResponseReceived({
+        multiChainAssets: {
+          pollInterval,
+        },
+      });
+      expect(
+        metamaskController.tokenBalancesController.setIntervalLength,
+      ).toHaveBeenCalledWith(pollInterval * SECOND);
+    });
   });
 
   describe('MV3 Specific behaviour', () => {
@@ -2520,6 +2842,146 @@ describe('MetaMaskController', () => {
 
       expect(metamaskController.resetStates).not.toHaveBeenCalled();
       expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('MetaMetrics & authentication dependencies', () => {
+    let metamaskController;
+    let mockPerformSignIn;
+    let mockPerformSignOut;
+
+    const arrangeControllerState = (stateOverrides) => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: { ...cloneDeep(firstTimeState), ...stateOverrides },
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+      });
+
+      mockPerformSignIn = jest
+        .spyOn(metamaskController.authenticationController, 'performSignIn')
+        .mockResolvedValue();
+      mockPerformSignOut = jest
+        .spyOn(metamaskController.authenticationController, 'performSignOut')
+        .mockResolvedValue();
+    };
+
+    it('should sign in the user if MetaMetrics is enabled and the user is not signed in', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: false,
+        },
+        AuthenticationController: {
+          isSignedIn: false,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: true,
+        },
+      );
+
+      expect(mockPerformSignIn).toHaveBeenCalledTimes(1);
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
+    });
+
+    it('should sign out the user if MetaMetrics is disabled and the user is signed in but profile syncing is disabled', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+        },
+        AuthenticationController: {
+          isSignedIn: true,
+        },
+        UserStorageController: {
+          isProfileSyncingEnabled: false,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: false,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not sign in the user if MetaMetrics is enabled and the user is already signed in', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: false,
+        },
+        AuthenticationController: {
+          isSignedIn: true,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: true,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
+    });
+
+    it('should not sign out the user if MetaMetrics is disabled and the user is not signed in', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+        },
+        AuthenticationController: {
+          isSignedIn: false,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: false,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
+    });
+
+    it('should not sign out the user if MetaMetrics is disabled and profile syncing is enabled', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+        },
+        AuthenticationController: {
+          isSignedIn: true,
+        },
+        UserStorageController: {
+          isProfileSyncingEnabled: true,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: false,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
     });
   });
 });

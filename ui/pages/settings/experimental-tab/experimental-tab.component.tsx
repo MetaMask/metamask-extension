@@ -36,6 +36,10 @@ import { SurveyUrl } from '../../../../shared/constants/urls';
 type ExperimentalTabProps = {
   watchAccountEnabled: boolean;
   setWatchAccountEnabled: (value: boolean) => void;
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  solanaSupportEnabled: boolean;
+  setSolanaSupportEnabled: (value: boolean) => void;
+  ///: END:ONLY_INCLUDE_IF
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
   bitcoinTestnetSupportEnabled: boolean;
@@ -174,6 +178,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       description: t('redesignedTransactionsToggleDescription'),
       toggleValue: redesignedTransactionsEnabled,
       toggleCallback: (value) => setRedesignedTransactionsEnabled(!value),
+      toggleContainerDataTestId: 'toggle-redesigned-transactions-container',
       toggleDataTestId: 'toggle-redesigned-transactions',
       toggleOffLabel: t('off'),
       toggleOnLabel: t('on'),
@@ -263,6 +268,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   renderWatchAccountToggle() {
     const { t, trackEvent } = this.context;
     const { watchAccountEnabled, setWatchAccountEnabled } = this.props;
@@ -297,7 +303,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // We're only setting the code fences here since
   // we should remove it for the feature release
   renderBitcoinSupport() {
@@ -371,6 +376,46 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   }
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  renderSolanaSupport() {
+    const { t, trackEvent } = this.context;
+    const { solanaSupportEnabled, setSolanaSupportEnabled } = this.props;
+
+    return (
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          as="h4"
+          color={TextColor.textAlternative}
+          marginBottom={2}
+          fontWeight={FontWeight.Bold}
+        >
+          {t('solanaSupportSectionTitle')}
+        </Text>
+        {this.renderToggleSection({
+          title: t('solanaSupportToggleTitle'),
+          description: t('solanaSupportToggleDescription'),
+          toggleValue: solanaSupportEnabled,
+          toggleCallback: (value) => {
+            trackEvent({
+              event: MetaMetricsEventName.SolanaSupportToggled,
+              category: MetaMetricsEventCategory.Settings,
+              properties: {
+                enabled: !value,
+              },
+            });
+            setSolanaSupportEnabled(!value);
+          },
+          toggleContainerDataTestId: 'solana-support-toggle-div',
+          toggleDataTestId: 'solana-support-toggle',
+          toggleOffLabel: t('off'),
+          toggleOnLabel: t('on'),
+        })}
+      </>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   render() {
     return (
       <div className="settings-page__body">
@@ -385,14 +430,22 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IF
         }
-        {this.renderWatchAccountToggle()}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          this.renderWatchAccountToggle()
+          ///: END:ONLY_INCLUDE_IF
+        }
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           // We're only setting the code fences here since
           // we should remove it for the feature release
-
           /* Section: Bitcoin Accounts */
           this.renderBitcoinSupport()
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(solana)
+          this.renderSolanaSupport()
           ///: END:ONLY_INCLUDE_IF
         }
       </div>

@@ -375,9 +375,6 @@
   "loading": {
     "message": "Indlæser..."
   },
-  "loadingTokens": {
-    "message": "Indlæser tokens..."
-  },
   "lock": {
     "message": "Log ud"
   },
@@ -434,9 +431,6 @@
   "noConversionRateAvailable": {
     "message": "Ingen tilgængelig omregningskurs"
   },
-  "noTransactions": {
-    "message": "Du har ingen transaktioner"
-  },
   "noWebcamFound": {
     "message": "Din computers webkamera blev ikke fundet. Prøv venligst igen."
   },
@@ -488,12 +482,6 @@
   },
   "prev": {
     "message": "Forrige"
-  },
-  "primaryCurrencySetting": {
-    "message": "Primær Valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Vælg lokal for fortrinsvis at vise værdier i kædens (f.eks. ETH) lokale valuta. Vælg Fiat for fortrinsvis at vise værdier i din valgte fiat valuta."
   },
   "privacyMsg": {
     "message": "Privatlivspolitik"
@@ -733,9 +721,6 @@
   },
   "unlockMessage": {
     "message": "Det decentraliserede internet venter"
-  },
-  "updatedWithDate": {
-    "message": "Opdaterede $1"
   },
   "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."

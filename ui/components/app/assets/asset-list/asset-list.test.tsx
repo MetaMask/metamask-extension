@@ -1,10 +1,13 @@
 import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/jest';
-import configureStore, { MetaMaskReduxState } from '../../../../store/store';
+import { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import useMultiPolling from '../../../../hooks/useMultiPolling';
 import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
@@ -64,8 +67,30 @@ jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
 jest.mock('../../../../store/actions', () => {
   return {
     getTokenSymbol: jest.fn(),
+    setTokenNetworkFilter: jest.fn(() => ({
+      type: 'TOKEN_NETWORK_FILTER',
+    })),
+    tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+    tokenBalancesStopPollingByPollingToken: jest.fn(),
+    addImportedTokens: jest.fn(),
   };
 });
+
+// Mock the dispatch function
+const mockDispatch = jest.fn();
+
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useDispatch: () => mockDispatch,
+  };
+});
+
+jest.mock('../../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
@@ -101,7 +126,7 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
       },
     },
   };
-  const store = configureStore(state);
+  const store = configureMockStore([thunk])(state);
   return renderWithProvider(
     <AssetList onClickAsset={() => undefined} showTokensLinks />,
     store,
@@ -109,6 +134,22 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
 };
 
 describe('AssetList', () => {
+  (useMultiPolling as jest.Mock).mockClear();
+
+  // Mock implementation for useMultiPolling
+  (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
+    // Mock startPolling and stopPollingByPollingToken for each input
+    const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
+    const stopPollingByPollingToken = jest.fn();
+
+    input.forEach((inputItem: string) => {
+      const key = JSON.stringify(inputItem);
+      // Simulate returning a unique token for each input
+      startPolling.mockResolvedValueOnce(`mockToken-${key}`);
+    });
+
+    return { startPolling, stopPollingByPollingToken };
+  });
   (useIsOriginalNativeTokenSymbol as jest.Mock).mockReturnValue(true);
 
   (getTokenSymbol as jest.Mock).mockImplementation(async (address) => {
@@ -124,13 +165,14 @@ describe('AssetList', () => {
     return null;
   });
 
-  it('renders AssetList component and shows Refresh List text', async () => {
+  it('renders AssetList component and shows AssetList control bar', async () => {
     await act(async () => {
       render();
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Refresh list')).toBeInTheDocument();
+      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+      expect(screen.getByTestId('import-token-button')).toBeInTheDocument();
     });
   });
 });

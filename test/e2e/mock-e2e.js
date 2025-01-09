@@ -1,14 +1,22 @@
 const fs = require('fs');
 
 const {
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
+} = require('../../shared/constants/security-provider');
+const {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } = require('../../shared/constants/bridge');
+const {
+  ACCOUNTS_DEV_API_BASE_URL,
+  ACCOUNTS_PROD_API_BASE_URL,
+} = require('../../shared/constants/accounts');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
+const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const {
   DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
 } = require('./tests/bridge/constants');
@@ -35,11 +43,14 @@ const blacklistedHosts = [
   'goerli.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
+  'linea-mainnet.infura.io',
+  'linea-sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 const { mockNotificationServices } = require('./tests/notifications/mocks');
+const { mockIdentityServices } = require('./tests/identity/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -61,6 +72,19 @@ const emptyHtmlPage = () => `<!DOCTYPE html>
  */
 const browserAPIRequestDomains =
   /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|mozilla\.org|gvt1\.com)$/iu;
+
+/**
+ * Some third-party providers might use random URLs that we don't want to track
+ * in the privacy report "in clear". We identify those private hosts with a
+ * `pattern` regexp and replace the original host by a more generic one (`host`).
+ * For example, "my-secret-host.provider.com" could be denoted as "*.provider.com" in
+ * the privacy report. This would prevent disclosing the "my-secret-host" subdomain
+ * in this case.
+ */
+const privateHostMatchers = [
+  // { pattern: RegExp, host: string }
+  { pattern: /^.*\.btc.*\.quiknode.pro$/iu, host: '*.btc*.quiknode.pro' },
+];
 
 /**
  * @typedef {import('mockttp').Mockttp} Mockttp
@@ -86,7 +110,7 @@ const browserAPIRequestDomains =
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = '1700' },
+  { chainId, ethConversionInUsd = 1700 },
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
@@ -102,7 +126,6 @@ async function setupMocking(
   });
 
   const mockedEndpoint = await testSpecificMock(server);
-
   // Mocks below this line can be overridden by test-specific mocks
 
   // Account link
@@ -133,6 +156,30 @@ async function setupMocking(
       body: emptyHtmlPage(),
     };
   });
+
+  await server
+    .forGet(`${SECURITY_ALERTS_PROD_API_BASE_URL}/supportedChains`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
+      };
+    });
+
+  await server
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/${chainId}`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          block: 20733513,
+          result_type: 'Benign',
+          reason: '',
+          description: '',
+          features: [],
+        },
+      };
+    });
 
   await server
     .forPost(
@@ -268,35 +315,33 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            ethereum: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            bsc: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            polygon: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            avalanche: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            smartTransactions: {
-              mobileActive: false,
-              extensionActive: false,
-            },
-            updated_at: '2022-03-17T15:54:00.360Z',
+        json: {
+          ethereum: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
           },
-        ],
+          bsc: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          polygon: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          avalanche: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          smartTransactions: {
+            mobileActive: false,
+            extensionActive: true,
+          },
+          updated_at: '2022-03-17T15:54:00.360Z',
+        },
       };
     });
 
@@ -309,6 +354,52 @@ async function setupMocking(
         return {
           statusCode: 200,
           json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
+        };
+      }),
+  );
+
+  [
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            userId: '0x123',
+            surveys: {},
+          },
+        };
+      }),
+  );
+
+  let surveyCallCount = 0;
+  [
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+  ].forEach(
+    async (url) =>
+      await server.forGet(url).thenCallback(() => {
+        const surveyId = surveyCallCount > 2 ? 2 : surveyCallCount;
+        surveyCallCount += 1;
+        return {
+          statusCode: 200,
+          json: {
+            userId: '0x123',
+            surveys: {
+              url: 'https://example.com',
+              description: `Test survey ${surveyId}`,
+              cta: 'Take survey',
+              id: surveyId,
+            },
+          },
         };
       }),
   );
@@ -420,7 +511,7 @@ async function setupMocking(
             decimals: 18,
             name: 'Dai Stablecoin',
             iconUrl:
-              'https://crypto.com/price/coin-data/icon/DAI/color_icon.png',
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png',
             type: 'erc20',
             aggregators: [
               'aave',
@@ -447,7 +538,7 @@ async function setupMocking(
             decimals: 6,
             name: 'USD Coin',
             iconUrl:
-              'https://crypto.com/price/coin-data/icon/USDC/color_icon.png',
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
             type: 'erc20',
             aggregators: [
               'aave',
@@ -527,13 +618,15 @@ async function setupMocking(
   });
 
   await server
-    .forGet('https://min-api.cryptocompare.com/data/price')
-    .withQuery({ fsym: 'ETH', tsyms: 'USD' })
+    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+    .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
-          USD: ethConversionInUsd,
+          ETH: {
+            USD: ethConversionInUsd,
+          },
         },
       };
     });
@@ -639,11 +732,30 @@ async function setupMocking(
   // Notification APIs
   await mockNotificationServices(server);
 
+  // Identity APIs
+  await mockIdentityServices(server);
+
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
       statusCode: 404,
     };
   });
+
+  // remote feature flags
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [{ feature1: true }, { feature2: false }],
+      };
+    });
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
@@ -665,6 +777,25 @@ async function setupMocking(
     request.headers.referer === 'https://portfolio.metamask.io/';
 
   /**
+   * Tests a request against private domains and returns a set of generic hostnames that
+   * match.
+   *
+   * @param request
+   * @returns A set of matched results.
+   */
+  const matchPrivateHosts = (request) => {
+    const privateHosts = new Set();
+
+    for (const { pattern, host: privateHost } of privateHostMatchers) {
+      if (request.headers.host.match(pattern)) {
+        privateHosts.add(privateHost);
+      }
+    }
+
+    return privateHosts;
+  };
+
+  /**
    * Listen for requests and add the hostname to the privacy report if it did
    * not previously exist. This is used to track which hosts are requested
    * during the current test suite and used to ask for extra scrutiny when new
@@ -673,6 +804,16 @@ async function setupMocking(
    * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
+    const privateHosts = matchPrivateHosts(request);
+    if (privateHosts.size) {
+      for (const privateHost of privateHosts) {
+        privacyReport.add(privateHost);
+      }
+      // At this point, we know the request at least one private doamin, so we just stops here to avoid
+      // using the request any further.
+      return;
+    }
+
     if (
       request.headers.host.match(browserAPIRequestDomains) === null &&
       !portfolioRequestsMatcher(request)

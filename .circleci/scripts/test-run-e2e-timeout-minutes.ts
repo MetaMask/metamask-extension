@@ -1,8 +1,23 @@
+import { fetchManifestFlagsFromPRAndGit } from '../../development/lib/get-manifest-flag';
 import { filterE2eChangedFiles } from '../../test/e2e/changedFilesUtil';
 
-const changedOrNewTests = filterE2eChangedFiles();
+fetchManifestFlagsFromPRAndGit().then((manifestFlags) => {
+  let timeout;
 
-//15 minutes, plus 3 minutes for every changed file, up to a maximum of 30 minutes
-const extraTime = Math.min(15 + changedOrNewTests.length * 3, 30);
+  if (manifestFlags.circleci?.timeoutMinutes) {
+    timeout = manifestFlags.circleci?.timeoutMinutes;
+  } else {
+    const changedOrNewTests = filterE2eChangedFiles();
 
-console.log(extraTime);
+    // 20 minutes, plus 3 minutes for every changed file, up to a maximum of 30 minutes
+    timeout = Math.min(20 + changedOrNewTests.length * 3, 30);
+  }
+
+  // If this is the Merge Queue, add 10 minutes
+  if (process.env.CIRCLE_BRANCH?.startsWith('gh-readonly-queue')) {
+    timeout += 10;
+  }
+
+  // This is an essential log, that feeds into a bash script
+  console.log(timeout);
+});

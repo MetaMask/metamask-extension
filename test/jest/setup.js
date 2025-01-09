@@ -1,6 +1,14 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
 import '../helpers/setup-after-helper';
 
+jest.mock('webextension-polyfill', () => {
+  return {
+    runtime: {
+      getManifest: () => ({ manifest_version: 2 }),
+    },
+  };
+});
+
 jest.mock('../../ui/hooks/usePetnamesEnabled', () => ({
   usePetnamesEnabled: () => false,
 }));

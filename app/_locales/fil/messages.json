@@ -335,9 +335,6 @@
   "loading": {
     "message": "Naglo-load..."
   },
-  "loadingTokens": {
-    "message": "Naglo-load ng Mga Token..."
-  },
   "lock": {
     "message": "Mag-log out"
   },
@@ -383,9 +380,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Walang Presyo ng Palitan na Available"
-  },
-  "noTransactions": {
-    "message": "Wala kang mga transaksyon"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukang muli."
@@ -435,12 +429,6 @@
   },
   "prev": {
     "message": "Nakaraan"
-  },
-  "primaryCurrencySetting": {
-    "message": "Pangunahing Currency"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Piliin ang native para bigyang priyoridad ang pagpapakita ng mga halaga sa native currency ng chain (hal. ETH). Piliin ang Fiat para bigyang priyoridad ang pagpapakita ng mga halaga sa napili mong fiat currency."
   },
   "privacyMsg": {
     "message": "Patakaran sa Privacy"
@@ -676,9 +664,6 @@
   },
   "unlockMessage": {
     "message": "Naghihintay ang decentralized web"
-  },
-  "updatedWithDate": {
-    "message": "Na-update ang $1"
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URI ang naaangkop na HTTP/HTTPS prefix."

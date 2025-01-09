@@ -32,12 +32,18 @@ export function useCurrentSpendingCap(currentConfirmation: Confirmation) {
   const txParamsData = isTxWithSpendingCap
     ? currentConfirmation.txParams.data
     : null;
+  const chainId = isTxWithSpendingCap ? currentConfirmation.chainId : null;
 
-  const { decimals } = useAssetDetails(txParamsTo, txParamsFrom, txParamsData);
+  const { decimals } = useAssetDetails(
+    txParamsTo,
+    txParamsFrom,
+    txParamsData,
+    chainId,
+  );
 
-  const { spendingCap } = useApproveTokenSimulation(
+  const { spendingCap, pending } = useApproveTokenSimulation(
     currentConfirmation as TransactionMeta,
-    decimals || '0',
+    decimals,
   );
 
   let customSpendingCap = '';
@@ -45,5 +51,5 @@ export function useCurrentSpendingCap(currentConfirmation: Confirmation) {
     customSpendingCap = spendingCap;
   }
 
-  return { customSpendingCap };
+  return { customSpendingCap, pending };
 }

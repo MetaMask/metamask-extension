@@ -30,10 +30,6 @@
     align-items: center;
     height: inherit;
 
-    .view-quote__conversion-rate-eth-label {
-      color: var(--color-text-default);
-    }
-
     i {
       color: var(--color-primary-default);
     }
@@ -66,14 +62,6 @@
       min-height: 60px;
       height: inherit;
     }
-  }
-
-  .view-quote__conversion-rate-token-label {
-    @include design-system.H6;
-
-    color: var(--color-text-default);
-    font-weight: bold;
-    margin-left: 2px;
   }
 
   &__metafox-logo {

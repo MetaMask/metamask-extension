@@ -1,7 +1,10 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import { IconName } from '../../components/component-library';
 import {
-  ALERTS_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -20,6 +23,7 @@ import {
  * # @param {string} route tab route with appended arbitrary, unique anchor tag / hash route
  * # @param {string} iconName
  * # @param {string} featureFlag ENV variable name. If the ENV value exists, the route will be searchable; else, route will not be searchable.
+ * # @param {boolean} hidden If true, the route will not be searchable.
  */
 
 /** @type {SettingRouteConfig[]} */
@@ -34,9 +38,9 @@ const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('general'),
-    sectionMessage: (t) => t('primaryCurrencySetting'),
-    descriptionMessage: (t) => t('primaryCurrencySettingDescription'),
-    route: `${GENERAL_ROUTE}#primary-currency`,
+    sectionMessage: (t) => t('showNativeTokenAsMainBalance'),
+    descriptionMessage: (t) => t('showNativeTokenAsMainBalance'),
+    route: `${GENERAL_ROUTE}#show-native-token-as-main-balance`,
     iconName: IconName.Setting,
   },
   {
@@ -155,6 +159,16 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#export-data`,
     icon: 'fas fa-download',
   },
+  // advanced settingsRefs[11]
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('overrideContentSecurityPolicyHeader'),
+    descriptionMessage: (t) =>
+      t('overrideContentSecurityPolicyHeaderDescription'),
+    route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
+    icon: 'fas fa-sliders-h',
+    hidden: getPlatform() !== PLATFORM_FIREFOX,
+  },
   {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
@@ -198,7 +212,7 @@ const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('use4ByteResolution'),
-    descriptionMessage: (t) => t('use4ByteResolutionDescription'),
+    descriptionMessage: (t) => t('toggleDecodeDescription'),
     route: `${SECURITY_ROUTE}#decode-smart-contracts`,
     icon: 'fa fa-lock',
   },
@@ -325,18 +339,11 @@ const SETTINGS_CONSTANTS = [
     icon: 'fa fa-lock',
   },
   {
-    tabMessage: (t) => t('alerts'),
-    sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
-    descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
-    route: `${ALERTS_ROUTE}#unconnected-account`,
-    iconName: IconName.Notification,
-  },
-  {
-    tabMessage: (t) => t('alerts'),
-    sectionMessage: (t) => t('alertSettingsWeb3ShimUsage'),
-    descriptionMessage: (t) => t('alertSettingsWeb3ShimUsage'),
-    route: `${ALERTS_ROUTE}#web3-shimusage`,
-    icon: 'fa fa-bell',
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('deleteMetaMetricsData'),
+    descriptionMessage: (t) => t('deleteMetaMetricsDataDescription'),
+    route: `${SECURITY_ROUTE}#delete-metametrics-data`,
+    icon: 'fa fa-lock',
   },
   {
     tabMessage: (t) => t('networks'),

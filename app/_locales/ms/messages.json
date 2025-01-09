@@ -374,9 +374,6 @@
   "loading": {
     "message": "Memuatkan..."
   },
-  "loadingTokens": {
-    "message": "Memuatkan Token..."
-  },
   "lock": {
     "message": "Log keluar"
   },
@@ -433,9 +430,6 @@
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
   },
-  "noTransactions": {
-    "message": "Anda tiada transaksi"
-  },
   "noWebcamFound": {
     "message": "Webcam komputer anda tidak dijumpai. Sila cuba semula."
   },
@@ -487,12 +481,6 @@
   },
   "prev": {
     "message": "Sebelumnya"
-  },
-  "primaryCurrencySetting": {
-    "message": "Mata Wang Utama"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Pilih natif untuk mengutamakan nilai paparan dalam mata wang natif rantaian (cth. ETH). Pilih Fiat untuk mengutamakan nilai paparan dalam mata wang fiat yang anda pilih."
   },
   "privacyMsg": {
     "message": "Dasar Privasi"
@@ -741,9 +729,6 @@
   },
   "unlockMessage": {
     "message": "Web ternyahpusat menanti"
-  },
-  "updatedWithDate": {
-    "message": "Dikemaskini $1"
   },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."

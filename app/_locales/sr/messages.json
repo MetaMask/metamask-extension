@@ -241,10 +241,6 @@
   "fast": {
     "message": "Брзо"
   },
-  "fiat": {
-    "message": "Dekret",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Uvoz datoteke ne radi? Kliknite ovde!",
     "description": "Helps user import their account from a JSON file"
@@ -382,9 +378,6 @@
   "loading": {
     "message": "Учитава се..."
   },
-  "loadingTokens": {
-    "message": "Učitavanje tokena..."
-  },
   "lock": {
     "message": "Odjavi se"
   },
@@ -441,9 +434,6 @@
   "noConversionRateAvailable": {
     "message": "Nije dostupan kurs za konverziju"
   },
-  "noTransactions": {
-    "message": "Nemate transakcije"
-  },
   "noWebcamFound": {
     "message": "Nije pronađena veb kamera na vašem kompjuteru. Molimo vas pokušajte ponovo."
   },
@@ -498,12 +488,6 @@
   },
   "prev": {
     "message": "Prethodno"
-  },
-  "primaryCurrencySetting": {
-    "message": "Primarna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Izaberite primarnu da biste postavili prioritete u prikazivanju vrednosti u primarnoj valuti lanca (npr. ETH). Izaberite Fiat da biste postavili prioritete u prikazivanju vrednosti u vašoj izabranoj fiat valuti."
   },
   "privacyMsg": {
     "message": "Smernice za privatnost"
@@ -752,9 +736,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizovani veb čeka"
-  },
-  "updatedWithDate": {
-    "message": "Ažuriran $1"
   },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."

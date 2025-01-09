@@ -1,14 +1,14 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BannerAlert } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getOpenSeaEnabled } from '../../../../../selectors';
 import {
   detectNfts,
   setOpenSeaEnabled,
-  setShowNftDetectionEnablementToast,
   setUseNftDetection,
 } from '../../../../../store/actions';
-import { getOpenSeaEnabled } from '../../../../../selectors';
+import { BannerAlert } from '../../../../component-library';
+import { setShowNftDetectionEnablementToast } from '../../../toast-master/utils';
 
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();

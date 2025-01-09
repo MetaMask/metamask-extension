@@ -2,12 +2,18 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
-  getPreferences,
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import {
+  getCurrentNetwork,
   getSelectedAccountCachedBalance,
 } from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -19,6 +25,9 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
+import LoadingScreen from '../../../ui/loading-screen';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
 
@@ -34,6 +43,12 @@ type AssetListProps = {
   isTokenDisabled?: (
     token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
   ) => boolean;
+  network?: NetworkConfiguration | AddNetworkFields;
+  isTokenListLoading?: boolean;
+  assetItemProps?: Pick<
+    React.ComponentProps<typeof TokenListItem>,
+    'isTitleNetworkName' | 'isTitleHidden'
+  >;
 };
 
 export default function AssetList({
@@ -41,47 +56,63 @@ export default function AssetList({
   asset,
   tokenList,
   isTokenDisabled,
+  network,
+  isTokenListLoading = false,
+  assetItemProps = {},
 }: AssetListProps) {
-  const selectedToken = asset?.address;
+  const t = useI18nContext();
+  const selectedTokenAddress = asset?.address;
 
+  const currentNetwork = useSelector(getCurrentNetwork);
+  // If a network is provided, display tokens in that network
+  // Otherwise, assume tokens in the current network are displayed
+  const networkToUse = network ?? currentNetwork;
+  // This indicates whether tokens in the wallet's active network are displayed
+  const isSelectedNetworkActive =
+    networkToUse.chainId === currentNetwork.chainId;
+
+  const chainId = useSelector(getCurrentChainId);
   const nativeCurrency = useSelector(getNativeCurrency);
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const currentCurrency = useSelector(getCurrentCurrency);
 
-  const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
-
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
-
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
+  const [primaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
+    currency: currentCurrency,
+    hideLabel: true,
   });
 
-  const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(balanceValue, {
-      numberOfDecimals: secondaryNumberOfDecimals,
-      currency: secondaryCurrency,
-      hideLabel: true,
-    });
+  const [secondaryCurrencyValue] = useCurrencyDisplay(balanceValue, {
+    currency: nativeCurrency,
+  });
 
   return (
     <Box className="tokens-main-view-modal">
+      {isTokenListLoading && (
+        <LoadingScreen
+          loadingMessage={t('loadingTokenList')}
+          showLoadingSpinner
+        />
+      )}
       {tokenList.map((token) => {
         const tokenAddress = token.address?.toLowerCase();
-        const isSelected = tokenAddress === selectedToken?.toLowerCase();
+
+        const isMatchingChainId = token.chainId === networkToUse?.chainId;
+        const isMatchingAddress =
+          // the native asset can have an undefined, null, '', or zero address
+          (token.type === AssetType.native &&
+            !token.address &&
+            !selectedTokenAddress) ||
+          tokenAddress === selectedTokenAddress?.toLowerCase();
+        const isSelected = isMatchingChainId && isMatchingAddress;
+
         const isDisabled = isTokenDisabled?.(token) ?? false;
+
         return (
           <Box
             padding={0}
             gap={0}
             margin={0}
-            key={token.symbol}
+            key={`${token.symbol}-${tokenAddress ?? ''}-${token.chainId}`}
             backgroundColor={
               isSelected
                 ? BackgroundColor.primaryMuted
@@ -113,30 +144,33 @@ export default function AssetList({
               flexWrap={FlexWrap.NoWrap}
               alignItems={AlignItems.center}
             >
-              <Box marginInlineStart={2}>
-                {token.type === AssetType.native ? (
+              <Box>
+                {token.type === AssetType.native &&
+                token.chainId === chainId &&
+                isSelectedNetworkActive ? (
+                  // Only use this component for the native token of the active network
                   <TokenListItem
-                    title={nativeCurrency}
-                    primary={
-                      primaryCurrencyProperties.value ??
-                      secondaryCurrencyProperties.value
-                    }
-                    tokenSymbol={
-                      useNativeCurrencyAsPrimaryCurrency
-                        ? primaryCurrency
-                        : secondaryCurrency
-                    }
-                    secondary={secondaryCurrencyDisplay}
+                    chainId={token.chainId}
+                    title={token.symbol}
+                    primary={primaryCurrencyValue}
+                    tokenSymbol={token.symbol}
+                    secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
-                    isOriginalTokenSymbol
+                    isPrimaryTokenSymbolHidden
+                    tokenChainImage={
+                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                        token.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                      ]
+                    }
+                    {...assetItemProps}
                   />
                 ) : (
                   <AssetComponent
-                    key={token.address}
                     {...token}
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }
+                    assetItemProps={assetItemProps}
                   />
                 )}
               </Box>

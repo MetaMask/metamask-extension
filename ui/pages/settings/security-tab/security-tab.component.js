@@ -26,7 +26,7 @@ import {
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
-  BUTTON_SIZES,
+  ButtonSize,
   Icon,
   IconSize,
   IconName,
@@ -44,6 +44,7 @@ import {
   TextColor,
   TextVariant,
   IconColor,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import {
@@ -52,8 +53,10 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
-import ProfileSyncToggle from './profile-sync-toggle';
+import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import MetametricsToggle from './metametrics-toggle';
+import ProfileSyncToggle from './profile-sync-toggle';
+import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -62,7 +65,6 @@ export default class SecurityTab extends PureComponent {
   };
 
   static propTypes = {
-    warning: PropTypes.string,
     history: PropTypes.object,
     openSeaEnabled: PropTypes.bool,
     setOpenSeaEnabled: PropTypes.func,
@@ -102,6 +104,7 @@ export default class SecurityTab extends PureComponent {
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
+    metaMetricsDataDeletionId: PropTypes.string,
   };
 
   state = {
@@ -138,9 +141,12 @@ export default class SecurityTab extends PureComponent {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
+    if (this.props.metaMetricsDataDeletionId) {
+      await updateDataDeletionTaskStatus();
+    }
   }
 
   toggleSetting(value, eventName, eventAction, toggleMethod) {
@@ -172,7 +178,7 @@ export default class SecurityTab extends PureComponent {
           <Button
             data-testid="reveal-seed-words"
             type="danger"
-            size={BUTTON_SIZES.LG}
+            size={ButtonSize.Lg}
             onClick={(event) => {
               event.preventDefault();
               this.context.trackEvent({
@@ -325,7 +331,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('use4ByteResolution')}</span>
           <div className="settings-page__content-description">
-            {t('use4ByteResolutionDescription')}
+            {t('toggleDecodeDescription')}
           </div>
         </div>
 
@@ -376,14 +382,15 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={dataCollectionForMarketing}
             onToggle={(value) => {
-              setDataCollectionForMarketing(!value);
+              const newMarketingConsent = Boolean(!value);
+              setDataCollectionForMarketing(newMarketingConsent);
               if (participateInMetaMetrics) {
                 this.context.trackEvent({
                   category: MetaMetricsEventCategory.Settings,
                   event: MetaMetricsEventName.AnalyticsPreferenceSelected,
                   properties: {
                     is_metrics_opted_in: true,
-                    has_marketing_consent: false,
+                    has_marketing_consent: Boolean(newMarketingConsent),
                     location: 'Settings',
                   },
                 });
@@ -961,7 +968,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[18]}
+        ref={this.settingsRefs[17]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -1036,8 +1043,44 @@ export default class SecurityTab extends PureComponent {
         data-testid="advanced-setting-show-testnet-conversion"
       >
         <div className="settings-page__content-item">
-          <span>{t('basicConfigurationLabel')}</span>
-          <div className="settings-page__content-description">
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            marginBottom={2}
+          >
+            <Text variant={TextVariant.headingSm}>
+              {t('basicConfigurationLabel')}
+            </Text>
+            <ToggleButton
+              value={useExternalServices}
+              onToggle={() => {
+                if (useExternalServices) {
+                  // If we are going to be disabling external services, then we want to show the "turn off" warning modal
+                  setBasicFunctionalityModalOpen();
+                } else {
+                  toggleExternalServices(true);
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Settings,
+                    event: MetaMetricsEventName.SettingsUpdated,
+                    properties: {
+                      settings_group: 'security_privacy',
+                      settings_type: 'basic_functionality',
+                      old_value: false,
+                      new_value: true,
+                      // these values will always be set to false
+                      // when basic functionality is re-enabled
+                      was_notifications_on: false,
+                      was_profile_syncing_on: false,
+                    },
+                  });
+                }
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </Box>
+          <Text marginBottom={2} color={TextColor.textAlternative}>
             {t('basicConfigurationDescription', [
               <a
                 href="https://consensys.io/privacy-policy"
@@ -1048,38 +1091,10 @@ export default class SecurityTab extends PureComponent {
                 {t('privacyMsg')}
               </a>,
             ])}
-          </div>
+          </Text>
         </div>
 
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={useExternalServices}
-            onToggle={() => {
-              if (useExternalServices) {
-                // If we are going to be disabling external services, then we want to show the "turn off" warning modal
-                setBasicFunctionalityModalOpen();
-              } else {
-                toggleExternalServices(true);
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.SettingsUpdated,
-                  properties: {
-                    settings_group: 'security_privacy',
-                    settings_type: 'basic_functionality',
-                    old_value: false,
-                    new_value: true,
-                    // these values will always be set to false
-                    // when basic functionality is re-enabled
-                    was_notifications_on: false,
-                    was_profile_syncing_on: false,
-                  },
-                });
-              }
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
+        <div className="settings-page__content-item-col"></div>
       </Box>
     );
   }
@@ -1125,7 +1140,6 @@ export default class SecurityTab extends PureComponent {
 
   render() {
     const {
-      warning,
       petnamesEnabled,
       dataCollectionForMarketing,
       setDataCollectionForMarketing,
@@ -1138,8 +1152,6 @@ export default class SecurityTab extends PureComponent {
         {showDataCollectionDisclaimer
           ? this.renderDataCollectionWarning()
           : null}
-
-        {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
         </span>
@@ -1222,6 +1234,7 @@ export default class SecurityTab extends PureComponent {
             setDataCollectionForMarketing={setDataCollectionForMarketing}
           />
           {this.renderDataCollectionForMarketing()}
+          <DeleteMetametricsDataButton ref={this.settingsRefs[20]} />
         </div>
       </div>
     );

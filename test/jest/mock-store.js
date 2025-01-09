@@ -3,6 +3,10 @@ import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
+import { DEFAULT_BRIDGE_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge/constants';
+import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge-status/constants';
+import { BRIDGE_PREFERRED_GAS_ESTIMATE } from '../../shared/constants/bridge';
+import { mockTokenData } from '../data/bridge/mock-token-data';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -138,6 +142,7 @@ export const createSwapsMockStore = () => {
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
         showMultiRpcModal: false,
       },
       transactions: [
@@ -210,7 +215,7 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      currentCurrency: 'ETH',
+      currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 1,
@@ -390,14 +395,10 @@ export const createSwapsMockStore = () => {
             smartTransactions: {
               expectedDeadline: 45,
               maxDeadline: 150,
-              returnTxHashAsap: false,
+              extensionReturnTxHashAsap: false,
             },
           },
           smartTransactions: {
-            mobileActive: true,
-            extensionActive: true,
-          },
-          swapRedesign: {
             mobileActive: true,
             extensionActive: true,
           },
@@ -469,6 +470,23 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
           TEST_AGG_2: {
             trade: {
@@ -503,6 +521,36 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                {
+                  maxFeePerGas: 2310003200,
+                  maxPriorityFeePerGas: 513154852,
+                  tokenFees: [
+                    {
+                      token: {
+                        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+                        symbol: 'DAI',
+                        decimals: 18,
+                      },
+                      balanceNeededToken: '0x426dc933c2e5a',
+                    },
+                  ],
+                },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
         },
         fetchParams: {
@@ -656,31 +704,79 @@ export const createSwapsMockStore = () => {
 };
 
 export const createBridgeMockStore = (
-  featureFlagOverrides = {},
-  bridgeSliceOverrides = {},
+  {
+    featureFlagOverrides = {},
+    bridgeSliceOverrides = {},
+    bridgeStateOverrides = {},
+    bridgeStatusStateOverrides = {},
+    metamaskStateOverrides = {},
+  } = {
+    featureFlagOverrides: {},
+    bridgeSliceOverrides: {},
+    bridgeStateOverrides: {},
+    bridgeStatusStateOverrides: {},
+    metamaskStateOverrides: {},
+  },
 ) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
+    // For initial state of dest asset picker
+    swaps: {
+      ...swapsStore.swaps,
+      topAssets: [],
+    },
     bridge: {
-      toChain: null,
+      toChainId: null,
+      sortOrder: 'cost_ascending',
       ...bridgeSliceOverrides,
     },
     metamask: {
       ...swapsStore.metamask,
-      bridgeState: {
-        ...(swapsStore.metamask.bridgeState ?? {}),
-        bridgeFeatureFlags: {
-          extensionSupport: false,
-          srcNetworkAllowlist: [],
-          destNetworkAllowlist: [],
-          ...featureFlagOverrides,
-        },
-      },
       ...mockNetworkState(
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
+      gasFeeEstimates: {
+        estimatedBaseFee: '0.00010456',
+        [BRIDGE_PREFERRED_GAS_ESTIMATE]: {
+          suggestedMaxFeePerGas: '0.00018456',
+          suggestedMaxPriorityFeePerGas: '0.0001',
+        },
+      },
+      currencyRates: {
+        ETH: { conversionRate: 2524.25 },
+        usd: { conversionRate: 1 },
+      },
+      marketData: {
+        '0x1': {
+          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+            currency: 'usd',
+            price: 2.3,
+          },
+        },
+      },
+      ...mockTokenData,
+      ...metamaskStateOverrides,
+      bridgeState: {
+        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
+        bridgeFeatureFlags: {
+          ...featureFlagOverrides,
+          extensionConfig: {
+            support: false,
+            chains: {},
+            ...featureFlagOverrides.extensionConfig,
+          },
+        },
+        ...bridgeStateOverrides,
+      },
+      bridgeStatusState: {
+        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+        ...bridgeStatusStateOverrides,
+      },
+    },
+    send: {
+      swapsBlockedTokens: [],
     },
   };
 };

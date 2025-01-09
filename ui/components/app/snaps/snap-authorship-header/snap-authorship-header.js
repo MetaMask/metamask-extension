@@ -39,7 +39,7 @@ const SnapAuthorshipHeader = ({
   const t = useI18nContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { name: snapName } = useSelector((state) =>
+  const { name: snapName, hidden } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
 
@@ -91,19 +91,21 @@ const SnapAuthorshipHeader = ({
           display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
+          style={{ overflow: 'hidden' }}
         >
           <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} />
           <Text
             color={TextColor.textDefault}
             variant={TextVariant.bodyMdMedium}
             marginLeft={2}
+            title={snapName}
             ellipsis
           >
             {snapName}
           </Text>
         </Box>
       </Box>
-      {showInfo && (
+      {showInfo && !hidden && (
         <Box marginLeft="auto">
           <AvatarIcon
             className="snaps-authorship-header__button"

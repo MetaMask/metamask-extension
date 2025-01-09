@@ -1,23 +1,19 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-
 import { Driver } from '../../webdriver/driver';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
+import GeneralSettings from '../../page-objects/pages/settings/general-settings';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import Homepage from '../../page-objects/pages/home/homepage';
+import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const selectors = {
-  accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
-  settingsOption: { text: 'Settings', tag: 'div' },
-  localeSelect: '[data-testid="locale-select"]',
-  ethOverviewSend: '[data-testid="eth-overview-send"]',
-  ensInput: '[data-testid="ens-input"]',
-  nftsTab: '[data-testid="account-overview__nfts-tab"]',
-  labelSpanish: { tag: 'span', text: 'Idioma actual' },
-  currentLanguageLabel: { tag: 'span', text: 'Current language' },
+  labelSpanish: { tag: 'p', text: 'Idioma actual' },
+  currentLanguageLabel: { tag: 'p', text: 'Current language' },
   advanceText: { text: 'Avanceret', tag: 'div' },
   waterText: '[placeholder="Søg"]',
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
@@ -29,50 +25,37 @@ const selectors = {
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
 
-async function changeLanguage(driver: Driver, languageIndex: number) {
-  await driver.clickElement(selectors.accountOptionsMenuButton);
-  await driver.clickElement(selectors.settingsOption);
-
-  const dropdownElement = await driver.findElement(selectors.localeSelect);
-  await dropdownElement.click();
-
-  const options = await dropdownElement.findElements({ css: 'option' });
-  await options[languageIndex].click();
-}
-
 describe('Settings - general tab @no-mmi', function (this: Suite) {
   it('validate the change language functionality', async function () {
-    let languageIndex = 10;
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex);
+        await loginWithBalanceValidation(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const generalSettings = new GeneralSettings(driver);
+        await generalSettings.check_pageIsLoaded();
 
-        // Validate the label changes to Spanish
+        // Change language to Spanish and validate that the word has changed correctly
+        await generalSettings.changeLanguage('Español');
         const isLanguageLabelChanged = await driver.isElementPresent(
           selectors.labelSpanish,
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
+        // Refresh the page and validate that the language is still Spanish
         await driver.refresh();
-
-        // Change back to English and verify that the word is correctly changed back to English
-        languageIndex = 9;
-
-        const dropdownElement = await driver.findElement(
-          selectors.localeSelect,
+        await generalSettings.check_pageIsLoaded();
+        assert.equal(
+          await driver.isElementPresent(selectors.labelSpanish),
+          true,
+          'Language did not change after refresh',
         );
-        await dropdownElement.click();
-        const options = await dropdownElement.findElements({ css: 'option' });
-        await options[languageIndex].click();
 
+        // Change language back to English and validate that the word has changed correctly
+        await generalSettings.changeLanguage('English');
         const isLabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageLabel,
         );
@@ -82,21 +65,22 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   });
 
   it('validate "Dansk" language on page navigation', async function () {
-    const languageIndex = 6;
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex);
+        await loginWithBalanceValidation(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const generalSettings = new GeneralSettings(driver);
+        await generalSettings.check_pageIsLoaded();
 
-        await driver.assertElementNotPresent('.loading-overlay__spinner');
-
+        // Select "Dansk" language
+        await generalSettings.changeLanguage('Dansk');
         await driver.clickElement(selectors.advanceText);
+        const advancedSettings = new AdvancedSettings(driver);
+        await advancedSettings.check_pageIsLoaded();
 
         // Confirm that the language change is reflected in search box water text
         const isWaterTextChanged = await driver.isElementPresent(
@@ -132,22 +116,30 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   });
 
   it('validate "Deutsch" language on error messages', async function () {
-    const languageIndex = 7;
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex);
-        await driver.navigate();
-        await driver.clickElement(selectors.ethOverviewSend);
-        await driver.pasteIntoField(
-          selectors.ensInput,
-          // use wrong checksum address; other inputs don't show error until snaps name-lookup has happened
+        await loginWithBalanceValidation(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const generalSettings = new GeneralSettings(driver);
+        await generalSettings.check_pageIsLoaded();
+
+        // Select "Deutsch" language
+        await generalSettings.changeLanguage('Deutsch');
+        await new SettingsPage(driver).closeSettingsPage();
+
+        const homepage = new Homepage(driver);
+        await homepage.check_pageIsLoaded();
+        await homepage.check_expectedBalanceIsDisplayed();
+        await homepage.startSendFlow();
+
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.check_pageIsLoaded();
+        // use wrong address for recipient to allow error message to show
+        await sendToPage.fillRecipient(
           '0xAAAA6BF26964aF9D7eEd9e03E53415D37aA96045',
         );
 
@@ -165,18 +157,23 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   });
 
   it('validate "मानक हिन्दी" language on tooltips', async function () {
-    const languageIndex = 19;
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex);
-        await driver.navigate();
+        await loginWithBalanceValidation(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const generalSettings = new GeneralSettings(driver);
+        await generalSettings.check_pageIsLoaded();
+
+        // Select "मानक हिन्दी" language
+        await generalSettings.changeLanguage('मानक हिन्दी');
+        await new SettingsPage(driver).closeSettingsPage();
+        const homepage = new Homepage(driver);
+        await homepage.check_pageIsLoaded();
+        await homepage.check_expectedBalanceIsDisplayed();
 
         // Validate the account tooltip
         const isAccountTooltipChanged = await driver.isElementPresent(
@@ -202,20 +199,24 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   });
 
   it('validate "Magyar" language change on hypertext', async function () {
-    const languageIndex = 23;
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        // selects "Magyar" language
-        await changeLanguage(driver, languageIndex);
-        await driver.navigate();
-        await driver.clickElement(selectors.nftsTab);
+        await loginWithBalanceValidation(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const generalSettings = new GeneralSettings(driver);
+        await generalSettings.check_pageIsLoaded();
+
+        // Select "Magyar" language
+        await generalSettings.changeLanguage('Magyar');
+        await new SettingsPage(driver).closeSettingsPage();
+        const homepage = new Homepage(driver);
+        await homepage.check_pageIsLoaded();
+        await homepage.check_expectedBalanceIsDisplayed();
+        await homepage.goToNftTab();
 
         // Validate the hypertext
         const isHyperTextChanged = await driver.isElementPresent(
@@ -231,18 +232,20 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   });
 
   it('validate "العربية" language change on page indent', async function () {
-    const languageIndex = 1;
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex);
+        await loginWithBalanceValidation(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        const generalSettings = new GeneralSettings(driver);
+        await generalSettings.check_pageIsLoaded();
 
-        // Validate the header text
+        // Select "العربية" language and validate that the header text has changed
+        await generalSettings.changeLanguage('العربية');
+
         const isHeaderTextChanged = await driver.isElementPresent(
           selectors.headerText,
         );

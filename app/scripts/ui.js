@@ -104,7 +104,7 @@ async function start() {
     if (isManifestV3 && isUIInitialised) {
       // Currently when service worker is revived we create new streams
       // in later version we might try to improve it by reviving same streams.
-      updateUiStreams();
+      updateUiStreams(connectionStream);
     } else {
       await initializeUiWithTab(
         activeTab,

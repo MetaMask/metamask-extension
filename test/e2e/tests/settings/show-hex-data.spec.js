@@ -1,8 +1,8 @@
-const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -79,20 +79,18 @@ describe('Check the toggle for hex data', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await toggleHexData(driver);
         await clickOnLogo(driver);
         await sendTransactionAndVerifyHexData(driver);
 
         // Verify hex data in the container content
-        const pageContentContainer = await driver.findElement(
-          selectors.containerContent,
-        );
-        const pageContentContainerText = await pageContentContainer.getText();
-        assert.equal(
-          pageContentContainerText.includes(inputData.hexDataText),
-          true,
-          'Hex data is incorrect',
-        );
+        await driver.waitForSelector({
+          tag: 'p',
+          text: '0x0abc',
+        });
       },
     );
   });

@@ -7,7 +7,6 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  switchToNotificationWindow,
   defaultGanacheOptions,
 } = require('../../helpers');
 
@@ -45,19 +44,15 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
 
         // Create Token
         await driver.clickElement({ text: 'Create Token', tag: 'button' });
-        await switchToNotificationWindow(driver);
-        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // Wait for token address to populate in dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.wait(async () => {
-          const tokenAddressesElement = await driver.findElement(
-            '#tokenAddresses',
-          );
-          const tokenAddresses = await tokenAddressesElement.getText();
-          return tokenAddresses !== '';
-        }, 10000);
+        await driver.waitForSelector({
+          css: '#tokenAddresses',
+          text: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+        });
 
         // Watch Asset 1st call
         await driver.clickElement({
@@ -65,11 +60,9 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Switch Ethereum Chain
-        await driver.findClickableElement('#switchEthereumChain');
         await driver.clickElement('#switchEthereumChain');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -83,7 +76,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
         // Wait for token to show in list of tokens to watch
         await driver.delay(regularDelayMs);
 
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',
@@ -92,9 +85,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
         // Confirm only 1 token is present in suggested token list
         assert.equal(multipleSuggestedtokens.length, 1);
 
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitUntilXWindowHandles(2);
 

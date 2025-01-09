@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
@@ -32,6 +32,10 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 
+export function countDecimalDigits(numberString: string) {
+  return numberString.split('.')[1]?.length || 0;
+}
+
 export const EditSpendingCapModal = ({
   isOpenEditSpendingCapModal,
   setIsOpenEditSpendingCapModal,
@@ -43,14 +47,14 @@ export const EditSpendingCapModal = ({
 
   const dispatch = useDispatch();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
+    transactionMeta.chainId,
   );
 
   const accountBalance = calcTokenAmount(
@@ -58,31 +62,38 @@ export const EditSpendingCapModal = ({
     Number(decimals ?? '0'),
   ).toFixed();
 
-  const { formattedSpendingCap } = useApproveTokenSimulation(
+  const { formattedSpendingCap, spendingCap } = useApproveTokenSimulation(
     transactionMeta,
-    decimals || '0',
+    decimals,
   );
 
   const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =
-    useState('');
+    useState(spendingCap);
+
+  useEffect(() => {
+    if (spendingCap) {
+      setCustomSpendingCapInputValue(spendingCap);
+    }
+  }, [spendingCap]);
 
   const handleCancel = useCallback(() => {
     setIsOpenEditSpendingCapModal(false);
-    setCustomSpendingCapInputValue('');
-  }, [setIsOpenEditSpendingCapModal, setCustomSpendingCapInputValue]);
+    setCustomSpendingCapInputValue(spendingCap);
+  }, [
+    setIsOpenEditSpendingCapModal,
+    setCustomSpendingCapInputValue,
+    spendingCap,
+  ]);
 
   const [isModalSaving, setIsModalSaving] = useState(false);
 
   const handleSubmit = useCallback(async () => {
     setIsModalSaving(true);
-    const parsedValue = parseInt(customSpendingCapInputValue, 10);
 
     const customTxParamsData = getCustomTxParamsData(
       transactionMeta?.txParams?.data,
       {
-        customPermissionAmount:
-          // coerce negative numbers to zero
-          parsedValue < 0 ? '0' : customSpendingCapInputValue || '0',
+        customPermissionAmount: customSpendingCapInputValue || '0',
         decimals: decimals || '0',
       },
     );
@@ -103,13 +114,19 @@ export const EditSpendingCapModal = ({
 
     setIsModalSaving(false);
     setIsOpenEditSpendingCapModal(false);
-    setCustomSpendingCapInputValue('');
-  }, [customSpendingCapInputValue]);
+    setCustomSpendingCapInputValue(spendingCap);
+  }, [customSpendingCapInputValue, spendingCap]);
+
+  const showDecimalError =
+    decimals &&
+    parseInt(decimals, 10) < countDecimalDigits(customSpendingCapInputValue);
+
+  const showSpecialCharacterError = /[-+e]/u.test(customSpendingCapInputValue);
 
   return (
     <Modal
       isOpen={isOpenEditSpendingCapModal}
-      onClose={() => setIsOpenEditSpendingCapModal(false)}
+      onClose={handleCancel}
       isClosedOnEscapeKey
       isClosedOnOutsideClick
       className="edit-spending-cap-modal"
@@ -144,6 +161,24 @@ export const EditSpendingCapModal = ({
             style={{ width: '100%' }}
             inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
           />
+          {showDecimalError && (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.errorDefault}
+              paddingTop={1}
+            >
+              {t('editSpendingCapError', [decimals])}
+            </Text>
+          )}
+          {showSpecialCharacterError && (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.errorDefault}
+              paddingTop={1}
+            >
+              {t('editSpendingCapSpecialCharError')}
+            </Text>
+          )}
           <Text
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
@@ -158,7 +193,14 @@ export const EditSpendingCapModal = ({
         <ModalFooter
           onSubmit={handleSubmit}
           onCancel={handleCancel}
-          submitButtonProps={{ children: t('save'), loading: isModalSaving }}
+          submitButtonProps={{
+            children: t('save'),
+            loading: isModalSaving,
+            disabled:
+              showDecimalError ||
+              showSpecialCharacterError ||
+              customSpendingCapInputValue === '',
+          }}
         />
       </ModalContent>
     </Modal>

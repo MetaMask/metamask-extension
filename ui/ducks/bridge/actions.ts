@@ -1,28 +1,55 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge/types';
+import type { Hex } from '@metamask/utils';
+import {
+  BridgeBackgroundAction,
+  BridgeUserAction,
+  QuoteRequest,
+} from '../../../shared/types/bridge';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { MetaMaskReduxDispatch } from '../../store/store';
-import { swapsSlice } from '../swaps/swaps';
-import { bridgeSlice } from './bridge';
+import type { MetaMaskReduxDispatch } from '../../store/store';
+import {
+  bridgeSlice,
+  setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
+  setSrcTokenExchangeRates,
+} from './bridge';
 
-// eslint-disable-next-line no-empty-pattern
-const {} = swapsSlice.actions;
+const {
+  setToChainId,
+  setFromToken,
+  setToToken,
+  setFromTokenInputValue,
+  resetInputFields,
+  setSortOrder,
+  setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
+} = bridgeSlice.actions;
 
-export const { setToChain } = bridgeSlice.actions;
+export {
+  setToChainId,
+  resetInputFields,
+  setToToken,
+  setFromToken,
+  setFromTokenInputValue,
+  setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
+  setSrcTokenExchangeRates,
+  setSortOrder,
+  setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
+};
 
 const callBridgeControllerMethod = <T>(
-  bridgeAction: BridgeBackgroundAction,
-  args?: T[],
+  bridgeAction: BridgeUserAction | BridgeBackgroundAction,
+  args?: T,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
+    await submitRequestToBackground(bridgeAction, [args]);
     await forceUpdateMetamaskState(dispatch);
   };
 };
-
-// User actions
 
 // Background actions
 export const setBridgeFeatureFlags = () => {
@@ -31,4 +58,52 @@ export const setBridgeFeatureFlags = () => {
       callBridgeControllerMethod(BridgeBackgroundAction.SET_FEATURE_FLAGS),
     );
   };
+};
+
+export const resetBridgeState = () => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(resetInputFields());
+    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+  };
+};
+
+// User actions
+export const setFromChain = (chainId: Hex) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(
+      callBridgeControllerMethod<Hex>(
+        BridgeUserAction.SELECT_SRC_NETWORK,
+        chainId,
+      ),
+    );
+  };
+};
+
+export const setToChain = (chainId: Hex) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(
+      callBridgeControllerMethod<Hex>(
+        BridgeUserAction.SELECT_DEST_NETWORK,
+        chainId,
+      ),
+    );
+  };
+};
+
+export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await dispatch(
+      callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),
+    );
+  };
+};
+
+export const getBridgeERC20Allowance = async (
+  contractAddress: string,
+  chainId: Hex,
+): Promise<string> => {
+  return await submitRequestToBackground(
+    BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
+    [contractAddress, chainId],
+  );
 };

@@ -372,9 +372,6 @@
   "loading": {
     "message": "Inapakia..."
   },
-  "loadingTokens": {
-    "message": "Inapakia Vianzio..."
-  },
   "lock": {
     "message": "Toka kwenye akaunti"
   },
@@ -427,9 +424,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Hakuna Kiwango cha Ubadilishaji"
-  },
-  "noTransactions": {
-    "message": "Huna miamala."
   },
   "noWebcamFound": {
     "message": "Kamera yako ya kumpyuta haikupatikana. Tafadhali jaribu tena."
@@ -485,12 +479,6 @@
   },
   "prev": {
     "message": "Hakiki"
-  },
-  "primaryCurrencySetting": {
-    "message": "Sarafu ya Msingi"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Chagua mzawa ili kuweka kipaumbele kuonyesha thamani kwenye sarafu mzawa ya mnyororo (k.m ETH). Chagua Fiat ili uwelke kipaumbale kuonyesha thamani kwenye sarafu yako ya fiat uliyoichagua."
   },
   "privacyMsg": {
     "message": "Sera ya Faragha"
@@ -742,9 +730,6 @@
   },
   "unlockMessage": {
     "message": "Wavuti uliotenganishwa unasubiri"
-  },
-  "updatedWithDate": {
-    "message": "Imesasishwa $1"
   },
   "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."

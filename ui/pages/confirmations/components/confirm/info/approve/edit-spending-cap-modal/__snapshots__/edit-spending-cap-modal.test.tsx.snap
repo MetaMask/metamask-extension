@@ -57,7 +57,7 @@ exports[`<EditSpendingCapModal /> renders component 1`] = `
                 focused="true"
                 placeholder="1000 TST"
                 type="number"
-                value=""
+                value="1000"
               />
             </div>
             <p

@@ -8,6 +8,9 @@
   }
 
   &__button-group {
+    display: flex;
+    flex-direction: row;
+
     & &-custom-button {
       cursor: text;
       display: flex;
@@ -15,7 +18,6 @@
       justify-content: center;
       position: relative;
       min-width: 72px;
-      margin-right: 0;
     }
   }
 

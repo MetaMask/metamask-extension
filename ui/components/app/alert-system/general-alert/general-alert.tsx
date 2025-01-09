@@ -21,13 +21,14 @@ import { AlertProvider } from '../alert-provider';
 import { AlertSeverity } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type GeneralAlertProps = {
-  description: string;
+  description?: string;
   details?: React.ReactNode | string[];
   onClickSupportLink?: () => void;
   provider?: SecurityProvider;
   reportUrl?: string;
   severity: AlertSeverity;
-  title: string;
+  title?: string;
+  children?: React.ReactNode;
 };
 
 function ReportLink({
@@ -119,6 +120,7 @@ function GeneralAlert({
       description={description}
       {...props}
     >
+      {props.children}
       <AlertDetails
         details={details}
         reportUrl={reportUrl}

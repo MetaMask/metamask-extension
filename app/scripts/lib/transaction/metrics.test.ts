@@ -17,6 +17,8 @@ import {
 import {
   MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
+  MetaMetricsEventUiCustomization,
+  MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 import {
@@ -114,6 +116,7 @@ describe('Transaction metrics', () => {
       type: TransactionType.simpleSend,
       origin: ORIGIN_METAMASK,
       chainId: mockChainId,
+      networkClientId: 'testNetworkClientId',
       time: 1624408066355,
       defaultGasEstimates: {
         gas: '0x7b0d',
@@ -147,6 +150,7 @@ describe('Transaction metrics', () => {
       eip_1559_version: '0',
       gas_edit_attempted: 'none',
       gas_estimation_failed: false,
+      is_smart_transaction: undefined,
       gas_edit_type: 'none',
       network: mockNetworkId,
       referrer: ORIGIN_METAMASK,
@@ -155,17 +159,20 @@ describe('Transaction metrics', () => {
       token_standard: TokenStandard.none,
       transaction_speed_up: false,
       transaction_type: TransactionType.simpleSend,
-      ui_customizations: null,
-      transaction_advanced_view: null,
+      ui_customizations: ['redesigned_confirmation'],
+      transaction_advanced_view: undefined,
+      transaction_contract_method: undefined,
+      transaction_internal_id: '1',
     };
 
     expectedSensitiveProperties = {
+      default_estimate: MetaMetricsEventTransactionEstimateType.DefaultEstimate,
       default_gas: '0.000031501',
       default_gas_price: '2',
       first_seen: 1624408066355,
       gas_limit: '0x7b0d',
       gas_price: '2',
-      transaction_contract_method: undefined,
+      transaction_contract_address: undefined,
       transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
       transaction_replaced: undefined,
     };
@@ -233,7 +240,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['gas_estimation_failed'],
+          ui_customizations: [
+            'gas_estimation_failed',
+            'redesigned_confirmation',
+          ],
           gas_estimation_failed: true,
         },
         sensitiveProperties: expectedSensitiveProperties,
@@ -263,7 +273,10 @@ describe('Transaction metrics', () => {
           ...expectedProperties,
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
         },
@@ -353,7 +366,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -370,7 +386,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -490,7 +509,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -510,7 +532,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -687,7 +712,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -709,7 +737,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -730,6 +761,72 @@ describe('Transaction metrics', () => {
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).toBeCalledWith(expectedUniqueId);
+    });
+
+    it('should create, update, finalize event fragment with transaction_contract_address', async () => {
+      mockTransactionMeta.txReceipt = {
+        gasUsed: '0x123',
+        status: '0x0',
+      };
+      mockTransactionMeta.submittedTime = 123;
+      mockTransactionMeta.status = TransactionStatus.confirmed;
+      mockTransactionMeta.type = TransactionType.contractInteraction;
+      const expectedUniqueId = 'transaction-submitted-1';
+      const properties = {
+        ...expectedProperties,
+        status: TransactionStatus.confirmed,
+        transaction_type: TransactionType.contractInteraction,
+        asset_type: AssetType.unknown,
+        ui_customizations: [
+          MetaMetricsEventUiCustomization.RedesignedConfirmation,
+        ],
+        is_smart_transaction: undefined,
+        transaction_advanced_view: undefined,
+      };
+      const sensitiveProperties = {
+        ...expectedSensitiveProperties,
+        transaction_contract_address:
+          '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        completion_time: expect.any(String),
+        gas_used: '0.000000291',
+        status: METRICS_STATUS_FAILED,
+      };
+
+      await handleTransactionConfirmed(mockTransactionMetricsRequest, {
+        ...mockTransactionMeta,
+        actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+        actionId: mockActionId,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.finalized,
+        uniqueIdentifier: expectedUniqueId,
+        persist: true,
+        properties,
+        sensitiveProperties,
+      });
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
+        expectedUniqueId,
+        {
+          properties,
+          sensitiveProperties,
+        },
+      );
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId);
     });
   });
 
@@ -820,7 +917,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -841,7 +941,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -947,7 +1050,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -964,7 +1070,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import {
   BannerAlert,
   Button,
@@ -32,6 +32,7 @@ import {
 } from '../../../shared/constants/transaction';
 import { getSuggestedTokens } from '../../selectors';
 import { Severity } from '../../helpers/constants/design-system';
+import { Nav } from '../confirmations/components/confirm/nav';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -84,6 +85,7 @@ const ConfirmAddSuggestedToken = () => {
   const suggestedTokens = useSelector(getSuggestedTokens);
   const tokens = useSelector(getTokens);
   const trackEvent = useContext(MetaMetricsContext);
+  const approvalId = suggestedTokens[0]?.id;
 
   const knownTokenBannerAlert = useMemo(() => {
     return (
@@ -147,7 +149,7 @@ const ConfirmAddSuggestedToken = () => {
         dispatch(
           rejectPendingApproval(
             id,
-            serializeError(ethErrors.provider.userRejectedRequest()),
+            serializeError(providerErrors.userRejectedRequest()),
           ),
         ),
       ),
@@ -168,6 +170,7 @@ const ConfirmAddSuggestedToken = () => {
 
   return (
     <div className="page-container">
+      <Nav confirmationId={approvalId} />
       <div className="page-container__header">
         <div className="page-container__title">{t('addSuggestedTokens')}</div>
         <div className="page-container__subtitle">

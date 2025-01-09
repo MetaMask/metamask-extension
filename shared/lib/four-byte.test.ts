@@ -10,12 +10,14 @@ import { getMethodDataAsync, getMethodFrom4Byte } from './four-byte';
 const FOUR_BYTE_MOCK = TRANSACTION_DATA_FOUR_BYTE.slice(0, 10);
 
 describe('Four Byte', () => {
-  const fetchMock = jest.fn();
-
   describe('getMethodFrom4Byte', () => {
-    it('returns signature with earliest creation date', async () => {
-      jest.spyOn(global, 'fetch').mockImplementation(fetchMock);
+    const fetchMock = jest.fn();
 
+    beforeEach(() => {
+      jest.spyOn(global, 'fetch').mockImplementation(fetchMock);
+    });
+
+    it('returns signature with earliest creation date', async () => {
       fetchMock.mockResolvedValue({
         ok: true,
         json: async () => FOUR_BYTE_RESPONSE,
@@ -42,6 +44,25 @@ describe('Four Byte', () => {
       'returns undefined if length of four byte prefix %s is less than 8',
       async (_: string, prefix: string) => {
         expect(await getMethodFrom4Byte(prefix)).toBeUndefined();
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      ['undefined', { results: undefined }],
+      ['object', { results: {} }],
+      ['empty', { results: [] }],
+    ])(
+      'returns `undefined` if fourByteResponse.results is %s',
+      async (_: string, mockResponse: { results: unknown }) => {
+        fetchMock.mockResolvedValue({
+          ok: true,
+          json: async () => mockResponse,
+        });
+
+        const result = await getMethodFrom4Byte('0x913aa952');
+
+        expect(result).toBeUndefined();
       },
     );
   });

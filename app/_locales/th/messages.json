@@ -120,10 +120,6 @@
   "fast": {
     "message": "เร็ว"
   },
-  "fiat": {
-    "message": "เงินตรา",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
     "description": "Helps user import their account from a JSON file"
@@ -198,9 +194,6 @@
   "loading": {
     "message": "กำลังโหลด..."
   },
-  "loadingTokens": {
-    "message": "กำลังโหลดโทเค็น..."
-  },
   "lock": {
     "message": "ออกจากระบบ"
   },
@@ -238,9 +231,6 @@
   },
   "next": {
     "message": "ถัดไป"
-  },
-  "noTransactions": {
-    "message": "ยังไม่มีรายการธุรกรรม"
   },
   "on": {
     "message": "เปิด"
@@ -370,9 +360,6 @@
   },
   "unlock": {
     "message": "ปลดล็อก"
-  },
-  "updatedWithDate": {
-    "message": "อัปเดต $1 แล้ว"
   },
   "urlErrorMsg": {
     "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"

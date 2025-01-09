@@ -87,10 +87,6 @@
   "failed": {
     "message": "विफल"
   },
-  "fiat": {
-    "message": "FIAT एक्सचेंज टाइप",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "फ़ाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
@@ -156,9 +152,6 @@
   "loading": {
     "message": "लोड हो रहा है ....."
   },
-  "loadingTokens": {
-    "message": "टोकन लोड हो रहा है ....."
-  },
   "localhost": {
     "message": "स्थानीयहोस्ट 8545"
   },
@@ -199,9 +192,6 @@
   },
   "next": {
     "message": "अगला"
-  },
-  "noTransactions": {
-    "message": "कोई लेन-देन नहीं"
   },
   "pastePrivateKey": {
     "message": "यहां अपनी निजी कुंजी स्ट्रिंग चिपकाएं:",

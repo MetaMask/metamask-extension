@@ -23,12 +23,13 @@ export const SnapsSection = () => {
       gap={4}
       marginBottom={4}
     >
-      {data.map(({ snapId, interfaceId, loading }) => (
+      {data.map(({ snapId, interfaceId, loading }, index) => (
         <SnapInsight
           key={snapId}
           snapId={snapId}
           interfaceId={interfaceId}
           loading={loading}
+          isExpanded={index === 0}
         />
       ))}
     </Box>

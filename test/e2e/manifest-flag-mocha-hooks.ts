@@ -14,7 +14,9 @@
  */
 import fs from 'fs';
 import { hasProperty } from '@metamask/utils';
-import { folder } from './set-manifest-flags';
+import { folder, getManifestVersion } from './set-manifest-flags';
+
+process.env.ENABLE_MV3 = getManifestVersion() === 3 ? 'true' : 'false';
 
 // Global beforeEach hook to backup the manifest.json file
 if (typeof beforeEach === 'function' && process.env.SELENIUM_BROWSER) {

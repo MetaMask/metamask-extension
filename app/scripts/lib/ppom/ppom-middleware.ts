@@ -1,9 +1,6 @@
 import { AccountsController } from '@metamask/accounts-controller';
 import { PPOMController } from '@metamask/ppom-validator';
-import {
-  NetworkClientId,
-  NetworkController,
-} from '@metamask/network-controller';
+import { NetworkController } from '@metamask/network-controller';
 import {
   Json,
   JsonRpcParams,
@@ -14,17 +11,17 @@ import { detectSIWE } from '@metamask/controller-utils';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import PreferencesController from '../../controllers/preferences-controller';
-import { AppStateController } from '../../controllers/app-state';
-import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+import { PreferencesController } from '../../controllers/preferences-controller';
+import { AppStateController } from '../../controllers/app-state-controller';
+import { SECURITY_ALERT_RESPONSE_CHECKING_CHAIN } from '../../../../shared/constants/security-provider';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
   handlePPOMError,
-  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
-import { SecurityAlertResponse } from './types';
+import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
@@ -35,7 +32,6 @@ const CONFIRMATION_METHODS = Object.freeze([
 export type PPOMMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
 > = Required<JsonRpcRequest<Params>> & {
-  networkClientId: NetworkClientId;
   securityAlertResponse?: SecurityAlertResponse | undefined;
   traceContext?: TraceContext;
 };
@@ -66,11 +62,7 @@ export function createPPOMMiddleware<
   networkController: NetworkController,
   appStateController: AppStateController,
   accountsController: AccountsController,
-  updateSecurityAlertResponse: (
-    method: string,
-    signatureAlertId: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void,
+  updateSecurityAlertResponse: UpdateSecurityAlertResponse,
 ) {
   return async (
     req: PPOMMiddlewareRequest<Params>,
@@ -78,22 +70,19 @@ export function createPPOMMiddleware<
     next: () => void,
   ) => {
     try {
-      const securityAlertsEnabled =
-        preferencesController.store.getState()?.securityAlertsEnabled;
+      const { securityAlertsEnabled } = preferencesController.state;
 
-      // This will always exist as the SelectedNetworkMiddleware
-      // adds networkClientId to the request before this middleware runs
       const { chainId } =
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        networkController.getNetworkConfigurationByNetworkClientId(
-          req.networkClientId,
-        )!;
-      const isSupportedChain = await isChainSupported(chainId);
+        getProviderConfig({
+          metamask: networkController.state,
+        }) ?? {};
+      if (!chainId) {
+        return;
+      }
 
       if (
         !securityAlertsEnabled ||
-        !CONFIRMATION_METHODS.includes(req.method) ||
-        !isSupportedChain
+        !CONFIRMATION_METHODS.includes(req.method)
       ) {
         return;
       }
@@ -125,27 +114,22 @@ export function createPPOMMiddleware<
             request: req,
             securityAlertId,
             chainId,
-          }).then((securityAlertResponse) => {
-            updateSecurityAlertResponse(
-              req.method,
-              securityAlertId,
-              securityAlertResponse,
-            );
+            updateSecurityAlertResponse,
           }),
       );
 
-      const loadingSecurityAlertResponse: SecurityAlertResponse = {
-        ...LOADING_SECURITY_ALERT_RESPONSE,
+      const securityAlertResponseCheckingChain: SecurityAlertResponse = {
+        ...SECURITY_ALERT_RESPONSE_CHECKING_CHAIN,
         securityAlertId,
       };
 
       if (SIGNING_METHODS.includes(req.method)) {
         appStateController.addSignatureSecurityAlertResponse(
-          loadingSecurityAlertResponse,
+          securityAlertResponseCheckingChain,
         );
       }
 
-      req.securityAlertResponse = loadingSecurityAlertResponse;
+      req.securityAlertResponse = securityAlertResponseCheckingChain;
     } catch (error) {
       req.securityAlertResponse = handlePPOMError(
         error,
