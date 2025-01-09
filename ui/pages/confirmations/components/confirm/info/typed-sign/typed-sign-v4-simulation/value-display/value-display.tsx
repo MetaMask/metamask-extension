@@ -31,7 +31,8 @@ import {
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
 
-const DAI_CONTRACT_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+export const DAI_CONTRACT_ADDRESS =
+  '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */

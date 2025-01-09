@@ -23,6 +23,8 @@ import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
+import { parseTypedDataMessage } from '../../../../../../shared/modules/transaction.utils';
+import { DAI_CONTRACT_ADDRESS } from '../info/typed-sign/typed-sign-v4-simulation/value-display/value-display';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const { generalAlerts } = useAlerts(ownerId);
@@ -84,6 +86,20 @@ const getTitle = (
         if (tokenStandard === TokenStandard.ERC721) {
           return t('setApprovalForAllRedesignedTitle');
         }
+
+        const msgData = (confirmation as SignatureRequestType)?.msgParams?.data;
+        const {
+          message,
+          domain: { verifyingContract },
+        } = parseTypedDataMessage(msgData as string);
+        const revokeDAIPermit =
+          message.allowed === false &&
+          verifyingContract === DAI_CONTRACT_ADDRESS;
+
+        if (revokeDAIPermit) {
+          return t('confirmTitleRevokeApproveTransaction');
+        }
+
         return t('confirmTitlePermitTokens');
       }
       return t('confirmTitleSignature');
@@ -136,6 +152,20 @@ const getDescription = (
         if (tokenStandard === TokenStandard.ERC721) {
           return t('confirmTitleDescApproveTransaction');
         }
+
+        const msgData = (confirmation as SignatureRequestType)?.msgParams?.data;
+        const {
+          message,
+          domain: { verifyingContract },
+        } = parseTypedDataMessage(msgData as string);
+        const revokeDAIPermit =
+          message.allowed === false &&
+          verifyingContract === DAI_CONTRACT_ADDRESS;
+
+        if (revokeDAIPermit) {
+          return '';
+        }
+
         return t('confirmTitleDescPermitSignature');
       }
       return t('confirmTitleDescSign');
