@@ -5,7 +5,6 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getInternalAccounts,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
@@ -31,8 +30,6 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { MergedInternalAccount } from '../../../selectors/selectors.types';
-import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import {
@@ -117,12 +114,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
-    return mergeAccounts(accounts, internalAccounts).filter(
-      (account: InternalAccount) => isEvmAccountType(account.type),
+  const evmAccounts = useMemo(() => {
+    return accounts.filter((account: InternalAccount) =>
+      isEvmAccountType(account.type),
     );
-  }, [accounts, internalAccounts]);
+  }, [accounts]);
 
   const currentAccount = useSelector(getSelectedInternalAccount);
   const currentAccountAddress = isEvmAccountType(currentAccount.type)
@@ -157,7 +153,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         <SiteCell
           nonTestNetworks={nonTestNetworks}
           testNetworks={testNetworks}
-          accounts={mergedAccounts}
+          accounts={evmAccounts}
           onSelectAccountAddresses={setSelectedAccountAddresses}
           onSelectChainIds={setSelectedChainIds}
           selectedAccountAddresses={selectedAccountAddresses}
