@@ -71,6 +71,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
+          decodingDescription: null,
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -109,6 +110,7 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           location: 'confirmation',
           decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
+          decodingDescription: null,
         });
       },
       mockSignatureRejectedWithDecoding,
