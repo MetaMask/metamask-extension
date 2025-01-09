@@ -32,7 +32,7 @@ class ConfirmSolanaTxPage {
     }
   }
 
-  async isTrancsactionDetailDisplayed(text: string): Promise<boolean> {
+  async isTransactionDetailDisplayed(text: string): Promise<boolean> {
     const detail = await this.driver.findElement(
       {
         text,

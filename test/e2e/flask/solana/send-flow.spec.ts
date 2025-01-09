@@ -5,7 +5,7 @@ import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { withSolanaAccountSnap } from './common-solana';
+import { getSolanaSeenRequests, withSolanaAccountSnap } from './common-solana';
 
 describe('Send SOL flow', function (this: Suite) {
   it('with a zero balance account', async function () {
@@ -43,7 +43,7 @@ describe('Send SOL flow', function (this: Suite) {
         mockCalls: true,
         mockSendTransaction: true,
       },
-      async (driver) => {
+      async (driver, mockServer) => {
         await driver.refresh();
         const homePage = new NonEvmHomepage(driver);
         assert.equal(
@@ -91,28 +91,28 @@ describe('Send SOL flow', function (this: Suite) {
           'Check amount displayed is wrong',
         );
         assert.equal(
-          await confirmSolanaPage.isTrancsactionDetailDisplayed('From'),
+          await confirmSolanaPage.isTransactionDetailDisplayed('From'),
           true,
           'From is not displayed',
         );
         assert.equal(
-          await confirmSolanaPage.isTrancsactionDetailDisplayed('Amount'),
+          await confirmSolanaPage.isTransactionDetailDisplayed('Amount'),
           true,
           'Amount is not displayed',
         );
 
         assert.equal(
-          await confirmSolanaPage.isTrancsactionDetailDisplayed('Recipient'),
+          await confirmSolanaPage.isTransactionDetailDisplayed('Recipient'),
           true,
           'Recipient is not displayed',
         );
         assert.equal(
-          await confirmSolanaPage.isTrancsactionDetailDisplayed('Network'),
+          await confirmSolanaPage.isTransactionDetailDisplayed('Network'),
           true,
           'Network is not displayed',
         );
         assert.equal(
-          await confirmSolanaPage.isTrancsactionDetailDisplayed(
+          await confirmSolanaPage.isTransactionDetailDisplayed(
             'Transaction speed',
           ),
           true,
@@ -120,17 +120,18 @@ describe('Send SOL flow', function (this: Suite) {
         );
 
         assert.equal(
-          await confirmSolanaPage.isTrancsactionDetailDisplayed('Network fee'),
+          await confirmSolanaPage.isTransactionDetailDisplayed('Network fee'),
           true,
           'Network fee is not displayed',
         );
         assert.equal(
-          await confirmSolanaPage.isTrancsactionDetailDisplayed('Total'),
+          await confirmSolanaPage.isTransactionDetailDisplayed('Total'),
           true,
           'Total is not displayed',
         );
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
+        assert(transaction !== undefined);
         assert.equal(
           await sentTxPage.checkTransactionStatusText('0.1', true),
           true,

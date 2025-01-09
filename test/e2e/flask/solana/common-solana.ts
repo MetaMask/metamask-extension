@@ -66,6 +66,33 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
       return response;
     });
 }
+
+export async function mockGetLatestBlockhash(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        context: {
+          apiVersion: '2.0.18',
+          slot: 308460925,
+        },
+        value: {
+          blockhash: '6E9FiVcuvavWyKTfYC7N9ezJWkNgJVQsroDTHvqApncg',
+          lastValidBlockHeight: 341034515,
+        },
+      },
+      id: 1337,
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getLatestBlockhash',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
 export async function mockGetSignaturesForAddress(mockServer: Mockttp) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
@@ -233,6 +260,7 @@ export async function withSolanaAccountSnap(
             await mockSolanaRatesCall(mockServer),
             await mockGetSignaturesForAddress(mockServer),
             await mockMultiCoinPrice(mockServer),
+            await mockGetLatestBlockhash(mockServer),
           ]);
         }
         if (mockSendTransaction) {
