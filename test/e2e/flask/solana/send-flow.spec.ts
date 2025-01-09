@@ -8,8 +8,8 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Send SOL flow', function (this: Suite) {
-  this.timeout(120000);
   it('with a zero balance account', async function () {
+    this.timeout(120000);
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
       async (driver) => {
@@ -35,6 +35,7 @@ describe('Send SOL flow', function (this: Suite) {
     );
   });
   it('with a positive balance account', async function () {
+    this.timeout(120000);
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
@@ -184,6 +185,7 @@ describe('Send SOL flow', function (this: Suite) {
     );
   });
   it('and Transaction fails', async function () {
+    this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),

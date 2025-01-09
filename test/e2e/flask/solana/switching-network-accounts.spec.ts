@@ -1,9 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { logging } from 'selenium-webdriver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Switching between account from different networks', function (this: Suite) {

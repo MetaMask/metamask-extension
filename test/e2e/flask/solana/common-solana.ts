@@ -8,7 +8,7 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const SOLANA_URL_REGEX = /^https:\/\/.*\..*/u;
-const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';
+// const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';
 const SOLANA_PRICE_REGEX =
   /^https:\/\/price-api\.metamask-institutional\.io\/v2\/chains\/solana:/u;
 const SOLANA_BITCOIN_MIN_API =
@@ -58,7 +58,7 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
     },
   };
   return await mockServer
-    .forPost(SOLANA_RPC_PROVIDER)
+    .forPost(SOLANA_URL_REGEX)
     .withJsonBodyIncluding({
       method: 'getBalance',
     })
@@ -153,9 +153,8 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
       id: 1337,
     },
   };
-  console.log('Entra aqui con ', response.json);
   return await mockServer
-    .forPost(SOLANA_RPC_PROVIDER)
+    .forPost(SOLANA_URL_REGEX)
     .withJsonBodyIncluding({
       method: 'sendTransaction',
     })

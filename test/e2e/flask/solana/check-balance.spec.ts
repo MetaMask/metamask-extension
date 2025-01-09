@@ -1,10 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import {
-  withSolanaAccountSnap,
-} from './common-solana';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-
+import { withSolanaAccountSnap } from './common-solana';
 
 describe('Check balance', function (this: Suite) {
   this.timeout(300000);

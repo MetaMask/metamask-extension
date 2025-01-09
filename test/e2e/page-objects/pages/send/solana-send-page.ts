@@ -30,13 +30,18 @@ class SendSolanaPage {
   }
 
   async clickOnContinue(): Promise<void> {
-    await this.driver.clickElement(
+    const continueButton = await this.driver.findElement(
       {
         text: 'Continue',
         tag: 'span',
       },
-      5,
+      3000,
     ); // Since the buttons takes a bit to get enabled, this avoid test flakiness
+    const clickableButton = await this.driver.findElement(
+      '.confirmation-page button:nth-of-type(2)',
+    );
+    await this.driver.wait(() => clickableButton.isEnabled(), 3000);
+    await continueButton.click();
   }
 
   async isContinueButtonEnabled(): Promise<boolean> {

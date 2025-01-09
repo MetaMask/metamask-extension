@@ -14,7 +14,7 @@ class NonEvmHomepage extends HomePage {
 
   /**
    * Checks if the expected balance is displayed on homepage.
-
+   *
    */
   async getBalance(): Promise<string> {
     console.log(`Getting Non-evm account balance`);
@@ -22,7 +22,7 @@ class NonEvmHomepage extends HomePage {
       timeout: 120000,
     });
     const singleBalanceText = await balanceValue.getText();
-    const trimmedBalance = singleBalanceText.replaceAll(/\s+/g, ' ').trim();
+    const trimmedBalance = singleBalanceText.replaceAll(/\s+/u, ' ').trim();
     return trimmedBalance;
   }
 
