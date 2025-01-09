@@ -15,7 +15,6 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToChain,
   setToChainId,
   setToToken,
   updateQuoteRequestParams,
@@ -485,7 +484,6 @@ const PrepareBridgePage = () => {
                   : undefined;
               toChainClientId && dispatch(setActiveNetwork(toChainClientId));
               dispatch(setFromToken(toToken));
-              fromChain?.chainId && dispatch(setToChain(fromChain.chainId));
               fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               dispatch(setToToken(fromToken));
             }}

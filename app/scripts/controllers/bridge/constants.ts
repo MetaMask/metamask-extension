@@ -1,5 +1,5 @@
 import { zeroAddress } from 'ethereumjs-util';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   BRIDGE_DEFAULT_SLIPPAGE,
   DEFAULT_MAX_REFRESH_COUNT,
@@ -20,9 +20,6 @@ export const DEFAULT_BRIDGE_CONTROLLER_STATE: BridgeControllerState = {
       chains: {},
     },
   },
-  destTokensLoadingStatus: undefined,
-  destTokens: {},
-  destTopAssets: [],
   quoteRequest: {
     walletAddress: undefined,
     srcTokenAddress: zeroAddress(),
