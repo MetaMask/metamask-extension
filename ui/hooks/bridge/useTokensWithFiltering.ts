@@ -1,19 +1,12 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { ChainId } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
-import { useParams } from 'react-router-dom';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   getAllDetectedTokensForSelectedAddress,
-  getTokenExchangeRates,
   selectERC20TokensByChain,
 } from '../../selectors';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../../ducks/metamask/metamask';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
@@ -41,24 +34,18 @@ type FilterPredicate = (
 
 /**
  * Returns a token list generator that filters and sorts tokens in this order
- * - matches URL token parameter
  * - matches search query
- * - highest balance in selected currency
- * - detected tokens (with balance)
+ * - tokens with highest to lowest balance in selected currency
+ * - detected tokens (without balance)
  * - popularity
  * - all other tokens
  *
  * @param chainId - the selected src/dest chainId
  */
 export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
-  const { token: tokenAddressFromUrl } = useParams();
   const allDetectedTokens: Record<string, Token[]> = useSelector(
     getAllDetectedTokensForSelectedAddress,
   );
-
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
 
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
@@ -138,22 +125,6 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
           Object.keys(tokenList).length === 0
         ) {
           return;
-        }
-
-        // If a token address is in the URL (e.g. from a deep link), yield that token first
-        if (tokenAddressFromUrl) {
-          const token =
-            tokenList[tokenAddressFromUrl] ??
-            tokenList[tokenAddressFromUrl.toLowerCase()];
-          if (
-            token &&
-            shouldAddToken(token.symbol, token.address ?? undefined, chainId)
-          ) {
-            const tokenWithData = buildTokenData(token);
-            if (tokenWithData) {
-              yield tokenWithData;
-            }
-          }
         }
 
         // Yield multichain tokens with balances and are not blocked
@@ -245,12 +216,8 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
     [
       multichainTokensWithBalance,
       topTokens,
-      tokenConversionRates,
-      conversionRate,
-      currentCurrency,
       chainId,
       tokenList,
-      tokenAddressFromUrl,
       allDetectedTokens,
     ],
   );
