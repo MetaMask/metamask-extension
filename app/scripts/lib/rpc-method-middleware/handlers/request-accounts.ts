@@ -35,7 +35,8 @@ const requestEthereumAccounts = {
     getUnlockPromise: true,
     sendMetrics: true,
     metamaskState: true,
-    requestCaip25PermissionForOrigin: true,
+    requestCaip25ApprovalForOrigin: true,
+    grantPermissionsForOrigin: true,
   },
 };
 export default requestEthereumAccounts;
@@ -59,7 +60,8 @@ const locks = new Set();
  * @param options.getUnlockPromise - A hook that resolves when the wallet is unlocked.
  * @param options.sendMetrics - A hook that helps track metric events.
  * @param options.metamaskState - The MetaMask app state.
- * @param options.requestCaip25PermissionForOrigin - A hook that requests the CAIP-25 permission for the origin.
+ * @param options.requestCaip25ApprovalForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
+ * @param options.grantPermissionsForOrigin - A hook that grants permission for the approved permissions for the origin.
  * @param options.metamaskState.metaMetricsId - The MetaMetrics ID.
  * @param options.metamaskState.permissionHistory - The permission history keyed by origin.
  * @param options.metamaskState.accounts - The accounts available in the wallet keyed by address.
@@ -75,7 +77,8 @@ async function requestEthereumAccountsHandler(
     getUnlockPromise,
     sendMetrics,
     metamaskState,
-    requestCaip25PermissionForOrigin,
+    requestCaip25ApprovalForOrigin,
+    grantPermissionsForOrigin,
   }: {
     getAccounts: (ignoreLock?: boolean) => string[];
     getUnlockPromise: (shouldShowUnlockRequest: true) => Promise<void>;
@@ -88,14 +91,15 @@ async function requestEthereumAccountsHandler(
       permissionHistory: Record<string, unknown>;
       accounts: Record<string, unknown>;
     };
-    requestCaip25PermissionForOrigin: (
+    requestCaip25ApprovalForOrigin: (
       requestedPermissions?: RequestedPermissions,
-    ) => Promise<
-      ValidPermission<
+    ) => Promise<RequestedPermissions>;
+    grantPermissionsForOrigin: (approvedPermissions: RequestedPermissions) => {
+      [Caip25EndowmentPermissionName]: ValidPermission<
         typeof Caip25EndowmentPermissionName,
         Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
-      >
-    >;
+      >;
+    };
   },
 ) {
   const { origin } = req;
@@ -125,7 +129,8 @@ async function requestEthereumAccountsHandler(
   }
 
   try {
-    await requestCaip25PermissionForOrigin();
+    const caip25Approval = await requestCaip25ApprovalForOrigin();
+    await grantPermissionsForOrigin(caip25Approval);
   } catch (error) {
     return end(error as unknown as Error);
   }
