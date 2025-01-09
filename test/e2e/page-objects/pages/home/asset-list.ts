@@ -117,7 +117,6 @@ class AssetListPage {
     const allNetworksValueElement = await this.driver.findElement(
       this.currentNetworksTotal,
     );
-    console.log('Aqui llega o no?');
     const value = await allNetworksValueElement.getText();
     return value;
   }

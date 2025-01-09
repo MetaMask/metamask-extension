@@ -139,11 +139,6 @@ class HeaderNavbar {
       text: expectedLabel,
     });
   }
-
-  async isNetworkPickerEnabled(): Promise<boolean> {
-    const element = await this.driver.findElement(this.switchNetworkDropDown);
-    return await element.isEnabled();
-  }
 }
 
 export default HeaderNavbar;
