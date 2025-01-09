@@ -309,14 +309,25 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
           data-testid="first-gas-field"
         >
-          0.0001 ETH
+          0 ETH
         </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.08
-        </p>
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-5"
+            class=""
+            data-original-title="0"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+              data-testid="native-currency"
+            >
+              &lt; $0.01
+            </p>
+          </div>
+        </div>
       </div>
     </div>
     <div
