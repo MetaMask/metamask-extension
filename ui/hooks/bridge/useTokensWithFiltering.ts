@@ -9,6 +9,7 @@ import {
   getAllDetectedTokensForSelectedAddress,
   getSelectedInternalAccountWithBalance,
   getTokenExchangeRates,
+  selectERC20TokensByChain,
 } from '../../selectors';
 import {
   getConversionRate,
@@ -26,7 +27,10 @@ import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { Token } from '../../components/app/assets/token-list/token-list';
 import { useMultichainBalances } from '../useMultichainBalances';
-import { getToTokens } from '../../ducks/bridge/selectors';
+import { useAsyncResult } from '../useAsyncResult';
+import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
+import { fetchBridgeTokens } from '../../../shared/modules/bridge-utils/bridge.util';
+import { MINUTE } from '../../../shared/constants/time';
 
 type FilterPredicate = (
   symbol: string,
@@ -60,6 +64,32 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
 
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
+
+  const cachedTokens = useSelector(selectERC20TokensByChain);
+
+  const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
+    Record<string, SwapsTokenObject>
+  >(async () => {
+    if (chainId) {
+      const timestamp = cachedTokens[chainId]?.timestamp;
+      // Use cached token data if updated in the last 10 minutes
+      if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
+        return cachedTokens[chainId]?.data;
+      }
+      // Otherwise fetch new token data
+      return await fetchBridgeTokens(chainId);
+    }
+    return {};
+  }, [chainId, cachedTokens]);
+
+  const { value: topTokens, pending: isTopTokenListLoading } = useAsyncResult<
+    { address: string }[]
+  >(async () => {
+    if (chainId) {
+      return await fetchTopAssetsList(chainId);
+    }
+    return [];
+  }, [chainId]);
 
   // This transforms the token object from the bridge-api into the format expected by the AssetPicker
   const buildTokenData = (
@@ -96,25 +126,28 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
     };
   };
 
-  // TODO only fetch tken list if network is not imported
-  const {
-    toTokens: tokenList,
-    toTopAssets: topTokens,
-    isLoading,
-  } = useSelector(getToTokens);
-
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
     (shouldAddToken: FilterPredicate) =>
       (function* (): Generator<
         AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
       > {
+        if (
+          !chainId ||
+          !topTokens ||
+          !tokenList ||
+          Object.keys(tokenList).length === 0
+        ) {
+          return;
+        }
+
         // If a token address is in the URL (e.g. from a deep link), yield that token first
         if (tokenAddressFromUrl) {
           const token =
-            tokenList?.[tokenAddressFromUrl] ??
-            tokenList?.[tokenAddressFromUrl.toLowerCase()];
+            tokenList[tokenAddressFromUrl] ??
+            tokenList[tokenAddressFromUrl.toLowerCase()];
           if (
+            token &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             const tokenWithData = buildTokenData(token);
@@ -203,5 +236,8 @@ export const useTokensWithFiltering = (chainId?: ChainId | Hex) => {
       allDetectedTokens,
     ],
   );
-  return { filteredTokenListGenerator, isLoading };
+  return {
+    filteredTokenListGenerator,
+    isLoading: isTokenListLoading || isTopTokenListLoading,
+  };
 };
