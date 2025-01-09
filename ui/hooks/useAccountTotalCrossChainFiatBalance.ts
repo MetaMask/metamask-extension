@@ -1,5 +1,5 @@
 import { shallowEqual, useSelector } from 'react-redux';
-import { toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from '@ethereumjs/util';
 import {
   getCurrentCurrency,
   getCurrencyRates,

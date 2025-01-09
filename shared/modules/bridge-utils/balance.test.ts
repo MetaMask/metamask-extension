@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { zeroAddress } from 'ethereumjs-util';
+import { zeroAddress } from '@ethereumjs/util';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { CHAIN_IDS } from '../../constants/network';
 import { Numeric } from '../Numeric';

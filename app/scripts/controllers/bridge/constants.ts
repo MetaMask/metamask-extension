@@ -1,4 +1,4 @@
-import { zeroAddress } from 'ethereumjs-util';
+import { zeroAddress } from '@ethereumjs/util';
 import { Hex } from '@metamask/utils';
 import {
   BRIDGE_DEFAULT_SLIPPAGE,

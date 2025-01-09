@@ -11,7 +11,7 @@ import {
   UserOperationController,
 } from '@metamask/user-operation-controller';
 import type { Hex } from '@metamask/utils';
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix } from '@ethereumjs/util';
 import { PPOMController } from '@metamask/ppom-validator';
 
 import {

@@ -1,7 +1,7 @@
 import { query } from '@metamask/controller-utils';
 import EthQuery from '@metamask/eth-query';
 import { Hex } from '@metamask/utils';
-import { addHexPrefix, stripHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, stripHexPrefix } from '@ethereumjs/util';
 
 const IMPLEMENTATION_STORAGE_SLOTS = [
   // org.zeppelinos.proxy.implementation

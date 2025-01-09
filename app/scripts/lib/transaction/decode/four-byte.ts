@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix } from '@ethereumjs/util';
 import { Interface, ParamType } from '@ethersproject/abi';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import {

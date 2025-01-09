@@ -1,4 +1,4 @@
-import { isHexString } from 'ethereumjs-util';
+import { isHexString } from '@ethereumjs/util';
 import { Interface } from '@ethersproject/abi';
 import {
   abiERC721,

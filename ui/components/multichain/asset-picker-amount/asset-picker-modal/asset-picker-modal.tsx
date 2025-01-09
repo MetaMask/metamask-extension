@@ -2,13 +2,13 @@ import React, { useState, useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
+import { zeroAddress } from '@ethereumjs/util';
 import {
   Token,
   TokenListMap,
   TokenListToken,
 } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
 import {
   Modal,
   ModalContent,

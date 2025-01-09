@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { Hex } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
+import { zeroAddress } from '@ethereumjs/util';
 import { getAddress } from 'ethers/lib/utils';
 import { HttpProvider } from '../../../types/global';
 import { fetchTokenBalance } from '../../lib/token-util';

@@ -1,4 +1,4 @@
-const { addHexPrefix } = require('ethereumjs-util');
+const { addHexPrefix } = require('@ethereumjs/util');
 const {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,

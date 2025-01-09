@@ -1,4 +1,4 @@
-import { toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from '@ethereumjs/util';
 import { EthAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';

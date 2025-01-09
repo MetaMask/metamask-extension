@@ -1,4 +1,4 @@
-import { toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from '@ethereumjs/util';
 import { getAccountType } from '../selectors';
 import { getSelectedInternalAccount } from '../accounts';
 import {

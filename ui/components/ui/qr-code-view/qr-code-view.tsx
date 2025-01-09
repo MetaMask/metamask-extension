@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
-import { isHexPrefixed } from 'ethereumjs-util';
+import { isHexPrefixed } from '@ethereumjs/util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';

@@ -1,6 +1,6 @@
 import { Transaction } from '@ethereumjs/tx';
 import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
-import { bufferToHex } from 'ethereumjs-util';
+import { bufferToHex } from '@ethereumjs/util';
 import { addHexPrefix, Common } from './keyring-utils';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
