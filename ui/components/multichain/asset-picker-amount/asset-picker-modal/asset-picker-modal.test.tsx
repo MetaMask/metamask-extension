@@ -65,6 +65,12 @@ jest.mock('../../../../hooks/useMultichainBalances', () => ({
   useMultichainBalances: () => mockUseMultichainBalances(),
 }));
 
+jest.mock('../../../../hooks/useNfts', () => ({
+  useNfts: () => ({
+    currentlyOwnedNfts: [],
+  }),
+}));
+
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;

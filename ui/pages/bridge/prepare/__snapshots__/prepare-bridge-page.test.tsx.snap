@@ -136,13 +136,6 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
               value="0"
             />
           </div>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-            data-theme="light"
-            style="white-space: nowrap;"
-          >
-            Bridge to
-          </button>
         </div>
         <div
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -325,13 +318,6 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
               value="0"
             />
           </div>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-            data-theme="light"
-            style="white-space: nowrap;"
-          >
-            Bridge to
-          </button>
         </div>
         <div
           class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
