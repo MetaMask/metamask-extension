@@ -33,7 +33,8 @@ export const requestPermissionsHandler = {
   hookNames: {
     getAccounts: true,
     requestPermissionsForOrigin: true,
-    requestCaip25PermissionForOrigin: true,
+    requestCaip25ApprovalForOrigin: true,
+    grantPermissionsForOrigin: true,
   },
 };
 
