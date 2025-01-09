@@ -130,7 +130,10 @@ async function requestEthereumAccountsHandler(
     return end(error as unknown as Error);
   }
 
+  // We cannot derive ethAccounts directly from the CAIP-25 permission
+  // because the accounts will not be in order of lastSelected
   ethAccounts = getAccounts(true);
+
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
   // we will leverage that to identify `is_first_visit` for metrics
@@ -152,9 +155,6 @@ async function requestEthereumAccountsHandler(
     });
   }
 
-  // We cannot derive ethAccounts directly from the CAIP-25 permission
-  // because the accounts will not be in order of lastSelected
   res.result = ethAccounts;
-
   return end();
 }
