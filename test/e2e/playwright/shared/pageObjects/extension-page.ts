@@ -17,7 +17,9 @@ export class ChromeExtensionPage {
     await context.waitForEvent('page');
     const pages = context.pages();
     const page = pages[pages.length - 1]; // return last tab
-    await page.waitForSelector('text=/I agree to MetaMask/');
+    await page
+      .getByTestId('onboarding-create-wallet')
+      .waitFor({ state: 'visible' });
     return page;
   }
 }
