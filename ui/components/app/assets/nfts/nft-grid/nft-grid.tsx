@@ -29,40 +29,42 @@ export default function NftGrid({
   );
 
   return (
-    <Box display={Display.Grid} gap={4} className="nft-items__wrapper">
-      {nfts.map((nft: NFT) => {
-        const { image, imageOriginal, tokenURI } = nft;
-        const nftImageAlt = getNftImageAlt(nft);
-        const isIpfsURL = (imageOriginal ?? image ?? tokenURI)?.startsWith(
-          'ipfs:',
-        );
-        return (
-          <Box
-            data-testid="nft-wrapper"
-            key={tokenURI}
-            className="nft-items__image-wrapper"
-          >
-            <NftItem
-              nft={nft}
-              alt={nftImageAlt}
-              src={image ?? ''}
-              networkName={currentChain.nickname}
-              networkSrc={currentChain.rpcPrefs?.imageUrl}
-              onClick={() => handleNftClick(nft)}
-              isIpfsURL={isIpfsURL}
-              clickable
+    <Box style={{ margin: 16 }}>
+      <Box display={Display.Grid} gap={4} className="nft-items__wrapper">
+        {nfts.map((nft: NFT) => {
+          const { image, imageOriginal, tokenURI } = nft;
+          const nftImageAlt = getNftImageAlt(nft);
+          const isIpfsURL = (imageOriginal ?? image ?? tokenURI)?.startsWith(
+            'ipfs:',
+          );
+          return (
+            <Box
+              data-testid="nft-wrapper"
+              key={tokenURI}
+              className="nft-items__image-wrapper"
+            >
+              <NftItem
+                nft={nft}
+                alt={nftImageAlt}
+                src={image ?? ''}
+                networkName={currentChain.nickname}
+                networkSrc={currentChain.rpcPrefs?.imageUrl}
+                onClick={() => handleNftClick(nft)}
+                isIpfsURL={isIpfsURL}
+                clickable
+              />
+            </Box>
+          );
+        })}
+        {nftsStillFetchingIndication ? (
+          <Box className="nfts-tab__fetching">
+            <Spinner
+              color="var(--color-warning-default)"
+              className="loading-overlay__spinner"
             />
           </Box>
-        );
-      })}
-      {nftsStillFetchingIndication ? (
-        <Box className="nfts-tab__fetching">
-          <Spinner
-            color="var(--color-warning-default)"
-            className="loading-overlay__spinner"
-          />
-        </Box>
-      ) : null}
+        ) : null}
+      </Box>
     </Box>
   );
 }

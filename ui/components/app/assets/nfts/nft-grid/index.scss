@@ -1,22 +1,13 @@
-.nfts-tab {
-  width: 100%;
-}
+@use "design-system";
 
 .nft-items {
   &__wrapper {
-    margin: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 
-  &__image-wrapper {
-    cursor: pointer;
-    width: 100%;
-    aspect-ratio: 1;
-
-    &-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+  @include design-system.screen-sm-max {
+    &__wrapper {
+      grid-template-columns: repeat(3, minmax(85px, 1fr));
     }
   }
 }

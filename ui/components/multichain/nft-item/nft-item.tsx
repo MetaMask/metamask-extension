@@ -34,6 +34,7 @@ type NftItemProps = {
   networkSrc?: string;
   onClick?: () => void;
   isIpfsURL?: boolean;
+  detailView?: boolean;
   clickable?: boolean;
   badgeWrapperClassname?: string;
 };
@@ -45,6 +46,7 @@ export const NftItem = ({
   networkName,
   networkSrc,
   onClick,
+  detailView,
   clickable,
   isIpfsURL,
   badgeWrapperClassname = '',
@@ -59,7 +61,11 @@ export const NftItem = ({
   const nftImageComponentToRender =
     ipfsImageIsRenderable || openseaImageIsRenderable ? (
       <Box
-        className="nft-item__item nft-item__item-image"
+        className={
+          detailView
+            ? 'nft-item__item nft-item__item-detail'
+            : 'nft-item__item nft-item__item-image'
+        }
         data-testid="nft-image"
         as="img"
         src={src}

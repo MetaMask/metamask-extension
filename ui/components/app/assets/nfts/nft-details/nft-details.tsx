@@ -354,6 +354,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
               networkSrc={currentChain.rpcPrefs?.imageUrl}
               isIpfsURL={isIpfsURL}
               onClick={handleImageClick}
+              detailView
               clickable
             />
           </Box>

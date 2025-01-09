@@ -1,3 +1,5 @@
+@use "design-system";
+
 .nft-item {
   &__card {
     cursor: pointer;
@@ -21,7 +23,22 @@
 
   &__item-image {
     border-radius: 8px;
-    padding: 0;
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1;
+    height: 200px;
+  }
+
+  @include design-system.screen-sm-max {
+    &__item-image {
+      height: 90px;
+    }
+  }
+
+  &__item-detail {
+    border-radius: 8px;
+    object-fit: cover;
+    aspect-ratio: 1;
     width: 100%;
     height: 100%;
   }
