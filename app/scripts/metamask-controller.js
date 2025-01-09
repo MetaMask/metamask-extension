@@ -5470,12 +5470,6 @@ export default class MetamaskController extends EventEmitter {
       Caip25CaveatType,
     );
 
-    if (caip25Caveat.value.isMultichainOrigin) {
-      throw providerErrors.unauthorized(
-        `Cannot switch to or add permissions for chainId '${chainId}' because permissions were granted over the Multichain API.`,
-      );
-    }
-
     if (!autoApprove) {
       await this.requestApprovalPermittedChainsPermission(origin, chainId);
     }

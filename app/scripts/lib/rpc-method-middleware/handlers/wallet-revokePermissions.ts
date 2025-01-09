@@ -1,21 +1,11 @@
-import {
-  CaveatSpecificationConstraint,
-  invalidParams,
-  MethodNames,
-  PermissionController,
-  PermissionSpecificationConstraint,
-} from '@metamask/permission-controller';
+import { invalidParams, MethodNames } from '@metamask/permission-controller';
 import {
   isNonEmptyArray,
   Json,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import {
-  Caip25CaveatType,
-  Caip25CaveatValue,
-  Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/multichain';
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
@@ -28,7 +18,6 @@ export const revokePermissionsHandler = {
   implementation: revokePermissionsImplementation,
   hookNames: {
     revokePermissionsForOrigin: true,
-    getPermissionsForOrigin: true,
     updateCaveat: true,
   },
 };
@@ -42,7 +31,6 @@ export const revokePermissionsHandler = {
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.revokePermissionsForOrigin - A hook that revokes given permission keys for an origin
- * @param options.getPermissionsForOrigin
  * @returns A promise that resolves to nothing
  */
 function revokePermissionsImplementation(
@@ -52,15 +40,8 @@ function revokePermissionsImplementation(
   end: JsonRpcEngineEndCallback,
   {
     revokePermissionsForOrigin,
-    getPermissionsForOrigin,
   }: {
     revokePermissionsForOrigin: (permissionKeys: string[]) => void;
-    getPermissionsForOrigin: () => ReturnType<
-      PermissionController<
-        PermissionSpecificationConstraint,
-        CaveatSpecificationConstraint
-      >['getPermissions']
-    >;
   },
 ) {
   const { params } = req;
@@ -86,27 +67,13 @@ function revokePermissionsImplementation(
     PermissionNames.permittedChains,
   ];
   const relevantPermissionKeys = permissionKeys.filter(
-    (name: string) =>
-      !caip25EquivalentPermissions.includes(name),
+    (name: string) => !caip25EquivalentPermissions.includes(name),
   );
 
   const shouldRevokeLegacyPermission =
     relevantPermissionKeys.length !== permissionKeys.length;
 
   if (shouldRevokeLegacyPermission) {
-    const permissions = getPermissionsForOrigin() || {};
-    const caip25Endowment = permissions?.[Caip25EndowmentPermissionName];
-    const caip25CaveatValue = caip25Endowment?.caveats?.find(
-      ({ type }) => type === Caip25CaveatType,
-    )?.value as Caip25CaveatValue | undefined;
-
-    if (caip25CaveatValue?.isMultichainOrigin) {
-      return end(
-        new Error(
-          'Cannot modify permission granted via the Multichain API. Either modify the permission using the Multichain API or revoke permissions and request again.',
-        ),
-      );
-    }
     relevantPermissionKeys.push(Caip25EndowmentPermissionName);
   }
 
