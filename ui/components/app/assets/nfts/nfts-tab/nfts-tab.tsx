@@ -271,8 +271,7 @@ export default function NftsTab() {
                         size={ButtonLinkSize.Md}
                         startIconName={IconName.Setting}
                         data-testid="refresh-list-button"
-                        // onClick={onEnableAutoDetect}
-                        onClick={() => console.log('enable autodetect')}
+                        onClick={onEnableAutoDetect}
                       >
                         {t('enableAutoDetect')}
                       </ButtonLink>
