@@ -55,9 +55,9 @@ export const BridgeTransactionSettingsModal = ({
     slippage,
   );
   const [customSlippage, setCustomSlippage] = useState<string | undefined>(
-    slippage && HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)
-      ? undefined
-      : slippage.toString(),
+    slippage && !HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)
+      ? slippage.toString()
+      : undefined,
   );
   const [showCustomButton, setShowCustomButton] = useState(true);
 
@@ -179,8 +179,8 @@ export const BridgeTransactionSettingsModal = ({
                 type={TextFieldType.Text}
                 value={customSlippage}
                 onChange={(e) => {
-                  const value = e.target.value;
-                  if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                  const { value } = e.target;
+                  if (value === '' || /^\d*\.?\d*$/u.test(value)) {
                     setLocalSlippage(undefined);
                     setCustomSlippage(value);
                   }
