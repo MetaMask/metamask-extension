@@ -5573,27 +5573,8 @@ export default class MetamaskController extends EventEmitter {
           },
         ],
       },
-    }
+    };
   }
-
-  // /**
-  //  * Requests CAIP-25 for permissions for the specified origin
-  //  * and replaces any existing CAIP-25 permission with a new one.
-  //  *
-  //  * @param {string} origin - The origin to request approval for.
-  //  * @param requestedPermissions - The legacy permissions to request approval for.
-  //  * @returns the granted CAIP-25 Permission.
-  //  */
-  // async requestCaip25Permission(origin, requestedPermissions = {}) {
-  //   const approvedPermissions = await this.requestCaip25Approval(origin, requestedPermissions)
-
-  //   const grantedPermissions = this.permissionController.grantPermissions({
-  //     subject: { origin },
-  //     approvedPermissions
-  //   });
-
-  //   return grantedPermissions[Caip25EndowmentPermissionName];
-  // }
 
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
@@ -6396,8 +6377,8 @@ export default class MetamaskController extends EventEmitter {
         grantPermissionsForOrigin: (approvedPermissions) => {
           return this.permissionController.grantPermissions({
             subject: { origin },
-            approvedPermissions
-          })
+            approvedPermissions,
+          });
         },
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
