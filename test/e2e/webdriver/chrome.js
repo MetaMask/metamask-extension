@@ -77,7 +77,6 @@ class ChromeDriver {
 
     // Temporarily lock to version 126
     options.setBrowserVersion('126');
-    options.set('goog:loggingPrefs', { browser: 'ALL' });
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
