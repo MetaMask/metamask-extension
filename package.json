@@ -28,6 +28,7 @@
     "start:test:mv2:flask": "ENABLE_MV3=false yarn start:test:flask --apply-lavamoat=false --snow=false",
     "start:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn start:test --apply-lavamoat=false --snow=false",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/benchmark.js",
+    "bundle-size": "SELENIUM_BROWSER=chrome ts-node test/e2e/mv3-perf-stats/bundle-size.js",
     "user-actions-benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/user-actions-benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox ts-node test/e2e/benchmark.js",
     "build:test": "yarn env:e2e build test",
