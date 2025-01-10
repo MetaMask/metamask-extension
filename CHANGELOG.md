@@ -66,7 +66,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed issue where clearing Activity tab data wiped txHistory for both source and destination chains in Bridge transactions ([#29000](https://github.com/MetaMask/metamask-extension/pull/29000))
 - [FLASK] Fixed Solana native balance display in the account selector ([#29054](https://github.com/MetaMask/metamask-extension/pull/29054))
 
-
 ## [12.9.3]
 ### Fixed
 - Fix some cases where users were incorrectly seeing 0 token balances ([#29361](https://github.com/MetaMask/metamask-extension/pull/29361))
