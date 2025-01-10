@@ -1,29 +1,8 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
-  Caip25CaveatType,
-  Caip25CaveatValue,
-  Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
-import {
-  Caveat,
-  RequestedPermissions,
-  ValidPermission,
-} from '@metamask/permission-controller';
-import {
-  JsonRpcParams,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
-import {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
 } from '../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../util';
 
@@ -35,7 +14,8 @@ const requestEthereumAccounts = {
     getUnlockPromise: true,
     sendMetrics: true,
     metamaskState: true,
-    requestCaip25PermissionForOrigin: true,
+    requestCaip25ApprovalForOrigin: true,
+    grantPermissionsForOrigin: true,
   },
 };
 export default requestEthereumAccounts;
@@ -59,43 +39,22 @@ const locks = new Set();
  * @param options.getUnlockPromise - A hook that resolves when the wallet is unlocked.
  * @param options.sendMetrics - A hook that helps track metric events.
  * @param options.metamaskState - The MetaMask app state.
- * @param options.requestCaip25PermissionForOrigin - A hook that requests the CAIP-25 permission for the origin.
- * @param options.metamaskState.metaMetricsId - The MetaMetrics ID.
- * @param options.metamaskState.permissionHistory - The permission history keyed by origin.
- * @param options.metamaskState.accounts - The accounts available in the wallet keyed by address.
+ * @param options.requestCaip25ApprovalForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
+ * @param options.grantPermissionsForOrigin - A hook that grants permission for the approved permissions for the origin.
  * @returns A promise that resolves to nothing
  */
 async function requestEthereumAccountsHandler(
-  req: JsonRpcRequest<JsonRpcParams> & { origin: string },
-  res: PendingJsonRpcResponse<string[]>,
-  _next: JsonRpcEngineNextCallback,
-  end: JsonRpcEngineEndCallback,
+  req,
+  res,
+  _next,
+  end,
   {
     getAccounts,
     getUnlockPromise,
     sendMetrics,
     metamaskState,
-    requestCaip25PermissionForOrigin,
-  }: {
-    getAccounts: (ignoreLock?: boolean) => string[];
-    getUnlockPromise: (shouldShowUnlockRequest: true) => Promise<void>;
-    sendMetrics: (
-      payload: MetaMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ) => void;
-    metamaskState: {
-      metaMetricsId: string;
-      permissionHistory: Record<string, unknown>;
-      accounts: Record<string, unknown>;
-    };
-    requestCaip25PermissionForOrigin: (
-      requestedPermissions?: RequestedPermissions,
-    ) => Promise<
-      ValidPermission<
-        typeof Caip25EndowmentPermissionName,
-        Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
-      >
-    >;
+    requestCaip25ApprovalForOrigin,
+    grantPermissionsForOrigin,
   },
 ) {
   const { origin } = req;
@@ -106,7 +65,7 @@ async function requestEthereumAccountsHandler(
     return end();
   }
 
-  let ethAccounts = getAccounts(true);
+  let ethAccounts = getAccounts({ ignoreLock: true });
   if (ethAccounts.length > 0) {
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
@@ -117,7 +76,7 @@ async function requestEthereumAccountsHandler(
       res.result = ethAccounts;
       end();
     } catch (error) {
-      end(error as unknown as Error);
+      end(error);
     } finally {
       locks.delete(origin);
     }
@@ -125,12 +84,16 @@ async function requestEthereumAccountsHandler(
   }
 
   try {
-    await requestCaip25PermissionForOrigin();
+    const caip25Approval = await requestCaip25ApprovalForOrigin();
+    await grantPermissionsForOrigin(caip25Approval);
   } catch (error) {
-    return end(error as unknown as Error);
+    return end(error);
   }
 
-  ethAccounts = getAccounts(true);
+  // We cannot derive ethAccounts directly from the CAIP-25 permission
+  // because the accounts will not be in order of lastSelected
+  ethAccounts = getAccounts({ ignoreLock: true });
+
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
   // we will leverage that to identify `is_first_visit` for metrics
@@ -152,9 +115,6 @@ async function requestEthereumAccountsHandler(
     });
   }
 
-  // We cannot derive ethAccounts directly from the CAIP-25 permission
-  // because the accounts will not be in order of lastSelected
   res.result = ethAccounts;
-
   return end();
 }
