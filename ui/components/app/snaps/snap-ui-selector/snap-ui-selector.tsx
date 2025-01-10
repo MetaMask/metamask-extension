@@ -3,6 +3,7 @@ import React, {
   useEffect,
   MouseEvent as ReactMouseEvent,
 } from 'react';
+import classnames from 'classnames';
 import {
   Box,
   ButtonBase,
@@ -128,7 +129,13 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
 
   return (
     <>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        className={classnames({
+          'snap-ui-renderer__field': label !== undefined,
+        })}
+      >
         {label && <Label htmlFor={name}>{label}</Label>}
         <ButtonBase
           className="snap-ui-renderer__selector"
