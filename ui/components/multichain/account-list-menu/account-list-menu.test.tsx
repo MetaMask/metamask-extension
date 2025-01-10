@@ -523,6 +523,9 @@ describe('AccountListMenu', () => {
                 keyring: {
                   type: 'Snap Keyring',
                 },
+                snap: {
+                  id: 'local:snap-id',
+                },
               },
             },
           },
@@ -535,7 +538,7 @@ describe('AccountListMenu', () => {
       '.multichain-account-list-item',
     );
     const tag = listItems[0].querySelector('.mm-tag') as Element;
-    expect(tag.textContent).toBe('Snaps (Beta)');
+    expect(tag.textContent).toBe('mock snap name (Beta)');
   });
 
   it('displays the correct label for named snap accounts', () => {
@@ -555,7 +558,7 @@ describe('AccountListMenu', () => {
                 },
                 snap: {
                   name: 'Test Snap Name',
-                  id: 'test-snap-id',
+                  id: 'local:snap-id',
                 },
               },
             },
@@ -568,7 +571,7 @@ describe('AccountListMenu', () => {
       '.multichain-account-list-item',
     );
     const tag = listItems[0].querySelector('.mm-tag') as Element;
-    expect(tag.textContent).toBe('Test Snap Name (Beta)');
+    expect(tag.textContent).toBe('mock snap name (Beta)');
   });
   ///: END:ONLY_INCLUDE_IF
 

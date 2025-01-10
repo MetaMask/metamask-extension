@@ -462,7 +462,6 @@
   "useNftDetection": false,
   "useNonceField": false,
   "usePhishDetect": true,
-  "useRequestQueue": true,
   "useSafeChainsListValidation": true,
   "useTokenDetection": true,
   "useTransactionSimulations": true,

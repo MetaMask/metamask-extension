@@ -143,7 +143,6 @@ const render = ({
           [CHAIN_IDS.LINEA_MAINNET]: true,
         },
       },
-      useRequestQueue: true,
       domains: {
         ...(selectedTabOriginInDomainsState
           ? { [origin]: selectedNetworkClientId }

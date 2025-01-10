@@ -813,8 +813,6 @@ export default class MetamaskController extends EventEmitter {
         }),
     });
 
-    this.nftController.setApiKey(process.env.OPENSEA_KEY);
-
     const nftDetectionControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'NftDetectionController',
@@ -1351,13 +1349,13 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.SelectedNetworkController,
-      useRequestQueuePreference:
-        this.preferencesController.state.useRequestQueue,
-      onPreferencesStateChange: (listener) => {
-        preferencesMessenger.subscribe(
-          'PreferencesController:stateChange',
-          listener,
-        );
+      useRequestQueuePreference: true,
+      onPreferencesStateChange: () => {
+        // noop
+        // we have removed the ability to toggle the useRequestQueue preference
+        // both useRequestQueue and onPreferencesStateChange will be removed
+        // once mobile supports per dapp network selection
+        // see https://github.com/MetaMask/core/pull/5065#issue-2736965186
       },
       domainProxyMap: new WeakRefObjectMap(),
     });
@@ -3484,9 +3482,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[], extensionId: string | undefined }>} An object with relevant state properties.
    */
   async getProviderState(origin) {
-    const providerNetworkState = await this.getProviderNetworkState(
-      this.preferencesController.getUseRequestQueue() ? origin : undefined,
-    );
+    const providerNetworkState = await this.getProviderNetworkState(origin);
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     const { chrome } = globalThis;
     ///: END:ONLY_INCLUDE_IF
@@ -3646,9 +3642,6 @@ export default class MetamaskController extends EventEmitter {
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
-      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
-      ),
       getProviderConfig: () =>
         getProviderConfig({
           metamask: this.networkController.state,
@@ -3698,7 +3691,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseTransactionSimulations.bind(
           preferencesController,
         ),
-      setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -4653,39 +4645,46 @@ export default class MetamaskController extends EventEmitter {
     // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
     // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
     if (details === undefined) {
-      details = await this.assetsContractController.getTokenStandardAndDetails(
-        address,
-        userAddress,
-        tokenId,
-      );
+      try {
+        details =
+          await this.assetsContractController.getTokenStandardAndDetails(
+            address,
+            userAddress,
+            tokenId,
+          );
+      } catch (e) {
+        log.warn(`Failed to get token standard and details. Error: ${e}`);
+      }
     }
 
-    const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
-      details.standard,
-      TokenStandard.ERC1155,
-    );
+    if (details) {
+      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
+        details.standard,
+        TokenStandard.ERC1155,
+      );
 
-    if (tokenDetailsStandardIsERC1155) {
-      try {
-        const balance = await fetchERC1155Balance(
-          address,
-          userAddress,
-          tokenId,
-          this.provider,
-        );
+      if (tokenDetailsStandardIsERC1155) {
+        try {
+          const balance = await fetchERC1155Balance(
+            address,
+            userAddress,
+            tokenId,
+            this.provider,
+          );
 
-        const balanceToUse = balance?._hex
-          ? parseInt(balance._hex, 16).toString()
-          : null;
+          const balanceToUse = balance?._hex
+            ? parseInt(balance._hex, 16).toString()
+            : null;
 
-        details = {
-          ...details,
-          balance: balanceToUse,
-        };
-      } catch (e) {
-        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warn('Failed to get token balance. Error:', e);
+          details = {
+            ...details,
+            balance: balanceToUse,
+          };
+        } catch (e) {
+          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+          // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
+          log.warn('Failed to get token balance. Error:', e);
+        }
       }
     }
 
@@ -5414,11 +5413,12 @@ export default class MetamaskController extends EventEmitter {
    * return permissioned accounts to the dapp when the wallet is locked.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @param {boolean} ignoreLock - If accounts should be returned even if the wallet is locked.
+   * @param {object} [options] - The options object
+   * @param {boolean} [options.ignoreLock] - If accounts should be returned even if the wallet is locked.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  getPermittedAccounts(origin, ignoreLock) {
+  getPermittedAccounts(origin, { ignoreLock } = {}) {
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(
@@ -5641,12 +5641,6 @@ export default class MetamaskController extends EventEmitter {
       Caip25CaveatType,
     );
 
-    if (caip25Caveat.value.isMultichainOrigin) {
-      throw providerErrors.unauthorized(
-        `Cannot switch to or add permissions for chainId '${chainId}' because permissions were granted over the Multichain API.`,
-      );
-    }
-
     if (!autoApprove) {
       await this.requestApprovalPermittedChainsPermission(origin, chainId);
     }
@@ -5671,14 +5665,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Requests CAIP-25 for permissions for the specified origin
-   * and replaces any existing CAIP-25 permission with a new one.
+   * Requests user approval for the CAIP-25 permission for the specified origin
+   * and returns a permissions object that must be passed to
+   * PermissionController.grantPermissions() to complete the permission granting.
    *
    * @param {string} origin - The origin to request approval for.
    * @param requestedPermissions - The legacy permissions to request approval for.
-   * @returns the granted CAIP-25 Permission.
+   * @returns the approved permissions object that must then be granted by calling the PermissionController.
    */
-  async requestCaip25Permission(origin, requestedPermissions = {}) {
+  async requestCaip25Approval(origin, requestedPermissions = {}) {
     const permissions = pick(requestedPermissions, [
       RestrictedMethods.eth_accounts,
       PermissionNames.permittedChains,
@@ -5726,21 +5721,16 @@ export default class MetamaskController extends EventEmitter {
       legacyApproval.approvedAccounts,
     );
 
-    const grantedPermissions = this.permissionController.grantPermissions({
-      subject: { origin },
-      approvedPermissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caveatValueWithAccounts,
-            },
-          ],
-        },
+    return {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: caveatValueWithAccounts,
+          },
+        ],
       },
-    });
-
-    return grantedPermissions[Caip25EndowmentPermissionName];
+    };
   }
 
   // ---------------------------------------------------------------------------
@@ -5894,14 +5884,6 @@ export default class MetamaskController extends EventEmitter {
   unMarkPasswordForgotten() {
     this.preferencesController.setPasswordForgotten(false);
     this.sendUpdate();
-  }
-
-  //=============================================================================
-  // REQUEST QUEUE
-  //=============================================================================
-
-  setUseRequestQueue(value) {
-    this.preferencesController.setUseRequestQueue(value);
   }
 
   //=============================================================================
@@ -6399,12 +6381,12 @@ export default class MetamaskController extends EventEmitter {
       enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
         this.queuedRequestController,
       ),
-      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
-      ),
       shouldEnqueueRequest: (request) => {
         return methodsThatShouldBeEnqueued.includes(request.method);
       },
+      // This will be removed once we can actually remove useRequestQueue state
+      // i.e. unrevert https://github.com/MetaMask/core/pull/5065
+      useRequestQueue: () => true,
     });
     engine.push(requestQueueMiddleware);
 
@@ -6554,10 +6536,16 @@ export default class MetamaskController extends EventEmitter {
         ),
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        requestCaip25PermissionForOrigin: this.requestCaip25Permission.bind(
+        requestCaip25ApprovalForOrigin: this.requestCaip25Approval.bind(
           this,
           origin,
         ),
+        grantPermissionsForOrigin: (approvedPermissions) => {
+          return this.permissionController.grantPermissions({
+            subject: { origin },
+            approvedPermissions,
+          });
+        },
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
           this.permissionController,
           origin,
@@ -6821,7 +6809,7 @@ export default class MetamaskController extends EventEmitter {
           MESSAGE_TYPE.WALLET_REVOKE_SESSION,
         ].includes(req.method)
       ) {
-        return end(new Error('Invalid method')); // TODO: Use a proper error
+        return end(rpcErrors.methodNotFound({ data: { method: req.method } }));
       }
       return next();
     });
@@ -6878,9 +6866,9 @@ export default class MetamaskController extends EventEmitter {
       enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
         this.queuedRequestController,
       ),
-      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
-      ),
+      // This will be removed once we can actually remove useRequestQueue state
+      // i.e. unrevert https://github.com/MetaMask/core/pull/5065
+      useRequestQueue: () => true,
       shouldEnqueueRequest: (request) => {
         return methodsRequiringNetworkSwitch.includes(request.method);
       },
@@ -7910,37 +7898,20 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _notifyChainChange() {
-    if (this.preferencesController.getUseRequestQueue()) {
-      this.notifyAllConnections(
-        async (origin) => ({
-          method: NOTIFICATION_NAMES.chainChanged,
-          params: await this.getProviderNetworkState(origin),
-        }),
-        API_TYPE.EIP1193,
-      );
-    } else {
-      this.notifyAllConnections(
-        {
-          method: NOTIFICATION_NAMES.chainChanged,
-          params: await this.getProviderNetworkState(),
-        },
-        API_TYPE.EIP1193,
-      );
-    }
+    this.notifyAllConnections(
+      async (origin) => ({
+        method: NOTIFICATION_NAMES.chainChanged,
+        params: await this.getProviderNetworkState(origin),
+      }),
+      API_TYPE.EIP1193,
+    );
   }
 
   async _notifyChainChangeForConnection(connection, origin) {
-    if (this.preferencesController.getUseRequestQueue()) {
-      this.notifyConnection(connection, {
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
-      });
-    } else {
-      this.notifyConnection(connection, {
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(),
-      });
-    }
+    this.notifyConnection(connection, {
+      method: NOTIFICATION_NAMES.chainChanged,
+      params: await this.getProviderNetworkState(origin),
+    });
   }
 
   async _onFinishedTransaction(transactionMeta) {
