@@ -1,4 +1,4 @@
-import { BoxElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import { ContainerElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapToTemplate } from '../utils';
 import {
@@ -9,7 +9,7 @@ import {
 import { UIComponentFactory } from './types';
 import { DEFAULT_FOOTER } from './footer';
 
-export const container: UIComponentFactory<BoxElement> = ({
+export const container: UIComponentFactory<ContainerElement> = ({
   element,
   useFooter,
   onCancel,
@@ -21,8 +21,8 @@ export const container: UIComponentFactory<BoxElement> = ({
 
   const { backgroundColor } = element.props;
   const backgroundColorMapping: { [key: string]: string | undefined } = {
-    default: BackgroundColor.backgroundDefault,
-    alternative: BackgroundColor.backgroundAlternative,
+    default: BackgroundColor.backgroundAlternative, // For Snaps, the default background color is the Alternative
+    alternative: BackgroundColor.backgroundDefault,
   };
   const extensionCompatibleBackgroundColor = backgroundColor
     ? backgroundColorMapping[backgroundColor]
@@ -40,6 +40,7 @@ export const container: UIComponentFactory<BoxElement> = ({
       t,
       ...params,
       element: child as JSXElement,
+      parentBackgroundColor: extensionCompatibleBackgroundColor,
     }),
   );
 

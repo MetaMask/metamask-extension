@@ -8,12 +8,20 @@ import { box } from './box';
 
 export const section: UIComponentFactory<SectionElement> = ({
   element,
+  // @ts-expect-error expected
+  parentBackgroundColor,
   ...params
 }) => {
   const { children, props } = box({
     element,
     ...params,
   } as unknown as UIComponentParams<BoxElement>);
+
+  const backgroundColor =
+    parentBackgroundColor === BackgroundColor.backgroundDefault
+      ? BackgroundColor.backgroundAlternative
+      : BackgroundColor.backgroundDefault;
+
   return {
     element: 'Box',
     children,
@@ -22,7 +30,7 @@ export const section: UIComponentFactory<SectionElement> = ({
       className: 'snap-ui-renderer__section',
       padding: 4,
       gap: 2,
-      backgroundColor: BackgroundColor.backgroundDefault,
+      backgroundColor,
       borderRadius: BorderRadius.LG,
     },
   };

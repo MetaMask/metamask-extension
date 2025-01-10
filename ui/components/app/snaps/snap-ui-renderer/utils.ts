@@ -20,6 +20,7 @@ export type MapToTemplateParams = {
     placeholder?: string;
   };
   t?: (key: string) => string;
+  parentBackgroundColor?: string | undefined;
 };
 
 /**
