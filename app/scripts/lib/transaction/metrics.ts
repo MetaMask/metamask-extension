@@ -33,6 +33,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import {
+  hexToDecimal,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
@@ -228,6 +229,8 @@ export const handleTransactionConfirmed = async (
   const { txReceipt } = transactionMeta;
 
   extraParams.gas_used = txReceipt?.gasUsed;
+  extraParams.block_number =
+    txReceipt?.blockNumber && hexToDecimal(txReceipt.blockNumber);
 
   const { submittedTime } = transactionMeta;
 
