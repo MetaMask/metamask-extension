@@ -19,7 +19,7 @@ import {
 describe('Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
   const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
-  it('Should receive empty object if `wallet_getSession` is called afterwards', async function () {
+  it('Should return empty object from `wallet_getSession` call', async function () {
     await withFixtures(
       {
         title: this.test?.fullTitle(),
@@ -44,6 +44,18 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+
+        /**
+         * We verify that scopes are not empty before calling `wallet_revokeSession`
+         */
+        const { sessionScopes } = await getSessionScopes(driver);
+        for (const scope of GANACHE_SCOPES) {
+          assert.notStrictEqual(
+            sessionScopes[scope],
+            undefined,
+            `scope ${scope} should not be empty.`,
+          );
+        }
 
         await driver.clickElement({
           text: 'wallet_revokeSession',
