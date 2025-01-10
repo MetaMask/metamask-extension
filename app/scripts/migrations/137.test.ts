@@ -1148,4 +1148,121 @@ describe('migration #137', () => {
       });
     },
   );
+
+  it('skips malformed subjects while migrating valid ones', async () => {
+    const baseData = () => ({
+      PermissionController: {
+        subjects: {},
+      },
+      SelectedNetworkController: {
+        domains: {},
+      },
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {},
+      },
+    });
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        ...baseData(),
+        PermissionController: {
+          subjects: {
+            'test.com': {
+              permissions: {
+                eth_accounts: {
+                  caveats: [
+                    {
+                      type: 'restrictReturnedAccounts',
+                      value: ['0xdeadbeef'],
+                    },
+                  ],
+                  parentCapability: 'eth_accounts',
+                },
+              },
+            },
+            'malformed.com': 'invalid-subject', // This should be skipped
+            'valid.com': {
+              permissions: {
+                eth_accounts: {
+                  caveats: [
+                    {
+                      type: 'restrictReturnedAccounts',
+                      value: ['0x123'],
+                    },
+                  ],
+                  parentCapability: 'eth_accounts',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(expect.any(Error));
+
+    expect(newStorage.data).toStrictEqual({
+      ...baseData(),
+      PermissionController: {
+        subjects: {
+          'test.com': {
+            permissions: {
+              'endowment:caip25': {
+                parentCapability: 'endowment:caip25',
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'wallet:eip155': {
+                          accounts: ['wallet:eip155:0xdeadbeef'],
+                        },
+                        'eip155:1': {
+                          accounts: ['eip155:1:0xdeadbeef'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'malformed.com': 'invalid-subject',
+          'valid.com': {
+            permissions: {
+              'endowment:caip25': {
+                parentCapability: 'endowment:caip25',
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'wallet:eip155': {
+                          accounts: ['wallet:eip155:0x123'],
+                        },
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x123'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // expect(newStorage.data.PermissionController.subjects['malformed.com']).toBe('invalid-subject');
+    // expect(newStorage.data.PermissionController.subjects['test.com'].permissions).toHaveProperty('endowment:caip25');
+    // expect(newStorage.data.PermissionController.subjects['valid.com'].permissions).toHaveProperty('endowment:caip25');
+  });
 });
