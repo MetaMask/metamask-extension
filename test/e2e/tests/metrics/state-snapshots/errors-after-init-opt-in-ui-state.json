@@ -289,7 +289,7 @@
     "isCheckingAccountsPresence": "boolean",
     "queuedRequestCount": 0,
     "fcmToken": "string",
-    "remoteFeatureFlags": { "feature1": true, "feature2": false },
+    "remoteFeatureFlags": {},
     "cacheTimestamp": "number",
     "accounts": "object",
     "accountsByChainId": "object",
