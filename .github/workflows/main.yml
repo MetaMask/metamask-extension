@@ -128,7 +128,7 @@ jobs:
     if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
     needs:
       - all-jobs-pass
-    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@6bbad335a01fce1a9ec1eabd9515542c225d46c0
+    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@7f7bdd6a3d6aaad46384546938bc261429efd06e
     secrets:
       GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
       GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
