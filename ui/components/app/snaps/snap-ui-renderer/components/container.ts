@@ -2,7 +2,6 @@ import { ContainerElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapToTemplate } from '../utils';
 import {
-  BackgroundColor,
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
@@ -19,15 +18,6 @@ export const container: UIComponentFactory<ContainerElement> = ({
 }) => {
   const children = getJsxChildren(element);
 
-  const { backgroundColor } = element.props;
-  const backgroundColorMapping: { [key: string]: string | undefined } = {
-    default: BackgroundColor.backgroundAlternative, // For Snaps, the default background color is the Alternative
-    alternative: BackgroundColor.backgroundDefault,
-  };
-  const extensionCompatibleBackgroundColor = backgroundColor
-    ? backgroundColorMapping[backgroundColor]
-    : undefined;
-
   // Remove footer if it's not allowed
   if (!useFooter && children.length === 2) {
     children.pop();
@@ -40,7 +30,6 @@ export const container: UIComponentFactory<ContainerElement> = ({
       t,
       ...params,
       element: child as JSXElement,
-      parentBackgroundColor: extensionCompatibleBackgroundColor,
     }),
   );
 
@@ -86,7 +75,6 @@ export const container: UIComponentFactory<ContainerElement> = ({
     element: 'Box',
     children: templateChildren,
     props: {
-      backgroundColor: extensionCompatibleBackgroundColor,
       display: Display.Flex,
       flexDirection: FlexDirection.Column,
       className: 'snap-ui-renderer__container',

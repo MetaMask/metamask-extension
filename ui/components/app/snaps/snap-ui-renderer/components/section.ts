@@ -9,7 +9,7 @@ import { box } from './box';
 export const section: UIComponentFactory<SectionElement> = ({
   element,
   // @ts-expect-error expected
-  parentBackgroundColor,
+  contentBackgroundColor,
   ...params
 }) => {
   const { children, props } = box({
@@ -17,8 +17,9 @@ export const section: UIComponentFactory<SectionElement> = ({
     ...params,
   } as unknown as UIComponentParams<BoxElement>);
 
+  // Reverse colors to improve visibility on certain backgrounds
   const backgroundColor =
-    parentBackgroundColor === BackgroundColor.backgroundDefault
+    contentBackgroundColor === BackgroundColor.backgroundDefault
       ? BackgroundColor.backgroundAlternative
       : BackgroundColor.backgroundDefault;
 
