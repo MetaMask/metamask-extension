@@ -72,25 +72,25 @@ export class MultichainAuthorizationConfirmation implements Rule {
     const isMethodAllowed = this.only ? this.only.includes(method.name) : true;
     if (isMethodAllowed) {
       if (method.examples) {
-        // pull the first example
-        const e = method.examples[0];
-        const ex = e as ExamplePairingObject;
+        method.examples.forEach((e) => {
+          const ex = e as ExamplePairingObject;
 
-        if (!ex.result) {
-          return calls;
-        }
-        const p = ex.params.map((_e) => (_e as ExampleObject).value);
-        const params =
-          method.paramStructure === 'by-name'
-            ? paramsToObj(p, method.params as ContentDescriptorObject[])
-            : p;
-        calls.push({
-          title: `${this.getTitle()} - with example ${ex.name}`,
-          methodName: method.name,
-          params,
-          url: '',
-          resultSchema: (method.result as ContentDescriptorObject).schema,
-          expectedResult: (ex.result as ExampleObject).value,
+          if (!ex.result) {
+            return;
+          }
+          const p = ex.params.map((_e) => (_e as ExampleObject).value);
+          const params =
+            method.paramStructure === 'by-name'
+              ? paramsToObj(p, method.params as ContentDescriptorObject[])
+              : p;
+          calls.push({
+            title: `${this.getTitle()} - with example ${ex.name}`,
+            methodName: method.name,
+            params,
+            url: '',
+            resultSchema: (method.result as ContentDescriptorObject).schema,
+            expectedResult: (ex.result as ExampleObject).value,
+          });
         });
       } else {
         // naively call the method with no params

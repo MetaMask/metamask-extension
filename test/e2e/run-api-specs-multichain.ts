@@ -123,8 +123,9 @@ async function main() {
       // fix the example for wallet_createSession
       (providerAuthorize as MethodObject).examples = [
         {
-          name: 'wallet_createSessionExample',
-          description: 'Example of a provider authorization request.',
+          name: 'wallet_createSessionEthExample',
+          description:
+            'Example of a provider authorization request with eip155 scopes.',
           params: [
             {
               name: 'requiredScopes',
@@ -146,7 +147,7 @@ async function main() {
             },
           ],
           result: {
-            name: 'wallet_createSessionResultExample',
+            name: 'wallet_createSessionEthResultExample',
             value: {
               sessionScopes: {
                 [`eip155:${chainId}`]: {
@@ -163,6 +164,73 @@ async function main() {
                   accounts: [`wallet:eip155:${ACCOUNT_1}`],
                   methods: walletRpcMethods,
                   notifications: [],
+                },
+              },
+            },
+          },
+        },
+        {
+          name: 'wallet_createSessionEthUnsupportedMethodsExample',
+          description:
+            'Example of a provider authorization request with unsupported eip155 methods.',
+          params: [
+            {
+              name: 'requiredScopes',
+              value: {
+                eip155: {
+                  references: ['1337'],
+                  methods: ['not_supported'],
+                  notifications: [],
+                },
+              },
+            },
+          ],
+          result: {
+            name: 'wallet_createSessionEthUnsupportedMethodsResultExample',
+            value: {
+              sessionScopes: {
+                [`eip155:${chainId}`]: {
+                  accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
+                  methods: ethereumMethods,
+                  notifications: ['eth_subscription'],
+                },
+              },
+            },
+          },
+        },
+        {
+          name: 'wallet_createSessionUnsupportedScopesExample',
+          description:
+            'Example of a provider authorization request with unsupported scopes.',
+          params: [
+            {
+              name: 'requiredScopes',
+              value: {
+                'foo:bar': {
+                  methods: [],
+                  notifications: [],
+                },
+              },
+            },
+          ],
+          result: {
+            name: 'wallet_createSessionUnsupportedScopesResultExample',
+            value: {
+              sessionScopes: {
+                [`eip155:1`]: {
+                  accounts: [`eip155:1:${ACCOUNT_1}`],
+                  methods: ethereumMethods,
+                  notifications: ['eth_subscription'],
+                },
+                [`eip155:59144`]: {
+                  accounts: [`eip155:59144:${ACCOUNT_1}`],
+                  methods: ethereumMethods,
+                  notifications: ['eth_subscription'],
+                },
+                [`eip155:${chainId}`]: {
+                  accounts: [`eip155:${chainId}:${ACCOUNT_1}`],
+                  methods: ethereumMethods,
+                  notifications: ['eth_subscription'],
                 },
               },
             },
