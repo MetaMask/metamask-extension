@@ -37,7 +37,7 @@ describe('Multichain API', function () {
           driver: Driver;
           extensionId: string;
         }) => {
-          const scopesToIgnore = ['eip155:42161', 'eip155:10'];
+          const scopesToIgnore = ['eip155:1338', 'eip155:1000'];
           await openMultichainDappAndConnectWalletWithExternallyConnectable(
             driver,
             extensionId,
@@ -144,8 +144,7 @@ describe('Multichain API', function () {
       }) => {
         const requestScopesToNetworkMap = {
           'eip155:1': 'Ethereum Mainnet',
-          'eip155:42161': 'Arbitrum One',
-          'eip155:10': 'OP Mainnet',
+          'eip155:59141': 'Linea Sepolia',
         };
 
         const requestScopes = Object.keys(requestScopesToNetworkMap);
