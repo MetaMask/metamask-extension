@@ -154,7 +154,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
             .then((res) => res.data?.error);
 
           /**
-           * We make sure it's the expected error by comparing expected error code and message (we ignore stack property)
+           * We make sure it's the expected error by comparing expected error code and message (we ignore `stack` property)
            */
           Object.entries(expectedError).forEach(([key, value]) => {
             assert.deepEqual(
