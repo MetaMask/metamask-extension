@@ -4,6 +4,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
+import dmk from './DeviceSdk';
 
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
@@ -16,6 +17,7 @@ type LedgerOffscreenBridgeOptions = Record<never, never>;
  * hardware wallet keyring also requires a bridge that has a known interface
  * that the keyring can call into for specific functions. The bridge then makes
  * whatever calls or requests it needs to in order to fulfill the request from
+ *
  * the keyring. In this case, the bridge is used to communicate with the
  * Offscreen Document. Inside the Offscreen document the ledger script is
  * loaded and registers a listener for these calls and communicate with the
@@ -53,24 +55,41 @@ export class LedgerOffscreenBridge
     return Promise.resolve();
   }
 
-  attemptMakeApp() {
-    return new Promise<boolean>((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.makeApp,
-        },
-        (response) => {
-          if (response.success) {
-            resolve(true);
-          } else if (response.error) {
-            reject(response.error);
-          } else {
-            reject(new Error('Unknown error occurred'));
-          }
-        },
-      );
+  async attemptMakeApp() {
+    dmk.startDiscovering().subscribe({
+      next: (device) => {
+        console.log('Device found:', device);
+        dmk.connect({ deviceId: device.id }).then((sessionId) => {
+          const connectedDevice = dmk.getConnectedDevice({ sessionId });
+          console.log('Connected device:', connectedDevice);
+        });
+
+      },
+      error: (error) => {
+        console.error('Error:', error);
+      },
+      complete: () => {
+        console.log('Discovery complete');
+      },
     });
+    return true;
+    // return new Promise<boolean>((resolve, reject) => {
+    //   chrome.runtime.sendMessage(
+    //     {
+    //       target: OffscreenCommunicationTarget.ledgerOffscreen,
+    //       action: LedgerAction.makeApp,
+    //     },
+    //     (response) => {
+    //       if (response.success) {
+    //         resolve(true);
+    //       } else if (response.error) {
+    //         reject(response.error);
+    //       } else {
+    //         reject(new Error('Unknown error occurred'));
+    //       }
+    //     },
+    //   );
+    // });
   }
 
   updateTransportMethod(transportType: string) {

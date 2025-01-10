@@ -269,6 +269,8 @@
     "@keystonehq/metamask-airgapped-keyring": "^0.14.1",
     "@lavamoat/lavadome-react": "0.0.17",
     "@lavamoat/snow": "^2.0.2",
+    "@ledgerhq/device-management-kit": "^0.5.1",
+    "@ledgerhq/device-signer-kit-ethereum": "^1.1.0",
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "^0.3.0",
     "@metamask-institutional/custody-keyring": "^2.1.1",
