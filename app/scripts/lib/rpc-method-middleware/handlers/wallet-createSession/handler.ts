@@ -63,8 +63,6 @@ type AbstractPermissionController = PermissionController<
  * @param end - The end function.
  * @param hooks - The hooks object.
  * @param hooks.listAccounts
- * @param hooks.removeNetwork
- * @param hooks.addNetwork
  * @param hooks.findNetworkClientIdByChainId
  * @param hooks.requestPermissionApprovalForOrigin
  * @param hooks.sendMetrics
@@ -84,8 +82,6 @@ async function walletCreateSessionHandler(
   end: JsonRpcEngineEndCallback,
   hooks: {
     listAccounts: () => { address: string }[];
-    removeNetwork: NetworkController['removeNetwork'];
-    addNetwork: NetworkController['addNetwork'];
     findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
     requestPermissionApprovalForOrigin: (
       requestedPermissions: RequestedPermissions,
@@ -273,10 +269,8 @@ export const walletCreateSession = {
   methodNames: [MESSAGE_TYPE.WALLET_CREATE_SESSION],
   implementation: walletCreateSessionHandler,
   hookNames: {
-    removeNetwork: true,
     findNetworkClientIdByChainId: true,
     listAccounts: true,
-    addNetwork: true,
     requestPermissionApprovalForOrigin: true,
     grantPermissions: true,
     sendMetrics: true,
