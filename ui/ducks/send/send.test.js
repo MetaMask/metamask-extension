@@ -89,15 +89,6 @@ const mockStore = createMockStore([thunk]);
 const mockAddress1 = '0xdafea492d9c6733ae3d56b7ed1adb60692c98123';
 const mockNftAddress1 = 'f4831105676a5fc024684d056390b8bc529daf51c7';
 
-jest.mock('./send', () => {
-  const actual = jest.requireActual('./send');
-  return {
-    __esModule: true,
-    ...actual,
-    getERC20Balance: jest.fn(() => '0x0'),
-  };
-});
-
 jest.mock('lodash', () => ({
   ...jest.requireActual('lodash'),
   debounce: (fn) => fn,

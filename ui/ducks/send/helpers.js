@@ -1,9 +1,6 @@
 import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
-import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { Web3Provider } from '@ethersproject/providers';
-import { Contract } from '@ethersproject/contracts';
 import { getErrorMessage } from '../../../shared/modules/error';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
@@ -405,23 +402,6 @@ export function getRoundedGasPrice(gasPriceEstimate) {
     .toString();
   const gasPriceAsNumber = Number(gasPriceInDecGwei);
   return getGasPriceInHexWei(gasPriceAsNumber);
-}
-
-export async function getERC20Balance(token, accountAddress) {
-  const contract = new Contract(
-    token.address,
-    abi,
-    new Web3Provider(global.ethereumProvider),
-  );
-  const usersToken = (await contract.balanceOf(accountAddress)) ?? null;
-  if (!usersToken) {
-    return '0x0';
-  }
-  const amount = calcTokenAmount(
-    usersToken.balance.toString(),
-    token.decimals,
-  ).toString(16);
-  return addHexPrefix(amount);
 }
 
 /**
