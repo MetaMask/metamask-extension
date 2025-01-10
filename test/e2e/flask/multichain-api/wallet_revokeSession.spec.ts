@@ -93,6 +93,12 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           driver,
           extensionId,
         );
+        const expectedError = {
+          code: 4100,
+          message:
+            'The requested account and/or method has not been authorized by the user.',
+        };
+
         await initCreateSessionScopes(driver, GANACHE_SCOPES, ACCOUNTS);
         await addAccountInWalletAndAuthorize(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
@@ -143,19 +149,12 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
            * We call `executeScript` to attempt JSON rpc call directly through the injected provider object since when session is revoked,
            * webapp does not provide UI to make call.
            */
-
-          const expectedError = {
-            code: 4100,
-            message:
-              'The requested account and/or method has not been authorized by the user.',
-          };
-
           const actualError = await driver
             .executeScript(script)
             .then((res) => res.data?.error);
 
           /**
-           * We make sure it's the expected error by comparing expected error code and message (we ignore stack propery)
+           * We make sure it's the expected error by comparing expected error code and message (we ignore stack property)
            */
           Object.entries(expectedError).forEach(([key, value]) => {
             assert.deepEqual(
