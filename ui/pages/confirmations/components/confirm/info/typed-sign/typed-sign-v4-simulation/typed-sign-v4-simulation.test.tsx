@@ -68,7 +68,7 @@ describe('PermitSimulation', () => {
       expect(await findByText('Estimated changes')).toBeInTheDocument();
       expect(
         await findByText(
-          "You're removing the spender permission to spend this many tokens from your account.",
+          "You're giving the spender permission to spend this many tokens from your account.",
         ),
       ).toBeInTheDocument();
     });
@@ -103,7 +103,7 @@ describe('PermitSimulation', () => {
       expect(await findByText('Estimated changes')).toBeInTheDocument();
       expect(
         await findByText(
-          "You're removing the spender permission to spend this many tokens from your account.",
+          "You're giving the spender permission to spend this many tokens from your account.",
         ),
       ).toBeInTheDocument();
     });
