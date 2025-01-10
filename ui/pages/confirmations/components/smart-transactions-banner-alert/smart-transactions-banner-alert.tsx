@@ -5,6 +5,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BannerAlert,
   ButtonLink,
+  Box,
   Text,
   BannerAlertSeverity,
 } from '../../../../components/component-library';
@@ -18,7 +19,6 @@ import {
   getSmartTransactionsOptInStatusInternal,
   getSmartTransactionsMigrationAppliedInternal,
 } from '../../../../../shared/modules/selectors/smart-transactions';
-import { Box } from '../../../../components/component-library';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
