@@ -153,33 +153,21 @@ async function walletCreateSessionHandler(
       return Boolean(validScopedProperties?.[scopeString]?.eip3085);
     };
 
-    const {
-      supportedScopes: supportedRequiredScopes,
-      supportableScopes: supportableRequiredScopes,
-      unsupportableScopes: unsupportableRequiredScopes,
-    } = bucketScopes(supportedRequiredScopesObjects, {
-      isChainIdSupported: existsNetworkClientForChainId,
-      isChainIdSupportable: existsEip3085ForChainId,
-    });
+    const { supportedScopes: supportedRequiredScopes } = bucketScopes(
+      supportedRequiredScopesObjects,
+      {
+        isChainIdSupported: existsNetworkClientForChainId,
+        isChainIdSupportable: existsEip3085ForChainId,
+      },
+    );
 
-    const {
-      supportedScopes: supportedOptionalScopes,
-      supportableScopes: supportableOptionalScopes,
-      unsupportableScopes: unsupportableOptionalScopes,
-    } = bucketScopes(supportedOptionalScopesObjects, {
-      isChainIdSupported: existsNetworkClientForChainId,
-      isChainIdSupportable: existsEip3085ForChainId,
-    });
-
-    // TODO: placeholder for future CAIP-25 permission confirmation call
-    JSON.stringify({
-      supportedRequiredScopes,
-      supportableRequiredScopes,
-      unsupportableRequiredScopes,
-      supportedOptionalScopes,
-      supportableOptionalScopes,
-      unsupportableOptionalScopes,
-    });
+    const { supportedScopes: supportedOptionalScopes } = bucketScopes(
+      supportedOptionalScopesObjects,
+      {
+        isChainIdSupported: existsNetworkClientForChainId,
+        isChainIdSupportable: existsEip3085ForChainId,
+      },
+    );
 
     // Fetch EVM accounts from native wallet keyring
     // These addresses are lowercased already
