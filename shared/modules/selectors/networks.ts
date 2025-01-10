@@ -48,7 +48,14 @@ export type NetworksMetadataState = {
 };
 
 export type ProviderConfigState = NetworkConfigurationsByChainIdState &
-  SelectedNetworkClientIdState;
+  SelectedNetworkClientIdState & {
+    activeTab?: {
+      origin: string;
+    };
+    metamask: {
+      domains: Record<string, string>;
+    }
+  };
 
 export type MultichainNetworkConfigurationsByChainIdState = {
   metamask: {
@@ -237,7 +244,7 @@ export const getProviderConfig = createDeepEqualSelector(
       for (const rpcEndpoint of network.rpcEndpoints) {
         if (rpcEndpoint.networkClientId === networkClientIdToUse) {
           const blockExplorerUrl =
-            network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex];
+            network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex ?? 0];
 
           return {
             chainId: network.chainId,
