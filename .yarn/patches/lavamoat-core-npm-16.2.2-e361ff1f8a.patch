@@ -17,21 +17,19 @@ index b3053356c739a5f351fd4e271b67e31ee00bb4dc..7daebe4104ce5d799f90068516b1d0aa
    return finalPolicy
  }
 diff --git a/src/scuttle.js b/src/scuttle.js
-index c096a1fbf0bfe8a8f22290852881598f74fff4b1..97f5d1cd09d19f8be1de6a5956d2c39f51058ba0 100644
+index c096a1fbf0bfe8a8f22290852881598f74fff4b1..b7438881be5e25b48ea18919a4b642a0b14cc317 100644
 --- a/src/scuttle.js
 +++ b/src/scuttle.js
-@@ -98,6 +98,10 @@ function generateScuttleOpts(globalRef, originalOpts = create(null)) {
-     }
-     opts.scuttlerFunc = globalRef[opts.scuttlerName]
+@@ -77,6 +77,8 @@ function generateScuttleOpts(globalRef, originalOpts = create(null)) {
+     exceptions: [],
+     scuttlerName: '',
    }
-+
 +  // cache regular expressions to work around https://github.com/MetaMask/metamask-extension/issues/21006
 +  const regexCache = new Map()
-+
-   return opts
- 
-   /**
-@@ -109,10 +113,15 @@ function generateScuttleOpts(globalRef, originalOpts = create(null)) {
+   const opts = assign(
+     create(null),
+     originalOpts === true ? defaultOpts : originalOpts,
+@@ -109,10 +111,15 @@ function generateScuttleOpts(globalRef, originalOpts = create(null)) {
      if (!except.startsWith('/')) {
        return except
      }

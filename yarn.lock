@@ -25289,7 +25289,7 @@ __metadata:
 
 "lavamoat-core@patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch":
   version: 16.2.2
-  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch::version=16.2.2&hash=963210"
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch::version=16.2.2&hash=c09704"
   dependencies:
     "@babel/types": "npm:7.26.0"
     json-stable-stringify: "npm:1.1.1"
@@ -25299,7 +25299,7 @@ __metadata:
     type-fest: "npm:4.30.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/edf1c69d7790bd8c0b47e0d98fd263b759b04542165a1a67f6747a50bbcc969513a159bd6cf53001b0e83e76a18e473bbb2da8cdb3d505ec277734ee4588c976
+  checksum: 10/d0feaa9598f50ba4fa268c227e81cf6235d12f6272f9b06d9e3e350367081ce3060c67caff9855211ce5f05f995cd342361e4cfa2bc108a7d525c0a630301efc
   languageName: node
   linkType: hard
 
