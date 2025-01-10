@@ -5,7 +5,7 @@ import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { getSolanaSeenRequests, withSolanaAccountSnap } from './common-solana';
+import { withSolanaAccountSnap } from './common-solana';
 
 describe('Send SOL flow', function (this: Suite) {
   it('with a zero balance account', async function () {
@@ -29,7 +29,7 @@ describe('Send SOL flow', function (this: Suite) {
         assert.equal(
           await sendSolanaPage.isInsufficientBalanceDisplayed(),
           true,
-          'Insufficiente balance text is not displayed',
+          'Insufficient balance text is not displayed',
         );
       },
     );
@@ -43,7 +43,7 @@ describe('Send SOL flow', function (this: Suite) {
         mockCalls: true,
         mockSendTransaction: true,
       },
-      async (driver, mockServer) => {
+      async (driver) => {
         await driver.refresh();
         const homePage = new NonEvmHomepage(driver);
         assert.equal(
@@ -80,7 +80,7 @@ describe('Send SOL flow', function (this: Suite) {
         assert.equal(
           await sendSolanaPage.isInsufficientBalanceDisplayed(),
           false,
-          'Insufficiente balance text is displayed',
+          'Insufficient balance text is displayed',
         );
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
         await sendSolanaPage.clickOnContinue();
@@ -132,52 +132,52 @@ describe('Send SOL flow', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await sentTxPage.checkTransactionStatusText('0.1', true),
+          await sentTxPage.check_TransactionStatusText('0.1', true),
           true,
           'Transaction amount is not correct',
         );
         assert.equal(
-          await sentTxPage.checkTransactionStatus(true),
+          await sentTxPage.check_TransactionStatus(true),
           true,
           'Transaction was not sent as expected',
         );
         assert.equal(
-          await sentTxPage.isTrancsactionDetailDisplayed('From'),
+          await sentTxPage.isTransactionDetailDisplayed('From'),
           true,
           'From field not displayed',
         );
         assert.equal(
-          await sentTxPage.isTrancsactionDetailDisplayed('Amount'),
+          await sentTxPage.isTransactionDetailDisplayed('Amount'),
           true,
           'Amount field not displayed',
         );
         assert.equal(
-          await sentTxPage.isTrancsactionDetailDisplayed('Recipient'),
+          await sentTxPage.isTransactionDetailDisplayed('Recipient'),
           true,
           'Recipient field not displayed',
         );
         assert.equal(
-          await sentTxPage.isTrancsactionDetailDisplayed('Network'),
+          await sentTxPage.isTransactionDetailDisplayed('Network'),
           true,
           'Network field not displayed',
         );
         assert.equal(
-          await sentTxPage.isTrancsactionDetailDisplayed('Transaction speed'),
+          await sentTxPage.isTransactionDetailDisplayed('Transaction speed'),
           true,
           'Transaction field not displayed',
         );
         assert.equal(
-          await sentTxPage.isTrancsactionDetailDisplayed('Network fee'),
+          await sentTxPage.isTransactionDetailDisplayed('Network fee'),
           true,
           'Network fee field not displayed',
         );
         assert.equal(
-          await sentTxPage.isTrancsactionDetailDisplayed('Total'),
+          await sentTxPage.isTransactionDetailDisplayed('Total'),
           true,
           'Total field not displayed',
         );
         assert.equal(
-          await sentTxPage.isViewTransactionLinkDisplayed(),
+          await sentTxPage.check_isViewTransactionLinkDisplayed(),
           true,
           'View transaction link is not displayed',
         );
@@ -223,47 +223,47 @@ describe('Send SOL flow', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const failedTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await failedTxPage.checkTransactionStatusText('0.1', false),
+          await failedTxPage.check_TransactionStatusText('0.1', false),
           true,
           'Transaction amount is not correct',
         );
         assert.equal(
-          await failedTxPage.checkTransactionStatus(false),
+          await failedTxPage.check_TransactionStatus(false),
           true,
           'Transaction did not fail as expected',
         );
         assert.equal(
-          await failedTxPage.isTrancsactionDetailDisplayed('From'),
+          await failedTxPage.isTransactionDetailDisplayed('From'),
           true,
           'From field not displayed',
         );
         assert.equal(
-          await failedTxPage.isTrancsactionDetailDisplayed('Amount'),
+          await failedTxPage.isTransactionDetailDisplayed('Amount'),
           true,
           'Amount field not displayed',
         );
         assert.equal(
-          await failedTxPage.isTrancsactionDetailDisplayed('Recipient'),
+          await failedTxPage.isTransactionDetailDisplayed('Recipient'),
           true,
           'Recipient field not displayed',
         );
         assert.equal(
-          await failedTxPage.isTrancsactionDetailDisplayed('Network'),
+          await failedTxPage.isTransactionDetailDisplayed('Network'),
           true,
           'Network field not displayed',
         );
         assert.equal(
-          await failedTxPage.isTrancsactionDetailDisplayed('Transaction speed'),
+          await failedTxPage.isTransactionDetailDisplayed('Transaction speed'),
           true,
           'Transaction field not displayed',
         );
         assert.equal(
-          await failedTxPage.isTrancsactionDetailDisplayed('Network fee'),
+          await failedTxPage.isTransactionDetailDisplayed('Network fee'),
           true,
           'Network fee field not displayed',
         );
         assert.equal(
-          await failedTxPage.isTrancsactionDetailDisplayed('Total'),
+          await failedTxPage.isTransactionDetailDisplayed('Total'),
           true,
           'Total field not displayed',
         );

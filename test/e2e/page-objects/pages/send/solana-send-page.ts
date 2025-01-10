@@ -51,7 +51,6 @@ class SendSolanaPage {
         2000,
       );
       await this.driver.delay(2000);
-      console.log('Aqui que dice ', await continueButton.isEnabled());
       return await continueButton.isEnabled();
     } catch (e) {
       console.log('Continue button not enabled', e);

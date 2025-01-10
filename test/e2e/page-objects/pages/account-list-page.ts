@@ -209,6 +209,14 @@ class AccountListPage {
     }
   }
 
+  /**
+   * Adds a new Solana account with optional custom name.
+   *
+   * @param options - Options for creating the Solana account
+   * @param [options.solanaAccountCreationEnabled] - Whether Solana account creation is enabled. If false, verifies the create button is disabled.
+   * @param [options.accountName] - Optional custom name for the new account
+   * @returns Promise that resolves when account creation is complete
+   */
   async addNewSolanaAccount({
     solanaAccountCreationEnabled = true,
     accountName = '',
@@ -381,11 +389,10 @@ class AccountListPage {
     console.log(
       `Check that account value and suffix ${expectedValueAndSuffix} is displayed in account list`,
     );
-    const solBalanceValue = await this.driver.findElement(
+    await this.driver.findElement(
       this.accountValueAndSuffix,
-      200000,
+      5000,
     );
-    console.log(await solBalanceValue.getText());
     await this.driver.waitForSelector(
       {
         css: this.accountValueAndSuffix,
