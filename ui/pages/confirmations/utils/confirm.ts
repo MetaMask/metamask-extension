@@ -75,7 +75,7 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
  */
 export const isValidASCIIURL = (urlString?: string): boolean => {
   try {
-    if (!urlString) {
+    if (!urlString || urlString.length === 0) {
       return false;
     }
 
