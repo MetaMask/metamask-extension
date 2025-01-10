@@ -389,10 +389,7 @@ class AccountListPage {
     console.log(
       `Check that account value and suffix ${expectedValueAndSuffix} is displayed in account list`,
     );
-    await this.driver.findElement(
-      this.accountValueAndSuffix,
-      5000,
-    );
+    await this.driver.findElement(this.accountValueAndSuffix, 5000);
     await this.driver.waitForSelector(
       {
         css: this.accountValueAndSuffix,
