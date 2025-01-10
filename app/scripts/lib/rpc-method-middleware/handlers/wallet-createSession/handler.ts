@@ -9,7 +9,6 @@ import {
   bucketScopes,
   validateAndNormalizeScopes,
   Caip25Authorization,
-  ScopedProperties,
   getInternalScopesObject,
   getSessionScopes,
   NormalizedScopesObject,
@@ -25,7 +24,6 @@ import {
   ValidPermission,
 } from '@metamask/permission-controller';
 import {
-  CaipChainId,
   Hex,
   isPlainObject,
   Json,
@@ -47,7 +45,6 @@ import {
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
-import { processScopedProperties } from './helpers';
 
 type AbstractPermissionController = PermissionController<
   PermissionSpecificationConstraint,
@@ -116,7 +113,6 @@ async function walletCreateSessionHandler(
     requiredScopes,
     optionalScopes,
     sessionProperties,
-    scopedProperties,
   } = req.params;
 
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
@@ -126,12 +122,6 @@ async function walletCreateSessionHandler(
   try {
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
-
-    const validScopedProperties = processScopedProperties(
-      normalizedRequiredScopes,
-      normalizedOptionalScopes,
-      scopedProperties as ScopedProperties,
-    );
 
     const supportedRequiredScopesObjects = getSupportedScopeObjects(
       normalizedRequiredScopes,
@@ -149,16 +139,11 @@ async function walletCreateSessionHandler(
       }
     };
 
-    const existsEip3085ForChainId = (chainId: Hex) => {
-      const scopeString: CaipChainId = `eip155:${parseInt(chainId, 16)}`;
-      return Boolean(validScopedProperties?.[scopeString]?.eip3085);
-    };
-
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
       supportedRequiredScopesObjects,
       {
         isChainIdSupported: existsNetworkClientForChainId,
-        isChainIdSupportable: existsEip3085ForChainId,
+        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
       },
     );
 
@@ -166,7 +151,7 @@ async function walletCreateSessionHandler(
       supportedOptionalScopesObjects,
       {
         isChainIdSupported: existsNetworkClientForChainId,
-        isChainIdSupportable: existsEip3085ForChainId,
+        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
       },
     );
 

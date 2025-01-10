@@ -10,7 +10,6 @@ import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
 import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import * as Util from '../../../util';
 import { PermissionNames } from '../../../../controllers/permissions';
-import * as Helpers from './helpers';
 import { walletCreateSession } from './handler';
 
 jest.mock('../../../util', () => ({
@@ -27,12 +26,6 @@ jest.mock('@metamask/multichain', () => ({
   getSupportedScopeObjects: jest.fn(),
 }));
 const MockMultichain = jest.mocked(Multichain);
-
-jest.mock('./helpers', () => ({
-  ...jest.requireActual('./helpers'),
-  processScopedProperties: jest.fn(),
-}));
-const MockHelpers = jest.mocked(Helpers);
 
 const baseRequest = {
   jsonrpc: '2.0' as const,
@@ -134,7 +127,6 @@ describe('wallet_createSession', () => {
     MockMultichain.getSupportedScopeObjects.mockImplementation(
       (scopesObject) => scopesObject,
     );
-    MockHelpers.processScopedProperties.mockReturnValue({});
   });
 
   afterEach(() => {
@@ -188,64 +180,6 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
     expect(end).toHaveBeenCalledWith(new Error('failed to process scopes'));
-  });
-
-  it('processes the scopedProperties', async () => {
-    const { handler } = createMockedHandler();
-    MockMultichain.validateAndNormalizeScopes.mockReturnValue({
-      normalizedRequiredScopes: {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
-      },
-      normalizedOptionalScopes: {
-        'eip155:100': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:100:0x4'],
-        },
-      },
-    });
-    await handler({
-      ...baseRequest,
-      params: {
-        ...baseRequest.params,
-        scopedProperties: {
-          foo: 'bar',
-        },
-      },
-    });
-
-    expect(MockHelpers.processScopedProperties).toHaveBeenCalledWith(
-      {
-        'eip155:1': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
-        },
-      },
-      {
-        'eip155:100': {
-          methods: ['eth_chainId'],
-          notifications: ['accountsChanged', 'chainChanged'],
-          accounts: ['eip155:100:0x4'],
-        },
-      },
-      { foo: 'bar' },
-    );
-  });
-
-  it('throws an error when processing scopedProperties fails', async () => {
-    const { handler, end } = createMockedHandler();
-    MockHelpers.processScopedProperties.mockImplementation(() => {
-      throw new Error('failed to process scoped properties');
-    });
-    await handler(baseRequest);
-    expect(end).toHaveBeenCalledWith(
-      new Error('failed to process scoped properties'),
-    );
   });
 
   it('filters the required scopesObjects', async () => {
@@ -326,9 +260,6 @@ describe('wallet_createSession', () => {
     const isChainIdSupportedBody =
       MockMultichain.bucketScopes.mock.calls[0][1].isChainIdSupported.toString();
     expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
-    const isChainIdSupportableBody =
-      MockMultichain.bucketScopes.mock.calls[0][1].isChainIdSupportable.toString();
-    expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
   it('buckets the optional scopes', async () => {
@@ -363,9 +294,6 @@ describe('wallet_createSession', () => {
     const isChainIdSupportedBody =
       MockMultichain.bucketScopes.mock.calls[1][1].isChainIdSupported.toString();
     expect(isChainIdSupportedBody).toContain('findNetworkClientIdByChainId');
-    const isChainIdSupportableBody =
-      MockMultichain.bucketScopes.mock.calls[1][1].isChainIdSupportable.toString();
-    expect(isChainIdSupportableBody).toContain('validScopedProperties');
   });
 
   it('gets a list of evm accounts in the wallet', async () => {
