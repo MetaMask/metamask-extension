@@ -15,9 +15,11 @@ import {
 export default function NftGrid({
   nfts,
   handleNftClick,
+  privacyMode,
 }: {
   nfts: NFT[];
   handleNftClick: (nft: NFT) => void;
+  privacyMode: boolean;
 }) {
   const currentChain = useSelector(getCurrentNetwork) as {
     chainId: Hex;
@@ -51,6 +53,7 @@ export default function NftGrid({
                 networkSrc={currentChain.rpcPrefs?.imageUrl}
                 onClick={() => handleNftClick(nft)}
                 isIpfsURL={isIpfsURL}
+                privacyMode={privacyMode}
                 clickable
               />
             </Box>

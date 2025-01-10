@@ -18,6 +18,7 @@ import {
   getIsMainnet,
   getUseNftDetection,
   getNftIsStillFetchingIndication,
+  getPreferences,
 } from '../../../../../selectors';
 import {
   Box,
@@ -58,6 +59,7 @@ export default function NftsTab() {
   const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
+  const { privacyMode } = useSelector(getPreferences);
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const nftsStillFetchingIndication = useSelector(
@@ -151,7 +153,11 @@ export default function NftsTab() {
         ) : null}
         {hasAnyNfts || previouslyOwnedNfts.length > 0 ? (
           <Box>
-            <NftGrid nfts={sortedNfts} handleNftClick={handleNftClick} />
+            <NftGrid
+              nfts={sortedNfts}
+              handleNftClick={handleNftClick}
+              privacyMode={privacyMode}
+            />
             <Box
               className="nfts-tab__buttons"
               display={Display.Flex}

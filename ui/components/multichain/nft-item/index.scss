@@ -29,9 +29,27 @@
     height: 200px;
   }
 
+  &__item-image--hidden {
+    border-radius: 8px;
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.5); /* White overlay effect */
+    mix-blend-mode: lighten; /* Ensures the white mixes with the image */
+  }
+
+
+
   @include design-system.screen-sm-max {
     &__item-image {
       height: 90px;
+    }
+
+    &__item-image--hidden {
+      height: 90px;
+      background: rgba(255, 255, 255, 0.5); /* White overlay effect */
+      mix-blend-mode: lighten; /* Ensures the white mixes with the image */
     }
   }
 

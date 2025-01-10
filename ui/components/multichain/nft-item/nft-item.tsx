@@ -8,11 +8,15 @@ import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
+  Icon,
+  IconName,
   Text,
 } from '../../component-library';
 import {
+  AlignItems,
   BackgroundColor,
   Display,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -36,6 +40,7 @@ type NftItemProps = {
   isIpfsURL?: boolean;
   detailView?: boolean;
   clickable?: boolean;
+  privacyMode?: boolean;
   badgeWrapperClassname?: string;
 };
 
@@ -48,6 +53,7 @@ export const NftItem = ({
   onClick,
   detailView,
   clickable,
+  privacyMode,
   isIpfsURL,
   badgeWrapperClassname = '',
 }: NftItemProps) => {
@@ -61,18 +67,36 @@ export const NftItem = ({
   const nftImageComponentToRender =
     ipfsImageIsRenderable || openseaImageIsRenderable ? (
       <Box
-        className={
-          detailView
-            ? 'nft-item__item nft-item__item-detail'
-            : 'nft-item__item nft-item__item-image'
-        }
-        data-testid="nft-image"
-        as="img"
-        src={src}
-        alt={alt}
-        display={Display.Block}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
-      />
+        alignItems={AlignItems.center}
+        style={{
+          position: 'relative',
+        }}
+      >
+        <Box
+          className={
+            detailView
+              ? 'nft-item__item nft-item__item-detail'
+              : `nft-item__item nft-item__item-image${
+                  privacyMode ? '--hidden' : ''
+                }`
+          }
+          data-testid="nft-image"
+          as="img"
+          src={src}
+          alt={alt}
+          display={Display.Block}
+          justifyContent={JustifyContent.center}
+        ></Box>
+        {privacyMode && (
+          <Icon
+            style={{ position: 'absolute' }}
+            name={IconName.EyeSlash}
+            color={IconColor.iconAlternative}
+          />
+        )}
+      </Box>
     ) : (
       <NftDefaultImage
         className="nft-item__default-image"
