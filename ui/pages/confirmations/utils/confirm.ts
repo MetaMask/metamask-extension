@@ -75,7 +75,11 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
  */
 export const isValidASCIIURL = (urlString?: string): boolean => {
   try {
-    return urlString?.includes(new URL(urlString).host);
+    if (!urlString) {
+      return false;
+    }
+
+    return urlString.includes(new URL(urlString).host);
   } catch (exp: unknown) {
     console.error(
       `Failed to detect if URL hostname contains non-ASCII characters: ${urlString}. Error: ${exp}`,
