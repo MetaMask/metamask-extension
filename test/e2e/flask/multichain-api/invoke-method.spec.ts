@@ -4,7 +4,6 @@ import {
   ACCOUNT_2,
   convertETHToHexGwei,
   largeDelayMs,
-  regularDelayMs,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
@@ -143,7 +142,7 @@ describe('Multichain API', function () {
             });
 
             for (const i of GANACHE_SCOPES.keys()) {
-              await driver.delay(regularDelayMs);
+              await driver.delay(largeDelayMs);
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
               const accountWebElement = await driver.findElement(
