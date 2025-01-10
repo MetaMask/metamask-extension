@@ -6345,11 +6345,26 @@ export default class MetamaskController extends EventEmitter {
             currency: fiatCurrency,
           };
         },
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,
           origin,
         ),
+        scheduleBackgroundEvent: (event) =>
+          this.controllerMessenger.call(
+            'CronjobController:scheduleBackgroundEvent',
+            { ...event, snapId: origin },
+          ),
+        cancelBackgroundEvent: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'CronjobController:cancelBackgroundEvent',
+          origin,
+        ),
+        getBackgroundEvents: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'CronjobController:getBackgroundEvents',
+          origin,
+        ),
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         handleSnapRpcRequest: (args) =>
           this.handleSnapRequest({ ...args, origin }),
         getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
