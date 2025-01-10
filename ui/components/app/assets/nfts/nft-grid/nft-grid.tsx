@@ -19,7 +19,7 @@ export default function NftGrid({
 }: {
   nfts: NFT[];
   handleNftClick: (nft: NFT) => void;
-  privacyMode: boolean;
+  privacyMode?: boolean;
 }) {
   const currentChain = useSelector(getCurrentNetwork) as {
     chainId: Hex;
