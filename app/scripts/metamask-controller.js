@@ -766,8 +766,6 @@ export default class MetamaskController extends EventEmitter {
         }),
     });
 
-    this.nftController.setApiKey(process.env.OPENSEA_KEY);
-
     const nftDetectionControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'NftDetectionController',
