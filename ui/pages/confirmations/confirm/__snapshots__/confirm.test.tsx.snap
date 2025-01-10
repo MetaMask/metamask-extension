@@ -117,9 +117,6 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box transaction-alerts"
-      />
-      <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
@@ -374,9 +371,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           </div>
         </div>
       </div>
-      <div
-        class="mm-box transaction-alerts"
-      />
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
         style="min-height: 0; overflow: hidden; position: relative;"
@@ -961,9 +955,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
         </div>
       </div>
       <div
-        class="mm-box transaction-alerts"
-      />
-      <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
@@ -1495,9 +1486,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           </div>
         </div>
       </div>
-      <div
-        class="mm-box transaction-alerts"
-      />
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
         style="min-height: 0; overflow: hidden; position: relative;"
@@ -2516,9 +2504,6 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
         </div>
       </div>
       <div
-        class="mm-box transaction-alerts"
-      />
-      <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
@@ -3044,9 +3029,6 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
           </div>
         </div>
       </div>
-      <div
-        class="mm-box transaction-alerts"
-      />
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
         style="min-height: 0; overflow: hidden; position: relative;"
@@ -3871,9 +3853,6 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
         </div>
       </div>
       <div
-        class="mm-box transaction-alerts"
-      />
-      <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
@@ -3987,9 +3966,6 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
           </div>
         </div>
       </div>
-      <div
-        class="mm-box transaction-alerts"
-      />
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
         style="min-height: 0; overflow: hidden; position: relative;"
