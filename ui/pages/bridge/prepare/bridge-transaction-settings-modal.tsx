@@ -66,7 +66,7 @@ export const BridgeTransactionSettingsModal = ({
       return null;
     }
 
-    const slippageValue = Number(customSlippage);
+    const slippageValue = Number(customSlippage.replace(',', '.'));
     if (slippageValue < 0.5) {
       return {
         severity: SEVERITIES.WARNING,
@@ -180,7 +180,7 @@ export const BridgeTransactionSettingsModal = ({
                 value={customSlippage}
                 onChange={(e) => {
                   const { value } = e.target;
-                  if (value === '' || /^\d*\.?\d*$/u.test(value)) {
+                  if (value === '' || /^\d*[.,]?\d*$/u.test(value)) {
                     setLocalSlippage(undefined);
                     setCustomSlippage(value);
                   }
@@ -215,11 +215,12 @@ export const BridgeTransactionSettingsModal = ({
             variant={TextVariant.bodyMd}
             disabled={
               (customSlippage !== undefined &&
-                Number(customSlippage) === slippage) ||
+                Number(customSlippage.replace(',', '.')) === slippage) ||
               (localSlippage !== undefined && localSlippage === slippage)
             }
             onClick={() => {
-              const newSlippage = localSlippage ?? Number(customSlippage);
+              const newSlippage =
+                localSlippage ?? Number(customSlippage?.replace(',', '.'));
               if (newSlippage) {
                 trackCrossChainSwapsEvent({
                   event: MetaMetricsEventName.InputChanged,
