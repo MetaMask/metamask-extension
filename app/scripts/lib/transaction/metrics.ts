@@ -1158,11 +1158,11 @@ function getTransactionOnchainCompletionTime(
 
   const blockTimestampSeconds = Number(hexToDecimal(blockTimestampHex));
   const completionTimeSeconds = blockTimestampSeconds - submittedTimeMs / 1000;
-  const completionTimeSecondsRoundedToThousands =
+  const completionTimeSecondsRounded =
     Math.round(completionTimeSeconds * 10 ** DECIMAL_DIGITS) /
     10 ** DECIMAL_DIGITS;
 
-  return completionTimeSecondsRoundedToThousands.toString();
+  return completionTimeSecondsRounded.toString();
 }
 
 /**

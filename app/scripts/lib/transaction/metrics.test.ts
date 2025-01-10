@@ -830,7 +830,7 @@ describe('Transaction metrics', () => {
       ).toHaveBeenCalledWith(expectedUniqueId);
     });
 
-    it.only('should create, update, finalize event fragment with completion_time_onchain', async () => {
+    it('should create, update, finalize event fragment with completion_time_onchain', async () => {
       mockTransactionMeta.txReceipt = {
         gasUsed: '0x123',
         status: '0x0',
