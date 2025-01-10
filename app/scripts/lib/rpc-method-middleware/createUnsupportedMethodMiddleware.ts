@@ -6,7 +6,7 @@ import { rpcErrors } from '@metamask/rpc-errors';
  * Creates a middleware that rejects explicitly unsupported RPC methods with the
  * appropriate error.
  *
- * @param methods
+ * @param methods - The list of unsupported RPC methods.
  */
 export function createUnsupportedMethodMiddleware(
   methods: string[],
