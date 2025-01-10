@@ -112,7 +112,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   const isImageHosted =
     image?.startsWith('https:') || image?.startsWith('http:');
   const nftImageURL = useGetAssetImageUrl(
-    (imageOriginal ?? image) as string | undefined,
+    imageOriginal ?? image ?? undefined,
     ipfsGateway,
   ) as string | undefined;
 
