@@ -104,6 +104,10 @@ describe('confirm util', () => {
         false,
       );
     });
+
+    it('returns false for empty string', () => {
+      expect(isValidASCIIURL('')).toStrictEqual(false);
+    });
   });
 
   describe('toPunycodeURL', () => {
