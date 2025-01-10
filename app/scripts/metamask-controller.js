@@ -6809,7 +6809,7 @@ export default class MetamaskController extends EventEmitter {
           MESSAGE_TYPE.WALLET_REVOKE_SESSION,
         ].includes(req.method)
       ) {
-        return end(new Error('Invalid method')); // TODO: Use a proper error
+        return end(rpcErrors.methodNotFound({ data: { method: req.method } }));
       }
       return next();
     });
