@@ -56,12 +56,17 @@ exports[`NFT full image should match snapshot 1`] = `
                   <div
                     class="mm-box mm-badge-wrapper nft-item__badge-wrapper badge-wrapper mm-box--display-block"
                   >
-                    <img
-                      alt="Red Mohawk bam!"
-                      class="mm-box nft-item__item nft-item__item-image mm-box--display-block mm-box--justify-content-center"
-                      data-testid="nft-image"
-                      src="https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE"
-                    />
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+                      style="position: relative;"
+                    >
+                      <img
+                        alt="Red Mohawk bam!"
+                        class="mm-box nft-item__item nft-item__item-image mm-box--display-block mm-box--justify-content-center"
+                        data-testid="nft-image"
+                        src="https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE"
+                      />
+                    </div>
                     <div
                       class="mm-box mm-badge-wrapper__badge-container"
                       style="top: -4px; right: -4px;"
