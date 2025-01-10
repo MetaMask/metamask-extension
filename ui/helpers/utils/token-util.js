@@ -12,9 +12,16 @@ import { formatCurrency } from './confirm-tx.util';
 const DEFAULT_SYMBOL = '';
 
 async function getSymbolFromContract(tokenAddress) {
-  const token = util.getContractAtAddress(tokenAddress);
+  const contract = util.getContractAtAddress(tokenAddress);
+
   try {
-    return await token.symbol();
+    const code = await contract.provider.getCode(tokenAddress);
+
+    if (code === '0x') {
+      return '';
+    }
+
+    return await contract.symbol();
   } catch (error) {
     log.warn(
       `symbol() call for token at address ${tokenAddress} resulted in error:`,
@@ -25,9 +32,16 @@ async function getSymbolFromContract(tokenAddress) {
 }
 
 async function getNameFromContract(tokenAddress) {
-  const token = util.getContractAtAddress(tokenAddress);
+  const contract = util.getContractAtAddress(tokenAddress);
+
   try {
-    return await token.name();
+    const code = await contract.provider.getCode(tokenAddress);
+
+    if (code === '0x') {
+      return '';
+    }
+
+    return await contract.name();
   } catch (error) {
     log.warn(
       `name() call for token at address ${tokenAddress} resulted in error:`,
@@ -38,10 +52,16 @@ async function getNameFromContract(tokenAddress) {
 }
 
 async function getDecimalsFromContract(tokenAddress) {
-  const token = util.getContractAtAddress(tokenAddress);
+  const contract = util.getContractAtAddress(tokenAddress);
 
   try {
-    const decimalsBN = await token.decimals();
+    const code = await contract.provider.getCode(tokenAddress);
+
+    if (code === '0x') {
+      return '0';
+    }
+
+    const decimalsBN = await contract.decimals();
     return decimalsBN?.toString();
   } catch (error) {
     log.warn(
