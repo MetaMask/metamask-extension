@@ -18,6 +18,7 @@ import {
   getSmartTransactionsOptInStatusInternal,
   getSmartTransactionsMigrationAppliedInternal,
 } from '../../../../../shared/modules/selectors/smart-transactions';
+import { Box } from '../../../../components/component-library';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -95,27 +96,29 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     };
 
     return (
-      <BannerAlert
-        severity={BannerAlertSeverity.Info}
-        onClose={dismissAlert}
-        data-testid="smart-transactions-banner-alert"
-        style={getMarginStyle()}
-      >
-        <Text fontWeight={FontWeight.Bold}>
-          {t('smartTransactionsEnabledTitle')}
-        </Text>
-        <Text as="p">
-          <ButtonLink
-            href={SMART_TRANSACTIONS_LEARN_MORE_URL}
-            onClick={dismissAlert}
-            externalLink
-            style={{ height: 'unset', verticalAlign: 'unset' }}
-          >
-            {t('smartTransactionsEnabledLink')}
-          </ButtonLink>
-          {t('smartTransactionsEnabledDescription')}
-        </Text>
-      </BannerAlert>
+      <Box className="transaction-alerts">
+        <BannerAlert
+          severity={BannerAlertSeverity.Info}
+          onClose={dismissAlert}
+          data-testid="smart-transactions-banner-alert"
+          style={getMarginStyle()}
+        >
+          <Text fontWeight={FontWeight.Bold}>
+            {t('smartTransactionsEnabledTitle')}
+          </Text>
+          <Text as="p">
+            <ButtonLink
+              href={SMART_TRANSACTIONS_LEARN_MORE_URL}
+              onClick={dismissAlert}
+              externalLink
+              style={{ height: 'unset', verticalAlign: 'unset' }}
+            >
+              {t('smartTransactionsEnabledLink')}
+            </ButtonLink>
+            {t('smartTransactionsEnabledDescription')}
+          </Text>
+        </BannerAlert>
+      </Box>
     );
   });
 
