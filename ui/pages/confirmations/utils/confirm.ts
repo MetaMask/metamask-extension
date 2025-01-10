@@ -69,7 +69,11 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
   return PRIMARY_TYPES_PERMIT.includes(primaryType);
 };
 
-export const isValidASCIIURL = (urlString?: string) => {
+/**
+ * @param urlString - The URL to check
+ * @returns True if the URL hostname contains only ASCII characters, false otherwise. The URL is still valid if the path contains non-ASCII characters.
+ */
+export const isValidASCIIURL = (urlString?: string): boolean => {
   try {
     return urlString?.includes(new URL(urlString).host);
   } catch (exp: unknown) {
@@ -80,7 +84,13 @@ export const isValidASCIIURL = (urlString?: string) => {
   }
 };
 
-export const toPunycodeURL = (urlString: string) => {
+/**
+ * Converts the URL to Punycode
+ *
+ * @param urlString - The URL to convert
+ * @returns The Punycode URL
+ */
+export const toPunycodeURL = (urlString: string): string | undefined => {
   try {
     const url = new URL(urlString);
     const isWithoutEndSlash = url.pathname === '/' && !urlString.endsWith('/');
