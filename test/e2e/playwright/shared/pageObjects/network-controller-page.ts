@@ -24,8 +24,6 @@ export class NetworkController {
 
   readonly dismissBtn: Locator;
 
-  readonly networkList: Locator;
-
   readonly networkListEdit: Locator;
 
   readonly rpcName: Locator;
@@ -39,9 +37,6 @@ export class NetworkController {
   constructor(page: Page) {
     this.page = page;
     this.networkDisplay = this.page.getByTestId('network-display');
-    this.networkList = this.page.getByTestId(
-      'network-list-item-options-button-0x1',
-    );
     this.networkListEdit = this.page.getByTestId(
       'network-list-item-options-edit',
     );
@@ -69,9 +64,14 @@ export class NetworkController {
   }) {
     let rpcName = options.name;
     await this.networkDisplay.click();
-    if (options.name === Tenderly.Mainnet.name) {
+    if (
+      options.name === Tenderly.Mainnet.name ||
+      options.name === Tenderly.Linea.name
+    ) {
       rpcName = options.rpcName;
-      await this.networkList.click();
+      await this.page
+        .getByTestId(`network-list-item-options-button-${options.chainID}`)
+        .click();
       await this.networkListEdit.click();
     } else {
       await this.addNetworkButton.click();
@@ -82,7 +82,10 @@ export class NetworkController {
     await this.networkRpc.fill(options.url);
     await this.rpcName.fill(rpcName);
     await this.addURLBtn.click();
-    if (options.name !== Tenderly.Mainnet.name) {
+    if (
+      options.name !== Tenderly.Mainnet.name &&
+      options.name !== Tenderly.Linea.name
+    ) {
       await this.networkChainId.fill(options.chainID);
     }
     await this.networkTicker.fill(options.symbol);

@@ -1,20 +1,11 @@
-import React, { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
-
+import React, { useMemo } from 'react';
 import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
-import { shortenString } from '../../../../../../../../helpers/utils/util';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
-import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
-import {
-  formatAmount,
-  formatAmountMaxPrecision,
-} from '../../../../../simulation-details/formatAmount';
-import { useGetTokenStandardAndDetails } from '../../../../../../hooks/useGetTokenStandardAndDetails';
-import useTrackERC20WithoutDecimalInformation from '../../../../../../hooks/useTrackERC20WithoutDecimalInformation';
-
+import Name from '../../../../../../../../components/app/name/name';
 import {
   Box,
   Text,
@@ -27,8 +18,17 @@ import {
   JustifyContent,
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
-import Name from '../../../../../../../../components/app/name/name';
+import { shortenString } from '../../../../../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
+import { useGetTokenStandardAndDetails } from '../../../../../../hooks/useGetTokenStandardAndDetails';
+import useTrackERC20WithoutDecimalInformation from '../../../../../../hooks/useTrackERC20WithoutDecimalInformation';
 import { TokenDetailsERC20 } from '../../../../../../utils/token';
+import { IndividualFiatDisplay } from '../../../../../simulation-details/fiat-display';
+import {
+  formatAmount,
+  formatAmountMaxPrecision,
+} from '../../../../../simulation-details/formatAmount';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
 
 type PermitSimulationValueDisplayParams = {
@@ -56,6 +56,9 @@ type PermitSimulationValueDisplayParams = {
 
   /** True if value is being debited to wallet */
   debit?: boolean;
+
+  /** Whether a large amount can be substituted by "Unlimited" */
+  canDisplayValueAsUnlimited?: boolean;
 };
 
 const PermitSimulationValueDisplay: React.FC<
@@ -68,7 +71,10 @@ const PermitSimulationValueDisplay: React.FC<
   value,
   credit,
   debit,
+  canDisplayValueAsUnlimited,
 }) => {
+  const t = useI18nContext();
+
   const exchangeRate = useTokenExchangeRate(tokenContract);
 
   const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
@@ -86,20 +92,28 @@ const PermitSimulationValueDisplay: React.FC<
       return exchangeRate.times(tokenAmount).toNumber();
     }
     return undefined;
-  }, [exchangeRate, tokenDecimals, value]);
+  }, [exchangeRate, tokenDecimals, tokenId, value]);
 
-  const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
-    if (!value || tokenId) {
-      return { tokenValue: null, tokenValueMaxPrecision: null };
-    }
+  const { tokenValue, tokenValueMaxPrecision, shouldShowUnlimitedValue } =
+    useMemo(() => {
+      if (!value || tokenId) {
+        return {
+          tokenValue: null,
+          tokenValueMaxPrecision: null,
+          shouldShowUnlimitedValue: false,
+        };
+      }
 
-    const tokenAmount = calcTokenAmount(value, tokenDecimals);
+      const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
-    return {
-      tokenValue: formatAmount('en-US', tokenAmount),
-      tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
-    };
-  }, [tokenDecimals, value]);
+      return {
+        tokenValue: formatAmount('en-US', tokenAmount),
+        tokenValueMaxPrecision: formatAmountMaxPrecision('en-US', tokenAmount),
+        shouldShowUnlimitedValue:
+          canDisplayValueAsUnlimited &&
+          Number(value) > TOKEN_VALUE_UNLIMITED_THRESHOLD,
+      };
+    }, [tokenDecimals, tokenId, value]);
 
   /** Temporary error capturing as we are building out Permit Simulations */
   if (!tokenContract) {
@@ -138,13 +152,15 @@ const PermitSimulationValueDisplay: React.FC<
             >
               {credit && '+ '}
               {debit && '- '}
-              {tokenValue !== null &&
-                shortenString(tokenValue || '', {
-                  truncatedCharLimit: 15,
-                  truncatedStartChars: 15,
-                  truncatedEndChars: 0,
-                  skipCharacterInEnd: true,
-                })}
+              {shouldShowUnlimitedValue
+                ? t('unlimited')
+                : tokenValue !== null &&
+                  shortenString(tokenValue || '', {
+                    truncatedCharLimit: 15,
+                    truncatedStartChars: 15,
+                    truncatedEndChars: 0,
+                    skipCharacterInEnd: true,
+                  })}
               {tokenId && `#${tokenId}`}
             </Text>
           </Tooltip>

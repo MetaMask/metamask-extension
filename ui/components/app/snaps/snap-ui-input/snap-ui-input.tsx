@@ -5,17 +5,19 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import classnames from 'classnames';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { FormTextField, FormTextFieldProps } from '../../../component-library';
 
 export type SnapUIInputProps = {
   name: string;
   form?: string;
+  label?: string | React.ReactNode;
 };
 
 export const SnapUIInput: FunctionComponent<
   SnapUIInputProps & FormTextFieldProps<'div'>
-> = ({ name, form, ...props }) => {
+> = ({ name, form, label, ...props }) => {
   const { handleInputChange, getValue, focusedInput, setCurrentFocusedInput } =
     useSnapInterfaceContext();
 
@@ -33,11 +35,11 @@ export const SnapUIInput: FunctionComponent<
 
   /*
    * Focus input if the last focused input was this input
-   * This avoids loosing the focus when the UI is re-rendered
+   * This avoids losing the focus when the UI is re-rendered
    */
   useEffect(() => {
     if (inputRef.current && name === focusedInput) {
-      (inputRef.current.children[0] as HTMLInputElement).focus();
+      (inputRef.current.querySelector('input') as HTMLInputElement).focus();
     }
   }, [inputRef]);
 
@@ -54,10 +56,13 @@ export const SnapUIInput: FunctionComponent<
       ref={inputRef}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      className="snap-ui-renderer__input"
+      className={classnames('snap-ui-renderer__input', {
+        'snap-ui-renderer__field': label !== undefined,
+      })}
       id={name}
       value={value}
       onChange={handleChange}
+      label={label}
       {...props}
     />
   );
