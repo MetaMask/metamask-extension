@@ -7,8 +7,8 @@ import {
 } from '@metamask/multichain';
 import {
   DAPP_URL,
-  defaultGanacheOptions,
   largeDelayMs,
+  multipleGanacheOptions,
   openDapp,
   regularDelayMs,
   unlockWallet,
@@ -32,17 +32,17 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
     ),
   ],
   ganacheOptions: {
-    ...defaultGanacheOptions,
+    ...multipleGanacheOptions,
     concurrent: [
       {
         port: 8546,
         chainId: 1338,
-        ganacheOptions2: defaultGanacheOptions,
+        ganacheOptions2: multipleGanacheOptions,
       },
       {
         port: 7777,
         chainId: 1000,
-        ganacheOptions2: defaultGanacheOptions,
+        ganacheOptions2: multipleGanacheOptions,
       },
     ],
   },
@@ -196,3 +196,12 @@ export const updateNetworkCheckboxes = async (
   }
   await driver.clickElement({ text: 'Update', tag: 'button' });
 };
+
+/**
+ * Sometimes we need to escape colon character when using {@link Driver.findElement}, otherwise selenium will treat this as an invalid selector.
+ *
+ * @param selector - string to manipulate.
+ * @returns string with escaped colon char.
+ */
+export const escapeColon = (selector: string): string =>
+  selector.replace(':', '\\:');
