@@ -160,7 +160,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
             assert.deepEqual(
               value,
               actualError[key],
-              `calling wallet_invokeMethod should throw an error for scope ${scope}`,
+              `calling wallet_invokeMethod should throw an error with ${key} of ${value} for scope ${scope}`,
             );
           });
         }
