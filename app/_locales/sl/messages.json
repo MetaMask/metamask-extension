@@ -431,9 +431,6 @@
   "noConversionRateAvailable": {
     "message": "Menjalni tečaj ni na voljo"
   },
-  "noTransactions": {
-    "message": "Nimate transakcij"
-  },
   "noWebcamFound": {
     "message": "Spletna kamera ni najdena. Poskusite znova kasneje."
   },

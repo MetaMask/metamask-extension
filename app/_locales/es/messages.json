@@ -3304,9 +3304,6 @@
   "noThanks": {
     "message": "No, gracias"
   },
-  "noTransactions": {
-    "message": "No tiene transacciones"
-  },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
   },
@@ -5975,18 +5972,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "Esto le permite seleccionar una red para cada sitio en lugar de una única red seleccionada para todos los sitios. Esta función evitará que cambie de red manualmente, lo que puede afectar su experiencia de usuario en ciertos sitios."
-  },
-  "toggleRequestQueueField": {
-    "message": "Seleccionar redes para cada sitio"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Desactivado"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Activado"
-  },
   "token": {
     "message": "Token"
   },
@@ -6337,9 +6322,6 @@
   },
   "use4ByteResolution": {
     "message": "Decodificar contratos inteligentes"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "Para mejorar la experiencia del usuario, personalizamos la pestaña de actividad con mensajes basados en los contratos inteligentes con los que interactúa. MetaMask usa un servicio llamado 4byte.directory para decodificar datos y mostrarle una versión de un contrato inteligente que es más fácil de leer. Esto ayuda a reducir sus posibilidades de aprobar acciones de contratos inteligentes maliciosos, pero puede resultar en que se comparta su dirección IP."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Solicitudes de saldo de cuenta por lotes"

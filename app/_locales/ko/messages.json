@@ -3304,9 +3304,6 @@
   "noThanks": {
     "message": "괜찮습니다"
   },
-  "noTransactions": {
-    "message": "트랜잭션이 없습니다."
-  },
   "noWebcamFound": {
     "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도하세요."
   },
@@ -5975,18 +5972,6 @@
     "message": "수신: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "이 기능을 이용하면 모든 사이트에 한 가지 네트워크를 선택하여 사용하는 대신, 사이트별로 네트워크를 다르게 선택할 수 있습니다. 이 기능을 사용하면 수동으로 네트워크를 전환하지 않아도 되므로 특정 사이트에서 사용자 경험이 저해되지 않습니다."
-  },
-  "toggleRequestQueueField": {
-    "message": "각 사이트별 네트워크 선택"
-  },
-  "toggleRequestQueueOff": {
-    "message": "끄기"
-  },
-  "toggleRequestQueueOn": {
-    "message": "켜기"
-  },
   "token": {
     "message": "토큰"
   },
@@ -6337,9 +6322,6 @@
   },
   "use4ByteResolution": {
     "message": "스마트 계약 디코딩"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "인터렉션하는 스마트 계약에 따라 메시지를 이용하여 활동 탭을 사용자 맞춤하여 사용자 경험을 개선합니다. MetaMask는 4byte.directory라는 서비스를 통해 데이터를 디코딩하여 스마트 계약을 읽기 쉬운 버전으로 보여 줍니다. 이는 악의적인 스마트 계약을 승인할 가능성을 줄이는 데 도움이 되지만 IP 주소가 공유될 수 있습니다."
   },
   "useMultiAccountBalanceChecker": {
     "message": "일괄 계정 잔액 요청"

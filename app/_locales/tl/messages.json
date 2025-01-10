@@ -3304,9 +3304,6 @@
   "noThanks": {
     "message": "Salamat na lang"
   },
-  "noTransactions": {
-    "message": "Wala kang transaksyon"
-  },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
   },
@@ -5975,18 +5972,6 @@
     "message": "Para kay/sa: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "Pinahihintulutan ka nitong pumili ng network para sa bawat site sa halip na iisang piniling network para sa lahat ng site. Pipigilan ka ng feature na ito na magpalit ng network nang mano-mano, na maaaring makasira sa iyong karanasan bilang user sa ilang partikular na site."
-  },
-  "toggleRequestQueueField": {
-    "message": "Piliin ang mga network para sa bawat site"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Naka-off"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Naka-on"
-  },
   "token": {
     "message": "Token"
   },
@@ -6337,9 +6322,6 @@
   },
   "use4ByteResolution": {
     "message": "I-decode ang mga smart na kontrata"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "Upang mapabuti ang karanasan ng user, kino-customize namin ang tab ng mga aktibidad gamit ang mga mensahe ayon sa mga smart na kontrata kung saan ka nakikipag-ugnayan. Gumagamit ang MetaMask ng serbisyong tinatawag na 4byte.directory para i-decode ang datos at ipakita sa iyo ang bersyon ng smart na kontrata na mas madaling basahin. Tumutulong ito na bawasan ang pagkakataon na aprubahan mo ang mga mapaminsalang aksyon sa smart na kontrata, ngunit maaaring magresulta sa pagbabahagi ng iyong IP address."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Maramihang kahilingan sa balanse ng account"

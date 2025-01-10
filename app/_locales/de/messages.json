@@ -3304,9 +3304,6 @@
   "noThanks": {
     "message": "Nein, danke!"
   },
-  "noTransactions": {
-    "message": "Keine Transaktionen"
-  },
   "noWebcamFound": {
     "message": "Die Webcam Ihres Computers wurde nicht gefunden. Bitte versuchen Sie es erneut."
   },
@@ -5975,18 +5972,6 @@
     "message": "An: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "Dadurch können Sie ein Netzwerk für jede Website auswählen, anstatt ein einziges Netzwerk für alle Websites auszuwählen. Diese Funktion verhindert, dass Sie manuell zwischen den Netzwerken wechseln müssen, was die Benutzerfreundlichkeit auf bestimmten Websites beeinträchtigen könnte."
-  },
-  "toggleRequestQueueField": {
-    "message": "Wählen Sie Netzwerke für jede Website"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Aus"
-  },
-  "toggleRequestQueueOn": {
-    "message": "An"
-  },
   "token": {
     "message": "Token"
   },
@@ -6337,9 +6322,6 @@
   },
   "use4ByteResolution": {
     "message": "Smart Contracts dekodieren"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "Um das Benutzererlebnis zu verbessern, passen wir die Aktivitätsregisterkarte mit Nachrichten an, die auf den Smart Contracts basieren, mit denen Sie interagieren. MetaMask verwendet einen Dienst namens 4byte.directory, um Daten zu entschlüsseln und Ihnen eine Version eines Smart Contracts anzuzeigen, die leichter zu lesen ist. Dies trägt dazu bei, die Wahrscheinlichkeit zu verringern, dass Sie bösartige Smart-Contract-Aktionen genehmigen, kann aber dazu führen, dass Ihre IP-Adresse weitergegeben wird."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Kontoguthaben-Anfragen sammeln"

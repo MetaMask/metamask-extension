@@ -3304,9 +3304,6 @@
   "noThanks": {
     "message": "Нет, спасибо"
   },
-  "noTransactions": {
-    "message": "У вас нет транзакций"
-  },
   "noWebcamFound": {
     "message": "Веб-камера вашего компьютера не найдена. Попробуйте еще раз."
   },
@@ -5975,18 +5972,6 @@
     "message": "Адресат: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleRequestQueueDescription": {
-    "message": "Это позволяет вам выбрать сеть для каждого сайта вместо одной выбранной сети для всех сайтов. Эта функция не позволит вам переключать сети вручную, что может снизить удобство использования некоторых сайтов."
-  },
-  "toggleRequestQueueField": {
-    "message": "Выберите сети для каждого сайта"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Выкл."
-  },
-  "toggleRequestQueueOn": {
-    "message": "Вкл."
-  },
   "token": {
     "message": "Токен"
   },
@@ -6337,9 +6322,6 @@
   },
   "use4ByteResolution": {
     "message": "Расшифровать смарт-контракты"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "Чтобы улучшить взаимодействие с пользователем, мы настраиваем вкладку действий, добавляя сообщения на основе смарт-контрактов, с которыми вы взаимодействуете. MetaMask использует службу под названием 4byte.directory для декодирования данных и показа версии смарт-контакта, которую легче читать. Это помогает снизить шансы того, что вы одобрите вредоносные действия смарт-контракта, но может привести к раскрытию вашего IP-адреса."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Пакетные запросы баланса счета"

@@ -25,7 +25,7 @@ exports[`TokenListItem handles clicking staking opens tab 1`] = `
         >
           <div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
             >
               <img
                 alt="network logo"
@@ -116,7 +116,7 @@ exports[`TokenListItem should display warning scam modal 1`] = `
         >
           <div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
             >
               ?
             </div>
@@ -196,7 +196,7 @@ exports[`TokenListItem should display warning scam modal fallback when safechain
         >
           <div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
             >
               ?
             </div>
@@ -277,7 +277,7 @@ exports[`TokenListItem should render correctly 1`] = `
         >
           <div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
             >
               <img
                 alt="network logo"
@@ -347,7 +347,7 @@ exports[`TokenListItem should render crypto balance 1`] = `
         >
           <div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
             >
               ?
             </div>
@@ -414,7 +414,7 @@ exports[`TokenListItem should render crypto balance with warning scam 1`] = `
         >
           <div>
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
             >
               ?
             </div>

@@ -207,7 +207,7 @@ exports[`AssetPage should render a native asset 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   >
                     <img
                       alt="static-logo"
@@ -351,17 +351,7 @@ exports[`AssetPage should render a native asset 1`] = `
             >
               <div
                 class="mm-box transaction-list__completed-transactions"
-              >
-                <div
-                  class="mm-box transaction-list__empty"
-                >
-                  <div
-                    class="mm-box transaction-list__empty-text"
-                  >
-                    You have no transactions
-                  </div>
-                </div>
-              </div>
+              />
             </div>
           </div>
         </div>
@@ -559,7 +549,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   >
                     <img
                       alt="static-logo"
@@ -765,17 +755,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             >
               <div
                 class="mm-box transaction-list__completed-transactions"
-              >
-                <div
-                  class="mm-box transaction-list__empty"
-                >
-                  <div
-                    class="mm-box transaction-list__empty-text"
-                  >
-                    You have no transactions
-                  </div>
-                </div>
-              </div>
+              />
             </div>
           </div>
         </div>
@@ -1099,7 +1079,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                   tabindex="0"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   >
                     <img
                       alt="static-logo"
@@ -1333,17 +1313,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             >
               <div
                 class="mm-box transaction-list__completed-transactions"
-              >
-                <div
-                  class="mm-box transaction-list__empty"
-                >
-                  <div
-                    class="mm-box transaction-list__empty-text"
-                  >
-                    You have no transactions
-                  </div>
-                </div>
-              </div>
+              />
             </div>
           </div>
         </div>
