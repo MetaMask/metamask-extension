@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "नेटवर्क जोड़ रहे हैं"
   },
-  "addingTokens": {
-    "message": "टोकन जोड़ना"
-  },
   "additionalNetworks": {
     "message": "अतिरिक्त नेटवर्क"
   },
@@ -437,17 +434,11 @@
   "alertMessageNoGasPrice": {
     "message": "जब तक आप शुल्क को मैन्युअल रूप से अपडेट नहीं करते, हम इस ट्रांसेक्शन को आगे नहीं बढ़ा सकते।"
   },
-  "alertMessagePendingTransactions": {
-    "message": "यह ट्रांसेक्शन तब तक नहीं होगा जब तक पिछला ट्रांसेक्शन पूरा न हो जाए। किसी ट्रांसेक्शन को रद्द करने या तेज़ करने का तरीका जानें।"
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "अनुरोध करने वाली साइट वह साइट नहीं है जिस पर आप साइन इन कर रहे हैं। यह आपके लॉगिन क्रेडेंशियल चुराने का प्रयास हो सकता है।"
   },
   "alertMessageSignInWrongAccount": {
     "message": "यह साइट आपसे गलत अकाउंट का उपयोग करके साइन इन करने के लिए कह रही है।"
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "यह ट्रांसेक्शन तभी पूरा होगा जब आपका पिछला ट्रांसेक्शन पूरा हो जाएगा।"
   },
   "alertModalAcknowledge": {
     "message": "मैंने जोखिम को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
@@ -632,12 +623,6 @@
   },
   "assetsDescription": {
     "message": "अपने वॉलेट में टोकन ऑटोडिटेक्ट करें, NFT प्रदर्शित करें, और बैच अकाउंट बैलेंस संबंधी अपडेट प्राप्त करें"
-  },
-  "attemptSendingAssets": {
-    "message": "अगर आप एसेट्स को सीधे एक नेटवर्क से दूसरे नेटवर्क पर भेजने की कोशिश करते हैं, तो ऐसा करने से आपको एसेट्स का नुकसान हो सकता है। ब्रिज का इस्तेमाल करके नेटवर्कों के बीच फंड्स को सुरक्षित तरीके से ट्रांसफ़र करें।"
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "अगर आप एसेट्स को सीधे एक नेटवर्क से दूसरे नेटवर्क पर भेजने की कोशिश करते हैं, तो ऐसा करने से आपको एसेट्स का नुकसान हो सकता है। ब्रिज, जैसे like $1, का इस्तेमाल करके नेटवर्कों के बीच फंड्स को सुरक्षित तरीके से ट्रांसफ़र करें।"
   },
   "attemptToCancelSwapForFree": {
     "message": "स्वैप को मुफ्त में कैंसिल करने की कोशिश करें"
@@ -846,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "कैलकुलेट किया जा रहा है..."
   },
-  "bridgeDontSend": {
-    "message": "ब्रिज, न भेजें"
-  },
   "bridgeEnterAmount": {
     "message": "रकम डालें"
   },
@@ -861,14 +843,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "टोकन और रकम का चयन करें"
   },
-  "bridgeTimingTooltipText": {
-    "message": "ब्रिजिंग का काम पूरा होने में यह अनुमानित समय लगेगा।"
-  },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "इसमें गैस शुल्क (क्रिप्टो माइनरों (miners) को भुगतान) और रीलेयर (relayer) शुल्क (ब्रिजिंग जैसी जटिल सेवाओं को मजबूत करने के लिए भुगतान) शामिल हैं।\nशुल्क नेटवर्क ट्रैफ़िक और ट्रांसेक्शन जटिलता पर आधारित हैं। MetaMask को किसी भी शुल्क से लाभ नहीं होता है।"
   },
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
@@ -965,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "अपने Ledger को WebHID के ज़रिए कनेक्ट करने के लिए यहां क्लिक करें",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "आप कभी भी मैन्युअल रूप से टोकन जोड़ सकते हैं।"
   },
   "close": {
     "message": "बंद करें"
@@ -1989,9 +1962,6 @@
   "estimatedFeeTooltip": {
     "message": "नेटवर्क पर ट्रांसेक्शन को प्रोसेस करने के लिए भुगतान की गई राशि।"
   },
-  "estimatedTime": {
-    "message": "अनुमानित समय"
-  },
   "ethGasPriceFetchWarning": {
     "message": "बैकअप गैस प्राइस दिया गया है क्योंकि मेन गैस एस्टीमेशन सर्विस अभी उपलब्ध नहीं है।"
   },
@@ -2152,9 +2122,6 @@
   },
   "gasFee": {
     "message": "गैस फीस"
-  },
-  "gasIsETH": {
-    "message": "गैस $1 है "
   },
   "gasLimit": {
     "message": "गैस लिमिट"
@@ -2717,9 +2684,6 @@
   "learnScamRisk": {
     "message": "घोटाले और सुरक्षा जोखिम।"
   },
-  "learnToBridge": {
-    "message": "ब्रिज करना सीखें"
-  },
   "leaveMetaMask": {
     "message": "MetaMask से बाहर निकलें?"
   },
@@ -2810,9 +2774,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "कृपया Snap पर ट्रांजेक्शन पूरा करें।"
-  },
-  "loadingTokens": {
-    "message": "टोकन लोड हो रहे हैं..."
   },
   "localhost": {
     "message": "लोकलहोस्ट 8545"
@@ -2914,9 +2875,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "वॉलेट नोटिफिकेशंस वर्तमान में सक्रिय नहीं हैं।"
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask स्वैप का रखरखाव किया जा रहा है। कृपया बाद में वापस देखें।"
@@ -3061,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 निम्नलिखित के लिए आपका एप्रूवल मांग रहा है:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "इस नेटवर्क पर ओरिजिनल टोकन $1 है। यह गैस फ़ीस के लिए इस्तेमाल किया जाने वाला टोकन है।",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "नेटवर्क का ब्यौरा बदलें"
@@ -3349,9 +3303,6 @@
   },
   "noThanks": {
     "message": "जी नहीं, धन्यवाद"
-  },
-  "noTransactions": {
-    "message": "आपके पास कोई ट्रांसेक्शन नहीं है"
   },
   "noWebcamFound": {
     "message": "आपके कंप्यूटर का वेबकैम नहीं मिला। कृपया फिर से कोशिश करें।"
@@ -4107,12 +4058,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "यहां पर आप इंस्टॉल किए गए Snaps या कनेक्टेड साइटों को दी गई अनुमतियां देख सकते हैं।"
-  },
-  "permissionsPageTourDescription": {
-    "message": "कनेक्टेड साइटों और इंस्टॉल किए गए Snaps को दी गई अनुमतियों को मैनेज करने के लिए यह आपका कंट्रोल पैनल है।"
-  },
-  "permissionsPageTourTitle": {
-    "message": "कनेक्टेड साइटें अब अनुमतियां हैं"
   },
   "permitSimulationDetailInfo": {
     "message": "आप खर्च करने वाले को अपने अकाउंट से इतने सारे टोकन खर्च करने की अनुमति दे रहे हैं।"
@@ -5961,9 +5906,6 @@
     "message": "$1 अब $2 पर एक्टिव है",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "आप अब इस्तेमाल कर रहे हैं"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "नेटवर्क स्विच करने से सभी लंबित कन्फर्मेशन कैंसिल हो जाएंगे"
   },
@@ -6000,9 +5942,6 @@
   "themeDescription": {
     "message": "अपनी पसंदीदा MetaMask थीम चुन लें"
   },
-  "thingsToKeep": {
-    "message": "ध्यान रखने योग्य बातें:"
-  },
   "thirdPartySoftware": {
     "message": "थर्ड-पार्टी सॉफ्टवेयर नोटिस",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -6032,18 +5971,6 @@
   "toAddress": {
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "ऐसा करके, आप सभी साइटों के लिए कोई सिंगल नेटवर्क चुनने के बजाय हरेक साइट के लिए एक नेटवर्क चुन सकते हैं। यह फीचर आपको मैन्युअल तरीके से नेटवर्क स्विच करने से रोकता है, इस वजह से कुछ साइटों पर आपका यूज़र अनुभव ख़राब हो सकता है।"
-  },
-  "toggleRequestQueueField": {
-    "message": "हरेक साइट के लिए नेटवर्क चुनें"
-  },
-  "toggleRequestQueueOff": {
-    "message": "बंद करें"
-  },
-  "toggleRequestQueueOn": {
-    "message": "चालू करें"
   },
   "token": {
     "message": "टोकन"
@@ -6084,9 +6011,6 @@
   "tokenScamSecurityRisk": {
     "message": "टोकन घोटाले और सुरक्षा जोखिम"
   },
-  "tokenShowUp": {
-    "message": "हो सकता है आपके वॉलेट में आपके टोकन ऑटोमेटिकली दिखाई नहीं दें। "
-  },
   "tokenStandard": {
     "message": "टोकन स्टैंडर्ड"
   },
@@ -6117,9 +6041,6 @@
   },
   "total": {
     "message": "कुलयोग"
-  },
-  "totalFees": {
-    "message": "कुल शुल्क"
   },
   "totalVolume": {
     "message": "टोटल वॉल्यूम"
@@ -6401,9 +6322,6 @@
   },
   "use4ByteResolution": {
     "message": "स्मार्ट कॉन्ट्रैक्ट्स को डीकोड करें"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "यूज़र के अनुभव को बेहतर बनाने के लिए, आपके द्वारा इंटरैक्ट किए गए स्मार्ट कॉन्ट्रैक्ट्स के आधार पर हम एक्टिविटी टैब को मैसेज के साथ कस्टमाइज़ करते हैं। डेटा को डीकोड करने और आसानी से पढ़े जा सकने वाले स्मार्ट कॉन्ट्रैक्ट्स का एक वर्शन आपको दिखाने के लिए MetaMask एक सर्विस इस्तेमाल करता है जिसका नाम 4byte.directory है। इससे आपके द्वारा बुरी नीयत वाले स्मार्ट कॉन्ट्रैक्ट एक्शन को मंजूरी देने की संभावनाओं को कम करने में मदद मिलती है। हालांकि, इसमें आपका IP एड्रेस शेयर होने का खतरा हो सकता है।"
   },
   "useMultiAccountBalanceChecker": {
     "message": "अकाउंट के बैलेंस के रिक्वेस्ट्स को बैच करें"

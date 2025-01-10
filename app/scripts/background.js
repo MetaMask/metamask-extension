@@ -308,15 +308,14 @@ function maybeDetectPhishing(theController) {
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
       if (isManifestV2) {
-        if (details.type === 'sub_frame') {
-          // redirect the entire tab to the
-          // phishing warning page instead.
-          redirectTab(details.tabId, redirectHref);
-          // don't let the sub_frame load at all
-          return { cancel: true };
+        // We can redirect `main_frame` requests directly to the warning page.
+        // For non-`main_frame` requests (e.g. `sub_frame` or WebSocket), we cancel them
+        // and redirect the whole tab asynchronously so that the user sees the warning.
+        if (details.type === 'main_frame') {
+          return { redirectUrl: redirectHref };
         }
-        // redirect the whole tab
-        return { redirectUrl: redirectHref };
+        redirectTab(details.tabId, redirectHref);
+        return { cancel: true };
       }
       // redirect the whole tab (even if it's a sub_frame request)
       redirectTab(details.tabId, redirectHref);
@@ -742,6 +741,49 @@ function trackDappView(remotePort) {
 }
 
 /**
+ * Emit App Opened event
+ */
+function emitAppOpenedMetricEvent() {
+  const { metaMetricsId, participateInMetaMetrics } =
+    controller.metaMetricsController.state;
+
+  // Skip if user hasn't opted into metrics
+  if (metaMetricsId === null && !participateInMetaMetrics) {
+    return;
+  }
+
+  controller.metaMetricsController.trackEvent({
+    event: MetaMetricsEventName.AppOpened,
+    category: MetaMetricsEventCategory.App,
+  });
+}
+
+/**
+ * This function checks if the app is being opened
+ * and emits an event only if no other UI instances are currently open.
+ *
+ * @param {string} environment - The environment type where the app is opening
+ */
+function trackAppOpened(environment) {
+  // List of valid environment types to track
+  const environmentTypeList = [
+    ENVIRONMENT_TYPE_POPUP,
+    ENVIRONMENT_TYPE_NOTIFICATION,
+    ENVIRONMENT_TYPE_FULLSCREEN,
+  ];
+
+  // Check if any UI instances are currently open
+  const isFullscreenOpen = Object.values(openMetamaskTabsIDs).some(Boolean);
+  const isAlreadyOpen =
+    isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
+
+  // Only emit event if no UI is open and environment is valid
+  if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
+    emitAppOpenedMetricEvent();
+  }
+}
+
+/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -883,6 +925,7 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+      trackAppOpened(processName);
 
       initializeRemoteFeatureFlags();
 
@@ -1110,10 +1153,8 @@ export function setupController(
         controller.appStateController.waitingForUnlock.length +
         controller.approvalController.getTotalApprovalCount();
 
-      if (controller.preferencesController.getUseRequestQueue()) {
-        pendingApprovalCount +=
-          controller.queuedRequestController.state.queuedRequestCount;
-      }
+      pendingApprovalCount +=
+        controller.queuedRequestController.state.queuedRequestCount;
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);

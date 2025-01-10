@@ -17,6 +17,7 @@ type SmartTransactionsMetaMaskState = {
   metamask: {
     preferences: {
       smartTransactionsOptInStatus?: boolean;
+      smartTransactionsMigrationApplied?: boolean;
     };
     internalAccounts: {
       selectedAccount: string;
@@ -73,6 +74,25 @@ export const getSmartTransactionsOptInStatusInternal = createSelector(
 );
 
 /**
+ * Returns whether the smart transactions migration has been applied to the user's settings.
+ * This specifically tracks if Migration 135 has been run, which enables Smart Transactions
+ * by default for users who have never interacted with the feature or who previously opted out
+ * with no STX activity.
+ *
+ * This should only be used for internal checks of the migration status, and not
+ * for determining overall Smart Transactions availability.
+ *
+ * @param state - The state object.
+ * @returns true if the migration has been applied to the user's settings, false if not or if unset.
+ */
+export const getSmartTransactionsMigrationAppliedInternal = createSelector(
+  getPreferences,
+  (preferences: { smartTransactionsMigrationApplied?: boolean }): boolean => {
+    return preferences?.smartTransactionsMigrationApplied ?? false;
+  },
+);
+
+/**
  * Returns the user's explicit opt-in status for the smart transactions feature.
  * This should only be used for metrics collection, and not for determining if the
  * smart transactions user preference is enabled.
@@ -84,6 +104,7 @@ export const getSmartTransactionsOptInStatusInternal = createSelector(
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
+// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => optInStatus,
@@ -96,6 +117,7 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @param state
  * @returns
  */
+// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => {
