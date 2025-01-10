@@ -957,7 +957,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#requestCaip25ApprovalApproval', () => {
+    describe('#requestCaip25Approval', () => {
       it('requests approval with well formed id and origin', async () => {
         jest
           .spyOn(
@@ -1394,6 +1394,9 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: {
+                    'wallet:eip155': {
+                      accounts: ['wallet:eip155:0xdeadbeef'],
+                    },
                     'eip155:1': {
                       accounts: ['eip155:1:0xdeadbeef'],
                     },
