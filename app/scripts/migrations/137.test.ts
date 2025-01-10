@@ -1260,9 +1260,4 @@ describe('migration #137', () => {
         },
       },
     });
-
-    // expect(newStorage.data.PermissionController.subjects['malformed.com']).toBe('invalid-subject');
-    // expect(newStorage.data.PermissionController.subjects['test.com'].permissions).toHaveProperty('endowment:caip25');
-    // expect(newStorage.data.PermissionController.subjects['valid.com'].permissions).toHaveProperty('endowment:caip25');
-  });
 });
