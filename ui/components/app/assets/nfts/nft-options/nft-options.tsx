@@ -30,7 +30,6 @@ const NftOptions = ({
 
   const closePopover = () => {
     setNftOptionsOpen(false);
-    onViewOnOpensea && onViewOnOpensea();
   };
 
   return (
@@ -60,7 +59,7 @@ const NftOptions = ({
           <SelectableListItem
             testId="nft-options__view-on-opensea"
             onClick={() => {
-              setNftOptionsOpen(false);
+              closePopover();
               onViewOnOpensea && onViewOnOpensea();
             }}
           >
@@ -75,8 +74,8 @@ const NftOptions = ({
         <SelectableListItem
           testId="nft-item-remove"
           onClick={() => {
-            setNftOptionsOpen(false);
-            onRemove();
+            closePopover();
+            onRemove && onRemove();
           }}
         >
           <Icon name={IconName.Trash} size={IconSize.Sm} marginInlineEnd={2} />
