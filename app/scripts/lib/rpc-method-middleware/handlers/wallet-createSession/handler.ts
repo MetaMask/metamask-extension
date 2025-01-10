@@ -55,22 +55,30 @@ type AbstractPermissionController = PermissionController<
 >;
 
 /**
- * Handler for the `wallet_createSession` RPC method.
+ * Handler for the `wallet_createSession` RPC method which is responsible
+ * for prompting for approval and granting a CAIP-25 permission.
+ *
+ * This implementation primarily deviates from the CAIP-25 handler
+ * specification by treating all scopes as optional regardless of
+ * if they were specified in `requiredScopes` or `optionalScopes`.
+ * Additionally, provided scopes, methods, notifications, and
+ * account values that are invalid/malformed are ignored rather than
+ * causing an error to be returned.
  *
  * @param req - The request object.
  * @param res - The response object.
  * @param _next - The next middleware function.
  * @param end - The end function.
  * @param hooks - The hooks object.
- * @param hooks.listAccounts
- * @param hooks.findNetworkClientIdByChainId
- * @param hooks.requestPermissionApprovalForOrigin
- * @param hooks.sendMetrics
- * @param hooks.metamaskState
- * @param hooks.metamaskState.metaMetricsId
- * @param hooks.metamaskState.permissionHistory
- * @param hooks.metamaskState.accounts
- * @param hooks.grantPermissions
+ * @param hooks.listAccounts - The hook that returns an array of the wallet's evm accounts.
+ * @param hooks.findNetworkClientIdByChainId - The hook that returns the networkClientId for a chainId.
+ * @param hooks.requestPermissionApprovalForOrigin - The hook that prompts the user approval for requested permissions.
+ * @param hooks.sendMetrics - The hook that tracks an analytics event.
+ * @param hooks.metamaskState - The wallet state.
+ * @param hooks.metamaskState.metaMetricsId - The analytics id.
+ * @param hooks.metamaskState.permissionHistory - The permission history object keyed by origin.
+ * @param hooks.metamaskState.accounts - The accounts object keyed by address .
+ * @param hooks.grantPermissions - The hook that grants permission for the origin.
  */
 async function walletCreateSessionHandler(
   req: JsonRpcRequest<Caip25Authorization> & { origin: string },

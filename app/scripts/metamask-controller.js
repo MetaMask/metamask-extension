@@ -6813,7 +6813,6 @@ export default class MetamaskController extends EventEmitter {
       return next();
     });
 
-    // TODO: Uncomment this when wallet lifecycle methods are added to api-specs
     engine.push(multichainMethodCallValidatorMiddleware);
     const middlewareMaker = makeMethodMiddlewareMaker([
       walletRevokeSession,
