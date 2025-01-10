@@ -29,13 +29,16 @@ jobs:
           # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
           # For a `push` event, the head commit hash is `github.sha`.
           HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+          JOB_NAME: job-publish-prerelease
         run: |
-          pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq -r ".items | map(select(.vcs.revision == \"${HEAD_COMMIT_HASH}\" )) | first | .id")
+          pipeline_id=$(curl --silent "https://circleci.com/api/v2/project/gh/$OWNER/$REPOSITORY/pipeline?branch=$BRANCH" | jq --arg head_commit_hash "${HEAD_COMMIT_HASH}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id')
           workflow_id=$(curl --silent "https://circleci.com/api/v2/pipeline/$pipeline_id/workflow" | jq -r ".items[0].id")
-          job_details=$(curl --silent "https://circleci.com/api/v2/workflow/$workflow_id/job" | jq -r '.items[] | select(.name == "job-publish-prerelease")')
+          job_details=$(curl --silent "https://circleci.com/api/v2/workflow/$workflow_id/job" | jq --arg job_name "${JOB_NAME}" -r '.items[] | select(.name == $job_name)')
+
           job_id=$(echo "$job_details" | jq -r '.id')
           echo 'CIRCLE_WORKFLOW_JOB_ID='"$job_id" >> "$GITHUB_OUTPUT"
-          echo "Getting artifacts from pipeline '${pipeline_id}', workflow '${workflow_id}', job ID '${job_id}'"
+
+          echo "Getting artifacts from pipeline '${pipeline_id}', workflow '${workflow_id}', job id '${job_id}'"
 
       - name: Download builds from CircleCI
         env:
