@@ -211,7 +211,6 @@
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
-    "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
@@ -348,6 +347,7 @@
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingReadyToBeDispatched": "boolean"
+    "isAccountSyncingReadyToBeDispatched": "boolean",
+    "isAccountSyncingInProgress": "boolean"
   }
 }

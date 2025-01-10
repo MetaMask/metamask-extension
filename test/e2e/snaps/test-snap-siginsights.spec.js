@@ -175,8 +175,13 @@ describe('Test Snap Signature Insights', function () {
           // switch back to MetaMask window and switch to tx insights pane
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+          await driver.waitForSelector(
+            '[data-testid="signature-request-scroll-button"]',
+          );
           // click down arrow
-          await driver.clickElementSafe('.fa-arrow-down');
+          await driver.clickElementSafe(
+            '[data-testid="signature-request-scroll-button"]',
+          );
 
           // wait for and click sign
           await clickSignOnSignatureConfirmation({
@@ -223,7 +228,12 @@ describe('Test Snap Signature Insights', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           // click down arrow
-          await driver.clickElementSafe('.fa-arrow-down');
+          await driver.waitForSelector(
+            '[data-testid="signature-request-scroll-button"]',
+          );
+          await driver.clickElementSafe(
+            '[data-testid="signature-request-scroll-button"]',
+          );
 
           // wait for and click sign
           await clickSignOnSignatureConfirmation({

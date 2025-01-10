@@ -1,8 +1,5 @@
 import { invalidParams } from '@metamask/permission-controller';
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/multichain';
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { PermissionNames } from '../../../controllers/permissions';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
@@ -24,24 +21,7 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const revokePermissionsForOrigin = jest.fn();
-  const getPermissionsForOrigin = jest.fn().mockReturnValue(
-    Object.freeze({
-      [Caip25EndowmentPermissionName]: {
-        id: '1',
-        parentCapability: Caip25EndowmentPermissionName,
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: {
-              requiredScopes: {},
-              optionalScopes: {},
-              isMultichainOrigin: false,
-            },
-          },
-        ],
-      },
-    }),
-  );
+
   const response: PendingJsonRpcResponse<Json> = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -49,7 +29,6 @@ const createMockedHandler = () => {
   const handler = (request: JsonRpcRequest<Json[]>) =>
     revokePermissionsHandler.implementation(request, response, next, end, {
       revokePermissionsForOrigin,
-      getPermissionsForOrigin,
     });
 
   return {
@@ -57,7 +36,6 @@ const createMockedHandler = () => {
     next,
     end,
     revokePermissionsForOrigin,
-    getPermissionsForOrigin,
     handler,
   };
 };
@@ -111,20 +89,6 @@ describe('revokePermissionsHandler', () => {
     [RestrictedMethods.eth_accounts],
     [PermissionNames.permittedChains],
   ])('%s permission is specified', (permission: string) => {
-    it('gets permissions for the origin', () => {
-      const { handler, getPermissionsForOrigin } = createMockedHandler();
-
-      handler({
-        ...baseRequest,
-        params: [
-          {
-            [permission]: {},
-          },
-        ],
-      });
-      expect(getPermissionsForOrigin).toHaveBeenCalled();
-    });
-
     it('revokes the CAIP-25 endowment permission', () => {
       const { handler, revokePermissionsForOrigin } = createMockedHandler();
 
@@ -157,41 +121,6 @@ describe('revokePermissionsHandler', () => {
         'otherPermission',
         Caip25EndowmentPermissionName,
       ]);
-    });
-
-    it('throws an error when a CAIP-25 permission exists from the multichain flow (isMultichainOrigin: true)', () => {
-      const { handler, getPermissionsForOrigin, end } = createMockedHandler();
-      getPermissionsForOrigin.mockReturnValue({
-        [Caip25EndowmentPermissionName]: {
-          id: '1',
-          parentCapability: Caip25EndowmentPermissionName,
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: {
-                requiredScopes: {},
-                optionalScopes: {},
-                isMultichainOrigin: true,
-              },
-            },
-          ],
-        },
-      });
-
-      handler({
-        ...baseRequest,
-        params: [
-          {
-            [permission]: {},
-            otherPermission: {},
-          },
-        ],
-      });
-      expect(end).toHaveBeenCalledWith(
-        new Error(
-          'Cannot modify permission granted via the Multichain API. Either modify the permission using the Multichain API or revoke permissions and request again.',
-        ),
-      );
     });
   });
 

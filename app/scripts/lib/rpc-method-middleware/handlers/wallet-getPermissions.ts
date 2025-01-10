@@ -57,7 +57,7 @@ async function getPermissionsImplementation(
         CaveatSpecificationConstraint
       >['getPermissions']
     >;
-    getAccounts: (ignoreLock?: boolean) => string[];
+    getAccounts: (options?: { ignoreLock?: boolean }) => string[];
   },
 ) {
   const permissions = { ...getPermissionsForOrigin() };
@@ -70,7 +70,7 @@ async function getPermissionsImplementation(
   if (caip25CaveatValue) {
     // We cannot derive ethAccounts directly from the CAIP-25 permission
     // because the accounts will not be in order of lastSelected
-    const ethAccounts = getAccounts(true);
+    const ethAccounts = getAccounts({ ignoreLock: true });
 
     if (ethAccounts.length > 0) {
       permissions[RestrictedMethods.eth_accounts] = {
