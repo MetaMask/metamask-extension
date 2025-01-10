@@ -248,7 +248,7 @@ describe('Multichain API', function () {
               );
               const currentBalance = await resultWebElement.getText();
 
-              assert.strictEqual(
+              assert.notStrictEqual(
                 currentBalance,
                 `"${DEFAULT_INITIAL_BALANCE_HEX}"`,
                 `${scope} scope balance should be different after eth_sendTransaction due to gas`,
