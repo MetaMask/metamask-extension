@@ -276,6 +276,9 @@ workflows:
       - user-actions-benchmark:
           requires:
             - prep-build-test
+      - bundle-size:
+          requires:
+            - prep-build-test
       - job-publish-prerelease:
           requires:
             - prep-deps
@@ -293,6 +296,7 @@ workflows:
             - prep-build-ts-migration-dashboard
             - benchmark
             - user-actions-benchmark
+            - bundle-size
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -1269,6 +1273,36 @@ jobs:
           paths:
             - test-artifacts
 
+  bundle-size:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: Measure bundle size
+          command: yarn bundle-size --out test-artifacts/chrome
+      - run:
+          name: Install jq
+          command: sudo apt install jq -y
+      - run:
+          name: Record bundle size at commit
+          command: ./.circleci/scripts/bundle-stats-commit.sh
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
+
   job-publish-prerelease:
     executor: node-browsers-medium
     steps:
@@ -1330,14 +1364,6 @@ jobs:
       - store_artifacts:
           path: development/ts-migration-dashboard/build/final
           destination: ts-migration-dashboard
-      - run:
-          name: Set branch parent commit env var
-          command: |
-            echo "export PARENT_COMMIT=$(git merge-base origin/HEAD HEAD)" >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: build:announce
-          command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
     executor: node-browsers-small
