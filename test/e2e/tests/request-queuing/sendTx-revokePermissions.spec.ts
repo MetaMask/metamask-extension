@@ -21,7 +21,6 @@ describe('Request Queuing', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         ganacheOptions: {
@@ -41,9 +40,7 @@ describe('Request Queuing', function () {
         // Open test dapp
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_connectedAccounts(
-          DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
-        );
+        await testDapp.check_connectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
 
         // Trigger a tx
         await testDapp.clickSimpleSendButton();
@@ -71,7 +68,7 @@ describe('Request Queuing', function () {
         await driver.waitUntilXWindowHandles(2);
 
         // Cleared eth_accounts account label
-        await testDapp.check_connectedAccounts();
+        await testDapp.check_connectedAccounts(DEFAULT_FIXTURE_ACCOUNT, false);
       },
     );
   });

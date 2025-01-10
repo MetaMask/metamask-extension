@@ -90,10 +90,7 @@ export const SpendingCap = ({
     Number(decimals ?? '0'),
   ).toFixed();
 
-  const { pending } = useApproveTokenSimulation(
-    transactionMeta,
-    decimals || '0',
-  );
+  const { pending } = useApproveTokenSimulation(transactionMeta, decimals);
 
   if (pending) {
     return <Container isLoading />;

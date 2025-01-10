@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Agregando red"
   },
-  "addingTokens": {
-    "message": "Agregando tokens"
-  },
   "additionalNetworks": {
     "message": "Redes adicionales"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "Detectar automáticamente tokens en su monedero, mostrar NFT y recibir actualizaciones de saldo de cuenta por lotes"
   },
-  "attemptSendingAssets": {
-    "message": "Puede perder sus activos si intenta enviarlos desde otra red. Transfiera fondos de forma segura entre redes mediante el uso de un puente."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Puede perder sus activos si intenta enviarlos desde otra red. Transfiera fondos de forma segura entre redes usando un puente, como $1"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Intente cancelar el intercambio de forma gratuita"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Calculando..."
   },
-  "bridgeDontSend": {
-    "message": "Puente, no enviar"
-  },
   "bridgeEnterAmount": {
     "message": "Ingrese el monto"
   },
@@ -953,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Haga clic aquí para conectar su Ledger a través de WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Siempre puede agregar tókenes manualmente."
   },
   "close": {
     "message": "Cerrar"
@@ -2138,9 +2123,6 @@
   "gasFee": {
     "message": "Tarifa de gas"
   },
-  "gasIsETH": {
-    "message": "El gas es $1 "
-  },
   "gasLimit": {
     "message": "Límite de gas"
   },
@@ -2702,9 +2684,6 @@
   "learnScamRisk": {
     "message": "estafas y riesgos en seguridad."
   },
-  "learnToBridge": {
-    "message": "Aprenda a puentear"
-  },
   "leaveMetaMask": {
     "message": "¿Dejar MetaMask?"
   },
@@ -2795,9 +2774,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Por favor, complete la transacción en el Snap."
-  },
-  "loadingTokens": {
-    "message": "Cargando tokens..."
   },
   "localhost": {
     "message": "Host local 8545"
@@ -2899,9 +2875,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Las notificaciones del monedero no están activas actualmente."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps está en mantenimiento. Vuelva a comprobarlo más tarde."
@@ -3046,10 +3019,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 solicita su aprobación para:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "El token nativo en esta red es de $1. Es el token utilizado para las tarifas de gas. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Editar detalles de la red"
@@ -3334,9 +3303,6 @@
   },
   "noThanks": {
     "message": "No, gracias"
-  },
-  "noTransactions": {
-    "message": "No tiene transacciones"
   },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
@@ -5940,9 +5906,6 @@
     "message": "$1 ahora está activo en $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Ahora está usando"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Cambiar de red cancelará todas las confirmaciones pendientes"
   },
@@ -5979,9 +5942,6 @@
   "themeDescription": {
     "message": "Elija su tema MetaMask preferido."
   },
-  "thingsToKeep": {
-    "message": "Tenga en cuenta:"
-  },
   "thirdPartySoftware": {
     "message": "Aviso de software de terceros",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -6011,18 +5971,6 @@
   "toAddress": {
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Esto le permite seleccionar una red para cada sitio en lugar de una única red seleccionada para todos los sitios. Esta función evitará que cambie de red manualmente, lo que puede afectar su experiencia de usuario en ciertos sitios."
-  },
-  "toggleRequestQueueField": {
-    "message": "Seleccionar redes para cada sitio"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Desactivado"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Activado"
   },
   "token": {
     "message": "Token"
@@ -6062,9 +6010,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "estafas de tokens y riesgos de seguridad"
-  },
-  "tokenShowUp": {
-    "message": "Es posible que sus tókenes no aparezcan automáticamente en su monedero. "
   },
   "tokenStandard": {
     "message": "Estándar de tokenes"
@@ -6377,9 +6322,6 @@
   },
   "use4ByteResolution": {
     "message": "Decodificar contratos inteligentes"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "Para mejorar la experiencia del usuario, personalizamos la pestaña de actividad con mensajes basados en los contratos inteligentes con los que interactúa. MetaMask usa un servicio llamado 4byte.directory para decodificar datos y mostrarle una versión de un contrato inteligente que es más fácil de leer. Esto ayuda a reducir sus posibilidades de aprobar acciones de contratos inteligentes maliciosos, pero puede resultar en que se comparta su dirección IP."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Solicitudes de saldo de cuenta por lotes"

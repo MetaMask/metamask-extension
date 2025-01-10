@@ -3,7 +3,10 @@ import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { createProjectLogger, Hex } from '@metamask/utils';
-import { QuoteMetadata, QuoteResponse } from '../types';
+import type {
+  QuoteMetadata,
+  QuoteResponse,
+} from '../../../../shared/types/bridge';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -90,7 +93,8 @@ export default function useSubmitBridgeTransaction() {
           CHAIN_IDS.LINEA_GOERLI,
           CHAIN_IDS.LINEA_SEPOLIA,
         ] as Hex[]
-      ).includes(srcChainId)
+      ).includes(srcChainId) &&
+      quoteResponse?.approval
     ) {
       debugLog(
         'Delaying submitting bridge tx to make Linea confirmation more likely',
