@@ -30,7 +30,6 @@ const MockMultichain = jest.mocked(Multichain);
 
 jest.mock('./helpers', () => ({
   ...jest.requireActual('./helpers'),
-  validateAndAddEip3085: jest.fn(),
   processScopedProperties: jest.fn(),
 }));
 const MockHelpers = jest.mocked(Helpers);
@@ -441,80 +440,6 @@ describe('wallet_createSession', () => {
     );
   });
 
-  it('validates and upserts EIP 3085 scoped properties when matching sessionScope is defined', async () => {
-    const { handler, findNetworkClientIdByChainId, addNetwork } =
-      createMockedHandler();
-    MockHelpers.processScopedProperties.mockReturnValue({
-      'eip155:1': {
-        eip3085: {
-          foo: 'bar',
-        },
-      },
-    });
-    MockMultichain.getSessionScopes.mockReturnValue({
-      'eip155:1': {
-        methods: [],
-        notifications: [],
-        accounts: ['eip155:1:0x1'],
-      },
-    });
-    await handler({
-      ...baseRequest,
-      params: {
-        ...baseRequest.params,
-        scopedProperties: {
-          'eip155:1': {
-            eip3085: {
-              foo: 'bar',
-            },
-          },
-        },
-      },
-    });
-
-    expect(MockHelpers.validateAndAddEip3085).toHaveBeenCalledWith({
-      eip3085Params: { foo: 'bar' },
-      addNetwork,
-      findNetworkClientIdByChainId,
-    });
-  });
-
-  it('does not validate and upsert EIP 3085 scoped properties when there is no matching sessionScope', async () => {
-    const { handler } = createMockedHandler();
-    MockMultichain.bucketScopes
-      .mockReturnValueOnce({
-        supportedScopes: {
-          'eip155:1': {
-            methods: [],
-            notifications: [],
-            accounts: ['eip155:1:0x1'],
-          },
-        },
-        supportableScopes: {},
-        unsupportableScopes: {},
-      })
-      .mockReturnValueOnce({
-        supportedScopes: {},
-        supportableScopes: {},
-        unsupportableScopes: {},
-      });
-    await handler({
-      ...baseRequest,
-      params: {
-        ...baseRequest.params,
-        scopedProperties: {
-          'eip155:99999': {
-            eip3085: {
-              foo: 'bar',
-            },
-          },
-        },
-      },
-    });
-
-    expect(MockHelpers.validateAndAddEip3085).not.toHaveBeenCalled();
-  });
-
   it('grants the CAIP-25 permission for the supported scopes and accounts that were approved', async () => {
     const { handler, grantPermissions, requestPermissionApprovalForOrigin } =
       createMockedHandler();
@@ -656,43 +581,5 @@ describe('wallet_createSession', () => {
         },
       },
     });
-  });
-
-  it('reverts any upserted network clients if the request fails', async () => {
-    const { handler, removeNetwork, grantPermissions } = createMockedHandler();
-    MockMultichain.getSessionScopes.mockReturnValue({
-      'eip155:1': {
-        methods: [],
-        notifications: [],
-        accounts: [],
-      },
-    });
-    MockHelpers.processScopedProperties.mockReturnValue({
-      'eip155:1': {
-        eip3085: {
-          foo: 'bar',
-        },
-      },
-    });
-    MockHelpers.validateAndAddEip3085.mockResolvedValue('0xdeadbeef');
-    grantPermissions.mockImplementation(() => {
-      throw new Error('failed to grant permission');
-    });
-
-    await handler({
-      ...baseRequest,
-      params: {
-        ...baseRequest.params,
-        scopedProperties: {
-          'eip155:1': {
-            eip3085: {
-              foo: 'bar',
-            },
-          },
-        },
-      },
-    });
-
-    expect(removeNetwork).toHaveBeenCalledWith('0xdeadbeef');
   });
 });

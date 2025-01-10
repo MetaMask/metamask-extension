@@ -13,7 +13,6 @@ import {
   getInternalScopesObject,
   getSessionScopes,
   NormalizedScopesObject,
-  InternalScopeString,
   getSupportedScopeObjects,
 } from '@metamask/multichain';
 import {
@@ -48,7 +47,7 @@ import {
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
-import { processScopedProperties, validateAndAddEip3085 } from './helpers';
+import { processScopedProperties } from './helpers';
 
 type AbstractPermissionController = PermissionController<
   PermissionSpecificationConstraint,
@@ -119,8 +118,6 @@ async function walletCreateSessionHandler(
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
   }
-
-  const chainIdsForNetworksAdded: Hex[] = [];
 
   try {
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
@@ -223,27 +220,6 @@ async function walletCreateSessionHandler(
 
     const sessionScopes = getSessionScopes(caip25CaveatValue);
 
-    await Promise.all(
-      Object.entries(validScopedProperties).map(
-        async ([scopeString, scopedProperty]) => {
-          const scope = sessionScopes[scopeString as InternalScopeString];
-          if (!scope) {
-            return;
-          }
-
-          const chainId = await validateAndAddEip3085({
-            eip3085Params: scopedProperty.eip3085,
-            addNetwork: hooks.addNetwork,
-            findNetworkClientIdByChainId: hooks.findNetworkClientIdByChainId,
-          });
-
-          if (chainId) {
-            chainIdsForNetworksAdded.push(chainId);
-          }
-        },
-      ),
-    );
-
     hooks.grantPermissions({
       subject: {
         origin,
@@ -289,9 +265,6 @@ async function walletCreateSessionHandler(
     };
     return end();
   } catch (err) {
-    chainIdsForNetworksAdded.forEach((chainId) => {
-      hooks.removeNetwork(chainId);
-    });
     return end(err);
   }
 }
