@@ -14,8 +14,7 @@ const DEFAULT_SYMBOL = '';
 async function getSymbolFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress);
   try {
-    const result = await token.symbol();
-    return result[0];
+    return await token.symbol();
   } catch (error) {
     log.warn(
       `symbol() call for token at address ${tokenAddress} resulted in error:`,
@@ -28,8 +27,7 @@ async function getSymbolFromContract(tokenAddress) {
 async function getNameFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress);
   try {
-    const [name] = await token.name();
-    return name;
+    return await token.name();
   } catch (error) {
     log.warn(
       `name() call for token at address ${tokenAddress} resulted in error:`,
@@ -43,8 +41,7 @@ async function getDecimalsFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress);
 
   try {
-    const result = await token.decimals();
-    const decimalsBN = result[0];
+    const decimalsBN = await token.decimals();
     return decimalsBN?.toString();
   } catch (error) {
     log.warn(
