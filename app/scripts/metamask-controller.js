@@ -6300,6 +6300,8 @@ export default class MetamaskController extends EventEmitter {
 
     const engine = this.setupProviderEngineCaip({
       origin,
+      sender,
+      subjectType,
       tabId,
     });
 
@@ -6784,10 +6786,12 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
+   * @param {MessageSender | SnapSender} options.sender - The sender object.
+   * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  setupProviderEngineCaip({ origin, tabId }) {
+  setupProviderEngineCaip({ origin, sender, subjectType, tabId }) {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
@@ -6883,9 +6887,18 @@ export default class MetamaskController extends EventEmitter {
       ]),
     );
 
+    if (subjectType === SubjectType.Website) {
+      engine.push(
+        createOnboardingMiddleware({
+          location: sender.url,
+          registerOnboarding: this.onboardingController.registerOnboarding,
+        }),
+      );
+    }
+
     engine.push(
       createMultichainMethodMiddleware({
-        subjectType: SubjectType.Website, // TODO: this should probably be passed in
+        subjectType,
 
         // Miscellaneous
         addSubjectMetadata:
