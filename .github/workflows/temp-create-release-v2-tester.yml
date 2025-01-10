@@ -1,0 +1,22 @@
+name: Temp Create Release Pull Request V2
+
+on:
+  push:
+    branches: '**'
+
+jobs:
+
+  create-release-pr:
+    # Uncomment and use `needs` if generate-build-version is uncommented
+    # needs: generate-build-version
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@platform-shared-workflows
+    with:
+      platform: extension
+      base-branch: rls-alignment
+      semver-version: 12.10.10
+      previous-version-tag: v12.9.3
+    secrets:
+      github-token: ${{ secrets.PR_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
