@@ -4261,9 +4261,6 @@
   "permissionsPageEmptySubContent": {
     "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
   },
-  "permitRevokeSimulationDetailInfo": {
-    "message": "You're removing the spender permission to spend this many tokens from your account."
-  },
   "permitSimulationChange_approve": {
     "message": "Spending cap"
   },
