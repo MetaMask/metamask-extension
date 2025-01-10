@@ -20,6 +20,16 @@ import {
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../shared/constants/bridge';
+import {
+  type BridgeControllerState,
+  type BridgeToken,
+  type L1GasFees,
+  type QuoteMetadata,
+  type QuoteResponse,
+  SortOrder,
+  BridgeFeatureFlagsKey,
+  RequestStatus,
+} from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import {
@@ -27,16 +37,6 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
-import {
-  type L1GasFees,
-  type BridgeControllerState,
-  type BridgeToken,
-  type QuoteMetadata,
-  type QuoteResponse,
-  SortOrder,
-  BridgeFeatureFlagsKey,
-  RequestStatus,
-} from '../../../shared/types/bridge';
 import {
   calcAdjustedReturn,
   calcCost,

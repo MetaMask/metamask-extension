@@ -1451,6 +1451,9 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: {
+                    'wallet:eip155': {
+                      accounts: ['wallet:eip155:0xdeadbeef'],
+                    },
                     'eip155:1': {
                       accounts: ['eip155:1:0xdeadbeef'],
                     },

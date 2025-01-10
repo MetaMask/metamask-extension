@@ -5698,23 +5698,18 @@ export default class MetamaskController extends EventEmitter {
 
     const newCaveatValue = {
       requiredScopes: {},
-      optionalScopes: {},
+      optionalScopes: {
+        'wallet:eip155': {
+          accounts: [],
+        },
+      },
       isMultichainOrigin: false,
     };
 
-    const caveatValueWithChains = isSnapId(origin)
-      ? {
-          ...newCaveatValue,
-          optionalScopes: {
-            'wallet:eip155': {
-              accounts: [],
-            },
-          },
-        }
-      : setPermittedEthChainIds(
-          newCaveatValue,
-          legacyApproval.approvedChainIds,
-        );
+    const caveatValueWithChains = setPermittedEthChainIds(
+      newCaveatValue,
+      isSnapId(origin) ? [] : legacyApproval.approvedChainIds,
+    );
 
     const caveatValueWithAccounts = setEthAccounts(
       caveatValueWithChains,
