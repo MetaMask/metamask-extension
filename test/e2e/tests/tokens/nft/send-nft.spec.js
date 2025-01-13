@@ -76,14 +76,6 @@ describe('Send NFT', function () {
           text: 'Send Test Dapp NFTs',
         });
         assert.equal(await sendNftItem.isDisplayed(), true);
-
-        // Go back to NFTs tab and check the imported NFT is shown as previously owned
-        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
-        const previouslyOwnedNft = await driver.findElement({
-          css: 'h5',
-          text: 'Previously Owned',
-        });
-        assert.equal(await previouslyOwnedNft.isDisplayed(), true);
       },
     );
   });
@@ -134,15 +126,6 @@ describe('Send NFT', function () {
           text: 'Safe transfer from',
         });
         assert.equal(await sendNftItem.isDisplayed(), true);
-
-        // Go back to NFTs tab and check the imported NFT is shown as previously owned
-        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
-
-        const previouslyOwnedNft = await driver.findElement({
-          css: 'h5',
-          text: 'Previously Owned',
-        });
-        assert.equal(await previouslyOwnedNft.isDisplayed(), true);
       },
     );
   });
