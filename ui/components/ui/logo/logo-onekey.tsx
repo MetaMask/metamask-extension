@@ -1,12 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
+type LogoOneKeyType = {
+  width: string;
+  color: string;
+  className: string;
+  ariaLabel: string;
+};
 
 const LogoOnekey = ({
   width = '100%',
   color = 'var(--color-text-default)',
   className,
   ariaLabel,
-}) => {
+}: LogoOneKeyType) => {
   return (
     <svg
       width={width}
@@ -29,25 +35,6 @@ const LogoOnekey = ({
       ></path>
     </svg>
   );
-};
-
-LogoOnekey.propTypes = {
-  /**
-   * The width of the logo. Defaults to 100%
-   */
-  width: PropTypes.string,
-  /**
-   * The color of the logo defaults to var(--color-text-default)
-   */
-  color: PropTypes.string,
-  /**
-   * Additional className to add to the root svg
-   */
-  className: PropTypes.string,
-  /**
-   * Aria label to add to the logo component
-   */
-  ariaLabel: PropTypes.string,
 };
 
 export default LogoOnekey;
