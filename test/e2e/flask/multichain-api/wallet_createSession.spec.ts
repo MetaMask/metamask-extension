@@ -6,7 +6,6 @@ import {
   withFixtures,
   ACCOUNT_1,
   ACCOUNT_2,
-  veryLargeDelayMs,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
@@ -19,7 +18,6 @@ import {
   addAccountInWalletAndAuthorize,
   updateNetworkCheckboxes,
 } from './testHelpers';
-import { A } from '@storybook/components';
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the user’s enabled networks', function () {
@@ -395,7 +393,7 @@ describe('Multichain API', function () {
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
     const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
-    it.only('should entirely overwrite old session permissions by those requested in the new `wallet_createSession` request', async function () {
+    it('should entirely overwrite old session permissions by those requested in the new `wallet_createSession` request', async function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
@@ -421,10 +419,18 @@ describe('Multichain API', function () {
           );
 
           /**
-           * We make sure to deselect the existing session scope
+           * We first make sure session exists
+           */
+          const existingGetSessionScopesResult = await getSessionScopes(driver);
+          assert.notStrictEqual(
+            existingGetSessionScopesResult.sessionScopes[OLD_SCOPE],
+            undefined,
+          );
+
+          /**
+           * Then we make sure to deselect the existing session scope, and create session with new scopes
            */
           await driver.clickElement(`input[name="${OLD_SCOPE}"]`);
-
           await initCreateSessionScopes(driver, NEW_SCOPES, [TREZOR_ACCOUNT]);
           await driver.clickElement({ text: 'Connect', tag: 'button' });
           await driver.delay(largeDelayMs);
@@ -432,35 +438,36 @@ describe('Multichain API', function () {
             WINDOW_TITLES.MultichainTestDApp,
           );
 
-          const getSessionScopesResult = await getSessionScopes(driver);
+          const newGetSessionScopesResult = await getSessionScopes(driver);
 
+          /**
+           * Assert old session doesn't exist anymore, as is overwritten by new session scopes
+           */
           assert.strictEqual(
-            getSessionScopesResult.sessionScopes[OLD_SCOPE],
+            newGetSessionScopesResult.sessionScopes[OLD_SCOPE],
             undefined,
           );
 
-          const expectedSessionScopes = NEW_SCOPES.map((scope) => {
-            return {
-              [scope]: getExpectedSessionScope(scope, [TREZOR_ACCOUNT]), // TODO: simplify syntax
-            };
-          });
+          const expectedNewSessionScopes = NEW_SCOPES.map((scope) => ({
+            [scope]: getExpectedSessionScope(scope, [TREZOR_ACCOUNT]),
+          }));
 
-          for (const expectedSessionScope of expectedSessionScopes) {
-            const [scopeName, expectedScopeObject] =
-              Object.entries(expectedSessionScope)[0]; // TODO: simplify this shit
+          for (const expectedSessionScope of expectedNewSessionScopes) {
+            const [scopeName] = Object.keys(expectedSessionScope);
+            const expectedScopeObject = expectedSessionScope[scopeName];
             const resultSessionScope =
-              getSessionScopesResult.sessionScopes[scopeName];
-            console.log({ resultSessionScope, scopeName, expectedScopeObject });
+              newGetSessionScopesResult.sessionScopes[scopeName];
+
             assert.deepEqual(
-              resultSessionScope,
               expectedScopeObject,
+              resultSessionScope,
               `${scopeName} does not match expected scope`,
             );
 
             const resultAccounts = resultSessionScope.accounts;
             assert.deepEqual(
-              resultAccounts,
               expectedScopeObject.accounts,
+              resultAccounts,
               `${expectedScopeObject.accounts} do not match accounts in scope ${scopeName}`,
             );
           }
