@@ -50,6 +50,7 @@ export class SignUpPage {
   readonly skipSrpBackupBtn: Locator;
 
   readonly termsModalBody: Locator;
+
   readonly popOverBtn: Locator;
 
   constructor(page: Page) {
