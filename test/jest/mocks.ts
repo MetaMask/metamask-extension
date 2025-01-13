@@ -186,7 +186,11 @@ export function createMockInternalAccount({
   type = EthAccountType.Eoa,
   keyringType = KeyringTypes.hd,
   lastSelected = 0,
-  snapOptions = undefined,
+  snapOptions = {
+    enabled: true,
+    id: 'npm:snap-id',
+    name: 'snap-name',
+  },
   options = undefined,
 }: {
   name?: string;
@@ -236,7 +240,7 @@ export function createMockInternalAccount({
       keyring: {
         type: keyringType,
       },
-      snap: snapOptions,
+      snap: keyringType === KeyringTypes.snap ? snapOptions : undefined,
       lastSelected,
     },
     options: options ?? {},

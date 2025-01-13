@@ -633,9 +633,9 @@ async function unlockWallet(
     await driver.navigate();
   }
 
+  await driver.waitForSelector('#password', { state: 'enabled' });
   await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
-
   if (waitLoginSuccess) {
     await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
@@ -722,7 +722,7 @@ async function clickSignOnSignatureConfirmation({
   if (snapSigInsights) {
     // there is no condition we can wait for to know the snap is ready,
     // so we have to add a small delay as the last alternative to avoid flakiness.
-    await driver.delay(regularDelayMs);
+    await driver.delay(largeDelayMs);
   }
   await driver.waitForSelector(
     { text: 'Sign', tag: 'button' },
