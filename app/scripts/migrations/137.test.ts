@@ -518,7 +518,7 @@ describe('migration #137', () => {
       });
       const currentScope = `eip155:${chainId}`;
 
-      it.only('replaces the eth_accounts permission with a CAIP-25 permission using the eth_accounts value for the currently selected chain id when the origin does not have its own network client', async () => {
+      it('replaces the eth_accounts permission with a CAIP-25 permission using the eth_accounts value for the currently selected chain id when the origin does not have its own network client', async () => {
         const oldStorage = {
           meta: { version: oldVersion },
           data: {
@@ -1260,5 +1260,42 @@ describe('migration #137', () => {
         },
       },
     });
+  });
+
+  it('returns original state if an error occurs during mutation', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PermissionController: {
+          subjects: {
+            'test.com': {
+              permissions: {
+                eth_accounts: {
+                  caveats: [
+                    {
+                      type: 'restrictReturnedAccounts',
+                      value: ['0xdeadbeef'],
+                    },
+                  ],
+                  parentCapability: 'eth_accounts',
+                },
+              },
+            },
+          },
+        },
+        NetworkController: {
+          selectedNetworkClientId: 'invalid-network-client-id', // This will cause an error
+          networkConfigurationsByChainId: {},
+        },
+        SelectedNetworkController: {
+          domains: {},
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(expect.any(Error));
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 });
