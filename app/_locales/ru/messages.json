@@ -1041,9 +1041,6 @@
   "confirmTitleTransaction": {
     "message": "Запрос транзакции"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Чтобы защитить ваши активы и данные для входа, рекомендуем отклонить запрос."
-  },
   "confirmationAlertModalTitle": {
     "message": "Этот запрос подозрительный"
   },

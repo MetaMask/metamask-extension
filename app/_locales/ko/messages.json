@@ -1041,9 +1041,6 @@
   "confirmTitleTransaction": {
     "message": "트랜젝션 요청"
   },
-  "confirmationAlertModalDetails": {
-    "message": "자산과 로그인 정보 보호를 위해 요청을 거부하는 것이 좋습니다."
-  },
   "confirmationAlertModalTitle": {
     "message": "의심스러운 요청입니다"
   },
