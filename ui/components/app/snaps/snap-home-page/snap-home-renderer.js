@@ -90,7 +90,6 @@ export const SnapHomeRenderer = ({ snapId }) => {
           isLoading={loading}
           useDelineator={false}
           useFooter
-          contentBackgroundColor={BackgroundColor.backgroundAlternative}
         />
       )}
     </Box>

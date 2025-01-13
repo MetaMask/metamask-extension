@@ -523,7 +523,6 @@ export default function ConfirmationPage({
               useDelineator={false}
               onCancel={handleSnapDialogCancel}
               useFooter={isSnapDefaultDialog}
-              contentBackgroundColor={BackgroundColor.backgroundAlternative}
             />
           ) : (
             <MetaMaskTemplateRenderer sections={templatedValues.content} />

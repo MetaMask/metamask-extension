@@ -41,7 +41,6 @@ const SnapUIRendererComponent = ({
   useFooter = false,
   onCancel,
   contentBackgroundColor,
-  disableCustomBackground = false,
 }) => {
   const t = useI18nContext();
 
@@ -61,10 +60,6 @@ const SnapUIRendererComponent = ({
       ? rawContent
       : Container({ children: rawContent });
 
-  if (disableCustomBackground && content.type === 'Container') {
-    delete content.props.backgroundColor;
-  }
-
   const promptLegacyProps = useMemo(
     () =>
       isPrompt && {
@@ -76,8 +71,8 @@ const SnapUIRendererComponent = ({
   );
 
   const backgroundColor =
-    mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
     contentBackgroundColor ??
+    mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
     BackgroundColor.backgroundAlternative;
 
   const sections = useMemo(
@@ -177,5 +172,4 @@ SnapUIRendererComponent.propTypes = {
   useFooter: PropTypes.bool,
   onCancel: PropTypes.func,
   contentBackgroundColor: PropTypes.string,
-  disableCustomBackground: PropTypes.bool,
 };
