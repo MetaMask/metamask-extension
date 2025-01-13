@@ -60,7 +60,7 @@ const NftOptions = ({
             testId="nft-options__view-on-opensea"
             onClick={() => {
               closePopover();
-              onViewOnOpensea && onViewOnOpensea();
+              onViewOnOpensea?.();
             }}
           >
             <Icon
@@ -75,7 +75,7 @@ const NftOptions = ({
           testId="nft-item-remove"
           onClick={() => {
             closePopover();
-            onRemove && onRemove();
+            onRemove?.();
           }}
         >
           <Icon name={IconName.Trash} size={IconSize.Sm} marginInlineEnd={2} />
