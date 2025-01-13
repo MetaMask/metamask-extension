@@ -258,7 +258,8 @@
     "tslib@npm:^2.3.0": "~2.6.0",
     "tslib@npm:^2.3.1": "~2.6.0",
     "tslib@npm:^2.4.0": "~2.6.0",
-    "tslib@npm:^2.6.2": "~2.6.0"
+    "tslib@npm:^2.6.2": "~2.6.0",
+    "@metamask/approval-controller@npm:^7.0.0": "npm:@metamask-previews/approval-controller@7.1.1-preview-ae144301"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",

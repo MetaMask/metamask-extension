@@ -27,6 +27,7 @@ import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
+import useOriginThrottling from '../../../hooks/useOriginThrottling';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -45,6 +46,8 @@ jest.mock(
   }),
 );
 
+jest.mock('../../../hooks/useOriginThrottling');
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
 
@@ -52,6 +55,14 @@ const render = (args?: Record<string, unknown>) => {
 };
 
 describe('ConfirmFooter', () => {
+  const mockUseOriginThrottling = useOriginThrottling as jest.Mock;
+
+  beforeEach(() => {
+    mockUseOriginThrottling.mockReturnValue({
+      willNextRejectionReachThreshold: false,
+    });
+  });
+
   it('should match snapshot with signature confirmation', () => {
     const { container } = render(getMockPersonalSignConfirmState());
     expect(container).toMatchSnapshot();
@@ -210,6 +221,20 @@ describe('ConfirmFooter', () => {
     );
     const submitButton = getAllByRole('button')[1];
     expect(submitButton).toHaveClass('mm-button-primary--type-danger');
+  });
+
+  it('no action is taken when the origin is on threshold and cancel button is clicked', () => {
+    mockUseOriginThrottling.mockReturnValue({
+      willNextRejectionReachThreshold: true,
+    });
+    const rejectSpy = jest.spyOn(Actions, 'rejectPendingApproval');
+
+    const { getAllByRole } = render(getMockPersonalSignConfirmState());
+
+    const cancelButton = getAllByRole('button')[0];
+    fireEvent.click(cancelButton);
+
+    expect(rejectSpy).not.toHaveBeenCalled();
   });
 
   it('disables submit button if required LedgerHidConnection is not yet established', () => {

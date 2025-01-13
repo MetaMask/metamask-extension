@@ -5501,6 +5501,21 @@
   "source": {
     "message": "Source"
   },
+  "spamModalBlockedDescription": {
+    "message": "This site will be blocked for 1 minute."
+  },
+  "spamModalBlockedTitle": {
+    "message": "You've temporarily blocked this site"
+  },
+  "spamModalDescription": {
+    "message": "If you're being spammed with multiple requests, you can temporarily block the site."
+  },
+  "spamModalTemporaryBlockButton": {
+    "message": "Temporarily block this site"
+  },
+  "spamModalTitle": {
+    "message": "We've noticed multiple requests"
+  },
   "speed": {
     "message": "Speed"
   },

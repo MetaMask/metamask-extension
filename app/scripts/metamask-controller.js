@@ -314,6 +314,7 @@ import { PreferencesController } from './controllers/preferences-controller';
 import { AppStateController } from './controllers/app-state-controller';
 import { AlertController } from './controllers/alert-controller';
 import OnboardingController from './controllers/onboarding';
+import { OriginThrottlingController } from './controllers/origin-throttling-controller';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
 import SwapsController from './controllers/swaps';
@@ -376,6 +377,7 @@ import {
   onPushNotificationReceived,
 } from './controllers/push-notifications';
 import createTracingMiddleware from './lib/createTracingMiddleware';
+import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
@@ -2444,6 +2446,17 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    this.originThrottlingController = new OriginThrottlingController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'OriginThrottlingController',
+        allowedEvents: [
+          'ApprovalController:accepted',
+          'ApprovalController:rejected',
+        ],
+      }),
+      state: initState.OriginThrottlingController,
+    });
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -2611,6 +2624,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      OriginThrottlingController: this.originThrottlingController,
       ...resetOnRestartStore,
     });
 
@@ -2667,6 +2681,7 @@ export default class MetamaskController extends EventEmitter {
         NotificationServicesPushController:
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
+        OriginThrottlingController: this.originThrottlingController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -3472,6 +3487,7 @@ export default class MetamaskController extends EventEmitter {
       userStorageController,
       notificationServicesController,
       notificationServicesPushController,
+      originThrottlingController,
     } = this;
 
     return {
@@ -4234,6 +4250,12 @@ export default class MetamaskController extends EventEmitter {
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
+
+      // Origin Throttling
+      resetOriginThrottlingState:
+        originThrottlingController.resetOriginThrottlingState.bind(
+          originThrottlingController,
+        ),
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -5995,6 +6017,12 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(createTracingMiddleware());
+
+    engine.push(
+      createOriginThrottlingMiddleware({
+        originThrottlingController: this.originThrottlingController,
+      }),
+    );
 
     engine.push(
       createPPOMMiddleware(

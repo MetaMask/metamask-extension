@@ -4942,7 +4942,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^7.0.0, @metamask/approval-controller@npm:^7.1.1":
+"@metamask/approval-controller@npm:@metamask-previews/approval-controller@7.1.1-preview-ae144301":
+  version: 7.1.1-preview-ae144301
+  resolution: "@metamask-previews/approval-controller@npm:7.1.1-preview-ae144301"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.1.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.0.1"
+    nanoid: "npm:^3.3.8"
+  checksum: 10/8389bcdbd8e557ec480f31a9c764398f2987a5092e65f98217dd03e5550122a3eea9fc85ed07aa08aa3c3a6e50c118ebe21fe1b3ca737269602e176a84e72996
+  languageName: node
+  linkType: hard
+
+"@metamask/approval-controller@npm:^7.1.1":
   version: 7.1.1
   resolution: "@metamask/approval-controller@npm:7.1.1"
   dependencies:
