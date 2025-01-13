@@ -4,6 +4,9 @@ import { Driver } from '../../../webdriver/driver';
 class ActivityListPage {
   private readonly driver: Driver;
 
+  private readonly activityListAction =
+    '[data-testid="activity-list-item-action"]';
+
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions = {
@@ -19,11 +22,30 @@ class ActivityListPage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
-  private readonly activityListAction =
-    '[data-testid="activity-list-item-action"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
+   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
+   *
+   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
+   */
+  async check_failedTxNumberDisplayedInActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const failedTxs = await this.driver.findElements(this.failedTransactions);
+      return failedTxs.length === expectedNumber;
+    }, 10000);
+    console.log(
+      `${expectedNumber} failed transactions found in activity list on homepage`,
+    );
   }
 
   /**
@@ -74,25 +96,24 @@ class ActivityListPage {
     );
   }
 
-  /**
-   * This function checks if the specified number of failed transactions are displayed in the activity list on homepage.
-   * It waits up to 10 seconds for the expected number of failed transactions to be visible.
-   *
-   * @param expectedNumber - The number of failed transactions expected to be displayed in activity list. Defaults to 1.
-   * @returns A promise that resolves if the expected number of failed transactions is displayed within the timeout period.
-   */
-  async check_failedTxNumberDisplayedInActivity(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Wait for ${expectedNumber} failed transactions to be displayed in activity list`,
+  async check_noTxInActivity(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.completedTransactions);
+  }
+
+  async check_txAction(expectedAction: string, expectedNumber: number = 1) {
+    const transactionActions = await this.driver.findElements(
+      this.activityListAction,
     );
+
     await this.driver.wait(async () => {
-      const failedTxs = await this.driver.findElements(this.failedTransactions);
-      return failedTxs.length === expectedNumber;
-    }, 10000);
+      const transactionActionText = await transactionActions[
+        expectedNumber - 1
+      ].getText();
+      return transactionActionText === expectedAction;
+    });
+
     console.log(
-      `${expectedNumber} failed transactions found in activity list on homepage`,
+      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
     );
   }
 
@@ -126,30 +147,6 @@ class ActivityListPage {
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
     );
-  }
-
-  async check_txAction(expectedAction: string, expectedNumber: number = 1) {
-    const transactionActions = await this.driver.findElements(
-      this.activityListAction,
-    );
-
-    const transactionActionText = await transactionActions[
-      expectedNumber - 1
-    ].getText();
-
-    assert.equal(
-      transactionActionText,
-      expectedAction,
-      `${transactionActionText} is displayed as transaction action instead of ${expectedAction} for transaction ${expectedNumber}`,
-    );
-
-    console.log(
-      `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
-    );
-  }
-
-  async check_noTxInActivity(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.completedTransactions);
   }
 }
 
