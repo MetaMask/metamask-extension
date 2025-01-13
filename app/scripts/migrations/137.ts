@@ -74,6 +74,9 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, unknown>) {
+  // **Step 1: Validate all subjects first**
+
+  // Validate the existence and types of controllers
   if (
     !hasProperty(state, 'PermissionController') ||
     !isObject(state.PermissionController)
@@ -119,32 +122,36 @@ function transformState(state: Record<string, unknown>) {
     SelectedNetworkController: { domains },
   } = state;
 
+  // Validate required properties
   if (!isObject(subjects)) {
-    global.sentry?.captureException(
+    global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.PermissionController.subjects is ${typeof subjects}`,
       ),
     );
     return state;
   }
+
   if (!selectedNetworkClientId || typeof selectedNetworkClientId !== 'string') {
-    global.sentry?.captureException(
+    global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.NetworkController.selectedNetworkClientId is ${typeof selectedNetworkClientId}`,
+        `Migration ${version}: invalid selectedNetworkClientId "${selectedNetworkClientId}"`,
       ),
     );
     return state;
   }
+
   if (!isObject(networkConfigurationsByChainId)) {
-    global.sentry?.captureException(
+    global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is ${typeof networkConfigurationsByChainId}`,
       ),
     );
     return state;
   }
+
   if (!isObject(domains)) {
-    global.sentry?.captureException(
+    global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.SelectedNetworkController.domains is ${typeof domains}`,
       ),
@@ -152,12 +159,62 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
+  // Validate all subjects before making any changes
+  for (const [origin, subject] of Object.entries(subjects)) {
+    if (!isObject(subject)) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
+        ),
+      );
+      return state;
+    }
+
+    const { permissions } = subject as {
+      permissions: Record<string, PermissionConstraint>;
+    };
+    if (!isObject(permissions)) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof permissions}`,
+        ),
+      );
+      return state;
+    }
+  }
+
+interface MetaMaskState {
+  PermissionController: {
+    subjects: Record<string, any>;
+  };
+  NetworkController: {
+    selectedNetworkClientId: string;
+    networkConfigurationsByChainId: Record<string, any>;
+  };
+  SelectedNetworkController: {
+    domains: Record<string, any>;
+  };
+}
+
+  const newState: MetaMaskState = cloneDeep(state) as MetaMaskState;
+
+  const {
+    PermissionController: { subjects: newSubjects },
+    NetworkController: {
+      selectedNetworkClientId: newSelectedNetworkClientId,
+      networkConfigurationsByChainId: newNetworkConfigurationsByChainId,
+    },
+    SelectedNetworkController: { domains: newDomains },
+  } = newState;
+
+  // **Step 3: Perform all mutations on the cloned state**
+
   const getChainIdForNetworkClientId = (
     networkClientId: string,
     propertyName: string,
   ): string | undefined => {
     for (const [chainId, networkConfiguration] of Object.entries(
-      networkConfigurationsByChainId,
+      newNetworkConfigurationsByChainId,
     )) {
       if (!isObject(networkConfiguration)) {
         global.sentry?.captureException(
@@ -202,34 +259,17 @@ function transformState(state: Record<string, unknown>) {
   };
 
   const currentChainId = getChainIdForNetworkClientId(
-    selectedNetworkClientId,
+    newSelectedNetworkClientId,
     'selectedNetworkClientId',
   );
   if (!currentChainId) {
     return state;
   }
 
-  for (const [origin, subject] of Object.entries(subjects)) {
-    if (!isObject(subject)) {
-      global.sentry?.captureException(
-        new Error(
-          `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
-        ),
-      );
-      continue;
-    }
-
+  for (const [origin, subject] of Object.entries(newSubjects)) {
     const { permissions } = subject as {
       permissions: Record<string, PermissionConstraint>;
     };
-    if (!isObject(permissions)) {
-      global.sentry?.captureException(
-        new Error(
-          `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof permissions}`,
-        ),
-      );
-      continue;
-    }
 
     let basePermission: PermissionConstraint | undefined;
 
@@ -239,8 +279,9 @@ function transformState(state: Record<string, unknown>) {
       Array.isArray(permissions[PermissionNames.eth_accounts].caveats)
     ) {
       ethAccounts =
-        (permissions[PermissionNames.eth_accounts].caveats?.[0]
-          ?.value as string[]) ?? [];
+        (permissions[PermissionNames.eth_accounts].caveats?.[0]?.value as
+          | string[]
+          | undefined) ?? [];
       basePermission = permissions[PermissionNames.eth_accounts];
     }
     delete permissions[PermissionNames.eth_accounts];
@@ -251,8 +292,9 @@ function transformState(state: Record<string, unknown>) {
       Array.isArray(permissions[PermissionNames.permittedChains].caveats)
     ) {
       chainIds =
-        (permissions[PermissionNames.permittedChains].caveats?.[0]
-          ?.value as string[]) ?? [];
+        (permissions[PermissionNames.permittedChains].caveats?.[0]?.value as
+          | string[]
+          | undefined) ?? [];
       basePermission ??= permissions[PermissionNames.permittedChains];
     }
     delete permissions[PermissionNames.permittedChains];
@@ -264,7 +306,7 @@ function transformState(state: Record<string, unknown>) {
     if (chainIds.length === 0) {
       chainIds = [currentChainId];
 
-      const networkClientIdForOrigin = domains[origin];
+      const networkClientIdForOrigin = newDomains[origin];
       if (
         networkClientIdForOrigin &&
         typeof networkClientIdForOrigin === 'string'
@@ -311,8 +353,10 @@ function transformState(state: Record<string, unknown>) {
         },
       ],
     };
+
     permissions[Caip25EndowmentPermissionName] = caip25Permission;
   }
 
-  return state;
+  // **Step 4: Return either original state or fully transformed state**
+  return newState;
 }

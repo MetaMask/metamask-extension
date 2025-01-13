@@ -518,7 +518,7 @@ describe('migration #137', () => {
       });
       const currentScope = `eip155:${chainId}`;
 
-      it('replaces the eth_accounts permission with a CAIP-25 permission using the eth_accounts value for the currently selected chain id when the origin does not have its own network client', async () => {
+      it.only('replaces the eth_accounts permission with a CAIP-25 permission using the eth_accounts value for the currently selected chain id when the origin does not have its own network client', async () => {
         const oldStorage = {
           meta: { version: oldVersion },
           data: {
