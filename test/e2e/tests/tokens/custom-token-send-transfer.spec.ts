@@ -24,6 +24,8 @@ describe('Transfer custom tokens @no-mmi', function () {
   const smartContract = SMART_CONTRACTS.HST;
   const symbol = 'TST';
   const valueWithSymbol = (value: string) => `${value} ${symbol}`;
+  const GAS_LIMIT = '60000';
+  const GAS_PRICE = '10';
 
   describe('Old confirmation screens', function () {
     it('send custom tokens from extension customizing gas values', async function () {
@@ -115,12 +117,12 @@ describe('Transfer custom tokens @no-mmi', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const estimatedGasFee = '0.00010321';
-          const totalAmount = `${valueWithSymbol('1.5')} + 0.00010321`;
+          const totalAmount = `${valueWithSymbol('1.5')} + ${estimatedGasFee}`;
           await confirmTxPage.check_pageIsLoaded(estimatedGasFee, totalAmount);
 
           // edit gas fee
           await confirmTxPage.switchToDetailsTab();
-          await confirmTxPage.editGasFee('60000', '10');
+          await confirmTxPage.editGasFee(GAS_LIMIT, GAS_PRICE);
           await confirmTxPage.confirmTx();
 
           // in extension, check that transaction has completed correctly and is displayed in the activity list
@@ -179,7 +181,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const estimatedGasFee = '0.00103214';
-          const totalAmount = `${valueWithSymbol('1.5')} + 0.00103214`;
+          const totalAmount = `${valueWithSymbol('1.5')} + ${estimatedGasFee}`;
           await confirmTxPage.check_pageIsLoaded(estimatedGasFee, totalAmount);
           await confirmTxPage.confirmTx();
 
@@ -298,7 +300,10 @@ describe('Transfer custom tokens @no-mmi', function () {
           );
 
           // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFee('60000', '10');
+          await tokenTransferRedesignedConfirmPage.editGasFee(
+            GAS_LIMIT,
+            GAS_PRICE,
+          );
           await tokenTransferRedesignedConfirmPage.confirmTx();
 
           // in extension, check that transaction has completed correctly and is displayed in the activity list
