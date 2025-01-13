@@ -4,6 +4,7 @@ import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { MOCK_META_METRICS_ID } from '../../constants';
 import { MOCK_REMOTE_FEATURE_FLAGS_RESPONSE } from './mock-data';
 
 describe('Remote feature flag', function (this: Suite) {
@@ -12,7 +13,7 @@ describe('Remote feature flag', function (this: Suite) {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
