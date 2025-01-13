@@ -70,7 +70,7 @@ export default class SelectHardware extends Component {
     if (this.state.selectedDevice) {
       if (
         (this.state.selectedDevice === HardwareDeviceNames.trezor ||
-          this.state.selectedDevice === HardwareDeviceNames.oneKeyViaTrezor) &&
+          this.state.selectedDevice === HardwareDeviceNames.oneKey) &&
         isUSBSupported
       ) {
         this.setState({
@@ -119,11 +119,10 @@ export default class SelectHardware extends Component {
       <button
         data-testid="connect-onekey-btn"
         className={classnames('hw-connect__btn', {
-          selected:
-            this.state.selectedDevice === HardwareDeviceNames.oneKeyViaTrezor,
+          selected: this.state.selectedDevice === HardwareDeviceNames.oneKey,
         })}
         onClick={(_) =>
-          this.setState({ selectedDevice: HardwareDeviceNames.oneKeyViaTrezor })
+          this.setState({ selectedDevice: HardwareDeviceNames.oneKey })
         }
       >
         <LogoOnekey className="hw-connect__btn__img" ariaLabel="OneKey" />
@@ -332,7 +331,7 @@ export default class SelectHardware extends Component {
         return this.renderLedgerTutorialSteps();
       case HardwareDeviceNames.trezor:
         return this.renderTrezorTutorialSteps();
-      case HardwareDeviceNames.oneKeyViaTrezor:
+      case HardwareDeviceNames.oneKey:
         return this.renderOnekeyTutorialSteps();
       case HardwareDeviceNames.lattice:
         return this.renderLatticeTutorialSteps();
