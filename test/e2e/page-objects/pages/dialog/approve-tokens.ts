@@ -4,17 +4,25 @@ class ApproveTokensModal {
   protected driver: Driver;
 
   private readonly customSpendingCapInput = 'input[id="custom-spending-cap"]';
+
   private readonly dataBlock =
     '.approve-content-card-container__data__data-block';
+
   private readonly editGasFeeButton = '[data-testid="edit-gas-fee-btn"]';
+
   private readonly editSpendingCapButton =
     '[data-testid="edit-spending-cap-btn"]';
+
   private readonly gasInputs = 'input[type="number"]';
+
   private readonly maxSpendingCapButton =
     '[data-testid="custom-spending-cap-max-button"]';
+
   private readonly nextOrApproveButton =
     '[data-testid="page-container-footer-next"]';
+
   private readonly reveiwSpendingCapValue = '.review-spending-cap__value';
+
   private readonly verifyThirdPartyLink =
     '.token-allowance-container__verify-link';
 
@@ -22,22 +30,27 @@ class ApproveTokensModal {
     text: 'Spending cap request for your',
     css: 'span',
   };
+
   private readonly pageOneOfTwo = {
     text: `1 of 2`,
     css: 'h6',
   };
+
   private readonly pageTwoOfTwo = {
     text: `2 of 2`,
     css: 'h6',
   };
+
   private saveButton = {
     text: 'Save',
     tag: 'button',
   };
+
   private thirdPartyGotItButton = {
     text: 'Got it',
     css: 'button',
   };
+
   private viewDetailsButton = {
     text: 'View details',
     css: '.token-allowance-container__view-details',

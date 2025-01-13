@@ -1,20 +1,24 @@
 import { Driver } from '../../../webdriver/driver';
-import { RawLocator } from '../../common';
-
 class ConfirmTxPage {
   private driver: Driver;
 
   private confirmButton = '[data-testid="page-container-footer-next"]';
+
   private transactionFee = '[data-testid="confirm-gas-display"]';
+
   private totalFee = '[data-testid="confirm-page-total-amount"]';
+
   private gasInputs = 'input[type="number"]';
 
   private editButton = { text: 'Edit', tag: 'button' };
+
   private saveButton = { text: 'Save', tag: 'button' };
+
   private hexTabButton = {
     css: 'button',
     text: 'Hex',
   };
+
   private detailsTabButton = {
     css: 'button',
     text: 'Details',

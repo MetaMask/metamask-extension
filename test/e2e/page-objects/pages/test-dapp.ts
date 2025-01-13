@@ -12,107 +12,180 @@ class TestDapp {
     text: 'Add Token(s) to Wallet',
     tag: 'button',
   };
+
   private readonly approveTokensButton = '#approveTokens';
+
   private readonly approveTokensButtonWithoutGas = '#approveTokensWithoutGas';
+
   private readonly confirmDepositButton =
     '[data-testid="confirm-footer-button"]';
+
   private readonly confirmDialogButton = '[data-testid="confirm-btn"]';
+
   private readonly confirmDialogScrollButton =
     '[data-testid="signature-request-scroll-button"]';
+
   private readonly confirmScrollToBottomButtonRedesign =
     '.confirm-scroll-to-bottom__button';
+
   private readonly confirmSignatureButton =
     '[data-testid="page-container-footer-next"]';
+
   private readonly confirmSignatureButtonRedesign =
     '[data-testid="confirm-footer-button"]';
+
   private readonly connectAccountButton = '#connectButton';
+
   private readonly connectMetaMaskMessage = {
     text: 'Connect with MetaMask',
     tag: 'h2',
   };
+
   private readonly connectedAccount = '#accounts';
+
   private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
+
   private readonly depositPiggyBankContractButton = '#depositButton';
+
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
+
   private readonly erc1155MintButton = '#batchMintButton';
+
   private readonly erc1155RevokeSetApprovalForAllButton =
     '#revokeERC1155Button';
+
   private readonly erc1155SetApprovalForAllButton =
     '#setApprovalForAllERC1155Button';
+
   private readonly erc1155TokenAmountInput = '#batchMintIdAmounts';
+
   private readonly erc1155TokenIDInput = '#batchMintTokenIds';
+
   private readonly erc1155WatchButton = '#watchAssetButton';
+
   private readonly erc20TokenAddresses = '#erc20TokenAddresses';
+
   private readonly erc20TokenTransferButton = '#transferTokens';
+
   private readonly erc20WatchAssetButton = '#watchAssets';
+
   private readonly erc721MintButton = '#mintButton';
+
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
+
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
+
   private readonly erc721TransferFromButton = '#transferFromButton';
+
   private readonly localhostNetworkMessage = { css: '#chainId', text: '0x539' };
+
   private readonly mmlogo = '#mm-logo';
+
   private readonly personalSignButton = '#personalSign';
+
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
+
   private readonly personalSignSignatureRequestMessage = {
     text: 'personal_sign',
     tag: 'div',
   };
+
   private readonly personalSignVerifyButton = '#personalSignVerify';
+
   private personalSignSigUtilResultSelector =
     '#personalSignVerifySigUtilResult';
+
   private readonly revokePermissionButton = '#revokeAccountsPermission';
+
   private readonly sign721PermitButton = '#sign721Permit';
+
   private sign721PermitResult = '#sign721PermitResult';
+
   private sign721PermitResultR = '#sign721PermitResultR';
+
   private sign721PermitResultS = '#sign721PermitResultS';
+
   private sign721PermitResultV = '#sign721PermitResultV';
+
   private sign721PermitVerifyButton = '#sign721PermitVerify';
+
   private sign721PermitVerifyResult = '#sign721PermitVerifyResult';
+
   private readonly signPermitButton = '#signPermit';
+
   private readonly signPermitResult = '#signPermitResult';
+
   private readonly signPermitResultR = '#signPermitResultR';
+
   private readonly signPermitResultS = '#signPermitResultS';
+
   private readonly signPermitResultV = '#signPermitResultV';
+
   private readonly signPermitSignatureRequestMessage = {
     text: 'Permit',
     tag: 'p',
   };
+
   private readonly signPermitVerifyButton = '#signPermitVerify';
+
   private readonly signPermitVerifyResult = '#signPermitVerifyResult';
+
   private readonly signSiweBadDomainButton = '#siweBadDomain';
+
   private readonly signSiweButton = '#siwe';
+
   private readonly signSiweVerifyResult = '#siweResult';
+
   private readonly signTypedDataButton = '#signTypedData';
+
   private readonly signTypedDataResult = '#signTypedDataResult';
+
   private readonly signTypedDataSignatureRequestMessage = {
     text: 'Hi, Alice!',
     tag: 'div',
   };
+
   private readonly signTypedDataV3Button = '#signTypedDataV3';
+
   private readonly signTypedDataV3Result = '#signTypedDataV3Result';
+
   private readonly signTypedDataV3V4SignatureRequestMessage = {
     text: 'Hello, Bob!',
     tag: 'div',
   };
+
   private readonly signTypedDataV3V4SignatureRequestMessageRedesign = {
     text: 'Hello, Bob!',
     tag: 'p',
   };
+
   private readonly signTypedDataV3VerifyButton = '#signTypedDataV3Verify';
+
   private readonly signTypedDataV3VerifyResult = '#signTypedDataV3VerifyResult';
+
   private readonly signTypedDataV4Button = '#signTypedDataV4';
+
   private readonly signTypedDataV4Result = '#signTypedDataV4Result';
+
   private readonly signTypedDataV4VerifyButton = '#signTypedDataV4Verify';
+
   private readonly signTypedDataV4VerifyResult = '#signTypedDataV4VerifyResult';
+
   private readonly signTypedDataVerifyButton = '#signTypedDataVerify';
+
   private readonly signTypedDataVerifyResult = '#signTypedDataVerifyResult';
+
   private readonly simpleSendButton = '#sendButton';
+
   private readonly transactionRequestMessage = {
     text: 'Transaction request',
     tag: 'h2',
   };
+
   private transferTokensButton = '#transferTokens';
+
   private transferTokensWithoutGasButton = '#transferTokensWithoutGas';
+
   private readonly userRejectedRequestMessage = {
     tag: 'span',
     text: 'Error: User rejected the request.',
