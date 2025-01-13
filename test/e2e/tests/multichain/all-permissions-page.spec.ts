@@ -62,7 +62,6 @@ describe('Permissions Page', function () {
 
         const experimentalSettings = new ExperimentalSettings(driver);
         await experimentalSettings.check_pageIsLoaded();
-        await experimentalSettings.toggleRequestQueue();
         await settingsPage.closeSettingsPage();
 
         // go to homepage and check site permissions

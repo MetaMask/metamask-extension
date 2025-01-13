@@ -3775,3 +3775,834 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
   </div>
 </div>
 `;
+
+exports[`Confirm should render SmartTransactionsBannerAlert for transaction types but not signature types 1`] = `
+<div>
+  <div
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+  >
+    <div
+      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    >
+      <div
+        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        data-testid="confirm-header"
+      >
+        <div
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
+        >
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
+          >
+            <div
+              class="identicon__image-border"
+              style="height: 32px; width: 32px; border-radius: 16px;"
+            />
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+            >
+              <img
+                alt="network logo"
+                class="mm-avatar-network__network-image"
+                src=""
+              />
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-inline-start-4"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              data-testid="header-account-name"
+            />
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+              data-testid="header-network-display-name"
+            />
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="align-self: flex-end;"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-27"
+                class=""
+                data-original-title="Account details"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <button
+                  aria-label="Account details"
+                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                  data-testid="header-info__account-details-button"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        style="min-height: 0; overflow: hidden; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          style="overflow: auto;"
+        />
+      </div>
+      <div
+        class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          data-testid="confirm-footer-cancel-button"
+        >
+          Cancel
+        </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="confirm-footer-button"
+          data-theme="light"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Confirm should render SmartTransactionsBannerAlert for transaction types but not signature types 2`] = `
+<div>
+  <div
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+  >
+    <div
+      class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    >
+      <div
+        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        data-testid="confirm-header"
+      >
+        <div
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
+        >
+          <div
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
+              />
+            </div>
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+            >
+              <img
+                alt="Goerli logo"
+                class="mm-avatar-network__network-image"
+              />
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-inline-start-4"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              data-testid="header-account-name"
+            >
+              Test Account
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+              data-testid="header-network-display-name"
+            >
+              Goerli
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="align-self: flex-end;"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-28"
+                class=""
+                data-original-title="Account details"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <button
+                  aria-label="Account details"
+                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                  data-testid="header-info__account-details-button"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        style="min-height: 0; overflow: hidden; position: relative;"
+      >
+        <div
+          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+          style="overflow: auto;"
+        >
+          <div
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            data-testid="confirmation_request-section"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Request from
+                  </p>
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-29"
+                      class=""
+                      data-original-title="This is the site asking for your signature."
+                      data-tooltipped=""
+                      style="display: flex;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                >
+                  metamask.github.io
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Interacting with
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                >
+                  <div
+                    class=""
+                  >
+                    <div
+                      class="identicon"
+                      style="height: 16px; width: 16px; border-radius: 8px;"
+                    />
+                  </div>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                    data-testid="confirm-info-row-display-name"
+                  >
+                    0xCcCCc...ccccC
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            data-testid="confirmation_message-section"
+          >
+            <div
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+            >
+              <button
+                aria-label="copy-button"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/copy.svg');"
+                />
+              </button>
+              <div
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Message
+                  </p>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-box--width-full"
+              >
+                <div
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
+                >
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Primary type:
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      style="white-space: pre-wrap;"
+                    >
+                      Mail
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="mm-box"
+                  style="margin-left: -8px;"
+                >
+                  <div
+                    class="mm-box mm-box--width-full"
+                  >
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-contents-index-0"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Contents:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
+                        >
+                          Hello, Bob!
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-from-index-1"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            From:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--width-full"
+                      >
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-name-index-0"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                Name:
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                          >
+                            <p
+                              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                              style="white-space: pre-wrap;"
+                            >
+                              Cow
+                            </p>
+                          </div>
+                        </div>
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-wallets-index-1"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                Wallets:
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="mm-box mm-box--width-full"
+                          >
+                            <div
+                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                              data-testid="confirmation_data-0-index-0"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                            >
+                              <div
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                              >
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                >
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    0:
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              >
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                >
+                                  <div
+                                    class=""
+                                  >
+                                    <div
+                                      class="identicon"
+                                      style="height: 16px; width: 16px; border-radius: 8px;"
+                                    />
+                                  </div>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                                    data-testid="confirm-info-row-display-name"
+                                  >
+                                    0xCD2a3...DD826
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                              data-testid="confirmation_data-1-index-1"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                            >
+                              <div
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                              >
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                >
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    1:
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              >
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                >
+                                  <div
+                                    class=""
+                                  >
+                                    <div
+                                      class="identicon"
+                                      style="height: 16px; width: 16px; border-radius: 8px;"
+                                    />
+                                  </div>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                                    data-testid="confirm-info-row-display-name"
+                                  >
+                                    0xDeaDb...DbeeF
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                              data-testid="confirmation_data-2-index-2"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                            >
+                              <div
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                              >
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                >
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    2:
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              >
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                >
+                                  <div
+                                    class=""
+                                  >
+                                    <div
+                                      class="identicon"
+                                      style="height: 16px; width: 16px; border-radius: 8px;"
+                                    />
+                                  </div>
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                                    data-testid="confirm-info-row-display-name"
+                                  >
+                                    0x06195...43896
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-to-index-2"
+                      style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                      >
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            To:
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        class="mm-box mm-box--width-full"
+                      >
+                        <div
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-0-index-0"
+                          style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                        >
+                          <div
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                          >
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
+                            >
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                0:
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="mm-box mm-box--width-full"
+                          >
+                            <div
+                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                              data-testid="confirmation_data-name-index-0"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                            >
+                              <div
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                              >
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                >
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Name:
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                              >
+                                <p
+                                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                                  style="white-space: pre-wrap;"
+                                >
+                                  Bob
+                                </p>
+                              </div>
+                            </div>
+                            <div
+                              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                              data-testid="confirmation_data-wallets-index-1"
+                              style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                            >
+                              <div
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                              >
+                                <div
+                                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                >
+                                  <p
+                                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                  >
+                                    Wallets:
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                class="mm-box mm-box--width-full"
+                              >
+                                <div
+                                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                                  data-testid="confirmation_data-0-index-0"
+                                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                                >
+                                  <div
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                  >
+                                    <div
+                                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                    >
+                                      <p
+                                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                      >
+                                        0:
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                  >
+                                    <div
+                                      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                    >
+                                      <div
+                                        class=""
+                                      >
+                                        <div
+                                          class="identicon"
+                                          style="height: 16px; width: 16px; border-radius: 8px;"
+                                        />
+                                      </div>
+                                      <p
+                                        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                                        data-testid="confirm-info-row-display-name"
+                                      >
+                                        0xbBbBB...bBBbB
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                                  data-testid="confirmation_data-1-index-1"
+                                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                                >
+                                  <div
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                  >
+                                    <div
+                                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                    >
+                                      <p
+                                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                      >
+                                        1:
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                  >
+                                    <div
+                                      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                    >
+                                      <div
+                                        class=""
+                                      >
+                                        <div
+                                          class="identicon"
+                                          style="height: 16px; width: 16px; border-radius: 8px;"
+                                        />
+                                      </div>
+                                      <p
+                                        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                                        data-testid="confirm-info-row-display-name"
+                                      >
+                                        0xB0Bda...bEa57
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                                  data-testid="confirmation_data-2-index-2"
+                                  style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
+                                >
+                                  <div
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                  >
+                                    <div
+                                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                                    >
+                                      <p
+                                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                                      >
+                                        2:
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                  >
+                                    <div
+                                      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                                    >
+                                      <div
+                                        class=""
+                                      >
+                                        <div
+                                          class="identicon"
+                                          style="height: 16px; width: 16px; border-radius: 8px;"
+                                        />
+                                      </div>
+                                      <p
+                                        class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                                        data-testid="confirm-info-row-display-name"
+                                      >
+                                        0xB0B0b...00000
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          data-testid="confirm-footer-cancel-button"
+        >
+          Cancel
+        </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="confirm-footer-button"
+          data-theme="light"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
