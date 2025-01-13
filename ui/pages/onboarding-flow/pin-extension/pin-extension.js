@@ -75,7 +75,7 @@ export default function OnboardingPinExtension() {
       await dispatch(setCompletedOnboarding());
 
       if (externalServicesOnboardingToggleState) {
-        if (!isProfileSyncingEnabled || participateInMetaMetrics) {
+        if (isProfileSyncingEnabled || participateInMetaMetrics) {
           await dispatch(performSignIn());
         }
       }
