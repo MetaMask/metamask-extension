@@ -126,9 +126,6 @@ export default class PermissionConnect extends Component {
       this.props.permissionsRequest,
     ),
     permissionsApproved: null,
-    origin: this.props.origin,
-    targetSubjectMetadata: this.props.targetSubjectMetadata || {},
-    snapsInstallPrivacyWarningShown: this.props.snapsInstallPrivacyWarningShown,
   };
 
   componentDidMount() {
@@ -180,8 +177,8 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { permissionsRequest, lastConnectedInfo } = this.props;
-    const { redirecting, origin } = this.state;
+    const { permissionsRequest, lastConnectedInfo, origin } = this.props;
+    const { redirecting } = this.state;
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
       const accountsLastApprovedTime =
@@ -267,7 +264,7 @@ export default class PermissionConnect extends Component {
   }
 
   renderTopBar(permissionsRequestId) {
-    const { targetSubjectMetadata } = this.state;
+    const { targetSubjectMetadata } = this.props;
     const handleCancelFromHeader = () => {
       this.cancelPermissionsRequest(permissionsRequestId);
     };
@@ -324,13 +321,10 @@ export default class PermissionConnect extends Component {
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
-    } = this.props;
-    const {
-      selectedAccountAddresses,
-      permissionsApproved,
-      redirecting,
       snapsInstallPrivacyWarningShown,
-    } = this.state;
+    } = this.props;
+    const { selectedAccountAddresses, permissionsApproved, redirecting } =
+      this.state;
 
     const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
 
@@ -372,7 +366,7 @@ export default class PermissionConnect extends Component {
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
                     }
-                    activeTabOrigin={this.state.origin}
+                    activeTabOrigin={this.props.origin}
                     request={permissionsRequest}
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
