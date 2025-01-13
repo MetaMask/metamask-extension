@@ -551,7 +551,9 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappWithTwoAccounts() {
+  withPermissionControllerConnectedToTestDappWithTwoAccounts({
+    isMultichainOrigin = false,
+  }) {
     const subjects = {
       [DAPP_URL]: {
         origin: DAPP_URL,
@@ -570,7 +572,7 @@ class FixtureBuilder {
                       ],
                     },
                   },
-                  isMultichainOrigin: false,
+                  isMultichainOrigin,
                 },
               },
             ],
