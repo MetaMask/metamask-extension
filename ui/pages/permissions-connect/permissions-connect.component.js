@@ -322,6 +322,8 @@ export default class PermissionConnect extends Component {
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
       snapsInstallPrivacyWarningShown,
+      origin,
+      history,
     } = this.props;
     const { selectedAccountAddresses, permissionsApproved, redirecting } =
       this.state;
@@ -366,7 +368,7 @@ export default class PermissionConnect extends Component {
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
                     }
-                    activeTabOrigin={this.props.origin}
+                    activeTabOrigin={origin}
                     request={permissionsRequest}
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
@@ -391,7 +393,7 @@ export default class PermissionConnect extends Component {
                     selectedAccountAddresses.has(account.address),
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
-                  history={this.props.history}
+                  history={history}
                   connectPath={connectPath}
                   snapsInstallPrivacyWarningShown={
                     snapsInstallPrivacyWarningShown
