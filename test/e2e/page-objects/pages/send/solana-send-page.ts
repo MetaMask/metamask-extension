@@ -22,6 +22,7 @@ class SendSolanaPage {
   }
 
   async setAmount(amount: string): Promise<void> {
+    await this.driver.waitForSelector(this.sendAmountInput);
     await this.driver.pasteIntoField(this.sendAmountInput, amount);
   }
 
