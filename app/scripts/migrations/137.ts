@@ -52,6 +52,24 @@ const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
 
 const snapsPrefixes = ['npm:', 'local:'] as const;
 
+function isPermissionConstraint(obj: unknown): obj is PermissionConstraint {
+  return (
+    isObject(obj) &&
+    obj !== null &&
+    hasProperty(obj, 'caveats') &&
+    Array.isArray(obj.caveats) &&
+    obj.caveats.length > 0 &&
+    hasProperty(obj, 'date') &&
+    typeof obj.date === 'number' &&
+    hasProperty(obj, 'id') &&
+    typeof obj.id === 'string' &&
+    hasProperty(obj, 'invoker') &&
+    typeof obj.invoker === 'string' &&
+    hasProperty(obj, 'parentCapability') &&
+    typeof obj.parentCapability === 'string'
+  );
+}
+
 /**
  * This migration transforms `eth_accounts` and `permittedChains` permissions into
  * an equivalent CAIP-25 permission.
@@ -75,128 +93,109 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
+function transformState(oldState: Record<string, unknown>) {
+  const newState = cloneDeep(oldState);
   if (
-    !hasProperty(state, 'PermissionController') ||
-    !isObject(state.PermissionController)
-  ) {
-    console.warn(
-      `Migration ${version}: typeof state.PermissionController is ${typeof state.PermissionController}`,
-    );
-    return state;
-  }
-
-  if (
-    !hasProperty(state, 'NetworkController') ||
-    !isObject(state.NetworkController)
+    !hasProperty(newState, 'PermissionController') ||
+    !isObject(newState.PermissionController)
   ) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.NetworkController is ${typeof state.NetworkController}`,
+        `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
       ),
     );
-    return state;
+    return oldState;
   }
 
-  if (!hasProperty(state, 'SelectedNetworkController')) {
-    console.warn(
-      `Migration ${version}: typeof state.SelectedNetworkController is ${typeof state.SelectedNetworkController}`,
+  if (
+    !hasProperty(newState, 'NetworkController') ||
+    !isObject(newState.NetworkController)
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController is ${typeof newState.NetworkController}`,
+      ),
     );
-    state.SelectedNetworkController = {
+    return newState;
+  }
+
+  if (!hasProperty(newState, 'SelectedNetworkController')) {
+    console.warn(
+      `Migration ${version}: typeof state.SelectedNetworkController is ${typeof newState.SelectedNetworkController}`,
+    );
+    newState.SelectedNetworkController = {
       domains: {},
     };
   }
 
+  if (!isObject(newState.SelectedNetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.SelectedNetworkController is ${typeof newState.SelectedNetworkController}`,
+      ),
+    );
+    return oldState;
+  }
+
   const {
-    // PermissionController: { subjects },
     NetworkController: {
       selectedNetworkClientId,
       networkConfigurationsByChainId,
     },
-  } = state;
+    PermissionController: { subjects },
+  } = newState;
 
-  // // legitimate state corruption error, would need to fix once we see this error hit
-  // if (!isObject(subjects)) {
-  //   global.sentry?.captureException?.(
-  //     new Error(
-  //       `Migration ${version}: typeof state.PermissionController.subjects is ${typeof state
-  //         .PermissionController.subjects}`,
-  //     ),
-  //   );
-  //   return state;
-  // }
+  if (!isObject(subjects)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController.subjects is ${typeof subjects}`,
+      ),
+    );
+    return oldState;
+  }
 
-  // // legitimate state corruption error, would need to fix once we see this error hit
-  // for (const [origin, subject] of Object.entries(subjects)) {
-  //   if (!isObject(subject)) {
-  //     global.sentry?.captureException?.(
-  //       new Error(
-  //         `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
-  //       ),
-  //     );
-  //     return state;
-  //   }
-
-  //   if (
-  //     !hasProperty(subject, 'permissions') ||
-  //     !isObject(subject.permissions)
-  //   ) {
-  //     global.sentry?.captureException?.(
-  //       new Error(
-  //         `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof subject.permissions}`,
-  //       ),
-  //     );
-  //     return state;
-  //   }
-  // }
-
-  // legitimate state corruption error, would need to fix once we see this error hit
   if (!selectedNetworkClientId || typeof selectedNetworkClientId !== 'string') {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: invalid selectedNetworkClientId "${selectedNetworkClientId}"`,
+        `Migration ${version}: typeof state.NetworkController.selectedNetworkClientId is ${typeof selectedNetworkClientId}`,
       ),
     );
-    return state;
+    return oldState;
   }
 
-  // legitimate state corruption error, would need to fix once we see this error hit
   if (!isObject(networkConfigurationsByChainId)) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is ${typeof state
+        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is ${typeof newState
           .NetworkController.networkConfigurationsByChainId}`,
       ),
     );
-    return state;
+    return oldState;
   }
 
-  // legitimate state corruption error, would need to fix once we see this error hit
   if (
-    !hasProperty(state.SelectedNetworkController as any, 'domains') ||
-    !isObject((state.SelectedNetworkController as any).domains)
+    !hasProperty(newState.SelectedNetworkController, 'domains') ||
+    !isObject(newState.SelectedNetworkController.domains)
   ) {
+    const domains = newState.SelectedNetworkController.domains;
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.SelectedNetworkController.domains is ${typeof (
-          state.SelectedNetworkController as any
-        ).domains}`,
+        `Migration ${version}: typeof state.SelectedNetworkController.domains is ${typeof domains}`,
       ),
     );
-    return state;
+    return oldState;
   }
 
-  const newState = cloneDeep(state);
+  if (!isObject(newState.PermissionController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
+      ),
+    );
+    return oldState;
+  }
 
-  const {
-    PermissionController: { subjects: newSubjects },
-  } = newState as {
-    PermissionController: {
-      subjects: Record<string, unknown>;
-    };
-  };
-
-  const { domains } = state.SelectedNetworkController as {
+  const { domains } = newState.SelectedNetworkController as {
     domains: Record<string, unknown>;
   };
 
@@ -254,18 +253,18 @@ function transformState(state: Record<string, unknown>) {
     'selectedNetworkClientId',
   );
   if (!currentChainId) {
-    return state;
+    return oldState;
   }
 
-  // Perform mutations on cloned state
-  for (const [origin, subject] of Object.entries(newSubjects)) {
+  // perform mutations on the cloned state
+  for (const [origin, subject] of Object.entries(subjects)) {
     if (!isObject(subject)) {
       global.sentry?.captureException?.(
         new Error(
           `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
         ),
       );
-      return state;
+      return oldState;
     }
 
     if (
@@ -277,7 +276,7 @@ function transformState(state: Record<string, unknown>) {
           `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof subject.permissions}`,
         ),
       );
-      return state;
+      return oldState;
     }
 
     const { permissions } = subject;
@@ -286,31 +285,25 @@ function transformState(state: Record<string, unknown>) {
 
     let ethAccounts: string[] = [];
     const ethAccountsPermission = permissions[PermissionNames.eth_accounts];
-    if (
-      isObject(ethAccountsPermission) &&
-      hasProperty(ethAccountsPermission, 'caveats') &&
-      Array.isArray(ethAccountsPermission.caveats)
-    ) {
+    if (isPermissionConstraint(ethAccountsPermission)) {
       ethAccounts =
-        (ethAccountsPermission.caveats?.[0]?.value as
-          | string[]
-          | undefined) ?? [];
-      // basePermission = ethAccountsPermission;
+        (ethAccountsPermission.caveats?.[0]?.value as string[] | undefined) ??
+        [];
+      basePermission = ethAccountsPermission;
     }
+
     delete permissions[PermissionNames.eth_accounts];
 
     let chainIds: string[] = [];
-    const permittedChainsPermission = permissions[PermissionNames.permittedChains];
-    if (
-      isObject(permittedChainsPermission) &&
-      hasProperty(permittedChainsPermission, 'caveats') &&
-      Array.isArray(permittedChainsPermission.caveats)
-    ) {
+    const permittedChainsPermission =
+      permissions[PermissionNames.permittedChains];
+    if (isPermissionConstraint(permittedChainsPermission)) {
       chainIds =
         (permittedChainsPermission.caveats?.[0]?.value as
           | string[]
           | undefined) ?? [];
-      // basePermission ??= permissions[PermissionNames.permittedChains];
+
+      basePermission ??= permittedChainsPermission;
     }
     delete permissions[PermissionNames.permittedChains];
 
@@ -355,10 +348,7 @@ function transformState(state: Record<string, unknown>) {
     });
 
     const caip25Permission: Caip25Permission = {
-      // ...basePermission,
-      id: '1', // for now
-      invoker: '1', // for now
-      date: new Date().getTime(), // for now
+      ...basePermission,
       parentCapability: Caip25EndowmentPermissionName,
       caveats: [
         {
