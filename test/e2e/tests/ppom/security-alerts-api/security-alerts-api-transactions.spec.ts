@@ -6,12 +6,12 @@ import {
   withFixtures,
   logInWithBalanceValidation,
 } from '../../../helpers';
-import { SECURITY_ALERTS_PROD_API_BASE_URL } from '../constants';
 import { mockServerJsonRpc } from '../mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { createTransactionToAddress } from '../../../page-objects/flows/transaction';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import { mockSecurityAlertValidateRequest } from './utils';
 
 const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
 const mockBenignAddress = '0x50587E46C5B96a3F6f9792922EC647F13E6EFAE4';
@@ -47,19 +47,8 @@ async function mockInfura(mockServer: MockttpServer): Promise<void> {
   await mockServerJsonRpc(mockServer, [['eth_getBalance']]);
 }
 
-async function mockRequest(
-  server: MockttpServer,
-  request: Record<string, unknown>,
-  response: Record<string, unknown>,
-): Promise<void> {
-  await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
-    .withJsonBodyIncluding(request)
-    .thenJson((response.statusCode as number) ?? 201, response);
-}
-
 async function mockBenignResponses(mockServer: MockttpServer): Promise<void> {
-  await mockRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
+  await mockSecurityAlertValidateRequest(mockServer, SEND_REQUEST_BASE_MOCK, {
     block: 20733513,
     result_type: 'Benign',
     reason: '',
@@ -72,13 +61,17 @@ async function mockMaliciousResponses(
   mockServer: MockttpServer,
 ): Promise<void> {
   await mockInfura(mockServer);
-  await mockRequest(mockServer, SEND_REQUEST_MALICIOUS_MOCK, {
-    block: 20733277,
-    result_type: 'Malicious',
-    reason: 'transfer_farming',
-    description: '',
-    features: ['Interaction with a known malicious address'],
-  });
+  await mockSecurityAlertValidateRequest(
+    mockServer,
+    SEND_REQUEST_MALICIOUS_MOCK,
+    {
+      block: 20733277,
+      result_type: 'Malicious',
+      reason: 'transfer_farming',
+      description: '',
+      features: ['Interaction with a known malicious address'],
+    },
+  );
 }
 
 async function mockInfuraWithFailedResponses(
@@ -86,7 +79,7 @@ async function mockInfuraWithFailedResponses(
 ): Promise<void> {
   await mockInfura(mockServer);
 
-  await mockRequest(
+  await mockSecurityAlertValidateRequest(
     mockServer,
     {
       ...SEND_REQUEST_BASE_MOCK,

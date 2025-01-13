@@ -1,5 +1,4 @@
 import { MockttpServer } from 'mockttp';
-import { SECURITY_ALERTS_PROD_API_BASE_URL } from '../constants';
 import FixtureBuilder from '../../../fixture-builder';
 import { defaultGanacheOptions, withFixtures } from '../../../helpers';
 import { SecurityAlertResponse } from '../../../../../app/scripts/lib/ppom/types';
@@ -9,8 +8,14 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from '../../confirmations/signatures/signature-helpers';
+import { mockSecurityAlertValidateRequest } from './utils';
 
-const maliciousTradeAlert: SecurityAlertResponse = {
+const tradeRequestMock = {
+  method: 'eth_signTypedData_v4',
+  params: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
+};
+
+const maliciousTradeAlertResponse: SecurityAlertResponse = {
   block: 1,
   result_type: 'Malicious',
   reason: 'trade_order_farming',
@@ -18,24 +23,16 @@ const maliciousTradeAlert: SecurityAlertResponse = {
   features: [],
 };
 
-async function mockRequest(
-  server: MockttpServer,
-  response: SecurityAlertResponse,
-): Promise<void> {
-  await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
-    .withJsonBodyIncluding({
-      method: 'eth_signTypedData_v4',
-      params: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
-    })
-    .thenJson(201, response);
-}
-
 async function mockMaliciousResponses(
   mockServer: MockttpServer,
 ): Promise<void> {
-  await mockRequest(mockServer, maliciousTradeAlert);
+  await mockSecurityAlertValidateRequest(
+    mockServer,
+    tradeRequestMock,
+    maliciousTradeAlertResponse,
+  );
 }
+
 describe('Security Alerts API - Signatures @no-mmi', function () {
   describe('Set Trade farming order', function () {
     it('should show banner alert', async function () {
