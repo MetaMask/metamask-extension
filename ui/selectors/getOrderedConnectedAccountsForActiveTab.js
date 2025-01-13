@@ -1,6 +1,6 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { getPermittedAccountsForCurrentTab } from './permissions';
-import { getMetaMaskAccountsOrdered } from './getMetaMaskAccounts';
+import { getPermittedAccountsForCurrentTab } from './getPermittedAccountsForCurrentTab';
+import { getMetaMaskAccountsOrdered } from './getMetaMaskAccountsOrdered';
 
 export function getOrderedConnectedAccountsForActiveTab(state) {
   const {

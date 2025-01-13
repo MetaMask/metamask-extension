@@ -112,7 +112,6 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
-  getMetaMaskAccountsOrdered,
   getTargetSubjectMetadata,
   getOriginOfCurrentTab,
   getMetaMaskAccounts,
@@ -120,6 +119,7 @@ import {
   getMetaMaskCachedBalances,
   getMetaMaskAccountBalances,
 } from './getMetaMaskAccounts';
+import { getMetaMaskAccountsOrdered } from './getMetaMaskAccountsOrdered';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,

@@ -33,6 +33,9 @@ jest.mock('../../../selectors', () => ({
 }));
 
 jest.mock('../../../selectors/getMetaMaskAccounts', () => ({
+  getInternalAccountsSortedByKeyring: () => {
+    return {};
+  },
   getMetaMaskAccountsConnected: () => {
     return {};
   },

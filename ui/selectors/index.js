@@ -11,3 +11,8 @@ export * from './accounts';
 export * from './getMetaMaskAccounts';
 export * from './getUpdatedAndSortedAccounts';
 export * from './getOrderedConnectedAccountsForActiveTab';
+export * from './getMetaMaskAccountsConnected';
+export * from './getAccountToConnectToActiveTab';
+export * from './getMetaMaskAccountsOrdered';
+export * from './isAccountConnectedToCurrentTab';
+export * from './getPermittedAccountsForCurrentTab';
