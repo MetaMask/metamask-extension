@@ -344,10 +344,14 @@ const PrepareBridgePage = () => {
         removeTokenFromUrl();
         break;
       case fromTokens[tokenAddressFromUrl]?.address?.toLowerCase(): {
-        // If there is a matching fromToken, set it as the fromToken
+        // If there is a match, set it as the fromToken
         const matchedToken = fromTokens[tokenAddressFromUrl];
         dispatch(
-          setFromToken({ ...matchedToken, image: matchedToken.iconUrl }),
+          setFromToken({
+            ...matchedToken,
+            image: matchedToken.iconUrl,
+            chainId: fromChain.chainId,
+          }),
         );
         removeTokenFromUrl();
         break;
