@@ -8,7 +8,6 @@ import { box } from './box';
 
 export const section: UIComponentFactory<SectionElement> = ({
   element,
-  // @ts-expect-error expected
   contentBackgroundColor,
   ...params
 }) => {
