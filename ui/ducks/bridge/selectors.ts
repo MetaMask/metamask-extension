@@ -416,16 +416,18 @@ const _getSelectedQuote = createSelector(
 );
 
 export const getBridgeQuotes = createSelector(
-  _getSortedQuotesWithMetadata,
-  _getSelectedQuote,
-  (state) => state.metamask.bridgeState.quotesLastFetched,
-  (state) =>
-    state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
-  (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
-  (state: BridgeAppState) => state.metamask.bridgeState.quotesInitialLoadTime,
-  (state: BridgeAppState) => state.metamask.bridgeState.quoteFetchError,
-  getBridgeQuotesConfig,
-  getQuoteRequest,
+  [
+    _getSortedQuotesWithMetadata,
+    _getSelectedQuote,
+    (state) => state.metamask.bridgeState.quotesLastFetched,
+    (state) =>
+      state.metamask.bridgeState.quotesLoadingStatus === RequestStatus.LOADING,
+    (state: BridgeAppState) => state.metamask.bridgeState.quotesRefreshCount,
+    (state: BridgeAppState) => state.metamask.bridgeState.quotesInitialLoadTime,
+    (state: BridgeAppState) => state.metamask.bridgeState.quoteFetchError,
+    getBridgeQuotesConfig,
+    getQuoteRequest,
+  ],
   (
     sortedQuotesWithMetadata,
     selectedQuote,
