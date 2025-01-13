@@ -2,7 +2,6 @@ import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { zeroAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
@@ -12,6 +11,12 @@ import {
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import {
+  mockEmptyHistoricalPrices,
+  mockEmptyPrices,
+  mockHistoricalPrices,
+  mockSpotPrices,
+} from './utils/mocks';
 
 describe('Token List', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -27,81 +32,6 @@ describe('Token List', function () {
     },
   };
 
-  const mockEmptyPrices = async (
-    mockServer: Mockttp,
-    chainIdToMock: string,
-  ) => {
-    return mockServer
-      .forGet(
-        `https://price.api.cx.metamask.io/v2/chains/${parseInt(
-          chainIdToMock,
-          16,
-        )}/spot-prices`,
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {},
-      }));
-  };
-
-  const mockEmptyHistoricalPrices = async (
-    mockServer: Mockttp,
-    address: string,
-  ) => {
-    return mockServer
-      .forGet(
-        `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}`,
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {},
-      }));
-  };
-
-  const mockSpotPrices = async (
-    mockServer: Mockttp,
-    chainIdToMock: string,
-    prices: Record<
-      string,
-      { price: number; pricePercentChange1d: number; marketCap: number }
-    >,
-  ) => {
-    return mockServer
-      .forGet(
-        `https://price.api.cx.metamask.io/v2/chains/${parseInt(
-          chainIdToMock,
-          16,
-        )}/spot-prices`,
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: prices,
-      }));
-  };
-
-  const mockHistoricalPrices = async (
-    mockServer: Mockttp,
-    address: string,
-    price: number,
-  ) => {
-    return mockServer
-      .forGet(
-        `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${toChecksumHexAddress(
-          address,
-        )}`,
-      )
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          prices: [
-            [1717566000000, price * 0.9],
-            [1717566322300, price],
-            [1717566611338, price * 1.1],
-          ],
-        },
-      }));
-  };
-
   it('should not show percentage increase for an ERC20 token without prices available', async function () {
     await withFixtures(
       {
@@ -110,7 +40,7 @@ describe('Token List', function () {
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockEmptyPrices(mockServer, chainId),
           await mockEmptyPrices(mockServer, lineaChainId),
-          await mockEmptyHistoricalPrices(mockServer, tokenAddress),
+          await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
@@ -155,11 +85,15 @@ describe('Token List', function () {
             [zeroAddress()]: marketDataNative,
             [tokenAddress.toLowerCase()]: marketData,
           }),
-          await mockHistoricalPrices(
-            mockServer,
-            tokenAddress,
-            marketData.price,
-          ),
+          await mockHistoricalPrices(mockServer, {
+            address: tokenAddress,
+            chainId,
+            historicalPrices: [
+              { timestamp: 1717566000000, price: marketData.price * 0.9 },
+              { timestamp: 1717566322300, price: marketData.price },
+              { timestamp: 1717566611338, price: marketData.price * 1.1 },
+            ],
+          }),
         ],
       },
       async ({ driver }: { driver: Driver }) => {

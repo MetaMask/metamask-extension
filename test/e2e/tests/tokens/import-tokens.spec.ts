@@ -80,10 +80,10 @@ describe('Import flow', function () {
 
         const tokenList = new AssetListPage(driver);
         await tokenList.check_tokenItemNumber(5); // Linea & Mainnet Eth
-        await tokenList.check_tokenIsDisplayed('Ethereum');
-        await tokenList.check_tokenIsDisplayed('Chain Games');
-        await tokenList.check_tokenIsDisplayed('Changex');
-        await tokenList.check_tokenIsDisplayed('Chai');
+        await tokenList.check_tokenExistsInList('Ethereum');
+        await tokenList.check_tokenExistsInList('Chain Games');
+        await tokenList.check_tokenExistsInList('Changex');
+        await tokenList.check_tokenExistsInList('Chai');
       },
     );
   });
