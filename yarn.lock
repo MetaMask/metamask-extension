@@ -25289,6 +25289,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lavamoat-core@npm:16.2.2":
+  version: 16.2.2
+  resolution: "lavamoat-core@npm:16.2.2"
+  dependencies:
+    "@babel/types": "npm:7.26.0"
+    json-stable-stringify: "npm:1.1.1"
+    lavamoat-tofu: "npm:^8.0.4"
+    merge-deep: "npm:3.0.3"
+    ses: "npm:1.9.0"
+    type-fest: "npm:4.30.0"
+  bin:
+    lavamoat-sort-policy: src/policy-sort-cli.js
+  checksum: 10/4509a560ec6f35aabf3f2915beeaefb526db06121b0bea40864c8f75d0b3e55df089bedd719392a3224dab040fa03a2593c998a66ea23ca820c29de038aa448b
+  languageName: node
+  linkType: hard
+
 "lavamoat-core@npm:^15.2.1":
   version: 15.3.0
   resolution: "lavamoat-core@npm:15.3.0"
@@ -25302,9 +25318,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^16.2.2":
+"lavamoat-core@patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch":
   version: 16.2.2
-  resolution: "lavamoat-core@npm:16.2.2"
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch::version=16.2.2&hash=c09704"
   dependencies:
     "@babel/types": "npm:7.26.0"
     json-stable-stringify: "npm:1.1.1"
@@ -25314,7 +25330,7 @@ __metadata:
     type-fest: "npm:4.30.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/4509a560ec6f35aabf3f2915beeaefb526db06121b0bea40864c8f75d0b3e55df089bedd719392a3224dab040fa03a2593c998a66ea23ca820c29de038aa448b
+  checksum: 10/d0feaa9598f50ba4fa268c227e81cf6235d12f6272f9b06d9e3e350367081ce3060c67caff9855211ce5f05f995cd342361e4cfa2bc108a7d525c0a630301efc
   languageName: node
   linkType: hard
 
