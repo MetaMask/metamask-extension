@@ -312,8 +312,6 @@
     "@metamask/eth-token-tracker": "^9.0.0",
     "@metamask/eth-trezor-keyring": "^6.0.0",
     "@metamask/etherscan-link": "^3.0.0",
-    "@metamask/ethjs-contract": "^0.4.1",
-    "@metamask/ethjs-query": "^0.7.1",
     "@metamask/gas-fee-controller": "^22.0.1",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",
