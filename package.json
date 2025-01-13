@@ -330,7 +330,7 @@
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/name-controller": "^8.0.0",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch",
-    "@metamask/notification-services-controller": "^0.15.0",
+    "@metamask/notification-services-controller": "npm:@metamask-previews/notification-services-controller@0.15.0-preview-4e54ae1",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^11.0.0",
