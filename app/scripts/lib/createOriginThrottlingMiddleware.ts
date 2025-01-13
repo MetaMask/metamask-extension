@@ -55,5 +55,7 @@ export default function createOriginThrottlingMiddleware({
     if (!isDappBlocked) {
       return next();
     }
+
+    return;
   };
 }

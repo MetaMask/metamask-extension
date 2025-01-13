@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import useOriginThrottling from './useOriginThrottling';
 import { resetOriginThrottlingState } from '../../../store/actions';
+import useOriginThrottling from './useOriginThrottling';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 jest.mock('react-redux', () => ({

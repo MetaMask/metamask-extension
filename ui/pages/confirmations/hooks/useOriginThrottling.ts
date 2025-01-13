@@ -6,8 +6,8 @@ import {
   REJECTION_THRESHOLD_IN_MS,
 } from '../../../../shared/constants/origin-throttling';
 
-import useCurrentConfirmation from './useCurrentConfirmation';
 import { MetaMaskReduxState } from '../../../store/store';
+import useCurrentConfirmation from './useCurrentConfirmation';
 
 type ThrottledOrigin = {
   rejections: number;

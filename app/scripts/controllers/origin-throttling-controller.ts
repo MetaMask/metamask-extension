@@ -72,9 +72,9 @@ const getDefaultState = (): OriginThrottlingState => ({
   throttledOrigins: {},
 });
 
-interface ErrorWithCode extends Error {
+type ErrorWithCode = {
   code?: number;
-}
+} & Error;
 
 const isUserRejectedError = (error: ErrorWithCode) =>
   error && error.code === errorCodes.provider.userRejectedRequest;
