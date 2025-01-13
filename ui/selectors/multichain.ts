@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import type {
-  MultichainBalancesControllerState,
-  RatesControllerState,
-} from '@metamask/assets-controllers';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { MultichainBalancesControllerState, RatesControllerState } from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
@@ -18,6 +16,7 @@ import {
   getCompletedOnboarding,
   getConversionRate,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -35,7 +34,6 @@ import {
 } from '../../shared/modules/selectors/networks';
 import { AccountsState, getSelectedInternalAccount } from './accounts';
 import {
-  getCurrentCurrency,
   getIsMainnet,
   getMaybeSelectedInternalAccount,
   getNativeCurrencyImage,

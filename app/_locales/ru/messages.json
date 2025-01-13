@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Добавление сети"
   },
-  "addingTokens": {
-    "message": "Добавление токенов"
-  },
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
   },
-  "attemptSendingAssets": {
-    "message": "Вы можете потерять свои активы, если попытаетесь отправить их из другой сети. Безопасно переводите средства между сетями с помощью моста."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост, такой как $1"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Бесплатная попытка отменить своп"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Расчет..."
   },
-  "bridgeDontSend": {
-    "message": "Мост, не отправлять"
-  },
   "bridgeEnterAmount": {
     "message": "Введите сумму"
   },
@@ -855,14 +843,8 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Выберите токен и сумму"
   },
-  "bridgeTimingTooltipText": {
-    "message": "Это примерное время, которое потребуется для создания моста."
-  },
   "bridgeTo": {
     "message": "Мост в"
-  },
-  "bridgeTotalFeesTooltipText": {
-    "message": "Сюда входят плата за газ (выплачивается майнерам криптовалюты) и плата ретранслятору (выплачивается за услуги энергетического комплекса, такие как мостовое соединение).\nРазмер комиссии зависит от сетевого трафика и сложности транзакции. MetaMask не получает прибыли ни от одной комиссии."
   },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
@@ -959,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Нажмите здесь, чтобы подключить свой Ledger через WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Вы также можете добавлять токены вручную."
   },
   "close": {
     "message": "Закрыть"
@@ -1065,9 +1044,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Запрос транзакции"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "Чтобы защитить ваши активы и данные для входа, рекомендуем отклонить запрос."
   },
   "confirmationAlertModalTitle": {
     "message": "Этот запрос подозрительный"
@@ -1983,9 +1959,6 @@
   "estimatedFeeTooltip": {
     "message": "Сумма, уплаченная за обработку транзакции в сети."
   },
-  "estimatedTime": {
-    "message": "Примерное время"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Указана резервная цена газа, поскольку основной сервис определения цены газа сейчас недоступен."
   },
@@ -2146,9 +2119,6 @@
   },
   "gasFee": {
     "message": "Плата за газ"
-  },
-  "gasIsETH": {
-    "message": "Газ стоит $1 "
   },
   "gasLimit": {
     "message": "Лимит газа"
@@ -2711,9 +2681,6 @@
   "learnScamRisk": {
     "message": "мошенничество и угрозы безопасности."
   },
-  "learnToBridge": {
-    "message": "Научитесь создавать мост для"
-  },
   "leaveMetaMask": {
     "message": "Выйти из MetaMask?"
   },
@@ -2804,9 +2771,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Завершите транзакцию в Snap."
-  },
-  "loadingTokens": {
-    "message": "Загрузка токенов..."
   },
   "localhost": {
     "message": "Локальный хост 8545"
@@ -2908,9 +2872,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Уведомления кошелька в настоящее время неактивны."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "Сервис свопов MetaMask на техобслуживании. Зайдите позже."
@@ -3055,10 +3016,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 запрашивает ваше одобрение на:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Нативный токен этой сети — $1. Этот токен используется для внесения платы за газ. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Изменить сведения о сети"
@@ -3343,9 +3300,6 @@
   },
   "noThanks": {
     "message": "Нет, спасибо"
-  },
-  "noTransactions": {
-    "message": "У вас нет транзакций"
   },
   "noWebcamFound": {
     "message": "Веб-камера вашего компьютера не найдена. Попробуйте еще раз."
@@ -5949,9 +5903,6 @@
     "message": "$1 теперь активен в $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Сейчас вы используете"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "В случае смены сетей все ожидающие подтверждения будут отменены"
   },
@@ -5988,9 +5939,6 @@
   "themeDescription": {
     "message": "Выберите предпочитаемую тему MetaMask."
   },
-  "thingsToKeep": {
-    "message": "Что нужно помнить:"
-  },
   "thirdPartySoftware": {
     "message": "Уведомление о стороннем ПО",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -6020,18 +5968,6 @@
   "toAddress": {
     "message": "Адресат: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Это позволяет вам выбрать сеть для каждого сайта вместо одной выбранной сети для всех сайтов. Эта функция не позволит вам переключать сети вручную, что может снизить удобство использования некоторых сайтов."
-  },
-  "toggleRequestQueueField": {
-    "message": "Выберите сети для каждого сайта"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Выкл."
-  },
-  "toggleRequestQueueOn": {
-    "message": "Вкл."
   },
   "token": {
     "message": "Токен"
@@ -6072,9 +6008,6 @@
   "tokenScamSecurityRisk": {
     "message": "мошенничество с токенами и угрозы безопасности"
   },
-  "tokenShowUp": {
-    "message": "Ваши токены могут не отображаться автоматически в вашем кошельке. "
-  },
   "tokenStandard": {
     "message": "Стандарт токена"
   },
@@ -6105,9 +6038,6 @@
   },
   "total": {
     "message": "Итого"
-  },
-  "totalFees": {
-    "message": "Итого комиссий"
   },
   "totalVolume": {
     "message": "Общий объем"
@@ -6389,9 +6319,6 @@
   },
   "use4ByteResolution": {
     "message": "Расшифровать смарт-контракты"
-  },
-  "use4ByteResolutionDescription": {
-    "message": "Чтобы улучшить взаимодействие с пользователем, мы настраиваем вкладку действий, добавляя сообщения на основе смарт-контрактов, с которыми вы взаимодействуете. MetaMask использует службу под названием 4byte.directory для декодирования данных и показа версии смарт-контакта, которую легче читать. Это помогает снизить шансы того, что вы одобрите вредоносные действия смарт-контракта, но может привести к раскрытию вашего IP-адреса."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Пакетные запросы баланса счета"
