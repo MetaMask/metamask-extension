@@ -1045,9 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Transaktionsanfrage"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Um Ihre Assets und Anmeldedaten zu schützen, empfehlen wir die Ablehnung der Anfrage."
-  },
   "confirmationAlertModalTitle": {
     "message": "Diese Anfrage scheint verdächtig"
   },
