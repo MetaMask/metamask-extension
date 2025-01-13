@@ -239,7 +239,7 @@ export async function withSolanaAccountSnap(
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
   console.log('Starting withSolanaAccountSnap');
-  let fixtures = new FixtureBuilder().withPreferencesControllerAndFeatureFlag({
+  let fixtures = new FixtureBuilder().withPreferencesController({
     solanaSupportEnabled: solanaSupportEnabled ?? true,
   });
   if (!showNativeTokenAsMainBalance) {

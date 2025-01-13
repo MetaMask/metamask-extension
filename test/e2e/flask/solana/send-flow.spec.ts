@@ -13,7 +13,7 @@ describe('Send SOL flow', function (this: Suite) {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
       async (driver) => {
-        await driver.refresh();
+        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         assert.equal(await homePage.check_ifSendButtonIsClickable(), true);
         assert.equal(await homePage.check_ifSwapButtonIsClickable(), false);
@@ -44,7 +44,7 @@ describe('Send SOL flow', function (this: Suite) {
         mockSendTransaction: true,
       },
       async (driver) => {
-        await driver.refresh();
+        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
@@ -193,7 +193,7 @@ describe('Send SOL flow', function (this: Suite) {
         mockCalls: true,
       },
       async (driver) => {
-        await driver.refresh();
+        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),

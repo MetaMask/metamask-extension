@@ -1,9 +1,6 @@
 import HomePage from './homepage';
 
 class NonEvmHomepage extends HomePage {
-  protected readonly balance =
-    '[data-testid="coin-overview__primary-currency"]';
-
   protected readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
   protected readonly receiveButton = '[data-testid="coin-overview-receive"]';
@@ -15,15 +12,17 @@ class NonEvmHomepage extends HomePage {
   /**
    * Checks if the expected balance is displayed on homepage.
    *
+   * @param balance
    */
-  async getBalance(): Promise<string> {
+  async check_getBalance(balance: string): Promise<void> {
     console.log(`Getting Non-evm account balance`);
-    const balanceValue = await this.driver.waitForSelector(this.balance, {
-      timeout: 120000,
-    });
-    const singleBalanceText = await balanceValue.getText();
-    const trimmedBalance = singleBalanceText.replaceAll(/\s+/gu, ' ').trim();
-    return trimmedBalance;
+    await this.driver.waitForSelector(
+      {
+        css: 'div',
+        text: balance,
+      },
+      { timeout: 5000 },
+    );
   }
 
   /**
@@ -57,15 +56,8 @@ class NonEvmHomepage extends HomePage {
   /**
    * Checks if the buy/sell button is enabled on a non-evm account homepage.
    */
-  async check_ifBuySellButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.buySellButton, 1000);
-    } catch (e) {
-      console.log('Buy/Sell button not enabled', e);
-      return false;
-    }
-    console.log('Buy/Sell button is enabled');
-    return true;
+  async check_ifBuySellButtonIsClickable(): Promise<void> {
+    await this.driver.findClickableElement(this.buySellButton, 1000);
   }
 
   /**

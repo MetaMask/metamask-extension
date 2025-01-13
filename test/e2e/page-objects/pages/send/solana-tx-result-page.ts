@@ -57,7 +57,6 @@ class SolanaTxresultPage {
         txStatusText,
         { timeout: 5000 }, // even the tx is being mock, there is an spinner that sometimes is slow to disappear
       );
-      await this.driver.findElement(txStatusText);
       return true;
     } catch (err) {
       console.log(
@@ -68,13 +67,10 @@ class SolanaTxresultPage {
   }
 
   async isTransactionDetailDisplayed(text: string): Promise<boolean> {
-    const detail = await this.driver.findElement(
-      {
-        text,
-        tag: 'p',
-      },
-      200,
-    );
+    const detail = await this.driver.waitForSelector({
+      text,
+      tag: 'p',
+    });
     return await detail.isDisplayed();
   }
 

@@ -50,7 +50,10 @@ class SendSolanaPage {
         this.continueButton,
         2000,
       );
-      await this.driver.delay(2000);
+      await this.driver.wait(
+        async () => await continueButton.isEnabled(),
+        5000,
+      );
       return await continueButton.isEnabled();
     } catch (e) {
       console.log('Continue button not enabled', e);
@@ -60,13 +63,10 @@ class SendSolanaPage {
 
   async isInsufficientBalanceDisplayed(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(
-        {
-          text: 'Insufficient balance',
-          tag: 'p',
-        },
-        1000,
-      );
+      await this.driver.waitForSelector({
+        text: 'Insufficient balance',
+        tag: 'p',
+      });
     } catch (e) {
       console.log('Insufficient balance message not displayed', e);
       return false;

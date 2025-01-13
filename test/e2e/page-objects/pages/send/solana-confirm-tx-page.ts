@@ -21,7 +21,7 @@ class ConfirmSolanaTxPage {
 
   async checkAmountDisplayed(amount: string): Promise<boolean> {
     try {
-      await this.driver.findElement({
+      await this.driver.waitForSelector({
         text: `Sending ${amount} SOL`,
         tag: 'h2',
       });
