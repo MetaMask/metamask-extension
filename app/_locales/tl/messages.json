@@ -1045,9 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Hiling na Transaksyon"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Para protektahan ang iyong mga asset at impormasyon sa pag-login, iminumungkahi namin na tanggihan mo ang kahilingan."
-  },
   "confirmationAlertModalTitle": {
     "message": "Kahina-hinala ang kahilingang ito"
   },

@@ -1045,8 +1045,8 @@
   "confirmTitleTransaction": {
     "message": "Solicitação de transação"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Para proteger seus ativos e informações de login, é recomendável que você recuse a solicitação."
+  "confirmationAlertDetails": {
+    "message": "Para proteger seus ativos, é recomendável que você recuse a solicitação."
   },
   "confirmationAlertModalTitle": {
     "message": "Esta solicitação é suspeita"
