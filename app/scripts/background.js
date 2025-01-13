@@ -78,6 +78,7 @@ import { createOffscreen } from './offscreen';
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+import { performAutoSignIn } from './lib/identity/authentication';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -764,7 +765,7 @@ function emitAppOpenedMetricEvent() {
  *
  * @param {string} environment - The environment type where the app is opening
  */
-function trackAppOpened(environment) {
+async function trackAppOpened(environment) {
   // List of valid environment types to track
   const environmentTypeList = [
     ENVIRONMENT_TYPE_POPUP,
@@ -780,6 +781,7 @@ function trackAppOpened(environment) {
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
     emitAppOpenedMetricEvent();
+    await performAutoSignIn(controller);
   }
 }
 
@@ -925,7 +927,7 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
-      trackAppOpened(processName);
+      await trackAppOpened(processName);
 
       initializeRemoteFeatureFlags();
 
