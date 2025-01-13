@@ -96,7 +96,7 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
 export default async function init() {
   return new Promise<void>((resolve) => {
     const iframe = document.createElement('iframe');
-    iframe.src = 'https://metamask.github.io/eth-ledger-bridge-keyring';
+    iframe.src = 'https://metamask.github.io/ledger-iframe-bridge/8.0.0/';
     iframe.allow = 'hid';
     iframe.onload = () => {
       setupMessageListeners(iframe);
