@@ -93,6 +93,10 @@ class SendTokenPage {
     await this.driver.clickElement(this.cancelButton);
   }
 
+  async clickContinueButton(): Promise<void> {
+    await this.driver.clickElement(this.continueButton);
+  }
+
   async fillAmount(amount: string): Promise<void> {
     console.log(`Fill amount input with ${amount} on send token screen`);
     const inputAmount = await this.driver.waitForSelector(this.inputAmount);
