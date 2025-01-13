@@ -2,7 +2,7 @@ import { EthAccountType, EthScopes } from '@metamask/keyring-api';
 import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject, isString, isArray } from 'lodash';
 
-export const version = 135;
+export const version = 137;
 
 type VersionedData = Record<string, unknown>;
 
