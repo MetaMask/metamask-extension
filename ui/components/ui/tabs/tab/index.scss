@@ -1,8 +1,18 @@
 .tab {
+  border-bottom: 2px solid var(--color-border-muted);
+  color: var(--color-text-muted);
+  font-weight: 500;
+
   button {
     min-width: 50px;
     background-color: unset;
     color: unset;
+    font-weight: 500;
+  }
+
+  &--single {
+    color: var(--color-text-default);
+    border-bottom: none;
   }
 
   &--active {

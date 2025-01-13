@@ -17,10 +17,7 @@
 
   &__tab {
     @include design-system.H6;
-
     flex-grow: 1;
-    color: var(--color-icon-default);
-    font-weight: 500;
   }
 
   &__tab--active {
