@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+
 class ConfirmTxPage {
   private driver: Driver;
 
