@@ -1160,10 +1160,8 @@ export function setupController(
         controller.appStateController.waitingForUnlock.length +
         controller.approvalController.getTotalApprovalCount();
 
-      if (controller.preferencesController.getUseRequestQueue()) {
-        pendingApprovalCount +=
-          controller.queuedRequestController.state.queuedRequestCount;
-      }
+      pendingApprovalCount +=
+        controller.queuedRequestController.state.queuedRequestCount;
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);

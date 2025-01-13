@@ -22,7 +22,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
