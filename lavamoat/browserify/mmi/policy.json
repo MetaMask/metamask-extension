@@ -1285,8 +1285,8 @@
       "packages": {
         "@babel/runtime": true,
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
-        "@metamask/ethjs-contract": true,
-        "@metamask/ethjs-query": true,
+        "eth-method-registry>@metamask/ethjs-contract": true,
+        "eth-method-registry>@metamask/ethjs-query": true,
         "@metamask/safe-event-emitter": true,
         "bn.js": true,
         "@metamask/eth-token-tracker>deep-equal": true,
@@ -1313,56 +1313,56 @@
         "URL": true
       }
     },
-    "@metamask/ethjs-contract": {
+    "eth-method-registry>@metamask/ethjs-contract": {
       "packages": {
         "@babel/runtime": true,
-        "@metamask/ethjs-contract>@metamask/ethjs-filter": true,
-        "@metamask/ethjs-contract>@metamask/ethjs-util": true,
-        "@metamask/ethjs-contract>ethjs-abi": true,
+        "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-filter": true,
+        "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": true,
+        "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": true,
         "eth-ens-namehash>js-sha3": true,
         "promise-to-callback": true
       }
     },
-    "@metamask/ethjs-contract>@metamask/ethjs-filter": {
+    "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-filter": {
       "globals": {
         "clearInterval": true,
         "setInterval": true
       }
     },
-    "@metamask/ethjs-query>@metamask/ethjs-format": {
+    "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format": {
       "packages": {
-        "@metamask/ethjs-contract>@metamask/ethjs-util": true,
-        "@metamask/ethjs-query>@metamask/ethjs-format>@metamask/number-to-bn": true,
-        "@metamask/ethjs-query>@metamask/ethjs-format>ethjs-schema": true,
-        "@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
+        "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": true,
+        "@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>ethjs-schema": true,
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
-    "@metamask/ethjs-query": {
+    "eth-method-registry>@metamask/ethjs-query": {
       "globals": {
         "console": true
       },
       "packages": {
-        "@metamask/ethjs-query>@metamask/ethjs-format": true,
-        "@metamask/ethjs-query>@metamask/ethjs-rpc": true,
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format": true,
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-rpc": true,
         "promise-to-callback": true
       }
     },
-    "@metamask/ethjs-query>@metamask/ethjs-rpc": {
+    "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-rpc": {
       "packages": {
         "promise-to-callback": true
       }
     },
     "@metamask/controller-utils>@metamask/ethjs-unit": {
       "packages": {
-        "@metamask/ethjs-query>@metamask/ethjs-format>@metamask/number-to-bn": true,
+        "@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
         "bn.js": true
       }
     },
-    "@metamask/ethjs-contract>@metamask/ethjs-util": {
+    "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": {
       "packages": {
         "browserify>buffer": true,
-        "@metamask/ethjs-query>@metamask/ethjs-format>is-hex-prefixed": true,
-        "@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>is-hex-prefixed": true,
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
     "@metamask/gas-fee-controller": {
@@ -1554,10 +1554,10 @@
         "uuid": true
       }
     },
-    "@metamask/ethjs-query>@metamask/ethjs-format>@metamask/number-to-bn": {
+    "@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": {
       "packages": {
         "bn.js": true,
-        "@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
     "@metamask/object-multiplex": {
@@ -3696,8 +3696,8 @@
     },
     "eth-method-registry": {
       "packages": {
-        "@metamask/ethjs-contract": true,
-        "@metamask/ethjs-query": true
+        "eth-method-registry>@metamask/ethjs-contract": true,
+        "eth-method-registry>@metamask/ethjs-query": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography": {
@@ -3848,12 +3848,12 @@
         "ethers>@ethersproject/wordlists": true
       }
     },
-    "@metamask/ethjs-contract>ethjs-abi": {
+    "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": {
       "packages": {
         "bn.js": true,
         "browserify>buffer": true,
         "eth-ens-namehash>js-sha3": true,
-        "@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
+        "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
       }
     },
     "webpack>events": {
@@ -4542,10 +4542,10 @@
         "fetch": true
       }
     },
-    "@metamask/ethjs-contract>ethjs-abi>number-to-bn": {
+    "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": {
       "packages": {
         "bn.js": true,
-        "@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
     "string.prototype.matchall>es-abstract>object-inspect": {
@@ -5379,9 +5379,9 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": {
+    "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": {
       "packages": {
-        "@metamask/ethjs-query>@metamask/ethjs-format>is-hex-prefixed": true
+        "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>is-hex-prefixed": true
       }
     },
     "react-markdown>style-to-object": {
