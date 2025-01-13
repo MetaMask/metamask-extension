@@ -35,7 +35,7 @@ export default function createOriginThrottlingMiddleware({
 }: {
   originThrottlingController: OriginThrottlingController;
 }) {
-  return async function originThrottlingMiddleware(
+  return function originThrottlingMiddleware(
     req: ExtendedJSONRPCRequest,
     _res: any,
     next: any,
@@ -43,7 +43,8 @@ export default function createOriginThrottlingMiddleware({
   ) {
     const isBlockableRPCMethod = BLOCKABLE_METHODS.has(req.method);
     if (!isBlockableRPCMethod) {
-      return next();
+      next();
+      return;
     }
 
     const isDappBlocked = validateOriginThrottling({
@@ -52,8 +53,10 @@ export default function createOriginThrottlingMiddleware({
       req,
     });
 
-    if (!isDappBlocked) {
-      next();
+    if (isDappBlocked) {
+      return;
     }
+
+    next();
   };
 }

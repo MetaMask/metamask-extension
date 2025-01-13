@@ -2056,7 +2056,8 @@
     },
     "bridgeStatusState": {
       "txHistory": {}
-    }
+    },
+    "throttledOrigins": {}
   },
   "ramps": {
     "buyableChains": [
