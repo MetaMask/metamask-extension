@@ -107,44 +107,61 @@ function transformState(state: Record<string, unknown>) {
     };
   }
 
-  // const {
-  //   PermissionController: { subjects },
-  //   NetworkController: {
-  //     selectedNetworkClientId,
-  //     networkConfigurationsByChainId,
-  //   },
-  //   SelectedNetworkController: { domains },
-  // } = state;
+  const {
+    // PermissionController: { subjects },
+    NetworkController: {
+      selectedNetworkClientId,
+      networkConfigurationsByChainId,
+    },
+  } = state;
+
+  // // legitimate state corruption error, would need to fix once we see this error hit
+  // if (!isObject(subjects)) {
+  //   global.sentry?.captureException?.(
+  //     new Error(
+  //       `Migration ${version}: typeof state.PermissionController.subjects is ${typeof state
+  //         .PermissionController.subjects}`,
+  //     ),
+  //   );
+  //   return state;
+  // }
+
+  // // legitimate state corruption error, would need to fix once we see this error hit
+  // for (const [origin, subject] of Object.entries(subjects)) {
+  //   if (!isObject(subject)) {
+  //     global.sentry?.captureException?.(
+  //       new Error(
+  //         `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
+  //       ),
+  //     );
+  //     return state;
+  //   }
+
+  //   if (
+  //     !hasProperty(subject, 'permissions') ||
+  //     !isObject(subject.permissions)
+  //   ) {
+  //     global.sentry?.captureException?.(
+  //       new Error(
+  //         `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof subject.permissions}`,
+  //       ),
+  //     );
+  //     return state;
+  //   }
+  // }
 
   // legitimate state corruption error, would need to fix once we see this error hit
-  if (!isObject(state.PermissionController.subjects)) {
+  if (!selectedNetworkClientId || typeof selectedNetworkClientId !== 'string') {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.PermissionController.subjects is ${typeof state
-          .PermissionController.subjects}`,
+        `Migration ${version}: invalid selectedNetworkClientId "${selectedNetworkClientId}"`,
       ),
     );
     return state;
   }
 
   // legitimate state corruption error, would need to fix once we see this error hit
-  if (
-    !state.NetworkController.selectedNetworkClientId ||
-    typeof state.NetworkController.selectedNetworkClientId !== 'string'
-  ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: invalid selectedNetworkClientId "${state.NetworkController.selectedNetworkClientId}"`,
-      ),
-    );
-    return state;
-  }
-
-  // legitimate state corruption error, would need to fix once we see this error hit
-  if (
-    !hasProperty(state.NetworkController, 'networkConfigurationsByChainId') ||
-    !isObject(state.NetworkController.networkConfigurationsByChainId)
-  ) {
+  if (!isObject(networkConfigurationsByChainId)) {
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is ${typeof state
@@ -169,52 +186,26 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
-  for (const [origin, subject] of Object.entries(
-    state.PermissionController.subjects,
-  )) {
-    if (!isObject(subject)) {
-      global.sentry?.captureException?.(
-        new Error(
-          `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
-        ),
-      );
-      return state;
-    }
-
-    const { permissions } = subject as {
-      permissions: Record<string, PermissionConstraint>;
-    };
-    if (!isObject(permissions)) {
-      global.sentry?.captureException?.(
-        new Error(
-          `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof permissions}`,
-        ),
-      );
-      return state;
-    }
-  }
-
   const newState = cloneDeep(state);
-
-  // if (
-  //   !hasProperty(newState, 'PermissionController') ||
-  //   !isObject(newState.PermissionController) ||
-  //   !hasProperty(newState.PermissionController, 'subjects') ||
-  //   !isObject(newState.PermissionController.subjects)
-  // ) {
-  //   return state;
-  // }
 
   const {
     PermissionController: { subjects: newSubjects },
-  } = newState;
+  } = newState as {
+    PermissionController: {
+      subjects: Record<string, unknown>;
+    };
+  };
+
+  const { domains } = state.SelectedNetworkController as {
+    domains: Record<string, unknown>;
+  };
 
   const getChainIdForNetworkClientId = (
     networkClientId: string,
     propertyName: string,
   ): string | undefined => {
     for (const [chainId, networkConfiguration] of Object.entries(
-      state.NetworkController.networkConfigurationsByChainId,
+      networkConfigurationsByChainId,
     )) {
       if (!isObject(networkConfiguration)) {
         global.sentry?.captureException(
@@ -268,33 +259,58 @@ function transformState(state: Record<string, unknown>) {
 
   // Perform mutations on cloned state
   for (const [origin, subject] of Object.entries(newSubjects)) {
+    if (!isObject(subject)) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
+        ),
+      );
+      return state;
+    }
+
+    if (
+      !hasProperty(subject, 'permissions') ||
+      !isObject(subject.permissions)
+    ) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof subject.permissions}`,
+        ),
+      );
+      return state;
+    }
+
     const { permissions } = subject;
 
     let basePermission: PermissionConstraint | undefined;
 
     let ethAccounts: string[] = [];
+    const ethAccountsPermission = permissions[PermissionNames.eth_accounts];
     if (
-      isObject(permissions[PermissionNames.eth_accounts]) &&
-      Array.isArray(permissions[PermissionNames.eth_accounts].caveats)
+      isObject(ethAccountsPermission) &&
+      hasProperty(ethAccountsPermission, 'caveats') &&
+      Array.isArray(ethAccountsPermission.caveats)
     ) {
       ethAccounts =
-        (permissions[PermissionNames.eth_accounts].caveats?.[0]?.value as
+        (ethAccountsPermission.caveats?.[0]?.value as
           | string[]
           | undefined) ?? [];
-      basePermission = permissions[PermissionNames.eth_accounts];
+      // basePermission = ethAccountsPermission;
     }
     delete permissions[PermissionNames.eth_accounts];
 
     let chainIds: string[] = [];
+    const permittedChainsPermission = permissions[PermissionNames.permittedChains];
     if (
-      isObject(permissions[PermissionNames.permittedChains]) &&
-      Array.isArray(permissions[PermissionNames.permittedChains].caveats)
+      isObject(permittedChainsPermission) &&
+      hasProperty(permittedChainsPermission, 'caveats') &&
+      Array.isArray(permittedChainsPermission.caveats)
     ) {
       chainIds =
-        (permissions[PermissionNames.permittedChains].caveats?.[0]?.value as
+        (permittedChainsPermission.caveats?.[0]?.value as
           | string[]
           | undefined) ?? [];
-      basePermission ??= permissions[PermissionNames.permittedChains];
+      // basePermission ??= permissions[PermissionNames.permittedChains];
     }
     delete permissions[PermissionNames.permittedChains];
 
@@ -305,7 +321,7 @@ function transformState(state: Record<string, unknown>) {
     if (chainIds.length === 0) {
       chainIds = [currentChainId];
 
-      const networkClientIdForOrigin = newDomains[origin];
+      const networkClientIdForOrigin = domains[origin];
       if (
         networkClientIdForOrigin &&
         typeof networkClientIdForOrigin === 'string'
@@ -339,7 +355,10 @@ function transformState(state: Record<string, unknown>) {
     });
 
     const caip25Permission: Caip25Permission = {
-      ...basePermission,
+      // ...basePermission,
+      id: '1', // for now
+      invoker: '1', // for now
+      date: new Date().getTime(), // for now
       parentCapability: Caip25EndowmentPermissionName,
       caveats: [
         {
