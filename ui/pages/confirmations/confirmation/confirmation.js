@@ -45,7 +45,6 @@ import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 import { DAY } from '../../../../shared/constants/time';
-import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
