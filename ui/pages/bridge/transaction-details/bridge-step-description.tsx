@@ -20,6 +20,10 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  AllowedBridgeChainIds,
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+} from '../../../../shared/constants/bridge';
 
 type I18nFunction = (
   key: string,
@@ -49,14 +53,19 @@ const getBridgeActionText = (
     ? networkConfigurationsByChainId[hexDestChainId]
     : undefined;
 
+  const destChainName =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      destNetworkConfiguration?.chainId as AllowedBridgeChainIds
+    ];
+
   return stepStatus === StatusTypes.COMPLETE
     ? t('bridgeStepActionBridgeComplete', [
         step.destAsset.symbol,
-        destNetworkConfiguration?.name,
+        destChainName,
       ])
     : t('bridgeStepActionBridgePending', [
         step.destAsset.symbol,
-        destNetworkConfiguration?.name,
+        destChainName,
       ]);
 };
 
