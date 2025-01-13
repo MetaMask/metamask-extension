@@ -22,11 +22,12 @@ class SendSolanaPage {
   }
 
   async setAmount(amount: string): Promise<void> {
-    await this.driver.waitForSelector(this.sendAmountInput);
+    await this.driver.waitForSelector(this.sendAmountInput, { timeout: 5000 });
     await this.driver.fill(this.sendAmountInput, amount);
   }
 
   async setToAddress(toAddress: string): Promise<void> {
+    await this.driver.waitForSelector(this.toAddressInput, { timeout: 5000 });
     await this.driver.fill(this.toAddressInput, toAddress);
   }
 
@@ -36,7 +37,7 @@ class SendSolanaPage {
         text: 'Continue',
         tag: 'span',
       },
-      3000,
+      5000,
     ); // Since the buttons takes a bit to get enabled, this avoid test flakiness
     const clickableButton = await this.driver.findElement(
       '.confirmation-page button:nth-of-type(2)',
