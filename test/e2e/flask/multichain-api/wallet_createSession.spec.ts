@@ -388,10 +388,18 @@ describe('Multichain API', function () {
     });
   });
 
-  describe(`Dapp has existing session with scope eip155:1337, and accounts ${ACCOUNT_1} & ${ACCOUNT_2}, call 'wallet_createSession' with scopes eip:155:1338 & eip:155:1000, and account 0xf68464152d7289d7ea9a2bec2e0035c45188223c`, function () {
-    const OLD_SCOPE = 'eip155:1337';
+  describe(`Dapp has existing session with scopes eip155:1337, eip155:1 & eip155:42161, and accounts ${ACCOUNT_1} & ${ACCOUNT_2}, call 'wallet_createSession' with scopes eip:155:1338 & eip:155:1000, and account 0xf68464152d7289d7ea9a2bec2e0035c45188223c`, function () {
+    const OLD_SCOPES = ['eip155:1337', 'eip155:1', 'eip155:42161'];
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
     const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
+
+    const optionalScopeAccounts = OLD_SCOPES.map((scope) => ({
+      [scope]: {
+        accounts: [`${scope}:${ACCOUNT_1}`, `${scope}:${ACCOUNT_2}`],
+      },
+    })).reduce((acc, curr) => {
+      return { ...acc, ...curr };
+    }, {});
 
     it('should entirely overwrite old session permissions by those requested in the new `wallet_createSession` request', async function () {
       await withFixtures(
@@ -401,6 +409,9 @@ describe('Multichain API', function () {
             .withNetworkControllerTripleGanache()
             .withPermissionControllerConnectedToTestDappWithTwoAccounts({
               isMultichainOrigin: true,
+              optionalScopes: {
+                ...optionalScopeAccounts,
+              },
             })
             .withTrezorAccount()
             .build(),
@@ -419,18 +430,24 @@ describe('Multichain API', function () {
           );
 
           /**
-           * We first make sure session exists
+           * We first make sure sessions exist
            */
           const existingGetSessionScopesResult = await getSessionScopes(driver);
-          assert.notStrictEqual(
-            existingGetSessionScopesResult.sessionScopes[OLD_SCOPE],
-            undefined,
+          OLD_SCOPES.forEach((scope) =>
+            assert.notStrictEqual(
+              existingGetSessionScopesResult.sessionScopes[scope],
+              undefined,
+              `scope ${scope} should exist`,
+            ),
           );
 
           /**
-           * Then we make sure to deselect the existing session scope, and create session with new scopes
+           * Then we make sure to deselect the existing session scopes, and create session with new scopes
            */
-          await driver.clickElement(`input[name="${OLD_SCOPE}"]`);
+          OLD_SCOPES.forEach(
+            async (scope) =>
+              await driver.clickElement(`input[name="${scope}"]`),
+          );
           await initCreateSessionScopes(driver, NEW_SCOPES, [TREZOR_ACCOUNT]);
           await driver.clickElement({ text: 'Connect', tag: 'button' });
           await driver.delay(largeDelayMs);
@@ -441,11 +458,14 @@ describe('Multichain API', function () {
           const newGetSessionScopesResult = await getSessionScopes(driver);
 
           /**
-           * Assert old session doesn't exist anymore, as is overwritten by new session scopes
+           * Assert old sessions don't exist anymore, as they are overwritten by new session scopes
            */
-          assert.strictEqual(
-            newGetSessionScopesResult.sessionScopes[OLD_SCOPE],
-            undefined,
+          OLD_SCOPES.forEach((scope) =>
+            assert.strictEqual(
+              newGetSessionScopesResult.sessionScopes[scope],
+              undefined,
+              `scope ${scope} should not exist anymore`,
+            ),
           );
 
           const expectedNewSessionScopes = NEW_SCOPES.map((scope) => ({

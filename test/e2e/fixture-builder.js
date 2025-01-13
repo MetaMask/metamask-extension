@@ -553,6 +553,7 @@ class FixtureBuilder {
 
   withPermissionControllerConnectedToTestDappWithTwoAccounts({
     isMultichainOrigin = false,
+    optionalScopes = {},
   }) {
     const subjects = {
       [DAPP_URL]: {
@@ -571,6 +572,7 @@ class FixtureBuilder {
                         'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                       ],
                     },
+                    ...optionalScopes,
                   },
                   isMultichainOrigin,
                 },
