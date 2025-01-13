@@ -20,7 +20,6 @@ export const personalSignWithSnapAccount = async (
   const testDapp = new TestDapp(driver);
   await testDapp.check_pageIsLoaded();
   await testDapp.personalSign();
-  await driver.delay(veryLargeDelayMs);
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
@@ -54,7 +53,6 @@ export const signTypedDataWithSnapAccount = async (
   const testDapp = new TestDapp(driver);
   await testDapp.check_pageIsLoaded();
   await testDapp.signTypedData();
-  await driver.delay(veryLargeDelayMs);
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
@@ -88,7 +86,6 @@ export const signTypedDataV3WithSnapAccount = async (
   const testDapp = new TestDapp(driver);
   await testDapp.check_pageIsLoaded();
   await testDapp.signTypedDataV3();
-  await driver.delay(veryLargeDelayMs);
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
@@ -122,7 +119,6 @@ export const signTypedDataV4WithSnapAccount = async (
   const testDapp = new TestDapp(driver);
   await testDapp.check_pageIsLoaded();
   await testDapp.signTypedDataV4();
-  await driver.delay(veryLargeDelayMs);
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
@@ -156,7 +152,6 @@ export const signPermitWithSnapAccount = async (
   const testDapp = new TestDapp(driver);
   await testDapp.check_pageIsLoaded();
   await testDapp.signPermit();
-  await driver.delay(veryLargeDelayMs);
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
