@@ -5462,15 +5462,15 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
+    if (!autoApprove) {
+      await this.requestApprovalPermittedChainsPermission(origin, chainId);
+    }
+
     const caip25Caveat = this.permissionController.getCaveat(
       origin,
       Caip25EndowmentPermissionName,
       Caip25CaveatType,
     );
-
-    if (!autoApprove) {
-      await this.requestApprovalPermittedChainsPermission(origin, chainId);
-    }
 
     const caveatValueWithChainsAdded = addPermittedEthChainId(
       caip25Caveat.value,
