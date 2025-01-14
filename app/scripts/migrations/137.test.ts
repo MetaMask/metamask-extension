@@ -505,7 +505,7 @@ describe('migration #137', () => {
       };
       const currentScope = `eip155:${chainId}`;
 
-      it('skips eth_accounts and permittedChains permissions when they are missing an id', async () => {
+      it('skips eth_accounts and permittedChains permissions when they are missing metadata', async () => {
         const oldStorage = {
           meta: { version: oldVersion },
           data: {
