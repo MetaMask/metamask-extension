@@ -6855,10 +6855,11 @@ export default class MetamaskController extends EventEmitter {
         ),
         getSelectedNetworkClientId: () =>
           this.networkController.state.selectedNetworkClientId,
-        revokePermissionForOrigin: this.permissionController.revokePermission.bind(
-          this.permissionController,
-          origin
-        ),
+        revokePermissionForOrigin:
+          this.permissionController.revokePermission.bind(
+            this.permissionController,
+            origin,
+          ),
       }),
     );
 
