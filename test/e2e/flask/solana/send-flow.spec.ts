@@ -97,6 +97,7 @@ describe('Send SOL flow', function (this: Suite) {
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
         await sendSolanaPage.clickOnContinue();
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
+        await confirmSolanaPage.waitForSendingStageToFinish();
         assert.equal(
           await confirmSolanaPage.checkAmountDisplayed('0.1'),
           true,
@@ -233,6 +234,7 @@ describe('Send SOL flow', function (this: Suite) {
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
 
         await confirmSolanaPage.clickOnSend();
+        await confirmSolanaPage.waitForSendingStageToFinish();
         const failedTxPage = new SolanaTxresultPage(driver);
         assert.equal(
           await failedTxPage.check_TransactionStatusText('0.1', false),
