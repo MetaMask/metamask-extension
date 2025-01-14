@@ -98,8 +98,18 @@ function transformState(
         );
         // But we still continue to "fix" the scopes field (this should never really happen though...).
         hasValidScopes = false;
+      } else {
+        // We know it's an array
+        for (const scope of account.scopes) {
+          if (!isString(scope)) {
+            // We log the error here.
+            error(
+              `Invalid AccountsController's account.scopes item type, is '${typeof scope}'`,
+            );
+            hasValidScopes = false;
+          }
+        }
       }
-      // TODO: Should we check of array's content here too?
     } else {
       hasValidScopes = false;
     }
@@ -107,6 +117,7 @@ function transformState(
     // Now we fix the scopes if they are not valid or missing:
     if (!hasValidScopes) {
       const badAccount = account as unknown as { scopes: string[] };
+
       if (account.type === EthAccountType.Eoa) {
         // EVM EOA account
         badAccount.scopes = [EthScopes.Namespace];
@@ -117,10 +128,8 @@ function transformState(
         // this case should never happen.
         badAccount.scopes = [EthScopes.Namespace];
         // Logging in case this happen
-        global.sentry?.captureException(
-          new Error(
-            'Injecting EVM scope for ERC4337 account (should never happen for now)',
-          ),
+        error(
+          'Injecting EVM scope for ERC4337 account (should never happen for now)',
         );
       }
     }
