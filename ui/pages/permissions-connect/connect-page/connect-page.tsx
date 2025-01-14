@@ -31,12 +31,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
+import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import {
   CaveatTypes,
   EndowmentTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
-import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 
 export type ConnectPageRequest = {
