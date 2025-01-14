@@ -6842,7 +6842,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
         metamaskState: this.getState(),
-        getCaveat: this.permissionController.getCaveat.bind(
+        getCaveatForOrigin: this.permissionController.getCaveat.bind(
           this.permissionController,
         ),
         getSelectedNetworkClientId: () =>
