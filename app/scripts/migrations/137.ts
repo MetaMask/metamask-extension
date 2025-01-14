@@ -89,26 +89,23 @@ function transformState(
 
     // By default, we consider that the account is not valid
     let hasValidScopes = true;
+    // Normally, accounts should not have `scopes` for now, that's why we need this migration, but just in case
+    // we check for it and fix them if needed.
     if (hasProperty(account, 'scopes')) {
-      // This should not really happen, but just in case, we check it (if accounts have not been created correctly).
-      if (!isArray(account.scopes)) {
-        // We log the error here.
-        error(
-          `Invalid AccountsController's account.scopes type, is '${typeof account.scopes}'`,
-        );
-        // But we still continue to "fix" the scopes field (this should never really happen though...).
-        hasValidScopes = false;
-      } else {
-        // We know it's an array
+      if (isArray(account.scopes)) {
         for (const scope of account.scopes) {
           if (!isString(scope)) {
-            // We log the error here.
             error(
               `Invalid AccountsController's account.scopes item type, is '${typeof scope}'`,
             );
             hasValidScopes = false;
           }
         }
+      } else {
+        error(
+          `Invalid AccountsController's account.scopes type, is '${typeof account.scopes}'`,
+        );
+        hasValidScopes = false;
       }
     } else {
       hasValidScopes = false;
@@ -127,7 +124,7 @@ function transformState(
         // "generic" scope for now. Also, there's no official Snap as of today that uses this account type. So
         // this case should never happen.
         badAccount.scopes = [EthScopes.Namespace];
-        // Logging in case this happen
+        // Logging in case this happens.
         error(
           'Injecting EVM scope for ERC4337 account (should never happen for now)',
         );
