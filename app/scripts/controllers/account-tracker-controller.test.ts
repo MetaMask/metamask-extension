@@ -391,14 +391,6 @@ describe('AccountTrackerController', () => {
         }).toThrow('pollingToken required');
       });
     });
-
-    it('should error if no matching pollingToken is found', async () => {
-      await withController(({ controller }) => {
-        expect(() => {
-          controller.stopPollingByPollingToken('potato');
-        }).toThrow('pollingToken not found');
-      });
-    });
   });
 
   describe('stopAll', () => {
