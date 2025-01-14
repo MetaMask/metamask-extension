@@ -5399,11 +5399,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async estimateGas(estimateGasParams) {
-    const result = await this.provider.request({
-      method: 'eth_estimateGas',
-      params: [estimateGasParams],
+    return new Promise((resolve, reject) => {
+      this.provider
+        .request({
+          method: 'eth_estimateGas',
+          params: [estimateGasParams],
+        })
+        .then((result) => resolve(result.toString(16)))
+        .catch((err) => reject(err));
     });
-    return result.toString(16);
   }
 
   handleWatchAssetRequest = ({ asset, type, origin, networkClientId }) => {
