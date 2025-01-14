@@ -1,6 +1,11 @@
-import { MessageTypes } from "@metamask/eth-sig-util";
+import { MessageTypes } from '@metamask/eth-sig-util';
 
-type MessageValue = string | number | boolean | Record<string, unknown> | MessageValue[];
+type MessageValue =
+  | string
+  | number
+  | boolean
+  | Record<string, unknown>
+  | MessageValue[];
 
 type SanitizedMessage = {
   value: MessageValue;
@@ -68,7 +73,7 @@ const isSolidityType = (type: string): boolean => SOLIDITY_TYPES.includes(type);
 export const sanitizeMessage = (
   msg: MessageValue,
   primaryType: string,
-  types: MessageTypes
+  types: MessageTypes,
 ): SanitizedMessage => {
   if (!types) {
     throw new Error(`Invalid types definition`);
@@ -82,7 +87,7 @@ export const sanitizeMessage = (
     }
     return {
       value: msg.map((value) =>
-        sanitizeMessage(value, stripOneLayerofNesting(primaryType), types)
+        sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
       ),
       type: primaryType,
     };
@@ -106,7 +111,7 @@ export const sanitizeMessage = (
   const msgKeys = Object.keys(msg);
   msgKeys.forEach((msgKey) => {
     const definedType = baseTypeDefinitions.find(
-      (baseTypeDefinition) => baseTypeDefinition.name === msgKey
+      (baseTypeDefinition) => baseTypeDefinition.name === msgKey,
     );
 
     if (!definedType) {
@@ -116,7 +121,7 @@ export const sanitizeMessage = (
     sanitizedStruct[msgKey] = sanitizeMessage(
       (msg as Record<string, MessageValue>)[msgKey],
       definedType.type,
-      types
+      types,
     );
   });
   return { value: sanitizedStruct, type: primaryType };

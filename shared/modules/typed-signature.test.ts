@@ -1,5 +1,5 @@
-import { sanitizeMessage, stripOneLayerofNesting } from './typed-signature';
 import { MessageTypes } from '@metamask/eth-sig-util';
+import { sanitizeMessage, stripOneLayerofNesting } from './typed-signature';
 
 describe('typed-signature utils', () => {
   describe('sanitizeMessage', () => {
@@ -64,14 +64,18 @@ describe('typed-signature utils', () => {
 
     it('throws an error if types is undefined', () => {
       expect(() =>
-        sanitizeMessage(message, primaryType, undefined as unknown as MessageTypes),
+        sanitizeMessage(
+          message,
+          primaryType,
+          undefined as unknown as MessageTypes,
+        ),
       ).toThrow('Invalid types definition');
     });
 
     it('throws an error if base type is not defined', () => {
-      expect(() => sanitizeMessage(message, undefined as unknown as string, types)).toThrow(
-        'Invalid primary type definition',
-      );
+      expect(() =>
+        sanitizeMessage(message, undefined as unknown as string, types),
+      ).toThrow('Invalid primary type definition');
     });
 
     it('returns parsed message if types is defined', () => {
