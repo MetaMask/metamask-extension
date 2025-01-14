@@ -576,7 +576,7 @@ class FixtureBuilder {
             ],
             id: 'ZaqPEWxyhNCJYACFw93jE',
             date: 1664388714636,
-            invoker: DAPP_URL,
+            invoker: DAPP_ONE_URL,
             parentCapability: 'eth_accounts',
           },
         },
