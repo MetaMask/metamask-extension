@@ -563,7 +563,7 @@ describe('migration #137', () => {
         });
       });
 
-      it('resolves the network client id for the origin even if there are other malformed network configurations', async () => {
+      it('resolves a chainId for the origin even if there are other malformed network configurations', async () => {
         const oldStorage = {
           meta: { version: oldVersion },
           data: {
