@@ -497,7 +497,7 @@ describe('migration #137', () => {
           domains: {},
         },
       });
-      const basePermission = {
+      const baseEthAccountsPermissionMetadata = {
         id: '1',
         date: 2,
         invoker: 'test.com',
@@ -601,7 +601,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -647,7 +647,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
-                    ...basePermission,
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -698,7 +698,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -724,7 +724,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
-                    ...basePermission,
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -775,7 +775,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -813,7 +813,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
-                    ...basePermission,
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -864,7 +864,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -895,7 +895,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
-                    ...basePermission,
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -941,7 +941,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -967,7 +967,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
-                    ...basePermission,
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -1025,7 +1025,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -1069,7 +1069,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
-                    ...basePermission,
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -1115,7 +1115,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.permittedChains]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictNetworkSwitching',
@@ -1160,7 +1160,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -1169,7 +1169,7 @@ describe('migration #137', () => {
                       ],
                     },
                     [PermissionNames.permittedChains]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictNetworkSwitching',
@@ -1195,7 +1195,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
-                    ...basePermission,
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -1244,7 +1244,7 @@ describe('migration #137', () => {
                 'test.com': {
                   permissions: {
                     [PermissionNames.eth_accounts]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -1257,7 +1257,7 @@ describe('migration #137', () => {
                 'test2.com': {
                   permissions: {
                     [PermissionNames.eth_accounts]: {
-                      ...basePermission,
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -1280,7 +1280,7 @@ describe('migration #137', () => {
               'test.com': {
                 permissions: {
                   'endowment:caip25': {
-                    ...basePermission,
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -1305,7 +1305,7 @@ describe('migration #137', () => {
               'test2.com': {
                 permissions: {
                   'endowment:caip25': {
-                    ...basePermission,
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
