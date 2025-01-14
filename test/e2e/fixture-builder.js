@@ -551,10 +551,51 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappWithTwoAccounts({
-    isMultichainOrigin = false,
-    optionalScopes = {},
+  withPermissionControllerConnectedToTestDappMultichainWithTwoAccounts({
+    scopes = ['eip155:1337'],
   }) {
+    const optionalScopes = scopes
+      .map((scope) => ({
+        [scope]: {
+          accounts: [
+            `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
+            `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
+          ],
+        },
+      }))
+      .reduce((acc, curr) => {
+        return { ...acc, ...curr };
+      }, {});
+
+    const subjects = {
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes,
+                  isMultichainOrigin: true,
+                },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
+    });
+  }
+
+  withPermissionControllerConnectedToTestDappWithTwoAccounts() {
     const subjects = {
       [DAPP_URL]: {
         origin: DAPP_URL,
@@ -572,9 +613,8 @@ class FixtureBuilder {
                         'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                       ],
                     },
-                    ...optionalScopes,
                   },
-                  isMultichainOrigin,
+                  isMultichainOrigin: false,
                 },
               },
             ],

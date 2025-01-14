@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
+import { isObject } from 'lodash';
 import {
   largeDelayMs,
   WINDOW_TITLES,
@@ -388,18 +389,10 @@ describe('Multichain API', function () {
     });
   });
 
-  describe(`Dapp has existing session with scopes eip155:1337, eip155:1 & eip155:42161, and accounts ${ACCOUNT_1} & ${ACCOUNT_2}, call 'wallet_createSession' with scopes eip:155:1338 & eip:155:1000, and account 0xf68464152d7289d7ea9a2bec2e0035c45188223c`, function () {
+  describe('Dapp has existing session with 3 scopes and 2 accounts and then calls `wallet_createSession` with different scopes and accounts', function () {
     const OLD_SCOPES = ['eip155:1337', 'eip155:1', 'eip155:42161'];
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
     const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
-
-    const optionalScopeAccounts = OLD_SCOPES.map((scope) => ({
-      [scope]: {
-        accounts: [`${scope}:${ACCOUNT_1}`, `${scope}:${ACCOUNT_2}`],
-      },
-    })).reduce((acc, curr) => {
-      return { ...acc, ...curr };
-    }, {});
 
     it('should entirely overwrite old session permissions by those requested in the new `wallet_createSession` request', async function () {
       await withFixtures(
@@ -407,12 +400,11 @@ describe('Multichain API', function () {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPermissionControllerConnectedToTestDappWithTwoAccounts({
-              isMultichainOrigin: true,
-              optionalScopes: {
-                ...optionalScopeAccounts,
+            .withPermissionControllerConnectedToTestDappMultichainWithTwoAccounts(
+              {
+                scopes: OLD_SCOPES,
               },
-            })
+            )
             .withTrezorAccount()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -434,9 +426,9 @@ describe('Multichain API', function () {
            */
           const existingGetSessionScopesResult = await getSessionScopes(driver);
           OLD_SCOPES.forEach((scope) =>
-            assert.notStrictEqual(
-              existingGetSessionScopesResult.sessionScopes[scope],
-              undefined,
+            assert.strictEqual(
+              isObject(existingGetSessionScopesResult.sessionScopes[scope]),
+              true,
               `scope ${scope} should exist`,
             ),
           );
