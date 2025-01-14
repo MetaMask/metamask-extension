@@ -88,12 +88,12 @@ describe('Creation Successful Onboarding View', () => {
     });
 
     it.each`
-      isProfileSyncingEnabled | participateInMetaMetrics | externalServicesOnboardingToggleState
-      ${true}                 | ${true}                  | ${true}
-      ${true}                 | ${false}                 | ${true}
-      ${false}                | ${true}                  | ${true}
+      isProfileSyncingEnabled | participateInMetaMetrics
+      ${true}                 | ${true}
+      ${true}                 | ${false}
+      ${false}                | ${true}
     `(
-      'should call performSignIn when isProfileSyncingEnabled is $isProfileSyncingEnabled, participateInMetaMetrics is $participateInMetaMetrics and externalServicesOnboardingToggleState is $externalServicesOnboardingToggleState',
+      'should call performSignIn when isProfileSyncingEnabled is $isProfileSyncingEnabled and participateInMetaMetrics is $participateInMetaMetrics',
       async ({
         isProfileSyncingEnabled,
         participateInMetaMetrics,
@@ -124,22 +124,6 @@ describe('Creation Successful Onboarding View', () => {
         metamask: {
           isProfileSyncingEnabled: false,
           participateInMetaMetrics: false,
-        },
-      });
-
-      const { getByText } = renderWithProvider(<PinExtension />, store);
-      const nextButton = getByText('Next');
-      fireEvent.click(nextButton);
-      const gotItButton = getByText('Done');
-      fireEvent.click(gotItButton);
-      await Promise.all(mockPromises);
-      expect(performSignIn).not.toHaveBeenCalled();
-    });
-
-    it('should not call performSignIn when externalServicesOnboardingToggleState is false', async () => {
-      const store = arrangeMocks({
-        appState: {
-          externalServicesOnboardingToggleState: false,
         },
       });
 
