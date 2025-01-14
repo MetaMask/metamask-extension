@@ -5586,9 +5586,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/institutional-wallet-snap@npm:0.2.9":
-  version: 0.2.9
-  resolution: "@metamask/institutional-wallet-snap@npm:0.2.9"
+"@metamask/institutional-wallet-snap@npm:0.2.10":
+  version: 0.2.10
+  resolution: "@metamask/institutional-wallet-snap@npm:0.2.10"
   dependencies:
     "@ethereumjs/common": "npm:^3.1.2"
     "@ethereumjs/tx": "npm:^4.1.2"
@@ -5598,7 +5598,7 @@ __metadata:
     "@metamask/snaps-types": "npm:^3.0.0"
     "@metamask/utils": "npm:^8.1.0"
     uuid: "npm:^9.0.0"
-  checksum: 10/e721022a87b9a24cca8a05304abb3b615163eeb5f3f644520f024fb38c1a5ad622e891ac1594981efb4ef71e63d6625d5dfb61af349d862be1bea750892feee1
+  checksum: 10/9a3d72b0ec99b22887894f5d63c842aba9f38c5a21d201b174dd525356a30c1abf2668529e4bdf6509736f1c8abc8c8e24c73a465b2db595f3dc6217abe9c683
   languageName: node
   linkType: hard
 
@@ -26730,7 +26730,7 @@ __metadata:
     "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.1"
-    "@metamask/institutional-wallet-snap": "npm:0.2.9"
+    "@metamask/institutional-wallet-snap": "npm:0.2.10"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
