@@ -1085,25 +1085,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/multichain>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/multichain>@metamask/utils": true,
+        "@metamask/controller-utils>@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -1563,7 +1545,7 @@
       },
       "packages": {
         "@metamask/api-specs": true,
-        "@metamask/multichain>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/permission-controller": true,
@@ -2096,6 +2078,21 @@
       }
     },
     "@metamask/browser-passworder>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/controller-utils>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
