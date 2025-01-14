@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MetamaskIdentityProvider } from './index';
 import { useAccountSyncing } from '../../hooks/identity/useProfileSyncing';
 import { useAutoSignIn } from '../../hooks/identity/useAuthentication';
+import { MetamaskIdentityProvider } from '.';
 
 jest.mock('../../hooks/identity/useProfileSyncing');
 jest.mock('../../hooks/identity/useAuthentication');
@@ -27,7 +27,7 @@ describe('MetamaskIdentityProvider', () => {
     render(
       <MetamaskIdentityProvider>
         <div data-testid="child">Child Component</div>
-      </MetamaskIdentityProvider>
+      </MetamaskIdentityProvider>,
     );
 
     expect(screen.getByTestId('child')).toBeInTheDocument();
@@ -43,7 +43,7 @@ describe('MetamaskIdentityProvider', () => {
     render(
       <MetamaskIdentityProvider>
         <div>Child Component</div>
-      </MetamaskIdentityProvider>
+      </MetamaskIdentityProvider>,
     );
 
     expect(dispatchAccountSyncing).toHaveBeenCalled();
@@ -59,7 +59,7 @@ describe('MetamaskIdentityProvider', () => {
     render(
       <MetamaskIdentityProvider>
         <div>Child Component</div>
-      </MetamaskIdentityProvider>
+      </MetamaskIdentityProvider>,
     );
 
     expect(dispatchAccountSyncing).not.toHaveBeenCalled();
@@ -76,7 +76,7 @@ describe('MetamaskIdentityProvider', () => {
     render(
       <MetamaskIdentityProvider>
         <div>Child Component</div>
-      </MetamaskIdentityProvider>
+      </MetamaskIdentityProvider>,
     );
 
     expect(autoSignIn).toHaveBeenCalled();
@@ -93,7 +93,7 @@ describe('MetamaskIdentityProvider', () => {
     render(
       <MetamaskIdentityProvider>
         <div>Child Component</div>
-      </MetamaskIdentityProvider>
+      </MetamaskIdentityProvider>,
     );
 
     expect(autoSignIn).not.toHaveBeenCalled();
