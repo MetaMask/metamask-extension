@@ -95,7 +95,7 @@ export const SendPageRecipientContent = ({
   const ipfsGateway = useSelector(getIpfsGateway);
 
   const nftImageURL = useGetAssetImageUrl(
-    sendAsset.details?.image ?? null,
+    sendAsset.details?.image ?? undefined,
     ipfsGateway,
   );
 
