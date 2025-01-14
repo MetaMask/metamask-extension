@@ -111,7 +111,6 @@ jobs:
       - validate-lavamoat-policy-webapp
       - run-tests
       - wait-for-circleci-workflow-status
-      - runway
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
