@@ -1,6 +1,14 @@
-import { EthAccountType, EthScopes } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  BtcScopes,
+  EthAccountType,
+  EthScopes,
+  SolAccountType,
+  SolScopes,
+} from '@metamask/keyring-api';
 import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject, isString, isArray } from 'lodash';
+import { isBtcMainnetAddress } from '../../../shared/lib/multichain';
 
 export const version = 137;
 
@@ -128,9 +136,39 @@ function transformState(
         error(
           'Injecting EVM scope for ERC4337 account (should never happen for now)',
         );
+      } else if (account.type === BtcAccountType.P2wpkh) {
+        if (!hasProperty(account, 'address') || !isString(account.address)) {
+          error(
+            'Invalid Bitcoin account, could not use "address" (should never happen)',
+          );
+          // If for some reason, we end up here, we will assume that account to be a mainnet one but... Not having
+          // an address will cause other problems (which is outside of the scope of this migration).
+          badAccount.scopes = [BtcScopes.Mainnet];
+        } else {
+          // Bitcoin uses different accounts for testnet and mainnet
+          badAccount.scopes = [
+            isBtcMainnetAddress(account.address)
+              ? BtcScopes.Mainnet
+              : BtcScopes.Testnet,
+          ];
+        }
+      } else if (account.type === SolAccountType.DataAccount) {
+        // Solana account supports multiple chains.
+        badAccount.scopes = [
+          SolScopes.Mainnet,
+          SolScopes.Testnet,
+          SolScopes.Devnet,
+        ];
+      } else {
+        // If we end up here, it means that we could not really identify the account type, in this case we'll treat
+        // it as a standard EOA account but we will log an error since it should never happen.
+        badAccount.scopes = [EthScopes.Namespace];
+        // Logging in case this happens.
+        error(
+          'Injecting EVM scope for unknown account type (should never happen)',
+        );
       }
     }
-    // We are not migrating Bitcoin/Solana accounts for now.
   }
 
   return versionedData;
