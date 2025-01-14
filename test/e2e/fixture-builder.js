@@ -504,7 +504,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappMultichain({
+  withPermissionControllerConnectedToMultichainTestDapp({
     account = '',
     useLocalhostHostname = false,
   } = {}) {
@@ -551,7 +551,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappMultichainWithTwoAccounts({
+  withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts({
     scopes = ['eip155:1337'],
   }) {
     const optionalScopes = scopes

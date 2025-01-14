@@ -29,7 +29,7 @@ describe("A dapp has permission to suggest transactions for a user's MetaMask ac
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPermissionControllerConnectedToTestDappMultichain()
+            .withPermissionControllerConnectedToMultichainTestDapp()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
@@ -72,7 +72,7 @@ describe("A dapp has permission to suggest transactions for a user's MetaMask ac
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPermissionControllerConnectedToTestDappMultichain()
+            .withPermissionControllerConnectedToMultichainTestDapp()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },

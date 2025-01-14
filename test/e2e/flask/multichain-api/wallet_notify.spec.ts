@@ -13,7 +13,7 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
       {
         title: this.test?.fullTitle(),
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappMultichain()
+          .withPermissionControllerConnectedToMultichainTestDapp()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },

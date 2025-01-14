@@ -289,7 +289,7 @@ async function main() {
     {
       dapp: true,
       fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToTestDappMultichain()
+        .withPermissionControllerConnectedToMultichainTestDapp()
         .build(),
       disableGanache: true,
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',

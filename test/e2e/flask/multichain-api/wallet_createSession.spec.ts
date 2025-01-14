@@ -400,7 +400,7 @@ describe('Multichain API', function () {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPermissionControllerConnectedToTestDappMultichainWithTwoAccounts(
+            .withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts(
               {
                 scopes: OLD_SCOPES,
               },
