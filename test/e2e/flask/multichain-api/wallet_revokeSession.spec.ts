@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { isObject, pick } from 'lodash';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
@@ -50,10 +51,10 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
          */
         const { sessionScopes } = await getSessionScopes(driver);
         for (const scope of GANACHE_SCOPES) {
-          assert.notStrictEqual(
-            sessionScopes[scope],
-            undefined,
-            `scope ${scope} should not be empty.`,
+          assert.strictEqual(
+            isObject(sessionScopes[scope]),
+            true,
+            `scope ${scope} should exist.`,
           );
         }
 
@@ -156,13 +157,14 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           /**
            * We make sure it's the expected error by comparing expected error code and message (we ignore `stack` property)
            */
-          Object.entries(expectedError).forEach(([key, value]) => {
-            assert.deepEqual(
-              value,
-              actualError[key],
-              `calling wallet_invokeMethod should throw an error with ${key} ${value} for scope ${scope}`,
-            );
-          });
+          assert.deepEqual(
+            expectedError,
+            pick(
+              actualError,
+              ['code', 'message'],
+              `calling wallet_invokeMethod should throw an error for scope ${scope}`,
+            ),
+          );
         }
       },
     );
