@@ -2,24 +2,11 @@ name: Build beta
 
 on:
   workflow_call:
-    inputs:
-      aws-region:
-        required: true
-        type: string
-      role-to-assume:
-        required: true
-        type: string
-      s3-bucket:
-        required: true
-        type: string
 
 jobs:
   build-beta:
     name: Build beta
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -49,9 +36,9 @@ jobs:
       - name: Upload 'example.txt' to S3
         uses: metamask/github-tools/.github/actions/upload-s3@2d79ed1954b571342bc7ee3ffca0b357354b58c0
         with:
-          aws-region: ${{ inputs.aws-region }}
-          role-to-assume: ${{ inputs.role-to-assume }}
-          s3-bucket: ${{ inputs.s3-bucket }}/${{ github.event.repository.name }}/${{ github.run_id }}/
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/
           path: example.txt
 
       - name: Setup environment
@@ -76,9 +63,9 @@ jobs:
       - name: Upload 'dist-beta' to S3
         uses: metamask/github-tools/.github/actions/upload-s3@2d79ed1954b571342bc7ee3ffca0b357354b58c0
         with:
-          aws-region: ${{ inputs.aws-region }}
-          role-to-assume: ${{ inputs.role-to-assume }}
-          s3-bucket: ${{ inputs.s3-bucket }}/${{ github.event.repository.name }}/${{ github.run_id }}/
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/
           path: dist-beta
 
       - name: Move 'builds' to 'builds-beta' to avoid conflict with production build
@@ -87,7 +74,7 @@ jobs:
       - name: Upload 'builds-beta' to S3
         uses: metamask/github-tools/.github/actions/upload-s3@2d79ed1954b571342bc7ee3ffca0b357354b58c0
         with:
-          aws-region: ${{ inputs.aws-region }}
-          role-to-assume: ${{ inputs.role-to-assume }}
-          s3-bucket: ${{ inputs.s3-bucket }}/${{ github.event.repository.name }}/${{ github.run_id }}/
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/
           path: builds-beta
