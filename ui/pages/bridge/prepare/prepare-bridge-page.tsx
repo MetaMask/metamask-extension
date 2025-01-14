@@ -266,7 +266,10 @@ const PrepareBridgePage = () => {
               // Treat empty or incomplete amount as 0 to reject NaN
               ['', '.'].includes(fromAmount) ? '0' : fromAmount,
               fromToken.decimals,
-            ).toFixed()
+            )
+              .toFixed()
+              // Length of decimal part cannot exceed token.decimals
+              .split('.')[0]
           : undefined,
       srcChainId: fromChain?.chainId
         ? Number(hexToDecimal(fromChain.chainId))
@@ -301,7 +304,7 @@ const PrepareBridgePage = () => {
 
   useEffect(() => {
     debouncedUpdateQuoteRequestInController(quoteParams);
-  }, Object.values(quoteParams));
+  }, [quoteParams]);
 
   const trackInputEvent = useCallback(
     (
