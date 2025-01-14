@@ -563,6 +563,128 @@ describe('migration #137', () => {
         });
       });
 
+      it('resolves the network client id for the origin even if there are other malformed network configurations', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            ...baseData(),
+            NetworkController: {
+              selectedNetworkClientId: 'mainnet',
+              networkConfigurationsByChainId: {
+                '0xInvalid': 'invalid-network-configuration',
+                '0x1': {
+                  rpcEndpoints: [
+                    {
+                      networkClientId: 'mainnet',
+                    },
+                  ],
+                },
+                '0xa': {
+                  rpcEndpoints: [
+                    {
+                      networkClientId: 'bar',
+                    },
+                  ],
+                },
+              },
+            },
+            SelectedNetworkController: {
+              domains: {
+                'test.com': 'bar',
+              },
+            },
+            PermissionController: {
+              subjects: {
+                'test.com': {
+                  permissions: {
+                    unrelated: {
+                      foo: 'bar',
+                    },
+                    [PermissionNames.eth_accounts]: {
+                      ...basePermission,
+                      caveats: [
+                        {
+                          type: 'restrictReturnedAccounts',
+                          value: ['0xdeadbeef', '0x999'],
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migrate(oldStorage);
+        expect(newStorage.data).toStrictEqual({
+          ...baseData(),
+          NetworkController: {
+            selectedNetworkClientId: 'mainnet',
+            networkConfigurationsByChainId: {
+              '0xInvalid': 'invalid-network-configuration',
+              '0x1': {
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'mainnet',
+                  },
+                ],
+              },
+              '0xa': {
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'bar',
+                  },
+                ],
+              },
+            },
+          },
+          PermissionController: {
+            subjects: {
+              'test.com': {
+                permissions: {
+                  unrelated: {
+                    foo: 'bar',
+                  },
+                  'endowment:caip25': {
+                    ...basePermission,
+                    parentCapability: 'endowment:caip25',
+                    caveats: [
+                      {
+                        type: 'authorizedScopes',
+                        value: {
+                          isMultichainOrigin: false,
+                          requiredScopes: {},
+                          optionalScopes: {
+                            'eip155:10': {
+                              accounts: [
+                                'eip155:10:0xdeadbeef',
+                                'eip155:10:0x999',
+                              ],
+                            },
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                                'wallet:eip155:0x999',
+                              ],
+                            },
+                          },
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+          SelectedNetworkController: {
+            domains: {
+              'test.com': 'bar',
+            },
+          },
+        });
+      });
+
       it('replaces the eth_accounts permission with a CAIP-25 permission using the eth_accounts value for the currently selected chain id when the origin does not have its own network client', async () => {
         const oldStorage = {
           meta: { version: oldVersion },

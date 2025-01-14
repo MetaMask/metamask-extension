@@ -145,6 +145,8 @@ function transformState(oldState: Record<string, unknown>) {
     PermissionController: { subjects },
   } = newState;
 
+  console.log('subjects', subjects);
+
   if (!isObject(subjects)) {
     global.sentry?.captureException?.(
       new Error(
@@ -199,6 +201,8 @@ function transformState(oldState: Record<string, unknown>) {
     domains: Record<string, unknown>;
   };
 
+  console.log('domains', domains);
+
   const getChainIdForNetworkClientId = (
     networkClientId: string,
     propertyName: string,
@@ -206,6 +210,8 @@ function transformState(oldState: Record<string, unknown>) {
     for (const [chainId, networkConfiguration] of Object.entries(
       networkConfigurationsByChainId,
     )) {
+      console.log('chainId', chainId);
+      console.log('networkConfiguration', networkConfiguration);
       if (!isObject(networkConfiguration)) {
         global.sentry?.captureException(
           new Error(
@@ -232,6 +238,7 @@ function transformState(oldState: Record<string, unknown>) {
           continue;
         }
         if (rpcEndpoint.networkClientId === networkClientId) {
+          console.log('returning chainId', chainId);
           return chainId;
         }
       }
