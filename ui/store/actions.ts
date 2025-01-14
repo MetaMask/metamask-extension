@@ -1605,12 +1605,7 @@ export function unlockSucceeded(message?: string) {
 
 export function updateMetamaskState(
   patches: Patch[],
-): ThunkAction<
-  void,
-  Omit<MetaMaskReduxState, 'metamask'> & { metamask: BackgroundStateProxy },
-  unknown,
-  AnyAction
-> {
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch, getState) => {
     const state = getState();
     const providerConfig = getProviderConfig(state);
