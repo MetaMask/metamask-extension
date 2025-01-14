@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [12.10.0]
-### Uncategorized
-- chore: Master sync PR following v12.8.0 and v12.9.0 ([#28912](https://github.com/MetaMask/metamask-extension/pull/28912))
-
 ## [12.9.2]
 ### Changed
 - Display the "Amount" row within the advanced view of contract interaction confirmations, and whenever the amount being sent differs from the "You Send" row of the transaction simulation information by more than 5% ([#29131](https://github.com/MetaMask/metamask-extension/pull/29131))
