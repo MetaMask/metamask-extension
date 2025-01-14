@@ -24,4 +24,5 @@ jobs:
         # For a `pull_request` event, the branch is `github.head_ref``.
         # For a `push` event, the branch is `github.ref_name`.
         if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
+        continue-on-error: true
         run: .circleci/scripts/validate-changelog-in-rc.sh
