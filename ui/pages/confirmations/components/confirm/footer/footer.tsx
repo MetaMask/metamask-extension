@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -187,9 +190,14 @@ const Footer = () => {
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isPermitSimulationShown = isPermit && useTransactionSimulations;
+  const isPersonalSign =
+    currentConfirmation?.type === TransactionType.personalSign;
 
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSIWE && !isPermitSimulationShown) ||
+    (!isScrollToBottomCompleted &&
+      !isSIWE &&
+      !isPermitSimulationShown &&
+      !isPersonalSign) ||
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiSubmitDisabled ||
     ///: END:ONLY_INCLUDE_IF
