@@ -35,7 +35,10 @@ export function transformManifest(args: { lockdown: boolean; test: boolean }) {
     browserManifest._flags = manifestFlags;
   }
 
-  transforms.push(addManifestFlags);
+  // Add manifest flags only for non-test builds so the test build is not affected by local feature flags
+  if (!args.test) {
+    transforms.push(addManifestFlags);
+  }
 
   if (!args.lockdown) {
     // remove lockdown scripts from content_scripts

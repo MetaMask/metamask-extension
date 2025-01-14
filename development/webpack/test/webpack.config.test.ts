@@ -78,7 +78,7 @@ ${Object.entries(env)
   }
 
   it('should have the correct defaults', () => {
-    const config: Configuration = getWebpackConfig();
+    const config: Configuration = getWebpackConfig(['--test']);
     // check that options are valid
     const { options } = webpack(config);
     assert.strictEqual(options.name, 'MetaMask – development');
@@ -162,6 +162,7 @@ ${Object.entries(env)
       {
         manifest_version: 3,
         name: 'name',
+        permissions: ['tabs'],
         version: '1.2.3',
         content_scripts: [
           {
@@ -191,6 +192,7 @@ ${Object.entries(env)
         '--no-progress',
         '--no-cache',
         '--zip',
+        '--test',
         ...removeUnsupportedFeatures,
       ],
       {
@@ -231,7 +233,7 @@ ${Object.entries(env)
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
     assert(manifestPlugin.options.zipOptions, 'Zip options should be present');
-    assert.strictEqual(manifestPlugin.options.transform, undefined);
+    assert.notEqual(manifestPlugin.options.transform, undefined);
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',

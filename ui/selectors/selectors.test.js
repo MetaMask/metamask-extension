@@ -6,6 +6,8 @@ import {
 } from '@metamask/keyring-api';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
+// eslint-disable-next-line import/no-restricted-paths
+import * as manifestFlags from '../../app/scripts/lib/manifestFlags';
 import { KeyringType } from '../../shared/constants/keyring';
 import mockState from '../../test/data/mock-state.json';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
@@ -15,7 +17,6 @@ import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import * as selectors from './selectors';
-import * as manifestFlags from '../../app/scripts/lib/manifestFlags';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../shared/modules/selectors/networks'),
@@ -2160,7 +2161,9 @@ describe('#getConnectedSitesList', () => {
 
     beforeEach(() => {
       // Mock the getManifestFlags function before each test
-      getManifestFlagsMock = jest.spyOn(manifestFlags, 'getManifestFlags').mockReturnValue({});
+      getManifestFlagsMock = jest
+        .spyOn(manifestFlags, 'getManifestFlags')
+        .mockReturnValue({});
     });
 
     afterEach(() => {
