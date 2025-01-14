@@ -51,9 +51,8 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
          */
         const { sessionScopes } = await getSessionScopes(driver);
         for (const scope of GANACHE_SCOPES) {
-          assert.strictEqual(
+          assert.ok(
             isObject(sessionScopes[scope]),
-            true,
             `scope ${scope} should exist.`,
           );
         }
