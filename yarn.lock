@@ -5514,17 +5514,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-provider-http@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/ethjs-provider-http@npm:0.3.0"
-  dependencies:
-    xhr2: "npm:0.2.1"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/cece5d20836dadbe31f0c7118f26bd5330465c28f9a39ab8ac4a3fbce25094ae53fe8b737e3d95ae0cf4c7e075c9349127cf8bd066f138278ffc9fd7f9a8a101
-  languageName: node
-  linkType: hard
-
 "@metamask/ethjs-query@npm:^0.7.1":
   version: 0.7.1
   resolution: "@metamask/ethjs-query@npm:0.7.1"
@@ -5570,26 +5559,6 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 10/aaecae091dd16362f048cbba27629d67d10530c704facf80f430db546c8ea32fa627cd9560bd3eca1e6ce651d2b7a7df9fdc3677e0ae2814954e3c950cee70da
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/ethjs@npm:0.6.0"
-  dependencies:
-    "@metamask/ethjs-contract": "npm:^0.4.1"
-    "@metamask/ethjs-filter": "npm:^0.3.0"
-    "@metamask/ethjs-provider-http": "npm:^0.3.0"
-    "@metamask/ethjs-query": "npm:^0.7.1"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/ethjs-util": "npm:^0.3.0"
-    "@metamask/number-to-bn": "npm:1.7.1"
-    bn.js: "npm:5.2.1"
-    ethjs-abi: "npm:0.2.1"
-    js-sha3: "npm:^0.9.2"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/11379cb4a1151fc8f8e939eb38c15ea6cfce042bc10a580a3fbe87b7e0234fb5cdf5b2458a7bbc8db3502032ac42054bf393154cfe967352b129fe8115719a91
   languageName: node
   linkType: hard
 
@@ -5935,7 +5904,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/number-to-bn@npm:1.7.1, @metamask/number-to-bn@npm:^1.7.1":
+"@metamask/number-to-bn@npm:^1.7.1":
   version: 1.7.1
   resolution: "@metamask/number-to-bn@npm:1.7.1"
   dependencies:
@@ -19033,7 +19002,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethjs-abi@npm:0.2.1, ethjs-abi@npm:^0.2.0":
+"ethjs-abi@npm:^0.2.0":
   version: 0.2.1
   resolution: "ethjs-abi@npm:0.2.1"
   dependencies:
@@ -26667,9 +26636,6 @@ __metadata:
     "@metamask/eth-token-tracker": "npm:^9.0.0"
     "@metamask/eth-trezor-keyring": "npm:^6.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
-    "@metamask/ethjs": "npm:^0.6.0"
-    "@metamask/ethjs-contract": "npm:^0.4.1"
-    "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
@@ -38040,13 +38006,6 @@ __metadata:
   version: 4.0.0
   resolution: "xdg-basedir@npm:4.0.0"
   checksum: 10/0073d5b59a37224ed3a5ac0dd2ec1d36f09c49f0afd769008a6e9cd3cd666bd6317bd1c7ce2eab47e1de285a286bad11a9b038196413cd753b79770361855f3c
-  languageName: node
-  linkType: hard
-
-"xhr2@npm:0.2.1":
-  version: 0.2.1
-  resolution: "xhr2@npm:0.2.1"
-  checksum: 10/162faae70972dc9207eb9b5f05715fa7016f7a04d90371908acaf02593c16f6d2853cd4d6917000e4c3094182697c79e0d33485aea3557bd46f2beead8150f95
   languageName: node
   linkType: hard
 

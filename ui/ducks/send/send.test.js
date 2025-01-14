@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -89,15 +88,6 @@ const mockStore = createMockStore([thunk]);
 
 const mockAddress1 = '0xdafea492d9c6733ae3d56b7ed1adb60692c98123';
 const mockNftAddress1 = 'f4831105676a5fc024684d056390b8bc529daf51c7';
-
-jest.mock('./send', () => {
-  const actual = jest.requireActual('./send');
-  return {
-    __esModule: true,
-    ...actual,
-    getERC20Balance: jest.fn(() => '0x0'),
-  };
-});
 
 jest.mock('lodash', () => ({
   ...jest.requireActual('lodash'),
@@ -2177,13 +2167,6 @@ describe('Send Slice', () => {
             decimals: 18,
           }),
         );
-        global.eth = {
-          contract: sinon.stub().returns({
-            at: sinon.stub().returns({
-              balanceOf: sinon.stub().returns(undefined),
-            }),
-          }),
-        };
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
@@ -2243,13 +2226,6 @@ describe('Send Slice', () => {
             [tokenAddress]: { hex: '0x0' },
           }),
         );
-        global.eth = {
-          contract: sinon.stub().returns({
-            at: sinon.stub().returns({
-              balanceOf: sinon.stub().returns(undefined),
-            }),
-          }),
-        };
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
@@ -2482,10 +2458,6 @@ describe('Send Slice', () => {
       };
 
       it('should create actions to update recipient and recalculate gas limit if the asset type is not set', async () => {
-        global.eth = {
-          getCode: sinon.stub(),
-        };
-
         const updateRecipientState = {
           metamask: {
             addressBook: {},
@@ -2532,10 +2504,6 @@ describe('Send Slice', () => {
       });
 
       it('should update recipient nickname if the passed address exists in the addressBook state but no nickname param is provided', async () => {
-        global.eth = {
-          getCode: sinon.stub(),
-        };
-
         const TEST_RECIPIENT_ADDRESS =
           '0x0000000000000000000000000000000000000001';
         const TEST_RECIPIENT_NAME = 'The 1 address';
@@ -3499,15 +3467,6 @@ describe('Send Slice', () => {
           },
         };
 
-        global.eth = {
-          contract: sinon.stub().returns({
-            at: sinon.stub().returns({
-              balanceOf: sinon.stub().returns(undefined),
-            }),
-          }),
-          getCode: jest.fn(() => '0xa'),
-        };
-
         const store = mockStore(editTransactionState);
 
         await store.dispatch(editExistingTransaction(AssetType.NFT, 1));
@@ -3728,15 +3687,6 @@ describe('Send Slice', () => {
           },
           stage: SEND_STAGES.EDIT,
         },
-      };
-
-      global.eth = {
-        contract: sinon.stub().returns({
-          at: sinon.stub().returns({
-            balanceOf: sinon.stub().returns(undefined),
-          }),
-        }),
-        getCode: jest.fn(() => '0xa'),
       };
 
       const store = mockStore(editTransactionState);
@@ -3978,15 +3928,6 @@ describe('Send Slice', () => {
             test: 'test',
           },
         },
-      };
-
-      global.eth = {
-        contract: sinon.stub().returns({
-          at: sinon.stub().returns({
-            balanceOf: sinon.stub().returns(undefined),
-          }),
-        }),
-        getCode: jest.fn(() => '0xa'),
       };
 
       const store = mockStore(editTransactionState);
