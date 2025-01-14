@@ -286,6 +286,8 @@ export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
 export const INK_DISPLAY_NAME = 'Ink Mainnet';
+export const SONEIUM_TESTNET_DISPLAY_NAME = "Soneium Minato Testnet";
+export const SONEIUM_MAINNET_DISPLAY_NAME = "Soneium Mainnet";
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
