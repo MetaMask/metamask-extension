@@ -93,7 +93,8 @@ export default function useSubmitBridgeTransaction() {
           CHAIN_IDS.LINEA_GOERLI,
           CHAIN_IDS.LINEA_SEPOLIA,
         ] as Hex[]
-      ).includes(srcChainId)
+      ).includes(srcChainId) &&
+      quoteResponse?.approval
     ) {
       debugLog(
         'Delaying submitting bridge tx to make Linea confirmation more likely',
@@ -136,7 +137,15 @@ export default function useSubmitBridgeTransaction() {
       startPollingForBridgeTxStatus({
         bridgeTxMeta,
         statusRequest,
-        quoteResponse,
+        quoteResponse: {
+          ...quoteResponse,
+          sentAmount: {
+            amount: quoteResponse.sentAmount.amount.toString(),
+            valueInCurrency: quoteResponse.sentAmount.valueInCurrency
+              ? quoteResponse.sentAmount.valueInCurrency.toString()
+              : null,
+          },
+        },
         slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
       }),

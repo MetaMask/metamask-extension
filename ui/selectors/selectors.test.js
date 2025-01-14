@@ -305,7 +305,6 @@ describe('Selectors', () => {
       },
       metamask: {
         isUnlocked: true,
-        useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
@@ -1083,11 +1082,6 @@ describe('Selectors', () => {
     );
   });
 
-  it('#getGasIsLoading', () => {
-    const gasIsLoading = selectors.getGasIsLoading(mockState);
-    expect(gasIsLoading).toStrictEqual(false);
-  });
-
   it('#getTotalUnapprovedCount', () => {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);
@@ -1297,6 +1291,7 @@ describe('Selectors', () => {
       'npm:@metamask/test-snap-networkAccess': false,
       'npm:@metamask/test-snap-notify': false,
       'npm:@metamask/test-snap-wasm': false,
+      'local:snap-id': false,
     });
   });
 
@@ -1520,7 +1515,7 @@ describe('Selectors', () => {
           name: 'Snap Account 1',
           snap: {
             enabled: true,
-            id: 'snap-id',
+            id: 'local:snap-id',
             name: 'snap-name',
           },
         },

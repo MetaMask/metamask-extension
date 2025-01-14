@@ -294,10 +294,10 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
 }
 
 /**
- * JSON.parse has a limitation which coerces values to scientific notation if numbers are greator than
+ * JSON.parse has a limitation which coerces values to scientific notation if numbers are greater than
  * Number.MAX_SAFE_INTEGER. This can cause a loss in precision.
  *
- * Aside from precision concerns, if the value returned was a large number greator than 15 digits,
+ * Aside from precision concerns, if the value returned was a large number greater than 15 digits,
  * e.g. 3.000123123123121e+26, passing the value to BigNumber will throw the error:
  * Error: new BigNumber() number type has more than 15 significant digits
  *
