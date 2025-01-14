@@ -1,29 +1,23 @@
 import { strict as assert } from 'assert';
 import {
   ACCOUNT_1,
-  ACCOUNT_2,
-  largeDelayMs,
-  veryLargeDelayMs,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  addAccountInWalletAndAuthorize,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
   getSessionScopes,
-  initCreateSessionScopes,
   openMultichainDappAndConnectWalletWithExternallyConnectable,
   passwordLockMetamaskExtension,
-  updateNetworkCheckboxes,
 } from './testHelpers';
 
 describe("A dapp has permission to suggest transactions for a user's MetaMask account and chain permissions for a user's RPC networks, user's extension becomes password locked", function () {
   const SCOPE = 'eip155:1337';
   describe('the dapp sends a request through the Multichain API that requires user confirmation on the permitted account', function () {
-    it.only('should prompts the user to unlock MetaMask before returning an RPC response to the dapp', async function () {
+    it('should prompts the user to unlock MetaMask before returning an RPC response to the dapp', async function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
@@ -53,13 +47,17 @@ describe("A dapp has permission to suggest transactions for a user's MetaMask ac
             text: 'wallet_createSession',
             tag: 'span',
           });
-          await driver.delay(30_000);
-          // await driver.delay(100_000);
-          // await driver.waitUntilXWindowHandles(4, 100000, 150000);
-          // await driver.waitUntilXWindowHandles(4, 100000, 1500000);
+
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          // TODO: After focus switches to Dialog, assert window is there and defined ?
-          // TODO: Problem: No window found by background script with title: MetaMask Dialog" always thrown before we see the actual popup extension password prompt window show
+
+          const unlockExtensionPageWebElement = await driver.findElement(
+            '[data-testid="unlock-page"]',
+          );
+
+          assert.ok(
+            unlockExtensionPageWebElement,
+            'Should prompt user to unlock Metamask Extension',
+          );
         },
       );
     });
