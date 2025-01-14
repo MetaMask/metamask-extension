@@ -37,10 +37,6 @@ const EthOverview = ({ className }) => {
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
 
-  const isDevelopmentEnvironment =
-    process.env.METAMASK_ENVIRONMENT === 'development' ||
-    process.env.METAMASK_ENVIRONMENT === 'testing';
-
   return (
     <CoinOverview
       account={account}
@@ -50,9 +46,9 @@ const EthOverview = ({ className }) => {
       classPrefix="eth"
       chainId={chainId}
       isSigningEnabled={isSigningEnabled}
-      isSwapsChain={isDevelopmentEnvironment}
+      isSwapsChain={isSwapsChain}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      isBridgeChain={isDevelopmentEnvironment}
+      isBridgeChain={isBridgeChain}
       isBuyableChain={isBuyableChain}
       defaultSwapsToken={defaultSwapsToken}
       ///: END:ONLY_INCLUDE_IF
