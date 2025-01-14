@@ -5052,6 +5052,31 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Get next available label for an hardware account
+   *
+   * @param {number} providedIndex - Index of the account in the accounts list
+   * @param {string} hardwareDeviceName - Name of the hardware device (Onekey, Ledger, etc)
+   * @param {string} hdPathDescription - HD path description
+   * @returns string label
+   */
+  getNextAvailableLabel(providedIndex, hardwareDeviceName, hdPathDescription) {
+    const label = (index) =>
+      this.getAccountLabel(hardwareDeviceName, index, hdPathDescription);
+    const existingLabels = this.accountsController
+      .listAccounts()
+      .map((account) => account.metadata.name);
+    let newIndex = providedIndex;
+    while (existingLabels.includes(label(newIndex))) {
+      newIndex += 1;
+    }
+    return this.getAccountLabel(
+      hardwareDeviceName,
+      newIndex,
+      hdPathDescription,
+    );
+  }
+
+  /**
    * Set account name that checks for identical label
    *
    * @param {string} accountId - Account ID
@@ -5060,22 +5085,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} hdPathDescription - HD path description
    */
   setAccountName(accountId, index, hardwareDeviceName, hdPathDescription) {
-    const label = this.getAccountLabel(
-      hardwareDeviceName,
+    const accountLabel = this.getNextAvailableLabel(
       index,
+      hardwareDeviceName,
       hdPathDescription,
     );
-    try {
-      this.accountsController.setAccountName(accountId, label);
-    } catch {
-      const newIndex = index + 1;
-      this.setAccountName(
-        accountId,
-        newIndex,
-        hardwareDeviceName,
-        hdPathDescription,
-      );
-    }
+    this.accountsController.setAccountName(accountId, accountLabel);
   }
 
   /**

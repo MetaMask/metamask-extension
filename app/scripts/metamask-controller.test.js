@@ -2367,38 +2367,36 @@ describe('MetaMaskController', () => {
                 ).toHaveBeenCalledTimes(1);
               });
 
-              it('should call twice getAccountLabel if accountsController.setAccountName throws an error', async () => {
-                jest
-                  .spyOn(
-                    metamaskController.accountsController,
-                    'setAccountName',
-                  )
-                  .mockImplementationOnce(() => {
-                    throw new Error();
-                  });
-                jest.spyOn(metamaskController, 'getAccountLabel');
+              it('should call getNextAvailableLabel', async () => {
+                jest.spyOn(metamaskController, 'getNextAvailableLabel');
                 await metamaskController.unlockHardwareWalletAccount(
                   accountToUnlock,
                   device,
                 );
-
                 expect(
-                  metamaskController.getAccountLabel,
-                ).toHaveBeenCalledTimes(2);
-                expect(metamaskController.getAccountLabel).toHaveBeenCalledWith(
-                  device,
-                  0,
-                  undefined,
-                );
-                expect(metamaskController.getAccountLabel).toHaveBeenCalledWith(
-                  device,
-                  1,
-                  undefined,
-                );
+                  metamaskController.getNextAvailableLabel,
+                ).toHaveBeenCalledTimes(1);
               });
             });
           },
         );
+      });
+      describe('getNextAvailableLabel', () => {
+        it('should return next label if account name already exists', () => {
+          jest
+            .spyOn(metamaskController.accountsController, 'listAccounts')
+            .mockImplementationOnce(() => [
+              { metadata: { name: 'Ledger 4' } },
+              { metadata: { name: 'Ledger 6' } },
+            ]);
+          const nextLabel = metamaskController.getNextAvailableLabel(
+            3,
+            HardwareDeviceNames.ledger,
+            undefined,
+          );
+
+          expect(nextLabel).toStrictEqual('Ledger 5');
+        });
       });
     });
 
