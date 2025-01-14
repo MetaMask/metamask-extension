@@ -14,12 +14,10 @@ import { useSignIn } from './useSignIn';
  * @returns An object containing:
  * - `autoSignIn`: A function to automatically sign in the user if necessary.
  * - `shouldAutoSignIn`: A function to determine if the user should be automatically signed in.
- * - `shouldSignIn`: A function to determine if the user should be signed in.
  */
 export function useAutoSignIn(): {
   autoSignIn: () => Promise<void>;
   shouldAutoSignIn: () => boolean;
-  shouldSignIn: () => boolean;
 } {
   const dispatch = useDispatch();
 
@@ -44,11 +42,10 @@ export function useAutoSignIn(): {
         log.error(errorMessage);
       }
     }
-  }, [dispatch, shouldAutoSignIn, shouldSignIn]);
+  }, [dispatch, shouldAutoSignIn]);
 
   return {
     autoSignIn,
     shouldAutoSignIn,
-    shouldSignIn,
   };
 }

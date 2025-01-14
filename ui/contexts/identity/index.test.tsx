@@ -8,8 +8,8 @@ jest.mock('../../hooks/identity/useProfileSyncing');
 jest.mock('../../hooks/identity/useAuthentication');
 
 describe('MetamaskIdentityProvider', () => {
-  const mockUseAccountSyncing = useAccountSyncing as jest.Mock;
-  const mockUseAutoSignIn = useAutoSignIn as jest.Mock;
+  const mockUseAccountSyncing = jest.mocked(useAccountSyncing);
+  const mockUseAutoSignIn = jest.mocked(useAutoSignIn);
 
   beforeEach(() => {
     mockUseAccountSyncing.mockReturnValue({

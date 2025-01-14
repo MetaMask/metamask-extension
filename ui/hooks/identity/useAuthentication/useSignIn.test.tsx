@@ -98,6 +98,7 @@ describe('useSignIn', () => {
   );
 
   it('should call performSignIn if shouldSignIn returns true', async () => {
+    // This state is set up so that shouldSignIn returns true
     const state = arrangeMockState({
       isSignedIn: false,
       isProfileSyncingEnabled: true,

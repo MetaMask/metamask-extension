@@ -75,10 +75,11 @@ describe('useAutoSignIn', () => {
     },
   );
 
-  it('should call performSignIn if shouldSignIn returns true', async () => {
+  it('should call performSignIn if all conditions are met', async () => {
     const state = arrangeMockState({
       isUnlocked: true,
       completedOnboarding: true,
+      // These values ensure that shouldSignIn from the useSignIn hook returns true
       isProfileSyncingEnabled: true,
       isSignedIn: false,
       participateInMetaMetrics: true,
