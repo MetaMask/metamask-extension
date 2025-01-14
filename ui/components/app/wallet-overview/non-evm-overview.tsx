@@ -40,6 +40,10 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   ///: END:ONLY_INCLUDE_IF
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
+  const isDevelopmentEnvironment =
+    process.env.METAMASK_ENVIRONMENT === 'development' ||
+    process.env.METAMASK_ENVIRONMENT === 'testing';
+
   return (
     <CoinOverview
       account={account}
@@ -49,10 +53,10 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       className={className}
       chainId={chainId}
       isSigningEnabled={true}
-      isSwapsChain={true}
+      isSwapsChain={isDevelopmentEnvironment}
       defaultSwapsToken={defaultSwapsToken}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      isBridgeChain={true}
+      isBridgeChain={isDevelopmentEnvironment}
       isBuyableChain={isBuyableChain}
       ///: END:ONLY_INCLUDE_IF
     />
