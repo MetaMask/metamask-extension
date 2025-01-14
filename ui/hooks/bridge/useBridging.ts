@@ -4,12 +4,12 @@ import { useHistory } from 'react-router-dom';
 import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getCurrentKeyring,
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getUseExternalServices,
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
@@ -17,6 +17,7 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
 } from '../../../shared/constants/metametrics';
 
 import {
@@ -26,30 +27,32 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
-import { setSwapsFromToken } from '../../ducks/swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+// eslint-disable-next-line import/no-restricted-paths
+import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 ///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
-  const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = isHardwareKeyring(keyring.type);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
   const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isBridgeChain = useSelector(getIsBridgeChain);
 
   useEffect(() => {
-    dispatch(setBridgeFeatureFlags());
+    if (isExternalServicesEnabled) {
+      dispatch(setBridgeFeatureFlags());
+    }
   }, [dispatch, setBridgeFeatureFlags]);
 
   const openBridgeExperience = useCallback(
@@ -63,6 +66,19 @@ const useBridging = () => {
       }
 
       if (isBridgeSupported) {
+        trackCrossChainSwapsEvent({
+          event: MetaMetricsEventName.ActionOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            location:
+              location === 'Home'
+                ? MetaMetricsSwapsEventSource.MainView
+                : MetaMetricsSwapsEventSource.TokenView,
+            chain_id_source: providerConfig.chainId,
+            token_symbol_source: token.symbol,
+            token_address_source: token.address,
+          },
+        });
         trackEvent({
           event: MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
@@ -73,18 +89,9 @@ const useBridging = () => {
             chain_id: providerConfig.chainId,
           },
         });
-        dispatch(
-          setSwapsFromToken({ ...token, address: token.address.toLowerCase() }),
+        history.push(
+          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`,
         );
-        if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(
-            PREPARE_SWAP_ROUTE,
-            null,
-            false,
-          );
-        } else {
-          history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
-        }
       } else {
         const portfolioUrl = getPortfolioUrl(
           'bridge',
@@ -114,12 +121,11 @@ const useBridging = () => {
     [
       isBridgeSupported,
       isBridgeChain,
-      setSwapsFromToken,
       dispatch,
-      usingHardwareWallet,
       history,
       metaMetricsId,
       trackEvent,
+      trackCrossChainSwapsEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
       providerConfig,

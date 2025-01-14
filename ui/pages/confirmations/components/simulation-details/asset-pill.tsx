@@ -1,6 +1,7 @@
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -18,16 +19,20 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Name from '../../../../components/app/name';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import {
-  getCurrentChainId,
-  getNativeCurrencyImage,
-} from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
 import { AssetIdentifier } from './types';
 
-const NativeAssetPill: React.FC = () => {
-  const ticker = useSelector(getNativeCurrency);
-  const imgSrc = useSelector(getNativeCurrencyImage);
+const NativeAssetPill: React.FC<{ chainId: Hex }> = ({ chainId }) => {
+  const imgSrc =
+    CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];
+
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+
+  const network = networkConfigurationsByChainId?.[chainId];
+  const { nativeCurrency } = network;
 
   return (
     <Box
@@ -42,13 +47,13 @@ const NativeAssetPill: React.FC = () => {
       }}
     >
       <AvatarNetwork
-        name={ticker}
+        name={nativeCurrency}
         size={AvatarNetworkSize.Xs}
         src={imgSrc}
         borderColor={BorderColor.borderDefault}
       />
       <Text ellipsis variant={TextVariant.bodyMd}>
-        {ticker}
+        {nativeCurrency}
       </Text>
     </Box>
   );
@@ -60,9 +65,10 @@ const NativeAssetPill: React.FC = () => {
  * @param props
  * @param props.asset
  */
-export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => {
-  // TODO: Temporary pending multi-chain support in simulations;
-  const chainId = useSelector(getCurrentChainId);
+export const AssetPill: React.FC<{
+  asset: AssetIdentifier;
+}> = ({ asset }) => {
+  const { chainId } = asset;
 
   return (
     <Box
@@ -74,7 +80,7 @@ export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => {
       }}
     >
       {asset.standard === TokenStandard.none ? (
-        <NativeAssetPill />
+        <NativeAssetPill chainId={chainId} />
       ) : (
         <Name
           preferContractSymbol

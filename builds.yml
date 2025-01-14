@@ -26,7 +26,8 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.9.1/index.html
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.11.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -46,7 +47,8 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.9.1/index.html
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.11.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -62,12 +64,14 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
+      - solana
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.9.1/index.html
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.11.0/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -90,7 +94,8 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.9.1/index.html
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.11.0/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://support.metamask-institutional.io
       - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
@@ -131,6 +136,9 @@ features:
   keyring-snaps:
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
+  solana:
+    assets:
+      - ./{app,shared,ui}/**/solana/**
 
 # Env variables that are required for all types of builds
 #
@@ -206,13 +214,9 @@ env:
   # API keys to 3rd party services
   ###
 
-  - PUBNUB_PUB_KEY: null
-  - PUBNUB_SUB_KEY: null
   - SEGMENT_HOST: null
   - SENTRY_DSN: null
   - SENTRY_DSN_DEV: null
-  - OPENSEA_KEY: null
-  - ETHERSCAN_KEY: null
   # also INFURA_PROJECT_ID below
 
   ###
@@ -228,6 +232,8 @@ env:
 
   # Used to enable confirmation redesigned pages
   - ENABLE_CONFIRMATION_REDESIGN: ''
+  # URL of the decoding API used to provide additional data from signature requests
+  - DECODING_API_URL: 'https://signature-insights.api.cx.metamask.io/v1'
   # Determines if feature flagged Settings Page - Developer Options should be used
   - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: false
   # Used for debugging changes to the phishing warning page.
@@ -267,23 +273,26 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-  # Determines if feature flagged Multichain Transactions should be used
-  - TRANSACTION_MULTICHAIN: ''
   # Determines if Barad Dur features should be used
   - BARAD_DUR: ''
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
+  # Determines if Portfolio View UI should be shown
+  - PORTFOLIO_VIEW: 'true'
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
   # Temporary mechanism to enable security alerts API prior to release
-  - SECURITY_ALERTS_API_ENABLED: ''
+  - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests
-  - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
+  - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
   # API key to authenticate Etherscan requests to avoid rate limiting
   - ETHERSCAN_API_KEY: ''
 
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
+
+  # This will be defined if running a unit test
+  - JEST_WORKER_ID: undefined
 
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
@@ -305,3 +314,10 @@ env:
   # This should NEVER be enabled in production since it slows down react
   ###
   - ENABLE_WHY_DID_YOU_RENDER: false
+
+  ###
+  # Unused environment variables referenced in dependencies
+  # Unset environment variables cause a build error. These are set to `null` to tell our build
+  # system that they are intentionally unset.
+  ###
+  - ETHERSCAN_KEY: null # Used by `gridplus-sdk/dist/util.js`

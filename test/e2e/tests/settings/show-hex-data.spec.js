@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -78,6 +79,9 @@ describe('Check the toggle for hex data', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await toggleHexData(driver);
         await clickOnLogo(driver);
         await sendTransactionAndVerifyHexData(driver);

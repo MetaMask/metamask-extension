@@ -7,20 +7,24 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  setUseRequestQueue,
   setPetnamesEnabled,
   setFeatureNotificationsEnabled,
   setRedesignedConfirmationsEnabled,
   setRedesignedTransactionsEnabled,
   setWatchEthereumAccountEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  setSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  getIsSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getUseRequestQueue,
   getPetnamesEnabled,
   getFeatureNotificationsEnabled,
   getRedesignedConfirmationsEnabled,
@@ -37,13 +41,15 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   const petnamesEnabled = getPetnamesEnabled(state);
   const featureNotificationsEnabled = getFeatureNotificationsEnabled(state);
   return {
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    solanaSupportEnabled: getIsSolanaSupportEnabled(state),
+    ///: END:ONLY_INCLUDE_IF
     watchAccountEnabled: getIsWatchEthereumAccountEnabled(state),
     bitcoinSupportEnabled: getIsBitcoinSupportEnabled(state),
     bitcoinTestnetSupportEnabled: getIsBitcoinTestnetSupportEnabled(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: getIsAddSnapAccountEnabled(state),
     ///: END:ONLY_INCLUDE_IF
-    useRequestQueue: getUseRequestQueue(state),
     petnamesEnabled,
     featureNotificationsEnabled,
     redesignedConfirmationsEnabled: getRedesignedConfirmationsEnabled(state),
@@ -55,6 +61,9 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     setWatchAccountEnabled: (value: boolean) =>
       setWatchEthereumAccountEnabled(value),
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    setSolanaSupportEnabled: (value: boolean) => setSolanaSupportEnabled(value),
+    ///: END:ONLY_INCLUDE_IF
     setBitcoinSupportEnabled: (value: boolean) =>
       setBitcoinSupportEnabled(value),
     setBitcoinTestnetSupportEnabled: (value: boolean) =>
@@ -63,7 +72,6 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     setAddSnapAccountEnabled: (value: boolean) =>
       setAddSnapAccountEnabled(value),
     ///: END:ONLY_INCLUDE_IF
-    setUseRequestQueue: (value: boolean) => setUseRequestQueue(value),
     setPetnamesEnabled: (value: boolean) => {
       return dispatch(setPetnamesEnabled(value));
     },

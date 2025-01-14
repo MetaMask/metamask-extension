@@ -28,6 +28,9 @@ const state = {
     url: 'https://metamask.github.io/test-dapp/',
   },
   metamask: {
+    bridgeStatusState: {
+      txHistory: {},
+    },
     announcements: {
       22: {
         id: 22,
@@ -307,7 +310,6 @@ const state = {
     connectedAccounts: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
     isInitialized: true,
     isUnlocked: true,
-    isAccountMenuOpen: false,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
     internalAccounts: {
       accounts: {
@@ -487,6 +489,32 @@ const state = {
         },
       },
     },
+    allTokens: {
+      '0x1': {
+        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': [
+          {
+            address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            aggregators: [],
+            decimals: 6,
+            symbol: 'USDC',
+          },
+          {
+            address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
+            aggregators: [],
+            decimals: 18,
+            symbol: 'YFI',
+          },
+        ],
+      },
+    },
+    tokenBalances: {
+      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
+        '0x1': {
+          '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+          '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+        },
+      },
+    },
     tokens: [
       {
         address: '0xaD6D458402F60fD3Bd25163575031ACDce07538A',
@@ -648,8 +676,6 @@ const state = {
         ],
       },
     ],
-    pendingTokens: {},
-    customNonceValue: '',
     send: {
       gasLimit: '0xcb28',
       gasPrice: null,
@@ -673,7 +699,7 @@ const state = {
     },
     useBlockie: false,
     featureFlags: {},
-    welcomeScreenSeen: false,
+    slides: [],
     currentLocale: 'en',
     preferences: {
       showNativeTokenAsMainBalance: true,
@@ -682,6 +708,7 @@ const state = {
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
+      tokenNetworkFilter: {},
     },
     incomingTransactionsPreferences: {
       [CHAIN_IDS.MAINNET]: true,
@@ -700,7 +727,6 @@ const state = {
       },
     },
     participateInMetaMetrics: true,
-    nextNonce: 71,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
@@ -1599,6 +1625,12 @@ const state = {
     openSeaEnabled: true,
   },
   appState: {
+    isAccountMenuOpen: false,
+    welcomeScreenSeen: false,
+    pendingTokens: {},
+    confirmationExchangeRates: {},
+    customNonceValue: '',
+    nextNonce: 71,
     shouldClose: false,
     menuOpen: false,
     modal: {
@@ -1634,7 +1666,6 @@ const state = {
     isLoading: false,
     warning: null,
     buyView: {},
-    gasIsLoading: false,
     defaultHdPaths: {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'/0/0",

@@ -45,13 +45,12 @@ import {
   getSmartTransactionFees,
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   conversionRateSelector,
   getSelectedAccount,
-  getCurrentCurrency,
   getTokenExchangeRates,
   getSwapsDefaultToken,
-  getCurrentChainId,
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
@@ -62,7 +61,11 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
-import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getTokens,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import {
   setCustomApproveTxData,
   showModal,
@@ -257,7 +260,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   );
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
-  const { estimatedBaseFee = '0' } = useGasFeeEstimates();
+  const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates();
+  const { estimatedBaseFee = '0' } = networkGasFeeEstimates ?? {};
 
   const gasFeeEstimates = useAsyncResult(async () => {
     if (!networkAndAccountSupports1559) {

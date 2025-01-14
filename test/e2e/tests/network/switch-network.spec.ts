@@ -4,10 +4,12 @@ import { withFixtures, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Ganache } from '../../seeder/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/homepage';
-import ModalConfirmation from '../../page-objects/pages/dialog/network-switch-modal-confirmation';
+import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import {
+  switchToNetworkFlow,
+  searchAndSwitchToNetworkFlow,
+} from '../../page-objects/flows/network.flow';
 
 describe('Switch network - ', function (this: Suite) {
   it('Switch networks to existing and new networks', async function () {
@@ -26,40 +28,27 @@ describe('Switch network - ', function (this: Suite) {
       }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
         const homePage = new HomePage(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        const selectNetwork = new SelectNetwork(driver);
-        const networkSwitchConfirmation = new ModalConfirmation(driver);
 
         // Validate the default network is Localhost 8545
-        await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
+        await new HeaderNavbar(driver).check_currentSelectedNetwork(
+          'Localhost 8545',
+        );
 
         // Validate the switch network functionality to Ethereum Mainnet
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetwork.clickNetworkName('Ethereum Mainnet');
-        await homePage.check_expectedBalanceIsDisplayed('25');
-        await headerNavbar.check_currentSelectedNetwork('Ethereum Mainnet');
+        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+
         // Validate the switch network functionality to test network
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetwork.clickToggleButton();
-        await selectNetwork.clickNetworkName('Localhost 8545');
-        await homePage.check_expectedBalanceIsDisplayed('25');
-        await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
+        await switchToNetworkFlow(driver, 'Localhost 8545', true);
+        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
 
         // Add Arbitrum network and perform the switch network functionality
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetwork.fillNetworkSearchInput('Arbitrum One');
-        await selectNetwork.clickAddButton();
-        await networkSwitchConfirmation.clickApproveButton();
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetwork.clickNetworkName('Arbitrum One');
-        await homePage.check_expectedBalanceIsDisplayed('25');
-        await headerNavbar.check_currentSelectedNetwork('Arbitrum One');
+        await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
+        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
 
         // Validate the switch network functionality back to Ethereum Mainnet
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetwork.clickNetworkName('Ethereum Mainnet');
-        await homePage.check_expectedBalanceIsDisplayed('25');
-        await headerNavbar.check_currentSelectedNetwork('Ethereum Mainnet');
+        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
       },
     );
   });

@@ -1,13 +1,16 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { zeroAddress, toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
+  getPreferences,
 } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 // TODO: Remove restricted import
@@ -19,7 +22,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 
 // core already has this exported type but its not yet available in this version
@@ -34,7 +37,9 @@ export const AggregatedPercentageOverview = () => {
     useSelector(getTokensMarketData);
   const locale = useSelector(getIntlLocale);
   const fiatCurrency = useSelector(getCurrentCurrency);
+  const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
+  const currentChainId = useSelector(getCurrentChainId);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -61,7 +66,8 @@ export const AggregatedPercentageOverview = () => {
       }
       // native token
       const nativePricePercentChange1d =
-        tokensMarketData?.[zeroAddress()]?.pricePercentChange1d;
+        tokensMarketData?.[getNativeTokenAddress(currentChainId)]
+          ?.pricePercentChange1d;
       const nativeFiat1dAgo = getCalculatedTokenAmount1dAgo(
         item.fiatBalance,
         nativePricePercentChange1d,
@@ -110,7 +116,7 @@ export const AggregatedPercentageOverview = () => {
 
   let color = TextColor.textDefault;
 
-  if (isValidAmount(amountChange)) {
+  if (!privacyMode && isValidAmount(amountChange)) {
     if ((amountChange as number) === 0) {
       color = TextColor.textDefault;
     } else if ((amountChange as number) > 0) {
@@ -118,26 +124,33 @@ export const AggregatedPercentageOverview = () => {
     } else {
       color = TextColor.errorDefault;
     }
+  } else {
+    color = TextColor.textAlternative;
   }
+
   return (
     <Box display={Display.Flex}>
-      <Text
+      <SensitiveText
         variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="aggregated-value-change"
         style={{ whiteSpace: 'pre' }}
+        isHidden={privacyMode}
         ellipsis
+        length="10"
       >
         {formattedAmountChange}
-      </Text>
-      <Text
+      </SensitiveText>
+      <SensitiveText
         variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="aggregated-percentage-change"
+        isHidden={privacyMode}
         ellipsis
+        length="10"
       >
         {formattedPercentChange}
-      </Text>
+      </SensitiveText>
     </Box>
   );
 };

@@ -10,7 +10,7 @@ import { AvatarNetwork } from '../../../../components/component-library/avatar-n
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AssetPill } from './asset-pill';
-import { NATIVE_ASSET_IDENTIFIER, TokenAssetIdentifier } from './types';
+import { NativeAssetIdentifier, TokenAssetIdentifier } from './types';
 
 jest.mock('../../../../components/component-library/avatar-network', () => ({
   AvatarNetworkSize: { Sm: 'Sm' },
@@ -21,6 +21,8 @@ jest.mock('../../../../components/app/name', () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));
+
+const CHAIN_ID_MOCK = '0x1';
 
 describe('AssetPill', () => {
   beforeEach(() => {
@@ -61,10 +63,12 @@ describe('AssetPill', () => {
           },
         });
 
-        renderWithProvider(
-          <AssetPill asset={NATIVE_ASSET_IDENTIFIER} />,
-          store,
-        );
+        const asset: NativeAssetIdentifier = {
+          chainId,
+          standard: TokenStandard.none,
+        };
+
+        renderWithProvider(<AssetPill asset={asset} />, store);
 
         expect(screen.getByText(expected.ticker)).toBeInTheDocument();
 
@@ -81,6 +85,7 @@ describe('AssetPill', () => {
 
   it('renders Name component with correct props when asset standard is not none', () => {
     const asset: TokenAssetIdentifier = {
+      chainId: CHAIN_ID_MOCK,
       standard: TokenStandard.ERC20,
       address: '0x1234567890123456789012345678901234567890',
     };

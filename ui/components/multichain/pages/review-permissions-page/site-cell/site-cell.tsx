@@ -38,6 +38,7 @@ type SiteCellProps = {
   selectedAccountAddresses: string[];
   selectedChainIds: string[];
   isConnectFlow?: boolean;
+  hideAllToasts?: () => void;
 };
 
 export const SiteCell: React.FC<SiteCellProps> = ({
@@ -49,6 +50,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   selectedAccountAddresses,
   selectedChainIds,
   isConnectFlow,
+  hideAllToasts = () => undefined,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -72,15 +74,48 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const accountMessageConnectedState =
     selectedAccounts.length === 1
       ? t('connectedWithAccountName', [
-          selectedAccounts[0].label || selectedAccounts[0].metadata.name,
+          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
         ])
-      : t('connectedWithAccount', [accounts.length]);
+      : t('connectedWithAccount', [selectedAccounts.length]);
   const accountMessageNotConnectedState =
     selectedAccounts.length === 1
       ? t('requestingForAccount', [
-          selectedAccounts[0].label || selectedAccounts[0].metadata.name,
+          selectedAccounts[0].metadata.name || selectedAccounts[0].label,
         ])
       : t('requestingFor');
+
+  const networkMessageConnectedState =
+    selectedChainIdsLength === 1
+      ? t('connectedWithNetworkName', [selectedNetworks[0].name])
+      : t('connectedWithNetwork', [selectedChainIdsLength]);
+  const networkMessageNotConnectedState =
+    selectedChainIdsLength === 1
+      ? t('requestingForNetwork', [selectedNetworks[0].name])
+      : t('requestingFor');
+
+  const handleOpenAccountsModal = () => {
+    hideAllToasts?.();
+    setShowEditAccountsModal(true);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ViewPermissionedAccounts,
+      properties: {
+        location: 'Connect view, Permissions toast, Permissions (dapp)',
+      },
+    });
+  };
+
+  const handleOpenNetworksModal = () => {
+    hideAllToasts?.();
+    setShowEditNetworksModal(true);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ViewPermissionedNetworks,
+      properties: {
+        location: 'Connect view, Permissions toast, Permissions (dapp)',
+      },
+    });
+  };
 
   return (
     <>
@@ -96,16 +131,7 @@ export const SiteCell: React.FC<SiteCellProps> = ({
           connectedMessage={accountMessageConnectedState}
           unconnectedMessage={accountMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
-          onClick={() => {
-            setShowEditAccountsModal(true);
-            trackEvent({
-              category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.ViewPermissionedAccounts,
-              properties: {
-                location: 'Connect view, Permissions toast, Permissions (dapp)',
-              },
-            });
-          }}
+          onClick={handleOpenAccountsModal}
           paddingBottomValue={2}
           paddingTopValue={0}
           content={
@@ -124,21 +150,10 @@ export const SiteCell: React.FC<SiteCellProps> = ({
         <SiteCellConnectionListItem
           title={t('permission_walletSwitchEthereumChain')}
           iconName={IconName.Data}
-          connectedMessage={t('connectedWithNetworks', [
-            selectedChainIdsLength,
-          ])}
-          unconnectedMessage={t('requestingFor')}
+          connectedMessage={networkMessageConnectedState}
+          unconnectedMessage={networkMessageNotConnectedState}
           isConnectFlow={isConnectFlow}
-          onClick={() => {
-            setShowEditNetworksModal(true);
-            trackEvent({
-              category: MetaMetricsEventCategory.Navigation,
-              event: MetaMetricsEventName.ViewPermissionedNetworks,
-              properties: {
-                location: 'Connect view, Permissions toast, Permissions (dapp)',
-              },
-            });
-          }}
+          onClick={handleOpenNetworksModal}
           paddingTopValue={2}
           paddingBottomValue={0}
           content={<SiteCellTooltip networks={selectedNetworks} />}

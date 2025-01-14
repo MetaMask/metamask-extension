@@ -9,6 +9,7 @@ const {
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
+  createWebSocketConnection,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -58,6 +59,12 @@ describe('Phishing Detection', function () {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
+        // see more here https://github.com/MetaMask/phishing-warning/pull/173
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
+        });
         await driver.clickElement({
           text: 'Proceed anyway',
         });
@@ -103,10 +110,15 @@ describe('Phishing Detection', function () {
         }
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
+        // see more here https://github.com/MetaMask/phishing-warning/pull/173
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
+        });
         await driver.clickElement({
           text: 'Proceed anyway',
         });
-
         await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       };
     }
@@ -169,6 +181,12 @@ describe('Phishing Detection', function () {
           text: 'Open this warning in a new tab',
         });
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
+        // see more here https://github.com/MetaMask/phishing-warning/pull/173
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
+        });
         await driver.clickElement({
           text: 'Proceed anyway',
         });
@@ -290,10 +308,82 @@ describe('Phishing Detection', function () {
           text: 'Back to safety',
         });
 
-        const currentUrl = await driver.getCurrentUrl();
-        const expectedPortfolioUrl = `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`;
+        await driver.waitForUrl({
+          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+        });
+      },
+    );
+  });
 
-        assert.equal(currentUrl, expectedPortfolioUrl);
+  it('should block a website that makes a websocket connection to a malicious command and control server', async function () {
+    const testPageURL = 'http://localhost:8080';
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockServer.forAnyWebSocket().thenEcho();
+          await setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+          });
+        },
+        dapp: true,
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.openNewPage(testPageURL);
+
+        await createWebSocketConnection(driver, 'malicious.localhost');
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Phishing Detection',
+          10000,
+        );
+
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
+        });
+
+        await driver.clickElement({
+          text: 'Back to safety',
+        });
+
+        await driver.waitForUrl({
+          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+        });
+      },
+    );
+  });
+
+  it('should not block a website that makes a safe WebSocket connection', async function () {
+    const testPageURL = 'http://localhost:8080/';
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockServer.forAnyWebSocket().thenEcho();
+          await setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+          });
+        },
+        dapp: true,
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.openNewPage(testPageURL);
+
+        await createWebSocketConnection(driver, 'safe.localhost');
+
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+
+        const currentUrl = await driver.getCurrentUrl();
+
+        assert.equal(currentUrl, testPageURL);
       },
     );
   });

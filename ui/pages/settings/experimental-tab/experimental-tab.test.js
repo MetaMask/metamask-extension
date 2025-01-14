@@ -108,4 +108,21 @@ describe('ExperimentalTab', () => {
       expect(setBitcoinSupportEnabled).toHaveBeenNthCalledWith(1, true);
     });
   });
+
+  it('enables the experimental solana account feature', async () => {
+    const setSolanaSupportEnabled = jest.fn();
+    const { getByTestId } = render(
+      {},
+      {
+        setSolanaSupportEnabled,
+        solanaSupportEnabled: false,
+      },
+    );
+    const toggle = getByTestId('solana-support-toggle');
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(setSolanaSupportEnabled).toHaveBeenNthCalledWith(1, true);
+    });
+  });
 });

@@ -1,5 +1,6 @@
 import { ControllerMessenger } from '@metamask/base-controller';
 import {
+  AllowedActions,
   MetaMetricsDataDeletionController,
   type MetaMetricsDataDeletionControllerMessengerActions,
 } from './metametrics-data-deletion';
@@ -10,8 +11,8 @@ describe('MetaMetricsDataDeletionController', () => {
       const mockMetaMetricsId = 'mockId';
       const mockTaskId = 'mockTaskId';
       const { controller, dataDeletionService } = setupController({
+        metaMetricsId: mockMetaMetricsId,
         options: {
-          getMetaMetricsId: jest.fn().mockReturnValue(mockMetaMetricsId),
           dataDeletionService: {
             createDataDeletionRegulationTask: jest
               .fn()
@@ -43,8 +44,8 @@ describe('MetaMetricsDataDeletionController', () => {
       const mockMetaMetricsId = 'mockId';
       const mockTaskId = 'mockTaskId';
       const { controller, dataDeletionService } = setupController({
+        metaMetricsId: mockMetaMetricsId,
         options: {
-          getMetaMetricsId: jest.fn().mockReturnValue(mockMetaMetricsId),
           dataDeletionService: {
             createDataDeletionRegulationTask: jest
               .fn()
@@ -76,9 +77,7 @@ describe('MetaMetricsDataDeletionController', () => {
 
     it('fails to creates a data deletion task when user has never participating in metrics tracking', async () => {
       const { controller } = setupController({
-        options: {
-          getMetaMetricsId: jest.fn().mockReturnValue(null),
-        },
+        metaMetricsId: null,
       });
       await expect(
         controller.createMetaMetricsDataDeletionTask(),
@@ -94,8 +93,8 @@ describe('MetaMetricsDataDeletionController', () => {
       const mockMetaMetricsId = 'mockId';
       const mockTaskId = 'mockTaskId';
       const { controller, dataDeletionService } = setupController({
+        metaMetricsId: mockMetaMetricsId,
         options: {
-          getMetaMetricsId: jest.fn().mockReturnValue(mockMetaMetricsId),
           dataDeletionService: {
             createDataDeletionRegulationTask: jest
               .fn()
@@ -128,28 +127,35 @@ describe('MetaMetricsDataDeletionController', () => {
  *
  * @param options - Setup options.
  * @param options.options - Controller constructor options.
+ * @param options.metaMetricsId - The MetaMetrics ID to use.
  * @returns The test controller, a messenger instance, and related mocks.
  */
 function setupController({
   options,
+  metaMetricsId,
 }: {
   options?: Partial<
     ConstructorParameters<typeof MetaMetricsDataDeletionController>[0]
   >;
+  metaMetricsId?: string | null;
 } = {}): {
   controller: MetaMetricsDataDeletionController;
   dataDeletionService: ConstructorParameters<
     typeof MetaMetricsDataDeletionController
   >[0]['dataDeletionService'];
   messenger: ControllerMessenger<
-    MetaMetricsDataDeletionControllerMessengerActions,
+    MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
     never
   >;
 } {
-  const messenger = new ControllerMessenger<
-    MetaMetricsDataDeletionControllerMessengerActions,
+  const controllerMessenger = new ControllerMessenger<
+    MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
     never
   >();
+  controllerMessenger.registerActionHandler(
+    'MetaMetricsController:getState',
+    jest.fn().mockReturnValue({ metaMetricsId }),
+  );
   const mockCreateDataDeletionRegulationTaskResponse = 'mockRegulateId';
   const mockFetchDeletionRegulationStatusResponse = 'UNKNOWN';
   const mockDataDeletionService = {
@@ -164,9 +170,9 @@ function setupController({
   const constructorOptions = {
     dataDeletionService: mockDataDeletionService,
     getMetaMetricsId: jest.fn().mockReturnValue('mockMetaMetricsId'),
-    messenger: messenger.getRestricted({
+    messenger: controllerMessenger.getRestricted({
       name: 'MetaMetricsDataDeletionController',
-      allowedActions: [],
+      allowedActions: ['MetaMetricsController:getState'],
       allowedEvents: [],
     }),
     ...options,
@@ -176,6 +182,6 @@ function setupController({
   return {
     controller,
     dataDeletionService: constructorOptions.dataDeletionService,
-    messenger,
+    messenger: controllerMessenger,
   };
 }

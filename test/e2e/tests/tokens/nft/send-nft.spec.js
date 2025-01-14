@@ -4,6 +4,7 @@ const {
   logInWithBalanceValidation,
   unlockWallet,
   withFixtures,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -23,6 +24,8 @@ describe('Send NFT', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
@@ -73,14 +76,6 @@ describe('Send NFT', function () {
           text: 'Send Test Dapp NFTs',
         });
         assert.equal(await sendNftItem.isDisplayed(), true);
-
-        // Go back to NFTs tab and check the imported NFT is shown as previously owned
-        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
-        const previouslyOwnedNft = await driver.findElement({
-          css: 'h5',
-          text: 'Previously Owned',
-        });
-        assert.equal(await previouslyOwnedNft.isDisplayed(), true);
       },
     );
   });
@@ -131,15 +126,6 @@ describe('Send NFT', function () {
           text: 'Safe transfer from',
         });
         assert.equal(await sendNftItem.isDisplayed(), true);
-
-        // Go back to NFTs tab and check the imported NFT is shown as previously owned
-        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
-
-        const previouslyOwnedNft = await driver.findElement({
-          css: 'h5',
-          text: 'Previously Owned',
-        });
-        assert.equal(await previouslyOwnedNft.isDisplayed(), true);
       },
     );
   });
@@ -174,7 +160,7 @@ describe('Send NFT', function () {
         await driver.fill('input[placeholder="0"]', '0');
         assert.ok(
           await driver.findElement({
-            text: '1 token. Cannot send negative or zero amounts of asset.',
+            text: '1 NFT. Cannot send negative or zero amounts of asset.',
             tag: 'p',
           }),
         );

@@ -5,6 +5,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { SmartTransactionsBannerAlert } from '../smart-transactions-banner-alert';
 import {
   BannerAlert,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -14,7 +15,10 @@ import {
 } from '../../../../components/component-library';
 import SimulationErrorMessage from '../simulation-error-message';
 import { SEVERITIES } from '../../../../helpers/constants/design-system';
+// eslint-disable-next-line import/no-duplicates
+import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+// eslint-disable-next-line import/no-duplicates
 import { submittedPendingTransactionsSelector } from '../../../../selectors';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
@@ -22,7 +26,6 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../../shared/lib/metamask-controller-utils';
 import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
@@ -47,7 +50,12 @@ const TransactionAlerts = ({
   ///: END:ONLY_INCLUDE_IF
 
   const t = useI18nContext();
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const { chainId } = txData;
+
+  const { nativeCurrency } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
   const transactionData = txData.txParams.data;
   const currentTokenSymbol = tokenSymbol || nativeCurrency;
   let currentTokenAmount;
@@ -74,6 +82,7 @@ const TransactionAlerts = ({
   return (
     <div className="transaction-alerts">
       <BlockaidBannerAlert txData={txData} />
+      <SmartTransactionsBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}

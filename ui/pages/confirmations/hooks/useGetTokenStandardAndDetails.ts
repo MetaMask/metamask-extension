@@ -16,15 +16,18 @@ import {
  * @returns
  */
 export const useGetTokenStandardAndDetails = (
-  tokenAddress: Hex | string | undefined,
+  tokenAddress?: Hex | string | undefined,
 ) => {
-  const { value: details } = useAsyncResult<TokenDetailsERC20>(
-    async () =>
-      (await memoizedGetTokenStandardAndDetails(
+  const { value: details } =
+    useAsyncResult<TokenDetailsERC20 | null>(async () => {
+      if (!tokenAddress) {
+        return Promise.resolve(null);
+      }
+
+      return (await memoizedGetTokenStandardAndDetails(
         tokenAddress,
-      )) as TokenDetailsERC20,
-    [tokenAddress],
-  );
+      )) as TokenDetailsERC20;
+    }, [tokenAddress]);
 
   if (!details) {
     return { decimalsNumber: undefined };

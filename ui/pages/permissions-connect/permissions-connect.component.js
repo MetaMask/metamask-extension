@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
+import { isSnapId } from '@metamask/snaps-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
@@ -19,7 +20,6 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
-import { isSnapId } from '../../helpers/utils/snaps';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -41,10 +41,12 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
     return new Set(
       requestedAccounts
         .map((address) => address.toLowerCase())
+        // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
         .filter(isEthAddress),
     );
   }
 
+  // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
@@ -124,9 +126,6 @@ export default class PermissionConnect extends Component {
       this.props.permissionsRequest,
     ),
     permissionsApproved: null,
-    origin: this.props.origin,
-    targetSubjectMetadata: this.props.targetSubjectMetadata || {},
-    snapsInstallPrivacyWarningShown: this.props.snapsInstallPrivacyWarningShown,
   };
 
   componentDidMount() {
@@ -178,8 +177,8 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { permissionsRequest, lastConnectedInfo } = this.props;
-    const { redirecting, origin } = this.state;
+    const { permissionsRequest, lastConnectedInfo, origin } = this.props;
+    const { redirecting } = this.state;
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
       const accountsLastApprovedTime =
@@ -265,7 +264,7 @@ export default class PermissionConnect extends Component {
   }
 
   renderTopBar(permissionsRequestId) {
-    const { targetSubjectMetadata } = this.state;
+    const { targetSubjectMetadata } = this.props;
     const handleCancelFromHeader = () => {
       this.cancelPermissionsRequest(permissionsRequestId);
     };
@@ -285,6 +284,7 @@ export default class PermissionConnect extends Component {
           />
         ) : (
           <PermissionConnectHeader
+            requestId={permissionsRequestId}
             origin={targetSubjectMetadata.origin}
             iconUrl={targetSubjectMetadata.iconUrl}
           />
@@ -321,13 +321,12 @@ export default class PermissionConnect extends Component {
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
-    } = this.props;
-    const {
-      selectedAccountAddresses,
-      permissionsApproved,
-      redirecting,
       snapsInstallPrivacyWarningShown,
-    } = this.state;
+      origin,
+      history,
+    } = this.props;
+    const { selectedAccountAddresses, permissionsApproved, redirecting } =
+      this.state;
 
     const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
 
@@ -369,7 +368,7 @@ export default class PermissionConnect extends Component {
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
                     }
-                    activeTabOrigin={this.state.origin}
+                    activeTabOrigin={origin}
                     request={permissionsRequest}
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
@@ -394,7 +393,7 @@ export default class PermissionConnect extends Component {
                     selectedAccountAddresses.has(account.address),
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
-                  history={this.props.history}
+                  history={history}
                   connectPath={connectPath}
                   snapsInstallPrivacyWarningShown={
                     snapsInstallPrivacyWarningShown

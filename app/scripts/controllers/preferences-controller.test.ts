@@ -640,19 +640,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('useRequestQueue', () => {
-    it('defaults useRequestQueue to true', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useRequestQueue).toStrictEqual(true);
-    });
-
-    it('setUseRequestQueue to false', () => {
-      const { controller } = setupController({});
-      controller.setUseRequestQueue(false);
-      expect(controller.state.useRequestQueue).toStrictEqual(false);
-    });
-  });
-
   describe('addSnapAccountEnabled', () => {
     it('defaults addSnapAccountEnabled to false', () => {
       const { controller } = setupController({});
@@ -730,9 +717,11 @@ describe('preferences controller', () => {
       expect(controller.state.preferences).toStrictEqual({
         autoLockTimeLimit: undefined,
         showExtensionInFullSizeView: false,
+        privacyMode: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        smartTransactionsOptInStatus: null,
+        smartTransactionsMigrationApplied: false,
+        smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
@@ -749,6 +738,7 @@ describe('preferences controller', () => {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
+        tokenNetworkFilter: {},
       });
     });
 
@@ -760,10 +750,12 @@ describe('preferences controller', () => {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        smartTransactionsOptInStatus: null,
+        smartTransactionsMigrationApplied: false,
+        smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        privacyMode: false,
         redesignedConfirmationsEnabled: true,
         redesignedTransactionsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
@@ -777,6 +769,7 @@ describe('preferences controller', () => {
           order: 'dsc',
           sortCallback: 'stringNumeric',
         },
+        tokenNetworkFilter: {},
       });
     });
   });
@@ -833,6 +826,23 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('overrideContentSecurityPolicyHeader', () => {
+    it('defaults overrideContentSecurityPolicyHeader to true', () => {
+      const { controller } = setupController({});
+      expect(
+        controller.state.overrideContentSecurityPolicyHeader,
+      ).toStrictEqual(true);
+    });
+
+    it('set overrideContentSecurityPolicyHeader to false', () => {
+      const { controller } = setupController({});
+      controller.setOverrideContentSecurityPolicyHeader(false);
+      expect(
+        controller.state.overrideContentSecurityPolicyHeader,
+      ).toStrictEqual(false);
+    });
+  });
+
   describe('snapsAddSnapAccountModalDismissed', () => {
     it('defaults snapsAddSnapAccountModalDismissed to false', () => {
       const { controller } = setupController({});
@@ -847,6 +857,21 @@ describe('preferences controller', () => {
       expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
         true,
       );
+    });
+  });
+
+  describe('setSolanaSupportEnabled', () => {
+    const { controller } = setupController({});
+    it('has the default value as false', () => {
+      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+    });
+
+    it('sets the solanaSupportEnabled property in state to true and then false', () => {
+      controller.setSolanaSupportEnabled(true);
+      expect(controller.state.solanaSupportEnabled).toStrictEqual(true);
+
+      controller.setSolanaSupportEnabled(false);
+      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
     });
   });
 });

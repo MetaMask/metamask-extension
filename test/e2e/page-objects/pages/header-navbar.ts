@@ -1,11 +1,17 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
 class HeaderNavbar {
-  private driver: Driver;
+  protected driver: Driver;
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private readonly accountOptionMenu =
+  private readonly allPermissionsButton =
+    '[data-testid="global-menu-connected-sites"]';
+
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
+  private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
 
   private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
@@ -15,14 +21,14 @@ class HeaderNavbar {
   private readonly mmiPortfolioButton =
     '[data-testid="global-menu-mmi-portfolio"]';
 
-  private readonly selectNetworkMessage = {
-    text: 'Select a network',
-    tag: 'h4',
-  };
+  private readonly openAccountDetailsButton =
+    '[data-testid="account-list-menu-details"]';
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
   private readonly switchNetworkDropDown = '[data-testid="network-display"]';
+
+  private readonly networkPicker = '.mm-picker-network';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -32,7 +38,7 @@ class HeaderNavbar {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountMenuButton,
-        this.accountOptionMenu,
+        this.threeDotMenuButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for header navbar to be loaded', e);
@@ -42,11 +48,7 @@ class HeaderNavbar {
   }
 
   async lockMetaMask(): Promise<void> {
-    await this.driver.clickElement(this.accountOptionMenu);
-    // fix race condition with mmi build
-    if (process.env.MMI) {
-      await this.driver.waitForSelector(this.mmiPortfolioButton);
-    }
+    await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
 
@@ -54,19 +56,36 @@ class HeaderNavbar {
     await this.driver.clickElement(this.accountMenuButton);
   }
 
+  async openAccountDetailsModal(): Promise<void> {
+    console.log('Open account details modal');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.openAccountDetailsButton);
+  }
+
+  async openThreeDotMenu(): Promise<void> {
+    console.log('Open account options menu');
+    await this.driver.clickElement(this.threeDotMenuButton);
+    // fix race condition with mmi build
+    if (process.env.MMI) {
+      await this.driver.waitForSelector(this.mmiPortfolioButton);
+    }
+  }
+
+  async openPermissionsPage(): Promise<void> {
+    console.log('Open permissions page in header navbar');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.allPermissionsButton);
+  }
+
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
-    await this.driver.clickElement(this.accountOptionMenu);
+    await this.openThreeDotMenu();
     await this.driver.clickElement(this.accountSnapButton);
   }
 
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
-    await this.driver.clickElement(this.accountOptionMenu);
-    // fix race condition with mmi build
-    if (process.env.MMI) {
-      await this.driver.waitForSelector(this.mmiPortfolioButton);
-    }
+    await this.openThreeDotMenu();
     await this.driver.clickElement(this.settingsButton);
   }
 
@@ -82,26 +101,27 @@ class HeaderNavbar {
     );
   }
 
+  async check_ifNetworkPickerClickable(clickable: boolean): Promise<void> {
+    console.log('Check whether the network picker is clickable or not');
+    assert.equal(
+      await (await this.driver.findElement(this.networkPicker)).isEnabled(),
+      clickable,
+    );
+  }
+
   /**
-   * Switches to the specified network.
+   * Verifies that the displayed account address in header matches the expected address.
    *
-   * @param networkName - The name of the network to switch to.
+   * @param expectedAddress - The expected address of the account.
    */
-  async switchToNetwork(networkName: string): Promise<void> {
-    console.log(`Switch to network ${networkName} in header bar`);
-    await this.driver.clickElement(this.switchNetworkDropDown);
-    await this.driver.waitForSelector(this.selectNetworkMessage);
-    await this.driver.clickElementAndWaitToDisappear(
-      `[data-testid="${networkName}"]`,
+  async check_accountAddress(expectedAddress: string): Promise<void> {
+    console.log(
+      `Verify the displayed account address in header is: ${expectedAddress}`,
     );
-    // check the toaster message is displayed and the network is correctly selected
     await this.driver.waitForSelector({
-      tag: 'h6',
-      text: `“${networkName}” was successfully added!`,
+      css: this.copyAddressButton,
+      text: expectedAddress,
     });
-    await this.driver.waitForSelector(
-      `${this.switchNetworkDropDown}[aria-label="Network Menu ${networkName}"]`,
-    );
   }
 
   /**

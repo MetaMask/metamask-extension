@@ -1,12 +1,13 @@
 import {
   convertToHexValue,
+  TEST_SEED_PHRASE,
   WALLET_PASSWORD,
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
@@ -20,6 +21,7 @@ import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
 describe('MetaMask onboarding @no-mmi', function () {
   const ganacheOptions2 = {
@@ -39,7 +41,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await completeCreateNewWalletOnboardingFlow(driver);
+        await completeCreateNewWalletOnboardingFlow({
+          driver,
+        });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
@@ -54,7 +58,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await completeImportSRPOnboardingFlow(driver);
+        await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
@@ -163,7 +167,10 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, secondaryGanacheServer }) => {
-        await importSRPOnboardingFlow(driver);
+        await importSRPOnboardingFlow({
+          driver,
+          seedPhrase: TEST_SEED_PHRASE,
+        });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
@@ -186,11 +193,12 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.headerNavbar.switchToNetwork(networkName);
+        await switchToNetworkFlow(driver, networkName);
+        await homePage.check_addNetworkMessageIsDisplayed(networkName);
 
         // Check the correct balance for the custom network is displayed
         if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
-          await homePage.check_ganacheBalanceIsDisplayed(
+          await homePage.check_localBlockchainBalanceIsDisplayed(
             secondaryGanacheServer[0],
           );
         } else {
@@ -207,7 +215,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await importSRPOnboardingFlow(driver);
+        await importSRPOnboardingFlow({ driver });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();

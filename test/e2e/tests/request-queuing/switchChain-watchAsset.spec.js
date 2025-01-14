@@ -3,9 +3,9 @@ const {
   defaultGanacheOptions,
   logInWithBalanceValidation,
   openDapp,
-  switchToNotificationWindow,
   WINDOW_TITLES,
   withFixtures,
+  switchToNotificationWindow,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { DAPP_URL } = require('../../constants');
@@ -20,7 +20,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
@@ -48,7 +48,17 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         await driver.clickElement('#connectButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const editButtons = await driver.findElements('[data-testid="edit"]');
 
+        await editButtons[1].click();
+
+        // Disconnect Localhost 8545. By Default, this was the globally selected network
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          tag: 'p',
+        });
+
+        await driver.clickElement('[data-testid="connect-more-chains-button"]');
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
@@ -72,7 +82,6 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           text: 'Use your enabled networks',
           tag: 'p',
         });
-
         // Switch back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -81,7 +90,6 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           text: 'Add Token(s) to Wallet',
           tag: 'button',
         });
-
         await switchToNotificationWindow(driver);
 
         // Confirm Switch Network

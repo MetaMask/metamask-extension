@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-
 import {
   Box,
   Button,
@@ -9,7 +8,6 @@ import {
   IconSize,
   Text,
 } from '../../../components/component-library';
-
 import {
   IconColor,
   Display,
@@ -17,24 +15,21 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/metamask-notifications/useProfileSyncing';
+import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useProfileSyncing';
 
-const AccountSyncDeleteDataFromUserStorage = () => {
-  const [hasDeletedAccountSyncEntries, setHasDeletedAccountSyncEntries] =
-    useState(false);
+type DeleteSyncedDataProps = {
+  onDelete: () => Promise<void>;
+  deleteSuccessful: boolean;
+  title: string;
+  description: string;
+};
 
-  const { dispatchDeleteAccountSyncingDataFromUserStorage } =
-    useDeleteAccountSyncingDataFromUserStorage();
-
-  const handleDeleteAccountSyncingDataFromUserStorage =
-    useCallback(async () => {
-      await dispatchDeleteAccountSyncingDataFromUserStorage();
-      setHasDeletedAccountSyncEntries(true);
-    }, [
-      dispatchDeleteAccountSyncingDataFromUserStorage,
-      setHasDeletedAccountSyncEntries,
-    ]);
-
+const DeleteSyncedData = ({
+  onDelete,
+  deleteSuccessful,
+  title,
+  description,
+}: DeleteSyncedDataProps) => {
   return (
     <div className="settings-page__content-padded">
       <Box
@@ -45,22 +40,14 @@ const AccountSyncDeleteDataFromUserStorage = () => {
         gap={4}
       >
         <div className="settings-page__content-item">
-          <span>Account syncing</span>
+          <span>{title}</span>
           <div className="settings-page__content-description">
-            Deletes all user storage entries for the current SRP. This can help
-            if you tested Account Syncing early on and have corrupted data. This
-            will not remove internal accounts already created and renamed. If
-            you want to start from scratch with only the first account and
-            restart syncing from this point on, you will need to reinstall the
-            extension after this action.
+            {description}
           </div>
         </div>
 
         <div className="settings-page__content-item-col">
-          <Button
-            variant={ButtonVariant.Primary}
-            onClick={handleDeleteAccountSyncingDataFromUserStorage}
-          >
+          <Button variant={ButtonVariant.Primary} onClick={onDelete}>
             Reset
           </Button>
         </div>
@@ -77,7 +64,7 @@ const AccountSyncDeleteDataFromUserStorage = () => {
               name={IconName.Check}
               color={IconColor.successDefault}
               size={IconSize.Lg}
-              hidden={!hasDeletedAccountSyncEntries}
+              hidden={!deleteSuccessful}
             />
           </Box>
         </div>
@@ -86,13 +73,30 @@ const AccountSyncDeleteDataFromUserStorage = () => {
   );
 };
 
+export const useDeleteAccountSyncDataProps = () => {
+  const [deleteSuccessful, setDeleteSuccessful] = useState(false);
+  const { dispatchDeleteAccountSyncingData } =
+    useDeleteAccountSyncingDataFromUserStorage();
+  const onDelete = useCallback(async () => {
+    await dispatchDeleteAccountSyncingData();
+    setDeleteSuccessful(true);
+  }, []);
+  return {
+    deleteSuccessful,
+    onDelete,
+    title: 'Account syncing',
+    description:
+      'Deletes all user storage entries for the current SRP. This can help if you tested Account Syncing early on and have corrupted data. This will not remove internal accounts already created and renamed. If you want to start from scratch with only the first account and restart syncing from this point on, you will need to reinstall the extension after this action.',
+  };
+};
+
 export const ProfileSyncDevSettings = () => {
   return (
     <>
       <Text className="settings-page__security-tab-sub-header__bold">
         Profile Sync
       </Text>
-      <AccountSyncDeleteDataFromUserStorage />
+      <DeleteSyncedData {...useDeleteAccountSyncDataProps()} />
     </>
   );
 };

@@ -8,7 +8,7 @@ import TextField from '../../../../components/ui/text-field';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { fetchToken } from '../../swaps.util';
-import { getCurrentChainId } from '../../../../selectors/selectors';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import SearchIcon from '../../../../components/ui/icon/search-icon';
 
 const renderAdornment = () => (

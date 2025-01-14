@@ -13,7 +13,6 @@
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
     "showPermittedNetworkToastOpen": false,
-    "gasIsLoading": false,
     "isLoading": false,
     "importTokensModalOpen": false,
     "modal": {
@@ -63,6 +62,12 @@
     "currentLocale": "en"
   },
   "metamask": {
+    "accountsByChainId": {},
+    "tokenBalances": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "0x5": {}
+      }
+    },
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
@@ -127,22 +132,18 @@
         }
       }
     },
-    "snaps": [{}],
+    "snaps": {},
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
-      "showTestNetworks": true
+      "showTestNetworks": true,
+      "tokenNetworkFilter": {}
     },
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
     "isUnlocked": true,
     "completedOnboarding": true,
-    "usedNetworks": {
-      "0x1": true,
-      "0x5": true,
-      "0x539": true
-    },
     "showTestnetMessageInDropdown": true,
     "alertEnabledness": {
       "unconnectedAccount": true

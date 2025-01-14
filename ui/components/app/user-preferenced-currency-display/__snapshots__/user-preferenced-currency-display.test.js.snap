@@ -8,6 +8,7 @@ exports[`UserPreferencedCurrencyDisplay Component rendering should match snapsho
   >
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      data-testid="account-value-and-suffix"
     >
       0
     </span>

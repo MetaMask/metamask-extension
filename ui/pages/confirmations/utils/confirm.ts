@@ -1,7 +1,4 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Json } from '@metamask/utils';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -10,35 +7,6 @@ import { parseTypedDataMessage } from '../../../../shared/modules/transaction.ut
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
-
-export const REDESIGN_APPROVAL_TYPES = [
-  ApprovalType.EthSignTypedData,
-  ApprovalType.PersonalSign,
-];
-
-export const REDESIGN_USER_TRANSACTION_TYPES = [
-  TransactionType.contractInteraction,
-  TransactionType.deployContract,
-  TransactionType.tokenMethodApprove,
-  TransactionType.tokenMethodIncreaseAllowance,
-  TransactionType.tokenMethodSetApprovalForAll,
-  TransactionType.tokenMethodTransfer,
-  TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-];
-
-export const REDESIGN_DEV_TRANSACTION_TYPES = [
-  ...REDESIGN_USER_TRANSACTION_TYPES,
-];
-
-const SIGNATURE_APPROVAL_TYPES = [
-  ApprovalType.PersonalSign,
-  ApprovalType.EthSignTypedData,
-];
-
-export const isSignatureApprovalRequest = (
-  request: ApprovalRequest<Record<string, Json>>,
-) => SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
@@ -112,7 +80,12 @@ export const isValidASCIIURL = (urlString?: string) => {
 
 export const toPunycodeURL = (urlString: string) => {
   try {
-    return new URL(urlString).href;
+    const url = new URL(urlString);
+    const { protocol, hostname, port, search, hash } = url;
+    const pathname =
+      url.pathname === '/' && !urlString.endsWith('/') ? '' : url.pathname;
+
+    return `${protocol}//${hostname}${port}${pathname}${search}${hash}`;
   } catch (err: unknown) {
     console.error(`Failed to convert URL to Punycode: ${err}`);
     return undefined;
