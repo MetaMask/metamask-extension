@@ -52,6 +52,24 @@ const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
 
 const snapsPrefixes = ['npm:', 'local:'] as const;
 
+function isPermissionConstraint(obj: unknown): obj is PermissionConstraint {
+  return (
+    isObject(obj) &&
+    obj !== null &&
+    hasProperty(obj, 'caveats') &&
+    Array.isArray(obj.caveats) &&
+    obj.caveats.length > 0 &&
+    hasProperty(obj, 'date') &&
+    typeof obj.date === 'number' &&
+    hasProperty(obj, 'id') &&
+    typeof obj.id === 'string' &&
+    hasProperty(obj, 'invoker') &&
+    typeof obj.invoker === 'string' &&
+    hasProperty(obj, 'parentCapability') &&
+    typeof obj.parentCapability === 'string'
+  );
+}
+
 /**
  * This migration transforms `eth_accounts` and `permittedChains` permissions into
  * an equivalent CAIP-25 permission.
@@ -69,88 +87,115 @@ export async function migrate(
 ): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  transformState(versionedData.data);
+
+  const newState = transformState(versionedData.data);
+  versionedData.data = newState as Record<string, unknown>;
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
+function transformState(oldState: Record<string, unknown>) {
+  const newState = cloneDeep(oldState);
   if (
-    !hasProperty(state, 'PermissionController') ||
-    !isObject(state.PermissionController)
+    !hasProperty(newState, 'PermissionController') ||
+    !isObject(newState.PermissionController)
   ) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.PermissionController is ${typeof state.PermissionController}`,
+        `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
       ),
     );
-    return state;
+    return oldState;
   }
 
   if (
-    !hasProperty(state, 'NetworkController') ||
-    !isObject(state.NetworkController)
+    !hasProperty(newState, 'NetworkController') ||
+    !isObject(newState.NetworkController)
   ) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.NetworkController is ${typeof state.NetworkController}`,
+        `Migration ${version}: typeof state.NetworkController is ${typeof newState.NetworkController}`,
       ),
     );
-    return state;
+    return newState;
   }
 
-  if (
-    !hasProperty(state, 'SelectedNetworkController') ||
-    !isObject(state.SelectedNetworkController)
-  ) {
+  if (!hasProperty(newState, 'SelectedNetworkController')) {
+    console.warn(
+      `Migration ${version}: typeof state.SelectedNetworkController is ${typeof newState.SelectedNetworkController}`,
+    );
+    newState.SelectedNetworkController = {
+      domains: {},
+    };
+  }
+
+  if (!isObject(newState.SelectedNetworkController)) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.SelectedNetworkController is ${typeof state.SelectedNetworkController}`,
+        `Migration ${version}: typeof state.SelectedNetworkController is ${typeof newState.SelectedNetworkController}`,
       ),
     );
-    return state;
+    return oldState;
   }
 
   const {
-    PermissionController: { subjects },
     NetworkController: {
       selectedNetworkClientId,
       networkConfigurationsByChainId,
     },
-    SelectedNetworkController: { domains },
-  } = state;
+    PermissionController: { subjects },
+  } = newState;
 
   if (!isObject(subjects)) {
-    global.sentry?.captureException(
+    global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.PermissionController.subjects is ${typeof subjects}`,
       ),
     );
-    return state;
+    return oldState;
   }
+
   if (!selectedNetworkClientId || typeof selectedNetworkClientId !== 'string') {
-    global.sentry?.captureException(
+    global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.NetworkController.selectedNetworkClientId is ${typeof selectedNetworkClientId}`,
       ),
     );
-    return state;
+    return oldState;
   }
+
   if (!isObject(networkConfigurationsByChainId)) {
-    global.sentry?.captureException(
+    global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is ${typeof networkConfigurationsByChainId}`,
+        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is ${typeof newState
+          .NetworkController.networkConfigurationsByChainId}`,
       ),
     );
-    return state;
+    return oldState;
   }
-  if (!isObject(domains)) {
-    global.sentry?.captureException(
+
+  if (
+    !hasProperty(newState.SelectedNetworkController, 'domains') ||
+    !isObject(newState.SelectedNetworkController.domains)
+  ) {
+    const { domains } = newState.SelectedNetworkController;
+    global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.SelectedNetworkController.domains is ${typeof domains}`,
       ),
     );
-    return state;
+    return oldState;
   }
+
+  if (!isObject(newState.PermissionController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
+      ),
+    );
+    return oldState;
+  }
+
+  const { domains } = newState.SelectedNetworkController;
 
   const getChainIdForNetworkClientId = (
     networkClientId: string,
@@ -165,7 +210,7 @@ function transformState(state: Record<string, unknown>) {
             `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"] is ${typeof networkConfiguration}`,
           ),
         );
-        return undefined;
+        continue;
       }
       if (!Array.isArray(networkConfiguration.rpcEndpoints)) {
         global.sentry?.captureException(
@@ -173,7 +218,7 @@ function transformState(state: Record<string, unknown>) {
             `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints is ${typeof networkConfiguration.rpcEndpoints}`,
           ),
         );
-        return undefined;
+        continue;
       }
       for (const rpcEndpoint of networkConfiguration.rpcEndpoints) {
         if (!isObject(rpcEndpoint)) {
@@ -182,7 +227,7 @@ function transformState(state: Record<string, unknown>) {
               `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints[] is ${typeof rpcEndpoint}`,
             ),
           );
-          return undefined;
+          continue;
         }
         if (rpcEndpoint.networkClientId === networkClientId) {
           return chainId;
@@ -206,54 +251,57 @@ function transformState(state: Record<string, unknown>) {
     'selectedNetworkClientId',
   );
   if (!currentChainId) {
-    return state;
+    return oldState;
   }
 
+  // perform mutations on the cloned state
   for (const [origin, subject] of Object.entries(subjects)) {
     if (!isObject(subject)) {
-      global.sentry?.captureException(
+      global.sentry?.captureException?.(
         new Error(
           `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
         ),
       );
-      continue;
+      return oldState;
     }
 
-    const { permissions } = subject as {
-      permissions: Record<string, PermissionConstraint>;
-    };
-    if (!isObject(permissions)) {
-      global.sentry?.captureException(
+    if (
+      !hasProperty(subject, 'permissions') ||
+      !isObject(subject.permissions)
+    ) {
+      global.sentry?.captureException?.(
         new Error(
-          `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof permissions}`,
+          `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof subject.permissions}`,
         ),
       );
-      continue;
+      return oldState;
     }
+
+    const { permissions } = subject;
 
     let basePermission: PermissionConstraint | undefined;
 
     let ethAccounts: string[] = [];
-    if (
-      isObject(permissions[PermissionNames.eth_accounts]) &&
-      Array.isArray(permissions[PermissionNames.eth_accounts].caveats)
-    ) {
+    const ethAccountsPermission = permissions[PermissionNames.eth_accounts];
+    if (isPermissionConstraint(ethAccountsPermission)) {
       ethAccounts =
-        (permissions[PermissionNames.eth_accounts].caveats?.[0]
-          ?.value as string[]) ?? [];
-      basePermission = permissions[PermissionNames.eth_accounts];
+        (ethAccountsPermission.caveats?.[0]?.value as string[] | undefined) ??
+        [];
+      basePermission = ethAccountsPermission;
     }
+
     delete permissions[PermissionNames.eth_accounts];
 
     let chainIds: string[] = [];
-    if (
-      isObject(permissions[PermissionNames.permittedChains]) &&
-      Array.isArray(permissions[PermissionNames.permittedChains].caveats)
-    ) {
+    const permittedChainsPermission =
+      permissions[PermissionNames.permittedChains];
+    if (isPermissionConstraint(permittedChainsPermission)) {
       chainIds =
-        (permissions[PermissionNames.permittedChains].caveats?.[0]
-          ?.value as string[]) ?? [];
-      basePermission ??= permissions[PermissionNames.permittedChains];
+        (permittedChainsPermission.caveats?.[0]?.value as
+          | string[]
+          | undefined) ?? [];
+
+      basePermission ??= permittedChainsPermission;
     }
     delete permissions[PermissionNames.permittedChains];
 
@@ -311,8 +359,9 @@ function transformState(state: Record<string, unknown>) {
         },
       ],
     };
+
     permissions[Caip25EndowmentPermissionName] = caip25Permission;
   }
 
-  return state;
+  return newState;
 }
