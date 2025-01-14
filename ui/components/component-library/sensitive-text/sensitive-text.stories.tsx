@@ -1,16 +1,22 @@
-import { StoryFn, Meta } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { SensitiveText } from '.';
 import { SensitiveTextLength } from './sensitive-text.types';
+import README from './README.mdx';
 import { Box } from '../box';
 import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-export default {
+const meta: Meta<typeof SensitiveText> = {
   title: 'Components/ComponentLibrary/SensitiveText',
   component: SensitiveText,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
   args: {
     children: 'Sensitive information',
     isHidden: false,
@@ -18,22 +24,35 @@ export default {
   },
 } as Meta<typeof SensitiveText>;
 
-const Template: StoryFn<typeof SensitiveText> = (args) => {
-  return <SensitiveText {...args} />;
-};
+export default meta;
+type Story = StoryObj<typeof SensitiveText>;
 
-export const DefaultStory = Template.bind({});
+export const DefaultStory: Story = {};
 DefaultStory.storyName = 'Default';
 
-export const HiddenText: StoryFn<typeof SensitiveText> = (args) => {
-  return <SensitiveText {...args} />;
-};
-HiddenText.args = {
-  isHidden: true,
+export const Children: Story = {
+  args: {
+    children: 'Sensitive information',
+  },
+  render: (args) => (
+    <SensitiveText {...args} />
+  ),
 };
 
-export const LengthVariants: StoryFn<typeof SensitiveText> = (args) => {
-  return (
+export const IsHidden: Story = {
+  args: {
+    isHidden: true,
+  },
+  render: (args) => (
+    <SensitiveText {...args} />
+  ),
+};
+
+export const Length: Story = {
+  args: {
+    isHidden: true,
+  },
+  render: (args) => (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
       <SensitiveText {...args} length={SensitiveTextLength.Short}>
         Length "short" (6 characters)
@@ -47,9 +66,9 @@ export const LengthVariants: StoryFn<typeof SensitiveText> = (args) => {
       <SensitiveText {...args} length={SensitiveTextLength.ExtraLong}>
         Length "extra long" (20 characters)
       </SensitiveText>
+      <SensitiveText {...args} length="15">
+        Length "15" (15 characters)
+      </SensitiveText>
     </Box>
-  );
-};
-LengthVariants.args = {
-  isHidden: true,
+  ),
 };

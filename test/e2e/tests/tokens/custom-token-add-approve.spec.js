@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-
 const {
   clickNestedButton,
   defaultGanacheOptions,
@@ -8,6 +7,7 @@ const {
   openDapp,
   WINDOW_TITLES,
   withFixtures,
+  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -35,7 +35,8 @@ describe('Create token, approve token and approve token without gas', function (
         );
         await clickNestedButton(driver, 'Tokens');
 
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement(`[data-testid="import-token-button"]`);
+        await driver.clickElement(`[data-testid="importTokens"]`);
         await clickNestedButton(driver, 'Custom token');
         await driver.fill(
           '[data-testid="import-tokens-modal-custom-address"]',
@@ -82,6 +83,8 @@ describe('Create token, approve token and approve token without gas', function (
           smartContract,
         );
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -180,6 +183,8 @@ describe('Create token, approve token and approve token without gas', function (
           smartContract,
         );
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -316,6 +321,8 @@ describe('Create token, approve token and approve token without gas', function (
         );
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         // create token
         await openDapp(driver, contractAddress);
         const windowHandles = await driver.getAllWindowHandles();
@@ -396,6 +403,8 @@ describe('Create token, approve token and approve token without gas', function (
           smartContract,
         );
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         await openDapp(driver, contractAddress);
         const windowHandles = await driver.getAllWindowHandles();

@@ -103,7 +103,8 @@ export type Preferences = {
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
-  smartTransactionsOptInStatus: boolean | null;
+  smartTransactionsOptInStatus: boolean;
+  smartTransactionsMigrationApplied: boolean;
   showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
@@ -112,6 +113,7 @@ export type Preferences = {
   redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
+  privacyMode: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
   tokenSortConfig: {
@@ -119,25 +121,33 @@ export type Preferences = {
     order: string;
     sortCallback: string;
   };
+  tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
 };
 
-// Omitting showTestNetworks and smartTransactionsOptInStatus, as they already exists here in Preferences type
+// Omitting properties that already exist in the PreferencesState, as part of the preferences property.
 export type PreferencesControllerState = Omit<
   PreferencesState,
-  'showTestNetworks' | 'smartTransactionsOptInStatus'
+  | 'showTestNetworks'
+  | 'smartTransactionsOptInStatus'
+  | 'smartTransactionsMigrationApplied'
+  | 'privacyMode'
+  | 'tokenSortConfig'
+  | 'useMultiRpcMigration'
 > & {
   useBlockie: boolean;
   useNonceField: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
+  overrideContentSecurityPolicyHeader: boolean;
   useMultiAccountBalanceChecker: boolean;
-  useSafeChainsListValidation: boolean;
   use4ByteResolution: boolean;
   useCurrencyRateCheck: boolean;
-  useRequestQueue: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  solanaSupportEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
@@ -170,6 +180,7 @@ export const getDefaultPreferencesControllerState =
     useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
+    overrideContentSecurityPolicyHeader: true,
     useMultiAccountBalanceChecker: true,
     useSafeChainsListValidation: true,
     // set to true means the dynamic list from the API is being used
@@ -178,10 +189,12 @@ export const getDefaultPreferencesControllerState =
     useNftDetection: true,
     use4ByteResolution: true,
     useCurrencyRateCheck: true,
-    useRequestQueue: true,
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    solanaSupportEnabled: false,
+    ///: END:ONLY_INCLUDE_IF
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -203,7 +216,8 @@ export const getDefaultPreferencesControllerState =
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: false,
-      smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: false,
       showNativeTokenAsMainBalance: false,
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,
@@ -214,12 +228,14 @@ export const getDefaultPreferencesControllerState =
       isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
+      privacyMode: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
         sortCallback: 'stringNumeric',
       },
+      tokenNetworkFilter: {},
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -296,6 +312,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  overrideContentSecurityPolicyHeader: {
+    persist: true,
+    anonymous: true,
+  },
   useMultiAccountBalanceChecker: {
     persist: true,
     anonymous: true,
@@ -320,10 +340,6 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
-  useRequestQueue: {
-    persist: true,
-    anonymous: true,
-  },
   openSeaEnabled: {
     persist: true,
     anonymous: true,
@@ -333,6 +349,10 @@ const controllerMetadata = {
     anonymous: false,
   },
   watchEthereumAccountEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  solanaSupportEnabled: {
     persist: true,
     anonymous: false,
   },
@@ -383,6 +403,16 @@ const controllerMetadata = {
   preferences: {
     persist: true,
     anonymous: true,
+    properties: {
+      smartTransactionsOptInStatus: {
+        persist: true,
+        anonymous: true,
+      },
+      smartTransactionsMigrationApplied: {
+        persist: true,
+        anonymous: true,
+      },
+    },
   },
   ipfsGateway: {
     persist: true,
@@ -607,17 +637,6 @@ export class PreferencesController extends BaseController<
   }
 
   /**
-   * Setter for the `useRequestQueue` property
-   *
-   * @param val - Whether or not the user wants to have requests queued if network change is required.
-   */
-  setUseRequestQueue(val: boolean): void {
-    this.update((state) => {
-      state.useRequestQueue = val;
-    });
-  }
-
-  /**
    * Setter for the `openSeaEnabled` property
    *
    * @param openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
@@ -663,6 +682,20 @@ export class PreferencesController extends BaseController<
   setWatchEthereumAccountEnabled(watchEthereumAccountEnabled: boolean): void {
     this.update((state) => {
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
+    });
+  }
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  /**
+   * Setter for the `solanaSupportEnabled` property.
+   *
+   * @param solanaSupportEnabled - Whether or not the user wants to
+   * enable the "Add a new Solana account" button.
+   */
+  setSolanaSupportEnabled(solanaSupportEnabled: boolean): void {
+    this.update((state) => {
+      state.solanaSupportEnabled = solanaSupportEnabled;
     });
   }
   ///: END:ONLY_INCLUDE_IF
@@ -813,15 +846,6 @@ export class PreferencesController extends BaseController<
     );
 
     return selectedAccount.address;
-  }
-
-  /**
-   * Getter for the `useRequestQueue` property
-   *
-   * @returns whether this option is on or off.
-   */
-  getUseRequestQueue(): boolean {
-    return this.state.useRequestQueue;
   }
 
   /**
@@ -978,6 +1002,20 @@ export class PreferencesController extends BaseController<
   setDismissSeedBackUpReminder(dismissSeedBackUpReminder: boolean): void {
     this.update((state) => {
       state.dismissSeedBackUpReminder = dismissSeedBackUpReminder;
+    });
+  }
+
+  /**
+   * A setter for the user preference to override the Content-Security-Policy header
+   *
+   * @param overrideContentSecurityPolicyHeader - User preference for overriding the Content-Security-Policy header.
+   */
+  setOverrideContentSecurityPolicyHeader(
+    overrideContentSecurityPolicyHeader: boolean,
+  ): void {
+    this.update((state) => {
+      state.overrideContentSecurityPolicyHeader =
+        overrideContentSecurityPolicyHeader;
     });
   }
 

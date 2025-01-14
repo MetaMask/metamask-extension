@@ -1,14 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getInternalAccounts,
-  getNetworkConfigurationsByChainId,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
 } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
   Box,
   Button,
@@ -22,7 +22,7 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { SiteCell } from '../../../components/multichain/pages/review-permissions-page';
+import { SiteCell } from '../../../components/multichain/pages/review-permissions-page/site-cell/site-cell';
 import {
   BackgroundColor,
   BlockSize,
@@ -30,8 +30,6 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { MergedInternalAccount } from '../../../selectors/selectors.types';
-import { mergeAccounts } from '../../../components/multichain/account-list-menu/account-list-menu';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import {
@@ -39,6 +37,7 @@ import {
   EndowmentTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 
 export type ConnectPageRequest = {
   id: string;
@@ -49,7 +48,7 @@ export type ConnectPageRequest = {
   >;
 };
 
-type ConnectPageProps = {
+export type ConnectPageProps = {
   request: ConnectPageRequest;
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
@@ -92,27 +91,41 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       ),
     [networkConfigurations],
   );
+
+  // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
+  const currentlySelectedNetwork = useSelector(getMultichainNetwork);
+  const currentlySelectedNetworkChainId =
+    currentlySelectedNetwork.network.chainId;
+  // If globally selected network is a test network, include that in the default selcted networks for connection request
+  const selectedTestNetwork = testNetworks.find(
+    (network: { chainId: string }) =>
+      network.chainId === currentlySelectedNetworkChainId,
+  );
+
+  const selectedNetworksList = selectedTestNetwork
+    ? [...nonTestNetworks, selectedTestNetwork]
+    : nonTestNetworks;
   const defaultSelectedChainIds =
     requestedChainIds.length > 0
       ? requestedChainIds
-      : nonTestNetworks.map(({ chainId }) => chainId);
+      : selectedNetworksList.map(({ chainId }) => chainId);
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
   );
 
   const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
-    return mergeAccounts(accounts, internalAccounts).filter(
-      (account: InternalAccount) => isEvmAccountType(account.type),
+  const evmAccounts = useMemo(() => {
+    return accounts.filter((account: InternalAccount) =>
+      isEvmAccountType(account.type),
     );
-  }, [accounts, internalAccounts]);
+  }, [accounts]);
 
   const currentAccount = useSelector(getSelectedInternalAccount);
+  const currentAccountAddress = isEvmAccountType(currentAccount.type)
+    ? [currentAccount.address]
+    : []; // We do not support non-EVM accounts connections
   const defaultAccountsAddresses =
-    requestedAccounts.length > 0
-      ? requestedAccounts
-      : [currentAccount?.address];
+    requestedAccounts.length > 0 ? requestedAccounts : currentAccountAddress;
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultAccountsAddresses,
   );
@@ -140,7 +153,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         <SiteCell
           nonTestNetworks={nonTestNetworks}
           testNetworks={testNetworks}
-          accounts={mergedAccounts}
+          accounts={evmAccounts}
           onSelectAccountAddresses={setSelectedAccountAddresses}
           onSelectChainIds={setSelectedChainIds}
           selectedAccountAddresses={selectedAccountAddresses}

@@ -134,8 +134,7 @@ class OnboardingPrivacySettingsPage {
       this.confirmAddCustomNetworkButton,
     );
     // Navigate back to default privacy settings
-    await this.driver.clickElement(this.categoryBackButton);
-    await this.driver.waitForElementToStopMoving(this.categoryBackButton);
+    await this.navigateBackToSettingsPage();
   }
 
   /**
@@ -152,11 +151,32 @@ class OnboardingPrivacySettingsPage {
     );
   }
 
+  /**
+   * Navigate back to the onboarding privacy settings page.
+   */
+  async navigateBackToSettingsPage(): Promise<void> {
+    console.log('Navigate back to onboarding privacy settings page');
+    // Wait until the onboarding carousel has stopped moving otherwise the click has no effect.
+    await this.driver.clickElement(this.categoryBackButton);
+    await this.driver.waitForElementToStopMoving(this.categoryBackButton);
+  }
+
   async navigateToGeneralSettings(): Promise<void> {
     console.log('Navigate to general settings');
     await this.check_pageIsLoaded();
     await this.driver.clickElement(this.generalSettings);
     await this.driver.waitForSelector(this.generalSettingsMessage);
+  }
+
+  /**
+   * Open the edit network modal for a given network name.
+   *
+   * @param networkName - The name of the network to open the edit modal for.
+   */
+  async openEditNetworkModal(networkName: string): Promise<void> {
+    console.log(`Open edit network modal for ${networkName}`);
+    await this.driver.clickElement({ text: networkName, tag: 'p' });
+    await this.driver.waitForSelector(this.addRpcUrlDropDown);
   }
 
   /**
@@ -172,8 +192,7 @@ class OnboardingPrivacySettingsPage {
         await this.driver.findClickableElements(this.assetsPrivacyToggle)
       ).map((toggle) => toggle.click()),
     );
-    await this.driver.clickElement(this.categoryBackButton);
-    await this.driver.waitForElementToStopMoving(this.categoryBackButton);
+    await this.navigateBackToSettingsPage();
   }
 
   /**
@@ -186,8 +205,7 @@ class OnboardingPrivacySettingsPage {
     await this.driver.waitForSelector(this.basicFunctionalityTurnOffMessage);
     await this.driver.clickElement(this.basicFunctionalityCheckbox);
     await this.driver.clickElement(this.basicFunctionalityTurnOffButton);
-    await this.driver.clickElement(this.categoryBackButton);
-    await this.driver.waitForElementToStopMoving(this.categoryBackButton);
+    await this.navigateBackToSettingsPage();
   }
 }
 

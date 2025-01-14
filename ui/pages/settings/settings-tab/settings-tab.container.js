@@ -14,14 +14,11 @@ import {
   getTheme,
   getSelectedInternalAccount,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state) => {
-  const {
-    appState: { warning },
-    metamask,
-  } = state;
+  const { metamask } = state;
   const { currentCurrency, useBlockie, currentLocale } = metamask;
   const { ticker: nativeCurrency } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
@@ -31,7 +28,6 @@ const mapStateToProps = (state) => {
   const tokenList = getTokenList(state);
 
   return {
-    warning,
     currentLocale,
     currentCurrency,
     nativeCurrency,

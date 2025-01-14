@@ -70,7 +70,7 @@ export default class ConfirmApproveContent extends Component {
     fromAddressIsLedger: PropTypes.bool,
     chainId: PropTypes.string,
     tokenAddress: PropTypes.string,
-    rpcPrefs: PropTypes.object,
+    blockExplorerUrl: PropTypes.string,
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
     hexMinimumTransactionFee: PropTypes.string,
@@ -375,10 +375,10 @@ export default class ConfirmApproveContent extends Component {
   }
 
   getTitleTokenDescription() {
-    const { tokenId, tokenAddress, rpcPrefs, chainId, userAddress } =
+    const { tokenId, tokenAddress, blockExplorerUrl, chainId, userAddress } =
       this.props;
     const useBlockExplorer =
-      rpcPrefs?.blockExplorerUrl ||
+      blockExplorerUrl ||
       [...TEST_CHAINS, CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
         chainId,
       );
@@ -393,7 +393,7 @@ export default class ConfirmApproveContent extends Component {
         null,
         userAddress,
         {
-          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+          blockExplorerUrl: blockExplorerUrl ?? null,
         },
       );
       const blockExplorerElement = (
@@ -529,7 +529,7 @@ export default class ConfirmApproveContent extends Component {
       fromAddressIsLedger,
       toAddress,
       chainId,
-      rpcPrefs,
+      blockExplorerUrl,
       assetStandard,
       tokenId,
       tokenAddress,
@@ -612,7 +612,7 @@ export default class ConfirmApproveContent extends Component {
               tokenAddress={tokenAddress}
               toAddress={toAddress}
               chainId={chainId}
-              rpcPrefs={rpcPrefs}
+              blockExplorerUrl={blockExplorerUrl}
               tokenId={tokenId}
               assetName={assetName}
               assetStandard={assetStandard}

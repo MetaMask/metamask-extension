@@ -12,13 +12,16 @@ import {
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
-import { getProviderConfig } from '../ducks/metamask/metamask';
-import { getCurrentChainId, getSelectedInternalAccount } from './selectors';
-import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import {
+  getProviderConfig,
+  getCurrentChainId,
+} from '../../shared/modules/selectors/networks';
 import {
   createDeepEqualSelector,
   filterAndShapeUnapprovedTransactions,
-} from './util';
+} from '../../shared/modules/selectors/util';
+import { getSelectedInternalAccount } from './accounts';
+import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
+
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
@@ -9,7 +11,6 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getUseNonceField,
 } from '../../../../../../../selectors';
 import {
   getNextNonce,
@@ -17,17 +18,24 @@ import {
   updateCustomNonce,
 } from '../../../../../../../store/actions';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { isSignatureTransactionType } from '../../../../../utils';
 import { TransactionData } from '../transaction-data/transaction-data';
 
 const NonceDetails = () => {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getNextNonce());
-  }, [dispatch]);
+    if (
+      currentConfirmation &&
+      !isSignatureTransactionType(currentConfirmation)
+    ) {
+      dispatch(getNextNonce(currentConfirmation.txParams.from));
+    }
+  }, [currentConfirmation, dispatch]);
 
-  const enableCustomNonce = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
 
@@ -55,9 +63,7 @@ const NonceDetails = () => {
         <ConfirmInfoRowText
           data-testid="advanced-details-displayed-nonce"
           text={`${displayedNonce}`}
-          onEditClick={
-            enableCustomNonce ? () => openEditNonceModal() : undefined
-          }
+          onEditClick={() => openEditNonceModal()}
           editIconClassName="edit-nonce-btn"
           editIconDataTestId="edit-nonce-icon"
         />

@@ -423,10 +423,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Mga Detalye ng Error",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "Mensahe: $1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -434,14 +430,6 @@
   "errorName": {
     "message": "Code: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Subukan ulit sa pamamagitan ng pag-reload ng page, o makipag-ugnayan sa suporta sa $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Subukan ulit sa pamamagitan ng pagsara at pagbukas ulit ng popup, o makipag-ugnayan sa suporta sa $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "Nagkaroon ng error sa MetaMask",
@@ -712,9 +700,6 @@
   "loading": {
     "message": "Nilo-load..."
   },
-  "loadingTokens": {
-    "message": "Nilo-load ang Mga Token..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -833,9 +818,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Hindi Available ang Rate ng Conversion"
-  },
-  "noTransactions": {
-    "message": "Wala kang transaksyon"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
@@ -1602,10 +1584,6 @@
   },
   "whatsThis": {
     "message": "Ano ito?"
-  },
-  "xOfYPending": {
-    "message": "$1 sa $2 ang nakabinbin",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."

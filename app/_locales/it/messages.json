@@ -252,9 +252,6 @@
   "assetOptions": {
     "message": "Opzioni asset"
   },
-  "attemptSendingAssets": {
-    "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
-  },
   "attributions": {
     "message": "Attribuzioni"
   },
@@ -368,9 +365,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Clicca qui per connettere il tuo Ledger tramite WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Clicca qui per aggiungere manualmente i token."
   },
   "close": {
     "message": "Chiudi"
@@ -736,10 +730,6 @@
     "message": "Codice: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Dettagli Errore",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "Messaggio: $1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -975,9 +965,6 @@
   "loading": {
     "message": "Caricamento..."
   },
-  "loadingTokens": {
-    "message": "Caricamento Tokens..."
-  },
   "lock": {
     "message": "Disconnetti"
   },
@@ -1058,9 +1045,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Tasso di conversione non disponibile"
-  },
-  "noTransactions": {
-    "message": "Nessuna Transazione"
   },
   "noWebcamFound": {
     "message": "La fotocamera del tuo computer non è stata trovata. Riprova."

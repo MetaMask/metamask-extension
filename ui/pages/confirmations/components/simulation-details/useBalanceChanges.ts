@@ -10,15 +10,15 @@ import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { getCurrentChainId, getCurrentCurrency } from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { selectConversionRateByChainId } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
 
 import {
   BalanceChange,
   FIAT_UNAVAILABLE,
-  NATIVE_ASSET_IDENTIFIER,
+  NativeAssetIdentifier,
   TokenAssetIdentifier,
 } from './types';
 
@@ -94,17 +94,25 @@ async function fetchTokenFiatRates(
 function getNativeBalanceChange(
   nativeBalanceChange: SimulationBalanceChange | undefined,
   nativeFiatRate: number | undefined,
+  chainId: Hex,
 ): BalanceChange | undefined {
   if (!nativeBalanceChange) {
     return undefined;
   }
-  const asset = NATIVE_ASSET_IDENTIFIER;
+
+  const asset: NativeAssetIdentifier = {
+    chainId,
+    standard: TokenStandard.none,
+  };
+
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
+
   const fiatAmount = nativeFiatRate
     ? amount
         .times(convertNumberToStringWithPrecisionWarning(nativeFiatRate))
         .toNumber()
     : FIAT_UNAVAILABLE;
+
   return { asset, amount, fiatAmount };
 }
 
@@ -113,9 +121,11 @@ function getTokenBalanceChanges(
   tokenBalanceChanges: SimulationTokenBalanceChange[],
   erc20Decimals: Record<Hex, number>,
   erc20FiatRates: Partial<Record<Hex, number>>,
+  chainId: Hex,
 ): BalanceChange[] {
   return tokenBalanceChanges.map((tokenBc) => {
     const asset: TokenAssetIdentifier = {
+      chainId,
       standard: convertStandard(tokenBc.standard),
       address: tokenBc.address.toLowerCase() as Hex,
       tokenId: tokenBc.id,
@@ -140,12 +150,18 @@ function getTokenBalanceChanges(
 }
 
 // Compiles a list of balance changes from simulation data
-export const useBalanceChanges = (
-  simulationData: SimulationData | undefined,
-): { pending: boolean; value: BalanceChange[] } => {
-  const chainId = useSelector(getCurrentChainId);
+export const useBalanceChanges = ({
+  chainId,
+  simulationData,
+}: {
+  chainId: Hex;
+  simulationData?: SimulationData;
+}): { pending: boolean; value: BalanceChange[] } => {
   const fiatCurrency = useSelector(getCurrentCurrency);
-  const nativeFiatRate = useSelector(getConversionRate);
+
+  const nativeFiatRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
 
   const { nativeBalanceChange, tokenBalanceChanges = [] } =
     simulationData ?? {};
@@ -171,11 +187,14 @@ export const useBalanceChanges = (
   const nativeChange = getNativeBalanceChange(
     nativeBalanceChange,
     nativeFiatRate,
+    chainId,
   );
+
   const tokenChanges = getTokenBalanceChanges(
     tokenBalanceChanges,
     erc20Decimals.value,
     erc20FiatRates.value,
+    chainId,
   );
 
   const balanceChanges: BalanceChange[] = [

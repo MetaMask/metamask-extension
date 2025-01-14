@@ -120,7 +120,7 @@ describe('PrepareSwapPage', () => {
       },
     });
     const props = createProps();
-    const { getByText } = renderWithProvider(
+    const { getByText, getAllByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
       store,
     );
@@ -128,7 +128,7 @@ describe('PrepareSwapPage', () => {
     expect(
       getByText('USDC is only verified on 1 source', { exact: false }),
     ).toBeInTheDocument();
-    expect(getByText('etherscan.io')).toBeInTheDocument();
+    expect(getAllByText('Etherscan')[0]).toBeInTheDocument();
     expect(getByText('Continue swapping')).toBeInTheDocument();
   });
 
@@ -143,7 +143,7 @@ describe('PrepareSwapPage', () => {
       },
     });
     const props = createProps();
-    const { getByText } = renderWithProvider(
+    const { getByText, getAllByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
       store,
     );
@@ -151,7 +151,7 @@ describe('PrepareSwapPage', () => {
     expect(
       getByText('Verify this token on', { exact: false }),
     ).toBeInTheDocument();
-    expect(getByText('etherscan.io')).toBeInTheDocument();
+    expect(getAllByText('Etherscan')[0]).toBeInTheDocument();
     expect(getByText('Continue swapping')).toBeInTheDocument();
   });
 
@@ -167,11 +167,11 @@ describe('PrepareSwapPage', () => {
       },
     });
     const props = createProps();
-    const { getByText } = renderWithProvider(
+    const { getAllByText } = renderWithProvider(
       <PrepareSwapPage {...props} />,
       store,
     );
-    const blockExplorer = getByText('etherscan.io');
+    const blockExplorer = getAllByText('Etherscan')[0];
     expect(blockExplorer).toBeInTheDocument();
     fireEvent.click(blockExplorer);
     expect(global.platform.openTab).toHaveBeenCalledWith({
@@ -267,5 +267,61 @@ describe('PrepareSwapPage', () => {
     );
 
     expect(bridgeButton).toBeNull();
+  });
+
+  describe('Smart Transactions Migration Banner', () => {
+    it('shows banner when alert is enabled, opted in, and migration applied', () => {
+      const mockStore = createSwapsMockStore();
+      const store = configureMockStore(middleware)({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          alertEnabledness: {
+            smartTransactionsMigration: true,
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+            smartTransactionsMigrationApplied: true,
+          },
+        },
+      });
+
+      const props = createProps();
+      const { getByTestId } = renderWithProvider(
+        <PrepareSwapPage {...props} />,
+        store,
+      );
+
+      expect(
+        getByTestId('smart-transactions-banner-alert'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show banner when alert is disabled', () => {
+      const mockStore = createSwapsMockStore();
+      const store = configureMockStore(middleware)({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          alertEnabledness: {
+            smartTransactionsMigration: false,
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+            smartTransactionsMigrationApplied: true,
+          },
+        },
+      });
+
+      const props = createProps();
+      const { queryByTestId } = renderWithProvider(
+        <PrepareSwapPage {...props} />,
+        store,
+      );
+
+      expect(
+        queryByTestId('smart-transactions-banner-alert'),
+      ).not.toBeInTheDocument();
+    });
   });
 });

@@ -42,6 +42,11 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AuthenticationController: {
     isSignedIn: false,
+    sessionData: {
+      profile: true,
+      accessToken: false,
+      expiresIn: true,
+    },
   },
   NetworkOrderController: {
     orderedNetworkList: [],
@@ -90,7 +95,6 @@ export const SENTRY_BACKGROUND_STATE = {
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
-    usedNetworks: true,
   },
   MultichainBalancesController: {
     balances: false,
@@ -98,14 +102,37 @@ export const SENTRY_BACKGROUND_STATE = {
   BridgeController: {
     bridgeState: {
       bridgeFeatureFlags: {
-        extensionSupport: false,
-        destNetworkAllowlist: [],
-        srcNetworkAllowlist: [],
+        extensionConfig: {
+          support: false,
+          chains: {},
+        },
       },
       destTokens: {},
       destTopAssets: [],
+      destTokensLoadingStatus: true,
       srcTokens: {},
       srcTopAssets: [],
+      srcTokensLoadingStatus: true,
+      quoteRequest: {
+        walletAddress: false,
+        srcTokenAddress: true,
+        slippage: true,
+        srcChainId: true,
+        destChainId: true,
+        destTokenAddress: true,
+        srcTokenAmount: true,
+      },
+      quotes: [],
+      quotesInitialLoadTime: true,
+      quotesLastFetched: true,
+      quotesLoadingStatus: true,
+      quoteFetchError: true,
+      quotesRefreshCount: true,
+    },
+  },
+  BridgeStatusController: {
+    bridgeStatusState: {
+      txHistory: false,
     },
   },
   CronjobController: {
@@ -184,9 +211,6 @@ export const SENTRY_BACKGROUND_STATE = {
     allNfts: false,
     ignoredNfts: false,
   },
-  NotificationController: {
-    notifications: false,
-  },
   OnboardingController: {
     completedOnboarding: true,
     firstTimeFlowType: true,
@@ -210,6 +234,7 @@ export const SENTRY_BACKGROUND_STATE = {
     advancedGasFee: true,
     currentLocale: true,
     dismissSeedBackUpReminder: true,
+    overrideContentSecurityPolicyHeader: true,
     featureFlags: true,
     forgottenPassword: true,
     identities: false,
@@ -230,9 +255,11 @@ export const SENTRY_BACKGROUND_STATE = {
       showFiatInTestnets: true,
       showTestNetworks: true,
       smartTransactionsOptInStatus: true,
+      tokenNetworkFilter: {},
       showNativeTokenAsMainBalance: true,
       petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
+      privacyMode: false,
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -248,9 +275,12 @@ export const SENTRY_BACKGROUND_STATE = {
     useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
-    useRequestQueue: true,
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
+  },
+  RemoteFeatureFlagController: {
+    remoteFeatureFlags: true,
+    cacheTimestamp: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
@@ -339,6 +369,9 @@ export const SENTRY_BACKGROUND_STATE = {
       [AllProperties]: false,
     },
   },
+  TokenBalancesController: {
+    tokenBalances: false,
+  },
   TokenRatesController: {
     marketData: false,
   },
@@ -370,6 +403,8 @@ export const SENTRY_BACKGROUND_STATE = {
   UserStorageController: {
     isProfileSyncingEnabled: true,
     isProfileSyncingUpdateLoading: false,
+    hasAccountSyncingSyncedAtLeastOnce: false,
+    isAccountSyncingReadyToBeDispatched: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,
@@ -391,18 +426,20 @@ const flattenedBackgroundStateMask = Object.values(
 export const SENTRY_UI_STATE = {
   gas: true,
   history: true,
-  metamask: {
-    ...flattenedBackgroundStateMask,
-    // This property comes from the background but isn't in controller state
-    isInitialized: true,
-    // These properties are in the `metamask` slice but not in the background state
+  appState: {
     customNonceValue: true,
     isAccountMenuOpen: true,
     isNetworkMenuOpen: true,
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    slides: false,
     confirmationExchangeRates: true,
+  },
+  metamask: {
+    ...flattenedBackgroundStateMask,
+    // This property comes from the background but isn't in controller state
+    isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
     bitcoinSupportEnabled: false,

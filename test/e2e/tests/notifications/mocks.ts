@@ -1,12 +1,11 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
-import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   NotificationServicesController,
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
-import { UserStorageMockttpController } from '../../helpers/user-storage/userStorageMockttpController';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 
-const AuthMocks = AuthenticationController.Mocks;
 const NotificationMocks = NotificationServicesController.Mocks;
 const PushMocks = NotificationServicesPushController.Mocks;
 
@@ -17,29 +16,25 @@ type MockResponse = {
 };
 
 /**
- * E2E mock setup for notification APIs (Auth, UserStorage, Notifications, Push Notifications, Profile syncing)
+ * E2E mock setup for notification APIs (Notifications, Push Notifications)
  *
  * @param server - server obj used to mock our endpoints
- * @param userStorageMockttpController - optional controller to mock user storage endpoints
+ * @param userStorageMockttpControllerInstance - optional instance of UserStorageMockttpController, useful if you need persisted user storage between tests
  */
 export async function mockNotificationServices(
   server: Mockttp,
-  userStorageMockttpController?: UserStorageMockttpController,
+  userStorageMockttpControllerInstance: UserStorageMockttpController = new UserStorageMockttpController(),
 ) {
-  // Auth
-  mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
-  mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
-  mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
-
   // Storage
-  if (!userStorageMockttpController?.paths.get('accounts')) {
-    new UserStorageMockttpController().setupPath('accounts', server);
-  }
-  if (!userStorageMockttpController?.paths.get('networks')) {
-    new UserStorageMockttpController().setupPath('networks', server);
-  }
-  if (!userStorageMockttpController?.paths.get('notifications')) {
-    new UserStorageMockttpController().setupPath('notifications', server);
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.notifications,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.notifications,
+      server,
+    );
   }
 
   // Notifications

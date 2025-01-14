@@ -54,7 +54,7 @@ export type FeatureFlags = {
   smartTransactions: {
     expectedDeadline?: number;
     maxDeadline?: number;
-    returnTxHashAsap?: boolean;
+    extensionReturnTxHashAsap?: boolean;
   };
 };
 
@@ -83,7 +83,7 @@ class SmartTransactionHook {
     smartTransactions: {
       expectedDeadline?: number;
       maxDeadline?: number;
-      returnTxHashAsap?: boolean;
+      extensionReturnTxHashAsap?: boolean;
     };
   };
 
@@ -100,6 +100,8 @@ class SmartTransactionHook {
   #signedTransactionInHex?: string;
 
   #txParams: TransactionParams;
+
+  #shouldShowStatusPage: boolean;
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
@@ -123,14 +125,18 @@ class SmartTransactionHook {
     this.#isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
     this.#chainId = transactionMeta.chainId;
     this.#txParams = transactionMeta.txParams;
+    this.#shouldShowStatusPage =
+      transactionMeta.type !== TransactionType.bridge;
   }
 
   async submit() {
     const isUnsupportedTransactionTypeForSmartTransaction = this
       .#transactionMeta?.type
-      ? [TransactionType.swapAndSend, TransactionType.swapApproval].includes(
-          this.#transactionMeta.type,
-        )
+      ? [
+          TransactionType.swapAndSend,
+          TransactionType.swapApproval,
+          TransactionType.bridgeApproval,
+        ].includes(this.#transactionMeta.type)
       : false;
 
     // Will cause TransactionController to publish to the RPC provider as normal.
@@ -141,10 +147,13 @@ class SmartTransactionHook {
     ) {
       return useRegularTransactionSubmit;
     }
-    const { id: approvalFlowId } = await this.#controllerMessenger.call(
-      'ApprovalController:startFlow',
-    );
-    this.#approvalFlowId = approvalFlowId;
+
+    if (this.#shouldShowStatusPage) {
+      const { id: approvalFlowId } = await this.#controllerMessenger.call(
+        'ApprovalController:startFlow',
+      );
+      this.#approvalFlowId = approvalFlowId;
+    }
     let getFeesResponse;
     try {
       getFeesResponse = await this.#smartTransactionsController.getFees(
@@ -167,16 +176,19 @@ class SmartTransactionHook {
       if (!uuid) {
         throw new Error('No smart transaction UUID');
       }
-      const returnTxHashAsap =
-        this.#featureFlags?.smartTransactions?.returnTxHashAsap;
-      this.#addApprovalRequest({
-        uuid,
-      });
-      this.#addListenerToUpdateStatusPage({
-        uuid,
-      });
+      const extensionReturnTxHashAsap =
+        this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsap;
+
+      if (this.#shouldShowStatusPage) {
+        this.#addApprovalRequest({
+          uuid,
+        });
+        this.#addListenerToUpdateStatusPage({
+          uuid,
+        });
+      }
       let transactionHash: string | undefined | null;
-      if (returnTxHashAsap && submitTransactionResponse?.txHash) {
+      if (extensionReturnTxHashAsap && submitTransactionResponse?.txHash) {
         transactionHash = submitTransactionResponse.txHash;
       } else {
         transactionHash = await this.#waitForTransactionHash({
@@ -197,7 +209,7 @@ class SmartTransactionHook {
   }
 
   #onApproveOrReject() {
-    if (this.#approvalFlowEnded) {
+    if (!this.#shouldShowStatusPage || this.#approvalFlowEnded) {
       return;
     }
     this.#approvalFlowEnded = true;
@@ -313,7 +325,9 @@ class SmartTransactionHook {
       signedTransactions,
       signedCanceledTransactions: [],
       txParams: this.#txParams,
-      transactionMeta: this.#transactionMeta,
+      // TODO: Replace `any` with type - version mismatch between smart-transactions-controller and transaction-controller breaking type safety
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      transactionMeta: this.#transactionMeta as any,
     });
   }
 

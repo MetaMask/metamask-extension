@@ -13,6 +13,7 @@ export const FIXTURES_PREFERENCES = {
     showNftAutodetectModal: false,
     isRedesignedConfirmationsDeveloperEnabled: false,
     showConfirmationAdvancedDetails: false,
+    privacyMode: false,
   },
   featureFlags: {
     sendHexData: true,
@@ -30,7 +31,6 @@ export const FIXTURES_PREFERENCES = {
   useTokenDetection: true,
   useCurrencyRateCheck: true,
   useMultiAccountBalanceChecker: true,
-  useRequestQueue: true,
   theme: 'light',
   useExternalNameSources: true,
   useTransactionSimulations: true,

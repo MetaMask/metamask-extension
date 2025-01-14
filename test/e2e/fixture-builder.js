@@ -13,6 +13,7 @@ const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
+  DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
   ERC_4337_ACCOUNT,
@@ -39,12 +40,6 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
-        usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
-        },
       },
       NetworkController: {
         ...mockNetworkStateOld({
@@ -62,6 +57,7 @@ function onboardingFixture() {
         advancedGasFee: {},
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
+        overrideContentSecurityPolicyHeader: true,
         featureFlags: {},
         forgottenPassword: false,
         identities: {},
@@ -74,8 +70,9 @@ function onboardingFixture() {
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
+          privacyMode: false,
           showTestNetworks: false,
-          smartTransactionsOptInStatus: false,
+          smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
@@ -86,6 +83,7 @@ function onboardingFixture() {
             order: 'dsc',
             sortCallback: 'stringNumeric',
           },
+          tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
@@ -97,7 +95,6 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: true,
         isMultiAccountBalancesEnabled: true,
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
@@ -122,7 +119,8 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
         showTestNetworks: false,
-        smartTransactionsOptInStatus: false,
+        smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
       },
       QueuedRequestController: {
         queuedRequestCount: 0,
@@ -236,6 +234,12 @@ class FixtureBuilder {
     });
   }
 
+  withUseBasicFunctionalityDisabled() {
+    return this.withPreferencesController({
+      useExternalServices: false,
+    });
+  }
+
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
@@ -290,6 +294,22 @@ class FixtureBuilder {
         networkConfigurationId: {
           chainId: CHAIN_IDS.OPTIMISM,
           nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.infura.io',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnPolygon() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.POLYGON,
+          nickname: 'Polygon Mainnet',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -431,9 +451,10 @@ class FixtureBuilder {
     this.fixture.data.BridgeController = {
       bridgeState: {
         bridgeFeatureFlags: {
-          destNetworkAllowlist: [],
-          extensionSupport: false,
-          srcNetworkAllowlist: [],
+          extensionConfig: {
+            support: false,
+            chains: {},
+          },
         },
         destTokens: {},
         destTopAssets: [],
@@ -447,12 +468,13 @@ class FixtureBuilder {
   withPermissionControllerConnectedToTestDapp({
     restrictReturnedAccounts = true,
     account = '',
+    useLocalhostHostname = false,
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     return this.withPermissionController({
       subjects: {
-        [DAPP_URL]: {
-          origin: DAPP_URL,
+        [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+          origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
           permissions: {
             eth_accounts: {
               id: 'ZaqPEWxyhNCJYACFw93jE',
@@ -660,6 +682,16 @@ class FixtureBuilder {
     return this.withPreferencesController({
       preferences: {
         smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
+      },
+    });
+  }
+
+  withPreferencesControllerSmartTransactionsOptedOut() {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
+        tokenNetworkFilter: {},
       },
     });
   }
@@ -812,15 +844,7 @@ class FixtureBuilder {
           [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
         },
       }),
-      this.withPreferencesControllerUseRequestQueueEnabled(),
-    );
-  }
-
-  withPreferencesControllerUseRequestQueueEnabled() {
-    return merge(
-      this.withPreferencesController({
-        useRequestQueue: true,
-      }),
+      this,
     );
   }
 
@@ -1456,6 +1480,24 @@ class FixtureBuilder {
         },
         selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
       });
+  }
+
+  withIncomingTransactionsPreferences(incomingTransactionsPreferences) {
+    return this.withPreferencesController({
+      featureFlags: {
+        showIncomingTransactions: incomingTransactionsPreferences,
+      },
+    });
+  }
+
+  withIncomingTransactionsCache(cache) {
+    return this.withTransactionController({ lastFetchedBlockNumbers: cache });
+  }
+
+  withTransactions(transactions) {
+    return this.withTransactionController({
+      transactions,
+    });
   }
 
   build() {
