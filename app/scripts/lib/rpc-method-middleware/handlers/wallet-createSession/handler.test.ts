@@ -62,8 +62,6 @@ const createMockedHandler = () => {
   });
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
-  const addNetwork = jest.fn().mockResolvedValue(undefined);
-  const removeNetwork = jest.fn();
   const sendMetrics = jest.fn();
   const metamaskState = {
     permissionHistory: {},
@@ -89,8 +87,6 @@ const createMockedHandler = () => {
       findNetworkClientIdByChainId,
       requestPermissionApprovalForOrigin,
       grantPermissions,
-      addNetwork,
-      removeNetwork,
       metamaskState,
       sendMetrics,
       listAccounts,
@@ -103,8 +99,6 @@ const createMockedHandler = () => {
     findNetworkClientIdByChainId,
     requestPermissionApprovalForOrigin,
     grantPermissions,
-    addNetwork,
-    removeNetwork,
     metamaskState,
     sendMetrics,
     listAccounts,
