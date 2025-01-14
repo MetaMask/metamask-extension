@@ -5095,17 +5095,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^7.0.0, @metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/base-controller@npm:7.1.0"
-  dependencies:
-    "@metamask/utils": "npm:^10.0.0"
-    immer: "npm:^9.0.6"
-  checksum: 10/5a0b50c1e096cbf6483e308eddb3ca2e5e1865b803b5dba778bf635ec59657290895e21ada71c7508d8e34ff9695a192a414fd75e287d290346359ef8e23960a
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^7.1.1":
+"@metamask/base-controller@npm:^7.0.0, @metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.1.0, @metamask/base-controller@npm:^7.1.1":
   version: 7.1.1
   resolution: "@metamask/base-controller@npm:7.1.1"
   dependencies:
@@ -5718,29 +5708,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^19.0.2":
-  version: 19.0.2
-  resolution: "@metamask/keyring-controller@npm:19.0.2"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
-    "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/browser-passworder": "npm:^4.3.0"
-    "@metamask/eth-hd-keyring": "npm:^7.0.4"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
-    "@metamask/eth-simple-keyring": "npm:^6.0.5"
-    "@metamask/keyring-api": "npm:^12.0.0"
-    "@metamask/keyring-internal-api": "npm:^1.0.0"
-    "@metamask/message-manager": "npm:^11.0.3"
-    "@metamask/utils": "npm:^10.0.0"
-    async-mutex: "npm:^0.5.0"
-    ethereumjs-wallet: "npm:^1.0.1"
-    immer: "npm:^9.0.6"
-  checksum: 10/bbc140db91902dc8a9b8e1220d3c07e91858d68b9888d26df74fe300b1baf1331c5df62dde4ea71be77b485a0bca314bfc899358375490c7dbce594810bc74b6
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-controller@npm:^19.0.3":
+"@metamask/keyring-controller@npm:^19.0.2, @metamask/keyring-controller@npm:^19.0.3":
   version: 19.0.3
   resolution: "@metamask/keyring-controller@npm:19.0.3"
   dependencies:
