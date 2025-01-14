@@ -624,6 +624,7 @@
     "level": "^8.0.1",
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",
+    "madge": "^8.0.0",
     "mini-css-extract-plugin": "^2.9.1",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
