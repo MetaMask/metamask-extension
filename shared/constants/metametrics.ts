@@ -433,6 +433,14 @@ export type MetaMetricsUserTraits = {
    */
   three_box_enabled?: boolean;
   /**
+   * Does the user have privacy mode enabled?
+   */
+  privacy_mode_toggle?: boolean;
+  /**
+   * Does the user prefer seeing all tokens or current network tokens in wallet list
+   */
+  selected_network_filter?: string[];
+  /**
    * Which theme the user has selected.
    */
   theme?: string;
