@@ -26,7 +26,7 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, providerErrors } from '@metamask/rpc-errors';
+import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -5635,15 +5635,15 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
+    if (!autoApprove) {
+      await this.requestApprovalPermittedChainsPermission(origin, chainId);
+    }
+
     const caip25Caveat = this.permissionController.getCaveat(
       origin,
       Caip25EndowmentPermissionName,
       Caip25CaveatType,
     );
-
-    if (!autoApprove) {
-      await this.requestApprovalPermittedChainsPermission(origin, chainId);
-    }
 
     const caveatValueWithChainsAdded = addPermittedEthChainId(
       caip25Caveat.value,
@@ -5698,23 +5698,18 @@ export default class MetamaskController extends EventEmitter {
 
     const newCaveatValue = {
       requiredScopes: {},
-      optionalScopes: {},
+      optionalScopes: {
+        'wallet:eip155': {
+          accounts: [],
+        },
+      },
       isMultichainOrigin: false,
     };
 
-    const caveatValueWithChains = isSnapId(origin)
-      ? {
-          ...newCaveatValue,
-          optionalScopes: {
-            'wallet:eip155': {
-              accounts: [],
-            },
-          },
-        }
-      : setPermittedEthChainIds(
-          newCaveatValue,
-          legacyApproval.approvedChainIds,
-        );
+    const caveatValueWithChains = setPermittedEthChainIds(
+      newCaveatValue,
+      isSnapId(origin) ? [] : legacyApproval.approvedChainIds,
+    );
 
     const caveatValueWithAccounts = setEthAccounts(
       caveatValueWithChains,
@@ -6818,7 +6813,6 @@ export default class MetamaskController extends EventEmitter {
       return next();
     });
 
-    // TODO: Uncomment this when wallet lifecycle methods are added to api-specs
     engine.push(multichainMethodCallValidatorMiddleware);
     const middlewareMaker = makeMethodMiddlewareMaker([
       walletRevokeSession,

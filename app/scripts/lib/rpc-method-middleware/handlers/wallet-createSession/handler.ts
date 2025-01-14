@@ -9,11 +9,9 @@ import {
   bucketScopes,
   validateAndNormalizeScopes,
   Caip25Authorization,
-  ScopedProperties,
   getInternalScopesObject,
   getSessionScopes,
   NormalizedScopesObject,
-  InternalScopeString,
   getSupportedScopeObjects,
 } from '@metamask/multichain';
 import {
@@ -26,7 +24,6 @@ import {
   ValidPermission,
 } from '@metamask/permission-controller';
 import {
-  CaipChainId,
   Hex,
   isPlainObject,
   Json,
@@ -48,7 +45,6 @@ import {
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
-import { processScopedProperties, validateAndAddEip3085 } from './helpers';
 
 type AbstractPermissionController = PermissionController<
   PermissionSpecificationConstraint,
@@ -56,24 +52,30 @@ type AbstractPermissionController = PermissionController<
 >;
 
 /**
- * Handler for the `wallet_createSession` RPC method.
+ * Handler for the `wallet_createSession` RPC method which is responsible
+ * for prompting for approval and granting a CAIP-25 permission.
+ *
+ * This implementation primarily deviates from the CAIP-25 handler
+ * specification by treating all scopes as optional regardless of
+ * if they were specified in `requiredScopes` or `optionalScopes`.
+ * Additionally, provided scopes, methods, notifications, and
+ * account values that are invalid/malformed are ignored rather than
+ * causing an error to be returned.
  *
  * @param req - The request object.
  * @param res - The response object.
  * @param _next - The next middleware function.
  * @param end - The end function.
  * @param hooks - The hooks object.
- * @param hooks.listAccounts
- * @param hooks.removeNetwork
- * @param hooks.addNetwork
- * @param hooks.findNetworkClientIdByChainId
- * @param hooks.requestPermissionApprovalForOrigin
- * @param hooks.sendMetrics
- * @param hooks.metamaskState
- * @param hooks.metamaskState.metaMetricsId
- * @param hooks.metamaskState.permissionHistory
- * @param hooks.metamaskState.accounts
- * @param hooks.grantPermissions
+ * @param hooks.listAccounts - The hook that returns an array of the wallet's evm accounts.
+ * @param hooks.findNetworkClientIdByChainId - The hook that returns the networkClientId for a chainId.
+ * @param hooks.requestPermissionApprovalForOrigin - The hook that prompts the user approval for requested permissions.
+ * @param hooks.sendMetrics - The hook that tracks an analytics event.
+ * @param hooks.metamaskState - The wallet state.
+ * @param hooks.metamaskState.metaMetricsId - The analytics id.
+ * @param hooks.metamaskState.permissionHistory - The permission history object keyed by origin.
+ * @param hooks.metamaskState.accounts - The accounts object keyed by address .
+ * @param hooks.grantPermissions - The hook that grants permission for the origin.
  */
 async function walletCreateSessionHandler(
   req: JsonRpcRequest<Caip25Authorization> & { origin: string },
@@ -85,8 +87,6 @@ async function walletCreateSessionHandler(
   end: JsonRpcEngineEndCallback,
   hooks: {
     listAccounts: () => { address: string }[];
-    removeNetwork: NetworkController['removeNetwork'];
-    addNetwork: NetworkController['addNetwork'];
     findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
     requestPermissionApprovalForOrigin: (
       requestedPermissions: RequestedPermissions,
@@ -109,28 +109,15 @@ async function walletCreateSessionHandler(
   if (!isPlainObject(req.params)) {
     return end(invalidParams({ data: { request: req } }));
   }
-  const {
-    requiredScopes,
-    optionalScopes,
-    sessionProperties,
-    scopedProperties,
-  } = req.params;
+  const { requiredScopes, optionalScopes, sessionProperties } = req.params;
 
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
   }
 
-  const chainIdsForNetworksAdded: Hex[] = [];
-
   try {
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
-
-    const validScopedProperties = processScopedProperties(
-      normalizedRequiredScopes,
-      normalizedOptionalScopes,
-      scopedProperties as ScopedProperties,
-    );
 
     const supportedRequiredScopesObjects = getSupportedScopeObjects(
       normalizedRequiredScopes,
@@ -148,38 +135,21 @@ async function walletCreateSessionHandler(
       }
     };
 
-    const existsEip3085ForChainId = (chainId: Hex) => {
-      const scopeString: CaipChainId = `eip155:${parseInt(chainId, 16)}`;
-      return Boolean(validScopedProperties?.[scopeString]?.eip3085);
-    };
+    const { supportedScopes: supportedRequiredScopes } = bucketScopes(
+      supportedRequiredScopesObjects,
+      {
+        isChainIdSupported: existsNetworkClientForChainId,
+        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+      },
+    );
 
-    const {
-      supportedScopes: supportedRequiredScopes,
-      supportableScopes: supportableRequiredScopes,
-      unsupportableScopes: unsupportableRequiredScopes,
-    } = bucketScopes(supportedRequiredScopesObjects, {
-      isChainIdSupported: existsNetworkClientForChainId,
-      isChainIdSupportable: existsEip3085ForChainId,
-    });
-
-    const {
-      supportedScopes: supportedOptionalScopes,
-      supportableScopes: supportableOptionalScopes,
-      unsupportableScopes: unsupportableOptionalScopes,
-    } = bucketScopes(supportedOptionalScopesObjects, {
-      isChainIdSupported: existsNetworkClientForChainId,
-      isChainIdSupportable: existsEip3085ForChainId,
-    });
-
-    // TODO: placeholder for future CAIP-25 permission confirmation call
-    JSON.stringify({
-      supportedRequiredScopes,
-      supportableRequiredScopes,
-      unsupportableRequiredScopes,
-      supportedOptionalScopes,
-      supportableOptionalScopes,
-      unsupportableOptionalScopes,
-    });
+    const { supportedScopes: supportedOptionalScopes } = bucketScopes(
+      supportedOptionalScopesObjects,
+      {
+        isChainIdSupported: existsNetworkClientForChainId,
+        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+      },
+    );
 
     // Fetch EVM accounts from native wallet keyring
     // These addresses are lowercased already
@@ -235,27 +205,6 @@ async function walletCreateSessionHandler(
 
     const sessionScopes = getSessionScopes(caip25CaveatValue);
 
-    await Promise.all(
-      Object.entries(validScopedProperties).map(
-        async ([scopeString, scopedProperty]) => {
-          const scope = sessionScopes[scopeString as InternalScopeString];
-          if (!scope) {
-            return;
-          }
-
-          const chainId = await validateAndAddEip3085({
-            eip3085Params: scopedProperty.eip3085,
-            addNetwork: hooks.addNetwork,
-            findNetworkClientIdByChainId: hooks.findNetworkClientIdByChainId,
-          });
-
-          if (chainId) {
-            chainIdsForNetworksAdded.push(chainId);
-          }
-        },
-      ),
-    );
-
     hooks.grantPermissions({
       subject: {
         origin,
@@ -301,9 +250,6 @@ async function walletCreateSessionHandler(
     };
     return end();
   } catch (err) {
-    chainIdsForNetworksAdded.forEach((chainId) => {
-      hooks.removeNetwork(chainId);
-    });
     return end(err);
   }
 }
@@ -312,10 +258,8 @@ export const walletCreateSession = {
   methodNames: [MESSAGE_TYPE.WALLET_CREATE_SESSION],
   implementation: walletCreateSessionHandler,
   hookNames: {
-    removeNetwork: true,
     findNetworkClientIdByChainId: true,
     listAccounts: true,
-    addNetwork: true,
     requestPermissionApprovalForOrigin: true,
     grantPermissions: true,
     sendMetrics: true,

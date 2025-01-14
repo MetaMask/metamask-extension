@@ -216,7 +216,7 @@ function transformState(state: Record<string, unknown>) {
           `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
         ),
       );
-      return state;
+      continue;
     }
 
     const { permissions } = subject as {
@@ -228,7 +228,7 @@ function transformState(state: Record<string, unknown>) {
           `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof permissions}`,
         ),
       );
-      return state;
+      continue;
     }
 
     let basePermission: PermissionConstraint | undefined;
