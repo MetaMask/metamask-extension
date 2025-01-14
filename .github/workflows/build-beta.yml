@@ -40,6 +40,17 @@ jobs:
               echo "NEEDS_BETA_BUILD=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Create 'example.txt'
+        run: echo example > example.txt
+
+      - name: Upload 'example.txt' to S3
+        uses: metamask/github-tools/.github/actions/upload-s3@2d79ed1954b571342bc7ee3ffca0b357354b58c0
+        with:
+          aws-region: ${{ inputs.aws-region }}
+          role-to-assume: ${{ inputs.role-to-assume }}
+          s3-bucket: ${{ inputs.s3-bucket }}/${{ github.event.repository.name }}/${{ github.run_id }}/
+          path: example.txt
+
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
 
