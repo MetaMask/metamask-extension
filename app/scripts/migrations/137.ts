@@ -173,6 +173,45 @@ function transformState(oldState: Record<string, unknown>) {
     return oldState;
   }
 
+  for (const [chainId, networkConfiguration] of Object.entries(
+    networkConfigurationsByChainId,
+  )) {
+    if (!isObject(networkConfiguration)) {
+      global.sentry?.captureException(
+        new Error(
+          `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"] is ${typeof networkConfiguration}`,
+        ),
+      );
+      continue;
+    }
+    if (!hasProperty(networkConfiguration, 'rpcEndpoints')) {
+      global.sentry?.captureException(
+        new Error(
+          `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints is ${typeof networkConfiguration.rpcEndpoints}`,
+        ),
+      );
+      continue;
+    }
+
+    if (!Array.isArray(networkConfiguration.rpcEndpoints)) {
+      global.sentry?.captureException(
+        new Error(
+          `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints is ${typeof networkConfiguration.rpcEndpoints}`,
+        ),
+      );
+      continue;
+    }
+    for (const rpcEndpoint of networkConfiguration.rpcEndpoints) {
+      if (!isObject(rpcEndpoint)) {
+        global.sentry?.captureException(
+          new Error(
+            `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints[] is ${typeof rpcEndpoint}`,
+          ),
+        );
+      }
+    }
+  }
+
   if (
     !hasProperty(newState.SelectedNetworkController, 'domains') ||
     !isObject(newState.SelectedNetworkController.domains)
@@ -207,29 +246,14 @@ function transformState(oldState: Record<string, unknown>) {
       networkConfigurationsByChainId,
     )) {
       if (!isObject(networkConfiguration)) {
-        global.sentry?.captureException(
-          new Error(
-            `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"] is ${typeof networkConfiguration}`,
-          ),
-        );
-        return undefined;
+        continue;
       }
       if (!Array.isArray(networkConfiguration.rpcEndpoints)) {
-        global.sentry?.captureException(
-          new Error(
-            `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints is ${typeof networkConfiguration.rpcEndpoints}`,
-          ),
-        );
-        return undefined;
+        continue;
       }
       for (const rpcEndpoint of networkConfiguration.rpcEndpoints) {
         if (!isObject(rpcEndpoint)) {
-          global.sentry?.captureException(
-            new Error(
-              `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints[] is ${typeof rpcEndpoint}`,
-            ),
-          );
-          return undefined;
+          continue;
         }
         if (rpcEndpoint.networkClientId === networkClientId) {
           return chainId;
