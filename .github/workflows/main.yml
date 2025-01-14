@@ -75,11 +75,19 @@ jobs:
       - wait-for-circleci-workflow-status
     uses: ./.github/workflows/runway.yml
 
+  build-beta:
+    name: Build beta
+    # For a `pull_request` event, the branch is `github.head_ref``.
+    # For a `push` event, the branch is `github.ref_name`.
+    if: ${{ (github.head_ref || github.ref_name) != 'master' }}
+    uses: ./.github/workflows/build-beta.yml
+
   publish-prerelease:
     name: Publish prerelease
     if: ${{ github.event_name == 'pull_request' }}
     needs:
       - wait-for-circleci-workflow-status
+      - build-beta
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -100,6 +108,8 @@ jobs:
       - validate-lavamoat-policy-webapp
       - run-tests
       - wait-for-circleci-workflow-status
+      - build-beta
+      - runway
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
