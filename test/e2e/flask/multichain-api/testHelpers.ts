@@ -198,6 +198,19 @@ export const updateNetworkCheckboxes = async (
 };
 
 /**
+ * Password locks user's metamask extension.
+ *
+ * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
+ */
+export const passwordLockMetamaskExtension = async (
+  driver: Driver,
+): Promise<void> => {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElementSafe('[data-testid="account-options-menu-button"]');
+  await driver.clickElementSafe('[data-testid="global-menu-lock"]');
+};
+
+/**
  * Sometimes we need to escape colon character when using {@link Driver.findElement}, otherwise selenium will treat this as an invalid selector.
  *
  * @param selector - string to manipulate.
