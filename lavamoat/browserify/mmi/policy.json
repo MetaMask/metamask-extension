@@ -3329,6 +3329,12 @@
         "semver": true
       }
     },
+    "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": {
+      "packages": {
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "browserify>has>function-bind": true
+      }
+    },
     "string.prototype.matchall>call-bind": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
@@ -3336,6 +3342,12 @@
         "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>call-bind>set-function-length": true
+      }
+    },
+    "string.prototype.matchall>side-channel>side-channel-map>call-bound": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "@ngraveio/bc-ur>cbor-sync": {
@@ -3638,6 +3650,12 @@
         "@babel/runtime": true
       }
     },
+    "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>es-abstract>gopd": true
+      }
+    },
     "debounce-stream>duplexer": {
       "packages": {
         "stream-browserify": true
@@ -3674,11 +3692,6 @@
         "pumpify>inherits": true,
         "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
         "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true
-      }
-    },
-    "string.prototype.matchall>call-bind>es-define-property": {
-      "packages": {
-        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal>es-get-iterator": {
@@ -3978,16 +3991,22 @@
         "WeakRef": true
       },
       "packages": {
+        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-object-atoms": true,
         "browserify>has>function-bind": true,
-        "string.prototype.matchall>es-abstract>has-proto": true,
+        "string.prototype.matchall>get-intrinsic>get-proto": true,
+        "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "depcheck>is-core-module>hasown": true
+        "depcheck>is-core-module>hasown": true,
+        "string.prototype.matchall>get-intrinsic>math-intrinsics": true
       }
     },
-    "string.prototype.matchall>es-abstract>gopd": {
+    "string.prototype.matchall>get-intrinsic>get-proto": {
       "packages": {
-        "string.prototype.matchall>get-intrinsic": true
+        "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": true,
+        "string.prototype.matchall>es-abstract>es-object-atoms": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk": {
@@ -5350,11 +5369,36 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "string.prototype.matchall>side-channel": {
+    "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true
+      }
+    },
+    "string.prototype.matchall>side-channel>side-channel-map": {
+      "packages": {
+        "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
+      }
+    },
+    "string.prototype.matchall>side-channel>side-channel-weakmap": {
+      "packages": {
+        "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>get-intrinsic": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "string.prototype.matchall>side-channel>side-channel-map": true
+      }
+    },
+    "string.prototype.matchall>side-channel": {
+      "packages": {
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "string.prototype.matchall>side-channel>side-channel-list": true,
+        "string.prototype.matchall>side-channel>side-channel-map": true,
+        "string.prototype.matchall>side-channel>side-channel-weakmap": true
       }
     },
     "@metamask/profile-sync-controller>siwe": {
