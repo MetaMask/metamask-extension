@@ -111,9 +111,6 @@ workflows:
           <<: *rc_branch_only
           requires:
             - prep-deps
-      - trigger-beta-build:
-          requires:
-            - prep-deps
       - check-mmi-trigger
       - prep-deps
       - get-changed-files-with-git-diff:
@@ -233,9 +230,6 @@ workflows:
       - validate-source-maps-mv2:
           requires:
             - prep-build-mv2
-      - validate-source-maps-beta:
-          requires:
-            - trigger-beta-build
       - validate-source-maps-mmi:
           requires:
             - prep-build-mmi
@@ -256,7 +250,6 @@ workflows:
       - all-tests-pass:
           requires:
             - validate-source-maps
-            - validate-source-maps-beta
             - validate-source-maps-flask
             - validate-source-maps-mmi
             - test-mozilla-lint-mv2
@@ -292,7 +285,6 @@ workflows:
             - prep-build-test-mv2
             - prep-build-test-flask
             - prep-build-test-flask-mv2
-            - trigger-beta-build
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
             - benchmark
@@ -359,35 +351,6 @@ workflows:
             - validate-locales-only
 
 jobs:
-  trigger-beta-build:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: Build beta prod
-                command: .circleci/scripts/trigger-beta-build.sh
-            - run:
-                name: Move beta build to 'dist-beta' to avoid conflict with production build
-                command: mv ./dist ./dist-beta
-            - run:
-                name: Move beta zips to 'builds-beta' to avoid conflict with production build
-                command: mv ./builds ./builds-beta
-            - persist_to_workspace:
-                root: .
-                paths:
-                  - dist-beta
-                  - builds-beta
-
   create_release_pull_request:
     executor: node-browsers-medium
     steps:
@@ -1436,17 +1399,6 @@ jobs:
       - run:
           name: Validate source maps
           command: yarn validate-source-maps
-
-  validate-source-maps-beta:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate source maps
-          command: .circleci/scripts/validate-source-maps-beta.sh
 
   validate-source-maps-mmi:
     executor: node-browsers-small
