@@ -1389,6 +1389,7 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:unhandledError',
         'ExecutionService:outboundRequest',
         'ExecutionService:outboundResponse',
+        'KeyringController:lock',
       ],
       allowedActions: [
         `${this.permissionController.name}:getEndowments`,
