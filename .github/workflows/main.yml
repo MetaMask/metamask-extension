@@ -81,6 +81,10 @@ jobs:
     # For a `push` event, the branch is `github.ref_name`.
     if: ${{ (github.head_ref || github.ref_name) != 'master' }}
     uses: ./.github/workflows/build-beta.yml
+    with:
+      aws-region: ${{ vars.AWS_REGION }}
+      role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+      s3-bucket: ${{ vars.AWS_S3_BUCKET }}
 
   publish-prerelease:
     name: Publish prerelease

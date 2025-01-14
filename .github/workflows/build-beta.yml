@@ -2,6 +2,16 @@ name: Build beta
 
 on:
   workflow_call:
+    inputs:
+      aws-region:
+        required: true
+        type: string
+      role-to-assume:
+        required: true
+        type: string
+      s3-bucket:
+        required: true
+        type: string
 
 jobs:
   build-beta:
@@ -33,8 +43,9 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
 
-      - name: Trigger beta build
+      - name: Run beta build
         env:
+          INFURA_PROJECT_ID: 00000000000
           ENABLE_MV3: true
         run: |
           yarn build --build-type beta --platform='chrome' dist
@@ -46,17 +57,21 @@ jobs:
       - name: Move 'dist' to 'dist-beta' to avoid conflict with production build
         run: mv ./dist ./dist-beta
 
-      - name: Upload 'dist-beta'
-        uses: actions/upload-artifact@v4
+      - name: Upload dist-beta
+        uses: metamask/github-tools/.github/actions/upload-s3@2d79ed1954b571342bc7ee3ffca0b357354b58c0
         with:
-          name: dist-beta
+          aws-region: ${{ github.event.inputs.aws-region }}
+          role-to-assume: ${{ github.event.inputs.role-to-assume }}
+          s3-bucket: ${{ github.event.inputs.s3-bucket }}
           path: dist-beta
 
       - name: Move 'builds' to 'builds-beta' to avoid conflict with production build
         run: mv ./builds ./builds-beta
 
-      - name: Upload 'builds-beta'
-        uses: actions/upload-artifact@v4
+      - name: Upload builds-beta
+        uses: metamask/github-tools/.github/actions/upload-s3@2d79ed1954b571342bc7ee3ffca0b357354b58c0
         with:
-          name: builds-beta
+          aws-region: ${{ github.event.inputs.aws-region }}
+          role-to-assume: ${{ github.event.inputs.role-to-assume }}
+          s3-bucket: ${{ github.event.inputs.s3-bucket }}
           path: builds-beta
