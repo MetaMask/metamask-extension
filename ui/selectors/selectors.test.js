@@ -305,7 +305,6 @@ describe('Selectors', () => {
       },
       metamask: {
         isUnlocked: true,
-        useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
@@ -1081,11 +1080,6 @@ describe('Selectors', () => {
     expect(currentAccountwithSendEther.metadata.name).toStrictEqual(
       'Test Account',
     );
-  });
-
-  it('#getGasIsLoading', () => {
-    const gasIsLoading = selectors.getGasIsLoading(mockState);
-    expect(gasIsLoading).toStrictEqual(false);
   });
 
   it('#getTotalUnapprovedCount', () => {
