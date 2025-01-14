@@ -15,7 +15,7 @@ on:
 jobs:
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@e4fef61e6ec862ab5b1ae63605a88c5e621d20ea
+    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@c534f265e02af2f2422a3c686bb09a11bfbf4cc2
 
   test-lint-shellcheck:
     name: Test lint shellcheck
