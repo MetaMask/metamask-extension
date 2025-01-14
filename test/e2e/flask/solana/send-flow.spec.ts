@@ -256,6 +256,7 @@ describe('Send SOL flow', function (this: Suite) {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
+        mockSendTransaction: false,
       },
       async (driver) => {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87

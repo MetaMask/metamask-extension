@@ -251,7 +251,6 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
-      disableGanache: false,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList = [];
         if (mockCalls) {
