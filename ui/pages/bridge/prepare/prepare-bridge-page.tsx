@@ -207,22 +207,32 @@ const PrepareBridgePage = () => {
   }, [rotateSwitchTokens]);
 
   useEffect(() => {
+    // If there's an active quote, assume that the user is returning to the page
     if (activeQuote) {
       // Get input data from active quote
-      const { srcAsset, destAsset, destChainId } = activeQuote.quote;
-      const quoteSrcToken = fromTokens[srcAsset.address.toLowerCase()];
+      const { srcAsset, destAsset, destChainId, srcChainId } =
+        activeQuote.quote;
       const quoteDestChainId = decimalToPrefixedHex(destChainId);
-      const quoteDestToken = toTokens[destAsset.address.toLowerCase()];
+      const quoteSrcChainId = decimalToPrefixedHex(srcChainId);
 
-      if (quoteSrcToken && quoteDestToken && quoteDestChainId) {
+      if (srcAsset && destAsset && quoteDestChainId) {
         // Set inputs to values from active quote
-        dispatch(setFromTokenInputValue(null));
-        dispatch(
-          setFromToken({ ...quoteSrcToken, image: quoteSrcToken.iconUrl }),
-        );
         dispatch(setToChainId(quoteDestChainId));
         dispatch(
-          setToToken({ ...quoteDestToken, image: quoteDestToken.iconUrl }),
+          setToToken({
+            ...destAsset,
+            chainId: quoteDestChainId,
+            image: destAsset.icon,
+            address: destAsset.address.toLowerCase(),
+          }),
+        );
+        dispatch(
+          setFromToken({
+            ...srcAsset,
+            chainId: quoteSrcChainId,
+            image: srcAsset.icon,
+            address: srcAsset.address.toLowerCase(),
+          }),
         );
       }
     } else {
