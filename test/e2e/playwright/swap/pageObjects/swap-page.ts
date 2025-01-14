@@ -89,6 +89,7 @@ export class SwapPage {
     }
 
     // Enter Swap Quantity
+    await this.tokenQty.waitFor({ state: 'visible' });
     await this.tokenQty.fill(options.qty);
     this.swapQty = options.qty;
 
