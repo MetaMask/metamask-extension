@@ -116,15 +116,15 @@ jobs:
         run: |
           if [[ "${{ github.ref_name }}" == Version-v* ]]; then
             echo "Ignoring failure for changelog validation in Version-v branch."
-            echo "IGNORED=true" >> $GITHUB_ENV
+            echo "IGNORED=true" >> "$GITHUB_ENV"
           else
-            echo "IGNORED=false" >> $GITHUB_ENV
+            echo "IGNORED=false" >> "$GITHUB_ENV"
           fi
 
       - name: Set PASSED output
         id: set-output
         run: |
-          if [[ "${{ env.IGNORED }}" == "true" ]]; then
+          if [[ "${IGNORED}" == "true" ]]; then
             echo "PASSED=true" >> "$GITHUB_OUTPUT"
           else
             echo "PASSED=false" >> "$GITHUB_OUTPUT"

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.10.0]
+### Uncategorized
+- Improved phishing detection protections ([#28782](https://github.com/MetaMask/metamask-extension/pull/28782))
+
 ## [12.9.2]
 ### Changed
 - Display the "Amount" row within the advanced view of contract interaction confirmations, and whenever the amount being sent differs from the "You Send" row of the transaction simulation information by more than 5% ([#29131](https://github.com/MetaMask/metamask-extension/pull/29131))
