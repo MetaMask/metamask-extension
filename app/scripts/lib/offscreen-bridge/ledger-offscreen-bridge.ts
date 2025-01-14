@@ -8,7 +8,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-import dmk from './DeviceSdk';
+import { dmk } from './DeviceSdk';
 
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
@@ -63,7 +63,7 @@ export class LedgerOffscreenBridge
     dmk.startDiscovering().subscribe({
       next: (device) => {
         console.log('Device found:', device);
-        dmk.connect({ deviceId: device.id }).then((sessionId) => {
+        dmk.connect({ device }).then((sessionId) => {
           const connectedDevice = dmk.getConnectedDevice({ sessionId });
           console.log('Connected device:', connectedDevice);
         });
