@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - Version-v*
   pull_request:
     types:
       - opened
