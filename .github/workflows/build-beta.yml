@@ -31,11 +31,9 @@ jobs:
           fi
 
       - name: Setup environment
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: Trigger beta build
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         env:
           ENABLE_MV3: true
         run: |
@@ -43,26 +41,21 @@ jobs:
           yarn build --build-type beta --platform='chrome' prod
 
       - name: Validate source maps
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         run: yarn validate-source-maps
 
       - name: Move 'dist' to 'dist-beta' to avoid conflict with production build
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         run: mv ./dist ./dist-beta
 
       - name: Upload 'dist-beta'
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: dist-beta
           path: dist-beta
 
       - name: Move 'builds' to 'builds-beta' to avoid conflict with production build
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         run: mv ./builds ./builds-beta
 
       - name: Upload 'builds-beta'
-        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: builds-beta
