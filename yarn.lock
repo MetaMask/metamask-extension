@@ -5095,17 +5095,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^7.0.0, @metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/base-controller@npm:7.1.0"
-  dependencies:
-    "@metamask/utils": "npm:^10.0.0"
-    immer: "npm:^9.0.6"
-  checksum: 10/5a0b50c1e096cbf6483e308eddb3ca2e5e1865b803b5dba778bf635ec59657290895e21ada71c7508d8e34ff9695a192a414fd75e287d290346359ef8e23960a
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^7.1.1":
+"@metamask/base-controller@npm:^7.0.0, @metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.1.0, @metamask/base-controller@npm:^7.1.1":
   version: 7.1.1
   resolution: "@metamask/base-controller@npm:7.1.1"
   dependencies:
@@ -6084,9 +6074,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/profile-sync-controller@npm:4.0.0"
+"@metamask/profile-sync-controller@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@metamask/profile-sync-controller@npm:4.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^7.1.1"
     "@metamask/keyring-api": "npm:^13.0.0"
@@ -6106,7 +6096,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.10.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/e89f342f57a35b51526b4a5d333c19fd30e7973619bd437641a93c0e834a3785fcd3a29813deeb1621335792cd1fbddb3601b99878ccbb17fb7ffadb5654125a
+  checksum: 10/613cc0968a701b4f509557c059d7e4aad63ee1c9b8405f2428039520c7afdb476c317078388d3186b325bf47fd6740aac72c21eeac63a08a9af65e08b8222235
   languageName: node
   linkType: hard
 
@@ -6674,10 +6664,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.4.0, @noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:~1.4.0":
+"@noble/hashes@npm:1.4.0, @noble/hashes@npm:~1.4.0":
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
   checksum: 10/e156e65794c473794c52fa9d06baf1eb20903d0d96719530f523cc4450f6c721a957c544796e6efd0197b2296e7cd70efeb312f861465e17940a3e3c7e0febc6
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0":
+  version: 1.5.0
+  resolution: "@noble/hashes@npm:1.5.0"
+  checksum: 10/da7fc7af52af7afcf59810a7eea6155075464ff462ffda2572dc6d57d53e2669b1ea2ec774e814f6273f1697e567f28d36823776c9bf7068cba2a2855140f26e
   languageName: node
   linkType: hard
 
@@ -26695,7 +26692,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^15.0.1"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:^4.0.0"
+    "@metamask/profile-sync-controller": "npm:^4.0.1"
     "@metamask/providers": "npm:^18.2.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
