@@ -1,1 +1,0 @@
-export { performAutoSignIn } from './authentication';

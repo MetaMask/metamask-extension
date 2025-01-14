@@ -78,7 +78,6 @@ import { createOffscreen } from './offscreen';
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
-import { performAutoSignIn } from './lib/identity/authentication';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -781,7 +780,6 @@ async function trackAppOpened(environment) {
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
     emitAppOpenedMetricEvent();
-    await performAutoSignIn(controller);
   }
 }
 
