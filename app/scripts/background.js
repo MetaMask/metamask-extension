@@ -764,7 +764,7 @@ function emitAppOpenedMetricEvent() {
  *
  * @param {string} environment - The environment type where the app is opening
  */
-async function trackAppOpened(environment) {
+function trackAppOpened(environment) {
   // List of valid environment types to track
   const environmentTypeList = [
     ENVIRONMENT_TYPE_POPUP,
@@ -925,7 +925,7 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
-      await trackAppOpened(processName);
+      trackAppOpened(processName);
 
       initializeRemoteFeatureFlags();
 

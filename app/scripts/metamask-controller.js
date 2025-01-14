@@ -3467,10 +3467,9 @@ export default class MetamaskController extends EventEmitter {
       phishingController,
       tokenRatesController,
       accountTrackerController,
-      // Identity Controllers
-      userStorageController,
-      authenticationController,
       // Notification Controllers
+      authenticationController,
+      userStorageController,
       notificationServicesController,
       notificationServicesPushController,
     } = this;
