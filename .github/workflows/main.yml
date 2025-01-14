@@ -113,7 +113,6 @@ jobs:
       - run-tests
       - wait-for-circleci-workflow-status
       - build-beta
-      - runway
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
