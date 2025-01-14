@@ -1,6 +1,7 @@
 import { abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
+import type { Provider } from '@metamask/network-controller';
 
 /**
  * Gets the '_value' parameter of the given token transaction data
@@ -28,9 +29,7 @@ export function getTokenIdParam(tokenData: any = {}): string | undefined {
 export async function fetchTokenBalance(
   address: string,
   userAddress: string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  provider: any,
+  provider: Provider,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
