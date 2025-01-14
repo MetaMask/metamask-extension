@@ -38,7 +38,7 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const isBtc = accountType === BtcAccountType.P2wpkh;
   const isBuyableChain = isBtc ? isBtcBuyable && isBtcMainnetAccount : false;
   ///: END:ONLY_INCLUDE_IF
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
   return (
     <CoinOverview
