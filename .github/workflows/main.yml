@@ -114,7 +114,8 @@ jobs:
       - name: Check changelog lint status
         id: changelog-status
         run: |
-          if [[ "${{ github.ref_name }}" == Version-v* ]]; then
+          BRANCH_NAME="${{ github.ref_name }}"
+          if [[ "$BRANCH_NAME" == Version-v* ]]; then
             echo "Ignoring failure for changelog validation in Version-v branch."
             echo "IGNORED=true" >> "$GITHUB_ENV"
           else
