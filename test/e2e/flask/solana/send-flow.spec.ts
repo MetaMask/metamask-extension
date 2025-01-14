@@ -7,6 +7,7 @@ import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-p
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { withSolanaAccountSnap } from './common-solana';
 
+const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 describe('Send SOL flow', function (this: Suite) {
   it('with a zero balance account', async function () {
     this.timeout(120000);
@@ -29,9 +30,7 @@ describe('Send SOL flow', function (this: Suite) {
           false,
           'Continue button is enabled and it shouldn`t',
         );
-        await sendSolanaPage.setToAddress(
-          'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna',
-        );
+        await sendSolanaPage.setToAddress(commonSolanaAddress);
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -39,9 +38,62 @@ describe('Send SOL flow', function (this: Suite) {
         );
         await sendSolanaPage.setAmount('0.1');
         assert.equal(
-          await sendSolanaPage.isInsufficientBalanceDisplayed(),
+          await sendSolanaPage.check_validationErrorAppears(
+            'Insufficient balance',
+          ),
           true,
           'Insufficient balance text is not displayed',
+        );
+      },
+    );
+  });
+  it('with some field validation', async function () {
+    this.timeout(120000);
+    await withSolanaAccountSnap(
+      { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
+      async (driver) => {
+        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.clickOnSend();
+        const sendSolanaPage = new SendSolanaPage(driver);
+        assert.equal(
+          await sendSolanaPage.isContinueButtonEnabled(),
+          false,
+          'Continue button is enabled and it shouldn`t',
+        );
+
+        await sendSolanaPage.setToAddress('2433asd');
+        assert.equal(
+          await sendSolanaPage.check_validationErrorAppears(
+            'Invalid Solana address',
+          ),
+          true,
+          'Invalid Solana address should appear and it does not',
+        );
+        await sendSolanaPage.setToAddress('');
+        assert.equal(
+          await sendSolanaPage.check_validationErrorAppears(
+            'To address is required',
+          ),
+          true,
+          'To address address is required should appear and it does not',
+        );
+        await sendSolanaPage.setToAddress(commonSolanaAddress);
+        await sendSolanaPage.setAmount('0.1');
+        assert.equal(
+          await sendSolanaPage.check_validationErrorAppears(
+            'Insufficient balance',
+          ),
+          true,
+          'Insufficient balance text is not displayed',
+        );
+        await sendSolanaPage.setAmount('0');
+        assert.equal(
+          await sendSolanaPage.check_validationErrorAppears(
+            'Amount must be greater than 0',
+          ),
+          true,
+          'Amount must be greater than 0 text is not displayed',
         );
       },
     );
@@ -80,9 +132,7 @@ describe('Send SOL flow', function (this: Suite) {
           false,
           'Continue button is enabled when no address nor amount',
         );
-        await sendSolanaPage.setToAddress(
-          'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna',
-        );
+        await sendSolanaPage.setToAddress(commonSolanaAddress);
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -90,7 +140,9 @@ describe('Send SOL flow', function (this: Suite) {
         );
         await sendSolanaPage.setAmount('0.1');
         assert.equal(
-          await sendSolanaPage.isInsufficientBalanceDisplayed(),
+          await sendSolanaPage.check_validationErrorAppears(
+            'Insufficient balance',
+          ),
           false,
           'Insufficient balance text is displayed  and it should`t',
         );
@@ -225,9 +277,7 @@ describe('Send SOL flow', function (this: Suite) {
         );
         await homePage.clickOnSend();
         const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.setToAddress(
-          'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna',
-        );
+        await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
         await sendSolanaPage.clickOnContinue();

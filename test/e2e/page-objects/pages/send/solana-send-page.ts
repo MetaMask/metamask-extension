@@ -21,6 +21,21 @@ class SendSolanaPage {
     this.driver = driver;
   }
 
+  async check_validationErrorAppears(
+    validationErrorText: string,
+  ): Promise<boolean> {
+    try {
+      await this.driver.waitForSelector({
+        text: validationErrorText,
+        tag: 'p',
+      });
+      return true;
+    } catch (e) {
+      console.log(`${validationErrorText} is not displayed`);
+      return false;
+    }
+  }
+
   async setAmount(amount: string): Promise<void> {
     await this.driver.waitForSelector(this.sendAmountInput, { timeout: 10000 });
     await this.driver.fill(this.sendAmountInput, amount);
@@ -61,23 +76,6 @@ class SendSolanaPage {
       console.log('Continue button not enabled', e);
       return false;
     }
-  }
-
-  async isInsufficientBalanceDisplayed(): Promise<boolean> {
-    try {
-      await this.driver.waitForSelector(
-        {
-          text: 'Insufficient balance',
-          tag: 'p',
-        },
-        { timeout: 1000 },
-      );
-    } catch (e) {
-      console.log('Insufficient balance message not displayed', e);
-      return false;
-    }
-    console.log('Insufficient balance message displayed');
-    return true;
   }
 }
 
