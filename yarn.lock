@@ -5363,17 +5363,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:5.0.1"
+"@metamask/eth-ledger-bridge-keyring@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:8.0.1"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^4.2.0"
     "@ethereumjs/util": "npm:^8.1.0"
     "@ledgerhq/hw-app-eth": "npm:^6.39.0"
-    "@metamask/eth-sig-util": "npm:^7.0.3"
+    "@metamask/eth-sig-util": "npm:^8.0.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/5ac967d7c88c2f1f2853118cfe65ee081a90c2633fb468eae8049c3a78a4985f03130bff3071e9fb893e4c97bc55aeb2196e2b6e9e363ac6235379b80e7cfc7e
+  checksum: 10/1fe3782ab224cd55e825c41226451ec52141b12387e23a49f9786b4d1edbb1e16be02e13ec07ed26547c8d9651a9951060b72432d8adefd7975d3a313d701f2f
   languageName: node
   linkType: hard
 
@@ -25272,6 +25272,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lavamoat-core@npm:16.2.2":
+  version: 16.2.2
+  resolution: "lavamoat-core@npm:16.2.2"
+  dependencies:
+    "@babel/types": "npm:7.26.0"
+    json-stable-stringify: "npm:1.1.1"
+    lavamoat-tofu: "npm:^8.0.4"
+    merge-deep: "npm:3.0.3"
+    ses: "npm:1.9.0"
+    type-fest: "npm:4.30.0"
+  bin:
+    lavamoat-sort-policy: src/policy-sort-cli.js
+  checksum: 10/4509a560ec6f35aabf3f2915beeaefb526db06121b0bea40864c8f75d0b3e55df089bedd719392a3224dab040fa03a2593c998a66ea23ca820c29de038aa448b
+  languageName: node
+  linkType: hard
+
 "lavamoat-core@npm:^15.2.1":
   version: 15.3.0
   resolution: "lavamoat-core@npm:15.3.0"
@@ -25285,9 +25301,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^16.2.2":
+"lavamoat-core@patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch":
   version: 16.2.2
-  resolution: "lavamoat-core@npm:16.2.2"
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch::version=16.2.2&hash=c09704"
   dependencies:
     "@babel/types": "npm:7.26.0"
     json-stable-stringify: "npm:1.1.1"
@@ -25297,7 +25313,7 @@ __metadata:
     type-fest: "npm:4.30.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/4509a560ec6f35aabf3f2915beeaefb526db06121b0bea40864c8f75d0b3e55df089bedd719392a3224dab040fa03a2593c998a66ea23ca820c29de038aa448b
+  checksum: 10/d0feaa9598f50ba4fa268c227e81cf6235d12f6272f9b06d9e3e350367081ce3060c67caff9855211ce5f05f995cd342361e4cfa2bc108a7d525c0a630301efc
   languageName: node
   linkType: hard
 
@@ -26641,7 +26657,7 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^15.1.2"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^5.0.1"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^8.0.0"
