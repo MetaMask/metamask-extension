@@ -1,9 +1,5 @@
 import { strict as assert } from 'assert';
-import {
-  ACCOUNT_1,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { ACCOUNT_1, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import {
