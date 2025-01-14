@@ -26,7 +26,13 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
+import {
+  JsonRpcError,
+  providerErrors,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  rpcErrors,
+  ///: END:ONLY_INCLUDE_IF
+} from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
