@@ -37,6 +37,7 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';
+import { getRemoteFeatureFlags } from '../../../selectors';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { ProfileSyncDevSettings } from './profile-sync';
@@ -241,11 +242,54 @@ const DeveloperOptionsTab = () => {
     );
   };
 
+  const renderRemoteFeatureFlags = () => {
+    const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+    return (
+      <Box
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>Remote feature flags</span>
+          <div className="settings-page__content-description">
+            The remote feature flags here by <b>getRemoteFeatureFlags()</b> is
+            retrieved from one of the following sources:
+            <br />
+            1) manifest-flags.json file 2) RemoteFeatureFlagsController
+            <br />
+            Modify the manifest-flags.json file will change the state locally.
+          </div>
+        </div>
+        <div
+          className="settings-page__content-description"
+          data-testid="developer-options-remote-feature-flags"
+        >
+          {JSON.stringify(remoteFeatureFlags)}
+        </div>
+      </Box>
+    );
+  };
+
   return (
     <div className="settings-page__body">
       <Text className="settings-page__security-tab-sub-header__bold">
         States
       </Text>
+
+      <Text
+        className="settings-page__security-tab-sub-header"
+        color={TextColor.textAlternative}
+        paddingTop={6}
+        ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
+      >
+        Current States
+      </Text>
+      <div className="settings-page__content-padded">
+        {renderRemoteFeatureFlags()}
+      </div>
       <Text
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
@@ -254,7 +298,6 @@ const DeveloperOptionsTab = () => {
       >
         Reset States
       </Text>
-
       <div className="settings-page__content-padded">
         {renderAnnouncementReset()}
         {renderOnboardingReset()}

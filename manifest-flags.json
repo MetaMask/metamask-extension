@@ -1,0 +1,8 @@
+{
+  "remoteFeatureFlags": {
+    "testFlagForThreshold": {
+      "name": "test-flag",
+      "value": "121212"
+    }
+  }
+}

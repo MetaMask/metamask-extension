@@ -11,6 +11,7 @@ const baradDurManifest = isManifestV3
   ? require('../../app/manifest/v3/_barad_dur.json')
   : require('../../app/manifest/v2/_barad_dur.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
+const manifestFlags = require('../../manifest-flags.json');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
 const { createTask, composeSeries } = require('./task');
@@ -47,8 +48,10 @@ function createManifestTasks({
           browserVersionMap[platform],
           await getBuildModifications(buildType, platform),
           customArrayMerge,
+          {
+            _flags: manifestFlags,
+          },
         );
-
         modifyNameAndDescForNonProd(result);
 
         const dir = path.join('.', 'dist', platform);

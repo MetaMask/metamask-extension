@@ -113,6 +113,7 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import { getManifestFlags } from '../../app/scripts/lib/manifestFlags';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -2977,7 +2978,23 @@ export function getMetaMetricsDataDeletionStatus(state) {
   return state.metamask.metaMetricsDataDeletionStatus;
 }
 
+/**
+ * Gets the remote feature flags from either the manifest or state.
+ * First checks if remote feature flags exist in the manifest and returns those if present.
+ * Otherwise returns the remote feature flags from the MetaMask state that's retrieved from controller.
+ *
+ * @param {object} state - The MetaMask state object
+ * @returns {object} The remote feature flags object containing feature flag key-value pairs
+ */
 export function getRemoteFeatureFlags(state) {
+  const remoteFeatureFlagsValueFromManifest =
+    getManifestFlags().remoteFeatureFlags;
+  if (
+    remoteFeatureFlagsValueFromManifest &&
+    Object.keys(remoteFeatureFlagsValueFromManifest).length > 0
+  ) {
+    return remoteFeatureFlagsValueFromManifest;
+  }
   return state.metamask.remoteFeatureFlags;
 }
 

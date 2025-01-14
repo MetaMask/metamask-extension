@@ -1,3 +1,5 @@
+import manifestFlags from '../../../../../manifest-flags.json';
+
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
@@ -23,6 +25,17 @@ export function transformManifest(args: { lockdown: boolean; test: boolean }) {
       mainScripts.js = mainScripts.js?.filter((js) => keep.includes(js));
     }
   }
+
+  /**
+   * This function sets predefined flags in the manifest's _flags property.
+   *
+   * @param browserManifest - The Chrome extension manifest object to modify
+   */
+  function addManifestFlags(browserManifest: chrome.runtime.Manifest) {
+    browserManifest._flags = manifestFlags;
+  }
+
+  transforms.push(addManifestFlags);
 
   if (!args.lockdown) {
     // remove lockdown scripts from content_scripts

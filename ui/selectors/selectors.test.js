@@ -15,6 +15,7 @@ import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import * as selectors from './selectors';
+import * as manifestFlags from '../../app/scripts/lib/manifestFlags';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../shared/modules/selectors/networks'),
@@ -2155,16 +2156,71 @@ describe('#getConnectedSitesList', () => {
   });
 
   describe('#getRemoteFeatureFlags', () => {
-    it('returns remoteFeatureFlags in state', () => {
+    let getManifestFlagsMock;
+
+    beforeEach(() => {
+      // Mock the getManifestFlags function before each test
+      getManifestFlagsMock = jest.spyOn(manifestFlags, 'getManifestFlags').mockReturnValue({});
+    });
+
+    afterEach(() => {
+      // Clean up mock after each test
+      getManifestFlagsMock.mockRestore();
+    });
+
+    it('returns manifest flags when they are provided in manifest-flags.json', () => {
+      getManifestFlagsMock.mockReturnValue({
+        remoteFeatureFlags: {
+          manifestFlag1: true,
+          manifestFlag2: false,
+        },
+      });
+
       const state = {
         metamask: {
           remoteFeatureFlags: {
-            existingFlag: true,
+            stateFlag: true,
           },
         },
       };
+
       expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
-        existingFlag: true,
+        manifestFlag1: true,
+        manifestFlag2: false,
+      });
+    });
+
+    it('returns state flags when manifest flags are empty', () => {
+      getManifestFlagsMock.mockReturnValue({
+        remoteFeatureFlags: {},
+      });
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            stateFlag: true,
+          },
+        },
+      };
+
+      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
+        stateFlag: true,
+      });
+    });
+
+    it('returns state flags when manifest flags are undefined', () => {
+      getManifestFlagsMock.mockReturnValue({});
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            stateFlag: true,
+          },
+        },
+      };
+
+      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
+        stateFlag: true,
       });
     });
   });
