@@ -486,7 +486,6 @@ class FixtureBuilder {
                   value: [
                     selectedAccount.toLowerCase(),
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                    ERC_4337_ACCOUNT.toLowerCase(),
                   ],
                 },
               ],
