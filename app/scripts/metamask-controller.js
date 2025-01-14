@@ -6833,12 +6833,6 @@ export default class MetamaskController extends EventEmitter {
         listAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
-        addNetwork: this.networkController.addNetwork.bind(
-          this.networkController,
-        ),
-        removeNetwork: this.networkController.removeNetwork.bind(
-          this.networkController,
-        ),
         requestPermissionApprovalForOrigin: this.requestPermissionApproval.bind(
           this,
           origin,
