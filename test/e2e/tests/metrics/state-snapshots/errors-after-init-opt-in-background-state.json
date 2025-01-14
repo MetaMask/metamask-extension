@@ -239,7 +239,6 @@
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
       "smartTransactionsMigrationApplied": "boolean"
     },
     "ipfsGateway": "string",

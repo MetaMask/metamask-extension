@@ -6664,11 +6664,6 @@ export default class MetamaskController extends EventEmitter {
       .redesignedConfirmationsEnabled;
   }
 
-  isTransactionsRedesignEnabled() {
-    return this.preferencesController.state.preferences
-      .redesignedTransactionsEnabled;
-  }
-
   isConfirmationRedesignDeveloperEnabled() {
     return this.preferencesController.state.preferences
       .isRedesignedConfirmationsDeveloperEnabled;
@@ -6860,8 +6855,6 @@ export default class MetamaskController extends EventEmitter {
       },
       getRedesignedConfirmationsEnabled:
         this.isConfirmationRedesignEnabled.bind(this),
-      getRedesignedTransactionsEnabled:
-        this.isTransactionsRedesignEnabled.bind(this),
       getMethodData: (data) => {
         if (!data) {
           return null;

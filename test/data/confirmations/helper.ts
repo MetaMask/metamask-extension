@@ -29,7 +29,6 @@ export const getMockTypedSignConfirmState = (
     ...args.metamask,
     preferences: {
       ...mockState.metamask.preferences,
-      redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
     },
@@ -56,7 +55,6 @@ export const getMockTypedSignConfirmStateForRequest = (
     ...args.metamask,
     preferences: {
       ...mockState.metamask.preferences,
-      redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
     },
@@ -82,7 +80,6 @@ export const getMockPersonalSignConfirmState = (
     ...args.metamask,
     preferences: {
       ...mockState.metamask.preferences,
-      redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
     },
@@ -109,7 +106,6 @@ export const getMockPersonalSignConfirmStateForRequest = (
     ...args.metamask,
     preferences: {
       ...mockState.metamask.preferences,
-      redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
     },
@@ -134,7 +130,6 @@ export const getMockConfirmState = (args: RootState = { metamask: {} }) => ({
     preferences: {
       ...mockState.metamask.preferences,
       ...(args.metamask?.preferences as Record<string, unknown>),
-      redesignedTransactionsEnabled: true,
       redesignedConfirmationsEnabled: true,
       isRedesignedConfirmationsDeveloperEnabled: true,
     },
