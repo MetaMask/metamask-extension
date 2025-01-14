@@ -246,12 +246,12 @@ export async function withSolanaAccountSnap(
     fixtures =
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
-  // withFixturesOptions.ganacheOptions.miner.blockTime = 10;
   await withFixtures(
     {
       fixtures: fixtures.build(),
       title,
       dapp: true,
+      disableGanache: false,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList = [];
         if (mockCalls) {

@@ -15,16 +15,28 @@ describe('Send SOL flow', function (this: Suite) {
       async (driver) => {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
-        assert.equal(await homePage.check_ifSendButtonIsClickable(), true);
+        assert.equal(
+          await homePage.check_ifSendButtonIsClickable(),
+          true,
+          'Send button is enabled and it shouldn`t',
+        );
         assert.equal(await homePage.check_ifSwapButtonIsClickable(), false);
         assert.equal(await homePage.check_ifBridgeButtonIsClickable(), false);
         await homePage.clickOnSend();
         const sendSolanaPage = new SendSolanaPage(driver);
-        assert.equal(await sendSolanaPage.isContinueButtonEnabled(), false);
+        assert.equal(
+          await sendSolanaPage.isContinueButtonEnabled(),
+          false,
+          'Continue button is enabled and it shouldn`t',
+        );
         await sendSolanaPage.setToAddress(
           'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna',
         );
-        assert.equal(await sendSolanaPage.isContinueButtonEnabled(), false);
+        assert.equal(
+          await sendSolanaPage.isContinueButtonEnabled(),
+          false,
+          'Continue button is enabled and it shouldn`t',
+        );
         await sendSolanaPage.setAmount('0.1');
         assert.equal(
           await sendSolanaPage.isInsufficientBalanceDisplayed(),
@@ -49,17 +61,17 @@ describe('Send SOL flow', function (this: Suite) {
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
-          'Send button is not enabled',
+          'Send button is not enabled and it should',
         );
         assert.equal(
           await homePage.check_ifSwapButtonIsClickable(),
           false,
-          'Swap button is enabled',
+          'Swap button is enabled and it shouldn`t',
         );
         assert.equal(
           await homePage.check_ifBridgeButtonIsClickable(),
           false,
-          'Bridge button is enabled',
+          'Bridge button is enabled  and it should`t',
         );
         await homePage.clickOnSend();
         const sendSolanaPage = new SendSolanaPage(driver);
@@ -80,7 +92,7 @@ describe('Send SOL flow', function (this: Suite) {
         assert.equal(
           await sendSolanaPage.isInsufficientBalanceDisplayed(),
           false,
-          'Insufficient balance text is displayed',
+          'Insufficient balance text is displayed  and it should`t',
         );
         // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
         await sendSolanaPage.clickOnContinue();
@@ -93,41 +105,41 @@ describe('Send SOL flow', function (this: Suite) {
         assert.equal(
           await confirmSolanaPage.isTransactionDetailDisplayed('From'),
           true,
-          'From is not displayed',
+          'From is not displayed and it should',
         );
         assert.equal(
           await confirmSolanaPage.isTransactionDetailDisplayed('Amount'),
           true,
-          'Amount is not displayed',
+          'Amount is not displayed and it should',
         );
 
         assert.equal(
           await confirmSolanaPage.isTransactionDetailDisplayed('Recipient'),
           true,
-          'Recipient is not displayed',
+          'Recipient is not displayed and it should',
         );
         assert.equal(
           await confirmSolanaPage.isTransactionDetailDisplayed('Network'),
           true,
-          'Network is not displayed',
+          'Network is not displayed and it should',
         );
         assert.equal(
           await confirmSolanaPage.isTransactionDetailDisplayed(
             'Transaction speed',
           ),
           true,
-          'Transaction speed is not displayed',
+          'Transaction speed is not displayed and it should',
         );
 
         assert.equal(
           await confirmSolanaPage.isTransactionDetailDisplayed('Network fee'),
           true,
-          'Network fee is not displayed',
+          'Network fee is not displayed and it should',
         );
         assert.equal(
           await confirmSolanaPage.isTransactionDetailDisplayed('Total'),
           true,
-          'Total is not displayed',
+          'Total is not displayed and it should',
         );
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
@@ -144,27 +156,27 @@ describe('Send SOL flow', function (this: Suite) {
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('From'),
           true,
-          'From field not displayed',
+          'From field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Amount'),
           true,
-          'Amount field not displayed',
+          'Amount field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Recipient'),
           true,
-          'Recipient field not displayed',
+          'Recipient field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Network'),
           true,
-          'Network field not displayed',
+          'Network field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Transaction speed'),
           true,
-          'Transaction field not displayed',
+          'Transaction field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Network fee'),
@@ -174,12 +186,12 @@ describe('Send SOL flow', function (this: Suite) {
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Total'),
           true,
-          'Total field not displayed',
+          'Total field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.check_isViewTransactionLinkDisplayed(),
           true,
-          'View transaction link is not displayed',
+          'View transaction link is not displayed and it should',
         );
       },
     );
@@ -198,17 +210,17 @@ describe('Send SOL flow', function (this: Suite) {
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
-          'Send button is not enabled',
+          'Send button is not enabled and it should',
         );
         assert.equal(
           await homePage.check_ifSwapButtonIsClickable(),
           false,
-          'Swap button is enabled',
+          'Swap button is enabled and it should`t',
         );
         assert.equal(
           await homePage.check_ifBridgeButtonIsClickable(),
           false,
-          'Bridge button is enabled',
+          'Bridge button is enabled and it should`t',
         );
         await homePage.clickOnSend();
         const sendSolanaPage = new SendSolanaPage(driver);
@@ -235,37 +247,37 @@ describe('Send SOL flow', function (this: Suite) {
         assert.equal(
           await failedTxPage.isTransactionDetailDisplayed('From'),
           true,
-          'From field not displayed',
+          'From field not displayed and it should',
         );
         assert.equal(
           await failedTxPage.isTransactionDetailDisplayed('Amount'),
           true,
-          'Amount field not displayed',
+          'Amount field not displayed and it should',
         );
         assert.equal(
           await failedTxPage.isTransactionDetailDisplayed('Recipient'),
           true,
-          'Recipient field not displayed',
+          'Recipient field not displayed and it should',
         );
         assert.equal(
           await failedTxPage.isTransactionDetailDisplayed('Network'),
           true,
-          'Network field not displayed',
+          'Network field not displayed and it should',
         );
         assert.equal(
           await failedTxPage.isTransactionDetailDisplayed('Transaction speed'),
           true,
-          'Transaction field not displayed',
+          'Transaction field not displayed and it should',
         );
         assert.equal(
           await failedTxPage.isTransactionDetailDisplayed('Network fee'),
           true,
-          'Network fee field not displayed',
+          'Network fee field not displayed and it should',
         );
         assert.equal(
           await failedTxPage.isTransactionDetailDisplayed('Total'),
           true,
-          'Total field not displayed',
+          'Total field not displayed and it should',
         );
       },
     );

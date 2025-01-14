@@ -32,17 +32,17 @@ class SendSolanaPage {
   }
 
   async clickOnContinue(): Promise<void> {
-    const continueButton = await this.driver.findElement(
+    const continueButton = await this.driver.waitForSelector(
       {
         text: 'Continue',
         tag: 'span',
       },
-      5000,
+      { timeout: 5000 },
     ); // Since the buttons takes a bit to get enabled, this avoid test flakiness
     const clickableButton = await this.driver.findElement(
       '.confirmation-page button:nth-of-type(2)',
     );
-    await this.driver.wait(() => clickableButton.isEnabled(), 3000);
+    await this.driver.wait(() => clickableButton.isEnabled());
     await continueButton.click();
   }
 
@@ -65,10 +65,13 @@ class SendSolanaPage {
 
   async isInsufficientBalanceDisplayed(): Promise<boolean> {
     try {
-      await this.driver.waitForSelector({
-        text: 'Insufficient balance',
-        tag: 'p',
-      });
+      await this.driver.waitForSelector(
+        {
+          text: 'Insufficient balance',
+          tag: 'p',
+        },
+        { timeout: 1000 },
+      );
     } catch (e) {
       console.log('Insufficient balance message not displayed', e);
       return false;
