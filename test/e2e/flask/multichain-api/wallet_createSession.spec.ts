@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
+import { isObject } from 'lodash';
 import {
   largeDelayMs,
   WINDOW_TITLES,
@@ -385,6 +386,105 @@ describe('Multichain API', function () {
           },
         );
       });
+    });
+  });
+
+  describe('Dapp has existing session with 3 scopes and 2 accounts and then calls `wallet_createSession` with different scopes and accounts', function () {
+    const OLD_SCOPES = ['eip155:1337', 'eip155:1', 'eip155:42161'];
+    const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
+    const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
+
+    it('should entirely overwrite old session permissions by those requested in the new `wallet_createSession` request', async function () {
+      await withFixtures(
+        {
+          title: this.test?.fullTitle(),
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerTripleGanache()
+            .withPermissionControllerConnectedToTestDappMultichainWithTwoAccounts(
+              {
+                scopes: OLD_SCOPES,
+              },
+            )
+            .withTrezorAccount()
+            .build(),
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+        },
+        async ({
+          driver,
+          extensionId,
+        }: {
+          driver: Driver;
+          extensionId: string;
+        }) => {
+          await openMultichainDappAndConnectWalletWithExternallyConnectable(
+            driver,
+            extensionId,
+          );
+
+          /**
+           * We first make sure sessions exist
+           */
+          const existingGetSessionScopesResult = await getSessionScopes(driver);
+          OLD_SCOPES.forEach((scope) =>
+            assert.strictEqual(
+              isObject(existingGetSessionScopesResult.sessionScopes[scope]),
+              true,
+              `scope ${scope} should exist`,
+            ),
+          );
+
+          /**
+           * Then we make sure to deselect the existing session scopes, and create session with new scopes
+           */
+          OLD_SCOPES.forEach(
+            async (scope) =>
+              await driver.clickElement(`input[name="${scope}"]`),
+          );
+          await initCreateSessionScopes(driver, NEW_SCOPES, [TREZOR_ACCOUNT]);
+          await driver.clickElement({ text: 'Connect', tag: 'button' });
+          await driver.delay(largeDelayMs);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
+
+          const newGetSessionScopesResult = await getSessionScopes(driver);
+
+          /**
+           * Assert old sessions don't exist anymore, as they are overwritten by new session scopes
+           */
+          OLD_SCOPES.forEach((scope) =>
+            assert.strictEqual(
+              newGetSessionScopesResult.sessionScopes[scope],
+              undefined,
+              `scope ${scope} should not exist anymore`,
+            ),
+          );
+
+          const expectedNewSessionScopes = NEW_SCOPES.map((scope) => ({
+            [scope]: getExpectedSessionScope(scope, [TREZOR_ACCOUNT]),
+          }));
+
+          for (const expectedSessionScope of expectedNewSessionScopes) {
+            const [scopeName] = Object.keys(expectedSessionScope);
+            const expectedScopeObject = expectedSessionScope[scopeName];
+            const resultSessionScope =
+              newGetSessionScopesResult.sessionScopes[scopeName];
+
+            assert.deepEqual(
+              expectedScopeObject,
+              resultSessionScope,
+              `${scopeName} does not match expected scope`,
+            );
+
+            const resultAccounts = resultSessionScope.accounts;
+            assert.deepEqual(
+              expectedScopeObject.accounts,
+              resultAccounts,
+              `${expectedScopeObject.accounts} do not match accounts in scope ${scopeName}`,
+            );
+          }
+        },
+      );
     });
   });
 });
