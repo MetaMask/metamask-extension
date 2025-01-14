@@ -64,7 +64,7 @@ import Analytics from '../lib/segment/analytics';
 import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
-import { BackgroundStateProxy } from '../../../shared/types/metamask';
+import { BackgroundStateProxy } from '../../../shared/types/background';
 import type {
   PreferencesControllerState,
   PreferencesControllerGetStateAction,

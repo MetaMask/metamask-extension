@@ -1,7 +1,7 @@
 import { createProjectLogger, getKnownPropertyNames } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
-import { MemStoreControllersComposedState } from '../../../shared/types/metamask';
+import { MemStoreControllersComposedState } from '../../../shared/types/background';
 import ComposableObservableStore from './ComposableObservableStore';
 import { sanitizeUIState } from './state-utils';
 

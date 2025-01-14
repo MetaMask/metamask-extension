@@ -1,13 +1,10 @@
-import {
-  EthAccountType,
-  BtcAccountType,
-  InternalAccount,
-} from '@metamask/keyring-api';
+import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
 } from '../../shared/lib/multichain';
-import type { BackgroundStateProxy } from '../../shared/types/metamask';
+import type { BackgroundStateProxy } from '../../shared/types/background';
 
 type AccountsState = {
   metamask: Pick<BackgroundStateProxy, 'AccountsController'>;

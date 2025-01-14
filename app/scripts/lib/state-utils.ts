@@ -1,7 +1,7 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 import { getKnownPropertyNames } from '@metamask/utils';
-import { MemStoreControllersComposedState } from '../../../shared/types/metamask';
+import { MemStoreControllersComposedState } from '../../../shared/types/background';
 
 const REMOVE_PATHS = {
   SnapController: ['snapStates', 'unencryptedSnapStates'],

@@ -11,7 +11,7 @@ import { getKnownPropertyNames } from '@metamask/utils';
 import {
   MemStoreControllers,
   MemStoreControllersComposedState,
-} from '../../../shared/types/metamask';
+} from '../../../shared/types/background';
 
 /**
  * An ObservableStore that can compose the state objects of its child stores and controllers
