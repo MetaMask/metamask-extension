@@ -79,6 +79,9 @@ jobs:
 
   runway:
     name: Runway
+    # For a `pull_request` event, the branch is `github.head_ref``.
+    # For a `push` event, the branch is `github.ref_name`.
+    if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
     needs:
       - wait-for-circleci-workflow-status
     uses: ./.github/workflows/runway.yml
