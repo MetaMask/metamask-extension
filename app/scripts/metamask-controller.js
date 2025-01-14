@@ -26,7 +26,13 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
+import {
+  JsonRpcError,
+  providerErrors,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  rpcErrors,
+  ///: END:ONLY_INCLUDE_IF
+} from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -42,7 +48,6 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from '@metamask/eth-query';
-import EthJSQuery from '@metamask/ethjs-query';
 import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -1649,7 +1654,12 @@ export default class MetamaskController extends EventEmitter {
               },
             });
           },
-          onAccountSyncErroneousSituation: (profileId, situationMessage) => {
+          onAccountSyncErroneousSituation: (
+            profileId,
+            situationMessage,
+            sentryContext,
+          ) => {
+            captureException(new Error(situationMessage), sentryContext);
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
               event: MetaMetricsEventName.AccountsSyncErroneousSituation,
@@ -2128,7 +2138,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.signatureController.hub.on(
       'cancelWithReason',
-      ({ message, reason }) => {
+      ({ metadata: message, reason }) => {
         this.metaMetricsController.trackEvent({
           event: reason,
           category: MetaMetricsEventCategory.Transactions,
@@ -5817,16 +5827,13 @@ export default class MetamaskController extends EventEmitter {
 
   async estimateGas(estimateGasParams) {
     return new Promise((resolve, reject) => {
-      return new EthJSQuery(this.provider).estimateGas(
-        estimateGasParams,
-        (err, res) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(res.toString(16));
-        },
-      );
+      this.provider
+        .request({
+          method: 'eth_estimateGas',
+          params: [estimateGasParams],
+        })
+        .then((result) => resolve(result.toString(16)))
+        .catch((err) => reject(err));
     });
   }
 
@@ -6833,12 +6840,6 @@ export default class MetamaskController extends EventEmitter {
         listAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
-        addNetwork: this.networkController.addNetwork.bind(
-          this.networkController,
-        ),
-        removeNetwork: this.networkController.removeNetwork.bind(
-          this.networkController,
-        ),
         requestPermissionApprovalForOrigin: this.requestPermissionApproval.bind(
           this,
           origin,
@@ -6847,7 +6848,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
         metamaskState: this.getState(),
-        getCaveat: this.permissionController.getCaveat.bind(
+        getCaveatForOrigin: this.permissionController.getCaveat.bind(
           this.permissionController,
         ),
         getSelectedNetworkClientId: () =>

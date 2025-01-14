@@ -177,7 +177,7 @@ async function requestPermissionsImplementation(
     }
   }
 
-res.result = Object.values(grantedPermissions).filter(
+  res.result = Object.values(grantedPermissions).filter(
     (
       permission: ValidPermission<string, Caveat<string, Json>> | undefined,
     ): permission is ValidPermission<string, Caveat<string, Json>> =>
