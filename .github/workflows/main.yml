@@ -65,6 +65,12 @@ jobs:
     name: Wait for CircleCI workflow status
     uses: ./.github/workflows/wait-for-circleci-workflow-status.yml
 
+  runway:
+    name: Runway
+    needs:
+      - wait-for-circleci-workflow-status
+    uses: ./.github/workflows/runway.yml
+
   publish-prerelease:
     name: Publish prerelease
     if: ${{ github.event_name == 'pull_request' }}
@@ -90,6 +96,7 @@ jobs:
       - validate-lavamoat-policy-webapp
       - run-tests
       - wait-for-circleci-workflow-status
+      - runway
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:

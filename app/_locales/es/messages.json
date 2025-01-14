@@ -1045,9 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Solicitud de transacción"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Para proteger sus activos e información de inicio de sesión, le sugerimos que rechace la solicitud."
-  },
   "confirmationAlertModalTitle": {
     "message": "Esta solicitud es sospechosa"
   },
