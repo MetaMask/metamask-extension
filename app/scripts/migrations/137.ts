@@ -177,7 +177,7 @@ function transformState(oldState: Record<string, unknown>) {
     !hasProperty(newState.SelectedNetworkController, 'domains') ||
     !isObject(newState.SelectedNetworkController.domains)
   ) {
-    const domains = newState.SelectedNetworkController.domains;
+    const { domains } = newState.SelectedNetworkController;
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.SelectedNetworkController.domains is ${typeof domains}`,
@@ -195,9 +195,7 @@ function transformState(oldState: Record<string, unknown>) {
     return oldState;
   }
 
-  const { domains } = newState.SelectedNetworkController as {
-    domains: Record<string, unknown>;
-  };
+  const { domains } = newState.SelectedNetworkController;
 
   const getChainIdForNetworkClientId = (
     networkClientId: string,
