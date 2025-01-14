@@ -367,10 +367,12 @@ export default function OnboardingWelcome() {
                       setHasAgreedToTerms((prevValue) => !prevValue)
                     }
                   />
-                  <Text variant={TextVariant.bodyMd} marginLeft={2}>
-                    I agree to the Terms of use, which apply to my use of
-                    MetaMask and all of its features
-                  </Text>
+                  <label htmlFor="onboarding__terms-checkbox">
+                    <Text variant={TextVariant.bodyMd} marginLeft={2}>
+                      I agree to the Terms of use, which apply to my use of
+                      MetaMask and all of its features
+                    </Text>
+                  </label>
                 </Box>
                 <Button
                   onClick={handleAcceptTerms}
