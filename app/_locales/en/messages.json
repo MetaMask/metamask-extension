@@ -5123,6 +5123,9 @@
   "showPrivateKey": {
     "message": "Show private key"
   },
+  "showSRP": {
+    "message": "Show secret recovery phrase"
+  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
