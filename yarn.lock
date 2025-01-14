@@ -5706,9 +5706,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@file:.yalc/@metamask/keyring-controller::locator=metamask-crx%40workspace%3A.":
-  version: 19.0.2
-  resolution: "@metamask/keyring-controller@file:.yalc/@metamask/keyring-controller#.yalc/@metamask/keyring-controller::hash=5a1aca&locator=metamask-crx%40workspace%3A."
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@19.0.2-preview-e96ca40c":
+  version: 19.0.2-preview-e96ca40c
+  resolution: "@metamask-previews/keyring-controller@npm:19.0.2-preview-e96ca40c"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5724,8 +5724,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-    ulid: "npm:^2.3.0"
-  checksum: 10/05df32c92dbbf3d2db103985d3ea08a0be69ce78c51c0e6471fa228da923f5d3c08b1f664cc32bc4ddb725d2aa7917d90768744a60c007e43abb6573b486fe0b
+  checksum: 10/6a638de01cb8a93ba0cfd82b0bd37e745bec074421a55e304d9f16ac3853a1a820f14145e3655f343f5120531f9e61fe900873b9882ac385833f1a82af4df714
   languageName: node
   linkType: hard
 
@@ -26775,7 +26774,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^10.1.0"
-    "@metamask/keyring-controller": "file:.yalc/@metamask/keyring-controller"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.0.2-preview-e96ca40c"
     "@metamask/logging-controller": "npm:^6.0.0"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^11.0.0"
@@ -36199,15 +36198,6 @@ __metadata:
   dependencies:
     multiformats: "npm:^9.4.2"
   checksum: 10/536e70273c040484aa7d522031a9dbca1fe8c06eb58a3ace1064ba68825b4e2764d4a0b604a1c451e7b8be0986dc94f23a419cfe9334bd116716074a2d29b33d
-  languageName: node
-  linkType: hard
-
-"ulid@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "ulid@npm:2.3.0"
-  bin:
-    ulid: ./bin/cli.js
-  checksum: 10/11d7dd35072b863effb1249f66fb03070142a625610f00e5afd99af7e909b5de9cc7ebca6ede621a6bb1b7479b2489d6f064db6742b55c14bff6496ac60f290f
   languageName: node
   linkType: hard
 

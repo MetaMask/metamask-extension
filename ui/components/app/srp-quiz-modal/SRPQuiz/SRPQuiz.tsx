@@ -63,6 +63,7 @@ export type SRPQuizProps = {
   accountId: string; // The account id will be used to determine which HD keyring to use.
   isOpen: boolean;
   onClose: () => void;
+  closeAfterCompleting?: boolean;
 };
 
 export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
@@ -227,7 +228,12 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
         buttons={[
           {
             label: t('continue'),
-            onClick: () => history.push(`${REVEAL_SEED_ROUTE}/${typeIndex}`),
+            onClick: () => {
+              history.push(`${REVEAL_SEED_ROUTE}/${typeIndex}`);
+              if (props.closeAfterCompleting) {
+                props.onClose();
+              }
+            },
             variant: ButtonVariant.Primary,
             size: ButtonSize.Lg,
             'data-testid': 'srp-quiz-continue',

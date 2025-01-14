@@ -15,6 +15,7 @@ import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
@@ -728,6 +729,27 @@ export const getNetworkNameFromProviderType = (providerName) => {
  */
 export const isAbleToExportAccount = (keyringType = '') => {
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
+};
+
+export const isAbleToRevealSrp = (accountToExport, keyrings) => {
+  if (
+    accountToExport.type !== KeyringTypes.hd &&
+    accountToExport.type !== KeyringTypes.snap
+  ) {
+    return false;
+  }
+
+  // All hd keyrings can reveal their srp.
+  if (accountToExport.type === KeyringTypes.hd) {
+    return true;
+  }
+
+  // For snap accounts we must check if the entropy source was from a HD keyring.
+  const keyringId = accountToExport.metadata.keyring.id;
+  const hdKeyringsIds = keyrings
+    .filter((keyring) => keyring.type === KeyringTypes.hd)
+    .map((keyring) => keyring.id);
+  return hdKeyringsIds.includes(keyringId);
 };
 
 /**

@@ -38,21 +38,34 @@ import {
   ModalBody,
 } from '../../component-library';
 import { AddressCopyButton } from '../address-copy-button';
+import SRPQuiz from '../../app/srp-quiz-modal';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
 
-export const AccountDetails = ({ address }) => {
+export enum AttemptExportState {
+  None = 'None',
+  PrivateKey = 'PrivateKey',
+  SRP = 'SRP',
+}
+
+type AccountDetailsProps = { address: string };
+
+export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const {
+    id: accountId,
     metadata: { name },
   } = useSelector((state) => getInternalAccountByAddress(state, address));
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
-  const [attemptingExport, setAttemptingExport] = useState(false);
+  const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
+    AttemptExportState.None,
+  );
+  const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
 
   // This is only populated when the user properly authenticates
   const [privateKey, setPrivateKey] = useState('');
@@ -80,7 +93,7 @@ export const AccountDetails = ({ address }) => {
     <>
       {/* This is the Modal that says "Show private key" on top and has a few states */}
       <Modal
-        isOpen={!showHoldToReveal}
+        isOpen={!showHoldToReveal && !srpQuizModalVisible}
         onClose={onClose}
         data-testid="account-details-modal"
       >
@@ -89,18 +102,32 @@ export const AccountDetails = ({ address }) => {
           <ModalHeader
             onClose={onClose}
             onBack={
-              attemptingExport &&
-              (() => {
-                dispatch(hideWarning());
-                setPrivateKey('');
-                setAttemptingExport(false);
-              })
+              attemptingExport
+                ? () => {
+                    dispatch(hideWarning());
+                    setPrivateKey('');
+                    setAttemptingExport(AttemptExportState.None);
+                  }
+                : undefined
             }
           >
             {attemptingExport ? t('showPrivateKey') : avatar}
           </ModalHeader>
           <ModalBody>
-            {attemptingExport ? (
+            {attemptingExport === AttemptExportState.None && (
+              <AccountDetailsDisplay
+                accounts={accounts}
+                accountName={name}
+                address={address}
+                onExportClick={(attemptExportMode: AttemptExportState) => {
+                  if (attemptExportMode === AttemptExportState.SRP) {
+                    setSrpQuizModalVisible(true);
+                  }
+                  setAttemptingExport(attemptExportMode);
+                }}
+              />
+            )}
+            {attemptingExport === AttemptExportState.PrivateKey && (
               <>
                 <Box
                   display={Display.Flex}
@@ -133,13 +160,6 @@ export const AccountDetails = ({ address }) => {
                   />
                 )}
               </>
-            ) : (
-              <AccountDetailsDisplay
-                accounts={accounts}
-                accountName={name}
-                address={address}
-                onExportClick={() => setAttemptingExport(true)}
-              />
             )}
           </ModalBody>
         </ModalContent>
@@ -163,6 +183,15 @@ export const AccountDetails = ({ address }) => {
           setShowHoldToReveal(false);
         }}
         holdToRevealType="PrivateKey"
+      />
+      <SRPQuiz
+        accountId={accountId}
+        isOpen={srpQuizModalVisible}
+        onClose={() => {
+          setSrpQuizModalVisible(false);
+          onClose();
+        }}
+        closeAfterCompleting
       />
     </>
   );
