@@ -98,7 +98,7 @@ jobs:
       - check-workflows
       - test-lint-shellcheck
       - test-lint
-      - ${{ !startsWith(github.ref_name, 'Version-v') && 'test-lint-changelog' }}
+      - test-lint-changelog
       - test-lint-lockfile
       - test-yarn-dedupe
       - test-deps-depcheck
