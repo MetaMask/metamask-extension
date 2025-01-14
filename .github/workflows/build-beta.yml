@@ -59,21 +59,21 @@ jobs:
       - name: Move 'dist' to 'dist-beta' to avoid conflict with production build
         run: mv ./dist ./dist-beta
 
-      - name: Upload dist-beta
+      - name: Upload 'dist-beta' to S3
         uses: metamask/github-tools/.github/actions/upload-s3@2d79ed1954b571342bc7ee3ffca0b357354b58c0
         with:
-          aws-region: ${{ github.event.inputs.aws-region }}
-          role-to-assume: ${{ github.event.inputs.role-to-assume }}
-          s3-bucket: ${{ github.event.inputs.s3-bucket }}
+          aws-region: ${{ inputs.aws-region }}
+          role-to-assume: ${{ inputs.role-to-assume }}
+          s3-bucket: ${{ inputs.s3-bucket }}/${{ github.event.repository.name }}/${{ github.run_id }}/
           path: dist-beta
 
       - name: Move 'builds' to 'builds-beta' to avoid conflict with production build
         run: mv ./builds ./builds-beta
 
-      - name: Upload builds-beta
+      - name: Upload 'builds-beta' to S3
         uses: metamask/github-tools/.github/actions/upload-s3@2d79ed1954b571342bc7ee3ffca0b357354b58c0
         with:
-          aws-region: ${{ github.event.inputs.aws-region }}
-          role-to-assume: ${{ github.event.inputs.role-to-assume }}
-          s3-bucket: ${{ github.event.inputs.s3-bucket }}
+          aws-region: ${{ inputs.aws-region }}
+          role-to-assume: ${{ inputs.role-to-assume }}
+          s3-bucket: ${{ inputs.s3-bucket }}/${{ github.event.repository.name }}/${{ github.run_id }}/
           path: builds-beta
