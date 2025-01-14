@@ -6,6 +6,9 @@ import {
   isEvmAccountType,
   EthScopes,
   BtcScopes,
+  SolAccountType,
+  SolScopes,
+  SolMethod,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -19,6 +22,7 @@ import {
 } from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
 import mockState from '../data/mock-state.json';
+import { isBtcMainnetAddress } from '../../shared/lib/multichain';
 
 export type MockState = typeof mockState;
 
@@ -222,16 +226,26 @@ export function createMockInternalAccount({
       ];
       break;
     case EthAccountType.Erc4337:
-      scopes = [EthScopes.Mainnet]; // Restrict this Smart Account for mainnet only.
+      // NOTE: This is not really valid here, cause a SC account might not be deployed on
+      // every EVM chains, but for testing purposes we enable everything.
+      scopes = [EthScopes.Namespace];
       methods = [
         EthMethod.PatchUserOperation,
         EthMethod.PrepareUserOperation,
         EthMethod.SignUserOperation,
       ];
       break;
-    case BtcAccountType.P2wpkh:
-      scopes = [BtcScopes.Testnet];
+    case BtcAccountType.P2wpkh: {
+      // If no address is given, we fallback to testnet
+      const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
+
+      scopes = [isMainnet ? BtcScopes.Mainnet : BtcScopes.Testnet];
       methods = [BtcMethod.SendBitcoin];
+      break;
+    }
+    case SolAccountType.DataAccount:
+      scopes = [SolScopes.Mainnet, SolScopes.Testnet, SolScopes.Devnet];
+      methods = [SolMethod.SendAndConfirmTransaction];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);
