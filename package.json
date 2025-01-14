@@ -776,5 +776,5 @@
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
     }
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.5.1"
 }
