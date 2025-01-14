@@ -67,8 +67,6 @@ const CrossChainSwap = () => {
 
   useEffect(() => {
     // Reset controller and inputs before unloading the page
-    resetControllerAndInputStates();
-
     window.addEventListener('beforeunload', resetControllerAndInputStates);
 
     return () => {
