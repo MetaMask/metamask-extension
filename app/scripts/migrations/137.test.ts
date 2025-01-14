@@ -104,25 +104,6 @@ describe('migration #137', () => {
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('does nothing if SelectedNetworkController state is missing', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {},
-        NetworkController: {},
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${version}: typeof state.SelectedNetworkController is undefined`,
-      ),
-    );
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
   it('does nothing if SelectedNetworkController state is not an object', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
@@ -516,7 +497,193 @@ describe('migration #137', () => {
           domains: {},
         },
       });
+      const baseEthAccountsPermissionMetadata = {
+        id: '1',
+        date: 2,
+        invoker: 'test.com',
+        parentCapability: PermissionNames.eth_accounts,
+      };
       const currentScope = `eip155:${chainId}`;
+
+      it('skips eth_accounts and permittedChains permissions when they are missing metadata', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            ...baseData(),
+            PermissionController: {
+              subjects: {
+                'test.com': {
+                  permissions: {
+                    unrelated: {
+                      foo: 'bar',
+                    },
+                    [PermissionNames.eth_accounts]: {
+                      invoker: 'test.com',
+                      parentCapability: PermissionNames.eth_accounts,
+                      date: 2,
+                      caveats: [
+                        {
+                          type: 'restrictReturnedAccounts',
+                          value: ['0xdeadbeef', '0x999'],
+                        },
+                      ],
+                    },
+                    [PermissionNames.permittedChains]: {
+                      invoker: 'test.com',
+                      parentCapability: PermissionNames.permittedChains,
+                      date: 2,
+                      caveats: [
+                        {
+                          type: 'restrictNetworkSwitching',
+                          value: ['0xa', '0x64'],
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migrate(oldStorage);
+        expect(newStorage.data).toStrictEqual({
+          ...baseData(),
+          PermissionController: {
+            subjects: {
+              'test.com': {
+                permissions: {
+                  unrelated: {
+                    foo: 'bar',
+                  },
+                },
+              },
+            },
+          },
+        });
+      });
+
+      it('resolves a chainId for the origin even if there are other malformed network configurations', async () => {
+        const oldStorage = {
+          meta: { version: oldVersion },
+          data: {
+            ...baseData(),
+            NetworkController: {
+              selectedNetworkClientId: 'mainnet',
+              networkConfigurationsByChainId: {
+                '0xInvalid': 'invalid-network-configuration',
+                '0x1': {
+                  rpcEndpoints: [
+                    {
+                      networkClientId: 'mainnet',
+                    },
+                  ],
+                },
+                '0xa': {
+                  rpcEndpoints: [
+                    {
+                      networkClientId: 'bar',
+                    },
+                  ],
+                },
+              },
+            },
+            SelectedNetworkController: {
+              domains: {
+                'test.com': 'bar',
+              },
+            },
+            PermissionController: {
+              subjects: {
+                'test.com': {
+                  permissions: {
+                    unrelated: {
+                      foo: 'bar',
+                    },
+                    [PermissionNames.eth_accounts]: {
+                      ...baseEthAccountsPermissionMetadata,
+                      caveats: [
+                        {
+                          type: 'restrictReturnedAccounts',
+                          value: ['0xdeadbeef', '0x999'],
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migrate(oldStorage);
+        expect(newStorage.data).toStrictEqual({
+          ...baseData(),
+          NetworkController: {
+            selectedNetworkClientId: 'mainnet',
+            networkConfigurationsByChainId: {
+              '0xInvalid': 'invalid-network-configuration',
+              '0x1': {
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'mainnet',
+                  },
+                ],
+              },
+              '0xa': {
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'bar',
+                  },
+                ],
+              },
+            },
+          },
+          PermissionController: {
+            subjects: {
+              'test.com': {
+                permissions: {
+                  unrelated: {
+                    foo: 'bar',
+                  },
+                  'endowment:caip25': {
+                    ...baseEthAccountsPermissionMetadata,
+                    parentCapability: 'endowment:caip25',
+                    caveats: [
+                      {
+                        type: 'authorizedScopes',
+                        value: {
+                          isMultichainOrigin: false,
+                          requiredScopes: {},
+                          optionalScopes: {
+                            'eip155:10': {
+                              accounts: [
+                                'eip155:10:0xdeadbeef',
+                                'eip155:10:0x999',
+                              ],
+                            },
+                            'wallet:eip155': {
+                              accounts: [
+                                'wallet:eip155:0xdeadbeef',
+                                'wallet:eip155:0x999',
+                              ],
+                            },
+                          },
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+          SelectedNetworkController: {
+            domains: {
+              'test.com': 'bar',
+            },
+          },
+        });
+      });
 
       it('replaces the eth_accounts permission with a CAIP-25 permission using the eth_accounts value for the currently selected chain id when the origin does not have its own network client', async () => {
         const oldStorage = {
@@ -531,6 +698,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -556,6 +724,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -588,7 +757,7 @@ describe('migration #137', () => {
         });
       });
 
-      it('replaces the eth_accounts permission with a CAIP-25 permission using the eth_accounts value for the currently selected chain id when the origin does have its own network client that cannot be resolved', async () => {
+      it('replaces the eth_accounts permission with a CAIP-25 permission using the globally selected chain id value for the currently selected chain id when the origin does have its own network client that cannot be resolved', async () => {
         const oldStorage = {
           meta: { version: oldVersion },
           data: {
@@ -606,6 +775,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -643,6 +813,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -693,6 +864,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -723,6 +895,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -768,6 +941,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -793,6 +967,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -850,6 +1025,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -893,6 +1069,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -938,6 +1115,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.permittedChains]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictNetworkSwitching',
@@ -982,6 +1160,7 @@ describe('migration #137', () => {
                       foo: 'bar',
                     },
                     [PermissionNames.eth_accounts]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -990,6 +1169,7 @@ describe('migration #137', () => {
                       ],
                     },
                     [PermissionNames.permittedChains]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictNetworkSwitching',
@@ -1015,6 +1195,7 @@ describe('migration #137', () => {
                     foo: 'bar',
                   },
                   'endowment:caip25': {
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -1063,6 +1244,7 @@ describe('migration #137', () => {
                 'test.com': {
                   permissions: {
                     [PermissionNames.eth_accounts]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -1075,6 +1257,7 @@ describe('migration #137', () => {
                 'test2.com': {
                   permissions: {
                     [PermissionNames.eth_accounts]: {
+                      ...baseEthAccountsPermissionMetadata,
                       caveats: [
                         {
                           type: 'restrictReturnedAccounts',
@@ -1097,6 +1280,7 @@ describe('migration #137', () => {
               'test.com': {
                 permissions: {
                   'endowment:caip25': {
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -1121,6 +1305,7 @@ describe('migration #137', () => {
               'test2.com': {
                 permissions: {
                   'endowment:caip25': {
+                    ...baseEthAccountsPermissionMetadata,
                     parentCapability: 'endowment:caip25',
                     caveats: [
                       {
@@ -1148,117 +1333,4 @@ describe('migration #137', () => {
       });
     },
   );
-
-  it('skips malformed subjects while migrating valid ones', async () => {
-    const baseData = () => ({
-      PermissionController: {
-        subjects: {},
-      },
-      SelectedNetworkController: {
-        domains: {},
-      },
-      NetworkController: {
-        selectedNetworkClientId: 'mainnet',
-        networkConfigurationsByChainId: {},
-      },
-    });
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        ...baseData(),
-        PermissionController: {
-          subjects: {
-            'test.com': {
-              permissions: {
-                eth_accounts: {
-                  caveats: [
-                    {
-                      type: 'restrictReturnedAccounts',
-                      value: ['0xdeadbeef'],
-                    },
-                  ],
-                  parentCapability: 'eth_accounts',
-                },
-              },
-            },
-            'malformed.com': 'invalid-subject', // This should be skipped
-            'valid.com': {
-              permissions: {
-                eth_accounts: {
-                  caveats: [
-                    {
-                      type: 'restrictReturnedAccounts',
-                      value: ['0x123'],
-                    },
-                  ],
-                  parentCapability: 'eth_accounts',
-                },
-              },
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(expect.any(Error));
-
-    expect(newStorage.data).toStrictEqual({
-      ...baseData(),
-      PermissionController: {
-        subjects: {
-          'test.com': {
-            permissions: {
-              'endowment:caip25': {
-                parentCapability: 'endowment:caip25',
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {
-                        'wallet:eip155': {
-                          accounts: ['wallet:eip155:0xdeadbeef'],
-                        },
-                        'eip155:1': {
-                          accounts: ['eip155:1:0xdeadbeef'],
-                        },
-                      },
-                      isMultichainOrigin: false,
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          'malformed.com': 'invalid-subject',
-          'valid.com': {
-            permissions: {
-              'endowment:caip25': {
-                parentCapability: 'endowment:caip25',
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {
-                        'wallet:eip155': {
-                          accounts: ['wallet:eip155:0x123'],
-                        },
-                        'eip155:1': {
-                          accounts: ['eip155:1:0x123'],
-                        },
-                      },
-                      isMultichainOrigin: false,
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
-    });
-  });
 });
