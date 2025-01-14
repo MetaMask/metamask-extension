@@ -46,6 +46,7 @@ export default function useOriginThrottling() {
   }, [dispatch, origin]);
 
   return {
+    origin,
     resetOrigin,
     willNextRejectionReachThreshold:
       willNextRejectionReachThreshold(originState),

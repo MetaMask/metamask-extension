@@ -25,6 +25,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
 import useOriginThrottling from '../../../hooks/useOriginThrottling';
+import OriginPill from '../../../../../components/ui/origin-pill/origin-pill';
 
 const MultipleRequestContent = ({
   onConfirmationCancel,
@@ -34,11 +35,7 @@ const MultipleRequestContent = ({
   setIsTemporaryBlock: (isTemporaryBlock: boolean) => void;
 }) => {
   const t = useContext(I18nContext);
-  const { resetOrigin } = useOriginThrottling();
-
-  const title = t('spamModalTitle');
-  const description = t('spamModalDescription');
-  const temporaryBlockButton = t('spamModalTemporaryBlockButton');
+  const { origin, resetOrigin } = useOriginThrottling();
 
   return (
     <ModalContent size={ModalContentSize.Md}>
@@ -53,14 +50,15 @@ const MultipleRequestContent = ({
           color={IconColor.warningDefault}
         />
       </Box>
-      <ModalHeader endAccessory={<></>}>{title}</ModalHeader>
+      <ModalHeader endAccessory={<></>}>{t('spamModalTitle')}</ModalHeader>
+      <OriginPill style={{ marginTop: 0, marginBottom: 20 }} origin={origin} />
       <ModalBody>
         <Text
           textAlign={TextAlign.Center}
           as="p"
           data-testid="confirmation-text"
         >
-          {description}
+          {t('spamModalDescription')}
         </Text>
       </ModalBody>
       <ModalFooter
@@ -82,7 +80,7 @@ const MultipleRequestContent = ({
           size: ButtonSize.Lg,
         }}
         cancelButtonProps={{
-          children: temporaryBlockButton,
+          children: t('spamModalTemporaryBlockButton'),
           size: ButtonSize.Lg,
         }}
       />
@@ -97,9 +95,6 @@ const OriginBlockedContent = ({
 }) => {
   const t = useContext(I18nContext);
 
-  const blockedTitle = t('spamModalBlockedTitle');
-  const blockedDescription = t('spamModalBlockedDescription');
-
   return (
     <ModalContent size={ModalContentSize.Md}>
       <Box
@@ -113,14 +108,16 @@ const OriginBlockedContent = ({
           color={IconColor.successDefault}
         />
       </Box>
-      <ModalHeader endAccessory={<></>}>{blockedTitle}</ModalHeader>
+      <ModalHeader endAccessory={<></>}>
+        {t('spamModalBlockedTitle')}
+      </ModalHeader>
       <ModalBody>
         <Text
           textAlign={TextAlign.Center}
           as="p"
           data-testid="confirmation-text"
         >
-          {blockedDescription}
+          {t('spamModalBlockedDescription')}
         </Text>
       </ModalBody>
       <ModalFooter
