@@ -27,7 +27,6 @@ import {
 } from '../../../../selectors';
 import { isAddressLedger } from '../../../../ducks/metamask/metamask';
 import {
-  sanitizeMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountByAddress,
   shortenAddress,
@@ -79,6 +78,7 @@ import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-bann
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
 import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
+import { sanitizeMessage } from '../../../../../shared/modules/typed-signature';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 

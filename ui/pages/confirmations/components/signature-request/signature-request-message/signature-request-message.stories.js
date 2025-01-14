@@ -1,5 +1,5 @@
 import React from 'react';
-import { sanitizeMessage } from '../../../../../helpers/utils/util';
+import { sanitizeMessage } from '../../../../../../shared/modules/typed-signature';
 import SignatureRequestMessage from './signature-request-message';
 
 export default {

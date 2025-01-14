@@ -18,6 +18,8 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state-controller';
+import { sanitizeMessage } from '../../../../shared/modules/typed-signature';
+import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
   getSecurityAlertsAPISupportedChainIds,
@@ -191,10 +193,20 @@ function sanitizeRequest(request: JsonRpcRequest): JsonRpcRequest {
     request.method === METHOD_SIGN_TYPED_DATA_V4 ||
     request.method === METHOD_SIGN_TYPED_DATA_V3
   ) {
-    if (Array.isArray(request.params)) {
+    if (Array.isArray(request.params) && request.params[1]) {
+      const typedMessage = parseTypedDataMessage(request.params[1].toString());
+      const sanitizedMessage = sanitizeMessage(
+        typedMessage.message,
+        typedMessage.primaryType,
+        typedMessage.types,
+      );
+
       return {
         ...request,
-        params: request.params.slice(0, 2),
+        params: [
+          request.params[0],
+          JSON.stringify({ ...typedMessage, message: sanitizedMessage }),
+        ],
       };
     }
   }

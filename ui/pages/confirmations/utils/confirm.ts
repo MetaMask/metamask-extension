@@ -4,9 +4,9 @@ import {
   PRIMARY_TYPES_PERMIT,
 } from '../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
-import { sanitizeMessage } from '../../../helpers/utils/util';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
+import { sanitizeMessage } from '../../../../shared/modules/typed-signature';
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
