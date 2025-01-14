@@ -1,6 +1,6 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import NftsItems from '../../../app/assets/nfts/nfts-items/nfts-items';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -25,10 +25,22 @@ import {
   getUseNftDetection,
 } from '../../../../selectors';
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
-import { useNftsCollections } from '../../../../hooks/useNftsCollections';
-import { Collection, NFT } from './types';
+import NftGrid from '../../../app/assets/nfts/nft-grid/nft-grid';
+import { useNfts } from '../../../../hooks/useNfts';
+import { SEND_ROUTE } from '../../../../helpers/constants/routes';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { AssetType } from '../../../../../shared/constants/transaction';
+import {
+  getSendAnalyticProperties,
+  updateSendAsset,
+} from '../../../../ducks/send';
+import { NFT } from './types';
 
-type PreviouslyOwnedCollections = {
+export type PreviouslyOwnedCollections = {
   collectionName: string;
   nfts: NFT[];
 };
@@ -45,44 +57,60 @@ export function AssetPickerModalNftTab({
   renderSearch,
 }: AssetPickerModalNftTabProps) {
   const t = useI18nContext();
-
-  const {
-    collections,
-    previouslyOwnedCollection,
-  }: {
-    collections: Record<string, Collection>;
-    previouslyOwnedCollection: PreviouslyOwnedCollections;
-  } = useNftsCollections();
-
-  const collectionsKeys = Object.keys(collections);
-
-  const collectionsData = collectionsKeys.reduce((acc: unknown[], key) => {
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const collection = (collections as any)[key];
-
-    const isMatchingQuery = collection.collectionName
-      ?.toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    if (isMatchingQuery) {
-      acc.push(collection);
-      return acc;
-    }
-    return acc;
-  }, []);
-
-  // filter and exclude ERC1155
-  const collectionDataFiltered = (collectionsData as Collection[]).filter(
-    (collection) => collection.nfts.length > 0,
-  );
-
-  const hasAnyNfts = Object.keys(collectionDataFiltered).length > 0;
+  const dispatch = useDispatch();
+  const history = useHistory();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
+
+  const { currentlyOwnedNfts } = useNfts();
+  const trackEvent = useContext(MetaMetricsContext);
+  const sendAnalytics = useSelector(getSendAnalyticProperties);
+
+  const filteredNfts = currentlyOwnedNfts.reduce((acc: NFT[], nft: NFT) => {
+    // Assuming `nft` has a `name` property
+    const isMatchingQuery = nft.name
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    if (isMatchingQuery) {
+      acc.push(nft);
+    }
+
+    return acc;
+  }, []);
+
+  const hasAnyNfts = filteredNfts.length > 0;
+
+  const handleNftClick = async (nft: NFT) => {
+    trackEvent(
+      {
+        event: MetaMetricsEventName.sendAssetSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          is_destination_asset_picker_modal: false,
+          is_nft: true,
+        },
+        sensitiveProperties: {
+          ...sendAnalytics,
+          new_asset_symbol: nft.name,
+          new_asset_address: nft.address,
+        },
+      },
+      { excludeMetaMetricsId: false },
+    );
+    await dispatch(
+      updateSendAsset({
+        type: AssetType.NFT,
+        details: nft,
+        skipComputeEstimatedGasLimit: false,
+      }),
+    );
+    history.push(SEND_ROUTE);
+    onClose && onClose();
+  };
 
   if (!hasAnyNfts && nftsStillFetchingIndication) {
     return (
@@ -95,72 +123,68 @@ export function AssetPickerModalNftTab({
     );
   }
 
-  if (hasAnyNfts) {
-    return (
-      <Box className="modal-tab__main-view">
-        {renderSearch()}
-        <NftsItems
-          collections={collectionDataFiltered}
-          previouslyOwnedCollection={previouslyOwnedCollection}
-          isModal={true}
-          onCloseModal={() => onClose()}
-          showTokenId={true}
-          displayPreviouslyOwnedCollection={false}
-        />
-        {nftsStillFetchingIndication ? (
-          <Box className="modal-tab__fetching">
-            <Spinner
-              color="var(--color-warning-default)"
-              className="loading-overlay__spinner"
-            />
-          </Box>
-        ) : null}
-      </Box>
-    );
-  }
   return (
-    <>
-      {isMainnet && !useNftDetection && (
-        <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
-          <NFTsDetectionNoticeNFTsTab />
-        </Box>
+    <Box className="modal-tab__main-view">
+      {renderSearch()}
+      {hasAnyNfts ? (
+        <>
+          <Box>
+            <NftGrid nfts={filteredNfts} handleNftClick={handleNftClick} />
+          </Box>
+          {nftsStillFetchingIndication && (
+            <Box className="modal-tab__fetching">
+              <Spinner
+                color="var(--color-warning-default)"
+                className="loading-overlay__spinner"
+              />
+            </Box>
+          )}
+        </>
+      ) : (
+        <>
+          {isMainnet && !useNftDetection && (
+            <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
+              <NFTsDetectionNoticeNFTsTab />
+            </Box>
+          )}
+          <Box
+            padding={12}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+          >
+            <Box justifyContent={JustifyContent.center}>
+              <img src="./images/no-nfts.svg" />
+            </Box>
+            <Box
+              marginTop={4}
+              marginBottom={12}
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              flexDirection={FlexDirection.Column}
+              className="nfts-tab__link"
+            >
+              <Text
+                color={TextColor.textMuted}
+                variant={TextVariant.headingSm}
+                textAlign={TextAlign.Center}
+                as="h4"
+              >
+                {t('noNFTs')}
+              </Text>
+              <ButtonLink
+                size={ButtonLinkSize.Sm}
+                href={ZENDESK_URLS.NFT_TOKENS}
+                externalLink
+              >
+                {t('learnMoreUpperCase')}
+              </ButtonLink>
+            </Box>
+          </Box>
+        </>
       )}
-      <Box
-        padding={12}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-      >
-        <Box justifyContent={JustifyContent.center}>
-          <img src="./images/no-nfts.svg" />
-        </Box>
-        <Box
-          marginTop={4}
-          marginBottom={12}
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          flexDirection={FlexDirection.Column}
-          className="nfts-tab__link"
-        >
-          <Text
-            color={TextColor.textMuted}
-            variant={TextVariant.headingSm}
-            textAlign={TextAlign.Center}
-            as="h4"
-          >
-            {t('noNFTs')}
-          </Text>
-          <ButtonLink
-            size={ButtonLinkSize.Sm}
-            href={ZENDESK_URLS.NFT_TOKENS}
-            externalLink
-          >
-            {t('learnMoreUpperCase')}
-          </ButtonLink>
-        </Box>
-      </Box>
-    </>
+    </Box>
   );
 }
