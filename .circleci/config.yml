@@ -201,13 +201,6 @@ workflows:
           <<: *main_master_rc_only
           requires:
             - prep-build-test-flask-mv2
-      - test-e2e-chrome-mmi:
-          requires:
-            - prep-build-test-mmi
-            - get-changed-files-with-git-diff
-      - test-e2e-mmi-playwright:
-          requires:
-            - prep-build-test-mmi-playwright
       - test-e2e-swap-playwright - OPTIONAL:
           requires:
             - prep-build
@@ -266,7 +259,6 @@ workflows:
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
-            - test-e2e-chrome-mmi
             - test-e2e-chrome-rpc-mmi
             - test-e2e-chrome-vault-decryption
             - test-e2e-chrome-webpack
@@ -1105,72 +1097,6 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
-
-  test-e2e-chrome-mmi:
-    executor: node-browsers-medium-plus
-    parallelism: 12
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run: *check-mmi-trigger
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-mmi ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-mmi ./builds
-      - run:
-          name: test:e2e:chrome:mmi
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:mmi --build-type=mmi
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-mmi-playwright:
-    executor: playwright
-    parallelism: 2
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run: *check-mmi-trigger
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-mmi-playwright ./dist
-      - run:
-          name: Install chromium
-          command: yarn playwright install chromium
-      - run:
-          name: test:e2e:chrome:mmi
-          command: |
-            TESTFILES=$(circleci tests glob "test/e2e/playwright/mmi/**/*.spec.ts")
-            echo "$TESTFILES"
-            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=mmi" verbose --split-by=timings
-          no_output_timeout: 10m
-      - slack/notify:
-          branch_pattern: Version-v*
-          event: fail
-          mentions: <@antonio.regadas>, @ramon.acitores134
-          template: basic_fail_1
-          channel: C01LUJL3T98
-      - slack/notify:
-          branch_pattern: main
-          event: fail
-          mentions: <@antonio.regadas>, @ramon.acitores134
-          template: basic_fail_1
-          channel: C05QXJA7NP8
-      - store_artifacts:
-          name: html-report and artifacts
-          path: public/playwright/playwright-reports
-      - store_test_results:
-          name: report for pipeline integration
-          path: public/playwright/playwright-reports/junit/test-results.xml
 
   test-e2e-swap-playwright - OPTIONAL:
     executor: playwright
