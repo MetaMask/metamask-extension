@@ -99,6 +99,10 @@ const SnapUIRendererComponent = ({
 
   const { state: initialState, context } = interfaceState;
 
+  // The renderer should only have a footer if there is a default cancel action
+  // or if the footer component has been used.
+  const hasFooter = onCancel || content?.props?.children?.[1] !== undefined;
+
   return useDelineator ? (
     <SnapDelineator
       snapName={snapName}
@@ -133,7 +137,7 @@ const SnapUIRendererComponent = ({
         backgroundColor={contentBackgroundColor}
         style={{
           overflowY: 'auto',
-          marginBottom: useFooter ? '80px' : '0',
+          marginBottom: useFooter && hasFooter ? '80px' : '0',
         }}
       >
         <MetaMaskTemplateRenderer sections={sections} />
