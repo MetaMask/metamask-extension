@@ -14,8 +14,9 @@ import {
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
-import { getSelectedInternalAccount } from '../../../selectors';
+import { getSelectedInternalAccount, getSwapsDefaultToken } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
+import { isEqual } from 'lodash';
 
 type NonEvmOverviewProps = {
   className?: string;
@@ -37,6 +38,7 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const isBtc = accountType === BtcAccountType.P2wpkh;
   const isBuyableChain = isBtc ? isBtcBuyable && isBtcMainnetAccount : false;
   ///: END:ONLY_INCLUDE_IF
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 
   return (
     <CoinOverview
@@ -47,9 +49,10 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       className={className}
       chainId={chainId}
       isSigningEnabled={true}
-      isSwapsChain={false}
+      isSwapsChain={true}
+      defaultSwapsToken={defaultSwapsToken}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      isBridgeChain={false}
+      isBridgeChain={true}
       isBuyableChain={isBuyableChain}
       ///: END:ONLY_INCLUDE_IF
     />
