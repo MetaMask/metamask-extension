@@ -126,3 +126,63 @@ export const sanitizeMessage = (
   });
   return { value: sanitizedStruct, type: primaryType };
 };
+
+
+/**
+ * Recursively sanitizes a message object based on the provided types and primary type.
+ *
+ * @param message - The message object to sanitize.
+ * @param types - The types defined in the typed message.
+ * @param primaryType - The primary type of the message.
+ * @returns The sanitized message object.
+ */
+export function sanitizeMessageRecursively<T extends MessageTypes>(
+  message: Record<string, unknown>,
+  types: T,
+  primaryType: string | number,
+): Record<string, unknown> {
+  const sanitizedMessage: Record<string, unknown> = {};
+  const typeDefinition = types[primaryType];
+
+  if (!typeDefinition) {
+    return message;
+  }
+
+  for (const field of typeDefinition) {
+    const { name, type } = field;
+    if (message[name] !== undefined) {
+      if (types[type]) {
+        sanitizedMessage[name] = sanitizeMessageRecursively(
+          message[name] as Record<string, unknown>,
+          types,
+          type,
+        );
+      } else {
+        sanitizedMessage[name] = message[name];
+      }
+    }
+  }
+
+  return sanitizedMessage;
+}
+
+/**
+ * Parses and sanitizes a typed data message.
+ *
+ * @param dataToParse - The string representation of the typed data message.
+ * @returns The sanitized typed message object and the primary type.
+ */
+// export function parseAndSanitizeTypedDataMessage<T extends MessageTypes>(
+//   dataToParse: string,
+// ): { sanitizedMessage: TypedMessage<T>; primaryType: string | number } {
+//   const typedMessage = parseTypedDataMessage(dataToParse);
+//   const { message, primaryType, types } =
+//     TypedDataUtils.sanitizeData(typedMessage);
+
+//   const sanitizedMessage = {
+//     ...typedMessage,
+//     message: sanitizeMessageRecursively(message, types, primaryType),
+//   } as TypedMessage<T>;
+
+//   return { sanitizedMessage, primaryType };
+// }

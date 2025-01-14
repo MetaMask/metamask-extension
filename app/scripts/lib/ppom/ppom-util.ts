@@ -18,7 +18,10 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state-controller';
-import { sanitizeMessage } from '../../../../shared/modules/typed-signature';
+import {
+  // sanitizeMessage,
+  sanitizeMessageRecursively,
+} from '../../../../shared/modules/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
@@ -194,18 +197,30 @@ function sanitizeRequest(request: JsonRpcRequest): JsonRpcRequest {
     request.method === METHOD_SIGN_TYPED_DATA_V3
   ) {
     if (Array.isArray(request.params) && request.params[1]) {
+      // console.log('>>>>>>>> ', request.params[1].toString());
       const typedMessage = parseTypedDataMessage(request.params[1].toString());
-      const sanitizedMessage = sanitizeMessage(
+      // const sanitizedMessage = sanitizeMessage(
+      //   typedMessage.message,
+      //   typedMessage.primaryType,
+      //   typedMessage.types,
+      // );
+
+      const sanitizedMessageRecursively = sanitizeMessageRecursively(
         typedMessage.message,
         typedMessage.primaryType,
         typedMessage.types,
       );
 
+      // console.log('>>>>>>>> ', sanitizedMessageRecursively);
+
       return {
         ...request,
         params: [
           request.params[0],
-          JSON.stringify({ ...typedMessage, message: sanitizedMessage }),
+          JSON.stringify({
+            ...typedMessage,
+            message: sanitizedMessageRecursively,
+          }),
         ],
       };
     }
