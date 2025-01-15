@@ -174,8 +174,6 @@
     "await-semaphore@^0.1.1": "patch:await-semaphore@npm%3A0.1.3#./.yarn/patches/await-semaphore-npm-0.1.3-b7a0001fab.patch",
     "await-semaphore@^0.1.3": "patch:await-semaphore@npm%3A0.1.3#./.yarn/patches/await-semaphore-npm-0.1.3-b7a0001fab.patch",
     "eslint@npm:^8.7.0": "patch:eslint@npm%3A8.57.0#~/.yarn/patches/eslint-npm-8.57.0-4286e12a3a.patch",
-    "eth-query@^2.1.2": "patch:eth-query@npm%3A2.1.2#./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch",
-    "eth-query@^2.1.0": "patch:eth-query@npm%3A2.1.2#./.yarn/patches/eth-query-npm-2.1.2-7c6adc825f.patch",
     "ethereumjs-util@^7.0.10": "patch:ethereumjs-util@npm%3A7.1.5#./.yarn/patches/ethereumjs-util-npm-7.1.5-5bb4d00000.patch",
     "ethereumjs-util@^7.1.5": "patch:ethereumjs-util@npm%3A7.1.5#./.yarn/patches/ethereumjs-util-npm-7.1.5-5bb4d00000.patch",
     "ethereumjs-util@^7.1.4": "patch:ethereumjs-util@npm%3A7.1.5#./.yarn/patches/ethereumjs-util-npm-7.1.5-5bb4d00000.patch",
