@@ -418,7 +418,6 @@ export class AppStateController extends BaseController<
     onInactiveTimeout,
     extension,
   }: AppStateControllerOptions) {
-    console.log('state', state);
     super({
       name: controllerName,
       metadata: controllerMetadata,
