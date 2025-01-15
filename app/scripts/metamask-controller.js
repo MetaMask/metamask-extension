@@ -1635,7 +1635,10 @@ export default class MetamaskController extends EventEmitter {
             situationMessage,
             sentryContext,
           ) => {
-            captureException(new Error(situationMessage), sentryContext);
+            captureException(
+              new Error(`Account sync - ${situationMessage}`),
+              sentryContext,
+            );
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
               event: MetaMetricsEventName.AccountsSyncErroneousSituation,
