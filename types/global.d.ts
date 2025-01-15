@@ -21,6 +21,7 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from 'shared/constants/offscreen-communication';
+import type { Provider } from '@metamask/network-controller';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 
 declare class Platform {
@@ -233,11 +234,6 @@ type SentryObject = Sentry & {
   getMetaMetricsEnabled: () => Promise<boolean>;
 };
 
-type HttpProvider = {
-  host: string;
-  timeout: number;
-};
-
 type StateHooks = {
   getCustomTraces?: () => { [name: string]: number };
   getCleanAppState?: () => Promise<any>;
@@ -263,7 +259,7 @@ export declare global {
 
   var chrome: Chrome;
 
-  var ethereumProvider: HttpProvider;
+  var ethereumProvider: Provider;
 
   var stateHooks: StateHooks;
 
