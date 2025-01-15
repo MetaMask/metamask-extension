@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { QuoteMetadata, QuoteResponse } from '../../types/bridge';
 import {
   QuoteMetadataSerialized,
