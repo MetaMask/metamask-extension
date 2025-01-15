@@ -26,7 +26,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 // eslint-disable-next-line import/no-restricted-paths
 import { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
-import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import {
+  BridgeHistoryItem,
+  StatusTypes,
+} from '../../../../shared/types/bridge-status';
+import { isEthUsdt } from '../../../../shared/modules/bridge-utils/bridge.util';
 import {
   BackgroundState,
   getHexGasTotalUsd,
@@ -116,6 +120,7 @@ export const handleBridgeTransactionComplete = async (
   },
 ) => {
   const { bridgeHistoryItem } = payload;
+  const { hasApprovalTx, quote } = bridgeHistoryItem;
   const state = { metamask: backgroundState };
 
   const common = getCommonProperties(bridgeHistoryItem, state);
@@ -137,7 +142,7 @@ export const handleBridgeTransactionComplete = async (
     (await getTokenUsdValue({
       chainId: chain_id_destination,
       tokenAmount: destTokenAmount,
-      tokenAddress: bridgeHistoryItem.quote.destAsset.address,
+      tokenAddress: quote.destAsset.address,
       state,
     })) ?? 0;
 
@@ -149,13 +154,36 @@ export const handleBridgeTransactionComplete = async (
   const quoted_vs_used_gas_ratio =
     usd_quoted_gas && usd_actual_gas ? usd_quoted_gas / usd_actual_gas : 0;
 
+  // Get tx statuses
+  const source_transaction = StatusTypes.COMPLETE;
+  const destination_transaction = StatusTypes.COMPLETE;
+
+  const isEthUsdtTx = isEthUsdt(
+    decimalToPrefixedHex(quote.srcChainId),
+    quote.srcAsset.address,
+  );
+
+  const allowanceResetTransaction =
+    isEthUsdtTx && hasApprovalTx
+      ? { allowance_reset_transaction: StatusTypes.COMPLETE }
+      : undefined;
+  const approvalTransaction = hasApprovalTx
+    ? { approval_transaction: StatusTypes.COMPLETE }
+    : undefined;
+
   const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionCompleted] & {
     action_type: ActionType;
   } = {
     ...common,
+
     usd_actual_return: destTokenUsdValue,
     quote_vs_execution_ratio,
     quoted_vs_used_gas_ratio,
+
+    ...allowanceResetTransaction,
+    ...approvalTransaction,
+    source_transaction,
+    destination_transaction,
   };
 
   trackEvent({
@@ -167,7 +195,7 @@ export const handleBridgeTransactionComplete = async (
 
 /**
  * This handles the BridgeStatusController:bridgeTransactionFailed event.
- * This is to capture bridge txs that fail on the destination chain.
+ * This is to capture bridge txs that fail on the source or destination chain.
  * We directly receive the bridgeHistoryItem as a payload here.
  *
  * @param payload
@@ -186,11 +214,42 @@ export const handleBridgeTransactionFailed = async (
   },
 ) => {
   const { bridgeHistoryItem } = payload;
+  const { hasApprovalTx, quote, status } = bridgeHistoryItem;
   const state = { metamask: backgroundState };
   const common = getCommonProperties(bridgeHistoryItem, state);
+
+  // Get tx statuses
+  const source_transaction = status.srcChain.txHash
+    ? StatusTypes.COMPLETE
+    : StatusTypes.FAILED;
+  const destination_transaction = status.destChain?.txHash
+    ? StatusTypes.COMPLETE
+    : StatusTypes.FAILED;
+
+  const isEthUsdtTx = isEthUsdt(
+    decimalToPrefixedHex(quote.srcChainId),
+    quote.srcAsset.address,
+  );
+
+  const allowance_reset_transaction =
+    isEthUsdtTx && hasApprovalTx && status.srcChain.txHash
+      ? StatusTypes.COMPLETE
+      : StatusTypes.FAILED;
+  const approval_transaction =
+    hasApprovalTx && status.srcChain.txHash
+      ? StatusTypes.COMPLETE
+      : StatusTypes.FAILED;
+
   const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionFailed] =
     {
       ...common,
+
+      allowance_reset_transaction,
+      approval_transaction,
+      source_transaction,
+      destination_transaction,
+
+      error_message: '',
     };
 
   trackEvent({
@@ -224,11 +283,82 @@ export const handleTransactionFailedTypeBridge = async (
   const { transactionMeta: txMeta } = payload;
   const bridgeHistoryItem =
     state.metamask.bridgeStatusState.txHistory[txMeta.id];
+  const { quote, hasApprovalTx } = bridgeHistoryItem;
 
   const common = getCommonProperties(bridgeHistoryItem, state);
+
+  // Get tx statuses
+  const source_transaction = StatusTypes.FAILED;
+
+  const isEthUsdtTx = isEthUsdt(
+    decimalToPrefixedHex(quote.srcChainId),
+    quote.srcAsset.address,
+  );
+  const allowanceResetTransaction =
+    isEthUsdtTx && hasApprovalTx
+      ? { allowance_reset_transaction: StatusTypes.COMPLETE }
+      : undefined;
+  const approvalTransaction = hasApprovalTx
+    ? { approval_transaction: StatusTypes.COMPLETE }
+    : undefined;
+
   const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionFailed] =
     {
       ...common,
+
+      ...allowanceResetTransaction,
+      ...approvalTransaction,
+      source_transaction,
+
+      error_message: payload.error,
+    };
+
+  trackEvent({
+    category: MetaMetricsEventCategory.CrossChainSwaps,
+    event: MetaMetricsEventName.ActionFailed,
+    properties,
+  });
+};
+
+export const handleTransactionFailedTypeBridgeApproval = async (
+  payload: TransactionControllerTransactionFailedEvent['payload'][0],
+  {
+    backgroundState,
+    trackEvent,
+  }: {
+    backgroundState: BackgroundState;
+    trackEvent: TrackEvent;
+  },
+) => {
+  const state = { metamask: backgroundState };
+  const { transactionMeta: txMeta } = payload;
+  const bridgeHistoryItem =
+    state.metamask.bridgeStatusState.txHistory[txMeta.id];
+  const { quote, hasApprovalTx } = bridgeHistoryItem;
+
+  const common = getCommonProperties(bridgeHistoryItem, state);
+
+  // Get tx statuses
+  const isEthUsdtTx = isEthUsdt(
+    decimalToPrefixedHex(quote.srcChainId),
+    quote.srcAsset.address,
+  );
+  const allowanceResetTransaction =
+    isEthUsdtTx && hasApprovalTx
+      ? { allowance_reset_transaction: StatusTypes.FAILED }
+      : undefined;
+  const approvalTransaction = hasApprovalTx
+    ? { approval_transaction: StatusTypes.FAILED }
+    : undefined;
+
+  const properties: CrossChainSwapsEventProperties[MetaMetricsEventName.ActionFailed] =
+    {
+      ...common,
+
+      ...allowanceResetTransaction,
+      ...approvalTransaction,
+
+      error_message: payload.error,
     };
 
   trackEvent({
