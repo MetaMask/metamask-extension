@@ -1,4 +1,5 @@
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -152,21 +153,27 @@ export function validateAddEthereumChainParams(params) {
   };
 }
 
-export async function switchChain(
+export async function switchChain({
   res,
   end,
   chainId,
   networkClientId,
   approvalFlowId,
-  {
+  origin,
+  fromNetworkConfiguration,
+  toNetworkConfiguration,
+  hooks: {
     isAddFlow,
     setActiveNetwork,
     endApprovalFlow,
     getCaveat,
     requestPermittedChainsPermission,
     grantPermittedChainsPermissionIncremental,
+    requestUserApproval,
+    hasApprovalRequestsForOrigin,
+    rejectApprovalRequestsForOrigin,
   },
-) {
+}) {
   try {
     const { value: permissionedChainIds } =
       getCaveat({
@@ -183,7 +190,18 @@ export async function switchChain(
       } else {
         await requestPermittedChainsPermission([chainId]);
       }
+    } else if (hasApprovalRequestsForOrigin() && !isAddFlow) {
+      await requestUserApproval({
+        origin,
+        type: ApprovalType.SwitchEthereumChain,
+        requestData: {
+          toNetworkConfiguration,
+          fromNetworkConfiguration,
+        },
+      });
     }
+
+    rejectApprovalRequestsForOrigin();
 
     await setActiveNetwork(networkClientId);
     res.result = null;

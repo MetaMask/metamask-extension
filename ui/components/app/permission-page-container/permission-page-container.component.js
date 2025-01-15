@@ -46,6 +46,7 @@ export default class PermissionPageContainer extends Component {
     }),
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
+    originPendingApprovals: PropTypes.array,
   };
 
   static defaultProps = {
@@ -183,6 +184,7 @@ export default class PermissionPageContainer extends Component {
       targetSubjectMetadata,
       selectedAccounts,
       allAccountsSelected,
+      originPendingApprovals,
     } = this.props;
 
     const requestedPermissions = this.getRequestedPermissions();
@@ -218,6 +220,7 @@ export default class PermissionPageContainer extends Component {
           selectedPermissions={requestedPermissions}
           selectedAccounts={selectedAccounts}
           allAccountsSelected={allAccountsSelected}
+          originPendingApprovals={originPendingApprovals}
         />
         <Box
           display={Display.Flex}

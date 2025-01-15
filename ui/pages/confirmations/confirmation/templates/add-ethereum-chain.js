@@ -162,10 +162,25 @@ const ERROR_CONNECTING_TO_RPC = {
   },
 };
 
+const PENDING_CONFIRMATIONS = {
+  id: 'PENDING_CONFIRMATIONS',
+  severity: Severity.Warning,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'switchingNetworksCancelsPendingConfirmations',
+      },
+    },
+  },
+};
+
 async function getAlerts(pendingApproval, data) {
+  const { origin } = pendingApproval;
   const alerts = [];
 
-  const originIsMetaMask = pendingApproval.origin === 'metamask';
+  const originIsMetaMask = origin === 'metamask';
   if (originIsMetaMask && Boolean(data.matchedChain)) {
     return [];
   }
@@ -184,9 +199,11 @@ async function getAlerts(pendingApproval, data) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
-    const { origin } = new URL(pendingApproval.requestData.rpcUrl);
+    const { origin: rpcOrigin } = new URL(pendingApproval.requestData.rpcUrl);
     if (
-      !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
+      !data.matchedChain.rpc
+        ?.map((rpc) => new URL(rpc).origin)
+        .includes(rpcOrigin)
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }
@@ -205,6 +222,14 @@ async function getAlerts(pendingApproval, data) {
 
   if (alerts.length) {
     alerts.push(MISMATCHED_CHAIN_RECOMMENDATION);
+  }
+
+  const originPendingApprovals = data.pendingApprovals.filter(
+    (approval) => approval.origin === origin,
+  );
+
+  if (originPendingApprovals.length > 1) {
+    alerts.push(PENDING_CONFIRMATIONS);
   }
 
   return alerts;

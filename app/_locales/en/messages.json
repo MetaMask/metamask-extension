@@ -3337,7 +3337,7 @@
     "description": "$1 represents the network name"
   },
   "networkSwitchMessage": {
-    "message": "Network switched to $1",
+    "message": "Network Switched: $1",
     "description": "$1 represents the network name"
   },
   "networkURL": {
@@ -3928,6 +3928,10 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "originSwitchMessage": {
+    "message": "dApp Switched: $1",
+    "description": "$1 represents the dApp origin"
   },
   "osTheme": {
     "message": "System"
@@ -6206,7 +6210,7 @@
     "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
-    "message": "Switching networks will cancel all pending confirmations"
+    "message": "Switching networks will cancel pending confirmations from the dApp"
   },
   "symbol": {
     "message": "Symbol"

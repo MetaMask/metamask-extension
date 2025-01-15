@@ -20,12 +20,8 @@ const PENDING_TX_DROP_NOTICE = {
   },
 };
 
-async function getAlerts(_pendingApproval, state) {
-  const alerts = [];
-  if (state.unapprovedTxsCount > 0) {
-    alerts.push(PENDING_TX_DROP_NOTICE);
-  }
-  return alerts;
+async function getAlerts(_pendingApproval, _state) {
+  return [PENDING_TX_DROP_NOTICE];
 }
 
 function getValues(pendingApproval, t, actions) {
@@ -56,6 +52,14 @@ function getValues(pendingApproval, t, actions) {
           boxProps: {
             padding: [0, 4, 0, 4],
           },
+        },
+      },
+      {
+        element: 'OriginPill',
+        key: 'origin-pill',
+        props: {
+          origin: pendingApproval.origin,
+          dataTestId: 'signature-origin-pill',
         },
       },
       {

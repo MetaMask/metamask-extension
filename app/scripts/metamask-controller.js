@@ -29,7 +29,6 @@ import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscripti
 import {
   errorCodes as rpcErrorCodes,
   JsonRpcError,
-  providerErrors,
 } from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
@@ -133,11 +132,6 @@ import {
   LensNameProvider,
 } from '@metamask/name-controller';
 
-import {
-  QueuedRequestController,
-  createQueuedRequestMiddleware,
-} from '@metamask/queued-request-controller';
-
 import { UserOperationController } from '@metamask/user-operation-controller';
 
 import {
@@ -165,11 +159,6 @@ import {
   NotificationServicesPushController,
   NotificationServicesController,
 } from '@metamask/notification-services-controller';
-import {
-  methodsRequiringNetworkSwitch,
-  methodsThatCanSwitchNetworkWithoutApproval,
-  methodsThatShouldBeEnqueued,
-} from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -380,7 +369,10 @@ import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
-import { rejectAllApprovals } from './lib/approval/utils';
+import {
+  rejectAllApprovals,
+  rejectOriginApprovals,
+} from './lib/approval/utils';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -390,7 +382,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
   APP_STATE_UNLOCK_CHANGE: 'AppStateController:unlockChange',
-  QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
   METAMASK_NOTIFICATIONS_LIST_UPDATED:
     'NotificationServicesController:notificationsListUpdated',
   METAMASK_NOTIFICATIONS_MARK_AS_READ:
@@ -506,15 +497,6 @@ export default class MetamaskController extends EventEmitter {
       currentAppVersion: version,
     });
 
-    // next, we will initialize the controllers
-    // controller initialization order matters
-    const clearPendingConfirmations = () => {
-      this.encryptionPublicKeyController.clearUnapproved();
-      this.decryptMessageController.clearUnapproved();
-      this.signatureController.clearUnapproved();
-      this.approvalController.clear(providerErrors.userRejectedRequest());
-    };
-
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
@@ -528,28 +510,6 @@ export default class MetamaskController extends EventEmitter {
         ApprovalType.EthGetEncryptionPublicKey,
         ApprovalType.EthDecrypt,
       ],
-    });
-
-    this.queuedRequestController = new QueuedRequestController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'QueuedRequestController',
-        allowedActions: [
-          'NetworkController:getState',
-          'NetworkController:setActiveNetwork',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-        ],
-        allowedEvents: ['SelectedNetworkController:stateChange'],
-      }),
-      shouldRequestSwitchNetwork: ({ method }) =>
-        methodsRequiringNetworkSwitch.includes(method),
-      canRequestSwitchNetworkWithoutApproval: ({ method }) =>
-        methodsThatCanSwitchNetworkWithoutApproval.includes(method),
-      clearPendingConfirmations,
-      showApprovalRequest: () => {
-        if (this.approvalController.getTotalApprovalCount() > 0) {
-          opts.showUserConfirmation();
-        }
-      },
     });
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -2404,12 +2364,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    // clear unapproved transactions and messages when the network will change
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkWillChange',
-      clearPendingConfirmations.bind(this),
-    );
-
     // RemoteFeatureFlagController has subscription for preferences changes
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -2663,7 +2617,6 @@ export default class MetamaskController extends EventEmitter {
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
         NotificationServicesController: this.notificationServicesController,
-        QueuedRequestController: this.queuedRequestController,
         NotificationServicesPushController:
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
@@ -5952,20 +5905,6 @@ export default class MetamaskController extends EventEmitter {
     // Append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
-    // Add a middleware that will switch chain on each request (as needed)
-    const requestQueueMiddleware = createQueuedRequestMiddleware({
-      enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
-        this.queuedRequestController,
-      ),
-      shouldEnqueueRequest: (request) => {
-        return methodsThatShouldBeEnqueued.includes(request.method);
-      },
-      // This will be removed once we can actually remove useRequestQueue state
-      // i.e. unrevert https://github.com/MetaMask/core/pull/5065
-      useRequestQueue: () => true,
-    });
-    engine.push(requestQueueMiddleware);
-
     // If the origin is not in the selectedNetworkController's `domains` state
     // when the provider engine is created, the selectedNetworkController will
     // fetch the globally selected networkClient from the networkController and wrap
@@ -6095,6 +6034,10 @@ export default class MetamaskController extends EventEmitter {
         endApprovalFlow: this.approvalController.endFlow.bind(
           this.approvalController,
         ),
+        hasApprovalRequestsForOrigin: () =>
+          this.approvalController.has({ origin }),
+        rejectApprovalRequestsForOrigin: () =>
+          this.rejectOriginPendingApprovals(origin),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -7156,6 +7099,20 @@ export default class MetamaskController extends EventEmitter {
       deleteInterface,
     });
   }
+
+  rejectOriginPendingApprovals = (origin) => {
+    const deleteInterface = (id) =>
+      this.controllerMessenger.call(
+        'SnapInterfaceController:deleteInterface',
+        id,
+      );
+
+    rejectOriginApprovals({
+      approvalController: this.approvalController,
+      deleteInterface,
+      origin,
+    });
+  };
 
   async _onAccountChange(newAddress) {
     const permittedAccountsMap = getPermittedAccountsByOrigin(

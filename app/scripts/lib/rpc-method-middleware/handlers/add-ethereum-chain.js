@@ -24,6 +24,8 @@ const addEthereumChain = {
     getCaveat: true,
     requestPermittedChainsPermission: true,
     grantPermittedChainsPermissionIncremental: true,
+    hasApprovalRequestsForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
   },
 };
 
@@ -46,6 +48,8 @@ async function addEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermission,
     grantPermittedChainsPermissionIncremental,
+    hasApprovalRequestsForOrigin,
+    rejectApprovalRequestsForOrigin,
   },
 ) {
   let validParams;
@@ -193,13 +197,32 @@ async function addEthereumChainHandler(
     const { networkClientId } =
       updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
-    return switchChain(res, end, chainId, networkClientId, approvalFlowId, {
-      isAddFlow: true,
-      setActiveNetwork,
-      endApprovalFlow,
-      getCaveat,
-      requestPermittedChainsPermission,
-      grantPermittedChainsPermissionIncremental,
+    const fromNetworkConfiguration = getNetworkConfigurationByChainId(
+      currentChainIdForDomain,
+    );
+
+    const toNetworkConfiguration = getNetworkConfigurationByChainId(chainId);
+
+    return switchChain({
+      res,
+      end,
+      chainId,
+      networkClientId,
+      approvalFlowId,
+      fromNetworkConfiguration,
+      toNetworkConfiguration,
+      origin,
+      hooks: {
+        isAddFlow: true,
+        setActiveNetwork,
+        endApprovalFlow,
+        getCaveat,
+        requestPermittedChainsPermission,
+        grantPermittedChainsPermissionIncremental,
+        requestUserApproval,
+        hasApprovalRequestsForOrigin,
+        rejectApprovalRequestsForOrigin,
+      },
     });
   } else if (approvalFlowId) {
     endApprovalFlow({ id: approvalFlowId });
