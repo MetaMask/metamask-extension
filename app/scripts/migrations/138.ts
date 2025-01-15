@@ -43,6 +43,8 @@ const PermissionNames = {
   permittedChains: 'endowment:permitted-chains',
 } as const;
 
+// a map of the networks built into the extension at the time of this migration to their chain IDs
+// copied from shared/constants/network.ts (https://github.com/MetaMask/metamask-extension/blob/5b5c04a16fb7937a6e9d59b1debe4713978ef39d/shared/constants/network.ts#L535)
 const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
   ['sepolia', '0xaa36a7'],
   ['mainnet', '0x1'],
