@@ -617,13 +617,6 @@ export async function loadStateFromPersistence() {
   versionedData =
     (await localStore.get()) || migrator.generateInitialState(firstTimeState);
 
-  // Force migration 137 to inject scopes on existing accounts:
-  // versionedData.meta.version = 136;
-  // console.log(
-  //  'HACK -- Forcing version to force account.scopes migration, using: ',
-  //  versionedData.meta.version,
-  // );
-
   // check if somehow state is empty
   // this should never happen but new error reporting suggests that it has
   // for a small number of users
