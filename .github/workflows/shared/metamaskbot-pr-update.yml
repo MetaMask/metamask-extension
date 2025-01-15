@@ -1,0 +1,194 @@
+name: MetaMask Bot PR Update Template
+
+# TODO: Migrate the following workflows to use this shared template:
+# - .github/workflows/update-attributions.yml
+# - .github/workflows/update-lavamoat-policies.yml
+#
+# These workflows share similar patterns for:
+# - PR fork checking
+# - Comment reactions
+# - Environment setup
+# - Change detection
+# - Committing changes
+# - Status checking and notifications
+
+on:
+  workflow_call:
+    inputs:
+      bot_command:
+        required: true
+        type: string
+      commit_message:
+        required: true
+        type: string
+      file_pattern:
+        required: false
+        type: string
+        default: '.'
+    outputs:
+      is_fork:
+        description: "Whether the PR is from a fork"
+        value: ${{ jobs.is-fork-pull-request.outputs.IS_FORK }}
+      has_changes:
+        description: "Whether there are changes to commit"
+        value: ${{ jobs.check-changes.outputs.HAS_CHANGES }}
+    secrets:
+      GITHUB_TOKEN:
+        required: true
+
+jobs:
+  is-fork-pull-request:
+    name: Check if PR is from fork
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, inputs.bot_command) }}
+    outputs:
+      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check fork status
+        id: is-fork
+        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+  react-to-comment:
+    name: React to comment
+    needs: is-fork-pull-request
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add reaction
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
+            -f content='+1'
+        env:
+          COMMENT_ID: ${{ github.event.comment.id }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+
+  prepare:
+    name: Prepare environment
+    needs: is-fork-pull-request
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    outputs:
+      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+  check-changes:
+    name: Check for changes
+    needs: [is-fork-pull-request, prepare]
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    outputs:
+      HAS_CHANGES: ${{ steps.changes.outputs.HAS_CHANGES }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --exit-code ${{ inputs.file_pattern }}
+          then
+            echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "HAS_CHANGES=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  commit-changes:
+    name: Commit changes
+    needs: [is-fork-pull-request, check-changes]
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' && needs.check-changes.outputs.HAS_CHANGES == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Commit changes
+        run: |
+          git config --global user.name 'MetaMask Bot'
+          git config --global user.email 'metamaskbot@users.noreply.github.com'
+          git add ${{ inputs.file_pattern }}
+          git commit -m "${{ inputs.commit_message }}"
+          git push
+      - name: Post success comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh pr comment "${PR_NUMBER}" \
+            --body "Changes committed: ${{ inputs.commit_message }}"
+
+  post-no-changes:
+    name: Post no changes comment
+    needs: [is-fork-pull-request, check-changes]
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' && needs.check-changes.outputs.HAS_CHANGES == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post comment
+        run: gh pr comment "${PR_NUMBER}" --body "No changes needed"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+  check-status:
+    name: Check update status
+    needs: [is-fork-pull-request, commit-changes, post-no-changes]
+    if: ${{ always() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    outputs:
+      PASSED: ${{ steps.set-output.outputs.PASSED }}
+    steps:
+      - name: Set status
+        id: set-output
+        run: |
+          if [[ "${{ needs.commit-changes.result }}" == "success" || "${{ needs.post-no-changes.result }}" == "success" ]]; then
+            echo "PASSED=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "PASSED=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  post-failure:
+    name: Post failure comment
+    needs: [is-fork-pull-request, check-status]
+    if: ${{ always() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' && needs.check-status.outputs.PASSED != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          ACTION_RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          gh pr comment "${PR_NUMBER}" \
+            --body "Update failed. You can [review the logs or retry the update here](${ACTION_RUN_URL})"

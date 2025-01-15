@@ -1,0 +1,35 @@
+name: Update Circular Dependencies
+
+on:
+  issue_comment:
+    types: created
+
+jobs:
+  shared-flow:
+    uses: ./.github/workflows/shared/metamaskbot-pr-update.yml
+    with:
+      bot_command: '@metamaskbot update-circular-deps'
+      commit_message: 'Update circular dependencies'
+      file_pattern: 'circular-deps.json'
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-circular-deps:
+    name: Update Circular Dependencies
+    needs: shared-flow
+    if: ${{ needs.shared-flow.outputs.is_fork == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Install madge
+        run: yarn add -D madge
+      - name: Update circular dependencies
+        run: yarn circular:update

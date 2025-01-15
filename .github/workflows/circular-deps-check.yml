@@ -1,0 +1,21 @@
+name: Check Circular Dependencies
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  check-circular-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Install madge
+        run: yarn add -D madge
+
+      - name: Check circular dependencies
+        run: yarn circular:check
