@@ -40,12 +40,14 @@ class SendSolanaPage {
   }
 
   async setAmount(amount: string): Promise<void> {
-    await this.driver.waitForSelector(this.sendAmountInput);
+    const element = await this.driver.findElement(this.sendAmountInput);
+    await this.driver.waitForSelector(element);
     await this.driver.pasteIntoField(this.sendAmountInput, amount);
   }
 
   async setToAddress(toAddress: string): Promise<void> {
-    await this.driver.waitForSelector(this.toAddressInput);
+    const element = await this.driver.findElement(this.toAddressInput);
+    await this.driver.waitForSelector(element);
     await this.driver.pasteIntoField(this.toAddressInput, toAddress);
   }
 
