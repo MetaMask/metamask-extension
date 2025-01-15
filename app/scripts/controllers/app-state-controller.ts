@@ -1173,11 +1173,9 @@ export class AppStateController extends BaseController<
 
   isOriginBlockedForConfirmations(origin: string): boolean {
     const originState = this.state.throttledOrigins[origin];
-    console.log('originState', originState);
     if (!originState) {
       return false;
     }
-    console.log('originState', originState);
     const currentTime = Date.now();
     const { rejections, lastRejection } = originState;
     const isWithinOneMinute =
