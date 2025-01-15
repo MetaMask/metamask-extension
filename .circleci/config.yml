@@ -1350,9 +1350,6 @@ jobs:
           name: Publish Flask MV2 release to Sentry
           command: yarn sentry:publish --build-type flask --dist mv2
       - run:
-          name: Publish MMI release to Sentry
-          command: yarn sentry:publish --build-type mmi
-      - run:
           name: Create GitHub release
           command: .circleci/scripts/release-create-gh-release.sh
 
