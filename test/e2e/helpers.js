@@ -4,6 +4,7 @@ const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
+const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
 const { Ganache } = require('./seeder/ganache');
@@ -184,7 +185,7 @@ async function withFixtures(options, testSuite) {
     }
     await mockServer.start(8000);
 
-    setManifestFlags(manifestFlags);
+    await setManifestFlags(manifestFlags);
 
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
@@ -640,6 +641,43 @@ async function unlockWallet(
   }
 }
 
+/**
+ * Simulates a WebSocket connection by executing a script in the browser context.
+ *
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {string} hostname - The hostname to connect to.
+ */
+async function createWebSocketConnection(driver, hostname) {
+  try {
+    await driver.executeScript(async (wsHostname) => {
+      const url = `ws://${wsHostname}:8000`;
+      const socket = new WebSocket(url);
+      socket.onopen = () => {
+        console.log('WebSocket connection opened');
+        socket.send('Hello, server!');
+      };
+      socket.onerror = (error) => {
+        console.error(
+          'WebSocket error:',
+          error.message || 'Connection blocked',
+        );
+      };
+      socket.onmessage = (event) => {
+        console.log('Message received from server:', event.data);
+      };
+      socket.onclose = () => {
+        console.log('WebSocket connection closed');
+      };
+    }, hostname);
+  } catch (error) {
+    console.error(
+      `Failed to execute WebSocket connection script for ws://${hostname}:8000`,
+      error,
+    );
+    throw error;
+  }
+}
+
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
   // Wait for balance to load
@@ -691,6 +729,29 @@ async function clickSignOnSignatureConfirmation({
 }
 
 /**
+ * This method handles clicking the sign button on signature confirmation
+ * screen.
+ *
+ * @param {object} options - Options for the function.
+ * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
+ * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
+ */
+async function clickSignOnRedesignedSignatureConfirmation({
+  driver,
+  snapSigInsights = false,
+}) {
+  await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
+
+  if (snapSigInsights) {
+    // there is no condition we can wait for to know the snap is ready,
+    // so we have to add a small delay as the last alternative to avoid flakiness.
+    await driver.delay(regularDelayMs);
+  }
+
+  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+}
+
+/**
  * Some signing methods have extra security that requires the user to click a
  * button to validate that they have verified the details. This method handles
  * performing the necessary steps to click that button.
@@ -723,25 +784,32 @@ async function switchToNotificationWindow(driver) {
  * mockServer method, this method will allow getting all of the seen requests
  * for each mock in the array.
  *
- * @param {WebDriver} driver
- * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints
- * @param {boolean} hasRequest
+ * @param {WebDriver} driver - The WebDriver instance.
+ * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints - mockttp mocked endpoints
+ * @param {boolean} [waitWhilePending] - Wait until no requests are pending
  * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse[]>}
  */
-async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  await driver.wait(
-    async () => {
-      let isPending = true;
+async function getEventPayloads(
+  driver,
+  mockedEndpoints,
+  waitWhilePending = true,
+) {
+  if (waitWhilePending) {
+    await driver.wait(
+      async () => {
+        const pendingStatuses = await Promise.all(
+          mockedEndpoints.map((mockedEndpoint) => mockedEndpoint.isPending()),
+        );
+        const isSomethingPending = pendingStatuses.some(
+          (pendingStatus) => pendingStatus,
+        );
 
-      for (const mockedEndpoint of mockedEndpoints) {
-        isPending = await mockedEndpoint.isPending();
-      }
-
-      return isPending === !hasRequest;
-    },
-    driver.timeout,
-    true,
-  );
+        return !isSomethingPending;
+      },
+      driver.timeout,
+      true,
+    );
+  }
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
@@ -955,6 +1023,7 @@ module.exports = {
   roundToXDecimalPlaces,
   generateRandNumBetween,
   clickSignOnSignatureConfirmation,
+  clickSignOnRedesignedSignatureConfirmation,
   validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
@@ -968,4 +1037,5 @@ module.exports = {
   tempToggleSettingRedesignedTransactionConfirmations,
   openMenuSafe,
   sentryRegEx,
+  createWebSocketConnection,
 };

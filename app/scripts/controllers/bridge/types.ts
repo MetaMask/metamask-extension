@@ -2,63 +2,18 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { Hex } from '@metamask/utils';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
 } from '@metamask/network-controller';
-import { SwapsTokenObject } from '../../../../shared/constants/swaps';
-import {
-  L1GasFees,
-  QuoteRequest,
-  QuoteResponse,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/bridge/types';
+import type {
+  BridgeBackgroundAction,
+  BridgeControllerState,
+  BridgeUserAction,
+} from '../../../../shared/types/bridge';
 import BridgeController from './bridge-controller';
-import { BRIDGE_CONTROLLER_NAME, RequestStatus } from './constants';
-
-export enum BridgeFeatureFlagsKey {
-  EXTENSION_CONFIG = 'extensionConfig',
-  EXTENSION_SUPPORT = 'extensionSupport',
-  NETWORK_SRC_ALLOWLIST = 'srcNetworkAllowlist',
-  NETWORK_DEST_ALLOWLIST = 'destNetworkAllowlist',
-}
-
-export type BridgeFeatureFlags = {
-  [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
-    refreshRate: number;
-    maxRefreshCount: number;
-  };
-  [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: boolean;
-  [BridgeFeatureFlagsKey.NETWORK_SRC_ALLOWLIST]: Hex[];
-  [BridgeFeatureFlagsKey.NETWORK_DEST_ALLOWLIST]: Hex[];
-};
-
-export type BridgeControllerState = {
-  bridgeFeatureFlags: BridgeFeatureFlags;
-  srcTokens: Record<string, SwapsTokenObject>;
-  srcTopAssets: { address: string }[];
-  destTokens: Record<string, SwapsTokenObject>;
-  destTopAssets: { address: string }[];
-  quoteRequest: Partial<QuoteRequest>;
-  quotes: (QuoteResponse & L1GasFees)[];
-  quotesLastFetched?: number;
-  quotesLoadingStatus?: RequestStatus;
-  quotesRefreshCount: number;
-};
-
-export enum BridgeUserAction {
-  SELECT_SRC_NETWORK = 'selectSrcNetwork',
-  SELECT_DEST_NETWORK = 'selectDestNetwork',
-  UPDATE_QUOTE_PARAMS = 'updateBridgeQuoteRequestParams',
-}
-export enum BridgeBackgroundAction {
-  SET_FEATURE_FLAGS = 'setBridgeFeatureFlags',
-  RESET_STATE = 'resetState',
-  GET_BRIDGE_ERC20_ALLOWANCE = 'getBridgeERC20Allowance',
-}
+import { BRIDGE_CONTROLLER_NAME } from './constants';
 
 type BridgeControllerAction<FunctionName extends keyof BridgeController> = {
   type: `${typeof BRIDGE_CONTROLLER_NAME}:${FunctionName}`;

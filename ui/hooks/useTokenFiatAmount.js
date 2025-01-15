@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
   getTokenExchangeRates,
-  getCurrentCurrency,
   getShouldShowFiat,
   getConfirmationExchangeRates,
   getMarketData,
@@ -10,7 +9,10 @@ import {
 } from '../selectors';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getConversionRate } from '../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 /**
@@ -42,15 +44,16 @@ export function useTokenFiatAmount(
     shallowEqual,
   );
 
-  const contractMarketData = chainId
-    ? Object.entries(allMarketData[chainId]).reduce(
-        (acc, [address, marketData]) => {
-          acc[address] = marketData?.price ?? null;
-          return acc;
-        },
-        {},
-      )
-    : null;
+  const contractMarketData =
+    chainId && allMarketData[chainId]
+      ? Object.entries(allMarketData[chainId]).reduce(
+          (acc, [address, marketData]) => {
+            acc[address] = marketData?.price ?? null;
+            return acc;
+          },
+          {},
+        )
+      : null;
 
   const tokenMarketData = chainId ? contractMarketData : contractExchangeRates;
 

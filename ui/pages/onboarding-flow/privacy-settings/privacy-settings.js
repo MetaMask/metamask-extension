@@ -10,7 +10,7 @@ import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
   useSetIsProfileSyncingEnabled,
   useEnableProfileSyncing,
-} from '../../../hooks/metamask-notifications/useProfileSyncing';
+} from '../../../hooks/identity/useProfileSyncing';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -53,7 +53,7 @@ import {
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
@@ -721,7 +721,7 @@ export default function PrivacySettings() {
                     value={turnOn4ByteResolution}
                     setValue={setTurnOn4ByteResolution}
                     title={t('use4ByteResolution')}
-                    description={t('use4ByteResolutionDescription')}
+                    description={t('toggleDecodeDescription')}
                   />
                   <Setting
                     value={turnOnPetnames}

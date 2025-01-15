@@ -20,19 +20,32 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   formatEtaInMinutes,
-  formatFiatAmount,
+  formatCurrencyAmount,
   formatTokenAmount,
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../selectors';
+import { getLocale } from '../../../selectors';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
-import { SortOrder } from '../types';
+import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  SortOrder,
+} from '../../../../shared/types/bridge';
 import {
   getBridgeQuotes,
   getBridgeSortOrder,
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
+import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
+import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -41,10 +54,18 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const { sortedQuotes, activeQuote } = useSelector(getBridgeQuotes);
+  const { sortedQuotes, activeQuote, recommendedQuote } =
+    useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const locale = useSelector(getLocale);
+
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+  const { quoteRequestProperties } = useRequestProperties();
+  const requestMetadataProperties = useRequestMetadataProperties();
+  const quoteListProperties = useQuoteProperties();
+  const tradeProperties = useTradeProperties();
 
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
@@ -62,14 +83,28 @@ export const BridgeQuotesModal = ({
         </ModalHeader>
 
         {/* HEADERS */}
-        <Row padding={[4, 3]} paddingBottom={1}>
+        <Row paddingTop={3} paddingBottom={1} paddingInline={4}>
           {[
             [SortOrder.COST_ASC, t('bridgeNetCost'), IconName.Arrow2Up],
             [SortOrder.ETA_ASC, t('time'), IconName.Arrow2Down],
           ].map(([sortOrderOption, label, icon]) => (
             <ButtonLink
               key={label}
-              onClick={() => dispatch(setSortOrder(sortOrderOption))}
+              onClick={() => {
+                quoteRequestProperties &&
+                  requestMetadataProperties &&
+                  quoteListProperties &&
+                  trackCrossChainSwapsEvent({
+                    event: MetaMetricsEventName.AllQuotesSorted,
+                    properties: {
+                      ...quoteRequestProperties,
+                      ...requestMetadataProperties,
+                      ...quoteListProperties,
+                      sort_order: sortOrder,
+                    },
+                  });
+                dispatch(setSortOrder(sortOrderOption));
+              }}
               startIconName={
                 sortOrder === sortOrderOption && sortOrder === SortOrder.ETA_ASC
                   ? icon
@@ -90,15 +125,19 @@ export const BridgeQuotesModal = ({
               color={
                 sortOrder === sortOrderOption
                   ? TextColor.primaryDefault
-                  : TextColor.textAlternative
+                  : TextColor.textAlternativeSoft
               }
             >
               <Text
-                variant={TextVariant.bodySm}
+                variant={
+                  sortOrder === sortOrderOption
+                    ? TextVariant.bodySmMedium
+                    : TextVariant.bodySm
+                }
                 color={
                   sortOrder === sortOrderOption
                     ? TextColor.primaryDefault
-                    : TextColor.textAlternative
+                    : TextColor.textAlternativeSoft
                 }
               >
                 {label}
@@ -108,76 +147,101 @@ export const BridgeQuotesModal = ({
         </Row>
         {/* QUOTE LIST */}
         <Column style={{ overflow: 'scroll' }}>
-          {sortedQuotes.map((quote, index) => {
-            const {
-              totalNetworkFee,
-              estimatedProcessingTimeInSeconds,
-              toTokenAmount,
-              cost,
-              quote: { destAsset, bridges, requestId },
-            } = quote;
-            const isQuoteActive = requestId === activeQuote?.quote.requestId;
+          {sortedQuotes.map(
+            (quote: QuoteMetadata & QuoteResponse, index: number) => {
+              const {
+                totalNetworkFee,
+                estimatedProcessingTimeInSeconds,
+                toTokenAmount,
+                cost,
+                sentAmount,
+                quote: { destAsset, bridges, requestId },
+              } = quote;
+              const isQuoteActive = requestId === activeQuote?.quote.requestId;
+              const isRecommendedQuote =
+                requestId === recommendedQuote?.quote.requestId;
 
-            return (
-              <Row
-                alignItems={AlignItems.flexStart}
-                key={index}
-                backgroundColor={
-                  isQuoteActive ? BackgroundColor.primaryMuted : undefined
-                }
-                onClick={() => {
-                  dispatch(setSelectedQuote(quote));
-                  onClose();
-                }}
-                paddingInline={4}
-                paddingTop={3}
-                paddingBottom={3}
-                style={{ position: 'relative', height: 78 }}
-              >
-                {isQuoteActive && (
-                  <Column
-                    style={{
-                      position: 'absolute',
-                      left: 4,
-                      top: 4,
-                      height: 70,
-                      width: 4,
-                      borderRadius: 8,
-                    }}
-                    backgroundColor={BackgroundColor.primaryDefault}
-                  />
-                )}
-                <Column>
-                  <Text variant={TextVariant.bodyMd}>
-                    {cost.fiat && formatFiatAmount(cost.fiat, currency, 0)}
-                  </Text>
-                  {[
-                    totalNetworkFee?.fiat
-                      ? t('quotedNetworkFee', [
-                          formatFiatAmount(totalNetworkFee.fiat, currency, 0),
-                        ])
-                      : t('quotedNetworkFee', [
+              return (
+                <Row
+                  alignItems={AlignItems.flexStart}
+                  key={index}
+                  backgroundColor={
+                    isQuoteActive ? BackgroundColor.primaryMuted : undefined
+                  }
+                  onClick={() => {
+                    dispatch(setSelectedQuote(quote));
+                    // Emit QuoteSelected event after dispatching setSelectedQuote
+                    quoteRequestProperties &&
+                      requestMetadataProperties &&
+                      quoteListProperties &&
+                      tradeProperties &&
+                      trackCrossChainSwapsEvent({
+                        event: MetaMetricsEventName.QuoteSelected,
+                        properties: {
+                          ...quoteRequestProperties,
+                          ...requestMetadataProperties,
+                          ...quoteListProperties,
+                          ...tradeProperties,
+                          is_best_quote: isRecommendedQuote,
+                        },
+                      });
+                    onClose();
+                  }}
+                  paddingInline={4}
+                  paddingTop={3}
+                  paddingBottom={3}
+                  style={{ position: 'relative' }}
+                >
+                  {isQuoteActive && (
+                    <Column
+                      style={{
+                        position: 'absolute',
+                        left: 4,
+                        top: 4,
+                        height: 'calc(100% - 8px)',
+                        width: 4,
+                        borderRadius: 8,
+                      }}
+                      backgroundColor={BackgroundColor.primaryDefault}
+                    />
+                  )}
+                  <Column>
+                    <Text variant={TextVariant.bodyMd}>
+                      {cost.valueInCurrency &&
+                        formatCurrencyAmount(cost.valueInCurrency, currency, 0)}
+                    </Text>
+                    {[
+                      totalNetworkFee?.valueInCurrency &&
+                      sentAmount?.valueInCurrency
+                        ? t('quotedTotalCost', [
+                            formatCurrencyAmount(
+                              totalNetworkFee.valueInCurrency.plus(
+                                sentAmount.valueInCurrency,
+                              ),
+                              currency,
+                              0,
+                            ),
+                          ])
+                        : t('quotedTotalCost', [
+                            formatTokenAmount(
+                              locale,
+                              totalNetworkFee.amount,
+                              nativeCurrency,
+                            ),
+                          ]),
+                      t('quotedReceiveAmount', [
+                        formatCurrencyAmount(
+                          toTokenAmount.valueInCurrency,
+                          currency,
+                          0,
+                        ) ??
                           formatTokenAmount(
-                            totalNetworkFee.amount,
-                            nativeCurrency,
-                          ),
-                        ]),
-                    t(
-                      sortOrder === SortOrder.ETA_ASC
-                        ? 'quotedReceivingAmount'
-                        : 'quotedReceiveAmount',
-                      [
-                        formatFiatAmount(toTokenAmount.fiat, currency, 0) ??
-                          formatTokenAmount(
+                            locale,
                             toTokenAmount.amount,
                             destAsset.symbol,
-                            0,
                           ),
-                      ],
-                    ),
-                  ]
-                    [sortOrder === SortOrder.ETA_ASC ? 'reverse' : 'slice']()
-                    .map((content) => (
+                      ]),
+                    ].map((content) => (
                       <Text
                         key={content}
                         variant={TextVariant.bodyXsMedium}
@@ -186,23 +250,24 @@ export const BridgeQuotesModal = ({
                         {content}
                       </Text>
                     ))}
-                </Column>
-                <Column alignItems={AlignItems.flexEnd}>
-                  <Text variant={TextVariant.bodyMd}>
-                    {t('bridgeTimingMinutes', [
-                      formatEtaInMinutes(estimatedProcessingTimeInSeconds),
-                    ])}
-                  </Text>
-                  <Text
-                    variant={TextVariant.bodyXsMedium}
-                    color={TextColor.textAlternative}
-                  >
-                    {startCase(bridges[0])}
-                  </Text>
-                </Column>
-              </Row>
-            );
-          })}
+                  </Column>
+                  <Column alignItems={AlignItems.flexEnd}>
+                    <Text variant={TextVariant.bodyMd}>
+                      {t('bridgeTimingMinutes', [
+                        formatEtaInMinutes(estimatedProcessingTimeInSeconds),
+                      ])}
+                    </Text>
+                    <Text
+                      variant={TextVariant.bodyXsMedium}
+                      color={TextColor.textAlternative}
+                    >
+                      {startCase(bridges[0])}
+                    </Text>
+                  </Column>
+                </Row>
+              );
+            },
+          )}
         </Column>
       </ModalContent>
     </Modal>

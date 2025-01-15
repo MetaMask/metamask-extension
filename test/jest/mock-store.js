@@ -4,7 +4,9 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
 import { DEFAULT_BRIDGE_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge/constants';
+import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge-status/constants';
 import { BRIDGE_PREFERRED_GAS_ESTIMATE } from '../../shared/constants/bridge';
+import { mockTokenData } from '../data/bridge/mock-token-data';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -393,7 +395,7 @@ export const createSwapsMockStore = () => {
             smartTransactions: {
               expectedDeadline: 45,
               maxDeadline: 150,
-              returnTxHashAsap: false,
+              extensionReturnTxHashAsap: false,
             },
           },
           smartTransactions: {
@@ -702,17 +704,31 @@ export const createSwapsMockStore = () => {
 };
 
 export const createBridgeMockStore = (
-  featureFlagOverrides = {},
-  bridgeSliceOverrides = {},
-  bridgeStateOverrides = {},
-  metamaskStateOverrides = {},
+  {
+    featureFlagOverrides = {},
+    bridgeSliceOverrides = {},
+    bridgeStateOverrides = {},
+    bridgeStatusStateOverrides = {},
+    metamaskStateOverrides = {},
+  } = {
+    featureFlagOverrides: {},
+    bridgeSliceOverrides: {},
+    bridgeStateOverrides: {},
+    bridgeStatusStateOverrides: {},
+    metamaskStateOverrides: {},
+  },
 ) => {
   const swapsStore = createSwapsMockStore();
   return {
     ...swapsStore,
+    // For initial state of dest asset picker
+    swaps: {
+      ...swapsStore.swaps,
+      topAssets: [],
+    },
     bridge: {
       toChainId: null,
-      sortOrder: 0,
+      sortOrder: 'cost_ascending',
       ...bridgeSliceOverrides,
     },
     metamask: {
@@ -730,20 +746,37 @@ export const createBridgeMockStore = (
       },
       currencyRates: {
         ETH: { conversionRate: 2524.25 },
+        usd: { conversionRate: 1 },
       },
+      marketData: {
+        '0x1': {
+          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+            currency: 'usd',
+            price: 2.3,
+          },
+        },
+      },
+      ...mockTokenData,
       ...metamaskStateOverrides,
       bridgeState: {
-        ...(swapsStore.metamask.bridgeState ?? {}),
+        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
         bridgeFeatureFlags: {
-          extensionSupport: false,
-          srcNetworkAllowlist: [],
-          destNetworkAllowlist: [],
           ...featureFlagOverrides,
+          extensionConfig: {
+            support: false,
+            chains: {},
+            ...featureFlagOverrides.extensionConfig,
+          },
         },
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
         ...bridgeStateOverrides,
       },
+      bridgeStatusState: {
+        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+        ...bridgeStatusStateOverrides,
+      },
+    },
+    send: {
+      swapsBlockedTokens: [],
     },
   };
 };

@@ -14,6 +14,7 @@ import {
   permitSignatureMsg,
   permitSignatureMsgWithNoDeadline,
   unapprovedTypedSignMsgV3,
+  unapprovedTypedSignMsgV4,
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import * as snapUtils from '../../../../../../helpers/utils/snaps';
@@ -147,11 +148,12 @@ describe('TypedSignInfo', () => {
 
   it('displays "requestFromInfoSnap" tooltip when origin is a snap', async () => {
     const mockState = getMockTypedSignConfirmStateForRequest({
+      ...unapprovedTypedSignMsgV4,
       id: '123',
       type: TransactionType.signTypedData,
       chainId: '0x5',
     });
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+    (snapUtils.isSnapId as unknown as jest.Mock).mockReturnValue(true);
     const mockStore = configureMockStore([])(mockState);
     const { queryByText } = renderWithConfirmContextProvider(
       <TypedSignInfo />,
@@ -170,11 +172,12 @@ describe('TypedSignInfo', () => {
 
   it('displays "requestFromInfo" tooltip when origin is not a snap', async () => {
     const mockState = getMockTypedSignConfirmStateForRequest({
+      ...unapprovedTypedSignMsgV4,
       id: '123',
       type: TransactionType.signTypedData,
       chainId: '0x5',
     });
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(false);
+    (snapUtils.isSnapId as unknown as jest.Mock).mockReturnValue(false);
     const mockStore = configureMockStore([])(mockState);
     const { queryByText } = renderWithConfirmContextProvider(
       <TypedSignInfo />,
