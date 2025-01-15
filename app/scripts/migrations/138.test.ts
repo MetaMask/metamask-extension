@@ -37,11 +37,6 @@ describe('migration #138', () => {
 
     const newStorage = await migrate(oldStorage);
 
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${version}: typeof state.PermissionController is undefined`,
-      ),
-    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -505,7 +500,7 @@ describe('migration #138', () => {
       };
       const currentScope = `eip155:${chainId}`;
 
-      it('skips eth_accounts and permittedChains permissions when they are missing metadata', async () => {
+      it('does nothing when eth_accounts and permittedChains permissions are missing metadata', async () => {
         const oldStorage = {
           meta: { version: oldVersion },
           data: {
@@ -547,20 +542,7 @@ describe('migration #138', () => {
         };
 
         const newStorage = await migrate(oldStorage);
-        expect(newStorage.data).toStrictEqual({
-          ...baseData(),
-          PermissionController: {
-            subjects: {
-              'test.com': {
-                permissions: {
-                  unrelated: {
-                    foo: 'bar',
-                  },
-                },
-              },
-            },
-          },
-        });
+        expect(newStorage.data).toStrictEqual(oldStorage.data);
       });
 
       it('resolves a chainId for the origin even if there are other malformed network configurations', async () => {

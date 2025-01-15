@@ -97,12 +97,18 @@ export async function migrate(
 
 function transformState(oldState: Record<string, unknown>) {
   const newState = cloneDeep(oldState);
-  if (
-    !hasProperty(newState, 'PermissionController') ||
-    !isObject(newState.PermissionController)
-  ) {
+  if (!hasProperty(newState, 'PermissionController')) {
     console.warn(
       `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
+    );
+    return oldState;
+  }
+
+  if (!isObject(newState.PermissionController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
+      ),
     );
     return oldState;
   }
@@ -276,30 +282,77 @@ function transformState(oldState: Record<string, unknown>) {
 
     let ethAccounts: string[] = [];
     const ethAccountsPermission = permissions[PermissionNames.eth_accounts];
-    if (isPermissionConstraint(ethAccountsPermission)) {
-      ethAccounts =
-        (ethAccountsPermission.caveats?.[0]?.value as string[] | undefined) ??
-        [];
-      basePermission = ethAccountsPermission;
+    const permittedChainsPermission =
+      permissions[PermissionNames.permittedChains];
+
+    // if there are no eth_accounts we can't create a valid CAIP-25 permission so we remove the permission
+    if (permittedChainsPermission && !ethAccountsPermission) {
+      delete permissions[PermissionNames.permittedChains];
+      continue;
     }
+    if (!isPermissionConstraint(ethAccountsPermission)) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
+            PermissionNames.eth_accounts
+          }: ${JSON.stringify(ethAccountsPermission)}`,
+        ),
+      );
+      return oldState;
+    }
+    const accountsCaveatValue = ethAccountsPermission.caveats?.[0]?.value;
+    if (
+      !Array.isArray(accountsCaveatValue) ||
+      accountsCaveatValue.length === 0 ||
+      !accountsCaveatValue.every((item) => typeof item === 'string')
+    ) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
+            PermissionNames.eth_accounts
+          }].caveats[0].value of type ${typeof ethAccountsPermission
+            .caveats?.[0]?.value}`,
+        ),
+      );
+      return oldState;
+    }
+    ethAccounts = accountsCaveatValue;
+    basePermission = ethAccountsPermission;
 
     delete permissions[PermissionNames.eth_accounts];
 
     let chainIds: string[] = [];
-    const permittedChainsPermission =
-      permissions[PermissionNames.permittedChains];
-    if (isPermissionConstraint(permittedChainsPermission)) {
-      chainIds =
-        (permittedChainsPermission.caveats?.[0]?.value as
-          | string[]
-          | undefined) ?? [];
-
+    // this permission is new so it may not exist
+    if (permittedChainsPermission) {
+      if (!isPermissionConstraint(permittedChainsPermission)) {
+        global.sentry?.captureException?.(
+          new Error(
+            `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
+              PermissionNames.permittedChains
+            }]: ${JSON.stringify(permittedChainsPermission)}`,
+          ),
+        );
+        return oldState;
+      }
+      const chainsCaveatValue = permittedChainsPermission.caveats?.[0]?.value;
+      if (
+        !Array.isArray(chainsCaveatValue) ||
+        chainsCaveatValue.length === 0 ||
+        !chainsCaveatValue.every((item) => typeof item === 'string')
+      ) {
+        global.sentry?.captureException?.(
+          new Error(
+            `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
+              PermissionNames.permittedChains
+            }].caveats[0].value of type ${typeof permittedChainsPermission
+              .caveats?.[0]?.value}`,
+          ),
+        );
+        return oldState;
+      }
+      chainIds = chainsCaveatValue;
       basePermission ??= permittedChainsPermission;
-    }
-    delete permissions[PermissionNames.permittedChains];
-
-    if (ethAccounts.length === 0 || !basePermission) {
-      continue;
+      delete permissions[PermissionNames.permittedChains];
     }
 
     if (chainIds.length === 0) {
