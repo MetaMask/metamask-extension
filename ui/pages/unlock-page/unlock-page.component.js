@@ -5,7 +5,6 @@ import { Text } from '../../components/component-library';
 import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
-import Mascot from '../../components/ui/mascot';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
@@ -167,10 +166,11 @@ export default class UnlockPage extends Component {
       <div className="unlock-page__container">
         <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
-            <Mascot
-              animationEventEmitter={this.animationEventEmitter}
-              width="120"
-              height="120"
+            <img
+              src="images/logo/metamask-fox.svg"
+              width="120px"
+              height="120px"
+              style={{ marginBottom: '16px' }}
             />
             {isBeta() ? (
               <div className="unlock-page__mascot-container__beta">
