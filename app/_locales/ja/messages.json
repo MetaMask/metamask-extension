@@ -1045,9 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "トランザクションの要求"
   },
-  "confirmationAlertModalDetails": {
-    "message": "資産とログイン情報を守るため、要求を拒否することをお勧めします。"
-  },
   "confirmationAlertModalTitle": {
     "message": "この要求は不審です"
   },

@@ -1045,9 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Permintaan transaksi"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Untuk melindungi aset dan informasi login Anda, sebaiknya tolak permintaan tersebut."
-  },
   "confirmationAlertModalTitle": {
     "message": "Permintaan ini mencurigakan"
   },

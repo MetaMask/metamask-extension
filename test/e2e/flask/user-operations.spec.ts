@@ -24,6 +24,7 @@ import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
+import TestDapp from '../page-objects/pages/test-dapp';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -204,9 +205,7 @@ async function withAccountSnap(
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToTestDapp()
-        .build(),
+      fixtures: new FixtureBuilder().build(),
       title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),
@@ -239,7 +238,10 @@ async function withAccountSnap(
         ERC_4337_ACCOUNT_SALT,
       );
 
-      await driver.closeWindow();
+      const testDapp = new TestDapp(driver);
+      await testDapp.openTestDappPage();
+      await testDapp.connectAccount({ publicAddress: ERC_4337_ACCOUNT });
+
       await driver.switchToWindowWithTitle(
         WINDOW_TITLES.ExtensionInFullScreenView,
       );
