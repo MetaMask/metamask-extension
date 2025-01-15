@@ -383,7 +383,6 @@ import {
   handleBridgeTransactionComplete,
   handleBridgeTransactionFailed,
   handleTransactionFailedTypeBridge,
-  handleTransactionFailedTypeBridgeApproval,
 } from './lib/bridge-status/metrics';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
