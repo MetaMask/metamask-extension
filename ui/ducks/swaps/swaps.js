@@ -1365,7 +1365,25 @@ export function fetchMetaSwapsGasPriceEstimates() {
       dispatch(swapGasPriceEstimatesFetchFailed());
 
       try {
-        const gasPrice = await global.ethQuery.gasPrice();
+        const gasPrice = await new Promise((resolve, reject) => {
+          global.ethereumProvider.sendAsync(
+            {
+              method: 'eth_gasPrice',
+              params: [],
+            },
+            (err, response) => {
+              let error = err;
+              if (!error && response.error) {
+                error = new Error(`RPC Error - ${response.error.message}`);
+              }
+              if (error) {
+                reject(error);
+                return;
+              }
+              resolve(response.result);
+            },
+          );
+        });
         const gasPriceInDecGWEI = hexWEIToDecGWEI(gasPrice.toString(10));
 
         dispatch(retrievedFallbackSwapsGasPrice(gasPriceInDecGWEI));

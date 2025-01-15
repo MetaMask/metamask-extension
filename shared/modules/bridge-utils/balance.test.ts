@@ -25,8 +25,7 @@ describe('balance', () => {
       chainId: CHAIN_IDS.MAINNET,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+    global.ethereumProvider = provider;
   });
 
   describe('calcLatestSrcBalance', () => {

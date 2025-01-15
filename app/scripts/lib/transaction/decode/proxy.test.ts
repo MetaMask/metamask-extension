@@ -1,44 +1,46 @@
-import EthQuery from '@metamask/eth-query';
+import type { Provider } from '@metamask/network-controller';
 import { getContractProxyAddress } from './proxy';
 
 const CONTRACT_ADDRESS_MOCK = '0x456';
 
-function createEthQueryMock(storageValues: string[]): EthQuery {
-  const ethQuery = {
-    eth_getStorageAt: jest.fn(),
-  };
+function createProviderMock(storageValues: string[]): Provider {
+  const ethGetStorageAt = jest.fn();
 
   for (const storageValue of storageValues) {
-    ethQuery.eth_getStorageAt.mockImplementationOnce(
-      (_contractAddress, _storageSlot, _blockNumber, cb) =>
-        cb(null, storageValue),
-    );
+    ethGetStorageAt.mockImplementationOnce(() => storageValue);
   }
 
-  return ethQuery as unknown as EthQuery;
+  return {
+    request: async (request) => {
+      if (request.method === 'eth_getStorageAt') {
+        return ethGetStorageAt(request);
+      }
+      throw new Error(`Unexpected method: ${request.method}`);
+    },
+  } as Provider;
 }
 
 describe('Proxy', () => {
   describe('getContractProxyAddress', () => {
     it('returns undefined if all responses empty', async () => {
-      const ethQuery = createEthQueryMock([
+      const provider = createProviderMock([
         '0x0000000000000000000000000000000000000000000000000000000000000000',
         '0x0000000000000000000000000000000000000000000000000000000000000000',
       ]);
 
       expect(
-        await getContractProxyAddress(CONTRACT_ADDRESS_MOCK, ethQuery),
+        await getContractProxyAddress(CONTRACT_ADDRESS_MOCK, provider),
       ).toBeUndefined();
     });
 
     it('returns first non-empty response', async () => {
-      const ethQuery = createEthQueryMock([
+      const provider = createProviderMock([
         '0x0000000000000000000000000000000000000000000000000000000000000000',
         '00000000000000000000000000123',
       ]);
 
       expect(
-        await getContractProxyAddress(CONTRACT_ADDRESS_MOCK, ethQuery),
+        await getContractProxyAddress(CONTRACT_ADDRESS_MOCK, provider),
       ).toBe('0x123');
     });
   });
