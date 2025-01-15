@@ -317,6 +317,7 @@ import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
 import SwapsController from './controllers/swaps';
 import MetaMetricsController from './controllers/metametrics-controller';
+import { MultichainNetworkController } from './controllers/multichain-network-controller';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
@@ -640,6 +641,23 @@ export default class MetamaskController extends EventEmitter {
     this.accountsController = new AccountsController({
       messenger: accountsControllerMessenger,
       state: initState.AccountsController,
+    });
+
+    const multichainNetworkControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MultichainNetworkController',
+        allowedActions: [
+          'NetworkController:getNetworkConfigurationByNetworkClientId',
+          'AccountsController:setSelectedAccount',
+          'NetworkController:setActiveNetwork',
+          'NetworkController:getState',
+        ],
+        allowedEvents: ['NetworkController:stateChange'],
+      });
+
+    this.multichainNetworkController = new MultichainNetworkController({
+      messenger: multichainNetworkControllerMessenger,
+      state: initState.MultichainNetworkController,
     });
 
     const preferencesMessenger = this.controllerMessenger.getRestricted({
@@ -2615,6 +2633,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      MultichainNetworkController: this.multichainNetworkController,
       ...resetOnRestartStore,
     });
 
@@ -2624,6 +2643,7 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
+        MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
@@ -3646,7 +3666,9 @@ export default class MetamaskController extends EventEmitter {
 
       // network management
       setActiveNetwork: (networkConfigurationId) => {
-        return this.networkController.setActiveNetwork(networkConfigurationId);
+        return this.multichainNetworkController.setActiveNetwork(
+          networkConfigurationId,
+        );
       },
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step
