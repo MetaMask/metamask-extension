@@ -130,7 +130,7 @@ export class TransactionControllerInit extends ControllerInit<
         },
       },
       testGasFeeFlows: Boolean(
-        process.env.TEST_GAS_FEE_FLOWS?.toLowerCase() === 'true',
+        process.env.TEST_GAS_FEE_FLOWS === 'true',
       ),
       // @ts-expect-error Controller uses string for names rather than enum
       trace,
