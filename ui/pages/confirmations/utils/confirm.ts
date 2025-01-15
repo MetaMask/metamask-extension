@@ -6,7 +6,7 @@ import {
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
-import { sanitizeMessage } from '../../../../shared/modules/typed-signature';
+import { sanitizeMessage } from '../../../helpers/utils/util';
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,

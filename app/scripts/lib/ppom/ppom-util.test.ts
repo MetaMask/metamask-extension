@@ -78,6 +78,29 @@ const SIGN_TYPED_DATA_PARAMS_MOCK_2 = {
       extraField: 'should be removed',
       test: { field: 'value' },
     },
+    a: {
+      a: {
+        a: {
+          a: {
+            a: {
+              a: {
+                a: {
+                  a: {
+                    a: {
+                      a: {
+                        a: {
+                          a: {},
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 };
 
@@ -327,14 +350,7 @@ describe('PPOM Utils', () => {
             JSON.stringify({
               ...SIGN_TYPED_DATA_PARAMS_MOCK_2,
               message: {
-                value: {
-                  root: {
-                    value:
-                      '0xbb50db86866daf83b8142fb53a50e4173c67f57330f24654ab7b110c484c8918',
-                    type: 'bytes32',
-                  },
-                },
-                type: 'Root',
+                root: '0xbb50db86866daf83b8142fb53a50e4173c67f57330f24654ab7b110c484c8918',
               },
             }),
           ],
