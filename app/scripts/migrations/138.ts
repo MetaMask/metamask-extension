@@ -121,6 +121,8 @@ function transformState(oldState: Record<string, unknown>) {
     console.warn(
       `Migration ${version}: typeof state.SelectedNetworkController is ${typeof newState.SelectedNetworkController}`,
     );
+    // This matches how the `SelectedNetworkController` is initialized
+    // See https://github.com/MetaMask/core/blob/e692641040be470f7f4ad2d58692b0668e6443b3/packages/selected-network-controller/src/SelectedNetworkController.ts#L27
     newState.SelectedNetworkController = {
       domains: {},
     };
