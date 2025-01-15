@@ -5181,7 +5181,7 @@ export default class MetamaskController extends EventEmitter {
    * an error to sentry for any accounts that were expected but are missing from the wallet.
    *
    * @param {InternalAccount[]} [internalAccounts] - The list of evm accounts the wallet knows about.
-   * @param {Hex[]} [accounts] - The list of evm accounts that should exist.
+   * @param {Hex[]} [accounts] - The list of evm accounts addresses that should exist.
    */
   captureKeyringTypesWithMissingIdentities(
     internalAccounts = [],
@@ -5210,6 +5210,13 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  /**
+   * Sorts a list of evm account addresses by most recently selected by using
+   * the lastSelected value for the matching InternalAccount object stored in state.
+   *
+   * @param {Hex[]} [accounts] - The list of evm accounts addresses to sort.
+   * @returns {Hex[]} The sorted evm accounts addresses.
+   */
   sortAccountsByLastSelected(accounts) {
     const internalAccounts = this.accountsController.listAccounts();
 
