@@ -304,7 +304,6 @@
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^15.1.2",
     "@metamask/eth-ledger-bridge-keyring": "^8.0.2",
-    "@metamask/eth-query": "^4.0.0",
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^7.0.0",
     "@metamask/eth-token-tracker": "^9.0.0",
