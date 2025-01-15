@@ -5,9 +5,11 @@ import TokenCell from '../token-cell';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
 import { sortAssets } from '../util/sort';
 import {
+  getChainIdsToPoll,
   getCurrencyRates,
   getCurrentNetwork,
   getIsTestnet,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
   getMarketData,
   getNetworkConfigurationIdByChainId,
   getNewTokensImported,
@@ -17,6 +19,7 @@ import {
   getSelectedAccountTokensAcrossChains,
   getShowFiatInTestnets,
   getTokenExchangeRates,
+  getTokenNetworkFilter,
 } from '../../../../selectors';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { filterAssets } from '../util/filter';
@@ -25,7 +28,6 @@ import { calculateTokenFiatAmount } from '../util/calculateTokenFiatAmount';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances } from '../../../../hooks/useTokenBalances';
 import { setTokenNetworkFilter } from '../../../../store/actions';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { getMultichainShouldShowFiat } from '../../../../selectors/multichain';
 
@@ -82,22 +84,28 @@ export default function TokenList({
   onTokenClick,
   nativeToken,
 }: TokenListProps) {
-  const t = useI18nContext();
   const dispatch = useDispatch();
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getNetworkConfigurationIdByChainId);
-  const { tokenSortConfig, tokenNetworkFilter, privacyMode } =
+  const { tokenSortConfig, privacyMode, hideZeroBalanceTokens } =
     useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
+  const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
     shallowEqual,
   );
   const newTokensImported = useSelector(getNewTokensImported);
   const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
+  const isOnCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
-  const { tokenBalances } = useTokenBalances();
+  const { tokenBalances } = useTokenBalances({
+    chainIds: chainIdsToPoll as Hex[],
+  });
   const selectedAccountTokenBalancesAcrossChains =
     tokenBalances[selectedAccount.address];
 
@@ -109,14 +117,13 @@ export default function TokenList({
   const nativeBalances: Record<Hex, Hex> = useSelector(
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<Hex, Hex>;
-
+  const isTestnet = useSelector(getIsTestnet);
   // Ensure newly added networks are included in the tokenNetworkFilter
   useEffect(() => {
     if (process.env.PORTFOLIO_VIEW) {
       const allNetworkFilters = Object.fromEntries(
         Object.keys(allNetworks).map((chainId) => [chainId, true]),
       );
-
       if (Object.keys(tokenNetworkFilter).length > 1) {
         dispatch(setTokenNetworkFilter(allNetworkFilters));
       }
@@ -125,7 +132,6 @@ export default function TokenList({
 
   const consolidatedBalances = () => {
     const tokensWithBalance: TokenWithFiatAmount[] = [];
-
     Object.entries(selectedAccountTokensChains).forEach(
       ([stringChainKey, tokens]) => {
         const chainId = stringChainKey as Hex;
@@ -149,14 +155,28 @@ export default function TokenList({
             currencyRates,
           });
 
-          // Append processed token with balance and fiat amount
-          tokensWithBalance.push({
-            ...token,
-            balance,
-            tokenFiatAmount,
-            chainId,
-            string: String(balance),
-          });
+          // Respect the "hide zero balance" setting (when true):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should not display with zero balance when on all networks filter
+          // - ERC20 tokens with zero balances should respect the setting on both the current and all networks.
+
+          // Respect the "hide zero balance" setting (when false):
+          // - Native tokens should always display with zero balance when on the current network filter.
+          // - Native tokens should always display with zero balance when on all networks filter
+          // - ERC20 tokens always display with zero balance on both the current and all networks filter.
+          if (
+            !hideZeroBalanceTokens ||
+            balance !== '0' ||
+            (token.isNative && isOnCurrentNetwork)
+          ) {
+            tokensWithBalance.push({
+              ...token,
+              balance,
+              tokenFiatAmount,
+              chainId,
+              string: String(balance),
+            });
+          }
         });
       },
     );
@@ -212,14 +232,6 @@ export default function TokenList({
     return React.cloneElement(nativeToken as React.ReactElement);
   }
 
-  // TODO: We can remove this string. However it will result in a huge file 50+ file diff
-  // Lets remove it in a separate PR
-  if (sortedFilteredTokens === undefined) {
-    console.log(t('loadingTokens'));
-  }
-
-  // Check if testnet
-  const isTestnet = useSelector(getIsTestnet);
   const shouldShowFiat = useMultichainSelector(
     getMultichainShouldShowFiat,
     selectedAccount,

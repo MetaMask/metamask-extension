@@ -5,7 +5,7 @@ import {
   calcSentAmount,
   calcSwapRate,
   calcToAmount,
-  calcTotalGasFee,
+  calcEstimatedAndMaxTotalGasFee,
   calcRelayerFee,
   formatEtaInMinutes,
 } from './quote';
@@ -24,21 +24,21 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1009000000000000000',
       2521.73,
-      { amount: '1.009', fiat: '2544.42557' },
+      { amount: '1.009', valueInCurrency: '2544.42557' },
     ],
     [
       'erc20',
       ERC20_TOKEN,
       '2543140000',
       0.999781,
-      { amount: '2543.14', fiat: '2542.58305234' },
+      { amount: '2543.14', valueInCurrency: '2542.58305234' },
     ],
     [
       'erc20 with null exchange rates',
       ERC20_TOKEN,
       '2543140000',
       null,
-      { amount: '2543.14', fiat: undefined },
+      { amount: '2543.14', valueInCurrency: undefined },
     ],
   ])(
     'calcToAmount: toToken is %s',
@@ -47,7 +47,7 @@ describe('Bridge quote utils', () => {
       destAsset: { decimals: number; address: string },
       destTokenAmount: string,
       toTokenExchangeRate: number,
-      { amount, fiat }: { amount: string; fiat: string },
+      { amount, valueInCurrency }: { amount: string; valueInCurrency: string },
     ) => {
       const result = calcToAmount(
         {
@@ -57,7 +57,7 @@ describe('Bridge quote utils', () => {
         toTokenExchangeRate,
       );
       expect(result.amount?.toString()).toStrictEqual(amount);
-      expect(result.fiat?.toString()).toStrictEqual(fiat);
+      expect(result.valueInCurrency?.toString()).toStrictEqual(valueInCurrency);
     },
   );
 
@@ -70,7 +70,7 @@ describe('Bridge quote utils', () => {
       2515.02,
       {
         amount: '1.143217728',
-        fiat: '2875.21545027456',
+        valueInCurrency: '2875.21545027456',
       },
     ],
     [
@@ -78,14 +78,14 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       0.999781,
-      { amount: '100.512', fiat: '100.489987872' },
+      { amount: '100.512', valueInCurrency: '100.489987872' },
     ],
     [
       'erc20 with null exchange rates',
       ERC20_TOKEN,
       '2543140000',
       null,
-      { amount: '2543.652', fiat: undefined },
+      { amount: '2543.652', valueInCurrency: undefined },
     ],
   ])(
     'calcSentAmount: fromToken is %s',
@@ -94,7 +94,7 @@ describe('Bridge quote utils', () => {
       srcAsset: { decimals: number; address: string },
       srcTokenAmount: string,
       fromTokenExchangeRate: number,
-      { amount, fiat }: { amount: string; fiat: string },
+      { amount, valueInCurrency }: { amount: string; valueInCurrency: string },
     ) => {
       const result = calcSentAmount(
         {
@@ -109,7 +109,7 @@ describe('Bridge quote utils', () => {
         fromTokenExchangeRate,
       );
       expect(result.amount?.toString()).toStrictEqual(amount);
-      expect(result.fiat?.toString()).toStrictEqual(fiat);
+      expect(result.valueInCurrency?.toString()).toStrictEqual(valueInCurrency);
     },
   );
 
@@ -120,7 +120,7 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1000000000000000000',
       '0x0de0b6b3a7640000',
-      { amount: '2.2351800712e-7', fiat: '0.0005626887014840304' },
+      { amount: '2.2351800712e-7', valueInCurrency: '0.0005626887014840304' },
       undefined,
     ],
     [
@@ -128,7 +128,7 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x00',
-      { amount: '2.2351800712e-7', fiat: '0.0005626887014840304' },
+      { amount: '2.2351800712e-7', valueInCurrency: '0.0005626887014840304' },
       undefined,
     ],
     [
@@ -136,7 +136,7 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x00',
-      { amount: '4.4703601424e-7', fiat: '0.0011253774029680608' },
+      { amount: '4.4703601424e-7', valueInCurrency: '0.0011253774029680608' },
       1092677,
     ],
     [
@@ -144,7 +144,10 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x0de0b6b3a7640000',
-      { amount: '1.00000022351800712', fiat: '2517.4205626887014840304' },
+      {
+        amount: '1.00000022351800712',
+        valueInCurrency: '2517.4205626887014840304',
+      },
       undefined,
     ],
     [
@@ -152,7 +155,10 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1000000000000000000',
       '0x0de1b6b3a7640000',
-      { amount: '0.000281698494717776', fiat: '0.70915342457242365792' },
+      {
+        amount: '0.000281698494717776',
+        valueInCurrency: '0.70915342457242365792',
+      },
       undefined,
     ],
   ])(
@@ -162,7 +168,7 @@ describe('Bridge quote utils', () => {
       srcAsset: { decimals: number; address: string },
       srcTokenAmount: string,
       value: string,
-      { amount, fiat }: { amount: string; fiat: string },
+      { amount, valueInCurrency }: { amount: string; valueInCurrency: string },
       approvalGasLimit?: number,
     ) => {
       const feeData = { metabridge: { amount: 0 } };
@@ -171,14 +177,22 @@ describe('Bridge quote utils', () => {
         approval: approvalGasLimit ? { gasLimit: approvalGasLimit } : undefined,
         quote: { srcAsset, srcTokenAmount, feeData },
       } as never;
-      const gasFee = calcTotalGasFee(quote, '0.00010456', '0.0001', 2517.42);
+      const gasFee = calcEstimatedAndMaxTotalGasFee({
+        bridgeQuote: quote,
+        maxFeePerGasInDecGwei: '0.0002',
+        estimatedBaseFeeInDecGwei: '0.00010456',
+        maxPriorityFeePerGasInDecGwei: '0.0001',
+        nativeExchangeRate: 2517.42,
+      });
       const relayerFee = calcRelayerFee(quote, 2517.42);
       const result = {
         amount: gasFee.amount.plus(relayerFee.amount),
-        fiat: gasFee.fiat?.plus(relayerFee.fiat || '0') ?? null,
+        valueInCurrency:
+          gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
+          null,
       };
       expect(result.amount?.toString()).toStrictEqual(amount);
-      expect(result.fiat?.toString()).toStrictEqual(fiat);
+      expect(result.valueInCurrency?.toString()).toStrictEqual(valueInCurrency);
     },
   );
 
@@ -189,7 +203,10 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1000000000000000000',
       '0x0de0b6b3a7640000',
-      { amount: '0.000002832228395508', fiat: '0.00712990840741974936' },
+      {
+        amount: '0.000002832228395508',
+        valueInCurrency: '0.00712990840741974936',
+      },
       undefined,
     ],
     [
@@ -197,7 +214,10 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x00',
-      { amount: '0.000002832228395508', fiat: '0.00712990840741974936' },
+      {
+        amount: '0.000002832228395508',
+        valueInCurrency: '0.00712990840741974936',
+      },
       undefined,
     ],
     [
@@ -205,7 +225,10 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x00',
-      { amount: '0.000003055746402628', fiat: '0.00769259710890377976' },
+      {
+        amount: '0.000003055746402628',
+        valueInCurrency: '0.00769259710890377976',
+      },
       1092677,
     ],
     [
@@ -213,7 +236,10 @@ describe('Bridge quote utils', () => {
       ERC20_TOKEN,
       '100000000',
       '0x0de0b6b3a7640000',
-      { amount: '1.000002832228395508', fiat: '2517.42712990840741974936' },
+      {
+        amount: '1.000002832228395508',
+        valueInCurrency: '2517.42712990840741974936',
+      },
       undefined,
     ],
     [
@@ -221,7 +247,10 @@ describe('Bridge quote utils', () => {
       NATIVE_TOKEN,
       '1000000000000000000',
       '0x0de1b6b3a7640000',
-      { amount: '0.000284307205106164', fiat: '0.71572064427835937688' },
+      {
+        amount: '0.000284307205106164',
+        valueInCurrency: '0.71572064427835937688',
+      },
       undefined,
     ],
   ])(
@@ -231,7 +260,7 @@ describe('Bridge quote utils', () => {
       srcAsset: { decimals: number; address: string },
       srcTokenAmount: string,
       value: string,
-      { amount, fiat }: { amount: string; fiat: string },
+      { amount, valueInCurrency }: { amount: string; valueInCurrency: string },
       approvalGasLimit?: number,
     ) => {
       const feeData = { metabridge: { amount: 0 } };
@@ -241,14 +270,22 @@ describe('Bridge quote utils', () => {
         quote: { srcAsset, srcTokenAmount, feeData },
         l1GasFeesInHexWei: '0x25F63418AA4',
       } as never;
-      const gasFee = calcTotalGasFee(quote, '0.00010456', '0.0001', 2517.42);
+      const gasFee = calcEstimatedAndMaxTotalGasFee({
+        bridgeQuote: quote,
+        estimatedBaseFeeInDecGwei: '0.00010456',
+        maxFeePerGasInDecGwei: '0.0002',
+        maxPriorityFeePerGasInDecGwei: '0.0001',
+        nativeExchangeRate: 2517.42,
+      });
       const relayerFee = calcRelayerFee(quote, 2517.42);
       const result = {
         amount: gasFee.amount.plus(relayerFee.amount),
-        fiat: gasFee.fiat?.plus(relayerFee.fiat || '0') ?? null,
+        valueInCurrency:
+          gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
+          null,
       };
       expect(result.amount?.toString()).toStrictEqual(amount);
-      expect(result.fiat?.toString()).toStrictEqual(fiat);
+      expect(result.valueInCurrency?.toString()).toStrictEqual(valueInCurrency);
     },
   );
 
@@ -262,18 +299,18 @@ describe('Bridge quote utils', () => {
     ],
     ['unavailable', null, null, null],
   ])(
-    'calcAdjustedReturn: fiat amounts are %s',
+    'calcAdjustedReturn: valueInCurrency amounts are %s',
     (
       _: string,
-      destTokenAmountInFiat: BigNumber,
-      totalNetworkFeeInFiat: BigNumber,
-      fiat: string,
+      destTokenAmountInCurrency: BigNumber,
+      totalNetworkFeeInCurrency: BigNumber,
+      valueInCurrency: string,
     ) => {
       const result = calcAdjustedReturn(
-        destTokenAmountInFiat,
-        totalNetworkFeeInFiat,
+        destTokenAmountInCurrency,
+        totalNetworkFeeInCurrency,
       );
-      expect(result.fiat).toStrictEqual(fiat);
+      expect(result.valueInCurrency).toStrictEqual(valueInCurrency);
     },
   );
 

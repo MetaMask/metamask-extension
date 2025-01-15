@@ -1,4 +1,4 @@
-import EthQuery, { Provider } from '@metamask/eth-query';
+import type { Provider } from '@metamask/network-controller';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
@@ -9,12 +9,16 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { GasRecommendations } from '../../../../shared/constants/gas';
+import {
+  GasRecommendations,
+  PriorityLevels,
+} from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
+  MetaMetricsEventTransactionEstimateType,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
@@ -29,6 +33,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import {
+  hexToDecimal,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
@@ -224,6 +229,8 @@ export const handleTransactionConfirmed = async (
   const { txReceipt } = transactionMeta;
 
   extraParams.gas_used = txReceipt?.gasUsed;
+  extraParams.block_number =
+    txReceipt?.blockNumber && hexToDecimal(txReceipt.blockNumber);
 
   const { submittedTime } = transactionMeta;
 
@@ -792,13 +799,17 @@ async function buildEventFragmentProperties({
     finalApprovalAmount,
     securityProviderResponse,
     simulationFails,
+    id,
+    userFeeLevel,
   } = transactionMeta;
-  const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
+
+  const gasFeeSelected =
+    userFeeLevel === 'dappSuggested' ? 'dapp_proposed' : userFeeLevel;
 
   const { assetType, tokenStandard } = await determineTransactionAssetType(
     transactionMeta,
-    query,
+    transactionMetricsRequest.provider,
     transactionMetricsRequest.getTokenStandardAndDetails,
   );
 
@@ -819,12 +830,18 @@ async function buildEventFragmentProperties({
     gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
   } else {
     gasParams.gas_price = gasPrice;
+    gasParams.default_estimate =
+      MetaMetricsEventTransactionEstimateType.DefaultEstimate;
   }
 
   if (defaultGasEstimates) {
     const { estimateType } = defaultGasEstimates;
     if (estimateType) {
-      gasParams.default_estimate = estimateType;
+      gasParams.default_estimate =
+        estimateType === PriorityLevels.dAppSuggested
+          ? MetaMetricsEventTransactionEstimateType.DappProposed
+          : estimateType;
+
       let defaultMaxFeePerGas =
         transactionMeta.defaultGasEstimates?.maxFeePerGas;
       let defaultMaxPriorityFeePerGas =
@@ -906,6 +923,7 @@ async function buildEventFragmentProperties({
   let transactionApprovalAmountVsBalanceRatio;
   let transactionContractAddress;
   let transactionType = TransactionType.simpleSend;
+  let transactionContractMethod4Byte;
   if (type === TransactionType.swapAndSend) {
     transactionType = TransactionType.swapAndSend;
   } else if (type === TransactionType.cancel) {
@@ -918,6 +936,10 @@ async function buildEventFragmentProperties({
     transactionType = TransactionType.contractInteraction;
     transactionContractMethod = contractMethodName;
     transactionContractAddress = transactionMeta.txParams?.to;
+    transactionContractMethod4Byte = transactionMeta.txParams?.data?.slice(
+      0,
+      10,
+    );
     if (
       transactionContractMethod === contractMethodNames.APPROVE &&
       tokenStandard === TokenStandard.ERC20
@@ -1038,6 +1060,8 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
+    transaction_internal_id: id,
+    gas_fee_selected: gasFeeSelected,
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
@@ -1071,6 +1095,7 @@ async function buildEventFragmentProperties({
     gas_limit: gasLimit,
     transaction_replaced: transactionReplaced,
     transaction_contract_address: transactionContractAddress,
+    transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
     // TODO: Replace `any` with type

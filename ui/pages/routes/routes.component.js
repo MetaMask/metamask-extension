@@ -61,6 +61,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -87,6 +88,7 @@ import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/mu
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
@@ -191,11 +193,10 @@ export default class Routes extends Component {
     automaticallySwitchNetwork: PropTypes.func.isRequired,
     totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
-    useRequestQueue: PropTypes.bool,
     clearEditedNetwork: PropTypes.func.isRequired,
-    oldestPendingApproval: PropTypes.object.isRequired,
+    oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
-    transactionsMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
+    transactionsMetadata: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -215,7 +216,6 @@ export default class Routes extends Component {
       activeTabOrigin,
       totalUnapprovedConfirmationCount,
       isUnlocked,
-      useRequestQueue,
       currentExtensionPopupId,
     } = this.props;
     if (theme !== prevProps.theme) {
@@ -241,7 +241,6 @@ export default class Routes extends Component {
     // Terminate the popup when another popup is opened
     // if the user is using RPC queueing
     if (
-      useRequestQueue &&
       currentExtensionPopupId !== undefined &&
       global.metamask.id !== undefined &&
       currentExtensionPopupId !== global.metamask.id
@@ -317,6 +316,11 @@ export default class Routes extends Component {
           />
           <Authenticated path={SEND_ROUTE} component={SendPage} exact />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
+          <Authenticated
+            path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
+            component={CrossChainSwapTxDetails}
+            exact
+          />
           <Authenticated
             path={CROSS_CHAIN_SWAP_ROUTE}
             component={CrossChainSwap}

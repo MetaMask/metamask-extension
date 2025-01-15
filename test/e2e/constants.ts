@@ -57,6 +57,9 @@ export const DEFAULT_BTC_FEES_RATE = 0.00001; // BTC
 /* Default BTC conversion rate to USD */
 export const DEFAULT_BTC_CONVERSION_RATE = 62000; // USD
 
+/* Default SOL conversion rate to USD */
+export const DEFAULT_SOL_CONVERSION_RATE = 226; // USD
+
 /* Default BTC transaction ID */
 export const DEFAULT_BTC_TRANSACTION_ID =
   'e4111a707317da67d49a71af4cbcf6c0546f900ca32c3842d2254e315d1fca18';
@@ -70,3 +73,13 @@ export const DEFAULT_SOLANA_ACCOUNT =
 
 /* Default (mocked) SOLANA balance used by the Solana RPC provider */
 export const DEFAULT_SOLANA_BALANCE = 1; // SOL
+
+/* Title of the mocked E2E test empty HTML page */
+export const EMPTY_E2E_TEST_PAGE_TITLE = 'E2E Test Page';
+
+/* Account types */
+export enum ACCOUNT_TYPE {
+  Ethereum,
+  Bitcoin,
+  Solana,
+}

@@ -4,7 +4,10 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import nock from 'nock';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -51,6 +54,9 @@ describe('AssetPage', () => {
   const mockStore = {
     localeMessages: {
       currentLocale: 'en',
+    },
+    appState: {
+      confirmationExchangeRates: {},
     },
     metamask: {
       tokenList: {},
@@ -291,13 +297,13 @@ describe('AssetPage', () => {
     expect(bridgeButton).not.toBeDisabled();
 
     fireEvent.click(bridgeButton as HTMLElement);
-    expect(openTabSpy).toHaveBeenCalledTimes(1);
 
-    await waitFor(() =>
+    await waitFor(() => {
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
       expect(openTabSpy).toHaveBeenCalledWith({
         url: `https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=&metricsEnabled=false&marketingEnabled=false&token=${token.address}`,
-      }),
-    );
+      });
+    });
   });
 
   it('should not show the Bridge button if chain id is not supported', async () => {
@@ -325,6 +331,18 @@ describe('AssetPage', () => {
 
     expect(mmiStakeButton).toBeInTheDocument();
     expect(mmiPortfolioButton).toBeInTheDocument();
+  });
+
+  it('should render the network name', async () => {
+    const mockedStore = configureMockStore([thunk])(mockStore);
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      mockedStore,
+    );
+    const networkNode = queryByTestId('asset-network');
+    expect(networkNode).toBeInTheDocument();
+    expect(networkNode?.textContent).toBe(MAINNET_DISPLAY_NAME);
   });
 
   it('should render a native asset', () => {

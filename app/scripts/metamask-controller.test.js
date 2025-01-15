@@ -4,7 +4,6 @@
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
-import EthQuery from '@metamask/eth-query';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   ListNames,
@@ -42,6 +41,7 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
+import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
 import {
   BalancesController as MultichainBalancesController,
@@ -779,9 +779,10 @@ describe('MetaMaskController', () => {
       it('should ask the network for a balance when not known by accountTrackerController', async () => {
         const accounts = {};
         const balance = '0x14ced5122ce0a000';
-        const ethQuery = new EthQuery();
-        jest.spyOn(ethQuery, 'getBalance').mockImplementation((_, callback) => {
-          callback(undefined, balance);
+        const { provider } = createTestProviderTools({
+          scaffold: {
+            eth_getBalance: balance,
+          },
         });
 
         jest
@@ -792,7 +793,7 @@ describe('MetaMaskController', () => {
 
         const gotten = await metamaskController.getBalance(
           TEST_ADDRESS,
-          ethQuery,
+          provider,
         );
 
         expect(balance).toStrictEqual(gotten);
@@ -2411,6 +2412,7 @@ describe('MetaMaskController', () => {
         methods: [BtcMethod.SendBitcoin],
         address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       };
+      const mockCurrency = 'CAD';
 
       beforeEach(() => {
         jest.spyOn(metamaskController.multichainRatesController, 'start');
@@ -2507,6 +2509,43 @@ describe('MetaMaskController', () => {
         expect(
           localMetamaskController.multichainRatesController.start,
         ).toHaveBeenCalled();
+      });
+
+      it('calls setFiatCurrency when the `currentCurrency` has changed', async () => {
+        jest.spyOn(RatesController.prototype, 'setFiatCurrency');
+        const localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            AccountsController: {
+              internalAccounts: {
+                accounts: {
+                  [mockNonEvmAccount.id]: mockNonEvmAccount,
+                  [mockEvmAccount.id]: mockEvmAccount,
+                },
+                selectedAccount: mockNonEvmAccount.id,
+              },
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        metamaskController.controllerMessenger.publish(
+          'CurrencyRateController:stateChange',
+          { currentCurrency: mockCurrency },
+        );
+
+        expect(
+          localMetamaskController.multichainRatesController.setFiatCurrency,
+        ).toHaveBeenCalledWith(mockCurrency);
       });
     });
 
@@ -2605,6 +2644,131 @@ describe('MetaMaskController', () => {
         expect(spyBalancesTrackerUpdateBalance).toHaveBeenLastCalledWith(
           mockNonEvmAccount.id,
         );
+      });
+    });
+
+    describe('RemoteFeatureFlagController', () => {
+      let localMetamaskController;
+
+      beforeEach(() => {
+        localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            PreferencesController: {
+              useExternalServices: false,
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should initialize RemoteFeatureFlagController in disabled state when useExternalServices is false', async () => {
+        const { remoteFeatureFlagController, preferencesController } =
+          localMetamaskController;
+
+        expect(preferencesController.state.useExternalServices).toBe(false);
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should disable feature flag fetching when useExternalServices is disabled', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+
+        // First enable external services
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        // Then disable them
+        await simulatePreferencesChange({
+          useExternalServices: false,
+        });
+
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should handle errors during feature flag updates', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+        const mockError = new Error('Failed to fetch');
+
+        jest
+          .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
+          .mockRejectedValue(mockError);
+
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+
+      it('should maintain feature flag state across preference toggles', async () => {
+        const { remoteFeatureFlagController } = localMetamaskController;
+        const mockFlags = { testFlag: true };
+
+        jest
+          .spyOn(remoteFeatureFlagController, 'updateRemoteFeatureFlags')
+          .mockResolvedValue(mockFlags);
+
+        // Enable external services
+        await simulatePreferencesChange({
+          useExternalServices: true,
+        });
+
+        // Disable external services
+        await simulatePreferencesChange({
+          useExternalServices: false,
+        });
+
+        // Verify state is cleared
+        expect(remoteFeatureFlagController.state).toStrictEqual({
+          remoteFeatureFlags: {},
+          cacheTimestamp: 0,
+        });
+      });
+    });
+
+    describe('_getConfigForRemoteFeatureFlagRequest', () => {
+      it('returns config in mapping', async () => {
+        const result =
+          await metamaskController._getConfigForRemoteFeatureFlagRequest();
+        expect(result).toStrictEqual({
+          distribution: 'main',
+          environment: 'dev',
+        });
+      });
+
+      it('returna config when not matching default mapping', async () => {
+        process.env.METAMASK_BUILD_TYPE = 'beta';
+        process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
+
+        const result =
+          await metamaskController._getConfigForRemoteFeatureFlagRequest();
+        expect(result).toStrictEqual({
+          distribution: 'main',
+          environment: 'rc',
+        });
       });
     });
   });
@@ -2712,6 +2876,146 @@ describe('MetaMaskController', () => {
 
       expect(metamaskController.resetStates).not.toHaveBeenCalled();
       expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('MetaMetrics & authentication dependencies', () => {
+    let metamaskController;
+    let mockPerformSignIn;
+    let mockPerformSignOut;
+
+    const arrangeControllerState = (stateOverrides) => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: { ...cloneDeep(firstTimeState), ...stateOverrides },
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+      });
+
+      mockPerformSignIn = jest
+        .spyOn(metamaskController.authenticationController, 'performSignIn')
+        .mockResolvedValue();
+      mockPerformSignOut = jest
+        .spyOn(metamaskController.authenticationController, 'performSignOut')
+        .mockResolvedValue();
+    };
+
+    it('should sign in the user if MetaMetrics is enabled and the user is not signed in', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: false,
+        },
+        AuthenticationController: {
+          isSignedIn: false,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: true,
+        },
+      );
+
+      expect(mockPerformSignIn).toHaveBeenCalledTimes(1);
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
+    });
+
+    it('should sign out the user if MetaMetrics is disabled and the user is signed in but profile syncing is disabled', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+        },
+        AuthenticationController: {
+          isSignedIn: true,
+        },
+        UserStorageController: {
+          isProfileSyncingEnabled: false,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: false,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not sign in the user if MetaMetrics is enabled and the user is already signed in', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: false,
+        },
+        AuthenticationController: {
+          isSignedIn: true,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: true,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
+    });
+
+    it('should not sign out the user if MetaMetrics is disabled and the user is not signed in', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+        },
+        AuthenticationController: {
+          isSignedIn: false,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: false,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
+    });
+
+    it('should not sign out the user if MetaMetrics is disabled and profile syncing is enabled', async () => {
+      arrangeControllerState({
+        MetaMetricsController: {
+          participateInMetaMetrics: true,
+        },
+        AuthenticationController: {
+          isSignedIn: true,
+        },
+        UserStorageController: {
+          isProfileSyncingEnabled: true,
+        },
+      });
+
+      metamaskController.controllerMessenger.publish(
+        'MetaMetricsController:stateChange',
+        {
+          participateInMetaMetrics: false,
+        },
+      );
+
+      expect(mockPerformSignIn).not.toHaveBeenCalled();
+      expect(mockPerformSignOut).not.toHaveBeenCalled();
     });
   });
 });

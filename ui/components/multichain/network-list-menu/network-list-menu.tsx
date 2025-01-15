@@ -46,7 +46,6 @@ import {
   getOnboardedInThisUISession,
   getShowNetworkBanner,
   getOriginOfCurrentTab,
-  getUseRequestQueue,
   getEditedNetwork,
   getOrderedNetworksList,
   getIsAddingNewNetwork,
@@ -120,7 +119,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const useRequestQueue = useSelector(getUseRequestQueue);
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
@@ -294,7 +292,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
           // as a user, I don't want my network selection to force update my filter when I have "All Networks" toggled on
           // however, if I am already filtered on "Current Network", we'll want to filter by the selected network when the network changes
-          if (Object.keys(tokenNetworkFilter).length <= 1) {
+          if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
             dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
           } else if (process.env.PORTFOLIO_VIEW) {
             dispatch(setTokenNetworkFilter(allOpts));
@@ -309,11 +307,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
           // network has changed due to user action
-          if (
-            useRequestQueue &&
-            selectedTabOrigin &&
-            domains[selectedTabOrigin]
-          ) {
+          if (selectedTabOrigin && domains[selectedTabOrigin]) {
             setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
           }
 

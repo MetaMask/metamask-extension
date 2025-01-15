@@ -44,23 +44,6 @@
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
-    "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionSupport": "boolean",
-          "srcNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          },
-          "destNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          }
-        }
-      }
-    },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -142,7 +125,6 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": true,
       "isMultiAccountBalancesEnabled": "boolean",
       "showIncomingTransactions": "object"
     },
@@ -169,16 +151,13 @@
     "BridgeController": {
       "bridgeState": {
         "bridgeFeatureFlags": {
-          "extensionSupport": "boolean",
-          "srcNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          },
-          "destNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
+          "extensionConfig": {
+            "support": "boolean",
+            "chains": {
+              "0x1": "object",
+              "0xa": "object",
+              "0xe708": "object"
+            }
           }
         },
         "destTokens": {},

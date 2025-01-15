@@ -305,7 +305,6 @@ describe('Selectors', () => {
       },
       metamask: {
         isUnlocked: true,
-        useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
@@ -1083,16 +1082,6 @@ describe('Selectors', () => {
     );
   });
 
-  it('#getGasIsLoading', () => {
-    const gasIsLoading = selectors.getGasIsLoading(mockState);
-    expect(gasIsLoading).toStrictEqual(false);
-  });
-
-  it('#getCurrentCurrency', () => {
-    const currentCurrency = selectors.getCurrentCurrency(mockState);
-    expect(currentCurrency).toStrictEqual('usd');
-  });
-
   it('#getTotalUnapprovedCount', () => {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);
@@ -1302,6 +1291,7 @@ describe('Selectors', () => {
       'npm:@metamask/test-snap-networkAccess': false,
       'npm:@metamask/test-snap-notify': false,
       'npm:@metamask/test-snap-wasm': false,
+      'local:snap-id': false,
     });
   });
 
@@ -1525,7 +1515,7 @@ describe('Selectors', () => {
           name: 'Snap Account 1',
           snap: {
             enabled: true,
-            id: 'snap-id',
+            id: 'local:snap-id',
             name: 'snap-name',
           },
         },
@@ -2161,6 +2151,80 @@ describe('#getConnectedSitesList', () => {
 
       expect(result).toBe(true);
       expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('#getRemoteFeatureFlags', () => {
+    it('returns remoteFeatureFlags in state', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            existingFlag: true,
+          },
+        },
+      };
+      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
+        existingFlag: true,
+      });
+    });
+  });
+
+  describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns true when the token network filter is equal to the current network', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        true,
+      );
+    });
+
+    it('returns false when the token network filter is on multiple networks', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+              '0x89': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        false,
+      );
     });
   });
 });

@@ -12,7 +12,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
-  getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
@@ -24,12 +23,16 @@ import {
   getConversionRate,
   getNativeCurrency,
   getTokens,
+  getCurrentCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import * as actions from '../../../../store/actions';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/modules/selectors/networks';
 import { AssetPickerModal } from './asset-picker-modal';
 import AssetList from './AssetList';
 import { ERC20Asset } from './types';
@@ -55,6 +58,17 @@ jest.mock('../../../../hooks/useTokenTracker', () => ({
 
 jest.mock('../../../../hooks/useTokensToSearch', () => ({
   getRenderableTokenData: jest.fn(),
+}));
+
+const mockUseMultichainBalances = jest.fn();
+jest.mock('../../../../hooks/useMultichainBalances', () => ({
+  useMultichainBalances: () => mockUseMultichainBalances(),
+}));
+
+jest.mock('../../../../hooks/useNfts', () => ({
+  useNfts: () => ({
+    currentlyOwnedNfts: [],
+  }),
 }));
 
 describe('AssetPickerModal', () => {
@@ -84,12 +98,16 @@ describe('AssetPickerModal', () => {
       image: 'image.png',
       symbol: 'SYMB',
     },
+    autoFocus: true,
   };
 
   beforeEach(() => {
     useSelectorMock.mockImplementation((selector) => {
+      if (selector === getNetworkConfigurationsByChainId) {
+        return { '0x1': { chainId: '0x1' } };
+      }
       if (selector === getCurrentChainId) {
-        return '1';
+        return '0x1';
       }
       if (selector === getCurrentCurrency) {
         return 'USD';
@@ -151,6 +169,7 @@ describe('AssetPickerModal', () => {
       tokensWithBalances: [],
     });
     (getRenderableTokenData as jest.Mock).mockReturnValue({});
+    mockUseMultichainBalances.mockReturnValue({});
   });
 
   afterEach(() => {
@@ -162,7 +181,9 @@ describe('AssetPickerModal', () => {
     renderWithProvider(<AssetPickerModal {...defaultProps} />, store);
 
     expect(screen.getByTestId('asset-picker-modal')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('searchTokens')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
+    ).toBeInTheDocument();
   });
 
   it('calls onClose when modal is closed', () => {
@@ -181,6 +202,7 @@ describe('AssetPickerModal', () => {
           type: AssetType.NFT,
           tokenId: 5,
           image: 'nft image',
+          address: '',
         }}
         sendingAsset={undefined}
       />,
@@ -195,17 +217,23 @@ describe('AssetPickerModal', () => {
   it('filters tokens based on search query', () => {
     renderWithProvider(<AssetPickerModal {...defaultProps} />, store);
 
-    fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
-      target: { value: 'TO' },
-    });
+    fireEvent.change(
+      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
+      {
+        target: { value: 'TO' },
+      },
+    );
 
     expect(
       (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList.length,
     ).toBe(2);
 
-    fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
-      target: { value: 'UNAVAILABLE TOKEN' },
-    });
+    fireEvent.change(
+      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
+      {
+        target: { value: 'UNAVAILABLE TOKEN' },
+      },
+    );
 
     expect((AssetList as jest.Mock).mock.calls[1][0]).not.toEqual(
       expect.objectContaining({
@@ -245,7 +273,9 @@ describe('AssetPickerModal', () => {
       store,
     );
     const modalTitle = getByText('sendSelectReceiveAsset');
-    const searchPlaceholder = getByPlaceholderText('searchTokens');
+    const searchPlaceholder = getByPlaceholderText(
+      'searchTokensByNameOrAddress',
+    );
 
     expect(modalTitle).toBeInTheDocument();
     expect(searchPlaceholder).toBeInTheDocument();
@@ -260,17 +290,23 @@ describe('AssetPickerModal', () => {
       store,
     );
 
-    fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
-      target: { value: 'TO' },
-    });
+    fireEvent.change(
+      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
+      {
+        target: { value: 'TO' },
+      },
+    );
 
     expect(
       (AssetList as jest.Mock).mock.calls.slice(-1)[0][0].tokenList.length,
     ).toBe(2);
 
-    fireEvent.change(screen.getByPlaceholderText('searchTokens'), {
-      target: { value: 'TOKEN1' },
-    });
+    fireEvent.change(
+      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
+      {
+        target: { value: 'TOKEN1' },
+      },
+    );
 
     expect((AssetList as jest.Mock).mock.calls[1][0]).not.toEqual(
       expect.objectContaining({
@@ -322,7 +358,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Network name');
+    const modalContent = getByText('Ethereum Mainnet');
     expect(modalContent).toBeInTheDocument();
   });
 

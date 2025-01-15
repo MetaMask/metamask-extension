@@ -3,6 +3,7 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -17,7 +18,17 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -140,6 +151,10 @@ describe('ERC721 Approve Confirmation', () => {
     const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
     const APPROVE_NFT_TEXT_SIG = 'approve(address,uint256)';
     mock4byte(APPROVE_NFT_HEX_SIG, APPROVE_NFT_TEXT_SIG);
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -163,7 +178,9 @@ describe('ERC721 Approve Confirmation', () => {
     });
 
     expect(
-      await screen.findByText(tEn('confirmTitleApproveTransaction') as string),
+      await screen.findByText(
+        tEn('confirmTitleApproveTransactionNFT') as string,
+      ),
     ).toBeInTheDocument();
     expect(
       await screen.findByText(
@@ -218,6 +235,7 @@ describe('ERC721 Approve Confirmation', () => {
     const approveDetails = await screen.findByTestId(
       'confirmation__approve-details',
     );
+
     expect(approveDetails).toBeInTheDocument();
     const approveDetailsSpender = await screen.findByTestId(
       'confirmation__approve-spender',

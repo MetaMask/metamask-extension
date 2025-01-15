@@ -4,15 +4,14 @@ exports[`Info renders info section for approve request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
-    data-testid="confirmation__approve-details"
+    data-testid="confirmation__simulation_section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      data-testid="transaction-details-origin-row"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -20,20 +19,19 @@ exports[`Info renders info section for approve request 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Request from
+            Estimated changes
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-8"
+              aria-describedby="tippy-tooltip-11"
               class=""
-              data-original-title="This is the site asking for your confirmation."
+              data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
               style="display: flex;"
               tabindex="0"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -41,21 +39,22 @@ exports[`Info renders info section for approve request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
         >
-          metamask.github.io
+          You're giving someone else permission to withdraw NFTs from your account.
         </p>
       </div>
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -63,8 +62,84 @@ exports[`Info renders info section for approve request 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Signing in with
+            Withdraw
           </p>
+        </div>
+      </div>
+      <div
+        class="mm-box"
+        style="margin-left: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              data-testid="simulation-token-value"
+            >
+              #0.0001
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <div
+              class="name name__missing"
+            >
+              <span
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+              <p
+                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              >
+                0x07614...3ad68
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__approve-details"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation__approve-spender"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Spender
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-8"
+              class=""
+              data-original-title="This is the address that will be able to withdraw your NFTs."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="confirmation__approve-spender-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div
@@ -74,10 +149,11 @@ exports[`Info renders info section for approve request 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
@@ -125,6 +201,53 @@ exports[`Info renders info section for approve request 1`] = `
         </div>
       </div>
     </div>
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-origin-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-9"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -148,7 +271,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-9"
+              aria-describedby="tippy-tooltip-10"
               class=""
               data-original-title="Amount paid to process the transaction on network."
               data-tooltipped=""
@@ -167,18 +290,6 @@ exports[`Info renders info section for approve request 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
-          data-testid="first-gas-field"
-        >
-          0.0001 ETH
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.08
-        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -192,6 +303,18 @@ exports[`Info renders info section for approve request 1`] = `
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
+        >
+          0.0001 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
+        >
+          $0.08
+        </p>
       </div>
     </div>
     <div
@@ -420,10 +543,11 @@ exports[`Info renders info section for contract interaction request 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 98);"
@@ -471,81 +595,6 @@ exports[`Info renders info section for contract interaction request 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Signing in with
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81420"
-                    height="16"
-                    transform="translate(-2.752618452452339 -2.6325616818687707) rotate(385.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#E9F500"
-                    height="16"
-                    transform="translate(5.337234703363199 6.214964079596694) rotate(184.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FAB300"
-                    height="16"
-                    transform="translate(0.9077275996181156 -13.015140953188144) rotate(431.3 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x2e0D7...5d09B
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -588,18 +637,6 @@ exports[`Info renders info section for contract interaction request 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
-          data-testid="first-gas-field"
-        >
-          0.0001 ETH
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.04
-        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -613,6 +650,18 @@ exports[`Info renders info section for contract interaction request 1`] = `
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
+        >
+          0.0001 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
+        >
+          $0.04
+        </p>
       </div>
     </div>
     <div
@@ -708,81 +757,6 @@ exports[`Info renders info section for personal sign request 1`] = `
         </p>
       </div>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Signing in with
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="16"
-                    transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="16"
-                    transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="16"
-                    transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            Test Account
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -794,7 +768,7 @@ exports[`Info renders info section for personal sign request 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -805,7 +779,7 @@ exports[`Info renders info section for personal sign request 1`] = `
         aria-label="collapse-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
-        style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 8px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -863,7 +837,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-10"
+              aria-describedby="tippy-tooltip-12"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -950,11 +924,11 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      data-testid="transaction-details-origin-row"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+      data-testid="confirmation__approve-spender"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -962,51 +936,24 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Request from
+            Permission for
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-11"
+              aria-describedby="tippy-tooltip-13"
               class=""
-              data-original-title="This is the site asking for your confirmation."
+              data-original-title="This is the address that will be able to withdraw your NFTs."
               data-tooltipped=""
               style="display: flex;"
               tabindex="0"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                data-testid="transaction-details-origin-row-tooltip"
+                data-testid="confirmation__approve-spender-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
           </div>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-        >
-          metamask.github.io
-        </p>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Signing in with
-          </p>
         </div>
       </div>
       <div
@@ -1016,10 +963,11 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
@@ -1067,6 +1015,53 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         </div>
       </div>
     </div>
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-origin-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-14"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -1090,7 +1085,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-12"
+              aria-describedby="tippy-tooltip-15"
               class=""
               data-original-title="Amount paid to process the transaction on network."
               data-tooltipped=""
@@ -1109,18 +1104,6 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
-          data-testid="first-gas-field"
-        >
-          0.0001 ETH
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.08
-        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -1134,6 +1117,18 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
+        >
+          0.0001 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
+        >
+          $0.08
+        </p>
       </div>
     </div>
     <div
@@ -1254,10 +1249,11 @@ exports[`Info renders info section for typed sign request 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
@@ -1305,81 +1301,6 @@ exports[`Info renders info section for typed sign request 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Signing in with
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="16"
-                    transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="16"
-                    transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="16"
-                    transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            Test Account
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -1392,7 +1313,7 @@ exports[`Info renders info section for typed sign request 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1575,10 +1496,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
@@ -1651,10 +1573,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 183, 242);"
@@ -1727,10 +1650,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 143, 0);"
@@ -1899,10 +1823,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
@@ -1975,10 +1900,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 54, 0);"
@@ -2051,10 +1977,11 @@ exports[`Info renders info section for typed sign request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 86);"

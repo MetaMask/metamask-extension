@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Добавление сети"
   },
-  "addingTokens": {
-    "message": "Добавление токенов"
-  },
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },
@@ -416,6 +413,9 @@
   "alertMessageAddressMismatchWarning": {
     "message": "Злоумышленники иногда имитируют сайты, внося небольшие изменения в адрес сайта. Прежде чем продолжить, убедитесь, что вы взаимодействуете с нужным сайтом."
   },
+  "alertMessageChangeInSimulationResults": {
+    "message": "Предполагаемые изменения для этой транзакции обновлены. Прежде чем продолжить, внимательно просмотрите их."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "Мы не можем указать точную сумму комиссии, и эта оценка может быть высокой. Мы предлагаем вам ввести индивидуальный лимит газа, но существует риск, что транзакция все равно не удастся."
   },
@@ -434,17 +434,11 @@
   "alertMessageNoGasPrice": {
     "message": "Мы не сможем продолжить эту транзакцию, пока вы не обновите комиссию вручную."
   },
-  "alertMessagePendingTransactions": {
-    "message": "Эта транзакция не будет выполнена, пока не завершится предыдущая транзакция. Узнайте, как отменить или ускорить транзакцию."
-  },
   "alertMessageSignInDomainMismatch": {
     "message": "Сайт, отправляющий запрос, не является сайтом, на который вы входите. Это может быть попыткой украсть ваши учетные данные."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Этот сайт просит вас войти в систему, используя неправильный счет."
-  },
-  "alertMessageSigningOrSubmitting": {
-    "message": "Эта транзакция будет выполнена только после завершения вашей предыдущей транзакции."
   },
   "alertModalAcknowledge": {
     "message": "Я осознал(-а) риск и все еще хочу продолжить"
@@ -454,6 +448,9 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Просмотреть все оповещения"
+  },
+  "alertReasonChangeInSimulationResults": {
+    "message": "Результаты изменились"
   },
   "alertReasonGasEstimateFailed": {
     "message": "Неточная комиссия"
@@ -626,12 +623,6 @@
   },
   "assetsDescription": {
     "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
-  },
-  "attemptSendingAssets": {
-    "message": "Вы можете потерять свои активы, если попытаетесь отправить их из другой сети. Безопасно переводите средства между сетями с помощью моста."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост, такой как $1"
   },
   "attemptToCancelSwapForFree": {
     "message": "Бесплатная попытка отменить своп"
@@ -837,14 +828,20 @@
   "bridge": {
     "message": "Мост"
   },
-  "bridgeDontSend": {
-    "message": "Мост, не отправлять"
+  "bridgeCalculatingAmount": {
+    "message": "Расчет..."
+  },
+  "bridgeEnterAmount": {
+    "message": "Введите сумму"
   },
   "bridgeFrom": {
     "message": "Мост из"
   },
   "bridgeSelectNetwork": {
     "message": "Выбор сети"
+  },
+  "bridgeSelectTokenAndAmount": {
+    "message": "Выберите токен и сумму"
   },
   "bridgeTo": {
     "message": "Мост в"
@@ -945,9 +942,6 @@
     "message": "Нажмите здесь, чтобы подключить свой Ledger через WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
-  "clickToManuallyAdd": {
-    "message": "Вы также можете добавлять токены вручную."
-  },
   "close": {
     "message": "Закрыть"
   },
@@ -1012,9 +1006,6 @@
   "confirmRecoveryPhrase": {
     "message": "Подтвердите секретную фразу для восстановления"
   },
-  "confirmTitleApproveTransaction": {
-    "message": "Запрос квоты"
-  },
   "confirmTitleDeployContract": {
     "message": "Развернуть контракт"
   },
@@ -1053,9 +1044,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Запрос транзакции"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "Чтобы защитить ваши активы и данные для входа, рекомендуем отклонить запрос."
   },
   "confirmationAlertModalTitle": {
     "message": "Этот запрос подозрительный"
@@ -1159,6 +1147,14 @@
   "connectedWithAccountName": {
     "message": "Подключен к $1",
     "description": "$1 represents account name"
+  },
+  "connectedWithNetwork": {
+    "message": "Подключены $1 сети(-ей)",
+    "description": "$1 represents network length"
+  },
+  "connectedWithNetworkName": {
+    "message": "Подключено с помощью $1",
+    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Подключение..."
@@ -1493,6 +1489,9 @@
   "dcent": {
     "message": "D'Cent"
   },
+  "debitCreditPurchaseOptions": {
+    "message": "Варианты покупки с помощью дебетовой или кредитной карты"
+  },
   "decimal": {
     "message": "Число десятичных знаков токена"
   },
@@ -1802,6 +1801,9 @@
   "editSpendingCapError": {
     "message": "Лимит расходов не может иметь более $1 десятичных знаков. Удалите лишние десятичные знаки, чтобы продолжить."
   },
+  "editSpendingCapSpecialCharError": {
+    "message": "Введите только цифры"
+  },
   "enableAutoDetect": {
     "message": " Включить автоопределение"
   },
@@ -1904,9 +1906,41 @@
     "message": "Код: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
+  "errorPageContactSupport": {
+    "message": "Связаться с поддержкой",
+    "description": "Button for contact MM support"
+  },
+  "errorPageDescribeUsWhatHappened": {
+    "message": "Опишите, что произошло",
+    "description": "Button for submitting report to sentry"
+  },
+  "errorPageInfo": {
+    "message": "Невозможно показать вашу информацию. Не волнуйтесь, ваш кошелек и средства в безопасности.",
+    "description": "Information banner shown in the error page"
+  },
+  "errorPageMessageTitle": {
+    "message": "Сообщение об ошибке",
+    "description": "Title for description, which is displayed for debugging purposes"
+  },
+  "errorPageSentryFormTitle": {
+    "message": "Опишите, что произошло",
+    "description": "In sentry feedback form, The title at the top of the feedback form."
+  },
+  "errorPageSentryMessagePlaceholder": {
+    "message": "Предоставление подробной информации, например, о том, как мы можем воспроизвести ошибку, поможет нам решить проблему.",
+    "description": "In sentry feedback form, The placeholder for the feedback description input field."
+  },
+  "errorPageSentrySuccessMessageText": {
+    "message": "Спасибо! Мы скоро рассмотрим это.",
+    "description": "In sentry feedback form, The message displayed after a successful feedback submission."
+  },
   "errorPageTitle": {
     "message": "MetaMask обнаружил ошибку",
     "description": "Title of generic error page"
+  },
+  "errorPageTryAgain": {
+    "message": "Повторить попытку",
+    "description": "Button for try again"
   },
   "errorStack": {
     "message": "Стек:",
@@ -2070,6 +2104,9 @@
   "functionType": {
     "message": "Тип функции"
   },
+  "fundingMethod": {
+    "message": "Способ пополнения"
+  },
   "gas": {
     "message": "Газ"
   },
@@ -2082,9 +2119,6 @@
   },
   "gasFee": {
     "message": "Плата за газ"
-  },
-  "gasIsETH": {
-    "message": "Газ стоит $1 "
   },
   "gasLimit": {
     "message": "Лимит газа"
@@ -2647,9 +2681,6 @@
   "learnScamRisk": {
     "message": "мошенничество и угрозы безопасности."
   },
-  "learnToBridge": {
-    "message": "Научитесь создавать мост для"
-  },
   "leaveMetaMask": {
     "message": "Выйти из MetaMask?"
   },
@@ -2740,9 +2771,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Завершите транзакцию в Snap."
-  },
-  "loadingTokens": {
-    "message": "Загрузка токенов..."
   },
   "localhost": {
     "message": "Локальный хост 8545"
@@ -2844,9 +2872,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Уведомления кошелька в настоящее время неактивны."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "Сервис свопов MetaMask на техобслуживании. Зайдите позже."
@@ -2991,10 +3016,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 запрашивает ваше одобрение на:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Нативный токен этой сети — $1. Этот токен используется для внесения платы за газ. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Изменить сведения о сети"
@@ -3279,9 +3300,6 @@
   },
   "noThanks": {
     "message": "Нет, спасибо"
-  },
-  "noTransactions": {
-    "message": "У вас нет транзакций"
   },
   "noWebcamFound": {
     "message": "Веб-камера вашего компьютера не найдена. Попробуйте еще раз."
@@ -3724,6 +3742,12 @@
   "outdatedBrowserNotification": {
     "message": "Ваш браузер устарел. Если вы не обновите его, то не сможете получать исправления безопасности и новые функции от MetaMask."
   },
+  "overrideContentSecurityPolicyHeader": {
+    "message": "Переопределить заголовок Content-Security-Policy"
+  },
+  "overrideContentSecurityPolicyHeaderDescription": {
+    "message": "Этот вариант является обходным решением известной проблемы в Firefox, когда заголовок Content-Security-Policy децентрализованного приложения может препятствовать правильной загрузке расширения. Отключать эту опцию не рекомендуется, если только это не требуется для совместимости конкретной веб-страницы."
+  },
   "padlock": {
     "message": "Замок"
   },
@@ -4031,12 +4055,6 @@
   },
   "permissionsPageEmptySubContent": {
     "message": "Здесь вы можете увидеть разрешения, которые вы предоставили установленным Snaps или подключенным сайтам."
-  },
-  "permissionsPageTourDescription": {
-    "message": "Это ваша панель управления для управления разрешениями, предоставленными подключенным сайтам и установленным Snaps."
-  },
-  "permissionsPageTourTitle": {
-    "message": "Подключенные сайты теперь имеют разрешения"
   },
   "permitSimulationDetailInfo": {
     "message": "Вы даёте расходующему лицу разрешение потратить именно столько токенов из вашего аккаунта"
@@ -4395,6 +4413,9 @@
   "requestFromInfo": {
     "message": "Это сайт, который запрашивает вашу подпись."
   },
+  "requestFromInfoSnap": {
+    "message": "Это Snap, который запрашивает вашу подпись."
+  },
   "requestFromTransactionDescription": {
     "message": "Это сайт, запрашивающий ваше подтверждение."
   },
@@ -4416,6 +4437,10 @@
   "requestingForAccount": {
     "message": "Запрашивается для $1",
     "description": "Name of Account"
+  },
+  "requestingForNetwork": {
+    "message": "Запрашивается для $1",
+    "description": "Name of Network"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "запросы, ожидающие подтверждения"
@@ -4895,6 +4920,9 @@
   "simulationDetailsIncomingHeading": {
     "message": "Вы получаете"
   },
+  "simulationDetailsNoChanges": {
+    "message": "Изменений нет"
+  },
   "simulationDetailsOutgoingHeading": {
     "message": "Вы отправляете"
   },
@@ -4916,6 +4944,9 @@
   },
   "simulationDetailsTransactionReverted": {
     "message": "Эта транзакция, скорее всего, не удастся"
+  },
+  "simulationDetailsUnavailable": {
+    "message": "Недоступно"
   },
   "simulationErrorMessageV2": {
     "message": "Мы не смогли оценить размер платы за газ. В контракте может быть ошибка, и эта транзакция может завершиться неудачно."
@@ -5142,6 +5173,15 @@
   "snapsUIError": {
     "message": "Свяжитесь с авторами $1 для получения дополнительной поддержки.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaSupportSectionTitle": {
+    "message": "Solana"
+  },
+  "solanaSupportToggleDescription": {
+    "message": "Включение этой функции даст вам возможность добавить в ваше расширение MetaMask счет Solana, созданный на основе вашей существующей секретной фразы для восстановления. Это экспериментальная бета-функция, которая используется вами на ваш страх и риск."
+  },
+  "solanaSupportToggleTitle": {
+    "message": "Включить «Добавить новый счет Solana (бета-версия)»"
   },
   "somethingDoesntLookRight": {
     "message": "Что-то не так? $1",
@@ -5801,6 +5841,10 @@
   "swapTokenVerifiedOn1SourceTitle": {
     "message": "Потенциально неаутентичный токен"
   },
+  "swapTokenVerifiedSources": {
+    "message": "Подтверждено $1 источниками. Подтвердить на $2.",
+    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
+  },
   "swapTooManyDecimalsError": {
     "message": "$1 позволяет использовать до $2 десятичных знаков",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -5859,9 +5903,6 @@
     "message": "$1 теперь активен в $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Сейчас вы используете"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "В случае смены сетей все ожидающие подтверждения будут отменены"
   },
@@ -5898,9 +5939,6 @@
   "themeDescription": {
     "message": "Выберите предпочитаемую тему MetaMask."
   },
-  "thingsToKeep": {
-    "message": "Что нужно помнить:"
-  },
   "thirdPartySoftware": {
     "message": "Уведомление о стороннем ПО",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -5918,24 +5956,18 @@
   "tips": {
     "message": "Советы"
   },
+  "tipsForUsingAWallet": {
+    "message": "Советы по использованию кошелька"
+  },
+  "tipsForUsingAWalletDescription": {
+    "message": "Добавление токенов открывает больше способов использования web3."
+  },
   "to": {
     "message": "Адресат"
   },
   "toAddress": {
     "message": "Адресат: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Это позволяет вам выбрать сеть для каждого сайта вместо одной выбранной сети для всех сайтов. Эта функция не позволит вам переключать сети вручную, что может снизить удобство использования некоторых сайтов."
-  },
-  "toggleRequestQueueField": {
-    "message": "Выберите сети для каждого сайта"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Выкл."
-  },
-  "toggleRequestQueueOn": {
-    "message": "Вкл."
   },
   "token": {
     "message": "Токен"
@@ -5970,11 +6002,11 @@
   "tokenList": {
     "message": "Списки токенов:"
   },
+  "tokenMarketplace": {
+    "message": "Торговая площадка для токенов"
+  },
   "tokenScamSecurityRisk": {
     "message": "мошенничество с токенами и угрозы безопасности"
-  },
-  "tokenShowUp": {
-    "message": "Ваши токены могут не отображаться автоматически в вашем кошельке. "
   },
   "tokenStandard": {
     "message": "Стандарт токена"
@@ -6288,9 +6320,6 @@
   "use4ByteResolution": {
     "message": "Расшифровать смарт-контракты"
   },
-  "use4ByteResolutionDescription": {
-    "message": "Чтобы улучшить взаимодействие с пользователем, мы настраиваем вкладку действий, добавляя сообщения на основе смарт-контрактов, с которыми вы взаимодействуете. MetaMask использует службу под названием 4byte.directory для декодирования данных и показа версии смарт-контакта, которую легче читать. Это помогает снизить шансы того, что вы одобрите вредоносные действия смарт-контракта, но может привести к раскрытию вашего IP-адреса."
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Пакетные запросы баланса счета"
   },
@@ -6483,10 +6512,6 @@
   },
   "wrongNetworkName": {
     "message": "Согласно нашим записям, имя сети может не соответствовать этому ID блокчейна."
-  },
-  "xOfYPending": {
-    "message": "$1 из $2 ожидающих",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yes": {
     "message": "Да"

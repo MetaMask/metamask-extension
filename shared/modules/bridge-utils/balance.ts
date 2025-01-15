@@ -1,13 +1,13 @@
 import { Web3Provider } from '@ethersproject/providers';
+import type { Provider } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
 import { getAddress } from 'ethers/lib/utils';
-import { HttpProvider } from '../../../types/global';
 import { fetchTokenBalance } from '../../lib/token-util';
 import { Numeric } from '../Numeric';
 
 export const calcLatestSrcBalance = async (
-  provider: HttpProvider,
+  provider: Provider,
   selectedAddress: string,
   tokenAddress: string,
   chainId: Hex,
@@ -33,14 +33,14 @@ export const calcLatestSrcBalance = async (
 };
 
 export const hasSufficientBalance = async (
-  provider: unknown,
+  provider: Provider,
   selectedAddress: string,
   tokenAddress: string,
   fromTokenAmount: string,
   chainId: Hex,
 ) => {
   const srcTokenBalance = await calcLatestSrcBalance(
-    provider as HttpProvider,
+    provider,
     selectedAddress,
     tokenAddress,
     chainId,
