@@ -37,12 +37,12 @@ class SendSolanaPage {
   }
 
   async setAmount(amount: string): Promise<void> {
-    await this.driver.waitForSelector(this.sendAmountInput, { timeout: 11000 });
+    await this.driver.waitForSelector(this.sendAmountInput);
     await this.driver.pasteIntoField(this.sendAmountInput, amount);
   }
 
   async setToAddress(toAddress: string): Promise<void> {
-    await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
+    await this.driver.waitForSelector(this.toAddressInput);
     await this.driver.pasteIntoField(this.toAddressInput, toAddress);
   }
 
