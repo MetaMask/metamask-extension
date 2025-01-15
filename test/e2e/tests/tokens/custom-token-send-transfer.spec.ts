@@ -72,7 +72,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           // edit gas fee
           await confirmTxPage.switchToDetailsTab();
           await confirmTxPage.editGasFee('60000', '10');
-          await confirmTxPage.confirmTx();
+          await confirmTxPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
           await activityListPage.check_txAction(`Send ${symbol}`);
@@ -123,7 +123,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           // edit gas fee
           await confirmTxPage.switchToDetailsTab();
           await confirmTxPage.editGasFee(GAS_LIMIT, GAS_PRICE);
-          await confirmTxPage.confirmTx();
+          await confirmTxPage.clickConfirmButton();
 
           // in extension, check that transaction has completed correctly and is displayed in the activity list
           await driver.switchToWindowWithTitle(
@@ -183,7 +183,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           const estimatedGasFee = '0.00103214';
           const totalAmount = `${valueWithSymbol('1.5')} + ${estimatedGasFee}`;
           await confirmTxPage.check_pageIsLoaded(estimatedGasFee, totalAmount);
-          await confirmTxPage.confirmTx();
+          await confirmTxPage.clickConfirmButton();
 
           // in extension, check that transaction has completed correctly and is displayed in the activity list
           await driver.switchToWindowWithTitle(
@@ -249,7 +249,7 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           // edit gas fee
           await tokenTransferRedesignedConfirmPage.editGasFee('60000', '10');
-          await tokenTransferRedesignedConfirmPage.confirmTx();
+          await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
           await activityListPage.check_txAction(`Send ${symbol}`);
@@ -304,7 +304,7 @@ describe('Transfer custom tokens @no-mmi', function () {
             GAS_LIMIT,
             GAS_PRICE,
           );
-          await tokenTransferRedesignedConfirmPage.confirmTx();
+          await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // in extension, check that transaction has completed correctly and is displayed in the activity list
           await driver.switchToWindowWithTitle(
@@ -362,7 +362,7 @@ describe('Transfer custom tokens @no-mmi', function () {
             symbol,
             expectedNetworkFee,
           );
-          await tokenTransferRedesignedConfirmPage.confirmTx();
+          await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // in extension, check that transaction has completed correctly and is displayed in the activity list
           await driver.switchToWindowWithTitle(
