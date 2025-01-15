@@ -64,6 +64,15 @@ export default function useSubmitBridgeTransaction() {
       history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
 
+    const statusRequestCommon = {
+      bridgeId: quoteResponse.quote.bridgeId,
+      bridge: quoteResponse.quote.bridges[0],
+      srcChainId: quoteResponse.quote.srcChainId,
+      destChainId: quoteResponse.quote.destChainId,
+      quote: quoteResponse.quote,
+      refuel: Boolean(quoteResponse.quote.refuel),
+    };
+
     // Execute transaction(s)
     let approvalTxMeta: TransactionMeta | undefined;
     try {
@@ -125,13 +134,8 @@ export default function useSubmitBridgeTransaction() {
 
     // Get bridge tx status
     const statusRequest = {
-      bridgeId: quoteResponse.quote.bridgeId,
+      ...statusRequestCommon,
       srcTxHash: bridgeTxMeta.hash, // This might be undefined for STX
-      bridge: quoteResponse.quote.bridges[0],
-      srcChainId: quoteResponse.quote.srcChainId,
-      destChainId: quoteResponse.quote.destChainId,
-      quote: quoteResponse.quote,
-      refuel: Boolean(quoteResponse.quote.refuel),
     };
     dispatch(
       startPollingForBridgeTxStatus({
