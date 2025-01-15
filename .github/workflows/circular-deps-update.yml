@@ -6,6 +6,7 @@ on:
 
 jobs:
   shared-flow:
+    if: contains(github.event.comment.body, '@metamaskbot update-circular-deps')
     uses: ./.github/workflows/shared/metamaskbot-pr-update.yml
     with:
       bot_command: '@metamaskbot update-circular-deps'
@@ -30,4 +31,4 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
       - name: Update circular dependencies
-        run: yarn circular:update
+        run: yarn circular-deps:update
