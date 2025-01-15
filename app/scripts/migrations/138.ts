@@ -99,10 +99,8 @@ function transformState(oldState: Record<string, unknown>) {
     !hasProperty(newState, 'PermissionController') ||
     !isObject(newState.PermissionController)
   ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
-      ),
+    console.warn(
+      `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
     );
     return oldState;
   }
