@@ -256,7 +256,20 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const generateNetworkListItem = (network: NetworkConfiguration) => {
     const isCurrentNetwork = network.chainId === currentChainId;
     const canDeleteNetwork =
-      isUnlocked && !isCurrentNetwork && network.chainId !== CHAIN_IDS.MAINNET;
+      isUnlocked &&
+      !isCurrentNetwork &&
+      ![
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.BITCOIN_MAINNET,
+        CHAIN_IDS.SOLANA_MAINNET,
+        // @ts-expect-error - Ignore
+      ].includes(network.chainId);
+
+    const canEditNetwork = ![
+      CHAIN_IDS.BITCOIN_MAINNET,
+      CHAIN_IDS.SOLANA_MAINNET,
+      // @ts-expect-error - Ignore
+    ].includes(network.chainId);
 
     const allOpts: Record<string, boolean> = {};
     Object.keys(allNetworks).forEach((chainId) => {
@@ -336,15 +349,19 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               }
             : undefined
         }
-        onEditClick={() => {
-          dispatch(
-            setEditedNetwork({
-              chainId: network.chainId,
-              nickname: network.name,
-            }),
-          );
-          setActionMode(ACTION_MODES.ADD_EDIT);
-        }}
+        onEditClick={
+          canEditNetwork
+            ? () => {
+                dispatch(
+                  setEditedNetwork({
+                    chainId: network.chainId,
+                    nickname: network.name,
+                  }),
+                );
+                setActionMode(ACTION_MODES.ADD_EDIT);
+              }
+            : undefined
+        }
         onRpcEndpointClick={() => {
           setActionMode(ACTION_MODES.SELECT_RPC);
           dispatch(setEditedNetwork({ chainId: network.chainId }));
