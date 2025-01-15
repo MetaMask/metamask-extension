@@ -153,10 +153,11 @@ const DecodedSimulation: React.FC<object> = () => {
   const { decodingLoading, decodingData } = currentConfirmation;
 
   const stateChangeFragment = useMemo(() => {
-    const orderedStateChanges = decodingData?.stateChanges?.sort((c1, c2) =>
-      stateChangeOrder[c1.changeType] > stateChangeOrder[c2.changeType]
-        ? 1
-        : -1,
+    const orderedStateChanges = [...(decodingData?.stateChanges ?? [])].sort(
+      (c1, c2) =>
+        stateChangeOrder[c1.changeType] > stateChangeOrder[c2.changeType]
+          ? 1
+          : -1,
     );
     const stateChangesGrouped: Record<string, DecodingDataStateChange[]> = (
       orderedStateChanges ?? []
