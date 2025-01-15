@@ -6,13 +6,13 @@ import {
   abiERC1155,
   abiFiatTokenV2,
 } from '@metamask/metamask-eth-abis';
-import type EthQuery from '@metamask/eth-query';
 import log from 'loglevel';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { TransactionParams } from '@metamask/transaction-controller';
+import type { Provider } from '@metamask/network-controller';
 
 import { Hex } from '@metamask/utils';
 import { AssetType, TokenStandard } from '../constants/transaction';
@@ -141,12 +141,12 @@ export function parseStandardTokenTransactionData(data: string) {
  * at transaction creation.
  *
  * @param txParams - Parameters for the transaction
- * @param query - EthQuery instance
+ * @param provider - Provider instance
  * @returns InferTransactionTypeResult
  */
 export async function determineTransactionType(
   txParams: TransactionParams,
-  query: EthQuery,
+  provider: Provider,
 ): Promise<InferTransactionTypeResult> {
   const { data, to } = txParams;
   let contractCode: string | null | undefined;
@@ -159,7 +159,7 @@ export async function determineTransactionType(
   }
   if (to) {
     const { contractCode: resultCode, isContractAddress } =
-      await readAddressAsContract(query, to);
+      await readAddressAsContract(provider, to);
 
     contractCode = resultCode;
 
@@ -211,13 +211,13 @@ type GetTokenStandardAndDetails = (to: string | undefined) => Promise<{
  * is a token transaction.
  *
  * @param txMeta - transaction meta object
- * @param query - EthQuery instance
+ * @param provider - Provider instance
  * @param getTokenStandardAndDetails - function to get token standards and details.
  * @returns assetType: AssetType, tokenStandard: TokenStandard
  */
 export async function determineTransactionAssetType(
   txMeta: TransactionMeta,
-  query: EthQuery,
+  provider: Provider,
   getTokenStandardAndDetails: GetTokenStandardAndDetails,
 ): Promise<{
   assetType: AssetType;
@@ -230,7 +230,7 @@ export async function determineTransactionAssetType(
     // Because we will deal with all types of transactions (including swaps)
     // we want to get an inferrable type of transaction that isn't special cased
     // that way we can narrow the number of logic gates required.
-    const result = await determineTransactionType(txMeta.txParams, query);
+    const result = await determineTransactionType(txMeta.txParams, provider);
     inferrableType = result.type;
   }
 
