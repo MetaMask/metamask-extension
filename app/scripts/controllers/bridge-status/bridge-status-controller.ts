@@ -189,6 +189,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
           txHash: statusRequest.srcTxHash,
         },
       },
+      hasApprovalTx: Boolean(quoteResponse.approval),
     };
     this.update((_state) => {
       _state.bridgeStatusState = {

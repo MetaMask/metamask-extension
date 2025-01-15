@@ -151,6 +151,7 @@ export type BridgeHistoryItem = {
   initialDestAssetBalance?: string;
   targetContractAddress?: string;
   account: string;
+  hasApprovalTx: boolean;
 };
 
 export enum BridgeStatusAction {
