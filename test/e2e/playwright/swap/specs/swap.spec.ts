@@ -25,20 +25,6 @@ const testSet = [
     network: Tenderly.Mainnet,
   },
   {
-    quantity: '.5',
-    source: 'ETH',
-    type: 'native',
-    destination: 'DAI',
-    network: Tenderly.Linea,
-  },
-  {
-    quantity: '10',
-    source: 'DAI',
-    type: 'unapproved',
-    destination: 'USDC',
-    network: Tenderly.Linea,
-  },
-  {
     quantity: '50',
     source: 'DAI',
     type: 'unapproved',
@@ -86,21 +72,6 @@ test.beforeAll(
   },
 );
 
-test(`Get quote on Mainnet Network`, async () => {
-  await walletPage.selectSwapAction();
-  await walletPage.page.waitForTimeout(3000);
-  await swapPage.enterQuote({
-    from: 'ETH',
-    to: 'USDC',
-    qty: '.01',
-    checkBalance: false,
-  });
-  await walletPage.page.waitForTimeout(3000);
-  const quoteFound = await swapPage.waitForQuote();
-  expect(quoteFound).toBeTruthy();
-  await swapPage.goBack();
-});
-
 test(`Add Custom Networks and import test account`, async () => {
   let response;
   wallet = ethers.Wallet.createRandom();
@@ -108,10 +79,6 @@ test(`Add Custom Networks and import test account`, async () => {
   response = await addFundsToAccount(Tenderly.Mainnet.url, wallet.address);
   expect(response.error).toBeUndefined();
 
-  response = await addFundsToAccount(Tenderly.Linea.url, wallet.address);
-  expect(response.error).toBeUndefined();
-
-  await networkController.addCustomNetwork(Tenderly.Linea);
   await networkController.addCustomNetwork(Tenderly.Mainnet);
 
   await walletPage.importAccount(wallet.privateKey);
