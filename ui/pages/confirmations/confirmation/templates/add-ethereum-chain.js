@@ -162,19 +162,23 @@ const ERROR_CONNECTING_TO_RPC = {
   },
 };
 
-const PENDING_CONFIRMATIONS = {
-  id: 'PENDING_CONFIRMATIONS',
+const ALERT_PENDING_CONFIRMATIONS = (count) => ({
+  id: 'PENDING_TX_DROP_NOTICE',
   severity: Severity.Warning,
   content: {
     element: 'span',
     children: {
       element: 'MetaMaskTranslation',
       props: {
-        translationKey: 'switchingNetworksCancelsPendingConfirmations',
+        translationKey:
+          count === 1
+            ? 'switchingNetworksCancelsPendingConfirmationsExtendedSingular'
+            : 'switchingNetworksCancelsPendingConfirmationsExtended',
+        variables: [count],
       },
     },
   },
-};
+});
 
 async function getAlerts(pendingApproval, data) {
   const { origin } = pendingApproval;
@@ -229,7 +233,7 @@ async function getAlerts(pendingApproval, data) {
   );
 
   if (originPendingApprovals.length > 1) {
-    alerts.push(PENDING_CONFIRMATIONS);
+    alerts.push(ALERT_PENDING_CONFIRMATIONS(originPendingApprovals.length - 1));
   }
 
   return alerts;

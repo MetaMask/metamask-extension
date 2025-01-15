@@ -16,6 +16,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { BannerAlert, Box, Text } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+} from '../../../../../shared/constants/permissions';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -57,7 +61,14 @@ export default class PermissionPageContainerContent extends PureComponent {
       return accumulator;
     }, []);
 
-    const originHasPendingApprovals = originPendingApprovals.length > 1;
+    const otherOriginApprovalsCount = originPendingApprovals.length - 1;
+    const originHasPendingApprovals = otherOriginApprovalsCount > 0;
+
+    const hasChainPermissions = Boolean(
+      selectedPermissions?.[EndowmentTypes.permittedChains]?.[
+        CaveatTypes.restrictNetworkSwitching
+      ]?.length,
+    );
 
     return (
       <Box
@@ -108,9 +119,15 @@ export default class PermissionPageContainerContent extends PureComponent {
             accounts={accounts}
           />
         </Box>
-        {originHasPendingApprovals && (
+        {hasChainPermissions && originHasPendingApprovals && (
           <BannerAlert severity={Severity.Warning} marginTop={2}>
-            {t('switchingNetworksCancelsPendingConfirmations')}
+            {otherOriginApprovalsCount === 1
+              ? t(
+                  'switchingNetworksCancelsPendingConfirmationsExtendedSingular',
+                )
+              : t('switchingNetworksCancelsPendingConfirmationsExtended', [
+                  otherOriginApprovalsCount,
+                ])}
           </BannerAlert>
         )}
       </Box>

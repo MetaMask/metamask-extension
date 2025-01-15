@@ -6,7 +6,7 @@ import {
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
-const PENDING_TX_DROP_NOTICE = {
+const ALERT_PENDING_CONFIRMATIONS = (count) => ({
   id: 'PENDING_TX_DROP_NOTICE',
   severity: SEVERITIES.WARNING,
   content: {
@@ -14,14 +14,18 @@ const PENDING_TX_DROP_NOTICE = {
     children: {
       element: 'MetaMaskTranslation',
       props: {
-        translationKey: 'switchingNetworksCancelsPendingConfirmations',
+        translationKey:
+          count === 1
+            ? 'switchingNetworksCancelsPendingConfirmationsSingular'
+            : 'switchingNetworksCancelsPendingConfirmations',
+        variables: [count],
       },
     },
   },
-};
+});
 
-async function getAlerts(_pendingApproval, _state) {
-  return [PENDING_TX_DROP_NOTICE];
+async function getAlerts(_pendingApproval, state) {
+  return [ALERT_PENDING_CONFIRMATIONS(state.pendingApprovals.length - 1)];
 }
 
 function getValues(pendingApproval, t, actions) {

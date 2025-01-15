@@ -58,7 +58,7 @@ const NetworkChangeToastLegacy = ({
 
       const isDifferentOrigin =
         lastInteractedConfirmationInfo &&
-        lastInteractedConfirmationInfo.origin !== origin;
+        lastInteractedConfirmationInfo.origin !== newOrigin;
 
       if (
         recentlyViewedOtherConfirmation &&

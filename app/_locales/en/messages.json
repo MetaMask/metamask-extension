@@ -3930,7 +3930,7 @@
     "message": "Origin"
   },
   "originSwitchMessage": {
-    "message": "dApp Switched: $1",
+    "message": "Site Switched: $1",
     "description": "$1 represents the dApp origin"
   },
   "osTheme": {
@@ -6210,7 +6210,16 @@
     "description": "$1 represents the network name"
   },
   "switchingNetworksCancelsPendingConfirmations": {
-    "message": "Switching networks will cancel pending confirmations from the dApp"
+    "message": "$1 pending confirmations from the site will be cancelled"
+  },
+  "switchingNetworksCancelsPendingConfirmationsSingular": {
+    "message": "1 pending confirmation from the site will be cancelled"
+  },
+  "switchingNetworksCancelsPendingConfirmationsExtended": {
+    "message": "The site network will be updated and $1 pending confirmations will be cancelled"
+  },
+  "switchingNetworksCancelsPendingConfirmationsExtendedSingular": {
+    "message": "The site network will be updated and 1 pending confirmation will be cancelled"
   },
   "symbol": {
     "message": "Symbol"
