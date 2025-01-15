@@ -188,15 +188,6 @@ function transformState(oldState: Record<string, unknown>) {
     return oldState;
   }
 
-  if (!isObject(newState.PermissionController)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
-      ),
-    );
-    return oldState;
-  }
-
   const { domains } = newState.SelectedNetworkController;
 
   const getChainIdForNetworkClientId = (
