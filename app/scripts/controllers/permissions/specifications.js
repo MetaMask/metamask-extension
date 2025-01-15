@@ -418,6 +418,9 @@ export const unrestrictedMethods = Object.freeze([
   'snap_getInterfaceContext',
   'snap_resolveInterface',
   'snap_setState',
+  'snap_scheduleBackgroundEvent',
+  'snap_cancelBackgroundEvent',
+  'snap_getBackgroundEvents',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   'metamaskinstitutional_authenticate',
   'metamaskinstitutional_reauthenticate',
