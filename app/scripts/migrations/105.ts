@@ -16,7 +16,7 @@ export type Identity = {
   lastSelected?: number;
 };
 
-export type InternalAccount = {
+export type InternalAccountV1 = {
   type: string;
   id: string;
   options: Record<string, Json>;
@@ -67,11 +67,11 @@ function findInternalAccountByAddress(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
   address: string,
-): InternalAccount | undefined {
-  return Object.values<InternalAccount>(
+): InternalAccountV1 | undefined {
+  return Object.values<InternalAccountV1>(
     state.AccountsController.internalAccounts.accounts,
   ).find(
-    (account: InternalAccount) =>
+    (account: InternalAccountV1) =>
       account.address.toLowerCase() === address.toLowerCase(),
   );
 }
@@ -100,7 +100,7 @@ function createInternalAccountsForAccountsController(
     return;
   }
 
-  const accounts: Record<string, InternalAccount> = {};
+  const accounts: Record<string, InternalAccountV1> = {};
 
   Object.values(identities).forEach((identity) => {
     const expectedId = uuid({
