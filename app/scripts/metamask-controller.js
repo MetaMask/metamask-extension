@@ -5176,6 +5176,13 @@ export default class MetamaskController extends EventEmitter {
     return selectedAddress;
   }
 
+  /**
+   * Checks that all accounts referenced have a matching InternalAccount. Sends
+   * an error to sentry for any accounts that were expected but are missing from the wallet.
+   *
+   * @param {InternalAccount[]} [internalAccounts] - The list of evm accounts the wallet knows about.
+   * @param {Hex[]} [accounts] - The list of evm accounts that should exist.
+   */
   captureKeyringTypesWithMissingIdentities(
     internalAccounts = [],
     accounts = [],
