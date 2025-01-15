@@ -33,10 +33,12 @@ let legacyExtMux: ObjectMultiplex,
 
 let extensionMux: ObjectMultiplex,
   extensionChannel: Substream,
+  extensionCaipChannel: Substream,
   extensionPort: browser.Runtime.Port | null,
   extensionStream: PortStream | null,
   pageMux: ObjectMultiplex,
-  pageChannel: Substream;
+  pageChannel: Substream,
+  caipChannel: Substream;
 
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
@@ -55,6 +57,8 @@ const setupPageStreams = () => {
   );
 
   pageChannel = pageMux.createStream(METAMASK_PROVIDER);
+  caipChannel = pageMux.createStream('metamask-provider-caip');
+
   pageMux.ignoreStream(METAMASK_COOKIE_HANDLER);
   pageMux.ignoreStream(LEGACY_PROVIDER);
   pageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
@@ -87,6 +91,14 @@ export const setupExtensionStreams = () => {
   pipeline(pageChannel, extensionChannel, pageChannel, (error: Error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${METAMASK_PROVIDER}" failed.`,
+      error,
+    ),
+  );
+
+  extensionCaipChannel = extensionMux.createStream('metamask-provider-caip');
+  pipeline(caipChannel, extensionCaipChannel, caipChannel, (error: Error) =>
+    console.debug(
+      `MetaMask: Muxed traffic for channel "metamask-provider-caip" failed.`,
       error,
     ),
   );

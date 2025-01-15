@@ -36,6 +36,8 @@ import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import ObjectMultiplex from '@metamask/object-multiplex';
+import { pipeline } from 'readable-stream';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -51,20 +53,29 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 
 if (shouldInjectProvider()) {
   // setup background connection
-  const metamaskStream = new WindowPostMessageStream({
+  window.metamaskStream = new WindowPostMessageStream({
     name: INPAGE,
     target: CONTENT_SCRIPT,
   });
 
-  initializeProvider({
-    connectionStream: metamaskStream,
-    logger: log,
-    shouldShimWeb3: true,
-    providerInfo: {
-      uuid: uuid(),
-      name: process.env.METAMASK_BUILD_NAME,
-      icon: process.env.METAMASK_BUILD_ICON,
-      rdns: process.env.METAMASK_BUILD_APP_ID,
-    },
+  window.metamaskMux = new ObjectMultiplex(metamaskStream)
+
+  window.caipStream =  window.metamaskMux.createStream('metamask-provider-caip')
+
+  pipeline(window.metamaskMux, window.metamaskStream, window.metamaskMux, (err) => {
+    console.log({err})
   });
+
+
+  // initializeProvider({
+  //   connectionStream: metamaskStream,
+  //   logger: log,
+  //   shouldShimWeb3: true,
+  //   providerInfo: {
+  //     uuid: uuid(),
+  //     name: process.env.METAMASK_BUILD_NAME,
+  //     icon: process.env.METAMASK_BUILD_ICON,
+  //     rdns: process.env.METAMASK_BUILD_APP_ID,
+  //   },
+  // });
 }

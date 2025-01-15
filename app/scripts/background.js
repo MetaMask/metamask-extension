@@ -72,8 +72,9 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { createOffscreen } from './offscreen';
+import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
+import { createOffscreen } from './offscreen';
 import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
@@ -393,7 +394,11 @@ function overrideContentSecurityPolicyHeader() {
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+// TODO: make sure browser is not chrome
 let connectExternalCaip;
+let connectRemoteCaip;
+///: END:ONLY_INCLUDE_IF
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -401,6 +406,11 @@ browser.runtime.onConnect.addListener(async (...args) => {
 
   // This is set in `setupController`, which is called as part of initialization
   connectRemote(...args);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  // TODO: make sure browser is not chrome
+  connectRemoteCaip(...args);
+  ///: END:ONLY_INCLUDE_IF
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -1058,6 +1068,28 @@ export function setupController(
       sender: remotePort.sender,
     });
   };
+
+  connectRemoteCaip = async (remotePort) => {
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
+      return;
+    }
+
+    // this is triggered when a new tab is opened, or origin(url) is changed
+    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+      trackDappView(remotePort);
+    }
+
+    const portStream =
+      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+    const mux = setupMultiplex(portStream);
+
+    controller.setupUntrustedCommunicationCaip({
+      connectionStream: mux.createStream('metamask-provider-caip'),
+      sender: remotePort.sender,
+    });
+  };
+  ///: END:ONLY_INCLUDE_IF
 
   if (overrides?.registerConnectListeners) {
     overrides.registerConnectListeners(connectRemote, connectExternalExtension);
