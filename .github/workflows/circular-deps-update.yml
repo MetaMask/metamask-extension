@@ -6,8 +6,7 @@ on:
 
 jobs:
   shared-flow:
-    if: contains(github.event.comment.body, '@metamaskbot update-circular-deps')
-    uses: ./.github/workflows/shared/metamaskbot-pr-update.yml
+    uses: ./.github/workflows/metamaskbot-pr-update.yml
     with:
       bot_command: '@metamaskbot update-circular-deps'
       commit_message: 'Update circular dependencies'

@@ -1,17 +1,5 @@
 name: MetaMask Bot PR Update Template
 
-# TODO: Migrate the following workflows to use this shared template:
-# - .github/workflows/update-attributions.yml
-# - .github/workflows/update-lavamoat-policies.yml
-#
-# These workflows share similar patterns for:
-# - PR fork checking
-# - Comment reactions
-# - Environment setup
-# - Change detection
-# - Committing changes
-# - Status checking and notifications
-
 on:
   workflow_call:
     inputs:
