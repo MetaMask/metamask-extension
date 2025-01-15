@@ -987,7 +987,7 @@
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
@@ -1090,7 +1090,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker>@metamask/utils": true,
-        "@metamask/eth-query>json-rpc-random-id": true,
+        "@metamask/ppom-validator>json-rpc-random-id": true,
         "pify": true
       }
     },
@@ -1103,7 +1103,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/network-controller>@metamask/eth-block-tracker>@metamask/utils": true,
-        "@metamask/eth-query>json-rpc-random-id": true
+        "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
@@ -1124,7 +1124,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/name-controller>async-mutex": true,
@@ -1187,9 +1187,9 @@
         "@metamask/eth-trezor-keyring>hdkey": true
       }
     },
-    "@metamask/eth-query": {
+    "@metamask/controller-utils>@metamask/eth-query": {
       "packages": {
-        "@metamask/eth-query>json-rpc-random-id": true,
+        "@metamask/ppom-validator>json-rpc-random-id": true,
         "watchify>xtend": true
       }
     },
@@ -1391,7 +1391,7 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
@@ -1542,7 +1542,7 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
@@ -1679,7 +1679,7 @@
         "browserify>buffer": true,
         "@metamask/ppom-validator>crypto-js": true,
         "@metamask/ppom-validator>elliptic": true,
-        "@metamask/eth-query>json-rpc-random-id": true
+        "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
     "@metamask/preferences-controller": {
@@ -1806,7 +1806,7 @@
         "@metamask/smart-transactions-controller>@ethereumjs/util": true,
         "@ethersproject/bytes": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
@@ -1941,7 +1941,7 @@
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
@@ -1965,7 +1965,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
