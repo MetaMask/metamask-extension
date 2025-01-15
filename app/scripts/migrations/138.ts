@@ -10,7 +10,7 @@ import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject, isString, isArray } from 'lodash';
 import { isBtcMainnetAddress } from '../../../shared/lib/multichain';
 
-export const version = 137;
+export const version = 138;
 
 type VersionedData = Record<string, unknown>;
 

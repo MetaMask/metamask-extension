@@ -7,7 +7,7 @@ import {
 import { Json } from '@metamask/utils';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { KeyringType } from '../../../shared/constants/keyring';
-import { migrate, version } from './137';
+import { migrate, version } from './138';
 
 const sentryCaptureExceptionMock = jest.fn();
 
@@ -15,7 +15,7 @@ global.sentry = {
   captureException: sentryCaptureExceptionMock,
 };
 
-const oldVersion = 136;
+const oldVersion = 137;
 
 // Hardcode types to avoid conflicting with future type updates.
 type KeyringAccount = {
