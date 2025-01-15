@@ -1,0 +1,188 @@
+diff --git a/dist/BaseProvider.cjs b/dist/BaseProvider.cjs
+index bcb7967af0b6369cc843a159e1c369e5d8a91f12..ad8b431fc9f6c7b4bffb43591ffc5f9e662f1a45 100644
+--- a/dist/BaseProvider.cjs
++++ b/dist/BaseProvider.cjs
+@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.BaseProvider = void 0;
+ const json_rpc_engine_1 = require("@metamask/json-rpc-engine");
+ const rpc_errors_1 = require("@metamask/rpc-errors");
++const { v4: uuidV4 } = require('uuid');
+ const safe_event_emitter_1 = __importDefault(require("@metamask/safe-event-emitter"));
+ const fast_deep_equal_1 = __importDefault(require("fast-deep-equal"));
+ const messages_1 = __importDefault(require("./messages.cjs"));
+@@ -134,9 +135,11 @@ class BaseProvider extends safe_event_emitter_1.default {
+         }
+         const payload = params === undefined || params === null
+             ? {
++                id: uuidV4(),
+                 method,
+             }
+             : {
++                id: uuidV4(),
+                 method,
+                 params,
+             };
+diff --git a/dist/BaseProvider.mjs b/dist/BaseProvider.mjs
+index 2a88b945be89d73d04a075508d6f2858a8c45feb..e371b418891d07e644866b521ad552425a25182a 100644
+--- a/dist/BaseProvider.mjs
++++ b/dist/BaseProvider.mjs
+@@ -20,6 +20,7 @@ import { JsonRpcEngine } from "@metamask/json-rpc-engine";
+ import { rpcErrors, JsonRpcError } from "@metamask/rpc-errors";
+ import SafeEventEmitter from "@metamask/safe-event-emitter";
+ import $dequal from "fast-deep-equal";
++import { v4 as uuidV4 } from "uuid";
+ const dequal = $importDefault($dequal);
+ import messages from "./messages.mjs";
+ import { getRpcPromiseCallback, isValidChainId } from "./utils.mjs";
+@@ -135,9 +136,11 @@ export class BaseProvider extends SafeEventEmitter {
+         }
+         const payload = params === undefined || params === null
+             ? {
++                id: uuidV4(),
+                 method,
+             }
+             : {
++                id: uuidV4(),
+                 method,
+                 params,
+             };
+diff --git a/dist/StreamProvider.cjs b/dist/StreamProvider.cjs
+index 340e5179e02bedc6854b0d7b5a8861bab101b5ec..a1b9d21395c8027c12778933337aaaa55c6717f9 100644
+--- a/dist/StreamProvider.cjs
++++ b/dist/StreamProvider.cjs
+@@ -29,23 +29,27 @@ class AbstractStreamProvider extends BaseProvider_1.BaseProvider {
+      * listeners. Default: 100.
+      * @param options.rpcMiddleware - The RPC middleware stack to use.
+      */
+-    constructor(connectionStream, { jsonRpcStreamName, logger = console, maxEventListeners = 100, rpcMiddleware = [], }) {
++    constructor(connectionStream, { jsonRpcStreamName = 'metamask-provider', logger = console, maxEventListeners = 100, rpcMiddleware = [], multiplexing = true, }) {
+         super({ logger, maxEventListeners, rpcMiddleware });
+         if (!(0, is_stream_1.duplex)(connectionStream)) {
+             throw new Error(messages_1.default.errors.invalidDuplexStream());
+         }
+         // Bind functions to prevent consumers from making unbound calls
+         this._handleStreamDisconnect = this._handleStreamDisconnect.bind(this);
+-        // Set up connectionStream multiplexing
+-        const mux = new object_multiplex_1.default();
+-        (0, readable_stream_1.pipeline)(connectionStream, mux, connectionStream, this._handleStreamDisconnect.bind(this, 'MetaMask'));
+         // Set up RPC connection
+         // Typecast: The type of `Duplex` is incompatible with the type of
+         // `JsonRpcConnection`.
+         this._jsonRpcConnection = (0, json_rpc_middleware_stream_1.createStreamMiddleware)({
+             retryOnMessage: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
+         });
+-        (0, readable_stream_1.pipeline)(this._jsonRpcConnection.stream, mux.createStream(jsonRpcStreamName), this._jsonRpcConnection.stream, this._handleStreamDisconnect.bind(this, 'MetaMask RpcProvider'));
++        if(multiplexing) {
++          // Set up connectionStream multiplexing
++          const mux = new object_multiplex_1.default();
++          (0, readable_stream_1.pipeline)(connectionStream, mux, connectionStream, this._handleStreamDisconnect.bind(this, 'MetaMask'));
++          (0, readable_stream_1.pipeline)(this._jsonRpcConnection.stream, mux.createStream(jsonRpcStreamName), this._jsonRpcConnection.stream, this._handleStreamDisconnect.bind(this, 'MetaMask RpcProvider'));
++        } else {
++          (0, readable_stream_1.pipeline)(connectionStream, this._jsonRpcConnection.stream, connectionStream, this._handleStreamDisconnect.bind(this, 'MetaMask'));
++        }
+         // Wire up the JsonRpcEngine to the JSON-RPC connection stream
+         this._rpcEngine.push(this._jsonRpcConnection.middleware);
+         // Handle JSON-RPC notifications
+diff --git a/dist/StreamProvider.d.cts b/dist/StreamProvider.d.cts
+index 5528633cb48d370c0a08f1f6951ef3960bcda17a..8c657e29b34b4de5d1c5a77c707903777b9f80c5 100644
+--- a/dist/StreamProvider.d.cts
++++ b/dist/StreamProvider.d.cts
+@@ -8,7 +8,11 @@ export type StreamProviderOptions = {
+     /**
+      * The name of the stream used to connect to the wallet.
+      */
+-    jsonRpcStreamName: string;
++    jsonRpcStreamName?: string;
++    /**
++     * Whether to use multiplexing.
++     */
++    multiplexing?: string;
+ } & BaseProviderOptions;
+ export type JsonRpcConnection = {
+     events: SafeEventEmitter;
+@@ -34,7 +38,7 @@ export declare abstract class AbstractStreamProvider extends BaseProvider {
+      * listeners. Default: 100.
+      * @param options.rpcMiddleware - The RPC middleware stack to use.
+      */
+-    constructor(connectionStream: Duplex, { jsonRpcStreamName, logger, maxEventListeners, rpcMiddleware, }: StreamProviderOptions);
++    constructor(connectionStream: Duplex, { jsonRpcStreamName, logger, maxEventListeners, rpcMiddleware, multiplexing, }: StreamProviderOptions);
+     /**
+      * MUST be called by child classes.
+      *
+diff --git a/dist/StreamProvider.d.mts b/dist/StreamProvider.d.mts
+index 01701544f5fd40de1cc15d34fc44dedd7a7f2696..e095aecf8736c72d599618e345e8038ec003ff10 100644
+--- a/dist/StreamProvider.d.mts
++++ b/dist/StreamProvider.d.mts
+@@ -8,7 +8,11 @@ export type StreamProviderOptions = {
+     /**
+      * The name of the stream used to connect to the wallet.
+      */
+-    jsonRpcStreamName: string;
++    jsonRpcStreamName?: string;
++    /**
++     * Whether to use multiplexing.
++     */
++    multiplexing?: string;
+ } & BaseProviderOptions;
+ export type JsonRpcConnection = {
+     events: SafeEventEmitter;
+@@ -34,7 +38,7 @@ export declare abstract class AbstractStreamProvider extends BaseProvider {
+      * listeners. Default: 100.
+      * @param options.rpcMiddleware - The RPC middleware stack to use.
+      */
+-    constructor(connectionStream: Duplex, { jsonRpcStreamName, logger, maxEventListeners, rpcMiddleware, }: StreamProviderOptions);
++    constructor(connectionStream: Duplex, { jsonRpcStreamName, logger, maxEventListeners, rpcMiddleware, multiplexing, }: StreamProviderOptions);
+     /**
+      * MUST be called by child classes.
+      *
+diff --git a/dist/StreamProvider.mjs b/dist/StreamProvider.mjs
+index 49ae5791fe630f80a14edc034a919afe116ac623..b416248ad501545509308088a1ce5f5832f6912d 100644
+--- a/dist/StreamProvider.mjs
++++ b/dist/StreamProvider.mjs
+@@ -31,23 +31,27 @@ export class AbstractStreamProvider extends BaseProvider {
+      * listeners. Default: 100.
+      * @param options.rpcMiddleware - The RPC middleware stack to use.
+      */
+-    constructor(connectionStream, { jsonRpcStreamName, logger = console, maxEventListeners = 100, rpcMiddleware = [], }) {
++    constructor(connectionStream, { jsonRpcStreamName = 'metamask-provider', logger = console, maxEventListeners = 100, rpcMiddleware = [], multiplexing = true, }) {
+         super({ logger, maxEventListeners, rpcMiddleware });
+         if (!isDuplex(connectionStream)) {
+             throw new Error(messages.errors.invalidDuplexStream());
+         }
+         // Bind functions to prevent consumers from making unbound calls
+         this._handleStreamDisconnect = this._handleStreamDisconnect.bind(this);
+-        // Set up connectionStream multiplexing
+-        const mux = new ObjectMultiplex();
+-        pipeline(connectionStream, mux, connectionStream, this._handleStreamDisconnect.bind(this, 'MetaMask'));
+         // Set up RPC connection
+         // Typecast: The type of `Duplex` is incompatible with the type of
+         // `JsonRpcConnection`.
+         this._jsonRpcConnection = createStreamMiddleware({
+             retryOnMessage: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
+         });
+-        pipeline(this._jsonRpcConnection.stream, mux.createStream(jsonRpcStreamName), this._jsonRpcConnection.stream, this._handleStreamDisconnect.bind(this, 'MetaMask RpcProvider'));
++        if(multiplexing) {
++          // Set up connectionStream multiplexing
++          const mux = new ObjectMultiplex();
++          pipeline(connectionStream, mux, connectionStream, this._handleStreamDisconnect.bind(this, 'MetaMask'));
++          pipeline(this._jsonRpcConnection.stream, mux.createStream(jsonRpcStreamName), this._jsonRpcConnection.stream, this._handleStreamDisconnect.bind(this, 'MetaMask RpcProvider'));
++        } else {
++          pipeline(connectionStream, this._jsonRpcConnection.stream, connectionStream, this._handleStreamDisconnect.bind(this, 'MetaMask'));
++        }
+         // Wire up the JsonRpcEngine to the JSON-RPC connection stream
+         this._rpcEngine.push(this._jsonRpcConnection.middleware);
+         // Handle JSON-RPC notifications
+diff --git a/package.json b/package.json
+index 886a1e106855112b02e254d413c5dc749d0e50ef..1c2a1ba0fb67cb5c1b9f9d6baef8745897a70283 100644
+--- a/package.json
++++ b/package.json
+@@ -110,7 +110,8 @@
+     "extension-port-stream": "^4.1.0",
+     "fast-deep-equal": "^3.1.3",
+     "is-stream": "^2.0.0",
+-    "readable-stream": "^3.6.2"
++    "readable-stream": "^3.6.2",
++    "uuid": "^8.3.2"
+   },
+   "devDependencies": {
+     "@lavamoat/allow-scripts": "^3.0.4",

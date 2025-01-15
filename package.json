@@ -309,7 +309,7 @@
     "@metamask/eth-ledger-bridge-keyring": "^8.0.2",
     "@metamask/eth-sig-util": "^7.0.1",
     "@metamask/eth-snap-keyring": "^8.1.0",
-    "@metamask/eth-token-tracker": "^9.0.0",
+    "@metamask/eth-token-tracker": "^10.0.1",
     "@metamask/eth-trezor-keyring": "^6.0.0",
     "@metamask/etherscan-link": "^3.0.0",
     "@metamask/gas-fee-controller": "^22.0.1",
@@ -339,7 +339,7 @@
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.3.0",
     "@metamask/profile-sync-controller": "^4.1.0",
-    "@metamask/providers": "^18.2.0",
+    "@metamask/providers": "patch:@metamask/providers@npm%3A18.2.0#~/.yarn/patches/@metamask-providers-npm-18.2.0-3616fe3170.patch",
     "@metamask/queued-request-controller": "^7.0.1",
     "@metamask/rate-limit-controller": "^6.0.0",
     "@metamask/remote-feature-flag-controller": "^1.3.0",
@@ -443,7 +443,6 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
-    "web3-stream-provider": "^5.0.0",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
