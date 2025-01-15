@@ -238,7 +238,7 @@ function transformState(oldState: Record<string, unknown>) {
       }
     }
     if (malformedDataErrorFound) {
-      return;
+      return undefined;
     }
 
     if (matchingChainId) {
