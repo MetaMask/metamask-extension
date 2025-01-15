@@ -160,7 +160,6 @@ export enum BridgeStatusAction {
   GET_STATE = 'getState',
 }
 
-// The BigNumber values are serialized to strings when QuoteMetadata sent to the background
 export type TokenAmountValuesSerialized = {
   amount: string;
   valueInCurrency: string | null;
