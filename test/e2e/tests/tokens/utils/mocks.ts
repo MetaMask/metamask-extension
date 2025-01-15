@@ -35,7 +35,9 @@ export const mockSpotPrices = async (
   >,
 ) => {
   return mockServer
-    .forGet(getPriceUrl('v2', parseInt(chainIdToMock, 16).toString(), 'spot-prices'))
+    .forGet(
+      getPriceUrl('v2', parseInt(chainIdToMock, 16).toString(), 'spot-prices'),
+    )
     .thenCallback(() => ({
       statusCode: 200,
       json: prices,
@@ -57,7 +59,11 @@ export const mockHistoricalPrices = async (
 ) => {
   return mockServer
     .forGet(
-      getPriceUrl('v1', chainId, `historical-prices/${toChecksumHexAddress(address)}`)
+      getPriceUrl(
+        'v1',
+        chainId,
+        `historical-prices/${toChecksumHexAddress(address)}`,
+      ),
     )
     .thenCallback(() => ({
       statusCode: 200,
