@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { providerErrors } from '@metamask/rpc-errors';
 import { JsonRpcRequest } from '@metamask/utils';
-import { OriginThrottlingController } from '../controllers/origin-throttling-controller';
+import { AppStateController } from '../controllers/app-state-controller';
 import { BLOCKABLE_METHODS } from '../../../shared/constants/origin-throttling';
 
 export type ExtendedJSONRPCRequest = JsonRpcRequest & { origin: string };
@@ -14,14 +14,15 @@ export const SPAM_FILTER_ACTIVATED_ERROR = providerErrors.unauthorized(
 export function validateOriginThrottling({
   req,
   end,
-  originThrottlingController,
+  appStateController,
 }: {
   req: ExtendedJSONRPCRequest;
   end: any;
-  originThrottlingController: OriginThrottlingController;
+  appStateController: AppStateController;
 }): boolean {
-  const isDappBlocked =
-    originThrottlingController.isOriginBlockedForConfirmations(req.origin);
+  const isDappBlocked = appStateController.isOriginBlockedForConfirmations(
+    req.origin,
+  );
 
   if (isDappBlocked) {
     end(SPAM_FILTER_ACTIVATED_ERROR);
@@ -31,9 +32,9 @@ export function validateOriginThrottling({
 }
 
 export default function createOriginThrottlingMiddleware({
-  originThrottlingController,
+  appStateController,
 }: {
-  originThrottlingController: OriginThrottlingController;
+  appStateController: AppStateController;
 }) {
   return function originThrottlingMiddleware(
     req: ExtendedJSONRPCRequest,
@@ -49,7 +50,7 @@ export default function createOriginThrottlingMiddleware({
 
     const isDappBlocked = validateOriginThrottling({
       end,
-      originThrottlingController,
+      appStateController,
       req,
     });
 

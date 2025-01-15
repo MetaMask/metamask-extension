@@ -1,10 +1,15 @@
 import { ControllerMessenger } from '@metamask/base-controller';
+import { errorCodes } from '@metamask/rpc-errors';
 import type {
   AcceptRequest,
   AddApprovalRequest,
+  ApprovalAcceptedEvent,
+  ApprovalRejectedEvent,
+  ApprovalRequest,
 } from '@metamask/approval-controller';
 import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import { Browser } from 'webextension-polyfill';
+import { waitFor } from '@testing-library/react';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ORIGIN_METAMASK,
@@ -17,6 +22,7 @@ import type {
   AppStateControllerActions,
   AppStateControllerEvents,
   AppStateControllerOptions,
+  AppStateControllerState,
 } from './app-state-controller';
 import type {
   PreferencesControllerState,
@@ -553,11 +559,157 @@ describe('AppStateController', () => {
       });
     });
   });
+
+  describe('throttledOrigins', () => {
+    describe('resetOriginThrottlingState', () => {
+      it('should reset the throttling state for a given origin', async () => {
+        await withController(
+          {
+            state: {
+              throttledOrigins: {
+                'example.com': { rejections: 3, lastRejection: Date.now() },
+              },
+            },
+          },
+          ({ controller }) => {
+            controller.resetOriginThrottlingState('example.com');
+            expect(
+              controller.state.throttledOrigins['example.com'],
+            ).toBeUndefined();
+          },
+        );
+      });
+    });
+
+    describe('isOriginBlockedForConfirmations', () => {
+      it('should return false if the origin is not throttled', async () => {
+        await withController(({ controller }) => {
+          expect(
+            controller.isOriginBlockedForConfirmations('example.com'),
+          ).toBe(false);
+        });
+      });
+
+      it('should return true if the origin is throttled and within the blocking threshold', async () => {
+        await withController(
+          {
+            state: {
+              throttledOrigins: {
+                'example.com': {
+                  rejections: 5,
+                  lastRejection: Date.now(),
+                },
+              },
+            },
+          },
+          ({ controller }) => {
+            expect(
+              controller.isOriginBlockedForConfirmations('example.com'),
+            ).toBe(true);
+          },
+        );
+      });
+
+      it('should return false if the origin is throttled but outside the blocking threshold', async () => {
+        await withController(
+          {
+            state: {
+              throttledOrigins: {
+                'example.com': {
+                  rejections: 5,
+                  lastRejection: Date.now() - 600000, // 10 minutes ago
+                },
+              },
+            },
+          },
+          ({ controller }) => {
+            expect(
+              controller.isOriginBlockedForConfirmations('example.com'),
+            ).toBe(false);
+          },
+        );
+      });
+    });
+
+    describe('ApprovalController:rejected event', () => {
+      it('should increase rejection count for user rejected errors', async () => {
+        await withController(
+          async ({ controller, controllerMessenger: messenger }) => {
+            const origin = 'example.com';
+
+            messenger.publish('ApprovalController:rejected', {
+              approval: {
+                origin,
+                type: 'transaction',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              } as unknown as ApprovalRequest<any>,
+              error: {
+                code: errorCodes.provider.userRejectedRequest,
+              } as unknown as Error,
+            });
+
+            await waitFor(() => {
+              expect(controller.state.throttledOrigins[origin].rejections).toBe(
+                1,
+              );
+            });
+          },
+        );
+      });
+
+      it('should not increase rejection count for non-user rejected errors', async () => {
+        await withController(
+          async ({ controller, controllerMessenger: messenger }) => {
+            const origin = 'example.com';
+
+            messenger.publish('ApprovalController:rejected', {
+              approval: {
+                origin,
+                type: 'transaction',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              } as unknown as ApprovalRequest<any>,
+              error: { code: errorCodes.rpc.internal } as unknown as Error,
+            });
+
+            expect(controller.state.throttledOrigins[origin]).toBeUndefined();
+          },
+        );
+      });
+    });
+
+    describe('ApprovalController:accepted event', () => {
+      it('should reset throttling state on approval acceptance', async () => {
+        await withController(
+          {
+            state: {
+              throttledOrigins: {
+                'example.com': { rejections: 3, lastRejection: Date.now() },
+              },
+            },
+          },
+          ({ controller, controllerMessenger: messenger }) => {
+            messenger.publish('ApprovalController:accepted', {
+              approval: {
+                origin: 'example.com',
+                type: 'transaction',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              } as unknown as ApprovalRequest<any>,
+            });
+
+            expect(
+              controller.state.throttledOrigins['example.com'],
+            ).toBeUndefined();
+          },
+        );
+      });
+    });
+  });
 });
 
 type WithControllerOptions = {
   options?: Partial<AppStateControllerOptions>;
   addRequestMock?: jest.Mock;
+  state?: Partial<AppStateControllerState>;
 };
 
 type WithControllerCallback<ReturnValue> = ({
@@ -573,6 +725,8 @@ type WithControllerCallback<ReturnValue> = ({
     | AppStateControllerEvents
     | PreferencesControllerStateChangeEvent
     | KeyringControllerQRKeyringStateChangeEvent
+    | ApprovalAcceptedEvent
+    | ApprovalRejectedEvent
   >;
 }) => ReturnValue;
 
@@ -584,7 +738,7 @@ async function withController<ReturnValue>(
   ...args: WithControllerArgs<ReturnValue>
 ): Promise<ReturnValue> {
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
-  const { addRequestMock, options = {} } = rest;
+  const { addRequestMock, state, options = {} } = rest;
 
   const controllerMessenger = new ControllerMessenger<
     | AppStateControllerActions
@@ -594,6 +748,8 @@ async function withController<ReturnValue>(
     | AppStateControllerEvents
     | PreferencesControllerStateChangeEvent
     | KeyringControllerQRKeyringStateChangeEvent
+    | ApprovalAcceptedEvent
+    | ApprovalRejectedEvent
   >();
   const appStateMessenger = controllerMessenger.getRestricted({
     name: 'AppStateController',
@@ -605,6 +761,8 @@ async function withController<ReturnValue>(
     allowedEvents: [
       `PreferencesController:stateChange`,
       `KeyringController:qrKeyringStateChange`,
+      `ApprovalController:accepted`,
+      `ApprovalController:rejected`,
     ],
   });
   controllerMessenger.registerActionHandler(
@@ -627,6 +785,7 @@ async function withController<ReturnValue>(
       onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,
+      state,
       ...options,
     }),
     controllerMessenger,

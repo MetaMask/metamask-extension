@@ -1,22 +1,20 @@
-// app/scripts/lib/__tests__/createOriginThrottlingMiddleware.test.ts
-
-import { OriginThrottlingController } from '../controllers/origin-throttling-controller';
+import { AppStateController } from '../controllers/app-state-controller';
 import createOriginThrottlingMiddleware, {
   SPAM_FILTER_ACTIVATED_ERROR,
   ExtendedJSONRPCRequest,
 } from './createOriginThrottlingMiddleware';
 
 describe('createOriginThrottlingMiddleware', () => {
-  let originThrottlingController: OriginThrottlingController;
+  let appStateController: AppStateController;
   let middleware: ReturnType<typeof createOriginThrottlingMiddleware>;
 
   beforeEach(() => {
-    originThrottlingController = {
+    appStateController = {
       isOriginBlockedForConfirmations: jest.fn(),
-    } as unknown as OriginThrottlingController;
+    } as unknown as AppStateController;
 
     middleware = createOriginThrottlingMiddleware({
-      originThrottlingController,
+      appStateController,
     });
   });
 
@@ -43,7 +41,7 @@ describe('createOriginThrottlingMiddleware', () => {
     const end = jest.fn();
 
     (
-      originThrottlingController.isOriginBlockedForConfirmations as jest.Mock
+      appStateController.isOriginBlockedForConfirmations as jest.Mock
     ).mockReturnValue(true);
 
     await middleware(req, {}, next, end);
@@ -61,7 +59,7 @@ describe('createOriginThrottlingMiddleware', () => {
     const end = jest.fn();
 
     (
-      originThrottlingController.isOriginBlockedForConfirmations as jest.Mock
+      appStateController.isOriginBlockedForConfirmations as jest.Mock
     ).mockReturnValue(false);
 
     await middleware(req, {}, next, end);

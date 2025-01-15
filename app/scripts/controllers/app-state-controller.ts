@@ -11,9 +11,13 @@ import {
 import {
   AcceptRequest,
   AddApprovalRequest,
+  ApprovalAcceptedEvent,
+  ApprovalRejectedEvent,
+  ApprovalRequest,
 } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 import { Browser } from 'webextension-polyfill';
+import { errorCodes } from '@metamask/rpc-errors';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -32,11 +36,28 @@ import {
   AccountOverviewTabKey,
   CarouselSlide,
 } from '../../../shared/constants/app-state';
+import {
+  BLOCKABLE_METHODS,
+  BLOCKING_THRESHOLD_IN_MS,
+  NUMBER_OF_REJECTIONS_THRESHOLD,
+  REJECTION_THRESHOLD_IN_MS,
+} from '../../../shared/constants/origin-throttling';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
+
+export type OriginState = {
+  rejections: number;
+  lastRejection: number;
+};
+
+export type OriginThrottlingState = {
+  throttledOrigins: {
+    [key: string]: OriginState;
+  };
+};
 
 export type AppStateControllerState = {
   timeoutMinutes: number;
@@ -80,6 +101,9 @@ export type AppStateControllerState = {
   noteToTraderMessage?: string;
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
+  throttledOrigins: {
+    [key: string]: OriginState;
+  };
 };
 
 const controllerName = 'AppStateController';
@@ -130,7 +154,9 @@ export type AppStateControllerEvents =
  */
 type AllowedEvents =
   | PreferencesControllerStateChangeEvent
-  | KeyringControllerQRKeyringStateChangeEvent;
+  | KeyringControllerQRKeyringStateChangeEvent
+  | ApprovalAcceptedEvent
+  | ApprovalRejectedEvent;
 
 export type AppStateControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -191,6 +217,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
   slides: [],
+  throttledOrigins: {},
   ...getInitialStateOverrides(),
 });
 
@@ -353,7 +380,18 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  throttledOrigins: {
+    persist: true,
+    anonymous: false,
+  },
 };
+
+type ErrorWithCode = {
+  code?: number;
+} & Error;
+
+const isUserRejectedError = (error: ErrorWithCode) =>
+  error && error.code === errorCodes.provider.userRejectedRequest;
 
 export class AppStateController extends BaseController<
   typeof controllerName,
@@ -380,6 +418,7 @@ export class AppStateController extends BaseController<
     onInactiveTimeout,
     extension,
   }: AppStateControllerOptions) {
+    console.log('state', state);
     super({
       name: controllerName,
       metadata: controllerMetadata,
@@ -427,6 +466,16 @@ export class AppStateController extends BaseController<
     }
 
     this.#approvalRequestId = null;
+
+    this.messagingSystem.subscribe(
+      'ApprovalController:accepted',
+      this.#onApprovalAccepted.bind(this),
+    );
+
+    this.messagingSystem.subscribe(
+      'ApprovalController:rejected',
+      this.#onApprovalRejected.bind(this),
+    );
   }
 
   /**
@@ -1074,5 +1123,67 @@ export class AppStateController extends BaseController<
     }
 
     this.#approvalRequestId = null;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  #onApprovalAccepted({ approval }: { approval: ApprovalRequest<any> }) {
+    const { type, origin } = approval;
+    if (BLOCKABLE_METHODS.has(type)) {
+      this.resetOriginThrottlingState(origin);
+    }
+  }
+
+  #onApprovalRejected({
+    approval,
+    error,
+  }: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    approval: ApprovalRequest<any>;
+    error: Error;
+  }) {
+    const { origin, type } = approval;
+
+    if (BLOCKABLE_METHODS.has(type) && isUserRejectedError(error)) {
+      this.#onConfirmationRejectedByUser(origin);
+    }
+  }
+
+  #onConfirmationRejectedByUser(origin: string): void {
+    const currentState = this.state.throttledOrigins[origin] || {
+      rejections: 0,
+      lastRejection: 0,
+    };
+    const currentTime = Date.now();
+    const isUnderThreshold =
+      currentTime - currentState.lastRejection < REJECTION_THRESHOLD_IN_MS;
+    const newRejections = isUnderThreshold ? currentState.rejections + 1 : 1;
+
+    this.update((state) => {
+      state.throttledOrigins[origin] = {
+        rejections: newRejections,
+        lastRejection: currentTime,
+      };
+    });
+  }
+
+  resetOriginThrottlingState(origin: string): void {
+    this.update((state) => {
+      delete state.throttledOrigins[origin];
+    });
+  }
+
+  isOriginBlockedForConfirmations(origin: string): boolean {
+    const originState = this.state.throttledOrigins[origin];
+    console.log('originState', originState);
+    if (!originState) {
+      return false;
+    }
+    console.log('originState', originState);
+    const currentTime = Date.now();
+    const { rejections, lastRejection } = originState;
+    const isWithinOneMinute =
+      currentTime - lastRejection <= BLOCKING_THRESHOLD_IN_MS;
+
+    return rejections >= NUMBER_OF_REJECTIONS_THRESHOLD && isWithinOneMinute;
   }
 }
