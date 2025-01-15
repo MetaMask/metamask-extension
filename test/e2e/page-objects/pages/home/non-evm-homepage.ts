@@ -10,6 +10,13 @@ class NonEvmHomepage extends HomePage {
   protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
 
   /**
+   * Clicks the send button on the non-EVM account homepage.
+   */
+  async clickOnSendButton(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
+  }
+
+  /**
    * Checks if the expected balance is displayed on homepage.
    *
    * @param balance
@@ -40,22 +47,6 @@ class NonEvmHomepage extends HomePage {
   }
 
   /**
-   * Checks if the swap button is enabled on a non-evm account homepage.
-   */
-  async check_ifSwapButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.waitForSelector(this.swapButton, { timeout: 5000 });
-      const swapButton = await this.driver.findClickableElement(
-        this.swapButton,
-      );
-      return swapButton.isEnabled();
-    } catch (e) {
-      console.log('Swap button not enabled', e);
-      return false;
-    }
-  }
-
-  /**
    * Checks if the buy/sell button is enabled on a non-evm account homepage.
    */
   async check_ifBuySellButtonIsClickable(): Promise<boolean> {
@@ -64,47 +55,11 @@ class NonEvmHomepage extends HomePage {
       const buySellButton = await this.driver.findClickableElement(
         this.buySellButton,
       );
-      return buySellButton.isEnabled();
+      return await buySellButton.isEnabled();
     } catch (e) {
       console.log('Buy/Sell button not enabled', e);
       return false;
     }
-  }
-
-  /**
-   * Checks if the send button is enabled on a non-evm account homepage.
-   */
-  async check_ifSendButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.waitForSelector(this.sendButton, { timeout: 5000 });
-      const sendButton = await this.driver.findClickableElement(
-        this.sendButton,
-      );
-      return sendButton.isEnabled();
-    } catch (e) {
-      console.log('Send button not enabled', e);
-      return false;
-    }
-  }
-
-  /**
-   * Checks if the bridge button is enabled on a non-evm account homepage.
-   */
-  async check_ifBridgeButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.waitForSelector(this.bridgeButton, { timeout: 5000 });
-      const bridgeButton = await this.driver.findClickableElement(
-        this.bridgeButton,
-      );
-      return bridgeButton.isEnabled();
-    } catch (e) {
-      console.log('Bridge button not enabled', e);
-      return false;
-    }
-  }
-
-  async clickOnSend(): Promise<void> {
-    await this.driver.clickElement(this.sendButton);
   }
 }
 

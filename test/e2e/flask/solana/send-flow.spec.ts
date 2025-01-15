@@ -23,7 +23,7 @@ describe('Send SOL flow', function (this: Suite) {
         );
         assert.equal(await homePage.check_ifSwapButtonIsClickable(), false);
         assert.equal(await homePage.check_ifBridgeButtonIsClickable(), false);
-        await homePage.clickOnSend();
+        await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
@@ -54,7 +54,7 @@ describe('Send SOL flow', function (this: Suite) {
       async (driver) => {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
-        await homePage.clickOnSend();
+        await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
@@ -125,7 +125,7 @@ describe('Send SOL flow', function (this: Suite) {
           false,
           'Bridge button is enabled  and it should`t',
         );
-        await homePage.clickOnSend();
+        await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
@@ -276,7 +276,7 @@ describe('Send SOL flow', function (this: Suite) {
           false,
           'Bridge button is enabled and it should`t',
         );
-        await homePage.clickOnSend();
+        await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');

@@ -26,7 +26,7 @@ class ConfirmSolanaTxPage {
           text: 'Sending...',
           tag: 'span',
         });
-        return true;
+        return false;
       }, 10000);
       console.log('Sending transaction modal has disappeared');
     } catch (e) {
@@ -62,8 +62,12 @@ class ConfirmSolanaTxPage {
     await this.driver.pasteIntoField(this.toAddressInput, toAddress);
   }
 
+  /**
+   * Clicks the send button on the Solana transaction confirmation page
+   */
   async clickOnSend(): Promise<void> {
-    await this.driver.clickElement(this.sendButton);
+    const sendButton = await this.driver.findElement(this.sendButton);
+    await sendButton.click();
   }
 
   async isSendButtonEnabled(): Promise<boolean> {
