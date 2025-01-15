@@ -8,7 +8,152 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap manageState', function () {
-  it('can pop up manageState snap and do update get and clear', async function () {
+  it('can use the new state API', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // navigate to test snaps page, then fill in the snapId
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // scroll to manage-state snap
+        const snapButton1 = await driver.findElement('#connectstate');
+        await driver.scrollToElement(snapButton1);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectstate');
+        await driver.clickElement('#connectstate');
+
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        // wait for and click confirm
+        await driver.waitForSelector({ text: 'Confirm' });
+        await driver.clickElement({
+          text: 'Confirm',
+          tag: 'button',
+        });
+
+        // wait for and click ok and wait for window to close
+        await driver.waitForSelector({ text: 'OK' });
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'OK',
+          tag: 'button',
+        });
+
+        // fill and click send inputs on test snap page
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectstate',
+          text: 'Reconnect to State Snap',
+        });
+
+        // Enter data and click set
+        await driver.pasteIntoField('#setStateKey', 'foo');
+        await driver.pasteIntoField('#dataState', '"bar"');
+        const sendEncrypted = await driver.findElement(
+          '#sendState',
+        );
+        await driver.scrollToElement(sendEncrypted);
+        await driver.clickElement('#sendState');
+
+        // Check that the entire state blob was updated
+        await driver.waitForSelector({
+          css: '#encryptedStateResult',
+          text: JSON.stringify({ foo: 'bar' }, null, 2),
+        });
+
+        // Check that we can retrive one state key
+        await driver.pasteIntoField('#getState', 'foo');
+        const getKeyButton = await driver.findElement(
+          '#sendGetState',
+        );
+        await driver.scrollToElement(getKeyButton);
+        await driver.clickElement('#sendGetState');
+
+        await driver.waitForSelector({
+          css: '#getStateResult',
+          text: '"bar"',
+        });
+
+        // click clear results
+        await driver.clickElement('#clearState');
+
+        // check result array is empty
+        await driver.waitForSelector({
+          css: '#encryptedStateResult',
+          text: 'null',
+        });
+
+        // repeat the same above steps to check unencrypted state management
+
+        // Enter data and click set
+        await driver.pasteIntoField('#setStateKeyUnencrypted', 'foo');
+        await driver.pasteIntoField('#dataUnencryptedState', '"bar"');
+        const sendUnencrypted = await driver.findElement(
+          '#sendUnencryptedState',
+        );
+        await driver.scrollToElement(sendUnencrypted);
+        await driver.clickElement('#sendUnencryptedState');
+
+        // Check that the entire state blob was updated
+        await driver.waitForSelector({
+          css: '#unencryptedStateResult',
+          text: JSON.stringify({ foo: 'bar' }, null, 2),
+        });
+
+        // Check that we can retrive one state key
+        await driver.pasteIntoField('#getUnencryptedState', 'foo');
+        const getUnencryptedKeyButton = await driver.findElement(
+          '#sendGetUnencryptedState',
+        );
+        await driver.scrollToElement(getUnencryptedKeyButton);
+        await driver.clickElement('#sendGetUnencryptedState');
+
+        await driver.waitForSelector({
+          css: '#getStateUnencryptedResult',
+          text: '"bar"',
+        });
+
+        // click clear results
+        await driver.clickElement('#clearStateUnencrypted');
+
+        // check result array is empty
+        await driver.waitForSelector({
+          css: '#unencryptedStateResult',
+          text: 'null',
+        });
+      },
+    );
+  });
+
+  it('can use the legacy state API', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
