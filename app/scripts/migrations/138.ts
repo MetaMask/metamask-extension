@@ -114,7 +114,7 @@ function transformState(oldState: Record<string, unknown>) {
         `Migration ${version}: typeof state.NetworkController is ${typeof newState.NetworkController}`,
       ),
     );
-    return newState;
+    return oldState;
   }
 
   if (!hasProperty(newState, 'SelectedNetworkController')) {
