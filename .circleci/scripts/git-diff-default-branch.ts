@@ -131,8 +131,6 @@ async function storeGitDiffOutputAndPrBody() {
 
     const prInfo = await getPrInfo();
 
-    console.log(111222, prInfo)
-
     const baseRef = prInfo?.base.ref;
     if (!baseRef) {
       console.log('Not a PR, skipping git diff');
