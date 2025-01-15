@@ -4,7 +4,6 @@
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
-import EthQuery from '@metamask/eth-query';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   ListNames,
@@ -780,9 +779,10 @@ describe('MetaMaskController', () => {
       it('should ask the network for a balance when not known by accountTrackerController', async () => {
         const accounts = {};
         const balance = '0x14ced5122ce0a000';
-        const ethQuery = new EthQuery();
-        jest.spyOn(ethQuery, 'getBalance').mockImplementation((_, callback) => {
-          callback(undefined, balance);
+        const { provider } = createTestProviderTools({
+          scaffold: {
+            eth_getBalance: balance,
+          },
         });
 
         jest
@@ -793,7 +793,7 @@ describe('MetaMaskController', () => {
 
         const gotten = await metamaskController.getBalance(
           TEST_ADDRESS,
-          ethQuery,
+          provider,
         );
 
         expect(balance).toStrictEqual(gotten);
