@@ -6,6 +6,7 @@ import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
+import type { Provider } from '@metamask/network-controller';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -394,7 +395,7 @@ export const getMethodDataName = async (
   use4ByteResolution: boolean,
   prefixedData: string,
   addKnownMethodData: (fourBytePrefix: string, methodData: MethodData) => void,
-  provider: object,
+  provider: Provider,
 ) => {
   if (!prefixedData || !use4ByteResolution) {
     return null;
