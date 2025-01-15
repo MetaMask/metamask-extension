@@ -37,11 +37,6 @@ describe('migration #138', () => {
 
     const newStorage = await migrate(oldStorage);
 
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${version}: typeof state.PermissionController is undefined`,
-      ),
-    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
@@ -505,7 +500,7 @@ describe('migration #138', () => {
       };
       const currentScope = `eip155:${chainId}`;
 
-      it('skips eth_accounts and permittedChains permissions when they are missing metadata', async () => {
+      it('does nothing when eth_accounts and permittedChains permissions are missing metadata', async () => {
         const oldStorage = {
           meta: { version: oldVersion },
           data: {
@@ -547,23 +542,10 @@ describe('migration #138', () => {
         };
 
         const newStorage = await migrate(oldStorage);
-        expect(newStorage.data).toStrictEqual({
-          ...baseData(),
-          PermissionController: {
-            subjects: {
-              'test.com': {
-                permissions: {
-                  unrelated: {
-                    foo: 'bar',
-                  },
-                },
-              },
-            },
-          },
-        });
+        expect(newStorage.data).toStrictEqual(oldStorage.data);
       });
 
-      it('resolves a chainId for the origin even if there are other malformed network configurations', async () => {
+      it('does nothing when there are malformed network configurations (even if there is a valid networkConfiguration that matches the selected network client)', async () => {
         const oldStorage = {
           meta: { version: oldVersion },
           data: {
@@ -571,7 +553,6 @@ describe('migration #138', () => {
             NetworkController: {
               selectedNetworkClientId: 'mainnet',
               networkConfigurationsByChainId: {
-                '0xInvalid': 'invalid-network-configuration',
                 '0x1': {
                   rpcEndpoints: [
                     {
@@ -579,6 +560,7 @@ describe('migration #138', () => {
                     },
                   ],
                 },
+                '0xInvalid': 'invalid-network-configuration',
                 '0xa': {
                   rpcEndpoints: [
                     {
@@ -617,72 +599,7 @@ describe('migration #138', () => {
         };
 
         const newStorage = await migrate(oldStorage);
-        expect(newStorage.data).toStrictEqual({
-          ...baseData(),
-          NetworkController: {
-            selectedNetworkClientId: 'mainnet',
-            networkConfigurationsByChainId: {
-              '0xInvalid': 'invalid-network-configuration',
-              '0x1': {
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'mainnet',
-                  },
-                ],
-              },
-              '0xa': {
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'bar',
-                  },
-                ],
-              },
-            },
-          },
-          PermissionController: {
-            subjects: {
-              'test.com': {
-                permissions: {
-                  unrelated: {
-                    foo: 'bar',
-                  },
-                  'endowment:caip25': {
-                    ...baseEthAccountsPermissionMetadata,
-                    parentCapability: 'endowment:caip25',
-                    caveats: [
-                      {
-                        type: 'authorizedScopes',
-                        value: {
-                          isMultichainOrigin: false,
-                          requiredScopes: {},
-                          optionalScopes: {
-                            'eip155:10': {
-                              accounts: [
-                                'eip155:10:0xdeadbeef',
-                                'eip155:10:0x999',
-                              ],
-                            },
-                            'wallet:eip155': {
-                              accounts: [
-                                'wallet:eip155:0xdeadbeef',
-                                'wallet:eip155:0x999',
-                              ],
-                            },
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-              },
-            },
-          },
-          SelectedNetworkController: {
-            domains: {
-              'test.com': 'bar',
-            },
-          },
-        });
+        expect(newStorage.data).toStrictEqual(oldStorage.data);
       });
 
       it('replaces the eth_accounts permission with a CAIP-25 permission using the eth_accounts value for the currently selected chain id when the origin does not have its own network client', async () => {
