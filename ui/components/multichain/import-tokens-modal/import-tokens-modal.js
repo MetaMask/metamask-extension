@@ -518,17 +518,17 @@ export const ImportTokensModal = ({ onClose }) => {
           {t('importTokensCamelCase')}
         </ModalHeader>
         <Box className="import-tokens-modal__body">
-          <Tabs t={t} tabsClassName="import-tokens-modal__tabs">
-            {showSearchTab ? (
-              <Tab
-                activeClassName="import-tokens-modal__active-tab"
-                buttonClassName="import-tokens-modal__button-tab"
-                tabKey="search"
-                name={t('search')}
-              >
-                {isConfirming ? (
-                  <ImportTokensModalConfirm />
-                ) : (
+          {isConfirming ? (
+            <ImportTokensModalConfirm />
+          ) : (
+            <Tabs t={t} tabsClassName="import-tokens-modal__tabs">
+              {showSearchTab ? (
+                <Tab
+                  activeClassName="import-tokens-modal__active-tab"
+                  buttonClassName="import-tokens-modal__button-tab"
+                  tabKey="search"
+                  name={t('search')}
+                >
                   <Box paddingTop={4}>
                     {useTokenDetection ? null : (
                       <Box paddingLeft={4} paddingRight={4}>
@@ -577,169 +577,169 @@ export const ImportTokensModal = ({ onClose }) => {
                       onToggleToken={(token) => handleToggleToken(token)}
                     />
                   </Box>
-                )}
-              </Tab>
-            ) : null}
-            <Tab
-              activeClassName="import-tokens-modal__active-tab"
-              buttonClassName="import-tokens-modal__button-tab"
-              tabKey="customToken"
-              name={t('customToken')}
-            >
-              {isConfirming ? (
-                <ImportTokensModalConfirm />
-              ) : (
-                <Box paddingTop={4}>
-                  <Box className="import-tokens-modal__custom-token-form__container">
-                    {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
-                      <Box paddingLeft={4} paddingRight={4}>
-                        <BannerAlert severity={Severity.Warning}>
-                          <Text variant={TextVariant.bodyMd}>
-                            {t(
-                              'customTokenWarningInTokenDetectionNetworkWithTDOFF',
-                              [
-                                <ButtonLink
-                                  key="import-token-security-risk"
-                                  rel="noopener noreferrer"
-                                  target="_blank"
-                                  href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
-                                >
-                                  {t('tokenScamSecurityRisk')}
-                                </ButtonLink>,
-                                <ButtonLink
-                                  type="link"
-                                  key="import-token-token-detection-announcement"
-                                  onClick={() => {
-                                    onClose();
-                                    history.push(
-                                      `${SECURITY_ROUTE}#auto-detect-tokens`,
-                                    );
-                                  }}
-                                >
-                                  {t('inYourSettings')}
-                                </ButtonLink>,
-                              ],
-                            )}
-                          </Text>
-                        </BannerAlert>
-                      </Box>
-                    ) : (
-                      <Box paddingLeft={4} paddingRight={4}>
-                        <BannerAlert
-                          severity={
-                            isDynamicTokenListAvailable
-                              ? Severity.Warning
-                              : Severity.Info
-                          }
-                        >
-                          <Text variant={TextVariant.bodyMd}>
-                            {t(
+                </Tab>
+              ) : null}
+              <Tab
+                activeClassName="import-tokens-modal__active-tab"
+                buttonClassName="import-tokens-modal__button-tab"
+                tabKey="customToken"
+                name={t('customToken')}
+              >
+                {isConfirming ? (
+                  <ImportTokensModalConfirm />
+                ) : (
+                  <Box paddingTop={4}>
+                    <Box className="import-tokens-modal__custom-token-form__container">
+                      {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+                        <Box paddingLeft={4} paddingRight={4}>
+                          <BannerAlert severity={Severity.Warning}>
+                            <Text variant={TextVariant.bodyMd}>
+                              {t(
+                                'customTokenWarningInTokenDetectionNetworkWithTDOFF',
+                                [
+                                  <ButtonLink
+                                    key="import-token-security-risk"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                    href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                                  >
+                                    {t('tokenScamSecurityRisk')}
+                                  </ButtonLink>,
+                                  <ButtonLink
+                                    type="link"
+                                    key="import-token-token-detection-announcement"
+                                    onClick={() => {
+                                      onClose();
+                                      history.push(
+                                        `${SECURITY_ROUTE}#auto-detect-tokens`,
+                                      );
+                                    }}
+                                  >
+                                    {t('inYourSettings')}
+                                  </ButtonLink>,
+                                ],
+                              )}
+                            </Text>
+                          </BannerAlert>
+                        </Box>
+                      ) : (
+                        <Box paddingLeft={4} paddingRight={4}>
+                          <BannerAlert
+                            severity={
                               isDynamicTokenListAvailable
-                                ? 'customTokenWarningInTokenDetectionNetwork'
-                                : 'customTokenWarningInNonTokenDetectionNetwork',
-                              [
-                                <ButtonLink
-                                  key="import-token-fake-token-warning"
-                                  rel="noopener noreferrer"
-                                  target="_blank"
-                                  href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
-                                >
-                                  {t('learnScamRisk')}
-                                </ButtonLink>,
-                              ],
-                            )}
-                          </Text>
-                        </BannerAlert>
-                      </Box>
-                    )}
-                    <Box>
-                      <FormTextField
-                        paddingLeft={4}
-                        paddingRight={4}
-                        paddingTop={6}
-                        label={t('tokenContractAddress')}
-                        value={customAddress}
-                        onChange={(e) =>
-                          handleCustomAddressChange(e.target.value)
-                        }
-                        helpText={
-                          customAddressError ||
-                          mainnetTokenWarning ||
-                          nftAddressError
-                        }
-                        error={
-                          customAddressError ||
-                          mainnetTokenWarning ||
-                          nftAddressError
-                        }
-                        textFieldProps={{
-                          className:
+                                ? Severity.Warning
+                                : Severity.Info
+                            }
+                          >
+                            <Text variant={TextVariant.bodyMd}>
+                              {t(
+                                isDynamicTokenListAvailable
+                                  ? 'customTokenWarningInTokenDetectionNetwork'
+                                  : 'customTokenWarningInNonTokenDetectionNetwork',
+                                [
+                                  <ButtonLink
+                                    key="import-token-fake-token-warning"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                    href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                                  >
+                                    {t('learnScamRisk')}
+                                  </ButtonLink>,
+                                ],
+                              )}
+                            </Text>
+                          </BannerAlert>
+                        </Box>
+                      )}
+                      <Box>
+                        <FormTextField
+                          paddingLeft={4}
+                          paddingRight={4}
+                          paddingTop={6}
+                          label={t('tokenContractAddress')}
+                          value={customAddress}
+                          onChange={(e) =>
+                            handleCustomAddressChange(e.target.value)
+                          }
+                          helpText={
                             customAddressError ||
                             mainnetTokenWarning ||
                             nftAddressError
-                              ? 'import-tokens-modal__custom-token-form__text-outline-error'
-                              : 'import-tokens-modal__custom-token-form__text-outline-success',
-                        }}
-                        inputProps={{
-                          'data-testid': 'import-tokens-modal-custom-address',
-                        }}
-                      />
-                      {showSymbolAndDecimals && (
-                        <Box>
-                          <FormTextField
-                            paddingLeft={4}
-                            paddingRight={4}
-                            paddingTop={4}
-                            label={<>{t('tokenSymbol')}</>}
-                            value={customSymbol}
-                            onChange={(e) =>
-                              handleCustomSymbolChange(e.target.value)
-                            }
-                            helpText={customSymbolError}
-                            error={customSymbolError}
-                            textFieldProps={{
-                              className: customSymbolError
+                          }
+                          error={
+                            customAddressError ||
+                            mainnetTokenWarning ||
+                            nftAddressError
+                          }
+                          textFieldProps={{
+                            className:
+                              customAddressError ||
+                              mainnetTokenWarning ||
+                              nftAddressError
                                 ? 'import-tokens-modal__custom-token-form__text-outline-error'
                                 : 'import-tokens-modal__custom-token-form__text-outline-success',
-                            }}
-                            inputProps={{
-                              'data-testid':
-                                'import-tokens-modal-custom-symbol',
-                            }}
-                          />
-                          <FormTextField
-                            paddingLeft={4}
-                            paddingRight={4}
-                            paddingTop={4}
-                            label={t('decimal')}
-                            type="number"
-                            value={customDecimals}
-                            onChange={(e) =>
-                              handleCustomDecimalsChange(e.target.value)
-                            }
-                            helpText={customDecimalsError}
-                            error={customDecimalsError}
-                            disabled={decimalAutoFilled}
-                            min={MIN_DECIMAL_VALUE}
-                            max={MAX_DECIMAL_VALUE}
-                            textFieldProps={{
-                              className: customDecimalsError
-                                ? 'import-tokens-modal__custom-token-form__text-outline-error'
-                                : 'import-tokens-modal__custom-token-form__text-outline-success',
-                            }}
-                            inputProps={{
-                              'data-testid':
-                                'import-tokens-modal-custom-decimals',
-                            }}
-                          />
-                        </Box>
-                      )}
+                          }}
+                          inputProps={{
+                            'data-testid': 'import-tokens-modal-custom-address',
+                          }}
+                        />
+                        {showSymbolAndDecimals && (
+                          <Box>
+                            <FormTextField
+                              paddingLeft={4}
+                              paddingRight={4}
+                              paddingTop={4}
+                              label={<>{t('tokenSymbol')}</>}
+                              value={customSymbol}
+                              onChange={(e) =>
+                                handleCustomSymbolChange(e.target.value)
+                              }
+                              helpText={customSymbolError}
+                              error={customSymbolError}
+                              textFieldProps={{
+                                className: customSymbolError
+                                  ? 'import-tokens-modal__custom-token-form__text-outline-error'
+                                  : 'import-tokens-modal__custom-token-form__text-outline-success',
+                              }}
+                              inputProps={{
+                                'data-testid':
+                                  'import-tokens-modal-custom-symbol',
+                              }}
+                            />
+                            <FormTextField
+                              paddingLeft={4}
+                              paddingRight={4}
+                              paddingTop={4}
+                              label={t('decimal')}
+                              type="number"
+                              value={customDecimals}
+                              onChange={(e) =>
+                                handleCustomDecimalsChange(e.target.value)
+                              }
+                              helpText={customDecimalsError}
+                              error={customDecimalsError}
+                              disabled={decimalAutoFilled}
+                              min={MIN_DECIMAL_VALUE}
+                              max={MAX_DECIMAL_VALUE}
+                              textFieldProps={{
+                                className: customDecimalsError
+                                  ? 'import-tokens-modal__custom-token-form__text-outline-error'
+                                  : 'import-tokens-modal__custom-token-form__text-outline-success',
+                              }}
+                              inputProps={{
+                                'data-testid':
+                                  'import-tokens-modal-custom-decimals',
+                              }}
+                            />
+                          </Box>
+                        )}
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              )}
-            </Tab>
-          </Tabs>
+                )}
+              </Tab>
+            </Tabs>
+          )}
         </Box>
         {isConfirming ? (
           <Box
