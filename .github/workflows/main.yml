@@ -111,8 +111,8 @@ jobs:
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
-      - name: Evaluate test-lint-changelog result
-        id: changelog-status
+      - name: Evaluate branch for changelog lint handling
+        id: evaluate-branch
         run: |
           BRANCH_NAME="${{ github.ref_name }}"
           if [[ "$BRANCH_NAME" == Version-v* ]]; then
@@ -122,8 +122,8 @@ jobs:
             echo "IGNORE_CHANGELOG_FAILURE=false" >> "$GITHUB_ENV"
           fi
 
-      - name: Check job statuses
-        id: check-statuses
+      - name: Validate test-lint-changelog outcome
+        id: validate-changelog-job
         run: |
           TEST_LINT_CHANGELOG_FAILED="${{ needs.test-lint-changelog.result }}"
           if [[ "$TEST_LINT_CHANGELOG_FAILED" == "failure" && "$IGNORE_CHANGELOG_FAILURE" == "true" ]]; then
@@ -132,9 +132,7 @@ jobs:
             echo "test-lint-changelog failed and cannot be ignored."
             exit 1
           fi
-
           echo "All jobs completed successfully."
-          echo "PASSED=true" >> "$GITHUB_OUTPUT"
 
       - name: Set PASSED output
         id: set-output
