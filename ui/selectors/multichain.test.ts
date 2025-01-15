@@ -35,7 +35,6 @@ import {
   getMultichainIsMainnet,
   getMultichainNativeCurrency,
   getMultichainNetwork,
-  getMultichainNetworkProviders,
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
@@ -43,6 +42,7 @@ import {
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
 } from './multichain';
+import { getMultichainNetworkProviders } from './getMultichainNetworkProviders';
 import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
 type TestState = MultichainState &

@@ -6,10 +6,8 @@ import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multic
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getInternalAccounts, getSelectedInternalAccount } from './accounts';
-import {
-  getMultichainBalances,
-  getMultichainNetworkProviders,
-} from './multichain';
+import { getMultichainBalances } from './getMultichainBalances';
+import { getMultichainNetworkProviders } from './getMultichainNetworkProviders';
 
 /**
  * Get MetaMask accounts, including account name and balance.

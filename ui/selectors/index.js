@@ -16,3 +16,5 @@ export * from './getAccountToConnectToActiveTab';
 export * from './getMetaMaskAccountsOrdered';
 export * from './isAccountConnectedToCurrentTab';
 export * from './getPermittedAccountsForCurrentTab';
+export * from './getMultichainBalances';
+export * from './getMultichainNetworkProviders';

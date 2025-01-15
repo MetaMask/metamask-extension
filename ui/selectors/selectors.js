@@ -1,5 +1,4 @@
 import { toUnicode } from 'punycode/punycode.js';
-import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
   stripSnapPrefix,
@@ -2678,18 +2677,6 @@ export function getUnconnectedAccounts(state, activeTab) {
     );
   });
   return unConnectedAccounts;
-}
-
-export function getOnboardedInThisUISession(state) {
-  return state.appState.onboardedInThisUISession;
-}
-
-export function getShowBasicFunctionalityModal(state) {
-  return state.appState.showBasicFunctionalityModal;
-}
-
-export function getExternalServicesOnboardingToggleState(state) {
-  return state.appState.externalServicesOnboardingToggleState;
 }
 
 export const useSafeChainsListValidationSelector = (state) => {
