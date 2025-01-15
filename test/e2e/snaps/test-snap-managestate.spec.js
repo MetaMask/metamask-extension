@@ -71,7 +71,7 @@ describe('Test Snap manageState', function () {
         // wait for npm installation success
         await driver.waitForSelector({
           css: '#connectmanage-state',
-          text: 'Reconnect to Manage State Snap',
+          text: 'Reconnect to Legacy State Snap',
         });
 
         // enter data and click send managestate
