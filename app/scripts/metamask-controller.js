@@ -6461,8 +6461,9 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     engine.push((req, res, next, end) =>
       caipPermissionAdapterMiddleware(req, res, next, end, {
-        getCaveat: this.permissionController.getCaveat.bind(
+        getCaveatForOrigin: this.permissionController.getCaveat.bind(
           this.permissionController,
+          origin,
         ),
         getNetworkConfigurationByNetworkClientId:
           this.networkController.getNetworkConfigurationByNetworkClientId.bind(
@@ -6850,12 +6851,15 @@ export default class MetamaskController extends EventEmitter {
         metamaskState: this.getState(),
         getCaveatForOrigin: this.permissionController.getCaveat.bind(
           this.permissionController,
+          origin,
         ),
         getSelectedNetworkClientId: () =>
           this.networkController.state.selectedNetworkClientId,
-        revokePermission: this.permissionController.revokePermission.bind(
-          this.permissionController,
-        ),
+        revokePermissionForOrigin:
+          this.permissionController.revokePermission.bind(
+            this.permissionController,
+            origin,
+          ),
       }),
     );
 
