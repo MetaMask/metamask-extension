@@ -26638,7 +26638,6 @@ __metadata:
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.2"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.1"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^7.0.0"
     "@metamask/eth-token-tracker": "npm:^9.0.0"
