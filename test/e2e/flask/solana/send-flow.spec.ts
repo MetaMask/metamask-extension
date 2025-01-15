@@ -38,7 +38,7 @@ describe('Send flow', function (this: Suite) {
             'To address is required',
           ),
           true,
-          'To address address is required should appear and it does not',
+          'To address is required should appear and it does not',
         );
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
