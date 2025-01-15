@@ -19,7 +19,7 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
-describe('Transfer custom tokens @no-mmi', function () {
+describe('Transfer custom tokens', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   describe('Old confirmation screens', function () {

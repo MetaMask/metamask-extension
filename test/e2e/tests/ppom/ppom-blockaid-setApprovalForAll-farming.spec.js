@@ -247,7 +247,7 @@ async function mockInfura(mockServer) {
     });
 }
 
-describe('PPOM Blockaid Alert - Set Approval to All @no-mmi', function () {
+describe('PPOM Blockaid Alert - Set Approval to All', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show banner alert', async function () {
     await withFixtures(

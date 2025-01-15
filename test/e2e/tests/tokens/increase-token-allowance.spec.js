@@ -19,7 +19,7 @@ const DEFAULT_TEST_DAPP_INCREASE_ALLOWANCE_SPENDING_CAP = '1';
 describe('Increase Token Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  it('increases token spending cap to allow other accounts to transfer tokens @no-mmi', async function () {
+  it('increases token spending cap to allow other accounts to transfer tokens', async function () {
     await withFixtures(
       {
         dapp: true,

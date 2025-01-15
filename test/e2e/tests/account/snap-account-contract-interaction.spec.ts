@@ -18,7 +18,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
+describe('Snap Account Contract interaction', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
   it('deposits to piggybank contract', async function () {
     await withFixtures(

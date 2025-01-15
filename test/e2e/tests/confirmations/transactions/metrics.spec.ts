@@ -23,7 +23,7 @@ const {
 } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 
-describe('Metrics @no-mmi', function () {
+describe('Metrics', function () {
   it('Sends a contract interaction type 2 transaction (EIP1559) with the right properties in the metric events', async function () {
     await withFixtures(
       {

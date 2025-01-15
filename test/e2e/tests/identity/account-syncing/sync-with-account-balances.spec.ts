@@ -45,7 +45,7 @@ const EXPECTED_ACCOUNT_NAMES = {
   ],
 };
 
-describe('Account syncing - User already has balances on multple accounts @no-mmi', function () {
+describe('Account syncing - User already has balances on multple accounts', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }

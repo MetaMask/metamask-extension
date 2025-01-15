@@ -39,7 +39,7 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('Wallet Created Events @no-mmi', function () {
+describe('Wallet Created Events', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     await withFixtures(
       {

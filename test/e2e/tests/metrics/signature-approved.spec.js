@@ -58,7 +58,7 @@ const expectedEventPropertiesBase = {
   security_alert_response: 'loading',
 };
 
-describe('Signature Approved Event @no-mmi', function () {
+describe('Signature Approved Event', function () {
   describe('Old confirmation screens', function () {
     it('Successfully tracked for signTypedData_v4', async function () {
       await withFixtures(

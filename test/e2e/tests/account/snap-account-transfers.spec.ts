@@ -22,7 +22,7 @@ import {
   sendTransactionWithSnapAccount,
 } from '../../page-objects/flows/send-transaction.flow';
 
-describe('Snap Account Transfers @no-mmi', function (this: Suite) {
+describe('Snap Account Transfers', function (this: Suite) {
   // TODO: Remove the old confirmations screen tests once migration has been complete.
   // See: https://github.com/MetaMask/MetaMask-planning/issues/3030
   describe('Old confirmation screens', function () {

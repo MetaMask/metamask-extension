@@ -61,7 +61,7 @@ describe('Traces', function () {
     );
   });
 
-  it('does not send custom trace when opening UI if metrics disabled @no-mmi', async function () {
+  it('does not send custom trace when opening UI if metrics disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -105,7 +105,7 @@ describe('Traces', function () {
     );
   });
 
-  it('does not send automated trace when opening UI if metrics disabled @no-mmi', async function () {
+  it('does not send automated trace when opening UI if metrics disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

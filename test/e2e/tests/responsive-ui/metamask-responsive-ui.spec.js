@@ -68,7 +68,7 @@ describe('MetaMask Responsive UI', function () {
   });
 
   describe('Redesigned confirmation screens', function () {
-    it('Creating a new wallet @no-mmi', async function () {
+    it('Creating a new wallet', async function () {
       const driverOptions = { constrainWindowSize: true };
 
       await withFixtures(

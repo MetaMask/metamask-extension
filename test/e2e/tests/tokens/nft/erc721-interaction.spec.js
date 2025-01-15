@@ -87,7 +87,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       );
     });
 
-    it('should prompt users to add their NFTs to their wallet (one by one) @no-mmi', async function () {
+    it('should prompt users to add their NFTs to their wallet (one by one)', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -426,7 +426,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       );
     });
 
-    it('should enable approval for a third party address to manage all ERC721 NFTs @no-mmi', async function () {
+    it('should enable approval for a third party address to manage all ERC721 NFTs', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -494,7 +494,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       );
     });
 
-    it('should disable approval for a third party address to manage all ERC721 NFTs @no-mmi', async function () {
+    it('should disable approval for a third party address to manage all ERC721 NFTs', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -625,7 +625,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       );
     });
 
-    it('should prompt users to add their NFTs to their wallet (one by one) @no-mmi', async function () {
+    it('should prompt users to add their NFTs to their wallet (one by one)', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -930,7 +930,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       );
     });
 
-    it('should enable approval for a third party address to manage all ERC721 NFTs @no-mmi', async function () {
+    it('should enable approval for a third party address to manage all ERC721 NFTs', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -977,7 +977,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       );
     });
 
-    it('should disable approval for a third party address to manage all ERC721 NFTs @no-mmi', async function () {
+    it('should disable approval for a third party address to manage all ERC721 NFTs', async function () {
       await withFixtures(
         {
           dapp: true,

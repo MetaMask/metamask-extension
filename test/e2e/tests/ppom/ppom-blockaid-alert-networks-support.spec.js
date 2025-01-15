@@ -46,7 +46,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
     });
 }
 
-describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () {
+describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show banner alert after switchinig to another supported network', async function () {
     await withFixtures(

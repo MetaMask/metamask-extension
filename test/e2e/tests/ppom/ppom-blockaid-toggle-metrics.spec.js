@@ -51,7 +51,7 @@ async function mockServerCalls(mockServer) {
   ];
 }
 
-describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
+describe('PPOM Blockaid Alert - Metrics', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('Successfully track button toggle on/off', async function () {
     await withFixtures(

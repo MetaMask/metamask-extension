@@ -20,7 +20,7 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
-describe('Swaps - notifications @no-mmi', function () {
+describe('Swaps - notifications', function () {
   async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1/trades')

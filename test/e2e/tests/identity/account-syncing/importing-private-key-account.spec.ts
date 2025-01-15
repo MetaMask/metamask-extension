@@ -16,7 +16,7 @@ import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onb
 import { accountsSyncMockResponse } from './mockData';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing - Import With Private Key @no-mmi', function () {
+describe('Account syncing - Import With Private Key', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }

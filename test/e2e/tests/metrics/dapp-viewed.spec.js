@@ -76,7 +76,7 @@ const waitForDappConnected = async (driver) => {
   });
 };
 
-describe('Dapp viewed Event @no-mmi', function () {
+describe('Dapp viewed Event', function () {
   const validFakeMetricsId = 'fake-metrics-fd20';
   it('is not sent when metametrics ID is not valid', async function () {
     async function mockSegment(mockServer) {

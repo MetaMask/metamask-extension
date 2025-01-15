@@ -27,7 +27,7 @@ import {
   SignatureType,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),

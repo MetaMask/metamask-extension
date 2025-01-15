@@ -63,12 +63,6 @@ app/scripts/lib/transaction/metrics.*   @MetaMask/confirmations
 app/scripts/lib/transaction/util.*      @MetaMask/confirmations
 ui/pages/confirmations                  @MetaMask/confirmations
 
-# MMI team is responsible for code related with Institutioanl version of MetaMask
-ui/pages/institutional               @MetaMask/mmi
-ui/components/institutional          @MetaMask/mmi
-ui/ducks/institutional               @MetaMask/mmi
-ui/selectors/institutional           @MetaMask/mmi
-
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
 ui/components/component-library      @MetaMask/design-system-engineers

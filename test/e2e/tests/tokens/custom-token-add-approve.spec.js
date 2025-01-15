@@ -67,7 +67,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('approves an already created token and displays the token approval data @no-mmi', async function () {
+  it('approves an already created token and displays the token approval data', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -167,7 +167,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('set custom spending cap, customizes gas, edit spending cap and checks transaction in transaction list @no-mmi', async function () {
+  it('set custom spending cap, customizes gas, edit spending cap and checks transaction in transaction list', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -304,7 +304,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('set maximum spending cap, submits the transaction and finds the transaction in the transactions list @no-mmi', async function () {
+  it('set maximum spending cap, submits the transaction and finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -387,7 +387,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('approves token without gas, set site suggested spending cap, submits the transaction and finds the transaction in the transactions list @no-mmi', async function () {
+  it('approves token without gas, set site suggested spending cap, submits the transaction and finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
         dapp: true,

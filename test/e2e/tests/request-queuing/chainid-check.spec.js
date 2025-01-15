@@ -13,7 +13,7 @@ const {
 const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queueing chainId proxy sync', function () {
-  it('should preserve per dapp network selections after connecting and switching without refresh calls @no-mmi', async function () {
+  it('should preserve per dapp network selections after connecting and switching without refresh calls', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(

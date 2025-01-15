@@ -27,7 +27,7 @@ import {
   triggerSignature,
 } from './signature-helpers';
 
-describe('Confirmation Signature - NFT Permit @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - NFT Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),

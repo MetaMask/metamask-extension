@@ -14,7 +14,7 @@ import {
   signTypedDataV4WithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
 
-describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suite) {
+describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
     await withFixtures(
       {

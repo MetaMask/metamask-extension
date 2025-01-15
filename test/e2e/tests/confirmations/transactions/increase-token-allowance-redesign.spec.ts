@@ -15,7 +15,7 @@ import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
-  describe('Submit an increase allowance transaction @no-mmi', function () {
+  describe('Submit an increase allowance transaction', function () {
     it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForLegacyTx(this),

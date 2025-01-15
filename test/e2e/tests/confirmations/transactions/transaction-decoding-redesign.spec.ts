@@ -20,7 +20,7 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign Contract Interaction Transaction Decoding', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  describe('Create a mint nft transaction @no-mmi', function () {
+  describe('Create a mint nft transaction', function () {
     it(`decodes 4 bytes transaction data`, async function () {
       await withFixtures(
         {

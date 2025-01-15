@@ -49,7 +49,7 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('Nft detection event @no-mmi', function () {
+describe('Nft detection event', function () {
   it('is sent when onboarding user', async function () {
     await withFixtures(
       {
