@@ -1,5 +1,11 @@
 import { hasProperty, hexToBigInt, isObject } from '@metamask/utils';
-import type { CaipChainId, CaipAccountId, Json, Hex } from '@metamask/utils';
+import type {
+  CaipChainId,
+  CaipAccountId,
+  Json,
+  Hex,
+  NonEmptyArray,
+} from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import type {
   Caveat,
@@ -69,6 +75,14 @@ function isPermissionConstraint(obj: unknown): obj is PermissionConstraint {
     typeof obj.invoker === 'string' &&
     hasProperty(obj, 'parentCapability') &&
     typeof obj.parentCapability === 'string'
+  );
+}
+
+function isNonEmptyArrayOfStrings(obj: unknown): obj is NonEmptyArray<string> {
+  return (
+    Array.isArray(obj) &&
+    obj.length > 0 &&
+    obj.every((item) => typeof item === 'string')
   );
 }
 
@@ -312,11 +326,7 @@ function transformState(oldState: Record<string, unknown>) {
       return oldState;
     }
     const accountsCaveatValue = ethAccountsPermission.caveats?.[0]?.value;
-    if (
-      !Array.isArray(accountsCaveatValue) ||
-      accountsCaveatValue.length === 0 ||
-      !accountsCaveatValue.every((item) => typeof item === 'string')
-    ) {
+    if (!isNonEmptyArrayOfStrings(accountsCaveatValue)) {
       global.sentry?.captureException?.(
         new Error(
           `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
@@ -346,11 +356,7 @@ function transformState(oldState: Record<string, unknown>) {
         return oldState;
       }
       const chainsCaveatValue = permittedChainsPermission.caveats?.[0]?.value;
-      if (
-        !Array.isArray(chainsCaveatValue) ||
-        chainsCaveatValue.length === 0 ||
-        !chainsCaveatValue.every((item) => typeof item === 'string')
-      ) {
+      if (!isNonEmptyArrayOfStrings(chainsCaveatValue)) {
         global.sentry?.captureException?.(
           new Error(
             `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
