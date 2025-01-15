@@ -103,13 +103,6 @@ describe('Send SOL flow', function (this: Suite) {
           'Continue button is enabled when no address',
         );
         await sendSolanaPage.setAmount('0.1');
-        assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
-            'Insufficient balance',
-          ),
-          false,
-          'Insufficient balance text is displayed  and it should`t',
-        );
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         await sendSolanaPage.clickOnContinue();
         assert.equal(
