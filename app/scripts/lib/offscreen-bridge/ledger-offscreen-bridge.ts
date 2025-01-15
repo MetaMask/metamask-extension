@@ -4,17 +4,25 @@ import {
   LedgerSignTypedDataResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import {
+  ConnectedDevice,
+  ConsoleLogger,
+  DeviceManagementKit,
+  DeviceManagementKitBuilder,
+  TransportIdentifier,
+} from '@ledgerhq/device-management-kit';
+import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-import { dmk } from './DeviceSdk';
 
 /**
  * The options for the LedgerOffscreenBridge are empty because the bridge
  * doesn't require any options to be passed in.
  */
 type LedgerOffscreenBridgeOptions = Record<never, never>;
+
+const webHidIdentifier: TransportIdentifier = 'WEB-HID';
 
 /**
  * This class is used as a custom bridge for the Ledger connection. Every
@@ -31,7 +39,15 @@ type LedgerOffscreenBridgeOptions = Record<never, never>;
 export class LedgerOffscreenBridge
   implements LedgerBridge<LedgerOffscreenBridgeOptions>
 {
+  dmk: DeviceManagementKit = new DeviceManagementKitBuilder()
+    .addLogger(new ConsoleLogger())
+    .build();
+
   isDeviceConnected = false;
+
+  sessionId: string | null = null;
+
+  connectedDevice: ConnectedDevice | undefined;
 
   init() {
     chrome.runtime.onMessage.addListener((msg) => {
@@ -60,22 +76,27 @@ export class LedgerOffscreenBridge
   }
 
   async attemptMakeApp() {
-    dmk.startDiscovering().subscribe({
-      next: (device) => {
-        console.log('Device found:', device);
-        dmk.connect({ device }).then((sessionId) => {
-          const connectedDevice = dmk.getConnectedDevice({ sessionId });
-          console.log('Connected device:', connectedDevice);
-        });
-
-      },
-      error: (error) => {
-        console.error('Error:', error);
-      },
-      complete: () => {
-        console.log('Discovery complete');
-      },
-    });
+    if (!this.connectedDevice) {
+      const dmkSdk = this.dmk;
+      console.log('Attempting to make app');
+      dmkSdk.startDiscovering({ transport: webHidIdentifier }).subscribe({
+        next: (device) => {
+          console.log('Device found:', device);
+          dmkSdk.connect({ device }).then((sessionId) => {
+            const connectedDevice = dmkSdk.getConnectedDevice({ sessionId });
+            console.log('Connected device:', connectedDevice);
+            this.connectedDevice = connectedDevice;
+            this.sessionId = sessionId;
+          });
+        },
+        error: (error) => {
+          console.error('Error:', error);
+        },
+        complete: () => {
+          console.log('Discovery complete');
+        },
+      });
+    }
     return true;
     // return new Promise<boolean>((resolve, reject) => {
     //   chrome.runtime.sendMessage(
