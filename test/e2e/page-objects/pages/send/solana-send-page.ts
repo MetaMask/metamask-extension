@@ -41,7 +41,7 @@ class SendSolanaPage {
           text: validationErrorText,
           tag: 'p',
         },
-        { timeout: 1000 },
+        { timeout: 5000 },
       );
       return true;
     } catch (e) {
