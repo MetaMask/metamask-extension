@@ -6889,14 +6889,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionFailed',
       (payload) => {
-        if (payload.transactionMeta.type === TransactionType.bridgeApproval) {
-          handleTransactionFailedTypeBridgeApproval(payload, {
-            backgroundState: this.getState(),
-            trackEvent: this.metaMetricsController.trackEvent.bind(
-              this.metaMetricsController,
-            ),
-          });
-        } else if (payload.transactionMeta.type === TransactionType.bridge) {
+        if (payload.transactionMeta.type === TransactionType.bridge) {
           handleTransactionFailedTypeBridge(payload, {
             backgroundState: this.getState(),
             trackEvent: this.metaMetricsController.trackEvent.bind(
