@@ -10,6 +10,13 @@ if [[ "$COMMAND" != "check" && "$COMMAND" != "update" ]]; then
   exit 1
 fi
 
+# Print instructions for how to resolve circular dependency issues
+print_resolution_steps() {
+  echo "You can resolve this by either:"
+  echo "1. Add comment '@metamaskbot update-circular-deps' on this PR"
+  echo "2. Run 'yarn circular-deps:update' locally and commit the changes."
+}
+
 # Normalizes JSON output by sorting both the individual cycles and the array of cycles.
 # This ensures consistent output regardless of cycle starting point.
 #
@@ -35,18 +42,22 @@ madge_json() {
 }
 
 if [[ "$COMMAND" == "check" ]]; then
+  # Check if circular-deps.json exists
+  if [ ! -f circular-deps.json ]; then
+    echo "Error: circular-deps.json does not exist."
+    print_resolution_steps
+    exit 1
+  fi
+
   # Generate current circular dependencies
   madge_json > circular-deps.temp.json || true
-
 
   # Compare files silently
   DIFF_OUTPUT=$(diff circular-deps.json circular-deps.temp.json || true)
 
   if [ -n "$DIFF_OUTPUT" ]; then
     echo "Error: Codebase circular dependencies are out of sync in circular-deps.json"
-    echo "You can resolve this by either:"
-    echo "1. Add comment '@metamaskbot update-circular-deps' on this PR"
-    echo "2. Run 'yarn circular-deps:update' locally and commit the changes."
+    print_resolution_steps
     rm circular-deps.temp.json
     exit 1
   fi
