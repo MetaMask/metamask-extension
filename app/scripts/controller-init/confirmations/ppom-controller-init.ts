@@ -2,14 +2,9 @@ import {
   PPOMController,
   PPOMControllerMessenger,
 } from '@metamask/ppom-validator';
-import { PreferencesController } from '@metamask/preferences-controller';
 import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
 import * as PPOMModule from '../../lib/ppom/ppom';
-import {
-  ControllerInit,
-  ControllerInitRequest,
-  ControllerName,
-} from '../types';
+import { ControllerInit, ControllerInitRequest } from '../types';
 import {
   getPPOMControllerInitMessenger,
   getPPOMControllerMessenger,
@@ -36,29 +31,27 @@ export class PPOMControllerInit extends ControllerInit<
       persistedState,
     } = request;
 
-    const preferencesController = () =>
-      getController<PreferencesController>(
-        ControllerName.PreferencesController,
-      );
+    const preferencesController = () => getController('PreferencesController');
 
     return new PPOMController({
       messenger: controllerMessenger,
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: getProvider(),
       ppomProvider: {
-        // @ts-expect-error Mismatched types
+        // @ts-expect-error Controller and PPOM wrapper have different argument types in `new` and `validateJsonRpc`
         PPOM: PPOMModule.PPOM,
         ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
       },
-      state: persistedState.PPOMController as PPOMController['state'],
+      state: persistedState.PPOMController,
       chainId: getGlobalChainId(),
       securityAlertsEnabled:
         preferencesController().state.securityAlertsEnabled,
-      // @ts-expect-error Mismatched types
+      // @ts-expect-error `onPreferencesChange` type signature is incorrect in `PPOMController`
       onPreferencesChange: initMessenger.subscribe.bind(
         initMessenger,
         'PreferencesController:stateChange',
       ),
+      // Both values have defaults in `builds.yml` so should always be defined.
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN as string,
       blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY as string,
     });

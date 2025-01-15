@@ -6,11 +6,12 @@ import {
 } from '@metamask/base-controller';
 import {
   BaseRestrictedControllerMessenger,
+  ControllerByName,
   ControllerInit,
   ControllerInitRequest,
   ControllerName,
-  GenericController,
 } from './types';
+import { Controller } from './controller-list';
 
 const log = createProjectLogger('controller-init');
 
@@ -19,10 +20,10 @@ type BaseInitRequest = ControllerInitRequest<
   BaseRestrictedControllerMessenger
 >;
 
-type InitFunction = (request: BaseInitRequest) => GenericController;
+type InitFunction = (request: BaseInitRequest) => Controller;
 
 type InitInstance = ControllerInit<
-  GenericController,
+  Controller,
   BaseRestrictedControllerMessenger,
   BaseRestrictedControllerMessenger
 >;
@@ -32,8 +33,8 @@ type InitObject = InitFunction | InitInstance;
 /**
  * Adapter class to handle legacy controllers that are returned from a function.
  */
-class LegacyControllerInit extends ControllerInit<
-  GenericController,
+class FunctionControllerInit extends ControllerInit<
+  Controller,
   BaseRestrictedControllerMessenger,
   BaseRestrictedControllerMessenger
 > {
@@ -44,7 +45,7 @@ class LegacyControllerInit extends ControllerInit<
     this.#fn = fn;
   }
 
-  init(_request: BaseInitRequest): GenericController {
+  init(_request: BaseInitRequest): Controller {
     return this.#fn(_request);
   }
 }
@@ -52,16 +53,16 @@ class LegacyControllerInit extends ControllerInit<
 /** Result of initializing controllers. */
 export type InitControllersResult = {
   /** All API methods exposed by the controllers. */
-  controllerApi: Record<string, GenericController>;
+  controllerApi: Record<string, Controller>;
 
   /** All controllers that provided a memory state key. */
-  controllerMemState: Record<string, GenericController>;
+  controllerMemState: Record<string, Controller>;
 
   /** All controllers that provided a persisted state key. */
-  controllerPersistedState: Record<string, GenericController>;
+  controllerPersistedState: Record<string, Controller>;
 
   /** All initialized controllers keyed by name. */
-  controllersByName: Record<string, GenericController>;
+  controllersByName: ControllerByName;
 };
 
 /**
@@ -93,18 +94,20 @@ export function initControllers({
   log('Initializing controllers', initObjects.length);
 
   const initInstances = initObjects.map((initObject) =>
-    (initObject as InitInstance).init
-      ? (initObject as InitInstance)
-      : new LegacyControllerInit(initObject as InitFunction),
+    isInitInstance(initObject)
+      ? initObject
+      : new FunctionControllerInit(initObject),
   );
 
-  const controllersByName: Record<string, GenericController> = {};
-  const controllerPersistedState: Record<string, GenericController> = {};
-  const controllerMemState: Record<string, GenericController> = {};
+  // Will be populated with all controllers once initialized.
+  let controllersByName = {} as ControllerByName;
+  const controllerPersistedState: Record<string, Controller> = {};
+  const controllerMemState: Record<string, Controller> = {};
   let controllerApi = {};
 
-  const getController = <T>(name: ControllerName) =>
-    getControllerOrThrow<T>(controllersByName, name);
+  const getController = <Name extends ControllerName>(
+    name: Name,
+  ): ControllerByName[Name] => getControllerOrThrow(controllersByName, name);
 
   for (const initInstance of initInstances) {
     const messengerCallback = initInstance.getControllerMessengerCallback();
@@ -122,11 +125,13 @@ export function initControllers({
     const controller = initInstance.init(finalInitRequest);
     const { name } = controller;
 
-    controllersByName[name] = controller;
+    controllersByName = {
+      ...controllersByName,
+      [name]: controller,
+    };
 
     const getApiRequest = {
       controller,
-      getFlatState: initRequest.getFlatState,
     };
 
     const api = initInstance.getApi(getApiRequest);
@@ -162,15 +167,25 @@ export function initControllers({
   };
 }
 
-function getControllerOrThrow<T>(
-  controllersByName: Record<ControllerName, GenericController>,
-  name: ControllerName,
-): T {
+function getControllerOrThrow<Name extends ControllerName>(
+  controllersByName: ControllerByName,
+  name: Name,
+): ControllerByName[Name] {
   const controller = controllersByName[name];
 
   if (!controller) {
     throw new Error(`Controller requested before it was initialized: ${name}`);
   }
 
-  return controller as T;
+  return controller;
+}
+
+/**
+ * Type guard to distinguish the two types of `InitObject`.
+ *
+ * @param initObject - The object to check
+ * @returns Returns `true` if it's an `InitInstance`, false otherwise.
+ */
+function isInitInstance(initObject: InitObject): initObject is InitInstance {
+  return 'init' in initObject;
 }

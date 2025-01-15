@@ -1,9 +1,9 @@
+import { Controller } from '../controller-list';
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
   ControllerGetApiRequest,
   ControllerInitRequest,
-  GenericController,
 } from '../types';
 
 export const CHAIN_ID_MOCK = '0x123';
@@ -38,7 +38,7 @@ export function buildControllerInitRequestMock<
 }
 
 export function buildControllerGetApiRequestMock<
-  ControllerType extends GenericController,
+  ControllerType extends Controller,
 >() {
   return {
     controller: jest.fn() as unknown as ControllerType,

@@ -20,6 +20,7 @@ function buildInitRequestMock() {
     PPOMControllerInitMessenger
   >();
 
+  // @ts-expect-error Mocked subset of full state object
   requestMock.getController.mockReturnValue({
     state: { securityAlertsEnabled: true },
   });
@@ -36,6 +37,7 @@ describe('PPOM Controller Init', () => {
   ): PPOMControllerOptions[T] {
     const requestMock = buildInitRequestMock();
 
+    // @ts-expect-error Mocked subset of full state object
     requestMock.getController.mockReturnValue({
       state: { securityAlertsEnabled: true },
       ...controllerProperties,

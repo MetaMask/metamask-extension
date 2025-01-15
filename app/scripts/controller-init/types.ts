@@ -6,11 +6,17 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { TransactionMetricsRequest } from '../lib/transaction/metrics';
+import { Controller, ControllerFlatState } from './controller-list';
 
-/**
- * Base controller type required for controller initialization.
- */
-export type GenericController = { name: string };
+export type ControllerName = Controller['name'];
+
+export type ControllerByName = {
+  [name in ControllerName]: Controller & { name: name };
+};
+
+export type ControllerPersistedState = {
+  [name in ControllerName]: ControllerByName[name]['state'];
+};
 
 /** Generic controller messenger using base template types. */
 export type BaseControllerMessenger = ControllerMessenger<
@@ -26,23 +32,6 @@ export type BaseRestrictedControllerMessenger = RestrictedControllerMessenger<
   string,
   string
 >;
-
-/**
- * Supported controller names.
- * Used to retrieve controllers using the `getController` method from `ControllerInitRequest`.
- */
-export enum ControllerName {
-  GasFeeController = 'GasFeeController',
-  KeyringController = 'KeyringController',
-  NetworkController = 'NetworkController',
-  OnboardingController = 'OnboardingController',
-  PermissionController = 'PermissionController',
-  PPOMController = 'PPOMController',
-  PreferencesController = 'PreferencesController',
-  SmartTransactionsController = 'SmartTransactionsController',
-  TransactionController = 'TransactionController',
-  TransactionUpdateController = 'TransactionUpdateController',
-}
 
 /**
  * Request to initialize and return a controller instance.
@@ -66,19 +55,14 @@ export type ControllerInitRequest<
    *
    * @param name - The name of the controller to retrieve.
    */
-  getController<T>(name: ControllerName): T;
+  getController<Name extends ControllerName>(
+    name: Name,
+  ): ControllerByName[Name];
 
   /**
-   * Retrieves the full flattened UI state.
-   * Includes no controller name properties.
-   * For example: `{ transactions: [] }`.
-   */
-  getFlatState(): unknown;
-
-  /**
-   * @deprecated
    * Retrieve the chain ID of the globally selected network.
-   * Will be removed in the future pending multi-chain support.
+   *
+   * @deprecated Will be removed in the future pending multi-chain support.
    */
   getGlobalChainId(): string;
 
@@ -95,18 +79,19 @@ export type ControllerInitRequest<
   ): Promise<string[]>;
 
   /**
-   * @deprecated
    * Retrieve the provider instance for the globally selected network.
-   * Will be removed in the future pending multi-chain support.
+   *
+   * @deprecated Will be removed in the future pending multi-chain support.
    */
   getProvider: () => Provider;
 
   /**
-   * Retrieve the full UI state.
-   * Includes reducer properties.
-   * For example: `{ metamask: { transactions: [] } }`.
+   * Retrieve the flat state for all controllers.
+   * For example: `{ transactions: [] }`.
+   *
+   * @deprecated Subscribe to other controller state via the messenger.
    */
-  getStateUI: () => unknown & { metamask: unknown };
+  getFlatState: () => ControllerFlatState;
 
   /**
    * Retrieve a transaction metrics request instance.
@@ -127,7 +112,7 @@ export type ControllerInitRequest<
    * Includes controller name properties.
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
-  persistedState: Record<string, unknown>;
+  persistedState: ControllerPersistedState;
 };
 
 /**
@@ -138,13 +123,6 @@ export type ControllerGetApiRequest<ControllerType> = {
    * The controller instance to generate API methods for.
    */
   controller: ControllerType;
-
-  /**
-   * Retrieve the full flattened UI state.
-   * Includes no controller name properties.
-   * For example: `{ transactions: [] }`.
-   */
-  getFlatState: () => unknown;
 };
 
 /**
@@ -165,7 +143,7 @@ export type ControllerGetApiResponse = Record<string, ControllerApi>;
  * `InitMessengerType` is the messenger required by the client to initialize the controller and register related listeners.
  */
 export abstract class ControllerInit<
-  ControllerType extends GenericController,
+  ControllerType extends Controller,
   ControllerMessengerType extends void | BaseRestrictedControllerMessenger = void,
   InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
 > {

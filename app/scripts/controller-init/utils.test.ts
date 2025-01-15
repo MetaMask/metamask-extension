@@ -1,3 +1,5 @@
+import { PPOMController } from '@metamask/ppom-validator';
+import { Controller } from './controller-list';
 import {
   buildControllerInitRequestMock,
   buildControllerMessengerMock,
@@ -12,6 +14,10 @@ import { initControllers } from './utils';
 const CONTROLLER_NAME_MOCK = 'TestController1';
 const CONTROLLER_NAME_2_MOCK = 'TestController2';
 
+function buildControllerMock(name: string) {
+  return { name } as unknown as PPOMController;
+}
+
 function buildControllerInitMock() {
   return {
     init: jest.fn().mockReturnValue({ name: CONTROLLER_NAME_MOCK }),
@@ -22,7 +28,7 @@ function buildControllerInitMock() {
     getMemStateKey: jest.fn(),
   } as unknown as jest.Mocked<
     ControllerInit<
-      { name: string },
+      Controller,
       BaseRestrictedControllerMessenger,
       BaseRestrictedControllerMessenger
     >
@@ -37,7 +43,9 @@ describe('Controller Init Utils', () => {
       const init1Mock = buildControllerInitMock();
       const init2Mock = buildControllerInitMock();
 
-      init2Mock.init.mockReturnValue({ name: CONTROLLER_NAME_2_MOCK });
+      init2Mock.init.mockReturnValue(
+        buildControllerMock(CONTROLLER_NAME_2_MOCK),
+      );
 
       const { controllersByName } = initControllers({
         initObjects: [init1Mock, init2Mock],
@@ -57,7 +65,9 @@ describe('Controller Init Utils', () => {
       const init1Mock = buildControllerInitMock();
       const init2Mock = buildControllerInitMock();
 
-      init2Mock.init.mockReturnValue({ name: CONTROLLER_NAME_2_MOCK });
+      init2Mock.init.mockReturnValue(
+        buildControllerMock(CONTROLLER_NAME_2_MOCK),
+      );
 
       initControllers({
         initObjects: [init1Mock, init2Mock],
@@ -251,10 +261,12 @@ describe('Controller Init Utils', () => {
 
       initMock.getPersistedStateKey.mockReturnValue('test1');
 
-      init2Mock.init.mockReturnValue({ name: CONTROLLER_NAME_2_MOCK });
+      init2Mock.init.mockReturnValue(
+        buildControllerMock(CONTROLLER_NAME_2_MOCK),
+      );
       init2Mock.getPersistedStateKey.mockReturnValue(undefined);
 
-      init3Mock.init.mockReturnValue({ name: 'TestController3' });
+      init3Mock.init.mockReturnValue(buildControllerMock('TestController3'));
       init3Mock.getPersistedStateKey.mockReturnValue('test3');
 
       const { controllerPersistedState } = initControllers({
@@ -278,10 +290,12 @@ describe('Controller Init Utils', () => {
 
       initMock.getMemStateKey.mockReturnValue('test1');
 
-      init2Mock.init.mockReturnValue({ name: CONTROLLER_NAME_2_MOCK });
+      init2Mock.init.mockReturnValue(
+        buildControllerMock(CONTROLLER_NAME_2_MOCK),
+      );
       init2Mock.getMemStateKey.mockReturnValue(undefined);
 
-      init3Mock.init.mockReturnValue({ name: 'TestController3' });
+      init3Mock.init.mockReturnValue(buildControllerMock('TestController3'));
       init3Mock.getMemStateKey.mockReturnValue('test3');
 
       const { controllerMemState } = initControllers({
@@ -299,8 +313,9 @@ describe('Controller Init Utils', () => {
     it('supports legacy init functions', () => {
       const controllerMessengerMock = buildControllerMessengerMock();
       const requestMock = buildControllerInitRequestMock();
-      const initFunctionMock = () => ({ name: CONTROLLER_NAME_MOCK });
-      const initFunction2Mock = () => ({ name: CONTROLLER_NAME_2_MOCK });
+      const initFunctionMock = () => buildControllerMock(CONTROLLER_NAME_MOCK);
+      const initFunction2Mock = () =>
+        buildControllerMock(CONTROLLER_NAME_2_MOCK);
 
       const { controllersByName } = initControllers({
         initObjects: [initFunctionMock, initFunction2Mock],

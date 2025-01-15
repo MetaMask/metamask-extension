@@ -358,7 +358,6 @@ import BridgeStatusController from './controllers/bridge-status/bridge-status-co
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { rejectAllApprovals } from './lib/approval/utils';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
-import { ControllerName } from './controller-init/types';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
 
@@ -2333,8 +2332,8 @@ export default class MetamaskController extends EventEmitter {
     this.controllersByName = controllersByName;
 
     // Backwards compatibility for existing references
-    this.ppomController = controllersByName[ControllerName.PPOMController];
-    this.txController = controllersByName[ControllerName.TransactionController];
+    this.ppomController = controllersByName.PPOMController;
+    this.txController = controllersByName.TransactionController;
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -3755,6 +3754,7 @@ export default class MetamaskController extends EventEmitter {
       updateTransaction: txController.updateTransaction.bind(txController),
       approveTransactionsWithSameNonce:
         txController.approveTransactionsWithSameNonce.bind(txController),
+      createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       estimateGasFee: txController.estimateGasFee.bind(txController),
@@ -5235,6 +5235,29 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
+   * Allows a user to attempt to cancel a previously submitted transaction
+   * by creating a new transaction.
+   *
+   * @param {number} originalTxId - the id of the txMeta that you want to
+   * attempt to cancel
+   * @param {import(
+   *  './controllers/transactions'
+   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
+   * instead of allowing this method to generate them
+   * @param options
+   * @returns {object} MetaMask state
+   */
+  async createCancelTransaction(originalTxId, customGasSettings, options) {
+    await this.txController.stopTransaction(
+      originalTxId,
+      customGasSettings,
+      options,
+    );
+    const state = this.getState();
+    return state;
+  }
+
+  /**
    * Allows a user to attempt to speed up a previously submitted transaction
    * by creating a new transaction.
    *
@@ -5557,12 +5580,12 @@ export default class MetamaskController extends EventEmitter {
 
     const api = {
       ...this.getApi(),
+      ...this.controllerApi,
       startPatches: () => {
         uiReady = true;
         handleUpdate();
       },
       getStatePatches: () => patchStore.flushPendingPatches(),
-      ...this.controllerApi,
     };
 
     this.on('update', handleUpdate);
@@ -6982,6 +7005,11 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  /**
+   * @deprecated
+   * Controllers should subscribe to messenger events internally rather than relying on the client.
+   * @param transactionMeta - Metadata for the transaction.
+   */
   async _onFinishedTransaction(transactionMeta) {
     if (
       ![TransactionStatus.confirmed, TransactionStatus.failed].includes(

@@ -3,6 +3,7 @@ import { ApprovalControllerActions } from '@metamask/approval-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
@@ -16,10 +17,10 @@ import {
   TransactionControllerTransactionNewSwapApprovalEvent,
   TransactionControllerTransactionNewSwapEvent,
   TransactionControllerTransactionRejectedEvent,
-  TransactionControllerTransactionStatusUpdatedEvent,
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
+import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -29,6 +30,7 @@ type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
+  | NetworkControllerGetEIP1559CompatibilityAction
   | NetworkControllerGetNetworkClientByIdAction
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction;
@@ -41,11 +43,11 @@ type MessengerEvents =
   | TransactionControllerTransactionNewSwapApprovalEvent
   | TransactionControllerTransactionNewSwapEvent
   | TransactionControllerTransactionRejectedEvent
-  | TransactionControllerTransactionStatusUpdatedEvent
   | TransactionControllerTransactionSubmittedEvent
   | TransactionControllerPostTransactionBalanceUpdatedEvent
   | TransactionControllerUnapprovedTransactionAddedEvent
-  | NetworkControllerStateChangeEvent;
+  | NetworkControllerStateChangeEvent
+  | SmartTransactionsControllerSmartTransactionEvent;
 
 export type TransactionControllerInitMessenger = ReturnType<
   typeof getTransactionControllerInitMessenger
@@ -79,12 +81,13 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:transactionNewSwapApproval',
       'TransactionController:transactionNewSwap',
       'TransactionController:transactionRejected',
-      'TransactionController:transactionStatusUpdated',
       'TransactionController:transactionSubmitted',
       'TransactionController:postTransactionBalanceUpdated',
       'TransactionController:unapprovedTransactionAdded',
+      'SmartTransactionsController:smartTransaction',
     ],
     allowedActions: [
+      'NetworkController:getEIP1559Compatibility',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
     ],

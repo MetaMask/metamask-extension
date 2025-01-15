@@ -1,23 +1,12 @@
 import {
-  SavedGasFees,
   TransactionController,
   TransactionControllerMessenger,
   TransactionControllerState,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { NetworkController } from '@metamask/network-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
-import { GasFeeController } from '@metamask/gas-fee-controller';
-import { KeyringController } from '@metamask/keyring-controller';
 import { Hex } from '@metamask/utils';
-import {
-  ActionConstraint,
-  ControllerMessenger,
-  EventConstraint,
-} from '@metamask/base-controller';
-import { PreferencesController } from '../../controllers/preferences-controller';
 import {
   getCurrentChainSupportsSmartTransactions,
   getFeatureFlagsByChainId,
@@ -25,10 +14,11 @@ import {
   getSmartTransactionsPreferenceEnabled,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
-import { submitSmartTransactionHook } from '../../lib/transaction/smart-transactions';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  SmartTransactionHookMessenger,
+  submitSmartTransactionHook,
+} from '../../lib/transaction/smart-transactions';
 import { trace } from '../../../../shared/lib/trace';
-import OnboardingController from '../../controllers/onboarding';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   afterTransactionSign as afterTransactionSignMMI,
@@ -48,19 +38,18 @@ import {
   handleTransactionSubmitted,
   TransactionMetricsRequest,
 } from '../../lib/transaction/metrics';
-import { NetworkState } from '../../../../shared/modules/selectors/networks';
 import {
   ControllerGetApiRequest,
   ControllerGetApiResponse,
   ControllerInit,
   ControllerInitRequest,
-  ControllerName,
 } from '../types';
 import {
   getTransactionControllerInitMessenger,
   getTransactionControllerMessenger,
   TransactionControllerInitMessenger,
 } from '../messengers/transaction-controller-messenger';
+import { ControllerFlatState } from '../controller-list';
 
 export class TransactionControllerInit extends ControllerInit<
   TransactionController,
@@ -75,9 +64,9 @@ export class TransactionControllerInit extends ControllerInit<
   ): TransactionController {
     const {
       controllerMessenger,
+      getFlatState,
       getGlobalChainId,
       getPermittedAccounts,
-      getStateUI,
       getTransactionMetricsRequest,
       initMessenger,
       persistedState,
@@ -95,9 +84,10 @@ export class TransactionControllerInit extends ControllerInit<
       ///: END:ONLY_INCLUDE_IF
     } = this.#getControllers(request);
 
-    const controller = new TransactionController({
+    const controller: TransactionController = new TransactionController({
       getCurrentNetworkEIP1559Compatibility: () =>
-        networkController().getEIP1559Compatibility() as Promise<boolean>,
+        // @ts-expect-error Controller type does not support undefined return value
+        initMessenger.call('NetworkController:getEIP1559Compatibility'),
       getCurrentAccountEIP1559Compatibility: async () => true,
       // @ts-expect-error Mismatched types
       getExternalPendingTransactions: (address) =>
@@ -110,23 +100,16 @@ export class TransactionControllerInit extends ControllerInit<
       getNetworkClientRegistry: (...args) =>
         networkController().getNetworkClientRegistry(...args),
       getNetworkState: () => networkController().state,
-      // @ts-expect-error Mismatched types
+      // @ts-expect-error Controller type does not support undefined return value
       getPermittedAccounts,
-      getSavedGasFees: () => {
-        const globalChainId = getGlobalChainId();
-        return preferencesController().state.advancedGasFee[
-          globalChainId
-        ] as unknown as SavedGasFees;
-      },
+      // @ts-expect-error Preferences controller uses Record rather than specific type
+      getSavedGasFees: (chainId: Hex) =>
+        preferencesController().state.advancedGasFee[chainId],
       incomingTransactions: {
-        etherscanApiKeysByChainId: {
-          [CHAIN_IDS.MAINNET as Hex]: process.env.ETHERSCAN_API_KEY as string,
-          [CHAIN_IDS.SEPOLIA as Hex]: process.env.ETHERSCAN_API_KEY as string,
-        },
         includeTokenTransfers: false,
         isEnabled: () =>
           preferencesController().state.incomingTransactionsPreferences?.[
-            // @ts-expect-error Mismatched types
+            // @ts-expect-error PreferencesController incorrectly expects number index
             getGlobalChainId()
           ] && onboardingController().state.completedOnboarding,
         queryEntireHistory: false,
@@ -138,20 +121,18 @@ export class TransactionControllerInit extends ControllerInit<
         preferencesController().state.useTransactionSimulations,
       messenger: controllerMessenger,
       pendingTransactions: {
-        isResubmitEnabled: () =>
-          !(
-            getSmartTransactionsPreferenceEnabled(
-              getStateUI() as Parameters<
-                typeof getSmartTransactionsPreferenceEnabled
-              >[0],
-            ) &&
-            getCurrentChainSupportsSmartTransactions(
-              getStateUI() as NetworkState,
-            )
-          ),
+        isResubmitEnabled: () => {
+          const uiState = this.#getUIState(getFlatState());
+          return !(
+            getSmartTransactionsPreferenceEnabled(uiState) &&
+            getCurrentChainSupportsSmartTransactions(uiState)
+          );
+        },
       },
-      testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS),
-      // @ts-expect-error Mismatched types
+      testGasFeeFlows: Boolean(
+        process.env.TEST_GAS_FEE_FLOWS?.toLowerCase() === 'true',
+      ),
+      // @ts-expect-error Controller uses string for names rather than enum
       trace,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -168,18 +149,19 @@ export class TransactionControllerInit extends ControllerInit<
         beforePublish: beforeTransactionPublishMMI.bind(this),
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
-        // @ts-expect-error Mismatched types
-        publish: (...args) =>
-          // @ts-expect-error Mismatched types
+        // @ts-expect-error Controller type does not support undefined return value
+        publish: (transactionMeta, rawTx: Hex) =>
           this.#publishSmartTransactionHook(
             controller,
             smartTransactionsController(),
-            controllerMessenger,
-            getStateUI(),
-            ...args,
+            // Init messenger cannot yet be further restricted so is a superset of what is needed
+            initMessenger as SmartTransactionHookMessenger,
+            getFlatState(),
+            transactionMeta,
+            rawTx,
           ),
       },
-      // @ts-expect-error Mismatched types
+      // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
       sign: (...args) => keyringController().signTransaction(...args),
       state: persistedState.TransactionController as TransactionControllerState,
     });
@@ -208,10 +190,6 @@ export class TransactionControllerInit extends ControllerInit<
     return {
       abortTransactionSigning:
         controller.abortTransactionSigning.bind(controller),
-      createCancelTransaction: this.#createCancelTransaction.bind(
-        this,
-        request,
-      ),
       getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
       getTransactions: controller.getTransactions.bind(controller),
       updateEditableParams: controller.updateEditableParams.bind(controller),
@@ -237,70 +215,51 @@ export class TransactionControllerInit extends ControllerInit<
     >,
   ) {
     return {
-      gasFeeController: () =>
-        request.getController<GasFeeController>(
-          ControllerName.GasFeeController,
-        ),
-      keyringController: () =>
-        request.getController<KeyringController>(
-          ControllerName.KeyringController,
-        ),
-      networkController: () =>
-        request.getController<NetworkController>(
-          ControllerName.NetworkController,
-        ),
-      onboardingController: () =>
-        request.getController<OnboardingController>(
-          ControllerName.OnboardingController,
-        ),
+      gasFeeController: () => request.getController('GasFeeController'),
+      keyringController: () => request.getController('KeyringController'),
+      networkController: () => request.getController('NetworkController'),
+      onboardingController: () => request.getController('OnboardingController'),
       preferencesController: () =>
-        request.getController<PreferencesController>(
-          ControllerName.PreferencesController,
-        ),
+        request.getController('PreferencesController'),
       smartTransactionsController: () =>
-        request.getController<SmartTransactionsController>(
-          ControllerName.SmartTransactionsController,
-        ),
+        request.getController('SmartTransactionsController'),
       transactionUpdateController: () =>
-        request.getController<TransactionUpdateController>(
-          ControllerName.TransactionUpdateController,
-        ),
+        request.getController('TransactionUpdateController'),
     };
   }
 
   #publishSmartTransactionHook(
     transactionController: TransactionController,
     smartTransactionsController: SmartTransactionsController,
-    controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>,
-    uiState: unknown,
+    hookControllerMessenger: SmartTransactionHookMessenger,
+    flatState: ControllerFlatState,
     transactionMeta: TransactionMeta,
     signedTransactionInHex: Hex,
   ) {
-    const isSmartTransaction = getIsSmartTransaction(
-      uiState as Parameters<typeof getIsSmartTransaction>[0],
-    );
+    // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
+    // Ideally all backend logic would instead rely on messenger event / state subscriptions.
+    const uiState = this.#getUIState(flatState);
+
+    // @ts-expect-error Smart transaction selector types does not match controller state
+    const isSmartTransaction = getIsSmartTransaction(uiState);
 
     if (!isSmartTransaction) {
       // Will cause TransactionController to publish to the RPC provider as normal.
       return { transactionHash: undefined };
     }
 
-    const featureFlags = getFeatureFlagsByChainId(
-      uiState as Parameters<typeof getFeatureFlagsByChainId>[0],
-    );
+    // @ts-expect-error Smart transaction selector types does not match controller state
+    const featureFlags = getFeatureFlagsByChainId(uiState);
 
     return submitSmartTransactionHook({
       transactionMeta,
       signedTransactionInHex,
       transactionController,
       smartTransactionsController,
-      // @ts-expect-error Mismatched types
-      controllerMessenger,
+      controllerMessenger: hookControllerMessenger,
       isSmartTransaction,
-      isHardwareWallet: isHardwareWallet(
-        uiState as Parameters<typeof isHardwareWallet>,
-      ),
-      // @ts-expect-error Mismatched types
+      isHardwareWallet: isHardwareWallet(uiState),
+      // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
       featureFlags,
     });
   }
@@ -316,81 +275,74 @@ export class TransactionControllerInit extends ControllerInit<
   }
 
   #addTransactionControllerListeners(
-    controllerMessenger: TransactionControllerInitMessenger,
+    initMessenger: TransactionControllerInitMessenger,
     getTransactionMetricsRequest: () => TransactionMetricsRequest,
   ) {
     const transactionMetricsRequest = getTransactionMetricsRequest();
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:postTransactionBalanceUpdated',
       handlePostTransactionBalanceUpdate.bind(null, transactionMetricsRequest),
     );
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:unapprovedTransactionAdded',
       (transactionMeta) =>
         handleTransactionAdded(transactionMetricsRequest, { transactionMeta }),
     );
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:transactionApproved',
       handleTransactionApproved.bind(null, transactionMetricsRequest),
     );
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:transactionDropped',
       handleTransactionDropped.bind(null, transactionMetricsRequest),
     );
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:transactionConfirmed',
-      // @ts-expect-error Mismatched types
+      // @ts-expect-error Error is string in metrics code but TransactionError in TransactionMeta type from controller
       handleTransactionConfirmed.bind(null, transactionMetricsRequest),
     );
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:transactionFailed',
       handleTransactionFailed.bind(null, transactionMetricsRequest),
     );
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:transactionNewSwap',
       ({ transactionMeta }) =>
         // TODO: This can be called internally by the TransactionController
         // since Swaps Controller registers this action handler
-        controllerMessenger.call(
-          'SwapsController:setTradeTxId',
-          transactionMeta.id,
-        ),
+        initMessenger.call('SwapsController:setTradeTxId', transactionMeta.id),
     );
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:transactionNewSwapApproval',
       ({ transactionMeta }) =>
         // TODO: This can be called internally by the TransactionController
         // since Swaps Controller registers this action handler
-        controllerMessenger.call(
+        initMessenger.call(
           'SwapsController:setApproveTxId',
           transactionMeta.id,
         ),
     );
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:transactionRejected',
       handleTransactionRejected.bind(null, transactionMetricsRequest),
     );
 
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'TransactionController:transactionSubmitted',
       handleTransactionSubmitted.bind(null, transactionMetricsRequest),
     );
   }
 
-  async #createCancelTransaction(
-    request: ControllerGetApiRequest<TransactionController>,
-    ...args: Parameters<TransactionController['stopTransaction']>
-  ) {
-    await request.controller.stopTransaction(...args);
-    return request.getFlatState();
+  #getUIState(flatState: ControllerFlatState) {
+    return { metamask: flatState };
   }
 }
