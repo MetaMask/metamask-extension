@@ -98,9 +98,6 @@ export async function migrate(
 function transformState(oldState: Record<string, unknown>) {
   const newState = cloneDeep(oldState);
   if (!hasProperty(newState, 'PermissionController')) {
-    console.warn(
-      `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
-    );
     return oldState;
   }
 
@@ -200,6 +197,8 @@ function transformState(oldState: Record<string, unknown>) {
     networkClientId: string,
     propertyName: string,
   ): string | undefined => {
+    let malformedDataErrorFound = false;
+    let matchingChainId: string | undefined;
     for (const [chainId, networkConfiguration] of Object.entries(
       networkConfigurationsByChainId,
     )) {
@@ -209,6 +208,7 @@ function transformState(oldState: Record<string, unknown>) {
             `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"] is ${typeof networkConfiguration}`,
           ),
         );
+        malformedDataErrorFound = true;
         continue;
       }
       if (!Array.isArray(networkConfiguration.rpcEndpoints)) {
@@ -217,8 +217,10 @@ function transformState(oldState: Record<string, unknown>) {
             `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints is ${typeof networkConfiguration.rpcEndpoints}`,
           ),
         );
+        malformedDataErrorFound = true;
         continue;
       }
+
       for (const rpcEndpoint of networkConfiguration.rpcEndpoints) {
         if (!isObject(rpcEndpoint)) {
           global.sentry?.captureException(
@@ -226,12 +228,21 @@ function transformState(oldState: Record<string, unknown>) {
               `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints[] is ${typeof rpcEndpoint}`,
             ),
           );
+          malformedDataErrorFound = true;
           continue;
         }
+
         if (rpcEndpoint.networkClientId === networkClientId) {
-          return chainId;
+          matchingChainId = chainId;
         }
       }
+    }
+    if (malformedDataErrorFound) {
+      return;
+    }
+
+    if (matchingChainId) {
+      return matchingChainId;
     }
 
     const builtInChainId = BUILT_IN_NETWORKS.get(networkClientId);
@@ -285,7 +296,7 @@ function transformState(oldState: Record<string, unknown>) {
     const permittedChainsPermission =
       permissions[PermissionNames.permittedChains];
 
-    // if there are no eth_accounts we can't create a valid CAIP-25 permission so we remove the permission
+    // if there is no eth_accounts permission we can't create a valid CAIP-25 permission so we remove the permission
     if (permittedChainsPermission && !ethAccountsPermission) {
       delete permissions[PermissionNames.permittedChains];
       continue;
