@@ -17,11 +17,7 @@ const selectors = {
   globalMenuSettingsButton: '[data-testid="global-menu-settings"]',
   securityAndPrivacySettings: { text: 'Security & privacy', tag: 'div' },
   experimentalSettings: { text: 'Experimental', tag: 'div' },
-  deletMetaMetricsSettings: '[data-testid="delete-metametrics-data-button"]',
-  deleteMetaMetricsDataButton: {
-    text: 'Delete MetaMetrics data',
-    tag: 'button',
-  },
+  deleteMetaMetricsDataButton: '[data-testid="delete-metametrics-data-button"]',
   clearButton: { text: 'Clear', tag: 'button' },
   backButton: '[data-testid="settings-back-button"]',
 };
@@ -111,7 +107,6 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         await driver.clickElement(selectors.globalMenuSettingsButton);
         await driver.clickElement(selectors.securityAndPrivacySettings);
 
-        await driver.findElement(selectors.deletMetaMetricsSettings);
         await driver.clickElement(selectors.deleteMetaMetricsDataButton);
 
         // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
@@ -157,35 +152,26 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
       },
     );
   });
+
   it('while user has opted out for metrics tracking', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: false,
           })
           .build(),
         defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({
-        driver,
-        mockedEndpoint: mockedEndpoints,
-      }: TestSuiteArguments) => {
+      async ({ driver }: TestSuiteArguments) => {
         await unlockWallet(driver);
 
         await driver.clickElement(selectors.accountOptionsMenuButton);
         await driver.clickElement(selectors.globalMenuSettingsButton);
         await driver.clickElement(selectors.securityAndPrivacySettings);
-
-        await driver.findElement(selectors.deletMetaMetricsSettings);
-        await driver.clickElement(selectors.deleteMetaMetricsDataButton);
-
-        // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
-        // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
-        await driver.delay(3000);
-        await driver.clickElementAndWaitToDisappear(selectors.clearButton);
 
         const deleteMetaMetricsDataButton = await driver.findElement(
           selectors.deleteMetaMetricsDataButton,
@@ -193,29 +179,10 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         await (
           deleteMetaMetricsDataButton as WebElementWithWaitForElementState
         ).waitForElementState('disabled');
-
-        const events = await getEventPayloads(
-          driver,
-          mockedEndpoints as MockedEndpoint[],
-        );
-        assert.equal(events.length, 2);
-
-        await driver.clickElementAndWaitToDisappear(
-          '.mm-box button[aria-label="Close"]',
-        );
-        await driver.clickElement(selectors.accountOptionsMenuButton);
-        await driver.clickElement(selectors.globalMenuSettingsButton);
-        await driver.clickElement(selectors.securityAndPrivacySettings);
-
-        const deleteMetaMetricsDataButtonRefreshed = await driver.findElement(
-          selectors.deleteMetaMetricsDataButton,
-        );
-        await (
-          deleteMetaMetricsDataButtonRefreshed as WebElementWithWaitForElementState
-        ).waitForElementState('disabled');
       },
     );
   });
+
   it('when the user has never opted in for metrics', async function () {
     await withFixtures(
       {
@@ -230,7 +197,6 @@ describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
         await driver.clickElement(selectors.accountOptionsMenuButton);
         await driver.clickElement(selectors.globalMenuSettingsButton);
         await driver.clickElement(selectors.securityAndPrivacySettings);
-        await driver.findElement(selectors.deletMetaMetricsSettings);
 
         const deleteMetaMetricsDataButton = await driver.findElement(
           selectors.deleteMetaMetricsDataButton,
