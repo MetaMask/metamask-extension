@@ -24,7 +24,6 @@ describe('Send SOL flow', function (this: Suite) {
           false,
           'Continue button is enabled and it shouldn`t',
         );
-
         await sendSolanaPage.setToAddress('2433asd');
         assert.equal(
           await sendSolanaPage.check_validationErrorAppears(
