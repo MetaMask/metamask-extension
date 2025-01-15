@@ -29,7 +29,5 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
-      - name: Install madge
-        run: yarn add -D madge
       - name: Update circular dependencies
         run: yarn circular:update
