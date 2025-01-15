@@ -88,9 +88,8 @@ test.beforeAll(
   },
 );
 
-test(`Get quote on Mainnet Network`, async () => {
-  // TODO: SKipping test as it's failing in the pipeline for unknown reasons
-  test.skip();
+// TODO: Skipping test as it's failing in the pipeline for unknown reasons
+test.skip(`Get quote on Mainnet Network`, async () => {
   await walletPage.selectSwapAction();
   await walletPage.page.waitForTimeout(3000);
   await swapPage.enterQuote({
