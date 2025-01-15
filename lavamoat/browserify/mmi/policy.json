@@ -1737,7 +1737,8 @@
     "@metamask/remote-feature-flag-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "cockatiel": true
+        "cockatiel": true,
+        "uuid": true
       }
     },
     "@metamask/rpc-errors": {
