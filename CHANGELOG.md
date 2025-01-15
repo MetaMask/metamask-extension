@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.10.1]
+### Changed
+- Stop publishing MMI builds to the release page ([#29732](https://github.com/MetaMask/metamask-extension/pull/29732))
+
 ## [12.10.0]
 ### Added
 - Added B3 network logo for improved identification ([#27778](https://github.com/MetaMask/metamask-extension/pull/27778))
