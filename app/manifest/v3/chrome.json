@@ -10,5 +10,6 @@
   "side_panel": {
     "default_path": "popup.html"
   },
+  "permissions": ["sidePanel"],
   "minimum_chrome_version": "89"
 }
