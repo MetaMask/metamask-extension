@@ -27,9 +27,9 @@ import {
 } from '../../../../selectors';
 import { isAddressLedger } from '../../../../ducks/metamask/metamask';
 import {
+  sanitizeMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountByAddress,
-  sanitizeMessage,
   shortenAddress,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';

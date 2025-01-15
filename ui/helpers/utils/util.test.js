@@ -416,7 +416,6 @@ describe('util', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
     });
   });
-
   describe('sanitizeMessage', () => {
     let message;
     let primaryType;
