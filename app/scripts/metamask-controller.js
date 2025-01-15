@@ -5988,7 +5988,13 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Website;
     }
 
+    console.log('caip', {connectionStream, sender, subjectType})
+
+    connectionStream.on('data', console.log)
+
     const caipStream = createCaipStream(connectionStream);
+
+    caipStream.on('data', console.log)
 
     // messages between subject and background
     this.setupProviderConnectionCaip(caipStream, sender, inputSubjectType);
