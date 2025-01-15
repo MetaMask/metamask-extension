@@ -28,7 +28,7 @@ jobs:
   is-fork-pull-request:
     name: Check if PR is from fork
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, inputs.bot_command) }}
+    if: ${{ github.event.issue.pull_request }}
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
     steps:

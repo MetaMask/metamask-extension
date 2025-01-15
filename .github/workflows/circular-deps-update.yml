@@ -6,6 +6,7 @@ on:
 
 jobs:
   shared-flow:
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-circular-deps') }}
     uses: ./.github/workflows/metamaskbot-pr-update.yml
     with:
       bot_command: '@metamaskbot update-circular-deps'
