@@ -12,7 +12,7 @@ jobs:
       commit_message: 'Update circular dependencies'
       file_pattern: 'circular-deps.json'
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      LAVAMOAT_UPDATE_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
   update-circular-deps:
     name: Update Circular Dependencies
@@ -25,7 +25,7 @@ jobs:
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
