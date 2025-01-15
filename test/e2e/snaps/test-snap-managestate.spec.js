@@ -77,9 +77,7 @@ describe('Test Snap manageState', function () {
         // Enter data and click set
         await driver.pasteIntoField('#setStateKey', 'foo');
         await driver.pasteIntoField('#dataState', '"bar"');
-        const sendEncrypted = await driver.findElement(
-          '#sendState',
-        );
+        const sendEncrypted = await driver.findElement('#sendState');
         await driver.scrollToElement(sendEncrypted);
         await driver.clickElement('#sendState');
 
@@ -91,9 +89,7 @@ describe('Test Snap manageState', function () {
 
         // Check that we can retrive one state key
         await driver.pasteIntoField('#getState', 'foo');
-        const getKeyButton = await driver.findElement(
-          '#sendGetState',
-        );
+        const getKeyButton = await driver.findElement('#sendGetState');
         await driver.scrollToElement(getKeyButton);
         await driver.clickElement('#sendGetState');
 
