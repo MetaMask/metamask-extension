@@ -5061,7 +5061,7 @@ export default class MetamaskController extends EventEmitter {
   async forgetDevice(deviceName) {
     return this.withKeyringForDevice({ name: deviceName }, async (keyring) => {
       for (const address of keyring.accounts) {
-        await this._onAccountRemoved(address);
+        this._onAccountRemoved(address);
       }
 
       keyring.forgetDevice();
@@ -5337,7 +5337,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string[]} address - A hex address
    */
   async removeAccount(address) {
-    await this._onAccountRemoved(address);
+    this._onAccountRemoved(address);
     await this.keyringController.removeAccount(address);
 
     return address;
@@ -6676,9 +6676,8 @@ export default class MetamaskController extends EventEmitter {
    * Execute side effects of a removed account.
    *
    * @param {string} address - The address of the account to remove.
-   * @returns {Promise<void>}
    */
-  async _onAccountRemoved(address) {
+  _onAccountRemoved(address) {
     // Remove all associated permissions
     this.removeAllAccountPermissions(address);
 
