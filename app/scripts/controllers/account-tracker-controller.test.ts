@@ -368,6 +368,23 @@ describe('AccountTrackerController', () => {
       });
     });
 
+    it('should gracefully handle unknown polling tokens', async () => {
+      await withController(({ controller, blockTrackerFromHookStub }) => {
+        jest.spyOn(controller, 'updateAccounts').mockResolvedValue();
+
+        const pollingToken =
+          controller.startPollingByNetworkClientId('mainnet');
+
+        controller.stopPollingByPollingToken('unknown-token');
+        controller.stopPollingByPollingToken(pollingToken);
+
+        expect(blockTrackerFromHookStub.removeListener).toHaveBeenCalledWith(
+          'latest',
+          expect.any(Function),
+        );
+      });
+    });
+
     it('should not unsubscribe from the block tracker if called with one of multiple active polling tokens for a given networkClient', async () => {
       await withController(({ controller, blockTrackerFromHookStub }) => {
         jest.spyOn(controller, 'updateAccounts').mockResolvedValue();
