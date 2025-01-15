@@ -1088,7 +1088,6 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/types-live": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": true,
         "browserify>buffer": true,
         "webpack>events": true,
