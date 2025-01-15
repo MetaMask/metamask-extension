@@ -107,7 +107,7 @@ async function gitDiff(): Promise<string> {
 
 function writePrBodyToFile(prBody: string) {
   const prBodyPath = path.resolve(CHANGED_FILES_DIR, 'pr-body.txt');
-  fs.writeFileSync(prBodyPath, prBody.trim());
+  fs.writeFileSync(prBodyPath, prBody?.trim() || '<no PR text>');
   console.log(`PR body saved to ${prBodyPath}`);
 }
 
