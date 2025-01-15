@@ -20,6 +20,7 @@ import { getQuoteRequest } from '../../../ducks/bridge/selectors';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { serializeQuoteMetadata } from '../../../../shared/lib/bridge-status/utils';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
@@ -141,15 +142,7 @@ export default function useSubmitBridgeTransaction() {
       startPollingForBridgeTxStatus({
         bridgeTxMeta,
         statusRequest,
-        quoteResponse: {
-          ...quoteResponse,
-          sentAmount: {
-            amount: quoteResponse.sentAmount.amount.toString(),
-            valueInCurrency: quoteResponse.sentAmount.valueInCurrency
-              ? quoteResponse.sentAmount.valueInCurrency.toString()
-              : null,
-          },
-        },
+        quoteResponse: serializeQuoteMetadata(quoteResponse),
         slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
       }),
