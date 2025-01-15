@@ -12,6 +12,8 @@ class SendSolanaPage {
     tag: 'button',
   };
 
+  private readonly swapCurrencyButton = '#send-swap-currency';
+
   private readonly cancelButton = {
     text: 'Cancel',
     tag: 'button',
@@ -19,6 +21,15 @@ class SendSolanaPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async clickOnSwapCurrencyButton(): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    const swapCurrencyButton = await this.driver.waitForSelector(
+      this.swapCurrencyButton,
+      { timeout: 10000 },
+    );
+    await swapCurrencyButton.click();
   }
 
   async check_validationErrorAppears(
