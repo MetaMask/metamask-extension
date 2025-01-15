@@ -53,13 +53,19 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
  *
  * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
  * @param extensionId - Extension identifier for web dapp to interact with wallet extension.
+ * @param url - URL path for test dapp. Defaults to {@link DAPP_URL}.
+ * @param multipleDapps - Checks if multiple dapps are being handled. Defaults to `false`.
  */
 export async function openMultichainDappAndConnectWalletWithExternallyConnectable(
   driver: Driver,
   extensionId: string,
+  url = DAPP_URL,
+  multipleDapps = false,
 ): Promise<void> {
-  await unlockWallet(driver);
-  await openDapp(driver, undefined, DAPP_URL);
+  if (!multipleDapps) {
+    await unlockWallet(driver);
+  }
+  await openDapp(driver, undefined, url);
 
   await driver.fill('[placeholder="Enter extension ID"]', extensionId);
   await driver.clickElement({ text: 'Connect', tag: 'button' });

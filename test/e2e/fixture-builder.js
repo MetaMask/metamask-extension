@@ -676,6 +676,46 @@ class FixtureBuilder {
     return this.withPermissionController({ subjects });
   }
 
+  withPermissionControllerConnectedToTwoMultichainTestDapps() {
+    // TODO: go over this whole file and just use ACCOUNT_1 and ACCOUNT_2 instead of this hardcoded tomfoolery
+    const permissions = {
+      'endowment:caip25': {
+        caveats: [
+          {
+            type: 'authorizedScopes',
+            value: {
+              requiredScopes: {},
+              optionalScopes: {
+                'eip155:1337': {
+                  accounts: [
+                    'eip155:1337:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                  ],
+                },
+              },
+              isMultichainOrigin: true,
+            },
+          },
+        ],
+        id: 'ZaqPEWxyhNCJYACFw93jE',
+        date: 1664388714636,
+        invoker: DAPP_URL,
+        parentCapability: 'endowment:caip25',
+      },
+    };
+    const subjects = {
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions,
+      },
+      [DAPP_ONE_URL]: {
+        origin: DAPP_ONE_URL,
+        permissions,
+      },
+    };
+    return this.withPermissionController({ subjects });
+  }
+
   withPermissionControllerConnectedToSnapDapp() {
     return this.withPermissionController({
       subjects: {
