@@ -37,6 +37,38 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
     });
 }
 
+export async function mockSolanaSignaturesForAddress(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getSignaturesForAddress',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result: [], // Empty for now, it has been mocked to avoid network calls.
+        },
+      };
+    });
+}
+
+export async function mockSolanaTokenAccountsByOwner(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getTokenACcountsByOwner',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result: [], // Empty for now, it has been mocked to avoid network calls.
+        },
+      };
+    });
+}
+
 export async function withSolanaAccountSnap(
   {
     title,
@@ -56,7 +88,11 @@ export async function withSolanaAccountSnap(
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => {
         console.log('Setting up test-specific mocks');
-        return [await mockSolanaBalanceQuote(mockServer)];
+        return [
+          await mockSolanaBalanceQuote(mockServer),
+          await mockSolanaTokenAccountsByOwner(mockServer),
+          await mockSolanaSignaturesForAddress(mockServer),
+        ];
       },
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
