@@ -25,10 +25,13 @@ class SendSolanaPage {
     validationErrorText: string,
   ): Promise<boolean> {
     try {
-      await this.driver.waitForSelector({
-        text: validationErrorText,
-        tag: 'p',
-      });
+      await this.driver.waitForSelector(
+        {
+          text: validationErrorText,
+          tag: 'p',
+        },
+        { timeout: 1000 },
+      );
       return true;
     } catch (e) {
       console.log(`${validationErrorText} is not displayed`);

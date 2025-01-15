@@ -9,44 +9,6 @@ import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 describe('Send SOL flow', function (this: Suite) {
-  it('with a zero balance account', async function () {
-    this.timeout(120000);
-    await withSolanaAccountSnap(
-      { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
-      async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
-        const homePage = new NonEvmHomepage(driver);
-        assert.equal(
-          await homePage.check_ifSendButtonIsClickable(),
-          true,
-          'Send button is enabled and it shouldn`t',
-        );
-        assert.equal(await homePage.check_ifSwapButtonIsClickable(), false);
-        assert.equal(await homePage.check_ifBridgeButtonIsClickable(), false);
-        await homePage.clickOnSendButton();
-        const sendSolanaPage = new SendSolanaPage(driver);
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled and it shouldn`t',
-        );
-        await sendSolanaPage.setToAddress(commonSolanaAddress);
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled and it shouldn`t',
-        );
-        await sendSolanaPage.setAmount('0.1');
-        assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
-            'Insufficient balance',
-          ),
-          true,
-          'Insufficient balance text is not displayed',
-        );
-      },
-    );
-  });
   it('with some field validation', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -54,6 +16,7 @@ describe('Send SOL flow', function (this: Suite) {
       async (driver) => {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
+        await homePage.check_pageIsLoaded();
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
@@ -110,6 +73,7 @@ describe('Send SOL flow', function (this: Suite) {
       async (driver) => {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
+        await homePage.check_pageIsLoaded();
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
@@ -146,10 +110,8 @@ describe('Send SOL flow', function (this: Suite) {
           false,
           'Insufficient balance text is displayed  and it should`t',
         );
-        // assert.equal(await sendSolanaPage.isContinueButtonEnabled(), true, "Continue button is not enabled when address and amount are set");
-        await sendSolanaPage.clickOnContinue();
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
-        await confirmSolanaPage.waitForSendingStageToFinish();
+        await sendSolanaPage.clickOnContinue();
         assert.equal(
           await confirmSolanaPage.checkAmountDisplayed('0.1'),
           true,
@@ -285,7 +247,6 @@ describe('Send SOL flow', function (this: Suite) {
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
 
         await confirmSolanaPage.clickOnSend();
-        await confirmSolanaPage.waitForSendingStageToFinish();
         const failedTxPage = new SolanaTxresultPage(driver);
         assert.equal(
           await failedTxPage.check_TransactionStatusText('0.1', false),

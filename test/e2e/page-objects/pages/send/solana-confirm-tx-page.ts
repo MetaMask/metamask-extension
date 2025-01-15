@@ -19,21 +19,6 @@ class ConfirmSolanaTxPage {
     this.driver = driver;
   }
 
-  async waitForSendingStageToFinish(): Promise<void> {
-    try {
-      await this.driver.wait(async () => {
-        await this.driver.findElements({
-          text: 'Sending...',
-          tag: 'span',
-        });
-        return false;
-      }, 10000);
-      console.log('Sending transaction modal has disappeared');
-    } catch (e) {
-      console.log('Sending transaction modal has not disappeared', e);
-    }
-  }
-
   async checkAmountDisplayed(amount: string): Promise<boolean> {
     try {
       await this.driver.waitForSelector({
