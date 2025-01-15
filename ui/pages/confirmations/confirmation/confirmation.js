@@ -34,6 +34,7 @@ import {
   useSafeChainsListValidationSelector,
   getSnapsMetadata,
   getHideSnapBranding,
+  getPendingApprovals,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import Callout from '../../../components/ui/callout';
@@ -106,6 +107,7 @@ const alertStateReducer = produce((state, action) => {
  * @param state.matchedChain
  * @param state.providerError
  * @param state.preventAlertsForAddChainValidation
+ * @param state.pendingApprovals
  * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
@@ -117,6 +119,7 @@ function useAlertState(
     matchedChain,
     providerError,
     preventAlertsForAddChainValidation = false,
+    pendingApprovals,
   } = {},
 ) {
   const [alertState, dispatch] = useReducer(alertStateReducer, {});
@@ -137,6 +140,7 @@ function useAlertState(
         useSafeChainsListValidation,
         matchedChain,
         providerError,
+        pendingApprovals,
       }).then((alerts) => {
         if (isMounted && alerts.length > 0) {
           dispatch({
@@ -255,12 +259,14 @@ export default function ConfirmationPage({
     !chainFetchComplete;
   const [currencySymbolWarning, setCurrencySymbolWarning] = useState(null);
   const [providerError, setProviderError] = useState(null);
+  const pendingApprovals = useSelector(getPendingApprovals);
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
     unapprovedTxsCount,
     useSafeChainsListValidation,
     matchedChain,
     providerError,
     preventAlertsForAddChainValidation,
+    pendingApprovals,
   });
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);

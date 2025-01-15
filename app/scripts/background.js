@@ -1072,11 +1072,6 @@ export function setupController(
   );
 
   controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
     updateBadge,
   );

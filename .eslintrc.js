@@ -487,10 +487,11 @@ module.exports = {
               'getNfts',
               'getProviderConfig',
               'getRpcPrefsForCurrentProvider',
+              'getSelectedNetworkClientId',
               'getUSDConversionRate',
               'isCurrentProviderCustom',
             ]
-              .map((method) => `(${method})`)
+              .map((method) => `^${method}$`)
               .join('|')}/]`,
             message: 'Avoid using global network selectors in confirmations',
           },

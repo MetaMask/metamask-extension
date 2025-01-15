@@ -15,6 +15,9 @@ const switchEthereumChain = {
     requestPermittedChainsPermission: true,
     getCurrentChainIdForDomain: true,
     grantPermittedChainsPermissionIncremental: true,
+    requestUserApproval: true,
+    hasApprovalRequestsForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
   },
 };
 
@@ -32,6 +35,9 @@ async function switchEthereumChainHandler(
     getCaveat,
     getCurrentChainIdForDomain,
     grantPermittedChainsPermissionIncremental,
+    requestUserApproval,
+    hasApprovalRequestsForOrigin,
+    rejectApprovalRequestsForOrigin,
   },
 ) {
   let chainId;
@@ -48,11 +54,15 @@ async function switchEthereumChainHandler(
     return end();
   }
 
-  const networkConfigurationForRequestedChainId =
-    getNetworkConfigurationByChainId(chainId);
+  const fromNetworkConfiguration = getNetworkConfigurationByChainId(
+    currentChainIdForOrigin,
+  );
+
+  const toNetworkConfiguration = getNetworkConfigurationByChainId(chainId);
+
   const networkClientIdToSwitchTo =
-    networkConfigurationForRequestedChainId?.rpcEndpoints[
-      networkConfigurationForRequestedChainId.defaultRpcEndpointIndex
+    toNetworkConfiguration?.rpcEndpoints[
+      toNetworkConfiguration.defaultRpcEndpointIndex
     ].networkClientId;
 
   if (!networkClientIdToSwitchTo) {
@@ -64,10 +74,22 @@ async function switchEthereumChainHandler(
     );
   }
 
-  return switchChain(res, end, chainId, networkClientIdToSwitchTo, null, {
-    setActiveNetwork,
-    getCaveat,
-    requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental,
+  return switchChain({
+    res,
+    end,
+    chainId,
+    networkClientId: networkClientIdToSwitchTo,
+    fromNetworkConfiguration,
+    toNetworkConfiguration,
+    origin,
+    hooks: {
+      setActiveNetwork,
+      getCaveat,
+      requestPermittedChainsPermission,
+      grantPermittedChainsPermissionIncremental,
+      requestUserApproval,
+      hasApprovalRequestsForOrigin,
+      rejectApprovalRequestsForOrigin,
+    },
   });
 }

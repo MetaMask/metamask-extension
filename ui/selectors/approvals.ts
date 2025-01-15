@@ -112,3 +112,10 @@ function isWatchNftApproval(approval: ApprovalRequest<Record<string, Json>>) {
 
   return approval.type === ApprovalType.WatchAsset && Boolean(tokenId);
 }
+
+export const selectPendingApprovalsForOrigin = createDeepEqualSelector(
+  getPendingApprovals,
+  (_state: ApprovalsMetaMaskState, origin: string) => origin,
+  (pendingApprovals, origin) =>
+    pendingApprovals.filter((approval) => approval.origin === origin),
+);

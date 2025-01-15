@@ -10,11 +10,16 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
+  Severity,
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../component-library';
+import { BannerAlert, Box, Text } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+} from '../../../../../shared/constants/permissions';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -27,6 +32,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     }),
     selectedPermissions: PropTypes.object.isRequired,
     selectedAccounts: PropTypes.array,
+    originPendingApprovals: PropTypes.array,
   };
 
   static defaultProps = {
@@ -40,8 +46,12 @@ export default class PermissionPageContainerContent extends PureComponent {
   render() {
     const { t } = this.context;
 
-    const { selectedPermissions, selectedAccounts, subjectMetadata } =
-      this.props;
+    const {
+      selectedPermissions,
+      selectedAccounts,
+      subjectMetadata,
+      originPendingApprovals,
+    } = this.props;
 
     const accounts = selectedAccounts.reduce((accumulator, account) => {
       accumulator.push({
@@ -50,6 +60,15 @@ export default class PermissionPageContainerContent extends PureComponent {
       });
       return accumulator;
     }, []);
+
+    const otherOriginApprovalsCount = originPendingApprovals.length - 1;
+    const originHasPendingApprovals = otherOriginApprovalsCount > 0;
+
+    const hasChainPermissions = Boolean(
+      selectedPermissions?.[EndowmentTypes.permittedChains]?.[
+        CaveatTypes.restrictNetworkSwitching
+      ]?.length,
+    );
 
     return (
       <Box
@@ -100,6 +119,17 @@ export default class PermissionPageContainerContent extends PureComponent {
             accounts={accounts}
           />
         </Box>
+        {hasChainPermissions && originHasPendingApprovals && (
+          <BannerAlert severity={Severity.Warning} marginTop={2}>
+            {otherOriginApprovalsCount === 1
+              ? t(
+                  'switchingNetworksCancelsPendingConfirmationsExtendedSingular',
+                )
+              : t('switchingNetworksCancelsPendingConfirmationsExtended', [
+                  otherOriginApprovalsCount,
+                ])}
+          </BannerAlert>
+        )}
       </Box>
     );
   }

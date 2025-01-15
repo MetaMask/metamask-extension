@@ -17,6 +17,7 @@ const render = () => {
     time: new Date().getTime(),
     type: TransactionType.personalSign,
     chainId: '0x1',
+    origin: 'test.com',
   };
 
   const mockExpectedState = {

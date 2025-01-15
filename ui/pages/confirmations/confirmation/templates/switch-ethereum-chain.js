@@ -6,7 +6,7 @@ import {
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
-const PENDING_TX_DROP_NOTICE = {
+const ALERT_PENDING_CONFIRMATIONS = (count) => ({
   id: 'PENDING_TX_DROP_NOTICE',
   severity: SEVERITIES.WARNING,
   content: {
@@ -14,18 +14,18 @@ const PENDING_TX_DROP_NOTICE = {
     children: {
       element: 'MetaMaskTranslation',
       props: {
-        translationKey: 'switchingNetworksCancelsPendingConfirmations',
+        translationKey:
+          count === 1
+            ? 'switchingNetworksCancelsPendingConfirmationsSingular'
+            : 'switchingNetworksCancelsPendingConfirmations',
+        variables: [count],
       },
     },
   },
-};
+});
 
 async function getAlerts(_pendingApproval, state) {
-  const alerts = [];
-  if (state.unapprovedTxsCount > 0) {
-    alerts.push(PENDING_TX_DROP_NOTICE);
-  }
-  return alerts;
+  return [ALERT_PENDING_CONFIRMATIONS(state.pendingApprovals.length - 1)];
 }
 
 function getValues(pendingApproval, t, actions) {
@@ -56,6 +56,14 @@ function getValues(pendingApproval, t, actions) {
           boxProps: {
             padding: [0, 4, 0, 4],
           },
+        },
+      },
+      {
+        element: 'OriginPill',
+        key: 'origin-pill',
+        props: {
+          origin: pendingApproval.origin,
+          dataTestId: 'signature-origin-pill',
         },
       },
       {
