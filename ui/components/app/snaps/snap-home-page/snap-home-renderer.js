@@ -64,16 +64,16 @@ export const SnapHomeRenderer = ({ snapId }) => {
     }
   }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
 
-  return (
-    <Box
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      style={{
-        overflowY: 'auto',
-      }}
-    >
-      {error && (
+  if (error) {
+    return (
+      <Box
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        style={{
+          overflowY: 'auto',
+        }}
+      >
         <Box height={BlockSize.Full} padding={4}>
           <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
             <Text variant={TextVariant.bodySm} marginBottom={4}>
@@ -82,18 +82,19 @@ export const SnapHomeRenderer = ({ snapId }) => {
             <Copyable text={error.message} />
           </SnapDelineator>
         </Box>
-      )}
-      {(interfaceId || loading) && (
-        <SnapUIRenderer
-          snapId={snapId}
-          interfaceId={interfaceId}
-          isLoading={loading}
-          useDelineator={false}
-          useFooter
-          contentBackgroundColor={BackgroundColor.backgroundAlternative}
-        />
-      )}
-    </Box>
+      </Box>
+    );
+  }
+
+  return (
+    <SnapUIRenderer
+      snapId={snapId}
+      interfaceId={interfaceId}
+      isLoading={loading}
+      useDelineator={false}
+      useFooter
+      contentBackgroundColor={BackgroundColor.backgroundAlternative}
+    />
   );
 };
 

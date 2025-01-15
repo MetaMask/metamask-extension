@@ -42,6 +42,7 @@ setBackgroundConnection({
   getNextNonce: jest.fn(),
   updateTransaction: jest.fn(),
   getLastInteractedConfirmationInfo: jest.fn(),
+  setAlertEnabledness: jest.fn(),
 });
 
 const mockTxParamsFromAddress = '0x123456789';
@@ -159,7 +160,6 @@ const baseStore = {
     ensResolutionsByAddress: {},
     snaps: {},
     useNonceField: true,
-    customNonceValue: '70',
   },
   confirmTransaction: {
     txData: {
@@ -200,6 +200,7 @@ const baseStore = {
   },
   appState: {
     sendInputCurrencySwitched: false,
+    customNonceValue: '70',
   },
   ramps: {
     buyableChains: defaultBuyableChains,

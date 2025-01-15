@@ -1,4 +1,4 @@
-import EthQuery, { Provider } from '@metamask/eth-query';
+import type { Provider } from '@metamask/network-controller';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
@@ -799,7 +799,6 @@ async function buildEventFragmentProperties({
     id,
     userFeeLevel,
   } = transactionMeta;
-  const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
   const gasFeeSelected =
@@ -807,7 +806,7 @@ async function buildEventFragmentProperties({
 
   const { assetType, tokenStandard } = await determineTransactionAssetType(
     transactionMeta,
-    query,
+    transactionMetricsRequest.provider,
     transactionMetricsRequest.getTokenStandardAndDetails,
   );
 
