@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.10.1]
+### Changed
+- Stop publishing MMI builds to the release page ([#29732](https://github.com/MetaMask/metamask-extension/pull/29732))
+
 ## [12.10.0]
 ### Added
 - Added B3 network logo for improved identification ([#27778](https://github.com/MetaMask/metamask-extension/pull/27778))
@@ -5553,7 +5557,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.10.1...HEAD
+[12.10.1]: https://github.com/MetaMask/metamask-extension/compare/v12.10.0...v12.10.1
 [12.10.0]: https://github.com/MetaMask/metamask-extension/compare/v12.9.3...v12.10.0
 [12.9.3]: https://github.com/MetaMask/metamask-extension/compare/v12.9.2...v12.9.3
 [12.9.2]: https://github.com/MetaMask/metamask-extension/compare/v12.9.1...v12.9.2
