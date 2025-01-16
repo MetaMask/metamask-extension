@@ -1,4 +1,4 @@
-import { MethodRegistry } from 'eth-method-registry';
+import { Interface } from '@ethersproject/abi';
 import { Hex } from '@metamask/utils';
 import { hasTransactionData } from '../modules/transaction.utils';
 import { stripHexPrefix } from '../modules/hexstring-utils';
@@ -47,22 +47,9 @@ export async function getMethodFrom4Byte(
   return fourByteResponse.results[0].text_signature;
 }
 
-let registry: MethodRegistry | undefined;
-
-type HttpProvider = {
-  host: string;
-  timeout: number;
-};
-
-type MethodRegistryArgs = {
-  network: string;
-  provider: HttpProvider;
-};
-
 export async function getMethodDataAsync(
   fourBytePrefix: string,
   allow4ByteRequests: boolean,
-  provider?: unknown,
 ) {
   try {
     let fourByteSig = null;
@@ -73,21 +60,22 @@ export async function getMethodDataAsync(
       });
     }
 
-    if (!registry) {
-      registry = new MethodRegistry({
-        provider: provider ?? global.ethereumProvider,
-      } as MethodRegistryArgs);
-    }
-
     if (!fourByteSig) {
       return {};
     }
 
-    const parsedResult = registry.parse(fourByteSig);
+    const iface = new Interface([`function ${fourByteSig}`]);
+    const fragment = iface.getFunction(fourBytePrefix);
+
+    if (!fragment) {
+      return {};
+    }
 
     return {
-      name: parsedResult.name,
-      params: parsedResult.args,
+      name: fragment.name,
+      params: fragment.inputs.map((input) => ({
+        type: input.type,
+      })),
     };
   } catch (error) {
     console.error(error);
