@@ -4,6 +4,7 @@ import { tinyDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
+  mocked4BytesApprove,
   openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
@@ -86,30 +87,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
     });
   });
 });
-
-export async function mocked4BytesApprove(mockServer: MockttpServer) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .always()
-    .withQuery({ hex_signature: '0x095ea7b3' })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            id: 149,
-            created_at: '2016-07-09T03:58:29.617584Z',
-            text_signature: 'approve(address,uint256)',
-            hex_signature: '0x095ea7b3',
-            bytes_signature: '\t^§³',
-          },
-        ],
-      },
-    }));
-}
 
 async function mocks(server: MockttpServer) {
   return [await mocked4BytesApprove(server)];
