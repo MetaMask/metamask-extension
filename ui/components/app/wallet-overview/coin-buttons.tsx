@@ -409,10 +409,12 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
+    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick();
       return;
     }
+    ///: END:ONLY_INCLUDE_IF
 
     await setCorrectChain();
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

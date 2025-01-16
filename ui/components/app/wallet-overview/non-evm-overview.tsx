@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { BtcAccountType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
-import { isEqual } from 'lodash';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsMainnet,
@@ -45,10 +44,11 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   ///: END:ONLY_INCLUDE_IF
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
-  const isSwapsChain = useSelector(getIsSwapsChain);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const isBridgeChain = useSelector(getIsBridgeChain);
+  let isSwapsChain = false;
+  let isBridgeChain = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
+  isBridgeChain = useSelector((state) => getIsBridgeChain(state, chainId));
   ///: END:ONLY_INCLUDE_IF
 
   return (
