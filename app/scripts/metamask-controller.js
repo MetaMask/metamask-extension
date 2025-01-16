@@ -45,8 +45,6 @@ import {
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
-import EthQuery from '@metamask/eth-query';
-import EthJSQuery from '@metamask/ethjs-query';
 import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -1631,7 +1629,15 @@ export default class MetamaskController extends EventEmitter {
               },
             });
           },
-          onAccountSyncErroneousSituation: (profileId, situationMessage) => {
+          onAccountSyncErroneousSituation: (
+            profileId,
+            situationMessage,
+            sentryContext,
+          ) => {
+            captureException(
+              new Error(`Account sync - ${situationMessage}`),
+              sentryContext,
+            );
             this.metaMetricsController.trackEvent({
               category: MetaMetricsEventCategory.ProfileSyncing,
               event: MetaMetricsEventName.AccountsSyncErroneousSituation,
@@ -2110,7 +2116,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.signatureController.hub.on(
       'cancelWithReason',
-      ({ message, reason }) => {
+      ({ metadata: message, reason }) => {
         this.metaMetricsController.trackEvent({
           event: reason,
           category: MetaMetricsEventCategory.Transactions,
@@ -2433,6 +2439,7 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [],
       }),
       disabled: !this.preferencesController.state.useExternalServices,
+      getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
       clientConfigApiService: new ClientConfigApiService({
         fetch: globalThis.fetch.bind(globalThis),
         config: {
@@ -3390,17 +3397,16 @@ export default class MetamaskController extends EventEmitter {
 
     let networkVersion = this.deprecatedNetworkVersions[networkClientId];
     if (networkVersion === undefined && completedOnboarding) {
-      const ethQuery = new EthQuery(networkClient.provider);
-      networkVersion = await new Promise((resolve) => {
-        ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
-          if (error) {
-            console.error(error);
-            resolve(null);
-          } else {
-            resolve(convertNetworkId(result));
-          }
+      try {
+        const result = await networkClient.provider.request({
+          method: 'net_version',
         });
-      });
+        networkVersion = convertNetworkId(result);
+      } catch (error) {
+        console.error(error);
+        networkVersion = null;
+      }
+
       this.deprecatedNetworkVersions[networkClientId] = networkVersion;
     }
 
@@ -4432,7 +4438,7 @@ export default class MetamaskController extends EventEmitter {
       decodeTransactionData: (request) =>
         decodeTransactionData({
           ...request,
-          ethQuery: new EthQuery(this.provider),
+          provider: this.provider,
         }),
       // metrics data deleteion
       createMetaMetricsDataDeletionTask:
@@ -4652,12 +4658,11 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
-      const ethQuery = new EthQuery(this.provider);
       const accounts = await this.keyringController.getAccounts();
       let address = accounts[accounts.length - 1];
 
       for (let count = accounts.length; ; count++) {
-        const balance = await this.getBalance(address, ethQuery);
+        const balance = await this.getBalance(address, this.provider);
 
         if (balance === '0x0') {
           // This account has no balance, so check for tokens
@@ -4727,25 +4732,25 @@ export default class MetamaskController extends EventEmitter {
    * Get an account balance from the AccountTrackerController or request it directly from the network.
    *
    * @param {string} address - The account address
-   * @param {EthQuery} ethQuery - The EthQuery instance to use when asking the network
+   * @param {Provider} provider - The provider instance to use when asking the network
    */
-  getBalance(address, ethQuery) {
-    return new Promise((resolve, reject) => {
-      const cached = this.accountTrackerController.state.accounts[address];
+  async getBalance(address, provider) {
+    const cached = this.accountTrackerController.state.accounts[address];
 
-      if (cached && cached.balance) {
-        resolve(cached.balance);
-      } else {
-        ethQuery.getBalance(address, (error, balance) => {
-          if (error) {
-            reject(error);
-            log.error(error);
-          } else {
-            resolve(balance || '0x0');
-          }
-        });
-      }
-    });
+    if (cached && cached.balance) {
+      return cached.balance;
+    }
+
+    try {
+      const balance = await provider.request({
+        method: 'eth_getBalance',
+        params: [address, 'latest'],
+      });
+      return balance || '0x0';
+    } catch (error) {
+      log.error(error);
+      throw error;
+    }
   }
 
   /**
@@ -5401,16 +5406,13 @@ export default class MetamaskController extends EventEmitter {
 
   async estimateGas(estimateGasParams) {
     return new Promise((resolve, reject) => {
-      return new EthJSQuery(this.provider).estimateGas(
-        estimateGasParams,
-        (err, res) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(res.toString(16));
-        },
-      );
+      this.provider
+        .request({
+          method: 'eth_estimateGas',
+          params: [estimateGasParams],
+        })
+        .then((result) => resolve(result.toString(16)))
+        .catch((err) => reject(err));
     });
   }
 

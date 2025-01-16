@@ -753,7 +753,29 @@ async function setupMocking(
       return {
         ok: true,
         statusCode: 200,
-        json: [{ feature1: true }, { feature2: false }],
+        json: [
+          { feature1: true },
+          { feature2: false },
+          {
+            feature3: [
+              {
+                value: 'valueA',
+                name: 'groupA',
+                scope: { type: 'threshold', value: 0.3 },
+              },
+              {
+                value: 'valueB',
+                name: 'groupB',
+                scope: { type: 'threshold', value: 0.5 },
+              },
+              {
+                scope: { type: 'threshold', value: 1 },
+                value: 'valueC',
+                name: 'groupC',
+              },
+            ],
+          },
+        ],
       };
     });
 
