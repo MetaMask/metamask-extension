@@ -406,6 +406,49 @@ const CoinButtons = ({
     history.push(SEND_ROUTE);
   }, [chainId, account, setCorrectChain]);
 
+  const handleSwapOnClick = useCallback(async () => {
+    await setCorrectChain();
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    global.platform.openTab({
+      url: `${mmiPortfolioUrl}/swap`,
+    });
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    if (isSwapsChain) {
+      trackEvent({
+        event: MetaMetricsEventName.NavSwapButtonClicked,
+        category: MetaMetricsEventCategory.Swaps,
+        properties: {
+          token_symbol: 'ETH',
+          location: MetaMetricsSwapsEventSource.MainView,
+          text: 'Swap',
+          chain_id: chainId,
+        },
+      });
+      dispatch(setSwapsFromToken(defaultSwapsToken));
+      if (usingHardwareWallet) {
+        if (global.platform.openExtensionInBrowser) {
+          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
+        }
+      } else {
+        history.push(PREPARE_SWAP_ROUTE);
+      }
+    }
+    ///: END:ONLY_INCLUDE_IF
+  }, [
+    setCorrectChain,
+    isSwapsChain,
+    chainId,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    usingHardwareWallet,
+    defaultSwapsToken,
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    mmiPortfolioUrl,
+    ///: END:ONLY_INCLUDE_IF
+  ]);
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp(getChainId());
@@ -479,7 +522,7 @@ const CoinButtons = ({
             size={IconSize.Sm}
           />
         }
-        onClick={handleBridgeOnClick}
+        onClick={handleSwapOnClick}
         label={t('swap')}
         data-testid="token-overview-button-swap"
         tooltipRender={(contents: React.ReactElement) =>
