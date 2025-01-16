@@ -1198,7 +1198,7 @@
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-utils": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
         "webpack>events": true,
@@ -1380,23 +1380,14 @@
         "@metamask/keyring-snap-client>uuid": true
       }
     },
-    "@metamask/eth-snap-keyring>@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/eth-snap-keyring>@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
     "@metamask/keyring-api>@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": true
+        "@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": true,
+        "bitcoin-address-validation": true
       }
     },
     "@metamask/logging-controller": {
