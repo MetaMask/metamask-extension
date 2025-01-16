@@ -46,24 +46,24 @@ jobs:
       - name: Validate source maps
         run: yarn validate-source-maps
 
-      - name: Move 'dist' to 'dist-beta' to avoid conflict with production build
-        run: mv ./dist ./dist-beta
-
       - name: Upload 'dist-beta' to S3
         uses: metamask/github-tools/.github/actions/upload-s3@5d1f7a2558428c28ecd167e43b4c3aa926a3b162
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/
-          path: dist-beta
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/dist-beta
+          path: dist
 
-      - name: Move 'builds' to 'builds-beta' to avoid conflict with production build
-        run: mv ./builds ./builds-beta
+      - name: Echo 'dist-beta' S3 URL
+        run: echo "${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}/dist-beta"
 
       - name: Upload 'builds-beta' to S3
         uses: metamask/github-tools/.github/actions/upload-s3@5d1f7a2558428c28ecd167e43b4c3aa926a3b162
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/
-          path: builds-beta
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/builds-beta
+          path: builds
+
+      - name: Echo 'builds-beta' S3 URL
+        run: echo "${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}/builds-beta"
