@@ -5,7 +5,10 @@ import { sha256 } from '@noble/hashes/sha256';
 import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
 import { ChangeEvent as ReactChangeEvent } from 'react';
-import { BackgroundColor } from '../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../helpers/constants/design-system';
 import { COMPONENT_MAPPING } from './components';
 import { UIComponent } from './components/types';
 
@@ -155,4 +158,23 @@ export const mapToExtensionCompatibleColor = (color: string) => {
     alternative: BackgroundColor.backgroundDefault,
   };
   return color ? backgroundColorMapping[color] : undefined;
+};
+
+/**
+ * Map Snap custom size for border radius to extension compatible size.
+ *
+ * @param snapBorderRadius - Snap custom color.
+ * @returns String, representing border radius size from design system.
+ */
+export const mapSnapBorderRadiusToExtensionBorderRadius = (
+  snapBorderRadius: string | undefined,
+): BorderRadius => {
+  const backgroundColorMapping: { [key: string]: BorderRadius } = {
+    none: BorderRadius.none,
+    medium: BorderRadius.MD,
+    full: BorderRadius.full,
+  };
+  return snapBorderRadius
+    ? backgroundColorMapping[snapBorderRadius]
+    : BorderRadius.none;
 };

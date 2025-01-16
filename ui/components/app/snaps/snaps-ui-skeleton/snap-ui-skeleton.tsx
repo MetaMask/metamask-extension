@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Skeleton } from '../../../component-library/skeleton';
 import { BorderRadius } from '../../../../helpers/constants/design-system';
+import { mapSnapBorderRadiusToExtensionBorderRadius } from '../snap-ui-renderer/utils';
 
 export type SnapUISkeletonProps = {
   width: number | string;
@@ -13,5 +14,11 @@ export const SnapUISkeleton: FunctionComponent<SnapUISkeletonProps> = ({
   height,
   borderRadius,
 }) => {
-  return <Skeleton width={width} height={height} borderRadius={borderRadius} />;
+  return (
+    <Skeleton
+      width={width}
+      height={height}
+      borderRadius={mapSnapBorderRadiusToExtensionBorderRadius(borderRadius)}
+    />
+  );
 };
