@@ -97,12 +97,12 @@ import {
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
 ///: END:ONLY_INCLUDE_IF
 import {
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -146,7 +146,6 @@ const CoinButtons = ({
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
-  const { isEvmNetwork } = useSelector(getMultichainNetwork);
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const currentActivityTabName = useSelector(
     // @ts-expect-error TODO: fix state type
@@ -162,12 +161,12 @@ const CoinButtons = ({
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
   // network).
-  const isEvm = useMultichainSelector(getMultichainIsEvm, account);
+  const {isEvmNetwork, chainId: multichainChainId} = useMultichainSelector(getMultichainNetwork, account);
   const multichainNativeToken = useMultichainSelector(
     getMultichainNativeCurrency,
     account,
   );
-  const nativeToken = isEvm ? 'ETH' : multichainNativeToken;
+  const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -333,7 +332,7 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const setCorrectChain = useCallback(async () => {
-    if (isEvmNetwork && currentChainId !== chainId) {
+    if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
@@ -407,6 +406,11 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain]);
 
   const handleSwapOnClick = useCallback(async () => {
+    if (multichainChainId === MultichainNetworks.SOLANA) {
+      handleBridgeOnClick();
+      return;
+    }
+
     await setCorrectChain();
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
