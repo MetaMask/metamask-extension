@@ -82,7 +82,7 @@
     }
   },
   "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
-  "CronjobController": { "jobs": "object" },
+  "CronjobController": { "jobs": "object", "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
     "currencyRates": {
@@ -239,7 +239,6 @@
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
       "smartTransactionsMigrationApplied": "boolean"
     },
     "ipfsGateway": "string",
@@ -258,7 +257,7 @@
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
-    "remoteFeatureFlags": { "feature1": true, "feature2": false },
+    "remoteFeatureFlags": {},
     "cacheTimestamp": "number"
   },
   "SelectedNetworkController": { "domains": "object" },
