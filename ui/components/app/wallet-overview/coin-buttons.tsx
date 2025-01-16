@@ -161,7 +161,10 @@ const CoinButtons = ({
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
   // network).
-  const {isEvmNetwork, chainId: multichainChainId} = useMultichainSelector(getMultichainNetwork, account);
+  const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
+    getMultichainNetwork,
+    account,
+  );
   const multichainNativeToken = useMultichainSelector(
     getMultichainNativeCurrency,
     account,

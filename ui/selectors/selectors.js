@@ -69,7 +69,10 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { ALLOWED_BRIDGE_CHAIN_IDS, ALLOWED_DEV_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
+import {
+  ALLOWED_BRIDGE_CHAIN_IDS,
+  ALLOWED_DEV_BRIDGE_CHAIN_IDS,
+} from '../../shared/constants/bridge';
 import { AssetType } from '../../shared/constants/transaction';
 
 import {

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { BtcAccountType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
+import { isEqual } from 'lodash';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsMainnet,
@@ -14,9 +15,13 @@ import {
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
-import { getIsSwapsChain, getIsBridgeChain, getSelectedInternalAccount, getSwapsDefaultToken } from '../../../selectors';
+import {
+  getIsSwapsChain,
+  getIsBridgeChain,
+  getSelectedInternalAccount,
+  getSwapsDefaultToken,
+} from '../../../selectors';
 import { CoinOverview } from './coin-overview';
-import { isEqual } from 'lodash';
 
 type NonEvmOverviewProps = {
   className?: string;
