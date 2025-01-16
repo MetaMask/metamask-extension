@@ -252,10 +252,6 @@ function getSentryTarget() {
     return SENTRY_DSN_DEV;
   }
 
-  if (METAMASK_BUILD_TYPE === 'mmi') {
-    return SENTRY_DSN_MMI;
-  }
-
   if (!SENTRY_DSN) {
     throw new Error(
       `Missing SENTRY_DSN environment variable in production environment`,
