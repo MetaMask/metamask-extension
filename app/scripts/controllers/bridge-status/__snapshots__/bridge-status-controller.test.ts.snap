@@ -5,6 +5,7 @@ exports[`BridgeStatusController constructor rehydrates the tx history state 1`] 
   "bridgeTxMetaId1": {
     "account": "0xaccount1",
     "estimatedProcessingTimeInSeconds": 15,
+    "hasApprovalTx": false,
     "initialDestAssetBalance": undefined,
     "pricingData": {
       "amountSent": "1.234",
@@ -117,6 +118,7 @@ exports[`BridgeStatusController startPollingForBridgeTxStatus sets the inital tx
   "bridgeTxMetaId1": {
     "account": "0xaccount1",
     "estimatedProcessingTimeInSeconds": 15,
+    "hasApprovalTx": false,
     "initialDestAssetBalance": undefined,
     "pricingData": {
       "amountSent": "1.234",
