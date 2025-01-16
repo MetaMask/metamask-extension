@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "उन्नत फॉर्मेट में सिग्नेचर अनुरोध देखने के लिए इसे चालू करें।"
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "बेहतर ट्रांसेक्शन के अनुरोध"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "उन्नत फॉर्मेट में ट्रांसेक्शन के अनुरोध देखने के लिए इसे चालू करें।"
-  },
   "refreshList": {
     "message": "लिस्ट रिफ्रेश करें"
   },

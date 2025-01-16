@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "İmza taleplerini geliştirilmiş bir biçimde görmek için bunu açın."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "İşlem talepleri iyileştirildi"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "İşlem taleplerini gelişmiş bir biçimde görmek için bunu açın."
-  },
   "refreshList": {
     "message": "Listeyi yenile"
   },

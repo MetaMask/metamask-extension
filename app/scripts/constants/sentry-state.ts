@@ -249,7 +249,6 @@ export const SENTRY_BACKGROUND_STATE = {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
       redesignedConfirmationsEnabled: true,
-      redesignedTransactionsEnabled: false,
       isRedesignedConfirmationsDeveloperEnabled: false,
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
