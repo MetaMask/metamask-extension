@@ -35,6 +35,11 @@ export function transformManifest(
     }
   }
 
+  if (!args.lockdown) {
+    // remove lockdown scripts from content_scripts
+    transforms.push(removeLockdown);
+  }
+
   /**
    * This function sets predefined flags in the manifest's _flags property.
    *
@@ -44,14 +49,9 @@ export function transformManifest(
     browserManifest._flags = manifestFlags;
   }
 
-  // Add manifest flags only for development builds
   if (isDevelopment) {
+    // Add manifest flags only for development builds
     transforms.push(addManifestFlags);
-  }
-
-  if (!args.lockdown) {
-    // remove lockdown scripts from content_scripts
-    transforms.push(removeLockdown);
   }
 
   function addTabsPermission(browserManifest: chrome.runtime.Manifest) {
