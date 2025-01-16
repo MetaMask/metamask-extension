@@ -4664,22 +4664,6 @@ export default class MetamaskController extends EventEmitter {
       releaseLock();
     }
   }
-
-  async generateNewMnemonicAndAddToVault() {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      const newHdkeyring = await this.keyringController.addNewKeyring(
-        KeyringTypes.hd,
-      );
-      const newAccount = (await newHdkeyring.getAccounts())[0];
-      const account = this.accountsController.getAccountByAddress(newAccount);
-      this.accountsController.setSelectedAccount(account.id);
-
-      return newAccount;
-    } finally {
-      releaseLock();
-    }
-  }
   ///: END:ONLY_INCLUDE_IF
 
   /**
@@ -5229,12 +5213,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} keyringIndex
    * @returns {Promise<string>} The address of the newly-created account.
    */
-  async addNewAccount(
-    accountCount,
-    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-    keyringIndex,
-    ///: END:ONLY_INCLUDE_IF
-  ) {
+  async addNewAccount(accountCount, keyringIndex) {
     const oldAccounts = await this.keyringController.getAccounts();
 
     const addedAccountAddress = await this.keyringController.addNewAccount(

@@ -177,6 +177,7 @@
   "accountsConnected": {
     "message": "Accounts connected"
   },
+
   "accountsPermissionsTitle": {
     "message": "See your accounts and suggest transactions"
   },
@@ -2568,8 +2569,15 @@
   "importNFTTokenIdToolTip": {
     "message": "An NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
+  "importNWordSRP": {
+    "message": "I have a $1, word recovery phrase",
+    "description": "$1 is the number of words in the recovery phrase"
+  },
   "importPrivateKey": {
     "message": "Import Private Key"
+  },
+  "importSRPAccountsDescription": {
+    "message": "Select the accounts to import as part of this Secret Recovery Phrase"
   },
   "importSRPDescription": {
     "message": "Enter your wallet's secret recovery phrase. You can import any Ethereum, Solana, or Bitcoin secret recovery phrase."
@@ -2577,12 +2585,17 @@
   "importSRPPlaceholder": {
     "message": "Recovery phrase"
   },
+  "importSRPWordError": {
+    "message": "Word $1 is incorrect or misspelled.",
+    "description": "$1 is the word that is incorrect or misspelled"
+  },
+    "description": "$1 and $2 are multiple words that are mispelled."
+  },
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
-  },
   "importSelectedTokensDescription": {
     "message": "Only the tokens you've selected will appear in your wallet. You can always import hidden tokens later by searching for them."
   },

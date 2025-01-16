@@ -611,19 +611,6 @@ export const AccountListMenu = ({
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 startIconName={IconName.Import}
-                onClick={() => {
-                  setActionMode(ACTION_MODES.IMPORT_SRP);
-                }}
-                data-testid="multichain-account-menu-popover-import-srp"
-              >
-                {t('importSecretRecoveryPhrase')}
-              </ButtonLink>
-            </Box>
-            ///: END:ONLY_INCLUDE_IF
-            <Box marginTop={4}>
-              <ButtonLink
-                size={ButtonLinkSize.Sm}
-                startIconName={IconName.Import}
                 data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
                   trackEvent({

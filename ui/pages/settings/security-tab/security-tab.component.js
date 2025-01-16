@@ -56,10 +56,10 @@ import {
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
+import { InternalAccountPropType } from '../../../selectors/multichain';
 import MetametricsToggle from './metametrics-toggle';
 import ProfileSyncToggle from './profile-sync-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
-import { InternalAccountPropType } from '../../../selectors/multichain';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -206,13 +206,6 @@ export default class SecurityTab extends PureComponent {
           >
             {t('revealSeedWords')}
           </Button>
-          {this.state.srpQuizModalVisible && (
-            <SRPQuiz
-              accountId={this.props.selectedAccount.id}
-              isOpen={this.state.srpQuizModalVisible}
-              onClose={this.hideSrpQuizModal}
-            />
-          )}
         </div>
       </>
     );
