@@ -22,7 +22,9 @@ import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
 import {
   KeyringController,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   KeyringTypes,
+  ///: END:ONLY_INCLUDE_IF
   keyringBuilderFactory,
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
@@ -5227,7 +5229,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} keyringIndex
    * @returns {Promise<string>} The address of the newly-created account.
    */
-  async addNewAccount(accountCount, keyringIndex) {
+  async addNewAccount(
+    accountCount,
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    keyringIndex,
+    ///: END:ONLY_INCLUDE_IF
+  ) {
     const oldAccounts = await this.keyringController.getAccounts();
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
