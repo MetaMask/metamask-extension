@@ -408,6 +408,36 @@ const CoinButtons = ({
     history.push(SEND_ROUTE);
   }, [chainId, account, setCorrectChain]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const handleBuyAndSellOnClick = useCallback(() => {
+    openBuyCryptoInPdapp(getChainId());
+    trackEvent({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        account_type: account.type,
+        location: 'Home',
+        text: 'Buy',
+        chain_id: chainId,
+        token_symbol: defaultSwapsToken,
+        ...getSnapAccountMetaMetricsPropertiesIfAny(account),
+      },
+    });
+  }, [chainId, defaultSwapsToken]);
+
+  const handleBridgeOnClick = useCallback(async () => {
+    if (!defaultSwapsToken) {
+      return;
+    }
+    await setCorrectChain();
+    openBridgeExperience(
+      'Home',
+      defaultSwapsToken,
+      location.pathname.includes('asset') ? '&token=native' : '',
+    );
+  }, [defaultSwapsToken, location, openBridgeExperience]);
+  ///: END:ONLY_INCLUDE_IF
+
   const handleSwapOnClick = useCallback(async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
@@ -457,36 +487,6 @@ const CoinButtons = ({
     mmiPortfolioUrl,
     ///: END:ONLY_INCLUDE_IF
   ]);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp(getChainId());
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        account_type: account.type,
-        location: 'Home',
-        text: 'Buy',
-        chain_id: chainId,
-        token_symbol: defaultSwapsToken,
-        ...getSnapAccountMetaMetricsPropertiesIfAny(account),
-      },
-    });
-  }, [chainId, defaultSwapsToken]);
-
-  const handleBridgeOnClick = useCallback(async () => {
-    if (!defaultSwapsToken) {
-      return;
-    }
-    await setCorrectChain();
-    openBridgeExperience(
-      'Home',
-      defaultSwapsToken,
-      location.pathname.includes('asset') ? '&token=native' : '',
-    );
-  }, [defaultSwapsToken, location, openBridgeExperience]);
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
