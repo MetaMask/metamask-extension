@@ -15,8 +15,10 @@ import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   getIsSwapsChain,
   getIsBridgeChain,
+  ///: END:ONLY_INCLUDE_IF
   getSelectedInternalAccount,
   getSwapsDefaultToken,
 } from '../../../selectors';
