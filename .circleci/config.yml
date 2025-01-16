@@ -1053,17 +1053,11 @@ jobs:
           path: dist/sourcemaps
           destination: builds/sourcemaps
       - store_artifacts:
-          path: dist-beta/sourcemaps
-          destination: builds-beta/sourcemaps
-      - store_artifacts:
           path: dist-flask/sourcemaps
           destination: builds-flask/sourcemaps
       - store_artifacts:
           path: builds
           destination: builds
-      - store_artifacts:
-          path: builds-beta
-          destination: builds-beta
       - store_artifacts:
           path: builds-flask
           destination: builds-flask
