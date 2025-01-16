@@ -1251,8 +1251,8 @@ class FixtureBuilder {
           permissions: {
             eth_accounts: {
               id: 'vaa88u5Iv3VmsJwG3bDKW',
-              invoker: 'https://app.uniswap.org',
               parentCapability: 'eth_accounts',
+              invoker: 'https://app.uniswap.org',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -1271,8 +1271,8 @@ class FixtureBuilder {
           permissions: {
             eth_accounts: {
               id: 'bvvPcFtIhkFyHyW0Tmwi4',
-              invoker: 'https://www.dextools.io',
               parentCapability: 'eth_accounts',
+              invoker: 'https://www.dextools.io',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -1292,8 +1292,8 @@ class FixtureBuilder {
           permissions: {
             eth_accounts: {
               id: 'AiblK84K1Cic-Y0FDSzMD',
-              invoker: 'https://coinmarketcap.com',
               parentCapability: 'eth_accounts',
+              invoker: 'https://coinmarketcap.com',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
