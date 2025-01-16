@@ -7,11 +7,9 @@
  * on each new block.
  */
 
-import EthQuery from '@metamask/eth-query';
 import { v4 as random } from 'uuid';
 
 import log from 'loglevel';
-import pify from 'pify';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
@@ -24,7 +22,7 @@ import {
   NetworkControllerGetStateAction,
   Provider,
 } from '@metamask/network-controller';
-import { hasProperty, Hex } from '@metamask/utils';
+import { hasProperty, type Hex, type JsonRpcParams } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -481,7 +479,7 @@ export default class AccountTrackerController extends BaseController<
    * AccountTrackerController.
    *
    * Once this AccountTrackerController accounts are up to date with those referenced by the passed addresses, each
-   * of these accounts are given an updated balance via EthQuery.
+   * of these accounts are given an updated balance via Provider.
    *
    * @param addresses - The array of hex addresses for accounts with which this AccountTrackerController accounts should be
    * in sync
@@ -588,7 +586,7 @@ export default class AccountTrackerController extends BaseController<
 
   /**
    * Given a block, updates this AccountTrackerController currentBlockGasLimit and currentBlockGasLimitByChainId and then updates
-   * each local account's balance via EthQuery
+   * each local account's balance via Provider
    *
    * @private
    * @param blockNumber - the block number to update to.
@@ -600,7 +598,7 @@ export default class AccountTrackerController extends BaseController<
 
   /**
    * Given a block, updates this AccountTrackerController currentBlockGasLimitByChainId, and then updates each local account's balance
-   * via EthQuery
+   * via Provider
    *
    * @private
    * @param networkClientId - optional network client ID to use instead of the globally selected network.
@@ -616,10 +614,13 @@ export default class AccountTrackerController extends BaseController<
     this.#currentBlockNumberByChainId[chainId] = blockNumber;
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
-    const currentBlock = await pify(new EthQuery(provider)).getBlockByNumber(
-      blockNumber,
-      false,
-    );
+    const currentBlock = await provider.request<
+      JsonRpcParams,
+      { gasLimit: string }
+    >({
+      method: 'eth_getBlockByNumber',
+      params: [blockNumber, false],
+    });
     if (!currentBlock) {
       return;
     }
@@ -729,7 +730,10 @@ export default class AccountTrackerController extends BaseController<
 
     // query balance
     try {
-      balance = await pify(new EthQuery(provider)).getBalance(address);
+      balance = await provider.request({
+        method: 'eth_getBalance',
+        params: [address, 'latest'],
+      });
     } catch (error) {
       if (
         error &&
