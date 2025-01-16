@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
-
+import { fireEvent, waitFor } from '@testing-library/react';
+import nock from 'nock';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
@@ -24,6 +24,7 @@ import {
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { setStorageItem } from '../../../../shared/lib/storage-helpers';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');
@@ -43,6 +44,8 @@ setBackgroundConnection({
   getNextNonce: jest.fn(),
   updateTransaction: jest.fn(),
   getLastInteractedConfirmationInfo: jest.fn(),
+  setAlertEnabledness: jest.fn(),
+  setSwapsFeatureFlags: jest.fn(),
 });
 
 const mockTxParamsFromAddress = '0x123456789';
@@ -160,7 +163,6 @@ const baseStore = {
     ensResolutionsByAddress: {},
     snaps: {},
     useNonceField: true,
-    customNonceValue: '70',
   },
   confirmTransaction: {
     txData: {
@@ -201,6 +203,7 @@ const baseStore = {
   },
   appState: {
     sendInputCurrencySwitched: false,
+    customNonceValue: '70',
   },
   ramps: {
     buyableChains: defaultBuyableChains,
@@ -242,7 +245,7 @@ const mockedStoreWithConfirmTxParams = (
 const sendToRecipientSelector =
   '.sender-to-recipient__party--recipient .sender-to-recipient__name';
 
-const render = async ({ props, state } = {}) => {
+const render = async ({ props, state, renderer } = {}) => {
   const store = configureMockStore(middleware)({
     ...baseStore,
     ...state,
@@ -260,6 +263,8 @@ const render = async ({ props, state } = {}) => {
       (result = renderWithProvider(
         <ConfirmTransactionBase {...componentProps} />,
         store,
+        undefined,
+        renderer,
       )),
   );
 
@@ -965,6 +970,141 @@ describe('Confirm Transaction Base', () => {
 
       const confirmButton = getByTestId('page-container-footer-next');
       expect(confirmButton).toBeDisabled();
+    });
+  });
+
+  describe('if useMaxValue is settled', () => {
+    const baseStoreState = {
+      ...baseStore,
+      metamask: {
+        ...baseStore.metamask,
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: undefined }),
+      },
+    };
+
+    const updateTransactionValue = jest.fn();
+
+    const maxValueSettledProps = {
+      useMaxValue: true,
+      hexMaximumTransactionFee: '0x111',
+      updateTransactionValue,
+    };
+
+    beforeEach(() => {
+      updateTransactionValue.mockClear();
+    });
+
+    it('should update transaction value when new hexMaximumTransactionFee is provided', async () => {
+      const { rerender } = await render({
+        state: baseStoreState,
+        props: maxValueSettledProps,
+      });
+
+      const newHexMaximumTransactionFee = '0x222';
+
+      render({
+        renderer: rerender,
+        state: baseStoreState,
+        props: {
+          ...maxValueSettledProps,
+          hexMaximumTransactionFee: newHexMaximumTransactionFee,
+        },
+      });
+
+      expect(updateTransactionValue).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not update transaction value if transactionStatus is not unapproved', async () => {
+      const { rerender } = await render({
+        state: baseStoreState,
+        props: maxValueSettledProps,
+      });
+
+      const newHexMaximumTransactionFee = '0x222';
+
+      render({
+        renderer: rerender,
+        state: { ...baseStoreState },
+        props: {
+          ...maxValueSettledProps,
+          hexMaximumTransactionFee: newHexMaximumTransactionFee,
+          transactionStatus: TransactionStatus.submitted,
+        },
+      });
+
+      expect(updateTransactionValue).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('Smart Transactions Refresh Interval', () => {
+    const cleanFeatureFlagApiCache = () => {
+      setStorageItem(
+        'cachedFetch:https://swap.api.cx.metamask.io/featureFlags',
+        null,
+      );
+    };
+
+    beforeEach(() => {
+      cleanFeatureFlagApiCache();
+      nock.cleanAll();
+    });
+
+    it('calls setSmartTransactionsRefreshInterval when smart transactions are enabled', async () => {
+      nock('https://swap.api.cx.metamask.io')
+        .get('/featureFlags')
+        .reply(200, {
+          smartTransactions: {
+            batchStatusPollingInterval: 1000,
+          },
+        });
+
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          smartTransactionsState: {
+            fees: {},
+            liveness: true,
+          },
+        },
+      };
+
+      const setSmartTransactionsRefreshInterval = jest.fn();
+      const props = {
+        setSmartTransactionsRefreshInterval,
+        smartTransactionsPreferenceEnabled: true,
+        currentChainSupportsSmartTransactions: true,
+      };
+
+      await render({ props, state });
+
+      await waitFor(() => {
+        expect(setSmartTransactionsRefreshInterval).toHaveBeenCalledWith(1000);
+      });
+    });
+
+    it('does not call setSmartTransactionsRefreshInterval when smart transactions are disabled', async () => {
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          smartTransactionsState: {
+            fees: {},
+            liveness: false,
+          },
+        },
+      };
+
+      const setSmartTransactionsRefreshInterval = jest.fn();
+      const props = {
+        setSmartTransactionsRefreshInterval,
+        smartTransactionsPreferenceEnabled: false,
+        currentChainSupportsSmartTransactions: false,
+      };
+
+      await render({ props, state });
+
+      expect(setSmartTransactionsRefreshInterval).not.toHaveBeenCalled();
     });
   });
 });

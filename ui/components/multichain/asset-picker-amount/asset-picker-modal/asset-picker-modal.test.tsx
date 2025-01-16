@@ -12,7 +12,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
-  getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
@@ -24,6 +23,7 @@ import {
   getConversionRate,
   getNativeCurrency,
   getTokens,
+  getCurrentCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
@@ -63,6 +63,12 @@ jest.mock('../../../../hooks/useTokensToSearch', () => ({
 const mockUseMultichainBalances = jest.fn();
 jest.mock('../../../../hooks/useMultichainBalances', () => ({
   useMultichainBalances: () => mockUseMultichainBalances(),
+}));
+
+jest.mock('../../../../hooks/useNfts', () => ({
+  useNfts: () => ({
+    currentlyOwnedNfts: [],
+  }),
 }));
 
 describe('AssetPickerModal', () => {
@@ -196,6 +202,7 @@ describe('AssetPickerModal', () => {
           type: AssetType.NFT,
           tokenId: 5,
           image: 'nft image',
+          address: '',
         }}
         sendingAsset={undefined}
       />,

@@ -16,7 +16,6 @@ const {
   DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
-  ERC_4337_ACCOUNT,
 } = require('./constants');
 const {
   defaultFixture,
@@ -95,7 +94,6 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: true,
         isMultiAccountBalancesEnabled: true,
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
@@ -487,7 +485,6 @@ class FixtureBuilder {
                   value: [
                     selectedAccount.toLowerCase(),
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                    ERC_4337_ACCOUNT.toLowerCase(),
                   ],
                 },
               ],
@@ -496,6 +493,34 @@ class FixtureBuilder {
           },
         },
       },
+    });
+  }
+
+  withPermissionControllerConnectedToTestDappWithTwoAccounts() {
+    const subjects = {
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          eth_accounts: {
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            parentCapability: 'eth_accounts',
+            invoker: DAPP_URL,
+            caveats: [
+              {
+                type: 'restrictReturnedAccounts',
+                value: [
+                  '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                  '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                ],
+              },
+            ],
+            date: 1664388714636,
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
     });
   }
 
@@ -697,11 +722,6 @@ class FixtureBuilder {
     });
   }
 
-  withPreferencesControllerAndFeatureFlag(flags) {
-    merge(this.fixture.data.PreferencesController, flags);
-    return this;
-  }
-
   withAccountsController(data) {
     merge(this.fixture.data.AccountsController, data);
     return this;
@@ -845,15 +865,7 @@ class FixtureBuilder {
           [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
         },
       }),
-      this.withPreferencesControllerUseRequestQueueEnabled(),
-    );
-  }
-
-  withPreferencesControllerUseRequestQueueEnabled() {
-    return merge(
-      this.withPreferencesController({
-        useRequestQueue: true,
-      }),
+      this,
     );
   }
 

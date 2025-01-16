@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Netzwerk wird hinzugefügt"
   },
-  "addingTokens": {
-    "message": "Hinzufügen von Token"
-  },
   "additionalNetworks": {
     "message": "Zusätzliche Netzwerke"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "Automatische Erkennung von Tokens in Ihrer Wallet, Anzeige von NFTs und stapelweise Aktualisierung des Kontostands"
   },
-  "attemptSendingAssets": {
-    "message": "Wenn Sie versuchen, Assets direkt von einem Netzwerk in ein anderes zu senden, kann dies zu einem dauerhaften Asset-Verlust führen. Verwenden Sie unbedingt eine Bridge."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Sie können Ihre Assets verlieren, wenn Sie versuchen, sie von einem anderen Netzwerk zu versenden. Übertragen Sie Gelder sicher zwischen den Netzwerken, indem Sie eine Bridge wie $1 verwenden."
-  },
   "attemptToCancelSwapForFree": {
     "message": "Versuch, den Swap kostenlos zu stornieren"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Berechnen ..."
   },
-  "bridgeDontSend": {
-    "message": "Bridge, nicht senden"
-  },
   "bridgeEnterAmount": {
     "message": "Betrag eingeben"
   },
@@ -954,9 +942,6 @@
     "message": "Klicken Sie hier, um Ihren Ledger über WebHID zu verbinden.",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
-  "clickToManuallyAdd": {
-    "message": "Sie können Tokens jederzeit manuell hinzufügen."
-  },
   "close": {
     "message": "Schließen"
   },
@@ -1059,9 +1044,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Transaktionsanfrage"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "Um Ihre Assets und Anmeldedaten zu schützen, empfehlen wir die Ablehnung der Anfrage."
   },
   "confirmationAlertModalTitle": {
     "message": "Diese Anfrage scheint verdächtig"
@@ -2138,9 +2120,6 @@
   "gasFee": {
     "message": "Gas-Gebühr"
   },
-  "gasIsETH": {
-    "message": "Gas ist $1"
-  },
   "gasLimit": {
     "message": "Gas-Limit"
   },
@@ -2702,9 +2681,6 @@
   "learnScamRisk": {
     "message": "Betrügereien und Sicherheitsrisiken."
   },
-  "learnToBridge": {
-    "message": "Lernen Sie zu bridgen"
-  },
   "leaveMetaMask": {
     "message": "MetaMask verlassen?"
   },
@@ -2795,9 +2771,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Bitte schließen Sie die Transaktion im Snap ab."
-  },
-  "loadingTokens": {
-    "message": "Tokens werden geladen ..."
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -2899,9 +2872,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Wallet-Benachrichtigungen sind momentan nicht aktiv."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps wird gewartet. Bitte versuchen Sie es später erneut."
@@ -3046,10 +3016,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 bittet um Ihre Zustimmung zu:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Das native Token dieses Netzwerks ist $1. Dieses Token wird für die Gas-Gebühr verwendet. ",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Netzwerkdetails bearbeiten"
@@ -3334,9 +3300,6 @@
   },
   "noThanks": {
     "message": "Nein, danke!"
-  },
-  "noTransactions": {
-    "message": "Keine Transaktionen"
   },
   "noWebcamFound": {
     "message": "Die Webcam Ihres Computers wurde nicht gefunden. Bitte versuchen Sie es erneut."
@@ -5940,9 +5903,6 @@
     "message": "$1 ist jetzt aktiv bei $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Sie verwenden jetzt"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Das Wechseln der Netzwerke wird alle ausstehenden Bestätigungen stornieren."
   },
@@ -5979,9 +5939,6 @@
   "themeDescription": {
     "message": "Wählen Sie Ihr bevorzugtes MetaMask-Motiv aus."
   },
-  "thingsToKeep": {
-    "message": "Was Sie beachten sollten:"
-  },
   "thirdPartySoftware": {
     "message": "Mitteilung bzgl. Drittanbieter-Software",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -6011,18 +5968,6 @@
   "toAddress": {
     "message": "An: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Dadurch können Sie ein Netzwerk für jede Website auswählen, anstatt ein einziges Netzwerk für alle Websites auszuwählen. Diese Funktion verhindert, dass Sie manuell zwischen den Netzwerken wechseln müssen, was die Benutzerfreundlichkeit auf bestimmten Websites beeinträchtigen könnte."
-  },
-  "toggleRequestQueueField": {
-    "message": "Wählen Sie Netzwerke für jede Website"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Aus"
-  },
-  "toggleRequestQueueOn": {
-    "message": "An"
   },
   "token": {
     "message": "Token"
@@ -6062,9 +6007,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "Token-Betrügereien und Sicherheitsrisiken"
-  },
-  "tokenShowUp": {
-    "message": "Ihre Tokens werden möglicherweise nicht automatisch in Ihrer Wallet angezeigt. "
   },
   "tokenStandard": {
     "message": "Token-Standard"

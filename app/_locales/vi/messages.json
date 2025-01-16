@@ -330,9 +330,6 @@
   "addingCustomNetwork": {
     "message": "Thêm mạng"
   },
-  "addingTokens": {
-    "message": "Đang thêm token"
-  },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
   },
@@ -627,12 +624,6 @@
   "assetsDescription": {
     "message": "Tự động phát hiện token trong ví của bạn, hiển thị NFT và nhận hàng loạt thông tin cập nhật về số dư tài khoản"
   },
-  "attemptSendingAssets": {
-    "message": "Bạn có thể bị mất tài sản nếu cố gắng gửi tài sản từ một mạng khác. Chuyển tiền an toàn giữa các mạng bằng cách sử dụng cầu nối."
-  },
-  "attemptSendingAssetsWithPortfolio": {
-    "message": "Bạn có thể bị mất tài sản nếu cố gắng gửi tài sản từ một mạng khác. Chuyển tiền an toàn giữa các mạng bằng cách sử dụng cầu nối, chẳng hạn như $1"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Cố gắng hủy hoán đổi miễn phí"
   },
@@ -840,9 +831,6 @@
   "bridgeCalculatingAmount": {
     "message": "Đang tính toán..."
   },
-  "bridgeDontSend": {
-    "message": "Cầu nối, không gửi"
-  },
   "bridgeEnterAmount": {
     "message": "Nhập số tiền"
   },
@@ -858,7 +846,6 @@
   "bridgeTo": {
     "message": "Cầu nối đến"
   },
-
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },
@@ -954,9 +941,6 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Nhấp vào đây để kết nối với ví Ledger của bạn qua WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
-  },
-  "clickToManuallyAdd": {
-    "message": "Bạn luôn có thể thêm token theo cách thủ công."
   },
   "close": {
     "message": "Đóng"
@@ -1060,9 +1044,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Yêu cầu giao dịch"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "Để bảo vệ tài sản và thông tin đăng nhập của bạn, chúng tôi đề nghị bạn từ chối yêu cầu này."
   },
   "confirmationAlertModalTitle": {
     "message": "Yêu cầu này có dấu hiệu đáng ngờ"
@@ -2139,9 +2120,6 @@
   "gasFee": {
     "message": "Phí gas"
   },
-  "gasIsETH": {
-    "message": "Gas là $1 "
-  },
   "gasLimit": {
     "message": "Hạn mức phí gas"
   },
@@ -2703,9 +2681,6 @@
   "learnScamRisk": {
     "message": "lừa đảo và nguy cơ bảo mật."
   },
-  "learnToBridge": {
-    "message": "Tìm hiểu cách sử dụng cầu nối"
-  },
   "leaveMetaMask": {
     "message": "Rời khỏi MetaMask?"
   },
@@ -2796,9 +2771,6 @@
   },
   "loadingScreenSnapMessage": {
     "message": "Vui lòng hoàn tất giao dịch trên Snap."
-  },
-  "loadingTokens": {
-    "message": "Đang tải token..."
   },
   "localhost": {
     "message": "Máy chủ cục bộ 8545"
@@ -2900,9 +2872,6 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "Thông báo ví hiện không hoạt động."
-  },
-  "metamaskPortfolio": {
-    "message": "MetaMask Portfolio."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "Tính năng Hoán đổi trên MetaMask đang được bảo trì. Vui lòng kiểm tra lại sau."
@@ -3047,10 +3016,6 @@
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 đang yêu cầu sự chấp thuận của bạn cho:",
     "description": "$1 represents dapp name"
-  },
-  "nativeToken": {
-    "message": "Token gốc của mạng này là $1. Token này được dùng làm phí gas.",
-    "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
     "message": "Chỉnh sửa thông tin mạng"
@@ -3335,9 +3300,6 @@
   },
   "noThanks": {
     "message": "Không, cảm ơn"
-  },
-  "noTransactions": {
-    "message": "Bạn không có giao dịch nào"
   },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
@@ -5941,9 +5903,6 @@
     "message": "$1 hiện đang hoạt động trên $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
-  "switchedTo": {
-    "message": "Bạn hiện đang sử dụng"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Khi bạn chuyển mạng, mọi xác nhận đang chờ xử lý sẽ bị hủy"
   },
@@ -5980,9 +5939,6 @@
   "themeDescription": {
     "message": "Chọn chủ đề MetaMask yêu thích của bạn."
   },
-  "thingsToKeep": {
-    "message": "Những điều cần lưu ý:"
-  },
   "thirdPartySoftware": {
     "message": "Thông báo phần mềm của bên thứ ba",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
@@ -6012,18 +5968,6 @@
   "toAddress": {
     "message": "Đến: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Tính năng này cho phép bạn chọn mạng cho từng trang web thay vì một mạng duy nhất được chọn cho tất cả các trang web. Tính năng này sẽ ngăn bạn chuyển đổi mạng theo cách thủ công, điều này có thể ảnh hưởng đến trải nghiệm người dùng của bạn trên một số trang web."
-  },
-  "toggleRequestQueueField": {
-    "message": "Chọn mạng cho từng trang web"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Tắt"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Bật"
   },
   "token": {
     "message": "Token"
@@ -6063,9 +6007,6 @@
   },
   "tokenScamSecurityRisk": {
     "message": "rủi ro về bảo mật và lừa đảo token"
-  },
-  "tokenShowUp": {
-    "message": "Các token có thể không tự động hiển thị trong ví của bạn. "
   },
   "tokenStandard": {
     "message": "Tiêu chuẩn token"

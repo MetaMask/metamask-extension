@@ -3,7 +3,10 @@ import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { createProjectLogger, Hex } from '@metamask/utils';
-import { QuoteMetadata, QuoteResponse } from '../types';
+import type {
+  QuoteMetadata,
+  QuoteResponse,
+} from '../../../../shared/types/bridge';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -134,7 +137,15 @@ export default function useSubmitBridgeTransaction() {
       startPollingForBridgeTxStatus({
         bridgeTxMeta,
         statusRequest,
-        quoteResponse,
+        quoteResponse: {
+          ...quoteResponse,
+          sentAmount: {
+            amount: quoteResponse.sentAmount.amount.toString(),
+            valueInCurrency: quoteResponse.sentAmount.valueInCurrency
+              ? quoteResponse.sentAmount.valueInCurrency.toString()
+              : null,
+          },
+        },
         slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
       }),
