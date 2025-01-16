@@ -134,7 +134,7 @@ export default function ConfirmApprove({
 
   const checkIfContract = useCallback(async () => {
     const { isContractAddress } = await readAddressAsContract(
-      global.eth,
+      global.ethereumProvider,
       toAddress,
     );
     setIsContract(isContractAddress);

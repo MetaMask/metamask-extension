@@ -5353,17 +5353,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:8.0.1"
+"@metamask/eth-ledger-bridge-keyring@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:8.0.2"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^4.2.0"
     "@ethereumjs/util": "npm:^8.1.0"
     "@ledgerhq/hw-app-eth": "npm:^6.39.0"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
+    "@metamask/eth-sig-util": "npm:^8.1.2"
     hdkey: "npm:^2.1.0"
-  checksum: 10/1fe3782ab224cd55e825c41226451ec52141b12387e23a49f9786b4d1edbb1e16be02e13ec07ed26547c8d9651a9951060b72432d8adefd7975d3a313d701f2f
+  checksum: 10/702d833a1a3a702d128b831f5cba157b14c414fdf0e9a6796e9f0cb866ea71da8673fb46494608cd05044387bc4bd99dbec0ac7bd98f24c2b11b61298288cae8
   languageName: node
   linkType: hard
 
@@ -5521,17 +5521,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-provider-http@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/ethjs-provider-http@npm:0.3.0"
-  dependencies:
-    xhr2: "npm:0.2.1"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/cece5d20836dadbe31f0c7118f26bd5330465c28f9a39ab8ac4a3fbce25094ae53fe8b737e3d95ae0cf4c7e075c9349127cf8bd066f138278ffc9fd7f9a8a101
-  languageName: node
-  linkType: hard
-
 "@metamask/ethjs-query@npm:^0.7.1":
   version: 0.7.1
   resolution: "@metamask/ethjs-query@npm:0.7.1"
@@ -5577,26 +5566,6 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 10/aaecae091dd16362f048cbba27629d67d10530c704facf80f430db546c8ea32fa627cd9560bd3eca1e6ce651d2b7a7df9fdc3677e0ae2814954e3c950cee70da
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/ethjs@npm:0.6.0"
-  dependencies:
-    "@metamask/ethjs-contract": "npm:^0.4.1"
-    "@metamask/ethjs-filter": "npm:^0.3.0"
-    "@metamask/ethjs-provider-http": "npm:^0.3.0"
-    "@metamask/ethjs-query": "npm:^0.7.1"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/ethjs-util": "npm:^0.3.0"
-    "@metamask/number-to-bn": "npm:1.7.1"
-    bn.js: "npm:5.2.1"
-    ethjs-abi: "npm:0.2.1"
-    js-sha3: "npm:^0.9.2"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/11379cb4a1151fc8f8e939eb38c15ea6cfce042bc10a580a3fbe87b7e0234fb5cdf5b2458a7bbc8db3502032ac42054bf393154cfe967352b129fe8115719a91
   languageName: node
   linkType: hard
 
@@ -5942,7 +5911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/number-to-bn@npm:1.7.1, @metamask/number-to-bn@npm:^1.7.1":
+"@metamask/number-to-bn@npm:^1.7.1":
   version: 1.7.1
   resolution: "@metamask/number-to-bn@npm:1.7.1"
   dependencies:
@@ -6097,9 +6066,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@metamask/profile-sync-controller@npm:4.0.1"
+"@metamask/profile-sync-controller@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/profile-sync-controller@npm:4.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^7.1.1"
     "@metamask/keyring-api": "npm:^13.0.0"
@@ -6119,7 +6088,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.10.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/613cc0968a701b4f509557c059d7e4aad63ee1c9b8405f2428039520c7afdb476c317078388d3186b325bf47fd6740aac72c21eeac63a08a9af65e08b8222235
+  checksum: 10/bdddc4386c4497a55dff7a4ce0e484d61ccfb19081086ac992200cb5955bb53113d43683492480b04a54c016eebadebea37f460b13d4ae8c9f4d8573609e9893
   languageName: node
   linkType: hard
 
@@ -6172,14 +6141,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:1.1.0"
+"@metamask/remote-feature-flag-controller@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@metamask/remote-feature-flag-controller@npm:1.3.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/utils": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^7.1.0"
+    "@metamask/utils": "npm:^11.0.1"
     cockatiel: "npm:^3.1.2"
-  checksum: 10/b4b9be277a0da57e8214bdb5ad832c46cdacf8f824426fc377fb40535d9c277f1c1b17c3290343a00f37fa3514232c21dcc18a2eaf5bb47267b3b4c09b150acb
+    uuid: "npm:^8.3.2"
+  checksum: 10/929c055b499588d8969d86b9d399967dcbcbdc8362d534f8bef7a0a55c2f137e18773d0a4cdf719889934a8e0092850550c8b55abf90a82013bffd81b72488d2
   languageName: node
   linkType: hard
 
@@ -19040,7 +19010,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethjs-abi@npm:0.2.1, ethjs-abi@npm:^0.2.0":
+"ethjs-abi@npm:^0.2.0":
   version: 0.2.1
   resolution: "ethjs-abi@npm:0.2.1"
   dependencies:
@@ -26667,16 +26637,12 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^15.1.2"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.1"
-    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.2"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^7.0.0"
     "@metamask/eth-token-tracker": "npm:^9.0.0"
     "@metamask/eth-trezor-keyring": "npm:^6.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
-    "@metamask/ethjs": "npm:^0.6.0"
-    "@metamask/ethjs-contract": "npm:^0.4.1"
-    "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
@@ -26705,11 +26671,11 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^15.0.1"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:^4.0.1"
+    "@metamask/profile-sync-controller": "npm:^4.1.0"
     "@metamask/providers": "npm:^18.2.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^1.1.0"
+    "@metamask/remote-feature-flag-controller": "npm:^1.3.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
@@ -38047,13 +38013,6 @@ __metadata:
   version: 4.0.0
   resolution: "xdg-basedir@npm:4.0.0"
   checksum: 10/0073d5b59a37224ed3a5ac0dd2ec1d36f09c49f0afd769008a6e9cd3cd666bd6317bd1c7ce2eab47e1de285a286bad11a9b038196413cd753b79770361855f3c
-  languageName: node
-  linkType: hard
-
-"xhr2@npm:0.2.1":
-  version: 0.2.1
-  resolution: "xhr2@npm:0.2.1"
-  checksum: 10/162faae70972dc9207eb9b5f05715fa7016f7a04d90371908acaf02593c16f6d2853cd4d6917000e4c3094182697c79e0d33485aea3557bd46f2beead8150f95
   languageName: node
   linkType: hard
 
