@@ -31,10 +31,11 @@ import {
   MetricsBackgroundState,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
-import { isEthUsdt } from '../../../../shared/modules/bridge-utils/bridge.util';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import useAddToken from './useAddToken';
-import useHandleApprovalTx from './useHandleApprovalTx';
+import useHandleApprovalTx, {
+  isApprovalTxError,
+  isAllowanceResetError,
+} from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
 
 const debugLog = createProjectLogger('bridge');
@@ -126,14 +127,12 @@ export default function useSubmitBridgeTransaction() {
       );
 
       // Get tx statuses
-      const isEthUsdtTx = isEthUsdt(
-        decimalToPrefixedHex(quoteResponse.quote.srcChainId),
-        quoteResponse.quote.srcAsset.address,
-      );
-      const allowanceResetTransaction = isEthUsdtTx
+      const allowanceResetTransaction = isAllowanceResetError(e)
         ? { allowance_reset_transaction: StatusTypes.FAILED }
         : undefined;
-      const approvalTransaction = { approval_transaction: StatusTypes.FAILED };
+      const approvalTransaction = isApprovalTxError(e)
+        ? { approval_transaction: StatusTypes.FAILED }
+        : undefined;
 
       trackCrossChainSwapsEvent({
         event: MetaMetricsEventName.ActionFailed,
