@@ -3,7 +3,37 @@ export const DummyQuotesNoApproval = {
     {
       sentAmount: {
         amount: '0.005',
-        valueInCurrency: null,
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
       },
       quote: {
         requestId: 'be448070-7849-4d14-bb35-8dcdaf7a4d69',
@@ -398,7 +428,37 @@ export const DummyQuotesWithApproval = {
     {
       sentAmount: {
         amount: '1.0903750',
-        valueInCurrency: null,
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
       },
       quote: {
         requestId: '0cd5caf6-9844-465b-89ad-9c89b639f432',
@@ -822,7 +882,37 @@ export const DummyQuotesWithApproval = {
     {
       sentAmount: {
         amount: '1.0903750',
-        valueInCurrency: null,
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
       },
       quote: {
         requestId: 'edbef62a-d3e6-4b33-aad5-9cdb81f85f53',
@@ -925,7 +1015,37 @@ export const DummyQuotesWithApproval = {
     {
       sentAmount: {
         amount: '1.0903750',
-        valueInCurrency: null,
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
       },
       quote: {
         requestId: 'dc63e7e6-dc9b-4aa8-80bb-714192ecd801',
@@ -2479,7 +2599,37 @@ export const DummyQuotesWithApproval = {
     {
       sentAmount: {
         amount: '1.1000000',
-        valueInCurrency: null,
+        valueInCurrency: '1000',
+        usd: '1000',
+      },
+      gasFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      totalMaxNetworkFee: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      toTokenAmount: {
+        amount: '12',
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      adjustedReturn: {
+        valueInCurrency: '12',
+        usd: '12',
+      },
+      swapRate: '12',
+      cost: {
+        valueInCurrency: '12',
+        usd: '12',
       },
       quote: {
         requestId: '01fa78fd-ed49-42b3-ab0e-94c7108feea9',
