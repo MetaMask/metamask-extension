@@ -69,8 +69,6 @@
           "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
         }
       },
-      "srcTokens": {},
-      "srcTopAssets": {},
       "destTokens": {},
       "destTopAssets": {},
       "quoteRequest": {

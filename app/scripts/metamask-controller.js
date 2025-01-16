@@ -4148,10 +4148,6 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE}`,
         ),
-      [BridgeUserAction.SELECT_SRC_NETWORK]: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_SRC_NETWORK}`,
-      ),
       [BridgeUserAction.SELECT_DEST_NETWORK]:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
