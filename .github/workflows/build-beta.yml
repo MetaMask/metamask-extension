@@ -10,30 +10,38 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # This is needed to get the latest commit message instead of the merge commit message
 
       - name: Needs beta build
+        # For a `pull_request` event, the branch is `github.head_ref``.
+        # For a `push` event, the branch is `github.ref_name`.
+        if: ${{ (github.head_ref || github.ref_name) != 'master' }}
         id: needs-beta-build
         env:
-          # For a `pull_request` event, the branch is `github.head_ref``.
-          # For a `push` event, the branch is `github.ref_name`.
           BRANCH: ${{ github.head_ref || github.ref_name }}
+          # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+          # For a `push` event, the head commit hash is `github.sha`.
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           version="${BRANCH/Version-v/}"
-          commit_message=$(git show -s --format='%s' HEAD)
+          commit_message=$(git show -s --format=%s "$HEAD_COMMIT_HASH")
           beta_version_regex="Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+"
 
           if [[ "$commit_message" =~ $beta_version_regex ]]; then
-              printf '%s\n' "Create a build for $version with beta version $commit_message"
+              printf '%s\n' "Creating a build for $version with $commit_message"
               echo "NEEDS_BETA_BUILD=true" >> "$GITHUB_OUTPUT"
           else
-              printf '%s\n' 'Commit message does not match commit message for beta pattern; skipping beta automation build'
+              printf '%s\n' 'Commit message does not match commit message for beta pattern; skipping beta build'
               echo "NEEDS_BETA_BUILD=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Setup environment
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: Run beta build
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         env:
           INFURA_PROJECT_ID: 00000000000
           INFURA_BETA_PROJECT_ID: 00000000000
@@ -44,9 +52,11 @@ jobs:
           yarn build --build-type beta --platform='chrome' prod
 
       - name: Validate source maps
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         run: yarn validate-source-maps
 
       - name: Upload 'dist-beta' to S3
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         uses: metamask/github-tools/.github/actions/upload-s3@5d1f7a2558428c28ecd167e43b4c3aa926a3b162
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -54,16 +64,11 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/dist-beta
           path: dist
 
-      - name: Echo 'dist-beta' S3 URL
-        run: echo "${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}/dist-beta"
-
       - name: Upload 'builds-beta' to S3
+        if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
         uses: metamask/github-tools/.github/actions/upload-s3@5d1f7a2558428c28ecd167e43b4c3aa926a3b162
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/builds-beta
           path: builds
-
-      - name: Echo 'builds-beta' S3 URL
-        run: echo "${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}/builds-beta"
