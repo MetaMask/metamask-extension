@@ -16,7 +16,6 @@ const {
   DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
-  ERC_4337_ACCOUNT,
 } = require('./constants');
 const {
   defaultFixture,

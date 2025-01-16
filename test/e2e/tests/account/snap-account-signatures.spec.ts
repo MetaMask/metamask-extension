@@ -16,7 +16,6 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import { DAPP_URL } from '../../constants';
 
 describe('Snap Account Signatures @no-mmi', function (this: Suite) {
   this.timeout(200000); // This test is very long, so we need an unusually high timeout
