@@ -4316,12 +4316,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Ative para ver as solicitações de assinatura em um formato aprimorado."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Solicitações de transação aprimoradas"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Ative esta opção para ver as solicitações de transação em formato aprimorado."
-  },
   "refreshList": {
     "message": "Atualizar lista"
   },

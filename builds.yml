@@ -27,7 +27,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.11.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.12.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -48,7 +48,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.11.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.12.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -71,7 +71,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.11.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.12.0/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -95,7 +95,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.11.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.12.0/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://support.metamask-institutional.io
       - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io

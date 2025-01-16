@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Text } from '../../../component-library';
 import {
   AlignItems,
+  BackgroundColor,
   FLEX_DIRECTION,
   JustifyContent,
   TextAlign,
@@ -69,6 +70,7 @@ export const SnapInsight = ({ snapId, data }) => {
               interfaceId={interfaceId}
               delineatorType={DelineatorType.Insights}
               isLoading={isLoading}
+              contentBackgroundColor={BackgroundColor.backgroundDefault}
             />
           ) : (
             <Text
