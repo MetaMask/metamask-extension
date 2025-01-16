@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "I-on ito upang makita ang mga hiling sa pirma sa isang pinahusay na format."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Pinahusay na mga hiling sa transaksyon"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "I-on ito upang makita ang mga hiling sa transaksyon sa isang pinahusay na format."
-  },
   "refreshList": {
     "message": "I-refresh ang listahan"
   },
