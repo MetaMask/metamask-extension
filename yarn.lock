@@ -5037,13 +5037,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/api-specs@npm:^0.9.3":
-  version: 0.9.3
-  resolution: "@metamask/api-specs@npm:0.9.3"
-  checksum: 10/803852ba43a0fbabb43aeba2ca63e43d22a99d35710700aa04c92cc85184c93024b052b2ee43831762341848de42d172c99485fa7b659249e75255ff8d29d0b2
-  languageName: node
-  linkType: hard
-
 "@metamask/approval-controller@npm:^7.0.0, @metamask/approval-controller@npm:^7.1.2":
   version: 7.1.2
   resolution: "@metamask/approval-controller@npm:7.1.2"
@@ -6224,7 +6217,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^18.2.0, @metamask/providers@npm:^18.3.1":
+"@metamask/providers@npm:^18.3.0, @metamask/providers@npm:^18.3.1":
   version: 18.3.1
   resolution: "@metamask/providers@npm:18.3.1"
   dependencies:
