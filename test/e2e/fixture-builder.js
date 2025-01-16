@@ -470,24 +470,24 @@ class FixtureBuilder {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     return this.withPermissionController({
       subjects: {
-      [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
-        origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
-        permissions: {
-          eth_accounts: {
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: [selectedAccount.toLowerCase()],
-              },
-            ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
-            date: 1664388714636,
-            invoker: DAPP_URL,
-            parentCapability: 'eth_accounts',
+        [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+          origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [selectedAccount.toLowerCase()],
+                },
+              ],
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              date: 1664388714636,
+              invoker: DAPP_URL,
+              parentCapability: 'eth_accounts',
+            },
           },
         },
       },
-    },
     });
   }
 
@@ -558,64 +558,66 @@ class FixtureBuilder {
   withPermissionControllerSnapAccountConnectedToTestDapp() {
     return this.withPermissionController({
       subjects: {
-      [DAPP_URL]: {
-        origin: DAPP_URL,
-        permissions: {
-          eth_accounts: {
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
-              },
-            ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
-            date: 1664388714636,
-            invoker: DAPP_URL,
-            parentCapability: 'eth_accounts',
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
+                },
+              ],
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              date: 1664388714636,
+              invoker: DAPP_URL,
+              parentCapability: 'eth_accounts',
+            },
           },
         },
       },
-    }
     });
   }
 
   withPermissionControllerConnectedToTwoTestDapps() {
-    return this.withPermissionController({ subjects: {
-      [DAPP_URL]: {
-        origin: DAPP_URL,
-        permissions: {
-          eth_accounts: {
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
-              },
-            ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
-            date: 1664388714636,
-            invoker: DAPP_URL,
-            parentCapability: 'eth_accounts',
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
+                },
+              ],
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              date: 1664388714636,
+              invoker: DAPP_URL,
+              parentCapability: 'eth_accounts',
+            },
+          },
+        },
+        [DAPP_ONE_URL]: {
+          origin: DAPP_ONE_URL,
+          permissions: {
+            eth_accounts: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
+                },
+              ],
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              date: 1664388714636,
+              invoker: DAPP_ONE_URL,
+              parentCapability: 'eth_accounts',
+            },
           },
         },
       },
-      [DAPP_ONE_URL]: {
-        origin: DAPP_ONE_URL,
-        permissions: {
-          eth_accounts: {
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
-              },
-            ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
-            date: 1664388714636,
-            invoker: DAPP_ONE_URL,
-            parentCapability: 'eth_accounts',
-          },
-        },
-      },
-    }});
+    });
   }
 
   withPermissionControllerConnectedToSnapDapp() {
