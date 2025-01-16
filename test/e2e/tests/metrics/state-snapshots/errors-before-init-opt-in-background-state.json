@@ -152,9 +152,7 @@
           }
         },
         "destTokens": {},
-        "destTopAssets": {},
-        "srcTokens": {},
-        "srcTopAssets": {}
+        "destTopAssets": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },
