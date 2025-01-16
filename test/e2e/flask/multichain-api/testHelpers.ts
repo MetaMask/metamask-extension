@@ -16,6 +16,8 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
+export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
+
 /**
  * Default options for setting up Multichain E2E test environment
  */

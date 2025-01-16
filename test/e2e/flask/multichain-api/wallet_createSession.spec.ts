@@ -8,7 +8,6 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
 } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import {
   initCreateSessionScopes,
@@ -18,6 +17,7 @@ import {
   getExpectedSessionScope,
   addAccountInWalletAndAuthorize,
   updateNetworkCheckboxes,
+  type FixtureCallbackArgs,
 } from './testHelpers';
 
 describe('Multichain API', function () {
@@ -31,13 +31,7 @@ describe('Multichain API', function () {
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
-        async ({
-          driver,
-          extensionId,
-        }: {
-          driver: Driver;
-          extensionId: string;
-        }) => {
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
           const scopesToIgnore = ['eip155:1338', 'eip155:1000'];
           await openMultichainDappAndConnectWalletWithExternallyConnectable(
             driver,
@@ -77,13 +71,7 @@ describe('Multichain API', function () {
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
-        async ({
-          driver,
-          extensionId,
-        }: {
-          driver: Driver;
-          extensionId: string;
-        }) => {
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
           const REQUEST_SCOPE = 'eip155:1337';
           /**
            * check {@link FixtureBuilder.withTrezorAccount} for second injected account address.
@@ -136,13 +124,7 @@ describe('Multichain API', function () {
         fixtures: new FixtureBuilder().withPopularNetworks().build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
-      async ({
-        driver,
-        extensionId,
-      }: {
-        driver: Driver;
-        extensionId: string;
-      }) => {
+      async ({ driver, extensionId }: FixtureCallbackArgs) => {
         const requestScopesToNetworkMap = {
           'eip155:1': 'Ethereum Mainnet',
           'eip155:59141': 'Linea Sepolia',
@@ -204,13 +186,7 @@ describe('Multichain API', function () {
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
-          async ({
-            driver,
-            extensionId,
-          }: {
-            driver: Driver;
-            extensionId: string;
-          }) => {
+          async ({ driver, extensionId }: FixtureCallbackArgs) => {
             await openMultichainDappAndConnectWalletWithExternallyConnectable(
               driver,
               extensionId,
@@ -259,13 +235,7 @@ describe('Multichain API', function () {
           fixtures: new FixtureBuilder().build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
-        async ({
-          driver,
-          extensionId,
-        }: {
-          driver: Driver;
-          extensionId: string;
-        }) => {
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
           await openMultichainDappAndConnectWalletWithExternallyConnectable(
             driver,
             extensionId,
@@ -304,13 +274,7 @@ describe('Multichain API', function () {
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
-          async ({
-            driver,
-            extensionId,
-          }: {
-            driver: Driver;
-            extensionId: string;
-          }) => {
+          async ({ driver, extensionId }: FixtureCallbackArgs) => {
             await openMultichainDappAndConnectWalletWithExternallyConnectable(
               driver,
               extensionId,
@@ -346,13 +310,7 @@ describe('Multichain API', function () {
             fixtures: new FixtureBuilder().build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
-          async ({
-            driver,
-            extensionId,
-          }: {
-            driver: Driver;
-            extensionId: string;
-          }) => {
+          async ({ driver, extensionId }: FixtureCallbackArgs) => {
             await openMultichainDappAndConnectWalletWithExternallyConnectable(
               driver,
               extensionId,
@@ -409,13 +367,7 @@ describe('Multichain API', function () {
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
-        async ({
-          driver,
-          extensionId,
-        }: {
-          driver: Driver;
-          extensionId: string;
-        }) => {
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
           await openMultichainDappAndConnectWalletWithExternallyConnectable(
             driver,
             extensionId,

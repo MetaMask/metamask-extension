@@ -5,6 +5,7 @@ import FixtureBuilder from '../../fixture-builder';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   escapeColon,
+  type FixtureCallbackArgs,
   getExpectedSessionScope,
   getSessionScopes,
   openMultichainDappAndConnectWalletWithExternallyConnectable,
@@ -26,15 +27,34 @@ describe("A dapp is connected with account and chain permissions previously gran
         async ({
           driver,
           extensionId,
-        }: {
-          driver: Driver;
-          extensionId: string;
-        }) => {
+        }: FixtureCallbackArgs) => {
           await openMultichainDappAndConnectWalletWithExternallyConnectable(
             driver,
             extensionId,
           );
           await passwordLockMetamaskExtension(driver);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
+
+          await driver.clickElementSafe(
+            '[data-testid="eip155:1337-eth_sendTransaction-option"]',
+          );
+          await driver.clickElement(
+            '[data-testid="invoke-method-eip155:1337-btn"]',
+          );
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          const unlockExtensionPageWebElement0 = await driver.findElement(
+            '[data-testid="unlock-page"]',
+          );
+
+          assert.ok(
+            unlockExtensionPageWebElement0,
+            'Should prompt user to unlock Metamask Extension',
+          );
+
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.MultichainTestDApp,
           );
@@ -48,12 +68,12 @@ describe("A dapp is connected with account and chain permissions previously gran
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          const unlockExtensionPageWebElement = await driver.findElement(
+          const unlockExtensionPageWebElement1 = await driver.findElement(
             '[data-testid="unlock-page"]',
           );
 
           assert.ok(
-            unlockExtensionPageWebElement,
+            unlockExtensionPageWebElement1,
             'Should prompt user to unlock Metamask Extension',
           );
         },
