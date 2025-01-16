@@ -7,6 +7,8 @@ jobs:
   test-lint-changelog:
     name: Test lint changelog
     runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.set-result.outputs.result }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -15,13 +17,24 @@ jobs:
         uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: Validate changelog
-        # For a `pull_request` event, the branch is `github.head_ref``.
+        id: validate-changelog
+        # For a `pull_request` event, the branch is `github.head_ref`.
         # For a `push` event, the branch is `github.ref_name`.
         if: ${{ !startsWith(github.head_ref || github.ref_name, 'Version-v') }}
         run: yarn lint:changelog
 
       - name: Validate release candidate changelog
-        # For a `pull_request` event, the branch is `github.head_ref``.
+        id: validate-rc-changelog
+        # For a `pull_request` event, the branch is `github.head_ref`.
         # For a `push` event, the branch is `github.ref_name`.
         if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
         run: .circleci/scripts/validate-changelog-in-rc.sh
+
+      - name: Set result
+        id: set-result
+        run: echo "result=success" >> "$GITHUB_OUTPUT"
+        if: ${{ success() }}
+
+      - name: Set result on failure
+        if: ${{ failure() }}
+        run: echo "result=failure" >> "$GITHUB_OUTPUT"
