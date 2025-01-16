@@ -131,7 +131,7 @@
     "attributions:generate": "./development/generate-attributions.sh",
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts",
     "git-diff-default-branch": "tsx .circleci/scripts/git-diff-default-branch.ts",
-    "setup-go": "echo \"Setting up Go environment...\" && exit 0"
+    "setup-go": "node ./.github/scripts/setup-go.js"
   },
   "resolutions": {
     "chokidar": "^3.6.0",
