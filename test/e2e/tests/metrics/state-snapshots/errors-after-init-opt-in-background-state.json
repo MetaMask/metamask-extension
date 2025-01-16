@@ -82,7 +82,7 @@
     }
   },
   "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
-  "CronjobController": { "jobs": "object" },
+  "CronjobController": { "jobs": "object", "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
     "currencyRates": {
