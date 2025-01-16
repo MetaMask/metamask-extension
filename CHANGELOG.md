@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [12.10.0]
+## [12.11.0]
 ### Uncategorized
 - Added a changelog lint job to the CI pipeline to ensure that the changelog is formatted correctly ([#29250](https://github.com/MetaMask/metamask-extension/pull/29250))
+
 ## [12.10.1]
 ### Changed
 - Stop publishing MMI builds to the release page ([#29732](https://github.com/MetaMask/metamask-extension/pull/29732))
