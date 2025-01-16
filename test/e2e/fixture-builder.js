@@ -713,11 +713,6 @@ class FixtureBuilder {
     });
   }
 
-  withPreferencesControllerAndFeatureFlag(flags) {
-    merge(this.fixture.data.PreferencesController, flags);
-    return this;
-  }
-
   withAccountsController(data) {
     merge(this.fixture.data.AccountsController, data);
     return this;
