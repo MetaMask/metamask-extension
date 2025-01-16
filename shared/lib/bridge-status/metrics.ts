@@ -1,4 +1,4 @@
-/* eslint-disable import/no-restricted-paths */
+/* eslint-disable import/no-restricted-paths, camelcase */
 import { getHexGasTotalUsd } from '../../../app/scripts/lib/bridge-status/metrics-utils';
 import {
   MetricsBackgroundState,
