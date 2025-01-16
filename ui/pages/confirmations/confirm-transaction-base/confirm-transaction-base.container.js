@@ -30,6 +30,7 @@ import {
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
   setNextNonce,
+  setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -486,6 +487,8 @@ export const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
+    setSmartTransactionsRefreshInterval: (interval) =>
+      dispatch(setSmartTransactionsRefreshInterval(interval)),
   };
 };
 
