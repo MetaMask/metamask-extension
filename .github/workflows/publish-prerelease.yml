@@ -72,4 +72,5 @@ jobs:
           MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
           CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
+          HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
         run: ./development/metamaskbot-build-announce.js

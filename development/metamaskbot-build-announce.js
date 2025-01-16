@@ -58,6 +58,7 @@ async function start() {
     MERGE_BASE_COMMIT_HASH,
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
+    HOST_URL,
   } = process.env;
 
   console.log('PR_NUMBER', PR_NUMBER);
@@ -65,6 +66,7 @@ async function start() {
   console.log('MERGE_BASE_COMMIT_HASH', MERGE_BASE_COMMIT_HASH);
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
   console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
+  console.log('HOST_URL', HOST_URL);
 
   if (!PR_NUMBER) {
     console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
@@ -95,6 +97,9 @@ async function start() {
     'builds (test-flask)': {
       chrome: `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
       firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+    },
+    'builds (beta)': {
+      chrome: `${HOST_URL}/builds-beta/metamask-chrome-${VERSION}.zip`,
     },
   };
 
