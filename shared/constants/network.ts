@@ -235,6 +235,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
   INK_SEPOLIA: '0xba5ed',
   INK: '0xdef1',
+  SONEIUM_MAINNET: '0x74c',
+  SONEIUM_TESTNET: '0x79a',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -288,7 +290,7 @@ export const LISK_DISPLAY_NAME = 'Lisk';
 export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
 export const INK_DISPLAY_NAME = 'Ink Mainnet';
-
+export const SONEIUM_DISPLAY_NAME = 'Soneium Mainnet';
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
   network,
@@ -411,6 +413,8 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   IOTEX_MAINNET: 'IOTX',
   APE: 'APE',
   LISK: 'ETH',
+  SONEIUM_MAINNET: 'ETH',
+  SONEIUM_TESTNET: 'ETH',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -498,6 +502,7 @@ export const LISK_IMAGE_URL = './images/lisk.svg';
 export const LISK_SEPOLIA_IMAGE_URL = './images/lisk_sepolia.svg';
 export const INK_SEPOLIA_IMAGE_URL = './images/ink-sepolia.svg';
 export const INK_IMAGE_URL = './images/ink.svg';
+export const SONEIUM_IMAGE_URL = './images/soneium.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -727,6 +732,10 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
   [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.IOTEX_MAINNET,
+  [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_MAINNET,
+  [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.SONEIUM_TESTNET,
 } as const;
 
 /**
@@ -848,6 +857,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.LISK_SEPOLIA]: LISK_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.INK_SEPOLIA]: INK_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.INK]: INK_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]: SONEIUM_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]: SONEIUM_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
