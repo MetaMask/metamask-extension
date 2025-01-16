@@ -6,8 +6,7 @@ import {
 } from '@metamask/keyring-api';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
-// eslint-disable-next-line import/no-restricted-paths
-import * as manifestFlags from '../../app/scripts/lib/manifestFlags';
+import * as manifestFlags from '../../shared/lib/manifestFlags';
 import { KeyringType } from '../../shared/constants/keyring';
 import mockState from '../../test/data/mock-state.json';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';

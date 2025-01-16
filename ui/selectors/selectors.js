@@ -113,8 +113,7 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
-// eslint-disable-next-line import/no-restricted-paths
-import { getManifestFlags } from '../../app/scripts/lib/manifestFlags';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
