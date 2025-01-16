@@ -2979,23 +2979,21 @@ export function getMetaMetricsDataDeletionStatus(state) {
 }
 
 /**
- * Gets the remote feature flags from either the manifest or state.
- * First checks if remote feature flags exist in the manifest and returns those if present.
- * Otherwise returns the remote feature flags from the MetaMask state that's retrieved from controller.
+ * Gets the remote feature flags by combining flags from both the manifest and state.
+ * Manifest flags take precedence and will override any duplicate flags from state.
+ * This allows for both static (manifest) and dynamic (state) feature flag configuration.
  *
  * @param {object} state - The MetaMask state object
- * @returns {ManifestFlags['remoteFeatureFlags']} The remote feature flags object containing feature flag key-value pairs
+ * @returns {object} Combined feature flags object with manifest flags taking precedence over state flags
  */
 export function getRemoteFeatureFlags(state) {
-  const remoteFeatureFlagsValueFromManifest =
-    getManifestFlags().remoteFeatureFlags;
-  if (
-    remoteFeatureFlagsValueFromManifest &&
-    Object.keys(remoteFeatureFlagsValueFromManifest).length > 0
-  ) {
-    return remoteFeatureFlagsValueFromManifest;
-  }
-  return state.metamask.remoteFeatureFlags;
+  const manifestFlags = getManifestFlags().remoteFeatureFlags;
+  const stateFlags = state.metamask.remoteFeatureFlags;
+
+  return {
+    ...stateFlags,
+    ...manifestFlags,
+  };
 }
 
 /**

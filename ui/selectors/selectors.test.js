@@ -2170,7 +2170,31 @@ describe('#getConnectedSitesList', () => {
       getManifestFlagsMock.mockRestore();
     });
 
-    it('returns manifest flags when they are provided in manifest-flags.json', () => {
+    it('performs shallow merge of manifest flags and state flags', () => {
+      getManifestFlagsMock.mockReturnValue({
+        remoteFeatureFlags: {
+          flag1: true,
+          flag2: false,
+        },
+      });
+
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            flag1: false,
+            flag3: false,
+          },
+        },
+      };
+
+      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
+        flag1: true,
+        flag2: false,
+        flag3: false,
+      });
+    });
+
+    it('returns manifest flags when they are only provided by manifest-flags.json', () => {
       getManifestFlagsMock.mockReturnValue({
         remoteFeatureFlags: {
           manifestFlag1: true,
@@ -2180,9 +2204,7 @@ describe('#getConnectedSitesList', () => {
 
       const state = {
         metamask: {
-          remoteFeatureFlags: {
-            stateFlag: true,
-          },
+          remoteFeatureFlags: {},
         },
       };
 
