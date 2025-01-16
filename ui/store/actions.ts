@@ -5084,6 +5084,9 @@ export function setSmartTransactionsRefreshInterval(
   refreshInterval: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
+    if (refreshInterval === undefined || refreshInterval === null) {
+      return;
+    }
     try {
       await submitRequestToBackground('setStatusRefreshInterval', [
         refreshInterval,
