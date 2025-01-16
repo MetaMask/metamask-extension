@@ -457,8 +457,6 @@ class FixtureBuilder {
         },
         destTokens: {},
         destTopAssets: [],
-        srcTokens: {},
-        srcTopAssets: [],
       },
     };
     return this;
