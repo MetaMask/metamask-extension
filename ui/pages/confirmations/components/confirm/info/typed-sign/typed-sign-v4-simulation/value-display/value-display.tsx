@@ -28,11 +28,11 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../../shared/constants';
+import {
+  DAI_CONTRACT_ADDRESS,
+  TOKEN_VALUE_UNLIMITED_THRESHOLD,
+} from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
-
-export const DAI_CONTRACT_ADDRESS =
-  '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */

@@ -5,7 +5,6 @@ import {
 import React, { memo, useMemo } from 'react';
 
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
-import { parseTypedDataMessage } from '../../../../../../shared/modules/transaction.utils';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -22,8 +21,8 @@ import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
-import { DAI_CONTRACT_ADDRESS } from '../info/typed-sign/typed-sign-v4-simulation/value-display/value-display';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
+import { getIsRevokeDAIPermit } from '../utils';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
@@ -87,16 +86,10 @@ const getTitle = (
           return t('setApprovalForAllRedesignedTitle');
         }
 
-        const msgData = (confirmation as SignatureRequestType)?.msgParams?.data;
-        const {
-          message,
-          domain: { verifyingContract },
-        } = parseTypedDataMessage(msgData as string);
-        const revokeDAIPermit =
-          message.allowed === false &&
-          verifyingContract === DAI_CONTRACT_ADDRESS;
-
-        if (revokeDAIPermit) {
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit) {
           return t('confirmTitleRevokeApproveTransaction');
         }
 
@@ -153,16 +146,10 @@ const getDescription = (
           return t('confirmTitleDescApproveTransaction');
         }
 
-        const msgData = (confirmation as SignatureRequestType)?.msgParams?.data;
-        const {
-          message,
-          domain: { verifyingContract },
-        } = parseTypedDataMessage(msgData as string);
-        const revokeDAIPermit =
-          message.allowed === false &&
-          verifyingContract === DAI_CONTRACT_ADDRESS;
-
-        if (revokeDAIPermit) {
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit) {
           return '';
         }
 
