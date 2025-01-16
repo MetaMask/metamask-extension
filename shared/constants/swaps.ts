@@ -1,4 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from './multichain/networks';
+///: END:ONLY_INCLUDE_IF
 import {
   ETH_TOKEN_IMAGE_URL,
   TEST_ETH_TOKEN_IMAGE_URL,
