@@ -836,15 +836,13 @@ class Driver {
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
   async pasteIntoField(rawLocator, contentToPaste) {
-    // Throw if double-quote is present in content to paste
-    // so that we don't have to worry about escaping double-quotes
-    if (contentToPaste.includes('"')) {
-      throw new Error('Cannot paste content with double-quote');
-    }
     // Click to focus the field
     await this.clickElement(rawLocator);
     await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste}")`,
+      `navigator.clipboard.writeText("${contentToPaste.replace(
+        /"/gu,
+        '\\"',
+      )}")`,
     );
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
