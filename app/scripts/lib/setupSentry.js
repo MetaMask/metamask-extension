@@ -25,7 +25,6 @@ const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
 const RELEASE = process.env.METAMASK_VERSION;
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
-const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.

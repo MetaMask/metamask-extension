@@ -104,6 +104,7 @@ features:
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
+  build-mmi:
   keyring-snaps:
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
