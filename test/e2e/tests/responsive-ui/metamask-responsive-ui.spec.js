@@ -24,11 +24,9 @@ describe('MetaMask Responsive UI', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        // agree to terms of use
-        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-        // welcome
-        await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.clickCreateWalletButton();
 
         // metrics
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
@@ -92,7 +90,7 @@ describe('MetaMask Responsive UI', function () {
         driverOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await driver.navigate();
 
         const startOnboardingPage = new StartOnboardingPage(driver);
