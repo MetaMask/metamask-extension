@@ -3,10 +3,8 @@ import { strict as assert } from 'assert';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
-  convertETHToHexGwei,
   largeDelayMs,
   multipleGanacheOptions,
-  openDapp,
   unlockWallet,
   veryLargeDelayMs,
   WINDOW_TITLES,
@@ -14,26 +12,18 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  DAPP_ONE_URL,
-  DAPP_URL,
-  DEFAULT_GANACHE_ETH_BALANCE_DEC,
-} from '../../constants';
+import { DAPP_ONE_URL, DAPP_URL } from '../../constants';
 import {
   initCreateSessionScopes,
-  DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   openMultichainDappAndConnectWalletWithExternallyConnectable,
   addAccountInWalletAndAuthorize,
   escapeColon,
 } from './testHelpers';
 
 describe('Multichain API', function () {
-  const DAPP_URLS = [DAPP_URL, DAPP_ONE_URL];
   const SCOPE = 'eip155:1337';
+  const DAPP_URLS = [DAPP_URL, DAPP_ONE_URL];
   const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
-  const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
-    DEFAULT_GANACHE_ETH_BALANCE_DEC,
-  );
   const MULTI_DAPP_OPTIONS_SETUP = {
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTwoMultichainTestDapps()
@@ -109,7 +99,6 @@ describe('Multichain API', function () {
             for (const dapp of DAPP_URLS) {
               const invokeMethod = TEST_METHODS[dapp];
               await driver.switchToWindowWithUrl(dapp);
-              await driver.delay(5_000);
               await driver.clickElementSafe(
                 `[data-testid="${SCOPE}-${invokeMethod}-option"]`,
               );
@@ -138,7 +127,7 @@ describe('Multichain API', function () {
     describe('Write operations: calling `eth_sendTransaction` on each dapp', function () {
       const INDEX_FOR_ALTERNATE_ACCOUNT = 1;
 
-      it.only('should match chosen addresses in each dapp to the selected address per scope in extension window', async function () {
+      it('should match chosen addresses in each dapp and request origin to the selected address per scope and origin in extension window', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
@@ -162,11 +151,11 @@ describe('Multichain API', function () {
               await initCreateSessionScopes(driver, [SCOPE], ACCOUNTS);
               await addAccountInWalletAndAuthorize(driver);
               await driver.clickElement({ text: 'Connect', tag: 'button' });
-              await driver.delay(largeDelayMs);
             }
 
             for (const [i, dapp] of DAPP_URLS.entries()) {
               await driver.switchToWindowWithUrl(dapp);
+              await driver.delay(veryLargeDelayMs);
               await driver.clickElementSafe(
                 `[data-testid="${SCOPE}-eth_sendTransaction-option"]`,
               );
@@ -175,17 +164,12 @@ describe('Multichain API', function () {
                 (await driver.clickElementSafe(
                   `[data-testid="${SCOPE}:${ACCOUNT_2}-option"]`,
                 ));
-            }
 
-            for (const [i, dapp] of DAPP_URLS.entries()) {
-              await driver.delay(largeDelayMs);
-              await driver.switchToWindowWithUrl(dapp);
               await driver.clickElementSafe(
                 `[data-testid="invoke-method-${SCOPE}-btn"]`,
               );
 
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
               const accountWebElement = await driver.findElement(
                 '[data-testid="sender-address"]',
               );
@@ -210,14 +194,10 @@ describe('Multichain API', function () {
                 `Should have origin as ${expectedOrigin}`,
               );
 
-              // TODO: investigate weird behaviour. Clicking invokeMethod button on window 1,
-              // then window 2 and click the button, if I confirm tx 1 on window 2, both dapps show the same TxHash processed
-              // Answer: Maybe both windows are interacting simultaneously because of `clickElement` triggering on both windows ?
               await driver.clickElement({
-                text: 'Confirm',
+                text: 'Cancel',
                 tag: 'button',
               });
-              await driver.delay(veryLargeDelayMs);
             }
           },
         );
