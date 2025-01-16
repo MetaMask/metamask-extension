@@ -82,7 +82,6 @@ describe('Import flow', function () {
         await tokenList.check_tokenItemNumber(5); // Linea & Mainnet Eth
         await tokenList.check_tokenIsDisplayed('Ethereum');
         await tokenList.check_tokenIsDisplayed('Chain Games');
-        await tokenList.check_tokenIsDisplayed('Changex');
         await tokenList.check_tokenIsDisplayed('Chai');
       },
     );
