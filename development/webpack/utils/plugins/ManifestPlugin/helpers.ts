@@ -1,4 +1,9 @@
-import manifestFlags from '../../../../../manifest-flags.json';
+let manifestFlags: { remoteFeatureFlags: Record<string, unknown> };
+try {
+  manifestFlags = require('../../../../../.manifest-flags.json');
+} catch (error) {
+  manifestFlags = { remoteFeatureFlags: {} };
+}
 
 /**
  * Returns a function that will transform a manifest JSON object based on the

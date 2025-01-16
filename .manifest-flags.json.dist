@@ -1,0 +1,5 @@
+  // This configuration file is used to manage values passing to _flags that will be injected into manifest.json
+{
+  "remoteFeatureFlags": {
+  }
+}

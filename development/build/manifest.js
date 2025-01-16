@@ -11,11 +11,33 @@ const baradDurManifest = isManifestV3
   ? require('../../app/manifest/v3/_barad_dur.json')
   : require('../../app/manifest/v2/_barad_dur.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
-const manifestFlags = require('../../manifest-flags.json');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getEnvironment, getBuildName } = require('./utils');
+
+module.exports = createManifestTasks;
+
+async function loadManifestFlags() {
+  try {
+    return JSON.parse(
+      await fs.readFile(
+        path.join(__dirname, '../../.manifest-flags.json'),
+        'utf8',
+      ),
+    );
+  } catch (error) {
+    return { remoteFeatureFlags: {} };
+  }
+}
+
+// Initialize with default value
+let manifestFlags = { remoteFeatureFlags: {} };
+
+// Load flags asynchronously
+loadManifestFlags().then((flags) => {
+  manifestFlags = flags;
+});
 
 module.exports = createManifestTasks;
 

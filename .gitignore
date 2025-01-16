@@ -52,6 +52,9 @@ notes.txt
 .metamaskrc
 .metamaskprodrc
 
+# Manifest customizated configuration
+.manifest-flags.json
+
 # Test results
 test-results/
 
