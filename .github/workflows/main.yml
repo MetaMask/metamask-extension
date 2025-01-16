@@ -98,7 +98,6 @@ jobs:
       - check-workflows
       - test-lint-shellcheck
       - test-lint
-      - test-lint-changelog
       - test-lint-lockfile
       - test-yarn-dedupe
       - test-deps-depcheck
@@ -117,8 +116,8 @@ jobs:
           # For a `pull_request` event, the branch is `github.head_ref``.
           # For a `push` event, the branch is `github.ref_name`.
           BRANCH: ${{ github.head_ref || github.ref_name }}
-          CHANGELOG_LINT_RESULT: ${{ needs.test-lint-changelog.result }}
         run: |
+          CHANGELOG_LINT_RESULT: ${{ jobs.test-lint-changelog.outcome }}
           echo "Branch: $BRANCH"
           echo "Changelog Lint Result: $CHANGELOG_LINT_RESULT"
           if [[ "$CHANGELOG_LINT_RESULT" == "failure" ]]; then
