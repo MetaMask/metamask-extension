@@ -1,8 +1,10 @@
 import log from 'loglevel';
-import { isErrorWithMessage } from '@metamask/utils';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import type Migrator from '../migrator';
-import { type IntermediaryStateType, BaseStore } from './BaseStore';
+import {
+  type IntermediaryStateType,
+  BaseStore,
+  MetaMaskStorageStructure,
+} from './BaseStore';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -16,30 +18,15 @@ const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}
 export default class ReadOnlyNetworkStore extends BaseStore {
   #initialized: boolean;
 
-  #promiseToInitialize?: Promise<void>;
+  #initializing?: Promise<void>;
 
   #state: IntermediaryStateType | null;
 
-  mostRecentRetrievedState: IntermediaryStateType | null;
-
-  stateCorruptionDetected: boolean;
-
-  dataPersistenceFailing: boolean;
-
-  migrator: Migrator;
-
-  firstTimeInstall: boolean;
-
-  constructor({ migrator }: { migrator: Migrator }) {
+  constructor() {
     super();
     this.#initialized = false;
-    this.#promiseToInitialize = this.#init();
+    this.#initializing = this.#init();
     this.#state = null;
-    this.mostRecentRetrievedState = null;
-    this.stateCorruptionDetected = false;
-    this.dataPersistenceFailing = false;
-    this.migrator = migrator;
-    this.firstTimeInstall = false;
   }
 
   /**
@@ -62,27 +49,14 @@ export default class ReadOnlyNetworkStore extends BaseStore {
         );
       }
     } catch (error) {
-      if (isErrorWithMessage(error)) {
+      console.log('error', error);
+      if (error instanceof Error) {
         log.debug(`Error loading network state: '${error.message}'`);
       } else {
-        log.debug(`Unknown error loading network state`);
+        log.debug(`Error loading network state: An unknown error occurred`);
       }
     } finally {
       this.#initialized = true;
-    }
-  }
-
-  async isFirstTimeInstall(): Promise<boolean> {
-    const result = await this.get();
-    if (result === null) {
-      return true;
-    }
-    return false;
-  }
-
-  cleanUpMostRecentRetrievedState() {
-    if (this.mostRecentRetrievedState) {
-      this.mostRecentRetrievedState = null;
     }
   }
 
@@ -91,38 +65,28 @@ export default class ReadOnlyNetworkStore extends BaseStore {
    */
   async get() {
     if (!this.#initialized) {
-      await this.#promiseToInitialize;
+      await this.#initializing;
     }
-    // Delay setting this until after the first read, to match the
-    // behavior of the local store.
-    if (!this.mostRecentRetrievedState && this.#state?.data) {
-      this.mostRecentRetrievedState = this.#state;
-    }
-    return this.#state?.data ? this.#state : this.generateFirstTimeState();
+    return this.#state;
   }
 
   /**
-   * Set state
+   * Sets the key in local state
    *
-   * @param state - The state to set
+   * @param obj - The key to set
+   * @param obj.data - The MetaMask State tree
+   * @param obj.meta - The metadata object
+   * @param obj.meta.version - The version of the state tree determined by the
+   * migration
+   * @returns a promise resolving to undefined.
    */
-  async set(state: IntermediaryStateType) {
-    if (!this.isSupported) {
-      throw new Error(
-        'Metamask- cannot persist state to local store as this browser does not support this action',
-      );
-    }
-    if (!state) {
+  async set(obj: MetaMaskStorageStructure): Promise<void> {
+    if (!obj) {
       throw new Error('MetaMask - updated state is missing');
     }
-    if (!this.metadata) {
-      throw new Error(
-        'MetaMask - metadata must be set on instance of ExtensionStore before calling "set"',
-      );
-    }
     if (!this.#initialized) {
-      await this.#promiseToInitialize;
+      await this.#initializing;
     }
-    this.#state = { data: state, meta: this.metadata };
+    this.#state = obj;
   }
 }

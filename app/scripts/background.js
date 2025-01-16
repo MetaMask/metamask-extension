@@ -49,7 +49,8 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
-import { ExtensionStore } from './lib/Stores/ExtensionStore';
+import { PersistanceManager } from './lib/Stores/PersistanceManager';
+import ExtensionStore from './lib/Stores/ExtensionStore';
 import ReadOnlyNetworkStore from './lib/Stores/ReadOnlyNetworkStore';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -72,6 +73,8 @@ import {
   shouldEmitDappViewedEvent,
 } from './lib/util';
 import { createOffscreen } from './offscreen';
+import { generateWalletState } from './fixtures/generate-wallet-state';
+import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
 
@@ -91,13 +94,14 @@ const migrator = new Migrator({
     ? FIXTURE_STATE_METADATA_VERSION
     : null,
 });
-const localStore = inTest
-  ? new ReadOnlyNetworkStore({ migrator })
-  : new ExtensionStore({ migrator });
+
+const _localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const localStore = new PersistanceManager({ localStore: _localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
   localStore.mostRecentRetrievedState;
 
 const { sentry } = global;
+let firstTimeState = { ...rawFirstTimeState };
 
 const metamaskInternalProcessHash = {
   [ENVIRONMENT_TYPE_POPUP]: true,
@@ -605,9 +609,15 @@ export async function loadStateFromPersistence() {
   // migrations
   migrator.on('error', console.warn);
 
+  if (process.env.WITH_STATE) {
+    const stateOverrides = await generateWalletState();
+    firstTimeState = { ...firstTimeState, ...stateOverrides };
+  }
+
   // read from disk
   // first from preferred, async API:
-  const preMigrationVersionedData = await localStore.get();
+  const preMigrationVersionedData =
+    (await localStore.get()) || migrator.generateInitialState(firstTimeState);
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
