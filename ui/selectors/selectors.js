@@ -3064,3 +3064,23 @@ export function getKeyringSnapAccounts(state) {
   return keyringAccounts;
 }
 ///: END:ONLY_INCLUDE_IF
+
+/**
+ * To retrieve the list of tokens detected across all chains.
+ *
+ * @param {*} state
+ * @returns list of token objects on all networks
+ */
+export function getAllDefiPositionsForSelectedAddress(state) {
+  const completedOnboarding = getCompletedOnboarding(state);
+  if (!completedOnboarding) {
+    return undefined;
+  }
+
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  const allPositions = state.metamask.accountPositions;
+  const accountPositions = allPositions?.[selectedAddress];
+
+  return accountPositions;
+}

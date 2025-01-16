@@ -14,6 +14,7 @@ import {
   fetchMultiExchangeRate,
   TokenBalancesController,
 } from '@metamask/assets-controllers';
+import { DefiListController } from './controllers/defi-list-controller';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
@@ -786,6 +787,26 @@ export default class MetamaskController extends EventEmitter {
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled: !this.preferencesController.state.useNftDetection,
+    });
+
+    const defiListControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'DefiListController',
+      allowedActions: [
+        'NetworkController:getNetworkClientById',
+        'AccountsController:getSelectedAccount',
+        'AccountsController:getAccount',
+      ],
+      allowedEvents: [
+        'NetworkController:stateChange',
+        'NetworkController:networkDidChange',
+        'AccountsController:selectedEvmAccountChange',
+      ],
+    });
+    this.defiListController = new DefiListController({
+      state: initState.DefiListController,
+      provider: this.provider,
+      messenger: defiListControllerMessenger,
+      chainId: this.#getGlobalChainId(),
     });
 
     const metaMetricsControllerMessenger =
@@ -2592,6 +2613,7 @@ export default class MetamaskController extends EventEmitter {
       TokenBalancesController: this.tokenBalancesController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
+      DefiListController: this.defiListController,
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
@@ -2648,6 +2670,7 @@ export default class MetamaskController extends EventEmitter {
         TokenBalancesController: this.tokenBalancesController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
+        DefiListController: this.defiListController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         TxController: this.txController,
