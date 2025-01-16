@@ -316,6 +316,8 @@ describe('NonEvmOverview', () => {
         location: 'Home',
         snap_id: mockNonEvmAccount.metadata.snap.id,
         text: 'Buy',
+        // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
+        token_symbol: expect.any(Object),
       },
     });
   });
