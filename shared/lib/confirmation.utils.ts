@@ -30,23 +30,17 @@ const REDESIGN_DEV_TRANSACTION_TYPES = [...REDESIGN_USER_TRANSACTION_TYPES];
  * based on user settings and developer mode
  *
  * @param opts.transactionMetadataType - The type of transaction to check
- * @param opts.isRedesignedTransactionsUserSettingEnabled - Whether the user has enabled the redesigned flow
  * @param opts.isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
  */
 export function shouldUseRedesignForTransactions({
   transactionMetadataType,
-  isRedesignedTransactionsUserSettingEnabled,
   isRedesignedConfirmationsDeveloperEnabled,
 }: {
   transactionMetadataType?: TransactionType;
-  isRedesignedTransactionsUserSettingEnabled: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
 }): boolean {
   return (
-    shouldUseRedesignForTransactionsUserMode(
-      isRedesignedTransactionsUserSettingEnabled,
-      transactionMetadataType,
-    ) ||
+    shouldUseRedesignForTransactionsUserMode(transactionMetadataType) ||
     shouldUseRedesignForTransactionsDeveloperMode(
       isRedesignedConfirmationsDeveloperEnabled,
       transactionMetadataType,
@@ -155,15 +149,10 @@ function shouldUseRedesignForTransactionsDeveloperMode(
  * Determines if the redesigned confirmation flow should be used for transactions
  * when in user mode
  *
- * @param isRedesignedTransactionsUserSettingEnabled - Whether the user has enabled the redesigned flow
  * @param transactionMetadataType - The type of transaction to check
  */
 function shouldUseRedesignForTransactionsUserMode(
-  isRedesignedTransactionsUserSettingEnabled: boolean,
   transactionMetadataType?: TransactionType,
 ): boolean {
-  return (
-    isRedesignedTransactionsUserSettingEnabled &&
-    isCorrectUserTransactionType(transactionMetadataType)
-  );
+  return isCorrectUserTransactionType(transactionMetadataType);
 }

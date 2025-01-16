@@ -1,7 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
+import nock from 'nock';
 import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
@@ -23,6 +24,7 @@ import {
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { setStorageItem } from '../../../../shared/lib/storage-helpers';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');
@@ -43,6 +45,7 @@ setBackgroundConnection({
   updateTransaction: jest.fn(),
   getLastInteractedConfirmationInfo: jest.fn(),
   setAlertEnabledness: jest.fn(),
+  setSwapsFeatureFlags: jest.fn(),
 });
 
 const mockTxParamsFromAddress = '0x123456789';
@@ -1030,6 +1033,78 @@ describe('Confirm Transaction Base', () => {
       });
 
       expect(updateTransactionValue).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('Smart Transactions Refresh Interval', () => {
+    const cleanFeatureFlagApiCache = () => {
+      setStorageItem(
+        'cachedFetch:https://swap.api.cx.metamask.io/featureFlags',
+        null,
+      );
+    };
+
+    beforeEach(() => {
+      cleanFeatureFlagApiCache();
+      nock.cleanAll();
+    });
+
+    it('calls setSmartTransactionsRefreshInterval when smart transactions are enabled', async () => {
+      nock('https://swap.api.cx.metamask.io')
+        .get('/featureFlags')
+        .reply(200, {
+          smartTransactions: {
+            batchStatusPollingInterval: 1000,
+          },
+        });
+
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          smartTransactionsState: {
+            fees: {},
+            liveness: true,
+          },
+        },
+      };
+
+      const setSmartTransactionsRefreshInterval = jest.fn();
+      const props = {
+        setSmartTransactionsRefreshInterval,
+        smartTransactionsPreferenceEnabled: true,
+        currentChainSupportsSmartTransactions: true,
+      };
+
+      await render({ props, state });
+
+      await waitFor(() => {
+        expect(setSmartTransactionsRefreshInterval).toHaveBeenCalledWith(1000);
+      });
+    });
+
+    it('does not call setSmartTransactionsRefreshInterval when smart transactions are disabled', async () => {
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          smartTransactionsState: {
+            fees: {},
+            liveness: false,
+          },
+        },
+      };
+
+      const setSmartTransactionsRefreshInterval = jest.fn();
+      const props = {
+        setSmartTransactionsRefreshInterval,
+        smartTransactionsPreferenceEnabled: false,
+        currentChainSupportsSmartTransactions: false,
+      };
+
+      await render({ props, state });
+
+      expect(setSmartTransactionsRefreshInterval).not.toHaveBeenCalled();
     });
   });
 });
