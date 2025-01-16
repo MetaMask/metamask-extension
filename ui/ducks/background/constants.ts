@@ -5,14 +5,14 @@ import { getDefaultPreferencesControllerState } from '../../../app/scripts/contr
 import type {
   BackgroundStateProxy,
   MemStoreControllersComposedState,
-} from '../../../shared/types/metamask';
+} from '../../../shared/types/background';
 import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
 } from '../../../shared/constants/preferences';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 
-export const initialMetamaskState: Omit<
+export const initialBackgroundState: Omit<
   BackgroundStateProxy,
   keyof MemStoreControllersComposedState
 > &
