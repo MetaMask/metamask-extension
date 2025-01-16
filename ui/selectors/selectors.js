@@ -2984,7 +2984,7 @@ export function getMetaMetricsDataDeletionStatus(state) {
  * Otherwise returns the remote feature flags from the MetaMask state that's retrieved from controller.
  *
  * @param {object} state - The MetaMask state object
- * @returns {object} The remote feature flags object containing feature flag key-value pairs
+ * @returns {ManifestFlags['remoteFeatureFlags']} The remote feature flags object containing feature flag key-value pairs
  */
 export function getRemoteFeatureFlags(state) {
   const remoteFeatureFlagsValueFromManifest =
