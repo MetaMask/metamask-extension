@@ -468,7 +468,8 @@ class FixtureBuilder {
     useLocalhostHostname = false,
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
-    const subjects = {
+    return this.withPermissionController({
+      subjects: {
       [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
         origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
         permissions: {
@@ -486,9 +487,7 @@ class FixtureBuilder {
           },
         },
       },
-    };
-    return this.withPermissionController({
-      subjects,
+    },
     });
   }
 
@@ -521,7 +520,8 @@ class FixtureBuilder {
   }
 
   withPermissionControllerSnapAccountConnectedToTestDapp() {
-    const subjects = {
+    return this.withPermissionController({
+      subjects: {
       [DAPP_URL]: {
         origin: DAPP_URL,
         permissions: {
@@ -539,12 +539,12 @@ class FixtureBuilder {
           },
         },
       },
-    };
-    return this.withPermissionController({ subjects });
+    }
+    });
   }
 
   withPermissionControllerConnectedToTwoTestDapps() {
-    const subjects = {
+    return this.withPermissionController({ subjects: {
       [DAPP_URL]: {
         origin: DAPP_URL,
         permissions: {
@@ -579,8 +579,7 @@ class FixtureBuilder {
           },
         },
       },
-    };
-    return this.withPermissionController({ subjects });
+    }});
   }
 
   withPermissionControllerConnectedToSnapDapp() {
