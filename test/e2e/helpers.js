@@ -984,6 +984,19 @@ async function openMenuSafe(driver) {
   }
 }
 
+/**
+ * Opens the extension popup view in the context of the origin passed.
+ *
+ * @param {WebDriver} driver - The WebDriver instance used to interact with the browser.
+ * @param {string} origin - The origin to open the popup view from.
+ * @returns {Promise<void>} A promise that resolves when the popup view is opened.
+ */
+async function openPopupWithActiveTabOrigin(driver, origin) {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
+  );
+}
+
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 module.exports = {
@@ -1039,6 +1052,7 @@ module.exports = {
   tempToggleSettingRedesignedConfirmations,
   tempToggleSettingRedesignedTransactionConfirmations,
   openMenuSafe,
+  openPopupWithActiveTabOrigin,
   sentryRegEx,
   createWebSocketConnection,
 };
