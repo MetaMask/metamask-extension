@@ -69,7 +69,7 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS, ALLOWED_DEV_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { AssetType } from '../../shared/constants/transaction';
 
 import {
@@ -1681,7 +1681,12 @@ export function getIsSwapsChain(state, overrideChainId) {
 export function getIsBridgeChain(state, overrideChainId) {
   const currentChainId = getCurrentChainId(state);
   const chainId = overrideChainId ?? currentChainId;
-  return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
+  const isNotDevelopment =
+    process.env.METAMASK_ENVIRONMENT !== 'development' &&
+    process.env.METAMASK_ENVIRONMENT !== 'testing';
+  return isNotDevelopment
+    ? ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId)
+    : ALLOWED_DEV_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
 function getBridgeFeatureFlags(state) {

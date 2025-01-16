@@ -1,3 +1,4 @@
+import { MultichainNetworks } from './multichain/networks';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
 // TODO read from feature flags
@@ -11,6 +12,11 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
+];
+
+export const ALLOWED_DEV_BRIDGE_CHAIN_IDS = [
+  ...ALLOWED_BRIDGE_CHAIN_IDS,
+  MultichainNetworks.SOLANA,
 ];
 
 export type AllowedBridgeChainIds = (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number];

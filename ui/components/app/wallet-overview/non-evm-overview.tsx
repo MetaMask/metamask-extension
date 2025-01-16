@@ -14,7 +14,7 @@ import {
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
-import { getSelectedInternalAccount, getSwapsDefaultToken } from '../../../selectors';
+import { getIsSwapsChain, getIsBridgeChain, getSelectedInternalAccount, getSwapsDefaultToken } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
 import { isEqual } from 'lodash';
 
@@ -40,9 +40,11 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   ///: END:ONLY_INCLUDE_IF
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
-  const isDevelopmentEnvironment =
-    process.env.METAMASK_ENVIRONMENT === 'development' ||
-    process.env.METAMASK_ENVIRONMENT === 'testing';
+  const isSwapsChain = useSelector(getIsSwapsChain);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const isBridgeChain = useSelector(getIsBridgeChain);
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <CoinOverview
@@ -53,10 +55,10 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       className={className}
       chainId={chainId}
       isSigningEnabled={true}
-      isSwapsChain={isDevelopmentEnvironment}
+      isSwapsChain={isSwapsChain}
       defaultSwapsToken={defaultSwapsToken}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      isBridgeChain={isDevelopmentEnvironment}
+      isBridgeChain={isBridgeChain}
       isBuyableChain={isBuyableChain}
       ///: END:ONLY_INCLUDE_IF
     />

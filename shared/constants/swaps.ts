@@ -1,3 +1,4 @@
+import { MultichainNetworks } from './multichain/networks';
 import {
   ETH_TOKEN_IMAGE_URL,
   TEST_ETH_TOKEN_IMAGE_URL,
@@ -186,6 +187,7 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
   ...ALLOWED_PROD_SWAPS_CHAIN_IDS,
   CHAIN_IDS.GOERLI,
+  MultichainNetworks.SOLANA,
 ] as const;
 
 export const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS = [
