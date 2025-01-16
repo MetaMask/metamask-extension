@@ -463,7 +463,6 @@ class FixtureBuilder {
   }
 
   withPermissionControllerConnectedToTestDapp({
-    restrictReturnedAccounts = true,
     account = '',
     useLocalhostHostname = false,
   } = {}) {
@@ -477,7 +476,7 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
@@ -558,9 +557,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerSnapAccountConnectedToTestDapp(
-    restrictReturnedAccounts = true,
-  ) {
+  withPermissionControllerSnapAccountConnectedToTestDapp() {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -570,7 +567,7 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
                   value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
@@ -584,9 +581,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTwoTestDapps(
-    restrictReturnedAccounts = true,
-  ) {
+  withPermissionControllerConnectedToTwoTestDapps() {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -596,7 +591,7 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
@@ -616,7 +611,7 @@ class FixtureBuilder {
               id: 'AqPEWxyhNCJYACFw93jE4',
               parentCapability: 'eth_accounts',
               invoker: DAPP_ONE_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
