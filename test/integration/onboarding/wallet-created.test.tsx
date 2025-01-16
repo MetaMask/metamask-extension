@@ -8,7 +8,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { createMockImplementation } from '../helpers';
-import { BridgeBackgroundAction } from '../../../app/scripts/controllers/bridge/types';
+import { BridgeBackgroundAction } from '../../../shared/types/bridge';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
