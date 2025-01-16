@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "开启此选项以查看增强格式的签名请求。"
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "经过改进的交易请求"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "开启此选项以查看增强格式的交易请求。"
-  },
   "refreshList": {
     "message": "刷新列表"
   },

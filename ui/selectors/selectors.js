@@ -1243,11 +1243,6 @@ export function getRedesignedConfirmationsEnabled(state) {
   return redesignedConfirmationsEnabled;
 }
 
-export function getRedesignedTransactionsEnabled(state) {
-  const { redesignedTransactionsEnabled } = getPreferences(state);
-  return redesignedTransactionsEnabled;
-}
-
 export function getFeatureNotificationsEnabled(state) {
   const { featureNotificationsEnabled = false } = getPreferences(state);
   return featureNotificationsEnabled;

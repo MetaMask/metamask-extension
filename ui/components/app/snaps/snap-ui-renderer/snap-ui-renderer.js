@@ -14,12 +14,13 @@ import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 import PulseLoader from '../../../ui/pulse-loader';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { mapToTemplate } from './utils';
+import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
@@ -69,6 +70,11 @@ const SnapUIRendererComponent = ({
     [inputValue, onInputChange, placeholder, isPrompt],
   );
 
+  const backgroundColor =
+    contentBackgroundColor ??
+    mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
+    BackgroundColor.backgroundAlternative;
+
   const sections = useMemo(
     () =>
       content &&
@@ -79,8 +85,9 @@ const SnapUIRendererComponent = ({
         useFooter,
         promptLegacyProps,
         t,
+        contentBackgroundColor: backgroundColor,
       }),
-    [content, onCancel, useFooter, promptLegacyProps, t],
+    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
   );
 
   if (isLoading || !content) {
@@ -134,7 +141,7 @@ const SnapUIRendererComponent = ({
       <Box
         className="snap-ui-renderer__content"
         height={BlockSize.Full}
-        backgroundColor={contentBackgroundColor}
+        backgroundColor={backgroundColor}
         style={{
           overflowY: 'auto',
           marginBottom: useFooter && hasFooter ? '80px' : '0',

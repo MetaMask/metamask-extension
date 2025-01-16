@@ -110,7 +110,6 @@ export type Preferences = {
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
   redesignedConfirmationsEnabled: boolean;
-  redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
   privacyMode: boolean;
@@ -223,7 +222,6 @@ export const getDefaultPreferencesControllerState =
       hideZeroBalanceTokens: false,
       petnamesEnabled: true,
       redesignedConfirmationsEnabled: true,
-      redesignedTransactionsEnabled: true,
       featureNotificationsEnabled: false,
       isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
