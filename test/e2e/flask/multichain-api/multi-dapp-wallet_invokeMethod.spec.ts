@@ -140,6 +140,7 @@ describe('Multichain API', function () {
             driver: Driver;
             extensionId: string;
           }) => {
+            // Arrange
             await unlockWallet(driver);
             for (const dapp of DAPP_URLS) {
               await openMultichainDappAndConnectWalletWithExternallyConnectable(
@@ -153,6 +154,7 @@ describe('Multichain API', function () {
               await driver.clickElement({ text: 'Connect', tag: 'button' });
             }
 
+            // Act
             for (const [i, dapp] of DAPP_URLS.entries()) {
               await driver.switchToWindowWithUrl(dapp);
               await driver.delay(veryLargeDelayMs);
@@ -168,8 +170,12 @@ describe('Multichain API', function () {
               await driver.clickElementSafe(
                 `[data-testid="invoke-method-${SCOPE}-btn"]`,
               );
+            }
 
-              await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+            // Assert
+            for (const [i, dapp] of DAPP_URLS.entries()) {
               const accountWebElement = await driver.findElement(
                 '[data-testid="sender-address"]',
               );
@@ -186,12 +192,12 @@ describe('Multichain API', function () {
               assert.strictEqual(
                 accountText,
                 expectedAccount,
-                `Should have ${expectedAccount} selected, got ${accountText}`,
+                `Queued request from dapp ${dapp} should have ${expectedAccount} selected, got ${accountText}`,
               );
 
               assert.ok(
                 originText.includes(expectedOrigin),
-                `Should have origin as ${expectedOrigin}`,
+                `Queued request from dapp ${dapp} should have origin as ${expectedOrigin}`,
               );
 
               await driver.clickElement({
