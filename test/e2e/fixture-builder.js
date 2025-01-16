@@ -500,6 +500,9 @@ class FixtureBuilder {
         origin: DAPP_URL,
         permissions: {
           eth_accounts: {
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            parentCapability: 'eth_accounts',
+            invoker: DAPP_URL,
             caveats: [
               {
                 type: 'restrictReturnedAccounts',
@@ -509,10 +512,7 @@ class FixtureBuilder {
                 ],
               },
             ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
             date: 1664388714636,
-            invoker: DAPP_URL,
-            parentCapability: 'eth_accounts',
           },
         },
       },
