@@ -111,26 +111,23 @@ jobs:
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
-      - name: Evaluate branch for changelog lint handling
-        id: evaluate-branch
-        run: |
-          BRANCH_NAME="${{ github.ref_name }}"
-          if [[ "$BRANCH_NAME" == Version-v* ]]; then
-            echo "Branch starts with Version-v. Ignoring failure for test-lint-changelog."
-            echo "IGNORE_CHANGELOG_FAILURE=true" >> "$GITHUB_ENV"
-          else
-            echo "IGNORE_CHANGELOG_FAILURE=false" >> "$GITHUB_ENV"
-          fi
-
       - name: Validate test-lint-changelog outcome
         id: validate-changelog-job
+        env:
+          # For a `pull_request` event, the branch is `github.head_ref``.
+          # For a `push` event, the branch is `github.ref_name`.
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          CHANGELOG_LINT_RESULT: ${{ needs.test-lint-changelog.result }}
         run: |
-          TEST_LINT_CHANGELOG_FAILED="${{ needs.test-lint-changelog.result }}"
-          if [[ "$TEST_LINT_CHANGELOG_FAILED" == "failure" && "$IGNORE_CHANGELOG_FAILURE" == "true" ]]; then
-            echo "test-lint-changelog failed, but we're ignoring it for Version-v branches."
-          elif [[ "$TEST_LINT_CHANGELOG_FAILED" == "failure" ]]; then
-            echo "test-lint-changelog failed and cannot be ignored."
-            exit 1
+          echo "Branch: $BRANCH"
+          echo "Changelog Lint Result: $CHANGELOG_LINT_RESULT"
+          if [[ "$CHANGELOG_LINT_RESULT" == "failure" ]]; then
+            if [[ "$BRANCH" == Version-v* ]]; then
+              echo "test-lint-changelog failed, but we're ignoring it for Version-v branches."
+            else
+              echo "test-lint-changelog failed."
+              exit 1
+            fi
           fi
           echo "All jobs completed successfully."
 

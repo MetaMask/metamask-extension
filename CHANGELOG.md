@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.10.0]
+### Uncategorized
+- Added a changelog lint job to the CI pipeline to ensure that the changelog is formatted correctly ([#29250](https://github.com/MetaMask/metamask-extension/pull/29250))
+
 ## [12.9.2]
 ### Changed
 - Display the "Amount" row within the advanced view of contract interaction confirmations, and whenever the amount being sent differs from the "You Send" row of the transaction simulation information by more than 5% ([#29131](https://github.com/MetaMask/metamask-extension/pull/29131))
