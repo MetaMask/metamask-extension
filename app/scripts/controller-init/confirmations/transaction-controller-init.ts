@@ -1,6 +1,5 @@
 import {
   TransactionController,
-  TransactionControllerState,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
@@ -155,7 +154,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
     sign: (...args) => keyringController().signTransaction(...args),
-    state: persistedState.TransactionController as TransactionControllerState,
+    state: persistedState.TransactionController,
   });
 
   addTransactionControllerListeners(
