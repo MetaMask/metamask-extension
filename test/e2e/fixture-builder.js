@@ -643,11 +643,6 @@ class FixtureBuilder {
           lastSelected: 1665507800000,
           name: 'Account 2',
         },
-        [ERC_4337_ACCOUNT]: {
-          address: ERC_4337_ACCOUNT,
-          lastSelected: 1665507600000,
-          name: 'Account 4',
-        },
       },
     });
   }
