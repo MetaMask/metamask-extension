@@ -15,6 +15,9 @@ import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
 
+/**
+ * Union of all controllers.
+ */
 export type Controller =
   | GasFeeController
   | KeyringController
@@ -33,6 +36,10 @@ export type Controller =
       state: Record<string, unknown>;
     });
 
+/**
+ * Flat state object for all controllers.
+ * e.g. `{ transactions: [] }`.
+ */
 export type ControllerFlatState = AccountsController['state'] &
   GasFeeController['state'] &
   KeyringController['state'] &

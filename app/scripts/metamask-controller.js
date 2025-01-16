@@ -2302,18 +2302,18 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    const controllerInitObjects = [
-      () => this.networkController,
-      () => this.preferencesController,
-      () => this.gasFeeController,
-      new PPOMControllerInit(),
-      () => this.onboardingController,
-      () => this.keyringController,
+    const controllerInitFunctions = [
+      () => ({ controller: this.networkController }),
+      () => ({ controller: this.preferencesController }),
+      () => ({ controller: this.gasFeeController }),
+      PPOMControllerInit,
+      () => ({ controller: this.onboardingController }),
+      () => ({ controller: this.keyringController }),
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      () => this.transactionUpdateController,
+      () => ({ controller: this.transactionUpdateController }),
       ///: END:ONLY_INCLUDE_IF
-      new TransactionControllerInit(),
-      () => this.smartTransactionsController,
+      TransactionControllerInit,
+      () => ({ controller: this.smartTransactionsController }),
     ];
 
     const {
@@ -2323,7 +2323,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName,
     } = this.#initControllers({
       initState,
-      initObjects: controllerInitObjects,
+      initFunctions: controllerInitFunctions,
     });
 
     this.controllerApi = controllerApi;
@@ -7346,8 +7346,9 @@ export default class MetamaskController extends EventEmitter {
     return this.networkController.state.selectedNetworkClientId;
   }
 
-  #initControllers({ initObjects, initState }) {
+  #initControllers({ initFunctions, initState }) {
     const initRequest = {
+      baseControllerMessenger: this.controllerMessenger,
       getFlatState: this.getState.bind(this),
       getGlobalChainId: this.#getGlobalChainId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
@@ -7359,8 +7360,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     return initControllers({
-      baseControllerMessenger: this.controllerMessenger,
-      initObjects,
+      initFunctions,
       initRequest,
     });
   }
