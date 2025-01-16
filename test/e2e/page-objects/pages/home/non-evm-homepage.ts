@@ -9,7 +9,7 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
 
-  protected readonly bridgeButton = '[data-testid="token-overview-bridge"]';
+  protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
   /**
    * Clicks the send button on the non-EVM account homepage.
