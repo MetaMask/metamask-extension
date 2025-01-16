@@ -1008,7 +1008,7 @@
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
@@ -1111,7 +1111,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker>@metamask/utils": true,
-        "@metamask/eth-query>json-rpc-random-id": true,
+        "@metamask/ppom-validator>json-rpc-random-id": true,
         "pify": true
       }
     },
@@ -1124,7 +1124,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/network-controller>@metamask/eth-block-tracker>@metamask/utils": true,
-        "@metamask/eth-query>json-rpc-random-id": true
+        "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
@@ -1145,7 +1145,7 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/name-controller>async-mutex": true,
@@ -1201,16 +1201,15 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/types-live": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "@metamask/eth-trezor-keyring>hdkey": true
       }
     },
-    "@metamask/eth-query": {
+    "@metamask/controller-utils>@metamask/eth-query": {
       "packages": {
-        "@metamask/eth-query>json-rpc-random-id": true,
+        "@metamask/ppom-validator>json-rpc-random-id": true,
         "watchify>xtend": true
       }
     },
@@ -1412,7 +1411,7 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
@@ -1442,7 +1441,7 @@
       },
       "packages": {
         "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
+        "@metamask/json-rpc-middleware-stream>@metamask/utils": true,
         "readable-stream": true
       }
     },
@@ -1452,7 +1451,7 @@
       },
       "packages": {
         "@metamask/scure-bip39": true,
-        "@metamask/utils": true,
+        "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
@@ -1581,7 +1580,7 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
@@ -1649,7 +1648,7 @@
         "@metamask/controller-utils": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
+        "@metamask/permission-controller>@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true,
         "nanoid": true
@@ -1718,7 +1717,7 @@
         "browserify>buffer": true,
         "@metamask/ppom-validator>crypto-js": true,
         "@metamask/ppom-validator>elliptic": true,
-        "@metamask/eth-query>json-rpc-random-id": true
+        "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
     "@metamask/preferences-controller": {
@@ -1776,7 +1775,8 @@
     "@metamask/remote-feature-flag-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "cockatiel": true
+        "cockatiel": true,
+        "uuid": true
       }
     },
     "@metamask/rpc-errors": {
@@ -1845,7 +1845,7 @@
         "@metamask/smart-transactions-controller>@ethereumjs/util": true,
         "@ethersproject/bytes": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
@@ -1875,13 +1875,15 @@
         "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
-        "@metamask/utils": true,
+        "@metamask/snaps-controllers>@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
+        "@metamask/name-controller>async-mutex": true,
         "browserify>browserify-zlib": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "eslint>fast-deep-equal": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
         "immer": true,
+        "luxon": true,
         "nanoid": true,
         "readable-stream": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
@@ -1896,13 +1898,14 @@
       "packages": {
         "@metamask/post-message-stream": true,
         "@metamask/snaps-utils": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "@metamask/snaps-execution-environments>@metamask/utils": true
       }
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@noble/hashes": true
       }
@@ -1915,8 +1918,9 @@
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@noble/hashes": true
+        "@metamask/snaps-rpc-methods>@metamask/utils": true,
+        "@noble/hashes": true,
+        "luxon": true
       }
     },
     "@metamask/snaps-sdk": {
@@ -1926,7 +1930,7 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true
+        "@metamask/snaps-sdk>@metamask/utils": true
       }
     },
     "@metamask/snaps-utils": {
@@ -1951,7 +1955,7 @@
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-sdk": true,
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
+        "@metamask/snaps-utils>@metamask/utils": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
@@ -1980,7 +1984,7 @@
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
@@ -2004,7 +2008,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
@@ -2302,6 +2306,36 @@
         "semver": true
       }
     },
+    "@metamask/json-rpc-middleware-stream>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
     "@metamask/keyring-api>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -2392,6 +2426,21 @@
         "semver": true
       }
     },
+    "@metamask/permission-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
     "@metamask/permission-log-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -2453,6 +2502,96 @@
       }
     },
     "@metamask/rate-limit-controller>@metamask/rpc-errors>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/snaps-execution-environments>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/snaps-rpc-methods>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -3422,7 +3561,7 @@
     },
     "string.prototype.matchall>call-bind>call-bind-apply-helpers": {
       "packages": {
-        "string.prototype.matchall>es-errors": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
         "browserify>has>function-bind": true
       }
     },
@@ -3430,14 +3569,14 @@
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>get-intrinsic": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
     "eslint-plugin-import>string.prototype.trimend>call-bound": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
-        "string.prototype.matchall>get-intrinsic": true
+        "eslint-plugin-react>array-includes>get-intrinsic": true
       }
     },
     "@ngraveio/bc-ur>cbor-sync": {
@@ -3690,7 +3829,7 @@
         "string.prototype.matchall>es-abstract>array-buffer-byte-length": true,
         "string.prototype.matchall>call-bind": true,
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator": true,
-        "string.prototype.matchall>get-intrinsic": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
         "browserify>util>is-arguments": true,
         "string.prototype.matchall>es-abstract>is-array-buffer": true,
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
@@ -3700,18 +3839,18 @@
         "@ngraveio/bc-ur>assert>object-is": true,
         "@lavamoat/lavapack>json-stable-stringify>object-keys": true,
         "gulp>vinyl-fs>object.assign": true,
-        "string.prototype.matchall>regexp.prototype.flags": true,
+        "eslint-plugin-react>string.prototype.matchall>regexp.prototype.flags": true,
         "string.prototype.matchall>side-channel": true,
         "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive": true,
         "@metamask/eth-token-tracker>deep-equal>which-collection": true,
-        "browserify>util>which-typed-array": true
+        "@metamask/eth-token-tracker>deep-equal>which-typed-array": true
       }
     },
     "string.prototype.matchall>define-properties>define-data-property": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>gopd": true
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "eslint-plugin-react>es-iterator-helpers>gopd": true
       }
     },
     "string.prototype.matchall>define-properties": {
@@ -3740,10 +3879,10 @@
         "@babel/runtime": true
       }
     },
-    "string.prototype.matchall>get-intrinsic>dunder-proto": {
+    "eslint-plugin-react>array-includes>get-intrinsic>dunder-proto": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
-        "string.prototype.matchall>gopd": true
+        "eslint-plugin-react>es-iterator-helpers>gopd": true
       }
     },
     "debounce-stream>duplexer": {
@@ -3798,7 +3937,7 @@
     "@metamask/eth-token-tracker>deep-equal>es-get-iterator": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
         "string.prototype.matchall>has-symbols": true,
         "browserify>util>is-arguments": true,
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-map": true,
@@ -4066,7 +4205,7 @@
         "define": true
       }
     },
-    "string.prototype.matchall>get-intrinsic": {
+    "eslint-plugin-react>array-includes>get-intrinsic": {
       "globals": {
         "AggregateError": true,
         "FinalizationRegistry": true,
@@ -4074,15 +4213,15 @@
       },
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
-        "string.prototype.matchall>get-intrinsic>dunder-proto": true,
+        "eslint-plugin-react>array-includes>get-intrinsic>dunder-proto": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>es-object-atoms": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "eslint-plugin-react>object.values>es-object-atoms": true,
         "browserify>has>function-bind": true,
-        "string.prototype.matchall>gopd": true,
+        "eslint-plugin-react>es-iterator-helpers>gopd": true,
         "string.prototype.matchall>has-symbols": true,
         "eslint-plugin-react>hasown": true,
-        "string.prototype.matchall>es-abstract>math-intrinsics": true
+        "eslint-plugin-react>array-includes>es-abstract>math-intrinsics": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk": {
@@ -4228,9 +4367,9 @@
         "browserify>punycode": true
       }
     },
-    "string.prototype.matchall>internal-slot": {
+    "eslint-plugin-react>es-iterator-helpers>internal-slot": {
       "packages": {
-        "string.prototype.matchall>es-errors": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
         "eslint-plugin-react>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
@@ -4244,7 +4383,7 @@
     "string.prototype.matchall>es-abstract>is-array-buffer": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true
+        "eslint-plugin-react>array-includes>get-intrinsic": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-bigint": {
@@ -4288,7 +4427,7 @@
     "string.prototype.matchall>es-abstract>is-regex": {
       "packages": {
         "eslint-plugin-import>string.prototype.trimend>call-bound": true,
-        "string.prototype.matchall>gopd": true,
+        "eslint-plugin-react>es-iterator-helpers>gopd": true,
         "koa>is-generator-function>has-tostringtag": true,
         "eslint-plugin-react>hasown": true
       }
@@ -4304,11 +4443,11 @@
         "koa>is-generator-function>has-tostringtag": true
       }
     },
-    "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": {
+    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-symbol": {
       "packages": {
         "eslint-plugin-import>string.prototype.trimend>call-bound": true,
         "string.prototype.matchall>has-symbols": true,
-        "string.prototype.matchall>es-abstract>safe-regex-test": true
+        "eslint-plugin-react>array-includes>es-abstract>safe-regex-test": true
       }
     },
     "browserify>util>is-typed-array": {
@@ -4319,7 +4458,7 @@
     "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakset": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true
+        "eslint-plugin-react>array-includes>get-intrinsic": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>borc>iso-url": {
@@ -4699,7 +4838,7 @@
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
-    "string.prototype.matchall>es-abstract>object-inspect": {
+    "string.prototype.matchall>side-channel>object-inspect": {
       "globals": {
         "HTMLElement": true,
         "WeakRef": true
@@ -5314,12 +5453,12 @@
         "@babel/runtime": true
       }
     },
-    "string.prototype.matchall>regexp.prototype.flags": {
+    "eslint-plugin-react>string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>set-function-name": true
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "eslint-plugin-react>string.prototype.matchall>set-function-name": true
       }
     },
     "react-markdown>remark-parse": {
@@ -5388,10 +5527,10 @@
         "browserify>buffer": true
       }
     },
-    "string.prototype.matchall>es-abstract>safe-regex-test": {
+    "eslint-plugin-react>array-includes>es-abstract>safe-regex-test": {
       "packages": {
         "eslint-plugin-import>string.prototype.trimend>call-bound": true,
-        "string.prototype.matchall>es-errors": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
         "string.prototype.matchall>es-abstract>is-regex": true
       }
     },
@@ -5437,17 +5576,17 @@
     "string.prototype.matchall>call-bind>set-function-length": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>gopd": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
+        "eslint-plugin-react>es-iterator-helpers>gopd": true,
         "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true
       }
     },
-    "string.prototype.matchall>set-function-name": {
+    "eslint-plugin-react>string.prototype.matchall>set-function-name": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>set-function-name>functions-have-names": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "eslint-plugin-react>string.prototype.matchall>set-function-name>functions-have-names": true,
         "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true
       }
     },
@@ -5467,31 +5606,31 @@
     },
     "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "string.prototype.matchall>side-channel>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
         "eslint-plugin-import>string.prototype.trimend>call-bound": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
+        "string.prototype.matchall>side-channel>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
         "eslint-plugin-import>string.prototype.trimend>call-bound": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
+        "string.prototype.matchall>side-channel>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
       }
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>es-abstract>object-inspect": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "string.prototype.matchall>side-channel>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-list": true,
         "string.prototype.matchall>side-channel>side-channel-map": true,
         "string.prototype.matchall>side-channel>side-channel-weakmap": true
@@ -5514,7 +5653,7 @@
         "StopIteration": true
       },
       "packages": {
-        "string.prototype.matchall>internal-slot": true
+        "eslint-plugin-react>es-iterator-helpers>internal-slot": true
       }
     },
     "stream-browserify": {
@@ -5845,7 +5984,7 @@
         "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-boolean-object": true,
         "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-number-object": true,
         "eslint-plugin-react>array-includes>is-string": true,
-        "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": true
+        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-symbol": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal>which-collection": {
@@ -5856,12 +5995,21 @@
         "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakset": true
       }
     },
+    "@metamask/eth-token-tracker>deep-equal>which-typed-array": {
+      "packages": {
+        "string.prototype.matchall>es-abstract>available-typed-arrays": true,
+        "string.prototype.matchall>call-bind": true,
+        "browserify>util>which-typed-array>for-each": true,
+        "eslint-plugin-react>es-iterator-helpers>gopd": true,
+        "koa>is-generator-function>has-tostringtag": true
+      }
+    },
     "browserify>util>which-typed-array": {
       "packages": {
         "string.prototype.matchall>es-abstract>available-typed-arrays": true,
         "string.prototype.matchall>call-bind": true,
         "browserify>util>which-typed-array>for-each": true,
-        "string.prototype.matchall>gopd": true,
+        "eslint-plugin-react>es-iterator-helpers>gopd": true,
         "koa>is-generator-function>has-tostringtag": true
       }
     }
