@@ -1,5 +1,12 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { ProviderConfigState } from '../modules/selectors/networks';
+import {
+  TransactionControllerState,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import {
+  NetworkState,
+  ProviderConfigState,
+} from '../modules/selectors/networks';
+import { SmartTransactionsMetaMaskState } from '../modules/selectors';
 import type { ChainId, Quote, QuoteMetadata, QuoteResponse } from './bridge';
 
 // All fields need to be types not interfaces, same with their children fields
@@ -229,3 +236,7 @@ export type BridgeStatusAppState = ProviderConfigState & {
     bridgeStatusState: BridgeStatusControllerState;
   };
 };
+export type MetricsBackgroundState = BridgeStatusAppState['metamask'] &
+  SmartTransactionsMetaMaskState['metamask'] &
+  NetworkState['metamask'] &
+  TransactionControllerState;

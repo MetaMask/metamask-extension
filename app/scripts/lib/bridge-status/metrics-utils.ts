@@ -1,10 +1,9 @@
 import { Hex } from '@metamask/utils';
-import { TransactionControllerState } from '@metamask/transaction-controller';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
+  MetricsBackgroundState,
   BridgeHistoryItem,
-  BridgeStatusAppState,
 } from '../../../../shared/types/bridge-status';
 import {
   exchangeRateFromMarketData,
@@ -16,15 +15,13 @@ import {
   getUSDConversionRateByChainId,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/selectors';
-import { SmartTransactionsMetaMaskState } from '../../../../shared/modules/selectors';
-import { NetworkState } from '../../../../shared/modules/selectors/networks';
 
 export const getHexGasTotalUsd = ({
   bridgeHistoryItem,
   state,
 }: {
   bridgeHistoryItem: BridgeHistoryItem;
-  state: { metamask: BackgroundState };
+  state: { metamask: MetricsBackgroundState };
 }) => {
   const srcTxMeta = state.metamask.transactions.find(
     (txMeta) => txMeta.id === bridgeHistoryItem.txMetaId,
@@ -49,7 +46,7 @@ export const getTokenUsdValue = async ({
   chainId: Hex;
   tokenAmount: number;
   tokenAddress: string;
-  state: { metamask: BackgroundState };
+  state: { metamask: MetricsBackgroundState };
 }) => {
   const marketData = getMarketData(state);
   const tokenToNativeAssetRate = exchangeRateFromMarketData(
@@ -72,7 +69,3 @@ export const getTokenUsdValue = async ({
   }
   return tokenAmount * tokenToUsdRate;
 };
-export type BackgroundState = BridgeStatusAppState['metamask'] &
-  SmartTransactionsMetaMaskState['metamask'] &
-  NetworkState['metamask'] &
-  TransactionControllerState;

@@ -1,15 +1,8 @@
 /* eslint-disable camelcase */
 import { TransactionControllerTransactionFailedEvent } from '@metamask/transaction-controller';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../../shared/constants/bridge';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { ActionType } from '../../../../ui/hooks/bridge/events/types';
 // eslint-disable-next-line import/no-restricted-paths
-import { formatProviderLabel } from '../../../../ui/pages/bridge/utils/quote';
-import {
-  getCurrentKeyring,
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/selectors';
 import {
   BridgeStatusControllerBridgeTransactionCompleteEvent,
   BridgeStatusControllerBridgeTransactionFailedEvent,
@@ -17,7 +10,6 @@ import {
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 // eslint-disable-next-line import/no-restricted-paths
-import { isHardwareKeyring } from '../../../../ui/helpers/utils/hardware';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -27,87 +19,17 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
 import {
-  BridgeHistoryItem,
   StatusTypes,
+  MetricsBackgroundState,
 } from '../../../../shared/types/bridge-status';
 import { isEthUsdt } from '../../../../shared/modules/bridge-utils/bridge.util';
-import {
-  BackgroundState,
-  getHexGasTotalUsd,
-  getTokenUsdValue,
-} from './metrics-utils';
+import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
+import { getTokenUsdValue } from './metrics-utils';
 
 type TrackEvent = (
   payload: MetaMetricsEventPayload,
   options?: MetaMetricsEventOptions,
 ) => void;
-
-const getCommonProperties = (
-  bridgeHistoryItem: BridgeHistoryItem,
-  state: { metamask: BackgroundState },
-) => {
-  const keyring = getCurrentKeyring(state);
-  // @ts-expect-error keyring type is possibly wrong
-  const is_hardware_wallet = isHardwareKeyring(keyring.type) ?? false;
-
-  const chain_id_source = decimalToPrefixedHex(
-    bridgeHistoryItem.quote.srcChainId,
-  );
-  const chain_id_destination = decimalToPrefixedHex(
-    bridgeHistoryItem.quote.destChainId,
-  );
-
-  const usd_actual_gas = getHexGasTotalUsd({ bridgeHistoryItem, state }) ?? 0;
-  const usd_quoted_return = Number(
-    bridgeHistoryItem.pricingData?.quotedReturnInUsd,
-  );
-  const usd_quoted_gas = Number(bridgeHistoryItem.pricingData?.quotedGasInUsd);
-
-  const isBridgeTx =
-    bridgeHistoryItem.quote.srcChainId !== bridgeHistoryItem.quote.destChainId;
-
-  return {
-    action_type: ActionType.CROSSCHAIN_V1,
-
-    slippage_limit: bridgeHistoryItem.slippagePercentage,
-    custom_slippage:
-      bridgeHistoryItem.slippagePercentage !== BRIDGE_DEFAULT_SLIPPAGE,
-
-    chain_id_source,
-    chain_id_destination,
-
-    token_address_source: bridgeHistoryItem.quote.srcAsset.address,
-    token_address_destination: bridgeHistoryItem.quote.destAsset.address,
-
-    token_symbol_source: bridgeHistoryItem.quote.srcAsset.symbol,
-    token_symbol_destination: bridgeHistoryItem.quote.destAsset.symbol,
-
-    stx_enabled: getIsSmartTransaction(state),
-    is_hardware_wallet,
-
-    provider: formatProviderLabel(bridgeHistoryItem.quote),
-
-    quoted_time_minutes: bridgeHistoryItem.estimatedProcessingTimeInSeconds
-      ? bridgeHistoryItem.estimatedProcessingTimeInSeconds / 60
-      : 0,
-    actual_time_minutes:
-      bridgeHistoryItem.completionTime && bridgeHistoryItem.startTime
-        ? (bridgeHistoryItem.completionTime - bridgeHistoryItem.startTime) /
-          1000 /
-          60
-        : 0,
-
-    swap_type: isBridgeTx ? ActionType.CROSSCHAIN_V1 : ActionType.SWAPBRIDGE_V1,
-
-    usd_amount_source: Number(bridgeHistoryItem.pricingData?.amountSentInUsd),
-
-    usd_actual_gas,
-    usd_quoted_return,
-    usd_quoted_gas,
-
-    gas_included: false, // TODO check if trade has gas included
-  };
-};
 
 export const handleBridgeTransactionComplete = async (
   payload: BridgeStatusControllerBridgeTransactionCompleteEvent['payload'][0],
@@ -115,7 +37,7 @@ export const handleBridgeTransactionComplete = async (
     backgroundState,
     trackEvent,
   }: {
-    backgroundState: BackgroundState;
+    backgroundState: MetricsBackgroundState;
     trackEvent: TrackEvent;
   },
 ) => {
@@ -209,7 +131,7 @@ export const handleBridgeTransactionFailed = async (
     backgroundState,
     trackEvent,
   }: {
-    backgroundState: BackgroundState;
+    backgroundState: MetricsBackgroundState;
     trackEvent: TrackEvent;
   },
 ) => {
@@ -275,7 +197,7 @@ export const handleTransactionFailedTypeBridge = async (
     backgroundState,
     trackEvent,
   }: {
-    backgroundState: BackgroundState;
+    backgroundState: MetricsBackgroundState;
     trackEvent: TrackEvent;
   },
 ) => {

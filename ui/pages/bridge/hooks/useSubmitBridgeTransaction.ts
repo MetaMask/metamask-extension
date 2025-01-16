@@ -15,12 +15,24 @@ import {
 } from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
-import { isHardwareWallet } from '../../../selectors';
+import { getSelectedAddress, isHardwareWallet } from '../../../selectors';
 import { getQuoteRequest } from '../../../ducks/bridge/selectors';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
-import { serializeQuoteMetadata } from '../../../../shared/lib/bridge-status/utils';
+import {
+  getInitialHistoryItem,
+  serializeQuoteMetadata,
+} from '../../../../shared/lib/bridge-status/utils';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
+import {
+  MetricsBackgroundState,
+  StatusTypes,
+} from '../../../../shared/types/bridge-status';
+import { isEthUsdt } from '../../../../shared/modules/bridge-utils/bridge.util';
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
@@ -51,12 +63,15 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 export default function useSubmitBridgeTransaction() {
   const history = useHistory();
   const dispatch = useDispatch();
+  const state = useSelector((allState) => allState);
   const srcChainId = useSelector(getCurrentChainId);
   const { addSourceToken, addDestToken } = useAddToken();
   const { handleApprovalTx } = useHandleApprovalTx();
   const { handleBridgeTx } = useHandleBridgeTx();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const { slippage } = useSelector(getQuoteRequest);
+  const selectedAddress = useSelector(getSelectedAddress);
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -93,6 +108,45 @@ export default function useSubmitBridgeTransaction() {
         await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push(DEFAULT_ROUTE);
       }
+
+      // Capture error in metrics
+      const historyItem = getInitialHistoryItem({
+        quoteResponse: serializeQuoteMetadata(quoteResponse),
+        bridgeTxMetaId: 'dummy-id',
+        startTime: approvalTxMeta?.time,
+        slippagePercentage: slippage ?? 0,
+        initialDestAssetBalance: undefined,
+        targetContractAddress: undefined,
+        account: selectedAddress,
+        statusRequest: statusRequestCommon,
+      });
+      const commonProperties = getCommonProperties(
+        historyItem,
+        state as { metamask: MetricsBackgroundState },
+      );
+
+      // Get tx statuses
+      const isEthUsdtTx = isEthUsdt(
+        decimalToPrefixedHex(quoteResponse.quote.srcChainId),
+        quoteResponse.quote.srcAsset.address,
+      );
+      const allowanceResetTransaction = isEthUsdtTx
+        ? { allowance_reset_transaction: StatusTypes.FAILED }
+        : undefined;
+      const approvalTransaction = { approval_transaction: StatusTypes.FAILED };
+
+      trackCrossChainSwapsEvent({
+        event: MetaMetricsEventName.ActionFailed,
+        properties: {
+          ...commonProperties,
+
+          ...allowanceResetTransaction,
+          ...approvalTransaction,
+
+          error_message: (e as Error).message,
+        },
+      });
+
       return;
     }
 
