@@ -78,7 +78,7 @@ ${Object.entries(env)
   }
 
   it('should have the correct defaults', () => {
-    const config: Configuration = getWebpackConfig(['--test']);
+    const config: Configuration = getWebpackConfig([]);
     // check that options are valid
     const { options } = webpack(config);
     assert.strictEqual(options.name, 'MetaMask – development');
@@ -162,8 +162,10 @@ ${Object.entries(env)
       {
         manifest_version: 3,
         name: 'name',
-        permissions: ['tabs'],
         version: '1.2.3',
+        _flags: {
+          remoteFeatureFlags: {},
+        },
         content_scripts: [
           {
             js: ['scripts/contentscript.js', 'scripts/inpage.js'],

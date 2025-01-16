@@ -232,7 +232,7 @@ describe('ManifestPlugin', () => {
       function runTest(baseManifest: Combination<typeof manifestMatrix>) {
         const manifest = baseManifest as unknown as chrome.runtime.Manifest;
         const hasTabsPermission = (manifest.permissions || []).includes('tabs');
-        const transform = transformManifest(args);
+        const transform = transformManifest(args, false);
 
         if (args.test && hasTabsPermission) {
           it("throws in test mode when manifest already contains 'tabs' permission", () => {

@@ -131,7 +131,7 @@ const plugins: WebpackPluginInstance[] = [
     version: version.version,
     versionName: version.versionName,
     browsers: args.browser,
-    transform: transformManifest(args),
+    transform: transformManifest(args, isDevelopment),
     zip: args.zip,
     ...(args.zip
       ? {

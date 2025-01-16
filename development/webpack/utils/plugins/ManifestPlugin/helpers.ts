@@ -16,11 +16,15 @@ try {
  * @param args
  * @param args.lockdown
  * @param args.test
+ * @param isDevelopment
  * @returns a function that will transform the manifest JSON object
  * @throws an error if the manifest already contains the "tabs" permission and
  * `test` is `true`
  */
-export function transformManifest(args: { lockdown: boolean; test: boolean }) {
+export function transformManifest(
+  args: { lockdown: boolean; test: boolean },
+  isDevelopment: boolean,
+) {
   const transforms: ((manifest: chrome.runtime.Manifest) => void)[] = [];
 
   function removeLockdown(browserManifest: chrome.runtime.Manifest) {
@@ -40,8 +44,8 @@ export function transformManifest(args: { lockdown: boolean; test: boolean }) {
     browserManifest._flags = manifestFlags;
   }
 
-  // Add manifest flags only for non-test builds so the test build is not affected by local feature flags
-  if (!args.test) {
+  // Add manifest flags only for development builds
+  if (isDevelopment) {
     transforms.push(addManifestFlags);
   }
 
