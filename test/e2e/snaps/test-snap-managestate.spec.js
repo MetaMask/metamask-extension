@@ -75,10 +75,11 @@ describe('Test Snap manageState', function () {
         });
 
         // Enter data and click set
+        const sendEncrypted = await driver.findElement('#setStateKey');
+        await driver.scrollToElement(sendEncrypted);
+        await driver.delayFirefox(1000);
         await driver.pasteIntoField('#setStateKey', 'foo');
         await driver.pasteIntoField('#dataState', '"bar"');
-        const sendEncrypted = await driver.findElement('#sendState');
-        await driver.scrollToElement(sendEncrypted);
         await driver.clickElement('#sendState');
 
         // Check that the entire state blob was updated
@@ -87,10 +88,11 @@ describe('Test Snap manageState', function () {
           text: JSON.stringify({ foo: 'bar' }, null, 2),
         });
 
-        // Check that we can retrive one state key
+        // Check that we can retrieve one state key
+        const getKeyField = await driver.findElement('#getState');
+        await driver.scrollToElement(getKeyField);
+        await driver.delayFirefox(1000);
         await driver.pasteIntoField('#getState', 'foo');
-        const getKeyButton = await driver.findElement('#sendGetState');
-        await driver.scrollToElement(getKeyButton);
         await driver.clickElement('#sendGetState');
 
         await driver.waitForSelector({
@@ -110,12 +112,13 @@ describe('Test Snap manageState', function () {
         // repeat the same above steps to check unencrypted state management
 
         // Enter data and click set
-        await driver.pasteIntoField('#setStateKeyUnencrypted', 'foo');
-        await driver.pasteIntoField('#dataUnencryptedState', '"bar"');
         const sendUnencrypted = await driver.findElement(
-          '#sendUnencryptedState',
+          '#setStateKeyUnencrypted',
         );
         await driver.scrollToElement(sendUnencrypted);
+        await driver.delayFirefox(1000);
+        await driver.pasteIntoField('#setStateKeyUnencrypted', 'foo');
+        await driver.pasteIntoField('#dataUnencryptedState', '"bar"');
         await driver.clickElement('#sendUnencryptedState');
 
         // Check that the entire state blob was updated
@@ -125,11 +128,12 @@ describe('Test Snap manageState', function () {
         });
 
         // Check that we can retrive one state key
-        await driver.pasteIntoField('#getUnencryptedState', 'foo');
-        const getUnencryptedKeyButton = await driver.findElement(
-          '#sendGetUnencryptedState',
+        const getUnencryptedKeyField = await driver.findElement(
+          '#getUnencryptedState',
         );
-        await driver.scrollToElement(getUnencryptedKeyButton);
+        await driver.scrollToElement(getUnencryptedKeyField);
+        await driver.delayFirefox(1000);
+        await driver.pasteIntoField('#getUnencryptedState', 'foo');
         await driver.clickElement('#sendGetUnencryptedState');
 
         await driver.waitForSelector({
