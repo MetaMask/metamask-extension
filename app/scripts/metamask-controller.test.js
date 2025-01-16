@@ -822,7 +822,7 @@ describe('MetaMaskController', () => {
           );
 
           await expect(result).rejects.toThrow(
-            'MetamaskController:withKeyringForDevice - Unknown device',
+            'MetamaskController:#withKeyringForDevice - Unknown device',
           );
         });
 
@@ -858,7 +858,7 @@ describe('MetaMaskController', () => {
             `m/44/0'/0'`,
           );
           await expect(result).rejects.toThrow(
-            'MetamaskController:withKeyringForDevice - Unknown device',
+            'MetamaskController:#withKeyringForDevice - Unknown device',
           );
         });
 
@@ -907,9 +907,10 @@ describe('MetaMaskController', () => {
         it('should return the correct device name for Trezor', async () => {
           const deviceName = 'trezor';
           jest
-            .spyOn(metamaskController, 'withKeyringForDevice')
+            .spyOn(metamaskController.keyringController, 'withKeyring')
             .mockImplementation((_, operation) =>
               operation({
+                getModel: jest.fn().mockReturnValue('T'),
                 bridge: {
                   minorVersion: 1,
                   model: 'T',
@@ -939,9 +940,10 @@ describe('MetaMaskController', () => {
         it('should handle special case for OneKeyDevice via Trezor', async () => {
           const deviceName = 'trezor';
           jest
-            .spyOn(metamaskController, 'withKeyringForDevice')
+            .spyOn(metamaskController.keyringController, 'withKeyring')
             .mockImplementation((_, operation) =>
               operation({
+                getModel: jest.fn().mockReturnValue('T'),
                 bridge: {
                   model: 'T',
                   minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION,
@@ -964,7 +966,7 @@ describe('MetaMaskController', () => {
             'Some random device name',
           );
           await expect(result).rejects.toThrow(
-            'MetamaskController:withKeyringForDevice - Unknown device',
+            'MetamaskController:#withKeyringForDevice - Unknown device',
           );
         });
 

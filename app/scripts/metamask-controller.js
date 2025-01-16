@@ -4647,7 +4647,7 @@ export default class MetamaskController extends EventEmitter {
         // keyring's iframe and have the setting initialized properly
         // Optimistically called to not block MetaMask login due to
         // Ledger Keyring GitHub downtime
-        this.withKeyringForDevice(
+        this.#withKeyringForDevice(
           { name: HardwareDeviceNames.ledger },
           async (keyring) => this.setLedgerTransportPreference(keyring),
         );
@@ -4788,7 +4788,7 @@ export default class MetamaskController extends EventEmitter {
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     if (completedOnboarding) {
-      this.withKeyringForDevice(
+      this.#withKeyringForDevice(
         { name: HardwareDeviceNames.ledger },
         async (keyring) => this.setLedgerTransportPreference(keyring),
       );
@@ -4895,73 +4895,8 @@ export default class MetamaskController extends EventEmitter {
   // Hardware
   //
 
-  /**
-   * Select a hardware wallet device and execute a
-   * callback with the keyring for that device.
-   *
-   * Note that KeyringController state is not updated before
-   * the end of the callback execution, and calls to KeyringController
-   * methods within the callback can lead to deadlocks.
-   *
-   * @param {object} options - The options for the device
-   * @param {string} options.name - The device name to select
-   * @param {string} options.hdPath - An optional hd path to be set on the device
-   * keyring
-   * @param {*} callback - The callback to execute with the keyring
-   * @returns {*} The result of the callback
-   */
-  async withKeyringForDevice(options, callback) {
-    const keyringOverrides = this.opts.overrides?.keyrings;
-    let keyringType = null;
-    switch (options.name) {
-      case HardwareDeviceNames.trezor:
-        keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
-        break;
-      case HardwareDeviceNames.ledger:
-        keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
-        break;
-      case HardwareDeviceNames.qr:
-        keyringType = QRHardwareKeyring.type;
-        break;
-      case HardwareDeviceNames.lattice:
-        keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
-        break;
-      default:
-        throw new Error(
-          'MetamaskController:withKeyringForDevice - Unknown device',
-        );
-    }
-
-    return this.keyringController.withKeyring(
-      { type: keyringType },
-      async (keyring) => {
-        if (options.hdPath && keyring.setHdPath) {
-          keyring.setHdPath(options.hdPath);
-        }
-
-        if (options.name === HardwareDeviceNames.lattice) {
-          keyring.appName = 'MetaMask';
-        }
-
-        if (options.name === HardwareDeviceNames.trezor) {
-          const model = keyring.getModel();
-          this.appStateController.setTrezorModel(model);
-        }
-
-        keyring.network = getProviderConfig({
-          metamask: this.networkController.state,
-        }).type;
-
-        return await callback(keyring);
-      },
-      {
-        createIfMissing: true,
-      },
-    );
-  }
-
   async attemptLedgerTransportCreation() {
-    return await this.withKeyringForDevice(
+    return await this.#withKeyringForDevice(
       HardwareDeviceNames.ledger,
       async (keyring) => keyring.attemptMakeApp(),
     );
@@ -4976,7 +4911,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
-    return this.withKeyringForDevice(
+    return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         if (deviceName === HardwareDeviceNames.ledger) {
@@ -5018,7 +4953,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async checkHardwareStatus(deviceName, hdPath) {
-    return this.withKeyringForDevice(
+    return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         return keyring.isUnlocked();
@@ -5038,7 +4973,7 @@ export default class MetamaskController extends EventEmitter {
       return deviceName;
     }
 
-    return await this.withKeyringForDevice(
+    return await this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       (keyring) => {
         const { minorVersion } = keyring.bridge;
@@ -5059,7 +4994,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async forgetDevice(deviceName) {
-    return this.withKeyringForDevice({ name: deviceName }, async (keyring) => {
+    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
       for (const address of keyring.accounts) {
         this._onAccountRemoved(address);
       }
@@ -5152,23 +5087,24 @@ export default class MetamaskController extends EventEmitter {
     hdPath,
     hdPathDescription,
   ) {
-    const { address: unlockedAccount, label } = await this.withKeyringForDevice(
-      { name: deviceName, hdPath },
-      async (keyring) => {
-        keyring.setAccountToUnlock(index);
-        const [address] = await keyring.addAccounts(1);
-        return {
-          address: normalize(address),
-          label: this.getAccountLabel(
-            deviceName === HardwareDeviceNames.qr
-              ? keyring.getName()
-              : deviceName,
-            index,
-            hdPathDescription,
-          ),
-        };
-      },
-    );
+    const { address: unlockedAccount, label } =
+      await this.#withKeyringForDevice(
+        { name: deviceName, hdPath },
+        async (keyring) => {
+          keyring.setAccountToUnlock(index);
+          const [address] = await keyring.addAccounts(1);
+          return {
+            address: normalize(address),
+            label: this.getAccountLabel(
+              deviceName === HardwareDeviceNames.qr
+                ? keyring.getName()
+                : deviceName,
+              index,
+              hdPathDescription,
+            ),
+          };
+        },
+      );
 
     // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
     this.preferencesController.setAccountLabel(unlockedAccount, label);
@@ -7573,6 +7509,71 @@ export default class MetamaskController extends EventEmitter {
         process.env.METAMASK_ENVIRONMENT
       ] || EnvironmentType.Development;
     return { distribution, environment };
+  }
+
+  /**
+   * Select a hardware wallet device and execute a
+   * callback with the keyring for that device.
+   *
+   * Note that KeyringController state is not updated before
+   * the end of the callback execution, and calls to KeyringController
+   * methods within the callback can lead to deadlocks.
+   *
+   * @param {object} options - The options for the device
+   * @param {string} options.name - The device name to select
+   * @param {string} options.hdPath - An optional hd path to be set on the device
+   * keyring
+   * @param {*} callback - The callback to execute with the keyring
+   * @returns {*} The result of the callback
+   */
+  async #withKeyringForDevice(options, callback) {
+    const keyringOverrides = this.opts.overrides?.keyrings;
+    let keyringType = null;
+    switch (options.name) {
+      case HardwareDeviceNames.trezor:
+        keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
+        break;
+      case HardwareDeviceNames.ledger:
+        keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
+        break;
+      case HardwareDeviceNames.qr:
+        keyringType = QRHardwareKeyring.type;
+        break;
+      case HardwareDeviceNames.lattice:
+        keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
+        break;
+      default:
+        throw new Error(
+          'MetamaskController:#withKeyringForDevice - Unknown device',
+        );
+    }
+
+    return this.keyringController.withKeyring(
+      { type: keyringType },
+      async (keyring) => {
+        if (options.hdPath && keyring.setHdPath) {
+          keyring.setHdPath(options.hdPath);
+        }
+
+        if (options.name === HardwareDeviceNames.lattice) {
+          keyring.appName = 'MetaMask';
+        }
+
+        if (options.name === HardwareDeviceNames.trezor) {
+          const model = keyring.getModel();
+          this.appStateController.setTrezorModel(model);
+        }
+
+        keyring.network = getProviderConfig({
+          metamask: this.networkController.state,
+        }).type;
+
+        return await callback(keyring);
+      },
+      {
+        createIfMissing: true,
+      },
+    );
   }
 
   #checkTokenListPolling(currentState, previousState) {
