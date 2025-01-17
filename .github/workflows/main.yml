@@ -29,8 +29,6 @@ jobs:
   test-lint-changelog:
     name: Test lint changelog
     uses: ./.github/workflows/test-lint-changelog.yml
-    outputs:
-      result: ${{ needs.test-lint-changelog.outputs.result }}
 
   test-lint-lockfile:
     name: Test lint lockfile
