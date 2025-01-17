@@ -33,12 +33,46 @@ describe(`migration #${version}`, () => {
     expect(newStorage.data).toStrictEqual(data);
   });
 
+  it('deletes AppStateController.collectiblesDropdownState from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        AppStateController: {
+          collectiblesDropdownState: 'test',
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      AppStateController: {},
+    });
+  });
+
   it('deletes AppStateController.serviceWorkerLastActiveTime from state', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
         AppStateController: {
           serviceWorkerLastActiveTime: 5,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      AppStateController: {},
+    });
+  });
+
+  it('deletes AppStateController.showPortfolioTooltip from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        AppStateController: {
+          showPortfolioTooltip: true,
         },
       },
     };

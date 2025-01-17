@@ -34,8 +34,16 @@ function transformState(state: Record<string, unknown>) {
     hasProperty(state, 'AppStateController') &&
     isObject(state.AppStateController)
   ) {
+    // Removed in 33cc8d587aad05c0b41871ba3676676a3ce5680e with a migration, but
+    // still persists for some people for some reason
+    // See https://metamask.sentry.io/issues/6223008336/events/723c5195130e4c5584b53a6656a85595/
+    delete state.AppStateController.collectiblesDropdownState;
     // Removed in 4ea52511eb7934bf0ce6b9b7d570a525120229ce
     delete state.AppStateController.serviceWorkerLastActiveTime;
+    // Removed in 24e0a9030b1a715a008e0c5dfaf9c552bcdb304e with a migration, but
+    // still persists for some people for some reason
+    // See https://metamask.sentry.io/issues/6223008336/events/a2cc42d6ed79485a8b2e9072d8033720/
+    delete state.AppStateController.showPortfolioTooltip;
   }
 
   if (
@@ -46,6 +54,7 @@ function transformState(state: Record<string, unknown>) {
     delete state.NetworkController.networkConfigurations;
     // Removed in 800a9d3a177446ff2d05e3e95ec06b3658474207 with a migration, but
     // still persists for some people for some reason
+    // See: https://metamask.sentry.io/issues/6011869130/events/039861ddb07f4b39b947edba3bbd710e/
     delete state.NetworkController.providerConfig;
   }
 
@@ -70,6 +79,7 @@ function transformState(state: Record<string, unknown>) {
     delete state.PreferencesController.infuraBlocked;
     // Removed in 4f66dc948fee54b8491227414342ab0d373475f1 with a migration, but
     // still persists for some people for some reason
+    // See: https://metamask.sentry.io/issues/6042074159/events/5711f95785d741739e5d0fa5ad19e7c0/
     delete state.PreferencesController.useCollectibleDetection;
     // Removed in eb987a47b51ce410de0047ec883bb4549ce80c85
     delete state.PreferencesController.useStaticTokenList;
