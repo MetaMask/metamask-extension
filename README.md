@@ -56,7 +56,7 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
   - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
-- Duplicate `manifest-flags.json.dist` within the root and rename it to `manifest-flags.json` by running `cp .manifest-flags.json{.dist,}`. This file is used to add flags to `manifest.json` build files for the extension. You can add flags to the file to be used in the build process, for example:
+- Duplicate `manifest-flags.json.dist` within the root and rename it to `manifest-flags.json` by running `cp .manifest-flags.json{.dist,}`. This file is used to add flags to `.manifest.json` build files for the extension. You can add flags to the file to be used in the build process, for example:
   ```json
   {
     "remoteFeatureFlags": {
