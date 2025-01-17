@@ -17,6 +17,8 @@ class BridgeQuotePage {
 
   private lineaNetwork = '[data-testid="Linea"]';
 
+  private submitButton = { text: 'Submit', tag: 'button' };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -34,6 +36,11 @@ class BridgeQuotePage {
     await this.driver.clickElement(
       '[data-testid="multichain-token-list-item-secondary-value"]',
     );
+  };
+
+  submitQuote = async () => {
+    await this.driver.waitForSelector(this.submitButton);
+    await this.driver.clickElement(this.submitButton)
   };
 }
 
