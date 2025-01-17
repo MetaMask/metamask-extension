@@ -1,14 +1,12 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import { JsonRpcResponse } from '@metamask/utils';
 import type { Json } from '@metamask/utils';
-import { AppStateController } from '../controllers/app-state-controller';
 import createOriginThrottlingMiddleware, {
   SPAM_FILTER_ACTIVATED_ERROR,
   ExtendedJSONRPCRequest,
 } from './createOriginThrottlingMiddleware';
 
 describe('createOriginThrottlingMiddleware', () => {
-  let appStateController: AppStateController;
   let middleware: ReturnType<typeof createOriginThrottlingMiddleware>;
   const mockIsOriginBlockedForConfirmations = jest.fn();
   const mockOnRequestRejectedByUser = jest.fn();

@@ -37,12 +37,12 @@ import {
   NUMBER_OF_REJECTIONS_THRESHOLD,
   REJECTION_THRESHOLD_IN_MS,
 } from '../../../shared/constants/origin-throttling';
+import type { ThrottledOrigins } from '../../../shared/types/origin-throttling';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
-import type { ThrottledOrigins } from '../../../shared/types/origin-throttling';
 
 export type AppStateControllerState = {
   timeoutMinutes: number;
@@ -1089,7 +1089,7 @@ export class AppStateController extends BaseController<
   }
 
   onRequestAccepted(origin: string) {
-    const hasOriginThrottled = !!this.state.throttledOrigins[origin];
+    const hasOriginThrottled = Boolean(this.state.throttledOrigins[origin]);
     if (hasOriginThrottled) {
       this.resetOriginThrottlingState(origin);
     }

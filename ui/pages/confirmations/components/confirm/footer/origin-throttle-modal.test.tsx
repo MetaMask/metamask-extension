@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { I18nContext } from '../../../../../contexts/i18n';
-import useOriginThrottling from '../../../hooks/useOriginThrottling';
+import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import OriginThrottleModal from './origin-throttle-modal';
 
 const mockHideModal = jest.fn();

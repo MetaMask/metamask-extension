@@ -8,8 +8,8 @@ import {
   REJECTION_THRESHOLD_IN_MS,
 } from '../../../../shared/constants/origin-throttling';
 
-import useCurrentConfirmation from './useCurrentConfirmation';
 import { throttledOriginsSelector } from '../../../selectors';
+import useCurrentConfirmation from './useCurrentConfirmation';
 
 const willNextRejectionReachThreshold = (
   originState: ThrottledOrigin,

@@ -282,7 +282,6 @@ const Footer = () => {
     [currentConfirmation, onCancel],
   );
 
-
   return (
     <PageFooter className="confirm-footer_page-footer">
       <OriginThrottleModal

@@ -1,5 +1,4 @@
-import { providerErrors } from '@metamask/rpc-errors';
-import { errorCodes } from '@metamask/rpc-errors';
+import { providerErrors, errorCodes } from '@metamask/rpc-errors';
 import type {
   Json,
   JsonRpcError,
@@ -38,22 +37,25 @@ export default function createOriginThrottlingMiddleware({
     next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,
   ) {
-    const origin = req.origin;
-    const isBlockableRPCMethod = BLOCKABLE_METHODS.has(req.method);
+    const { method, origin } = req;
+    const isBlockableRPCMethod = BLOCKABLE_METHODS.has(method);
 
     if (!isBlockableRPCMethod) {
-      return next();
+      next();
+      return;
     }
 
     const isDappBlocked = isOriginBlockedForConfirmations(origin);
 
     if (isDappBlocked) {
-      return end(SPAM_FILTER_ACTIVATED_ERROR);
+      end(SPAM_FILTER_ACTIVATED_ERROR);
+      return;
     }
 
     next((callback: () => void) => {
       if (!isBlockableRPCMethod) {
-        return callback();
+        callback();
+        return;
       }
 
       if ('error' in res && res.error && isUserRejectedError(res.error)) {
