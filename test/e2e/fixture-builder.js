@@ -8,8 +8,8 @@ const {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
 } = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
+
 const { CHAIN_IDS } = require('../../shared/constants/network');
-const { ACCOUNT_1, ACCOUNT_2 } = require('./helpers');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
@@ -360,7 +360,7 @@ class FixtureBuilder {
   withNftControllerERC1155() {
     return this.withNftController({
       allNftContracts: {
-        [ACCOUNT_1]: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
@@ -369,7 +369,7 @@ class FixtureBuilder {
         },
       },
       allNfts: {
-        [ACCOUNT_1]: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
@@ -392,7 +392,7 @@ class FixtureBuilder {
   withNftControllerERC721() {
     return this.withNftController({
       allNftContracts: {
-        [ACCOUNT_1]: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
@@ -403,7 +403,7 @@ class FixtureBuilder {
         },
       },
       allNfts: {
-        [ACCOUNT_1]: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
@@ -547,7 +547,10 @@ class FixtureBuilder {
     const optionalScopes = scopes
       .map((scope) => ({
         [scope]: {
-          accounts: [`${scope}:${ACCOUNT_1}`, `${scope}:${ACCOUNT_2}`],
+          accounts: [
+            `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
+            `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
+          ],
         },
       }))
       .reduce((acc, curr) => {
@@ -591,7 +594,10 @@ class FixtureBuilder {
             caveats: [
               {
                 type: 'restrictReturnedAccounts',
-                value: [ACCOUNT_1, ACCOUNT_2],
+                value: [
+                  '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                  '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                ],
               },
             ],
             id: 'ZaqPEWxyhNCJYACFw93jE',
@@ -616,7 +622,7 @@ class FixtureBuilder {
             caveats: [
               {
                 type: 'restrictReturnedAccounts',
-                value: [ACCOUNT_2],
+                value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
               },
             ],
             id: 'ZaqPEWxyhNCJYACFw93jE',
@@ -639,7 +645,7 @@ class FixtureBuilder {
             caveats: [
               {
                 type: 'restrictReturnedAccounts',
-                value: [ACCOUNT_1],
+                value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
               },
             ],
             id: 'ZaqPEWxyhNCJYACFw93jE',
@@ -656,7 +662,7 @@ class FixtureBuilder {
             caveats: [
               {
                 type: 'restrictReturnedAccounts',
-                value: [ACCOUNT_1],
+                value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
               },
             ],
             id: 'ZaqPEWxyhNCJYACFw93jE',
@@ -681,8 +687,8 @@ class FixtureBuilder {
               optionalScopes: {
                 'eip155:1337': {
                   accounts: [
-                    `eip155:1337:${ACCOUNT_1}`,
-                    `eip155:1337:${ACCOUNT_2}`,
+                    'eip155:1337:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    'eip155:1337:0x09781764c08de8ca82e156bbf156a3ca217c7950',
                   ],
                 },
               },
@@ -762,10 +768,15 @@ class FixtureBuilder {
           lastSelected: 1665507600000,
           name: 'Account 1',
         },
-        [ACCOUNT_2]: {
-          address: ACCOUNT_2,
+        '0x09781764c08de8ca82e156bbf156a3ca217c7950': {
+          address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
           lastSelected: 1665507800000,
           name: 'Account 2',
+        },
+        [ERC_4337_ACCOUNT]: {
+          address: ERC_4337_ACCOUNT,
+          lastSelected: 1665507600000,
+          name: 'Account 4',
         },
       },
     });
@@ -830,6 +841,11 @@ class FixtureBuilder {
         tokenNetworkFilter: {},
       },
     });
+  }
+
+  withPreferencesControllerAndFeatureFlag(flags) {
+    merge(this.fixture.data.PreferencesController, flags);
+    return this;
   }
 
   withAccountsController(data) {
@@ -911,7 +927,7 @@ class FixtureBuilder {
         accounts: {
           'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
             id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: ACCOUNT_1,
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             options: {},
             methods: [
               'personal_sign',
@@ -931,7 +947,7 @@ class FixtureBuilder {
           },
           'e9976a84-110e-46c3-9811-e2da7b5528d3': {
             id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
-            address: ACCOUNT_2,
+            address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
             options: {},
             methods: [
               'personal_sign',
@@ -1040,7 +1056,7 @@ class FixtureBuilder {
       detectedTokens: [],
       allTokens: {
         [toHex(chainId)]: {
-          ACCOUNT_1: [
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
               symbol: 'TST',
@@ -1083,7 +1099,7 @@ class FixtureBuilder {
               status: 'unapproved',
               time: 1617228030067,
               txParams: {
-                from: ACCOUNT_1,
+                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                 gas: '0x61a8',
                 maxFeePerGas: '0x59682f0c',
                 maxPriorityFeePerGas: '0x59682f00',
@@ -1123,7 +1139,7 @@ class FixtureBuilder {
             status: 'approved',
             time: 1617228030067,
             txParams: {
-              from: ACCOUNT_1,
+              from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
               gas: '0x61a8',
               maxFeePerGas: '0x59682f0c',
               maxPriorityFeePerGas: '0x59682f00',
@@ -1136,7 +1152,7 @@ class FixtureBuilder {
           status: 'approved',
           time: 1617228030067,
           txParams: {
-            from: ACCOUNT_1,
+            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             gas: '0x61a8',
             maxFeePerGas: '0x59682f0c',
             maxPriorityFeePerGas: '0x59682f00',
@@ -1164,7 +1180,7 @@ class FixtureBuilder {
               status: 'unapproved',
               time: 1671635506502,
               txParams: {
-                from: ACCOUNT_1,
+                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                 gas: '0x5208',
                 maxFeePerGas: '0x4c03c96f8',
                 maxPriorityFeePerGas: '0x59682f00',
@@ -1251,7 +1267,7 @@ class FixtureBuilder {
                 path: '/txReceipt',
                 value: {
                   blockNumber: '7cbf95',
-                  from: ACCOUNT_1,
+                  from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                   gasUsed: '5208',
                   status: '0x1',
                   to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -1276,7 +1292,7 @@ class FixtureBuilder {
           submittedTime: 1671635510753,
           time: 1671635506502,
           txParams: {
-            from: ACCOUNT_1,
+            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             gas: '0x5208',
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
             type: '0x2',
@@ -1289,7 +1305,7 @@ class FixtureBuilder {
               negative: 0,
               words: [8175509, null],
             },
-            from: ACCOUNT_1,
+            from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             status: '0x1',
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
             type: '0x2',
@@ -1314,7 +1330,7 @@ class FixtureBuilder {
             from: '0xc87261ba337be737fa744f50e7aaf4a920bdfcd6',
             gas: '0x5208',
             gasPrice: '0x329af9707',
-            to: ACCOUNT_1,
+            to: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             value: '0xDE0B6B3A7640000',
           },
           type: 'incoming',
@@ -1356,9 +1372,6 @@ class FixtureBuilder {
           origin: 'https://app.ens.domains',
           permissions: {
             eth_accounts: {
-              id: 'oKXoF_MNlffiR2u1Y3mDE',
-              parentCapability: 'eth_accounts',
-              invoker: 'https://app.ens.domains',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -1369,6 +1382,9 @@ class FixtureBuilder {
                 },
               ],
               date: 1708029792962,
+              id: 'oKXoF_MNlffiR2u1Y3mDE',
+              invoker: 'https://app.ens.domains',
+              parentCapability: 'eth_accounts',
             },
           },
         },
@@ -1376,9 +1392,6 @@ class FixtureBuilder {
           origin: 'https://app.uniswap.org',
           permissions: {
             eth_accounts: {
-              id: 'vaa88u5Iv3VmsJwG3bDKW',
-              invoker: 'https://app.uniswap.org',
-              parentCapability: 'eth_accounts',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -1389,6 +1402,9 @@ class FixtureBuilder {
                 },
               ],
               date: 1708029870079,
+              id: 'vaa88u5Iv3VmsJwG3bDKW',
+              invoker: 'https://app.uniswap.org',
+              parentCapability: 'eth_accounts',
             },
           },
         },
@@ -1396,20 +1412,20 @@ class FixtureBuilder {
           origin: 'https://www.dextools.io',
           permissions: {
             eth_accounts: {
-              id: 'bvvPcFtIhkFyHyW0Tmwi4',
-              invoker: 'https://www.dextools.io',
-              parentCapability: 'eth_accounts',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
-                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
-                    '0xa5c5293e124d04e2f85e8553851001fd2f192647',
-                    '0xb9504634e5788208933b51ae7440b478bfadf865',
+                    'eip155:1337:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                    'eip155:1337:0xa5c5293e124d04e2f85e8553851001fd2f192647',
+                    'eip155:1337:0xb9504634e5788208933b51ae7440b478bfadf865',
                   ],
                 },
               ],
               date: 1708029948170,
+              id: 'bvvPcFtIhkFyHyW0Tmwi4',
+              invoker: 'https://www.dextools.io',
+              parentCapability: 'eth_accounts',
             },
           },
         },
@@ -1417,16 +1433,18 @@ class FixtureBuilder {
           origin: 'https://coinmarketcap.com',
           permissions: {
             eth_accounts: {
-              id: 'AiblK84K1Cic-Y0FDSzMD',
-              invoker: 'https://coinmarketcap.com',
-              parentCapability: 'eth_accounts',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: ['0xbee150bdc171c7d4190891e78234f791a3ac7b24'],
+                  value: [
+                    'eip155:1337:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                  ],
                 },
               ],
               date: 1708030049641,
+              id: 'AiblK84K1Cic-Y0FDSzMD',
+              invoker: 'https://coinmarketcap.com',
+              parentCapability: 'eth_accounts',
             },
           },
         },
@@ -1488,8 +1506,8 @@ class FixtureBuilder {
   withTrezorAccount() {
     return this.withAccountTracker({
       accounts: {
-        ACCOUNT_1: {
-          address: ACCOUNT_1,
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
           balance: '0x15af1d78b58c40000',
         },
         '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
@@ -1500,8 +1518,8 @@ class FixtureBuilder {
       currentBlockGasLimit: '0x1c9c380',
       accountsByChainId: {
         '0x539': {
-          ACCOUNT_1: {
-            address: ACCOUNT_1,
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             balance: '0x15af1d78b58c40000',
           },
           '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
@@ -1519,7 +1537,7 @@ class FixtureBuilder {
           accounts: {
             'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
               id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-              address: ACCOUNT_1,
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
               options: {},
               methods: [
                 'personal_sign',
@@ -1572,7 +1590,7 @@ class FixtureBuilder {
       .withNameController({
         names: {
           ethereumAddress: {
-            ACCOUNT_1: {
+            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
               '*': {
                 name: 'Account 1',
                 sourceId: null,
@@ -1593,8 +1611,8 @@ class FixtureBuilder {
       })
       .withPreferencesController({
         identities: {
-          ACCOUNT_1: {
-            address: ACCOUNT_1,
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             lastSelected: 1665507600000,
             name: 'Account 1',
           },
@@ -1605,8 +1623,8 @@ class FixtureBuilder {
           },
         },
         lostIdentities: {
-          ACCOUNT_1: {
-            address: ACCOUNT_1,
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             name: 'Account 1',
             lastSelected: 1665507600000,
           },
