@@ -3,8 +3,6 @@ import { errorCodes } from '@metamask/rpc-errors';
 import type {
   AcceptRequest,
   AddApprovalRequest,
-  ApprovalAcceptedEvent,
-  ApprovalRejectedEvent,
   ApprovalRequest,
 } from '@metamask/approval-controller';
 import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
@@ -631,53 +629,7 @@ describe('AppStateController', () => {
       });
     });
 
-    describe('ApprovalController:rejected event', () => {
-      it('should increase rejection count for user rejected errors', async () => {
-        await withController(
-          async ({ controller, controllerMessenger: messenger }) => {
-            const origin = 'example.com';
-
-            messenger.publish('ApprovalController:rejected', {
-              approval: {
-                origin,
-                type: 'transaction',
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              } as unknown as ApprovalRequest<any>,
-              error: {
-                code: errorCodes.provider.userRejectedRequest,
-              } as unknown as Error,
-            });
-
-            await waitFor(() => {
-              expect(controller.state.throttledOrigins[origin].rejections).toBe(
-                1,
-              );
-            });
-          },
-        );
-      });
-
-      it('should not increase rejection count for non-user rejected errors', async () => {
-        await withController(
-          async ({ controller, controllerMessenger: messenger }) => {
-            const origin = 'example.com';
-
-            messenger.publish('ApprovalController:rejected', {
-              approval: {
-                origin,
-                type: 'transaction',
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              } as unknown as ApprovalRequest<any>,
-              error: { code: errorCodes.rpc.internal } as unknown as Error,
-            });
-
-            expect(controller.state.throttledOrigins[origin]).toBeUndefined();
-          },
-        );
-      });
-    });
-
-    describe('ApprovalController:accepted event', () => {
+    describe('onRequestAccepted', () => {
       it('should reset throttling state on approval acceptance', async () => {
         await withController(
           {
@@ -687,20 +639,30 @@ describe('AppStateController', () => {
               },
             },
           },
-          ({ controller, controllerMessenger: messenger }) => {
-            messenger.publish('ApprovalController:accepted', {
-              approval: {
-                origin: 'example.com',
-                type: 'transaction',
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              } as unknown as ApprovalRequest<any>,
-            });
+          ({ controller }) => {
+            controller.onRequestAccepted('example.com');
 
             expect(
               controller.state.throttledOrigins['example.com'],
             ).toBeUndefined();
           },
         );
+      });
+    });
+
+    describe('onRequestRejectedByUser', () => {
+      it('should increase rejection count for user rejected errors', async () => {
+        await withController(async ({ controller }) => {
+          const origin = 'example.com';
+
+          controller.onRequestRejectedByUser(origin);
+
+          await waitFor(() => {
+            expect(controller.state.throttledOrigins[origin].rejections).toBe(
+              1,
+            );
+          });
+        });
       });
     });
   });
@@ -725,8 +687,6 @@ type WithControllerCallback<ReturnValue> = ({
     | AppStateControllerEvents
     | PreferencesControllerStateChangeEvent
     | KeyringControllerQRKeyringStateChangeEvent
-    | ApprovalAcceptedEvent
-    | ApprovalRejectedEvent
   >;
 }) => ReturnValue;
 
@@ -748,8 +708,6 @@ async function withController<ReturnValue>(
     | AppStateControllerEvents
     | PreferencesControllerStateChangeEvent
     | KeyringControllerQRKeyringStateChangeEvent
-    | ApprovalAcceptedEvent
-    | ApprovalRejectedEvent
   >();
   const appStateMessenger = controllerMessenger.getRestricted({
     name: 'AppStateController',
@@ -761,8 +719,6 @@ async function withController<ReturnValue>(
     allowedEvents: [
       `PreferencesController:stateChange`,
       `KeyringController:qrKeyringStateChange`,
-      `ApprovalController:accepted`,
-      `ApprovalController:rejected`,
     ],
   });
   controllerMessenger.registerActionHandler(

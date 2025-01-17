@@ -11,9 +11,6 @@ import {
 import {
   AcceptRequest,
   AddApprovalRequest,
-  ApprovalAcceptedEvent,
-  ApprovalRejectedEvent,
-  ApprovalRequest,
 } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 import { Browser } from 'webextension-polyfill';
@@ -37,7 +34,6 @@ import {
   CarouselSlide,
 } from '../../../shared/constants/app-state';
 import {
-  BLOCKABLE_METHODS,
   BLOCKING_THRESHOLD_IN_MS,
   NUMBER_OF_REJECTIONS_THRESHOLD,
   REJECTION_THRESHOLD_IN_MS,
@@ -154,9 +150,7 @@ export type AppStateControllerEvents =
  */
 type AllowedEvents =
   | PreferencesControllerStateChangeEvent
-  | KeyringControllerQRKeyringStateChangeEvent
-  | ApprovalAcceptedEvent
-  | ApprovalRejectedEvent;
+  | KeyringControllerQRKeyringStateChangeEvent;
 
 export type AppStateControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -465,16 +459,6 @@ export class AppStateController extends BaseController<
     }
 
     this.#approvalRequestId = null;
-
-    this.messagingSystem.subscribe(
-      'ApprovalController:accepted',
-      this.#onApprovalAccepted.bind(this),
-    );
-
-    this.messagingSystem.subscribe(
-      'ApprovalController:rejected',
-      this.#onApprovalRejected.bind(this),
-    );
   }
 
   /**
@@ -1124,30 +1108,14 @@ export class AppStateController extends BaseController<
     this.#approvalRequestId = null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #onApprovalAccepted({ approval }: { approval: ApprovalRequest<any> }) {
-    const { type, origin } = approval;
-    if (BLOCKABLE_METHODS.has(type)) {
+  onRequestAccepted(origin: string) {
+    const hasOriginThrottled = !!this.state.throttledOrigins[origin];
+    if (hasOriginThrottled) {
       this.resetOriginThrottlingState(origin);
     }
   }
 
-  #onApprovalRejected({
-    approval,
-    error,
-  }: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    approval: ApprovalRequest<any>;
-    error: Error;
-  }) {
-    const { origin, type } = approval;
-
-    if (BLOCKABLE_METHODS.has(type) && isUserRejectedError(error)) {
-      this.#onConfirmationRejectedByUser(origin);
-    }
-  }
-
-  #onConfirmationRejectedByUser(origin: string): void {
+  onRequestRejectedByUser(origin: string): void {
     const currentState = this.state.throttledOrigins[origin] || {
       rejections: 0,
       lastRejection: 0,

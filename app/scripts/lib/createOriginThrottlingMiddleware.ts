@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { providerErrors } from '@metamask/rpc-errors';
 import { JsonRpcRequest } from '@metamask/utils';
-import { AppStateController } from '../controllers/app-state-controller';
+import { errorCodes } from '@metamask/rpc-errors';
 import { BLOCKABLE_METHODS } from '../../../shared/constants/origin-throttling';
 
 export type ExtendedJSONRPCRequest = JsonRpcRequest & { origin: string };
@@ -11,53 +11,58 @@ export const SPAM_FILTER_ACTIVATED_ERROR = providerErrors.unauthorized(
   'Request blocked due to spam filter.',
 );
 
-export function validateOriginThrottling({
-  req,
-  end,
-  appStateController,
-}: {
-  req: ExtendedJSONRPCRequest;
-  end: any;
-  appStateController: AppStateController;
-}): boolean {
-  const isDappBlocked = appStateController.isOriginBlockedForConfirmations(
-    req.origin,
-  );
+type ErrorWithCode = {
+  code?: number;
+} & Error;
 
-  if (isDappBlocked) {
-    end(SPAM_FILTER_ACTIVATED_ERROR);
-  }
+type createOriginThrottlingMiddlewareOptions = {
+  isOriginBlockedForConfirmations: (origin: string) => boolean;
+  onRequestRejectedByUser: (origin: string) => void;
+  onRequestAccepted: (origin: string) => boolean;
+};
 
-  return isDappBlocked;
-}
+const isUserRejectedError = (error: ErrorWithCode) =>
+  error.code === errorCodes.provider.userRejectedRequest;
 
 export default function createOriginThrottlingMiddleware({
-  appStateController,
-}: {
-  appStateController: AppStateController;
-}) {
+  isOriginBlockedForConfirmations,
+  onRequestRejectedByUser,
+  onRequestAccepted,
+}: createOriginThrottlingMiddlewareOptions) {
   return function originThrottlingMiddleware(
     req: ExtendedJSONRPCRequest,
-    _res: any,
+    res: any,
     next: any,
     end: any,
   ) {
+    const origin = req.origin;
     const isBlockableRPCMethod = BLOCKABLE_METHODS.has(req.method);
+
     if (!isBlockableRPCMethod) {
-      next();
-      return;
+      return next();
     }
 
-    const isDappBlocked = validateOriginThrottling({
-      end,
-      appStateController,
-      req,
-    });
+    const isDappBlocked = isOriginBlockedForConfirmations(origin);
 
     if (isDappBlocked) {
-      return;
+      return end(SPAM_FILTER_ACTIVATED_ERROR);
     }
 
-    next();
+    next((callback: any) => {
+      if (!isBlockableRPCMethod) {
+        return callback();
+      }
+
+      if (!res.error) {
+        onRequestAccepted(origin);
+        return callback();
+      }
+
+      if (isUserRejectedError(res.error)) {
+        onRequestRejectedByUser(origin);
+      }
+
+      callback();
+    });
   };
 }

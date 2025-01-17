@@ -1,3 +1,4 @@
+import { errorCodes } from '@metamask/rpc-errors';
 import { AppStateController } from '../controllers/app-state-controller';
 import createOriginThrottlingMiddleware, {
   SPAM_FILTER_ACTIVATED_ERROR,
@@ -7,14 +8,15 @@ import createOriginThrottlingMiddleware, {
 describe('createOriginThrottlingMiddleware', () => {
   let appStateController: AppStateController;
   let middleware: ReturnType<typeof createOriginThrottlingMiddleware>;
+  const mockIsOriginBlockedForConfirmations = jest.fn();
+  const mockOnRequestRejectedByUser = jest.fn();
+  const mockOnRequestAccepted = jest.fn();
 
   beforeEach(() => {
-    appStateController = {
-      isOriginBlockedForConfirmations: jest.fn(),
-    } as unknown as AppStateController;
-
     middleware = createOriginThrottlingMiddleware({
-      appStateController,
+      isOriginBlockedForConfirmations: mockIsOriginBlockedForConfirmations,
+      onRequestRejectedByUser: mockOnRequestRejectedByUser,
+      onRequestAccepted: mockOnRequestAccepted,
     });
   });
 
@@ -40,9 +42,7 @@ describe('createOriginThrottlingMiddleware', () => {
     const next = jest.fn();
     const end = jest.fn();
 
-    (
-      appStateController.isOriginBlockedForConfirmations as jest.Mock
-    ).mockReturnValue(true);
+    mockIsOriginBlockedForConfirmations.mockReturnValueOnce(true);
 
     await middleware(req, {}, next, end);
 
@@ -50,21 +50,51 @@ describe('createOriginThrottlingMiddleware', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it('should call next if the origin is not blocked', async () => {
+  it('should onRequestAccepted be called if response has no error', async () => {
     const req = {
       method: 'transaction',
       origin: 'testOrigin',
     } as unknown as ExtendedJSONRPCRequest;
-    const next = jest.fn();
+    const nextCallback = jest.fn();
+    const next = jest
+      .fn()
+      .mockImplementation((callback) => callback(nextCallback));
     const end = jest.fn();
+    const responseWithoutError = {
+      error: null,
+    };
 
-    (
-      appStateController.isOriginBlockedForConfirmations as jest.Mock
-    ).mockReturnValue(false);
+    mockIsOriginBlockedForConfirmations.mockReturnValueOnce(false);
 
-    await middleware(req, {}, next, end);
+    await middleware(req, responseWithoutError, next, end);
 
-    expect(next).toHaveBeenCalled();
-    expect(end).not.toHaveBeenCalled();
+    expect(mockOnRequestAccepted).toHaveBeenCalled();
+    expect(mockOnRequestAccepted).toHaveBeenCalledWith('testOrigin');
+    expect(nextCallback).toHaveBeenCalled();
+  });
+
+  it('should onRequestRejectedByUser be called if response has userRejected error', async () => {
+    const req = {
+      method: 'transaction',
+      origin: 'testOrigin',
+    } as unknown as ExtendedJSONRPCRequest;
+    const nextCallback = jest.fn();
+    const next = jest
+      .fn()
+      .mockImplementation((callback) => callback(nextCallback));
+    const end = jest.fn();
+    const responseWithUserRejectedError = {
+      error: {
+        code: errorCodes.provider.userRejectedRequest,
+      },
+    };
+
+    mockIsOriginBlockedForConfirmations.mockReturnValueOnce(false);
+
+    await middleware(req, responseWithUserRejectedError, next, end);
+
+    expect(mockOnRequestRejectedByUser).toHaveBeenCalled();
+    expect(mockOnRequestRejectedByUser).toHaveBeenCalledWith('testOrigin');
+    expect(nextCallback).toHaveBeenCalled();
   });
 });

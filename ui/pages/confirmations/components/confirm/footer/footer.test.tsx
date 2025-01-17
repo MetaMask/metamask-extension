@@ -27,7 +27,7 @@ import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
-import useOriginThrottling from '../../../hooks/useOriginThrottling';
+import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -59,7 +59,7 @@ describe('ConfirmFooter', () => {
 
   beforeEach(() => {
     mockUseOriginThrottling.mockReturnValue({
-      willNextRejectionReachThreshold: false,
+      shouldThrottleOrigin: false,
     });
   });
 
@@ -225,7 +225,7 @@ describe('ConfirmFooter', () => {
 
   it('no action is taken when the origin is on threshold and cancel button is clicked', () => {
     mockUseOriginThrottling.mockReturnValue({
-      willNextRejectionReachThreshold: true,
+      shouldThrottleOrigin: true,
     });
     const rejectSpy = jest.spyOn(Actions, 'rejectPendingApproval');
 

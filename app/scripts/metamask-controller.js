@@ -889,8 +889,6 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [
           `KeyringController:qrKeyringStateChange`,
           'PreferencesController:stateChange',
-          'ApprovalController:accepted',
-          'ApprovalController:rejected'
         ],
       }),
       extension: this.extension,
@@ -6004,7 +6002,17 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createOriginThrottlingMiddleware({
-        appStateController: this.appStateController,
+        isOriginBlockedForConfirmations:
+          this.appStateController.isOriginBlockedForConfirmations.bind(
+            this.appStateController,
+          ),
+        onRequestRejectedByUser:
+          this.appStateController.onRequestRejectedByUser.bind(
+            this.appStateController,
+          ),
+        onRequestAccepted: this.appStateController.onRequestAccepted.bind(
+          this.appStateController,
+        ),
       }),
     );
 

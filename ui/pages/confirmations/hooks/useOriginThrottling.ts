@@ -1,27 +1,19 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import type { ThrottledOrigin } from '../../../../shared/types/origin-throttling';
 import { resetOriginThrottlingState } from '../../../store/actions';
 import {
   NUMBER_OF_REJECTIONS_THRESHOLD,
   REJECTION_THRESHOLD_IN_MS,
 } from '../../../../shared/constants/origin-throttling';
 
-import { MetaMaskReduxState } from '../../../store/store';
 import useCurrentConfirmation from './useCurrentConfirmation';
+import { throttledOriginsSelector } from '../../../selectors';
 
-type ThrottledOrigin = {
-  rejections: number;
-  lastRejection: number;
-};
-
-type ThrottledOrigins = {
-  [origin: string]: ThrottledOrigin;
-};
-
-const getThrottledOrigins = (state: MetaMaskReduxState): ThrottledOrigins =>
-  state.metamask.throttledOrigins;
-
-const willNextRejectionReachThreshold = (originState: ThrottledOrigin) => {
+const willNextRejectionReachThreshold = (
+  originState: ThrottledOrigin,
+): boolean => {
   if (!originState) {
     return false;
   }
@@ -33,13 +25,14 @@ const willNextRejectionReachThreshold = (originState: ThrottledOrigin) => {
   );
 };
 
-export default function useOriginThrottling() {
+export function useOriginThrottling() {
   const dispatch = useDispatch();
-  const throttledOrigins = useSelector(getThrottledOrigins);
+  const throttledOrigins = useSelector(throttledOriginsSelector);
   const { currentConfirmation } = useCurrentConfirmation();
   const origin =
     currentConfirmation?.origin || currentConfirmation?.messageParams?.origin;
   const originState = throttledOrigins[origin];
+  const shouldThrottleOrigin = willNextRejectionReachThreshold(originState);
 
   const resetOrigin = useCallback(async () => {
     await dispatch(resetOriginThrottlingState(origin));
@@ -48,7 +41,6 @@ export default function useOriginThrottling() {
   return {
     origin,
     resetOrigin,
-    willNextRejectionReachThreshold:
-      willNextRejectionReachThreshold(originState),
+    shouldThrottleOrigin,
   };
 }

@@ -24,7 +24,7 @@ import {
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
-import useOriginThrottling from '../../../hooks/useOriginThrottling';
+import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import OriginPill from '../../../../../components/ui/origin-pill/origin-pill';
 
 const MultipleRequestContent = ({
@@ -51,7 +51,11 @@ const MultipleRequestContent = ({
         />
       </Box>
       <ModalHeader endAccessory={<></>}>{t('spamModalTitle')}</ModalHeader>
-      <OriginPill style={{ marginTop: 0, marginBottom: 20 }} origin={origin} />
+      <OriginPill
+        style={{ marginTop: 0, marginBottom: 20 }}
+        origin={origin}
+        dataTestId="origin-pill"
+      />
       <ModalBody>
         <Text
           textAlign={TextAlign.Center}
