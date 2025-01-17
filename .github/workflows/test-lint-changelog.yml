@@ -43,3 +43,7 @@ jobs:
       - name: Set result
         id: set-result
         run: echo "result=${{ env.result }}" >> $GITHUB_OUTPUT
+
+      - name: Fail job if result is failure
+        if: ${{ env.result == 'failure' }}
+        run: exit 1
