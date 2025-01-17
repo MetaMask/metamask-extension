@@ -362,8 +362,8 @@ const controllerMetadata = {
     anonymous: true,
   },
   throttledOrigins: {
-    persist: true,
-    anonymous: false,
+    persist: false,
+    anonymous: true,
   },
 };
 
