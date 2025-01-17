@@ -8,9 +8,9 @@ import {
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
 
 import FixtureBuilder from '../../fixture-builder';
+import type { FixtureCallbackArgs } from './testHelpers';
 
 describe('Multichain API', function () {
   it('should connect the wallet to the multichain test dapp via `externally_connectable` and successfully create a session with the requested chains', async function () {
@@ -30,13 +30,7 @@ describe('Multichain API', function () {
         fixtures: new FixtureBuilder().withPopularNetworks().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        extensionId,
-      }: {
-        driver: Driver;
-        extensionId: string;
-      }) => {
+      async ({ driver, extensionId }: FixtureCallbackArgs) => {
         await unlockWallet(driver);
 
         await openDapp(driver, undefined, DAPP_URL);

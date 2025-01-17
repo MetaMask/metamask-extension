@@ -16,6 +16,8 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
+export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
+
 /**
  * Default options for setting up Multichain E2E test environment
  */
@@ -195,6 +197,19 @@ export const updateNetworkCheckboxes = async (
     }
   }
   await driver.clickElement({ text: 'Update', tag: 'button' });
+};
+
+/**
+ * Password locks user's metamask extension.
+ *
+ * @param driver - E2E test driver {@link Driver}, wrapping the Selenium WebDriver.
+ */
+export const passwordLockMetamaskExtension = async (
+  driver: Driver,
+): Promise<void> => {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElementSafe('[data-testid="account-options-menu-button"]');
+  await driver.clickElementSafe('[data-testid="global-menu-lock"]');
 };
 
 /**
