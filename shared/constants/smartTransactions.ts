@@ -11,10 +11,12 @@ export const FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER: number = 2;
 const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_DEVELOPMENT: string[] = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.SEPOLIA,
+  CHAIN_IDS.BSC,
 ];
 
 const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_PRODUCTION: string[] = [
   CHAIN_IDS.MAINNET,
+  CHAIN_IDS.BSC,
 ];
 
 export const getAllowedSmartTransactionsChainIds = (): string[] => {

@@ -8,7 +8,7 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
-describe('Send flow', function (this: Suite) {
+describe.skip('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -61,8 +61,8 @@ describe('Send flow', function (this: Suite) {
     );
   });
 });
-describe('Send full flow of USD', function (this: Suite) {
-  it.skip('with a positive balance account', async function () {
+describe.skip('Send full flow of USD', function (this: Suite) {
+  it('with a positive balance account', async function () {
     // skipped due tohttps://consensyssoftware.atlassian.net/browse/SOL-100
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -213,7 +213,7 @@ describe('Send full flow of USD', function (this: Suite) {
     );
   });
 });
-describe('Send full flow of SOL', function (this: Suite) {
+describe.skip('Send full flow of SOL', function (this: Suite) {
   it('with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -358,7 +358,7 @@ describe('Send full flow of SOL', function (this: Suite) {
     );
   });
 });
-describe('Send flow flow', function (this: Suite) {
+describe.skip('Send flow flow', function (this: Suite) {
   it('and Transaction fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(

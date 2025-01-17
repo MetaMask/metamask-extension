@@ -16,7 +16,6 @@ const {
   DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
-  ERC_4337_ACCOUNT,
 } = require('./constants');
 const {
   defaultFixture,
@@ -458,8 +457,6 @@ class FixtureBuilder {
         },
         destTokens: {},
         destTopAssets: [],
-        srcTokens: {},
-        srcTopAssets: [],
       },
     };
     return this;
@@ -470,27 +467,62 @@ class FixtureBuilder {
     useLocalhostHostname = false,
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
-    const subjects = {
-      [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
-        origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
-        permissions: {
-          eth_accounts: {
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: [selectedAccount.toLowerCase()],
-              },
-            ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
-            date: 1664388714636,
-            invoker: DAPP_URL,
-            parentCapability: 'eth_accounts',
+    return this.withPermissionController({
+      subjects: {
+        [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+          origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [selectedAccount.toLowerCase()],
+                },
+              ],
+              date: 1664388714636,
+            },
           },
         },
       },
-    };
+    });
+  }
+
+  withPermissionControllerConnectedToTestDappWithChain() {
     return this.withPermissionController({
-      subjects,
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [DEFAULT_FIXTURE_ACCOUNT.toLowerCase()],
+                },
+              ],
+              date: 1664388714636,
+            },
+            'endowment:permitted-chains': {
+              id: 'D7cac0a2e3BD8f349506a',
+              parentCapability: 'endowment:permitted-chains',
+              invoker: DAPP_URL,
+              caveats: [
+                {
+                  type: 'restrictNetworkSwitching',
+                  value: ['0x539'],
+                },
+              ],
+              date: 1664388714637,
+            },
+          },
+        },
+      },
     });
   }
 
@@ -591,6 +623,9 @@ class FixtureBuilder {
         origin: DAPP_URL,
         permissions: {
           eth_accounts: {
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            parentCapability: 'eth_accounts',
+            invoker: DAPP_URL,
             caveats: [
               {
                 type: 'restrictReturnedAccounts',
@@ -600,10 +635,7 @@ class FixtureBuilder {
                 ],
               },
             ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
             date: 1664388714636,
-            invoker: DAPP_URL,
-            parentCapability: 'eth_accounts',
           },
         },
       },
@@ -614,66 +646,68 @@ class FixtureBuilder {
   }
 
   withPermissionControllerSnapAccountConnectedToTestDapp() {
-    const subjects = {
-      [DAPP_URL]: {
-        origin: DAPP_URL,
-        permissions: {
-          eth_accounts: {
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
-              },
-            ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
-            date: 1664388714636,
-            invoker: DAPP_URL,
-            parentCapability: 'eth_accounts',
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
+                },
+              ],
+              date: 1664388714636,
+            },
           },
         },
       },
-    };
-    return this.withPermissionController({ subjects });
+    });
   }
 
   withPermissionControllerConnectedToTwoTestDapps() {
-    const subjects = {
-      [DAPP_URL]: {
-        origin: DAPP_URL,
-        permissions: {
-          eth_accounts: {
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
-              },
-            ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
-            date: 1664388714636,
-            invoker: DAPP_URL,
-            parentCapability: 'eth_accounts',
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+        [DAPP_ONE_URL]: {
+          origin: DAPP_ONE_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'AqPEWxyhNCJYACFw93jE4',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_ONE_URL,
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
+                },
+              ],
+              date: 1664388714636,
+            },
           },
         },
       },
-      [DAPP_ONE_URL]: {
-        origin: DAPP_ONE_URL,
-        permissions: {
-          eth_accounts: {
-            caveats: [
-              {
-                type: 'restrictReturnedAccounts',
-                value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
-              },
-            ],
-            id: 'ZaqPEWxyhNCJYACFw93jE',
-            date: 1664388714636,
-            invoker: DAPP_ONE_URL,
-            parentCapability: 'eth_accounts',
-          },
-        },
-      },
-    };
-    return this.withPermissionController({ subjects });
+    });
   }
 
   withPermissionControllerConnectedToTwoMultichainTestDapps() {
@@ -772,8 +806,8 @@ class FixtureBuilder {
   withPreferencesControllerAdditionalAccountIdentities() {
     return this.withPreferencesController({
       identities: {
-        [DEFAULT_FIXTURE_ACCOUNT]: {
-          address: DEFAULT_FIXTURE_ACCOUNT,
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
           lastSelected: 1665507600000,
           name: 'Account 1',
         },
@@ -963,13 +997,6 @@ class FixtureBuilder {
                 type: 'HD Key Tree',
               },
             },
-          },
-          '74c55111-be4f-48aa-a49c-55995c8a1b26': {
-            id: '74c55111-be4f-48aa-a49c-55995c8a1b26',
-            address: ERC_4337_ACCOUNT,
-            options: {},
-            methods: [],
-            type: 'eip155:erc4337',
           },
         },
       },
@@ -1392,8 +1419,8 @@ class FixtureBuilder {
           permissions: {
             eth_accounts: {
               id: 'vaa88u5Iv3VmsJwG3bDKW',
-              invoker: 'https://app.uniswap.org',
               parentCapability: 'eth_accounts',
+              invoker: 'https://app.uniswap.org',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -1412,8 +1439,8 @@ class FixtureBuilder {
           permissions: {
             eth_accounts: {
               id: 'bvvPcFtIhkFyHyW0Tmwi4',
-              invoker: 'https://www.dextools.io',
               parentCapability: 'eth_accounts',
+              invoker: 'https://www.dextools.io',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -1433,8 +1460,8 @@ class FixtureBuilder {
           permissions: {
             eth_accounts: {
               id: 'AiblK84K1Cic-Y0FDSzMD',
-              invoker: 'https://coinmarketcap.com',
               parentCapability: 'eth_accounts',
+              invoker: 'https://coinmarketcap.com',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',

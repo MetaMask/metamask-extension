@@ -7,7 +7,6 @@ import {
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import {
   initCreateSessionScopes,
@@ -15,6 +14,7 @@ import {
   openMultichainDappAndConnectWalletWithExternallyConnectable,
   addAccountInWalletAndAuthorize,
   getSessionScopes,
+  type FixtureCallbackArgs,
 } from './testHelpers';
 
 describe('Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`', function () {
@@ -29,13 +29,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
-      async ({
-        driver,
-        extensionId,
-      }: {
-        driver: Driver;
-        extensionId: string;
-      }) => {
+      async ({ driver, extensionId }: FixtureCallbackArgs) => {
         await openMultichainDappAndConnectWalletWithExternallyConnectable(
           driver,
           extensionId,
@@ -82,13 +76,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
-      async ({
-        driver,
-        extensionId,
-      }: {
-        driver: Driver;
-        extensionId: string;
-      }) => {
+      async ({ driver, extensionId }: FixtureCallbackArgs) => {
         await openMultichainDappAndConnectWalletWithExternallyConnectable(
           driver,
           extensionId,

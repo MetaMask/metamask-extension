@@ -403,10 +403,8 @@ export default class AccountTrackerController extends BaseController<
     if (!pollingToken) {
       throw new Error('pollingToken required');
     }
-    let found = false;
     this.#pollingTokenSets.forEach((tokenSet, key) => {
       if (tokenSet.has(pollingToken)) {
-        found = true;
         tokenSet.delete(pollingToken);
         if (tokenSet.size === 0) {
           this.#pollingTokenSets.delete(key);
@@ -414,9 +412,6 @@ export default class AccountTrackerController extends BaseController<
         }
       }
     });
-    if (!found) {
-      throw new Error('pollingToken not found');
-    }
   }
 
   /**

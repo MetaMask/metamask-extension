@@ -42,6 +42,7 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getTokenList,
+  getUseExternalServices,
 } from '../../../../selectors';
 import {
   getConversionRate,
@@ -49,7 +50,6 @@ import {
   getNativeCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
-import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -60,6 +60,8 @@ import {
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AvatarType } from '../../avatar-group/avatar-group.types';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
+import { useAsyncResult } from '../../../../hooks/useAsyncResult';
+import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
 import {
   ERC20Asset,
   NativeAsset,
@@ -183,9 +185,19 @@ export function AssetPickerModal({
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
 
-  // Swaps token list
   const tokenList = useSelector(getTokenList) as TokenListMap;
-  const topTokens = useSelector(getTopAssets, isEqual);
+
+  const allowExternalServices = useSelector(getUseExternalServices);
+  // Swaps top tokens
+  const { value: topTokensResponse } = useAsyncResult<
+    { address: string }[] | undefined
+  >(async () => {
+    if (allowExternalServices && selectedNetwork?.chainId) {
+      return await fetchTopAssetsList(selectedNetwork.chainId);
+    }
+    return undefined;
+  }, [selectedNetwork?.chainId, allowExternalServices]);
+  const topTokens = topTokensResponse ?? [];
 
   const getIsDisabled = useCallback(
     ({
@@ -212,6 +224,18 @@ export function AssetPickerModal({
     );
   }, [tokensWithBalances, tokens]);
 
+  /**
+   * Generates a list of tokens sorted in this order
+   * - native tokens with balance
+   * - tokens with highest to lowest balance in selected currency
+   * - selected network's native token
+   * - matches URL token parameter
+   * - matches search query
+   * - detected tokens (without balance)
+   * - popularity
+   * - all other tokens
+   * - blocked tokens
+   */
   const tokenListGenerator = useCallback(
     function* (
       shouldAddToken: (
@@ -227,6 +251,18 @@ export function AssetPickerModal({
           string?: string;
         })
     > {
+      const blockedTokens = [];
+
+      // Yield multichain tokens with balances
+      if (isMultiselectEnabled) {
+        for (const token of multichainTokensWithBalance) {
+          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+            yield token;
+          }
+        }
+      }
+
+      // Yield the native token for the selected chain
       const nativeToken: AssetWithDisplayData<NativeAsset> = {
         address: null,
         symbol: nativeCurrency,
@@ -248,26 +284,15 @@ export function AssetPickerModal({
         yield nativeToken;
       }
 
-      const blockedTokens = [];
-
-      // Yield multichain tokens with balances
-      if (isMultiselectEnabled) {
-        for (const token of multichainTokensWithBalance) {
-          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-            yield token;
-          }
-        }
-      }
-
       for (const token of memoizedUsersTokens) {
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
       }
 
-      // topTokens should already be sorted by popularity
-      for (const address of Object.keys(topTokens)) {
-        const token = tokenList?.[address];
+      // topTokens are sorted by popularity
+      for (const topToken of topTokens) {
+        const token = tokenList?.[topToken.address];
         if (
           token &&
           shouldAddToken(token.symbol, token.address, currentChainId)
@@ -384,7 +409,6 @@ export function AssetPickerModal({
     customTokenListGenerator,
     isMultiselectEnabled,
     selectedChainIds,
-    isMultiselectEnabled,
     selectedNetwork,
   ]);
 
