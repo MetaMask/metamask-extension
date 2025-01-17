@@ -12,7 +12,9 @@ export function useTransferRecipient() {
   const transactionData = useTokenTransactionData();
   const transactionType = transactionMetadata?.type;
   const transactionTo = transactionMetadata?.txParams?.to;
-  const transferTo = transactionData?.args?._to as string | undefined;
+  const transferTo =
+    (transactionData?.args?._to as string | undefined) ||
+    transactionData?.args?.to;
 
   return transactionType === TransactionType.simpleSend
     ? transactionTo
