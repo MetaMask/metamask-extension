@@ -9,6 +9,10 @@ export const GANACHE_PRIVATE_KEY =
 export const DEFAULT_FIXTURE_ACCOUNT =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
+/** Address of the second default account derived from onboarding fixture. */
+export const DEFAULT_FIXTURE_ACCOUNT_2 =
+  '0x09781764c08de8ca82e156bbf156a3ca217c7950';
+
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 

@@ -17,6 +17,7 @@ const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
+  DEFAULT_FIXTURE_ACCOUNT_2,
   ERC_4337_ACCOUNT,
   DEFAULT_GANACHE_ETH_BALANCE_DEC,
 } = require('./constants');
@@ -456,7 +457,7 @@ const PRIVATE_KEY_TWO =
   '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
+const ACCOUNT_2 = DEFAULT_FIXTURE_ACCOUNT_2;
 
 const defaultGanacheOptions = {
   accounts: [

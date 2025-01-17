@@ -9,13 +9,13 @@ const {
 } = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 const { CHAIN_IDS } = require('../../shared/constants/network');
-const { ACCOUNT_1, ACCOUNT_2 } = require('./helpers');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
+  DEFAULT_FIXTURE_ACCOUNT_2,
 } = require('./constants');
 const {
   defaultFixture,
@@ -359,7 +359,7 @@ class FixtureBuilder {
   withNftControllerERC1155() {
     return this.withNftController({
       allNftContracts: {
-        [ACCOUNT_1]: {
+        [DEFAULT_FIXTURE_ACCOUNT]: {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
@@ -368,7 +368,7 @@ class FixtureBuilder {
         },
       },
       allNfts: {
-        [ACCOUNT_1]: {
+        [DEFAULT_FIXTURE_ACCOUNT]: {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
@@ -391,7 +391,7 @@ class FixtureBuilder {
   withNftControllerERC721() {
     return this.withNftController({
       allNftContracts: {
-        [ACCOUNT_1]: {
+        [DEFAULT_FIXTURE_ACCOUNT]: {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
@@ -402,7 +402,7 @@ class FixtureBuilder {
         },
       },
       allNfts: {
-        [ACCOUNT_1]: {
+        [DEFAULT_FIXTURE_ACCOUNT]: {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
@@ -538,7 +538,7 @@ class FixtureBuilder {
             caveats: [
               {
                 type: 'restrictReturnedAccounts',
-                value: [ACCOUNT_1, ACCOUNT_2],
+                value: [DEFAULT_FIXTURE_ACCOUNT, DEFAULT_FIXTURE_ACCOUNT_2],
               },
             ],
             date: 1664388714636,
@@ -564,7 +564,7 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [ACCOUNT_2],
+                  value: [DEFAULT_FIXTURE_ACCOUNT_2],
                 },
               ],
               date: 1664388714636,
@@ -588,7 +588,7 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [ACCOUNT_1],
+                  value: [DEFAULT_FIXTURE_ACCOUNT],
                 },
               ],
               date: 1664388714636,
@@ -605,7 +605,7 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [ACCOUNT_1],
+                  value: [DEFAULT_FIXTURE_ACCOUNT],
                 },
               ],
               date: 1664388714636,
@@ -669,8 +669,8 @@ class FixtureBuilder {
           lastSelected: 1665507600000,
           name: 'Account 1',
         },
-        [ACCOUNT_2]: {
-          address: ACCOUNT_2,
+        [DEFAULT_FIXTURE_ACCOUNT_2]: {
+          address: DEFAULT_FIXTURE_ACCOUNT_2,
           lastSelected: 1665507800000,
           name: 'Account 2',
         },
@@ -818,7 +818,7 @@ class FixtureBuilder {
         accounts: {
           'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
             id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-            address: ACCOUNT_1,
+            address: DEFAULT_FIXTURE_ACCOUNT,
             options: {},
             methods: [
               'personal_sign',
@@ -838,7 +838,7 @@ class FixtureBuilder {
           },
           'e9976a84-110e-46c3-9811-e2da7b5528d3': {
             id: 'e9976a84-110e-46c3-9811-e2da7b5528d3',
-            address: ACCOUNT_2,
+            address: DEFAULT_FIXTURE_ACCOUNT_2,
             options: {},
             methods: [
               'personal_sign',
@@ -940,7 +940,7 @@ class FixtureBuilder {
       detectedTokens: [],
       allTokens: {
         [toHex(chainId)]: {
-          [ACCOUNT_1]: [
+          [DEFAULT_FIXTURE_ACCOUNT]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
               symbol: 'TST',
@@ -983,7 +983,7 @@ class FixtureBuilder {
               status: 'unapproved',
               time: 1617228030067,
               txParams: {
-                from: ACCOUNT_1,
+                from: DEFAULT_FIXTURE_ACCOUNT,
                 gas: '0x61a8',
                 maxFeePerGas: '0x59682f0c',
                 maxPriorityFeePerGas: '0x59682f00',
@@ -1023,7 +1023,7 @@ class FixtureBuilder {
             status: 'approved',
             time: 1617228030067,
             txParams: {
-              from: ACCOUNT_1,
+              from: DEFAULT_FIXTURE_ACCOUNT,
               gas: '0x61a8',
               maxFeePerGas: '0x59682f0c',
               maxPriorityFeePerGas: '0x59682f00',
@@ -1036,7 +1036,7 @@ class FixtureBuilder {
           status: 'approved',
           time: 1617228030067,
           txParams: {
-            from: ACCOUNT_1,
+            from: DEFAULT_FIXTURE_ACCOUNT,
             gas: '0x61a8',
             maxFeePerGas: '0x59682f0c',
             maxPriorityFeePerGas: '0x59682f00',
@@ -1064,7 +1064,7 @@ class FixtureBuilder {
               status: 'unapproved',
               time: 1671635506502,
               txParams: {
-                from: ACCOUNT_1,
+                from: DEFAULT_FIXTURE_ACCOUNT,
                 gas: '0x5208',
                 maxFeePerGas: '0x4c03c96f8',
                 maxPriorityFeePerGas: '0x59682f00',
@@ -1151,7 +1151,7 @@ class FixtureBuilder {
                 path: '/txReceipt',
                 value: {
                   blockNumber: '7cbf95',
-                  from: ACCOUNT_1,
+                  from: DEFAULT_FIXTURE_ACCOUNT,
                   gasUsed: '5208',
                   status: '0x1',
                   to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -1176,7 +1176,7 @@ class FixtureBuilder {
           submittedTime: 1671635510753,
           time: 1671635506502,
           txParams: {
-            from: ACCOUNT_1,
+            from: DEFAULT_FIXTURE_ACCOUNT,
             gas: '0x5208',
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
             type: '0x2',
@@ -1189,7 +1189,7 @@ class FixtureBuilder {
               negative: 0,
               words: [8175509, null],
             },
-            from: ACCOUNT_1,
+            from: DEFAULT_FIXTURE_ACCOUNT,
             status: '0x1',
             to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
             type: '0x2',
@@ -1214,7 +1214,7 @@ class FixtureBuilder {
             from: '0xc87261ba337be737fa744f50e7aaf4a920bdfcd6',
             gas: '0x5208',
             gasPrice: '0x329af9707',
-            to: ACCOUNT_1,
+            to: DEFAULT_FIXTURE_ACCOUNT,
             value: '0xDE0B6B3A7640000',
           },
           type: 'incoming',
@@ -1388,8 +1388,8 @@ class FixtureBuilder {
   withTrezorAccount() {
     return this.withAccountTracker({
       accounts: {
-        [ACCOUNT_1]: {
-          address: ACCOUNT_1,
+        [DEFAULT_FIXTURE_ACCOUNT]: {
+          address: DEFAULT_FIXTURE_ACCOUNT,
           balance: '0x15af1d78b58c40000',
         },
         '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
@@ -1400,8 +1400,8 @@ class FixtureBuilder {
       currentBlockGasLimit: '0x1c9c380',
       accountsByChainId: {
         '0x539': {
-          [ACCOUNT_1]: {
-            address: ACCOUNT_1,
+          [DEFAULT_FIXTURE_ACCOUNT]: {
+            address: DEFAULT_FIXTURE_ACCOUNT,
             balance: '0x15af1d78b58c40000',
           },
           '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
@@ -1419,7 +1419,7 @@ class FixtureBuilder {
           accounts: {
             'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
               id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-              address: ACCOUNT_1,
+              address: DEFAULT_FIXTURE_ACCOUNT,
               options: {},
               methods: [
                 'personal_sign',
@@ -1472,7 +1472,7 @@ class FixtureBuilder {
       .withNameController({
         names: {
           ethereumAddress: {
-            [ACCOUNT_1]: {
+            [DEFAULT_FIXTURE_ACCOUNT]: {
               '*': {
                 name: 'Account 1',
                 sourceId: null,
@@ -1493,8 +1493,8 @@ class FixtureBuilder {
       })
       .withPreferencesController({
         identities: {
-          [ACCOUNT_1]: {
-            address: ACCOUNT_1,
+          [DEFAULT_FIXTURE_ACCOUNT]: {
+            address: DEFAULT_FIXTURE_ACCOUNT,
             lastSelected: 1665507600000,
             name: 'Account 1',
           },
@@ -1505,8 +1505,8 @@ class FixtureBuilder {
           },
         },
         lostIdentities: {
-          [ACCOUNT_1]: {
-            address: ACCOUNT_1,
+          [DEFAULT_FIXTURE_ACCOUNT]: {
+            address: DEFAULT_FIXTURE_ACCOUNT,
             name: 'Account 1',
             lastSelected: 1665507600000,
           },
