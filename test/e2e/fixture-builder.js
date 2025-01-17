@@ -677,6 +677,7 @@ class FixtureBuilder {
   }
 
   withPermissionControllerConnectedToTwoMultichainTestDapps() {
+    // TODO: go over this whole file and just use ACCOUNT_1 and ACCOUNT_2 instead of this hardcoded tomfoolery
     const permissions = {
       'endowment:caip25': {
         caveats: [
