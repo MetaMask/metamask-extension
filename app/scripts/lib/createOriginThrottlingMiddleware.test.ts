@@ -1,4 +1,6 @@
 import { errorCodes } from '@metamask/rpc-errors';
+import { JsonRpcResponse } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import { AppStateController } from '../controllers/app-state-controller';
 import createOriginThrottlingMiddleware, {
   SPAM_FILTER_ACTIVATED_ERROR,
@@ -28,7 +30,7 @@ describe('createOriginThrottlingMiddleware', () => {
     const next = jest.fn();
     const end = jest.fn();
 
-    await middleware(req, {}, next, end);
+    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next, end);
 
     expect(next).toHaveBeenCalled();
     expect(end).not.toHaveBeenCalled();
@@ -44,7 +46,12 @@ describe('createOriginThrottlingMiddleware', () => {
 
     mockIsOriginBlockedForConfirmations.mockReturnValueOnce(true);
 
-    await middleware(req, {}, next, end);
+    await middleware(
+      req,
+      { error: null } as unknown as JsonRpcResponse<Json>,
+      next,
+      end,
+    );
 
     expect(end).toHaveBeenCalledWith(SPAM_FILTER_ACTIVATED_ERROR);
     expect(next).not.toHaveBeenCalled();
@@ -62,7 +69,9 @@ describe('createOriginThrottlingMiddleware', () => {
     const end = jest.fn();
     const responseWithoutError = {
       error: null,
-    };
+      id: 1,
+      jsonrpc: '2.0',
+    } as unknown as JsonRpcResponse<Json>;
 
     mockIsOriginBlockedForConfirmations.mockReturnValueOnce(false);
 
@@ -87,7 +96,9 @@ describe('createOriginThrottlingMiddleware', () => {
       error: {
         code: errorCodes.provider.userRejectedRequest,
       },
-    };
+      id: 1,
+      jsonrpc: '2.0',
+    } as unknown as JsonRpcResponse<Json>;
 
     mockIsOriginBlockedForConfirmations.mockReturnValueOnce(false);
 

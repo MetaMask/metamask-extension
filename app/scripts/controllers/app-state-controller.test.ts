@@ -1,13 +1,10 @@
 import { ControllerMessenger } from '@metamask/base-controller';
-import { errorCodes } from '@metamask/rpc-errors';
 import type {
   AcceptRequest,
   AddApprovalRequest,
-  ApprovalRequest,
 } from '@metamask/approval-controller';
 import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import { Browser } from 'webextension-polyfill';
-import { waitFor } from '@testing-library/react';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ORIGIN_METAMASK,
@@ -657,11 +654,7 @@ describe('AppStateController', () => {
 
           controller.onRequestRejectedByUser(origin);
 
-          await waitFor(() => {
-            expect(controller.state.throttledOrigins[origin].rejections).toBe(
-              1,
-            );
-          });
+          expect(controller.state.throttledOrigins[origin].rejections).toBe(1);
         });
       });
     });

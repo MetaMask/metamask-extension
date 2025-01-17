@@ -14,7 +14,6 @@ import {
 } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 import { Browser } from 'webextension-polyfill';
-import { errorCodes } from '@metamask/rpc-errors';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -43,17 +42,7 @@ import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
-
-export type OriginState = {
-  rejections: number;
-  lastRejection: number;
-};
-
-export type OriginThrottlingState = {
-  throttledOrigins: {
-    [key: string]: OriginState;
-  };
-};
+import type { ThrottledOrigins } from '../../../shared/types/origin-throttling';
 
 export type AppStateControllerState = {
   timeoutMinutes: number;
@@ -97,9 +86,7 @@ export type AppStateControllerState = {
   noteToTraderMessage?: string;
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
-  throttledOrigins: {
-    [key: string]: OriginState;
-  };
+  throttledOrigins: ThrottledOrigins;
 };
 
 const controllerName = 'AppStateController';
@@ -379,13 +366,6 @@ const controllerMetadata = {
     anonymous: false,
   },
 };
-
-type ErrorWithCode = {
-  code?: number;
-} & Error;
-
-const isUserRejectedError = (error: ErrorWithCode) =>
-  error && error.code === errorCodes.provider.userRejectedRequest;
 
 export class AppStateController extends BaseController<
   typeof controllerName,
