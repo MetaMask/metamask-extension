@@ -68,6 +68,8 @@ const PermitSimulation: React.FC<object> = () => {
       tokenContract={token}
       value={amount}
       chainId={chainId}
+      message={message}
+      canDisplayValueAsUnlimited
     />
   );
 
@@ -97,19 +99,27 @@ const PermitSimulation: React.FC<object> = () => {
             value={message.value}
             tokenId={message.tokenId}
             chainId={chainId}
+            message={message}
+            canDisplayValueAsUnlimited
           />
         )}
       </Box>
     </ConfirmInfoRow>
   );
 
+  let descriptionKey = 'permitSimulationDetailInfo';
+  if (isNFT) {
+    descriptionKey = 'simulationDetailsApproveDesc';
+  } else if (message.allowed === false) {
+    // revoke permit
+    descriptionKey = 'revokeSimulationDetailsDesc';
+  }
+
   return (
     <StaticSimulation
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
-      description={t(
-        isNFT ? 'simulationDetailsApproveDesc' : 'permitSimulationDetailInfo',
-      )}
+      description={t(descriptionKey)}
       simulationElements={SpendingCapRow}
     />
   );

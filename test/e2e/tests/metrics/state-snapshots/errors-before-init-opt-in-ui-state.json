@@ -161,9 +161,7 @@
           }
         },
         "destTokens": {},
-        "destTopAssets": {},
-        "srcTokens": {},
-        "srcTopAssets": {}
+        "destTopAssets": {}
       }
     },
     "TransactionController": { "transactions": "object" },
