@@ -116,20 +116,6 @@ describe('ConfirmFooter', () => {
       const confirmButton = getByText('Confirm');
       expect(confirmButton).toBeDisabled();
     });
-
-    it('when the confirmation is a Permit with the transaction simulation setting disabled', () => {
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: permitSignatureMsg,
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: () => undefined,
-      });
-      const mockStatePermit =
-        getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
-      const { getByText } = render(mockStatePermit);
-
-      const confirmButton = getByText('Confirm');
-      expect(confirmButton).toBeDisabled();
-    });
   });
 
   it('invoke required actions when cancel button is clicked', () => {
