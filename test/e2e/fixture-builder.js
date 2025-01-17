@@ -333,6 +333,22 @@ class FixtureBuilder {
     });
   }
 
+  withNetworkControllerOnTenderly(rpcUrl) {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.MAINNET,
+          nickname: 'Tenderly Mainnet',
+          rpcPrefs: {},
+          rpcUrl,
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
   withNetworkControllerDoubleGanache() {
     const ganacheNetworks = mockNetworkStateOld({
       id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
