@@ -29,8 +29,6 @@ jobs:
   test-lint-changelog:
     name: Test lint changelog
     uses: ./.github/workflows/test-lint-changelog.yml
-    outputs:
-      result: ${{ steps.set-result.outputs.result }}
 
   test-lint-lockfile:
     name: Test lint lockfile
@@ -112,11 +110,10 @@ jobs:
           # For a `pull_request` event, the branch is `github.head_ref`.
           # For a `push` event, the branch is `github.ref_name`.
           BRANCH: ${{ github.head_ref || github.ref_name }}
+          CHANGELOG_LINT_RESULT: ${{ env.CHANGELOG_LINT_RESULT }}
         run: |
-          CHANGELOG_LINT_RESULT="${{ needs.test-lint-changelog.outputs.result }}"
           echo "Branch: $BRANCH"
           echo "Changelog Lint Result: $CHANGELOG_LINT_RESULT"
-          echo "Test lint changelog output: ${{ needs.test-lint-changelog.outputs.result }}"
           if [[ "$CHANGELOG_LINT_RESULT" == "failure" ]]; then
             if [[ "$BRANCH" == Version-v* ]]; then
               echo "test-lint-changelog failed, but we're ignoring it for Version-v branches."

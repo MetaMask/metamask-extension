@@ -7,8 +7,6 @@ jobs:
   test-lint-changelog:
     name: Test lint changelog
     runs-on: ubuntu-latest
-    outputs:
-      result: ${{ steps.set-result.outputs.result }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,10 +21,11 @@ jobs:
         if: ${{ !startsWith(github.head_ref || github.ref_name, 'Version-v') }}
         run: |
           if yarn lint:changelog; then
-            echo "result=success" >> $GITHUB_ENV
+            echo "CHANGELOG_LINT_RESULT=success" >> $GITHUB_ENV
           else
-            echo "result=failure" >> $GITHUB_ENV
+            echo "CHANGELOG_LINT_RESULT=failure" >> $GITHUB_ENV
           fi
+          echo "Changelog Lint Result: $CHANGELOG_LINT_RESULT"
 
       - name: Validate release candidate changelog
         id: validate-rc-changelog
@@ -35,15 +34,12 @@ jobs:
         if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
         run: |
           if .circleci/scripts/validate-changelog-in-rc.sh; then
-            echo "result=success" >> $GITHUB_ENV
+            echo "CHANGELOG_LINT_RESULT=success" >> $GITHUB_ENV
           else
-            echo "result=failure" >> $GITHUB_ENV
+            echo "CHANGELOG_LINT_RESULT=failure" >> $GITHUB_ENV
           fi
-
-      - name: Set result
-        id: set-result
-        run: echo "result=${{ env.result }}" >> $GITHUB_OUTPUT
+          echo "Changelog Lint Result: $CHANGELOG_LINT_RESULT"
 
       - name: Fail job if result is failure
-        if: ${{ env.result == 'failure' }}
+        if: ${{ env.CHANGELOG_LINT_RESULT == 'failure' }}
         run: exit 1
