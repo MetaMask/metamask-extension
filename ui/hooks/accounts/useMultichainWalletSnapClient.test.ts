@@ -4,6 +4,8 @@ import {
   BtcAccountType,
   BtcMethod,
   BtcScopes,
+  SolAccountType,
+  SolMethod,
   SolScopes,
 } from '@metamask/keyring-api';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -53,10 +55,9 @@ describe('useMultichainWalletSnapClient', () => {
         address: '4mip4tgbhxf8dpqvtb3zhzzapwfvznanhssqzgjyp7ha',
         id: '22b44d7c-1e57-4b5b-8502-02698e686fd1',
         options: {},
-        methods: ['someMethod'],
-        scopes: [SolScopes.Devnet],
-        // TODO: Update when keyring-api is published with Solana types
-        type: BtcAccountType.P2wpkh,
+        methods: [SolMethod.SendAndConfirmTransaction],
+        scopes: [SolScopes.Mainnet, SolScopes.Testnet, SolScopes.Devnet],
+        type: SolAccountType.DataAccount,
       },
     },
   ];
