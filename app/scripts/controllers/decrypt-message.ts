@@ -1,4 +1,3 @@
-import EventEmitter from 'events';
 import log from 'loglevel';
 import {
   AbstractMessage,
