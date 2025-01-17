@@ -804,8 +804,6 @@ export default function PrepareSwapPage({
     true,
   );
 
-  console.log('swapToTokenFiatValue', swapToTokenFiatValue);
-
   if (fromTokenInputValue) {
     fromTokenAmountClassName = getClassNameForCharLength(
       fromTokenInputValue,
