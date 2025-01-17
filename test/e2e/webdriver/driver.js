@@ -707,12 +707,15 @@ class Driver {
   async clickElementSafe(rawLocator, timeout = 1000) {
     try {
       const locator = this.buildLocator(rawLocator);
-
       const elements = await this.driver.wait(
         until.elementsLocated(locator),
         timeout,
       );
 
+      await Promise.all([
+        this.driver.wait(until.elementIsVisible(elements[0]), timeout),
+        this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
+      ]);
       await elements[0].click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
