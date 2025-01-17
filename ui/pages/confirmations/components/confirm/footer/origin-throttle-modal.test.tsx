@@ -1,9 +1,12 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import OriginThrottleModal from './origin-throttle-modal';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
 
 const mockHideModal = jest.fn();
 jest.mock('../../../../../hooks/useModalProps', () => ({
@@ -15,14 +18,16 @@ jest.mock('../../../../../hooks/useModalProps', () => ({
 jest.mock('../../../hooks/useOriginThrottling');
 
 const renderComponent = (isOpen: boolean, onConfirmationCancel: jest.Mock) => {
-  const t = (key: string) => key; // Mock translation function
-  return render(
+  const store = configureStore()(mockState);
+  const t = (key: string) => key;
+  return renderWithProvider(
     <I18nContext.Provider value={t}>
       <OriginThrottleModal
         isOpen={isOpen}
         onConfirmationCancel={onConfirmationCancel}
       />
     </I18nContext.Provider>,
+    store,
   );
 };
 
