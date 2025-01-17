@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.11.0]
-### Uncategorized
+### Fixed
 - feat: add Lisk network logos ([#29762](https://github.com/MetaMask/metamask-extension/pull/29762))
 - test: fix flaky erc1155 set approval for all tests ([#29467](https://github.com/MetaMask/metamask-extension/pull/29467))
 - fix: remove check for changeX token from test ([#29752](https://github.com/MetaMask/metamask-extension/pull/29752))
