@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Ενεργοποιήστε το για να δείτε αιτήματα υπογραφών σε βελτιωμένη μορφή."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Βελτιωμένα αιτήματα συναλλαγών"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Ενεργοποιήστε το για να δείτε τα αιτήματα συναλλαγών σε βελτιωμένη μορφή."
-  },
   "refreshList": {
     "message": "Ανανέωση λίστας"
   },
