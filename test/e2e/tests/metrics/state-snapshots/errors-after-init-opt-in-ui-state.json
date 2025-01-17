@@ -122,6 +122,7 @@
         "usdConversionRate": 1700
       }
     },
+    "throttledOrigins": "object",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
