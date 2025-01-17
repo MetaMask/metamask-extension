@@ -173,6 +173,7 @@ export const CHAIN_IDS = {
   LISK_SEPOLIA: '0x106a',
   INK_SEPOLIA: '0xba5eD',
   INK: '0xdef1',
+  BIFROST_POLKADOT: '0x3e4',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -237,6 +238,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   INK: '0xdef1',
   SONEIUM_MAINNET: '0x74c',
   SONEIUM_TESTNET: '0x79a',
+  BIFROST_POLKADOT: '0x3e4',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -291,6 +293,7 @@ export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
 export const INK_DISPLAY_NAME = 'Ink Mainnet';
 export const SONEIUM_DISPLAY_NAME = 'Soneium Mainnet';
+export const BIFROST_POLKADOT_DISPLAY_NAME = 'Bifrost Polkadot';
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
   network,
@@ -415,6 +418,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   LISK: 'ETH',
   SONEIUM_MAINNET: 'ETH',
   SONEIUM_TESTNET: 'ETH',
+  BIFROST_POLKADOT: 'ETH',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -503,6 +507,7 @@ export const LISK_SEPOLIA_IMAGE_URL = './images/lisk_sepolia.svg';
 export const INK_SEPOLIA_IMAGE_URL = './images/ink-sepolia.svg';
 export const INK_IMAGE_URL = './images/ink.svg';
 export const SONEIUM_IMAGE_URL = './images/soneium.svg';
+export const BIFROST_POLKADOT_IMAGE_URL = './images/bifrost_polkadot.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -859,6 +864,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.INK]: INK_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]: SONEIUM_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]: SONEIUM_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.BIFROST_POLKADOT]: BIFROST_POLKADOT_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
