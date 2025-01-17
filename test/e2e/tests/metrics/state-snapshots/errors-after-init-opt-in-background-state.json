@@ -63,18 +63,12 @@
     "bridgeState": {
       "bridgeFeatureFlags": {
         "extensionConfig": {
-          "maxRefreshCount": "number",
           "refreshRate": "number",
+          "maxRefreshCount": "number",
           "support": "boolean",
-          "chains": {
-            "0x1": "object",
-            "0xa4b1": "object",
-            "0xe708": "object"
-          }
+          "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
         }
       },
-      "srcTokens": {},
-      "srcTopAssets": {},
       "destTokens": {},
       "destTopAssets": {},
       "quoteRequest": {
@@ -86,7 +80,7 @@
     }
   },
   "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
-  "CronjobController": { "jobs": "object" },
+  "CronjobController": { "jobs": "object", "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
     "currencyRates": {
@@ -215,7 +209,6 @@
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
-    "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
@@ -242,11 +235,9 @@
       "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": {
-        "0x539": "boolean"
-      },
+      "tokenNetworkFilter": { "0x539": "boolean" },
       "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean"
+      "smartTransactionsMigrationApplied": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -264,7 +255,7 @@
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
-    "remoteFeatureFlags": { "feature1": true, "feature2": false },
+    "remoteFeatureFlags": {},
     "cacheTimestamp": "number"
   },
   "SelectedNetworkController": { "domains": "object" },
@@ -330,9 +321,7 @@
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
     "tokenList": "object",
-    "tokensChainsCache": {
-      "0x539": "object"
-    },
+    "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": { "marketData": "object" },
@@ -355,6 +344,7 @@
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingReadyToBeDispatched": "boolean"
+    "isAccountSyncingReadyToBeDispatched": "boolean",
+    "isAccountSyncingInProgress": "boolean"
   }
 }

@@ -1045,9 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Transaktionsanfrage"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Um Ihre Assets und Anmeldedaten zu schützen, empfehlen wir die Ablehnung der Anfrage."
-  },
   "confirmationAlertModalTitle": {
     "message": "Diese Anfrage scheint verdächtig"
   },
@@ -4316,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Schalten Sie dies ein, um sich Unterschriftsanfragen in einem erweiterten Format anzeigen zu lassen."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Verbesserte Transaktionsanfragen"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Schalten Sie dies ein, um sich Transaktionsanfragen in einem erweiterten Format anzeigen zu lassen."
-  },
   "refreshList": {
     "message": "Liste aktualisieren"
   },
@@ -5971,18 +5962,6 @@
   "toAddress": {
     "message": "An: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Dadurch können Sie ein Netzwerk für jede Website auswählen, anstatt ein einziges Netzwerk für alle Websites auszuwählen. Diese Funktion verhindert, dass Sie manuell zwischen den Netzwerken wechseln müssen, was die Benutzerfreundlichkeit auf bestimmten Websites beeinträchtigen könnte."
-  },
-  "toggleRequestQueueField": {
-    "message": "Wählen Sie Netzwerke für jede Website"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Aus"
-  },
-  "toggleRequestQueueOn": {
-    "message": "An"
   },
   "token": {
     "message": "Token"

@@ -1045,9 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Yêu cầu giao dịch"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Để bảo vệ tài sản và thông tin đăng nhập của bạn, chúng tôi đề nghị bạn từ chối yêu cầu này."
-  },
   "confirmationAlertModalTitle": {
     "message": "Yêu cầu này có dấu hiệu đáng ngờ"
   },
@@ -4316,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Bật tính năng này để xem các yêu cầu chữ ký ở định dạng nâng cao."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Yêu cầu giao dịch được cải thiện"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Bật tính năng này để xem các yêu cầu giao dịch ở định dạng nâng cao."
-  },
   "refreshList": {
     "message": "Làm mới danh sách"
   },
@@ -5971,18 +5962,6 @@
   "toAddress": {
     "message": "Đến: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Tính năng này cho phép bạn chọn mạng cho từng trang web thay vì một mạng duy nhất được chọn cho tất cả các trang web. Tính năng này sẽ ngăn bạn chuyển đổi mạng theo cách thủ công, điều này có thể ảnh hưởng đến trải nghiệm người dùng của bạn trên một số trang web."
-  },
-  "toggleRequestQueueField": {
-    "message": "Chọn mạng cho từng trang web"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Tắt"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Bật"
   },
   "token": {
     "message": "Token"

@@ -1045,9 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Αίτημα συναλλαγής"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία και τις πληροφορίες σύνδεσης, σας προτείνουμε να απορρίψετε το αίτημα."
-  },
   "confirmationAlertModalTitle": {
     "message": "Αυτό το αίτημα είναι ύποπτο"
   },
@@ -4316,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Ενεργοποιήστε το για να δείτε αιτήματα υπογραφών σε βελτιωμένη μορφή."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Βελτιωμένα αιτήματα συναλλαγών"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Ενεργοποιήστε το για να δείτε τα αιτήματα συναλλαγών σε βελτιωμένη μορφή."
-  },
   "refreshList": {
     "message": "Ανανέωση λίστας"
   },
@@ -5971,18 +5962,6 @@
   "toAddress": {
     "message": "Προς: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Αυτό σας επιτρέπει να επιλέξετε ένα δίκτυο για κάθε ιστότοπο αντί για ένα μόνο επιλεγμένο δίκτυο για όλους τους ιστότοπους. Αυτή η λειτουργία θα σας αποτρέψει από το να αλλάζετε δίκτυα χειροκίνητα, το οποίο μπορεί να διαταράξει την εμπειρία του χρήστη σε ορισμένους ιστότοπους."
-  },
-  "toggleRequestQueueField": {
-    "message": "Επιλογή δικτύων για κάθε ιστότοπο"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Απενεργοποίηση"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Ενεργοποίηση"
   },
   "token": {
     "message": "Token"
