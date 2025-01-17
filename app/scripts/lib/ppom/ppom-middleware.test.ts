@@ -12,7 +12,6 @@ import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
   handlePPOMError,
-  isChainSupported,
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
@@ -106,7 +105,6 @@ const createMiddleware = (
 describe('PPOMMiddleware', () => {
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
-  const isChainSupportedMock = jest.mocked(isChainSupported);
   const detectSIWEMock = jest.mocked(detectSIWE);
 
   beforeEach(() => {
@@ -114,7 +112,6 @@ describe('PPOMMiddleware', () => {
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
-    isChainSupportedMock.mockResolvedValue(true);
     detectSIWEMock.mockReturnValue({ isSIWEMessage: false } as SIWEMessage);
 
     globalThis.sentry = {

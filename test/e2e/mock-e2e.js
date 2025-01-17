@@ -1,9 +1,6 @@
 const fs = require('fs');
 
 const {
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
-} = require('../../shared/constants/security-provider');
-const {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } = require('../../shared/constants/bridge');
@@ -156,15 +153,6 @@ async function setupMocking(
       body: emptyHtmlPage(),
     };
   });
-
-  await server
-    .forGet(`${SECURITY_ALERTS_PROD_API_BASE_URL}/supportedChains`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
-      };
-    });
 
   await server
     .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/${chainId}`)

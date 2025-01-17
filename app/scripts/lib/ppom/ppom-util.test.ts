@@ -21,7 +21,6 @@ import {
 import { AppStateController } from '../../controllers/app-state-controller';
 import {
   generateSecurityAlertId,
-  isChainSupported,
   METHOD_SIGN_TYPED_DATA_V3,
   METHOD_SIGN_TYPED_DATA_V4,
   updateSecurityAlertResponse,
@@ -113,10 +112,6 @@ function createTransactionControllerMock(
 describe('PPOM Utils', () => {
   const normalizeTransactionParamsMock = jest.mocked(
     normalizeTransactionParams,
-  );
-  const getSupportedChainIdsMock = jest.spyOn(
-    securityAlertAPI,
-    'getSecurityAlertsAPISupportedChainIds',
   );
   let isSecurityAlertsEnabledMock: jest.SpyInstance;
 
@@ -455,38 +450,6 @@ describe('PPOM Utils', () => {
         CHAIN_ID_MOCK,
         request,
       );
-    });
-  });
-
-  describe('isChainSupported', () => {
-    describe('when security alerts API is enabled', () => {
-      beforeEach(async () => {
-        isSecurityAlertsEnabledMock.mockReturnValue(true);
-        getSupportedChainIdsMock.mockResolvedValue([CHAIN_ID_MOCK]);
-      });
-
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
-
-      it('returns correctly if security alerts API throws', async () => {
-        getSupportedChainIdsMock.mockRejectedValue(new Error('Test Error'));
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-    });
-
-    describe('when security alerts API is disabled', () => {
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
     });
   });
 });
