@@ -3174,10 +3174,6 @@ export function setPrivacyMode(value: boolean) {
   return setPreference('privacyMode', value, false);
 }
 
-export function setRedesignedTransactionsEnabled(value: boolean) {
-  return setPreference('redesignedTransactionsEnabled', value);
-}
-
 export function setFeatureNotificationsEnabled(value: boolean) {
   return setPreference('featureNotificationsEnabled', value);
 }

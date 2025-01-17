@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Aktifkan ini untuk melihat permintaan tanda tangan dalam format yang disempurnakan."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Penyempurnaan permintaan transaksi"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Aktifkan ini untuk melihat permintaan transaksi dalam format yang disempurnakan."
-  },
   "refreshList": {
     "message": "Segarkan daftar"
   },
