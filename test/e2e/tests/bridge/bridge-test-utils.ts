@@ -15,6 +15,7 @@ import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
 } from './constants';
+import { Tenderly } from '../../tenderly-network';
 
 export class BridgePage {
   driver: Driver;
@@ -123,7 +124,7 @@ export const getBridgeFixtures = (
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
   })
-    .withNetworkControllerOnMainnet()
+    .withNetworkControllerOnTenderly(Tenderly.Mainnet.url)
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState();
 
@@ -134,6 +135,7 @@ export const getBridgeFixtures = (
   return {
     driverOptions: {
       // openDevToolsForTabs: true,
+      disableGanache: true,
     },
     fixtures: fixtureBuilder.build(),
     testSpecificMock: mockServer(featureFlags),

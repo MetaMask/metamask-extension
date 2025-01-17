@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { Tenderly } from '../../swap/tenderly-network';
+import { Tenderly } from '../../../tenderly-network';
 
 export class NetworkController {
   readonly page: Page;
