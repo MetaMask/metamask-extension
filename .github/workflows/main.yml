@@ -86,7 +86,6 @@ jobs:
 
   all-jobs-completed:
     name: All jobs completed
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
       - lint-workflows

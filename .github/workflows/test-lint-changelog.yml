@@ -38,7 +38,7 @@ jobs:
           else
             echo "CHANGELOG_LINT_RESULT=failure" >> $GITHUB_ENV
           fi
-          echo "Changelog Lint Result: $CHANGELOG_LINT_RESULT"
+          echo "Changelog Lint Result: ${{ env.CHANGELOG_LINT_RESULT }}"
 
       - name: Fail job if result is failure
         if: ${{ env.CHANGELOG_LINT_RESULT == 'failure' }}
