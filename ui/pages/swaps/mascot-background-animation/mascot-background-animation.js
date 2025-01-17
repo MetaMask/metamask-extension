@@ -1,13 +1,8 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
-import EventEmitter from 'events';
-import React, { useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import Mascot from '../../../components/ui/mascot';
-
 export default function MascotBackgroundAnimation({ height, width }) {
-  const animationEventEmitter = useRef(new EventEmitter());
-
   return (
     <div className="mascot-background-animation__animation">
       <div
@@ -219,11 +214,10 @@ export default function MascotBackgroundAnimation({ height, width }) {
         className="mascot-background-animation__mascot-container"
         data-testid="mascot-background-animation-mascot-container"
       >
-        <Mascot
-          animationEventEmitter={animationEventEmitter.current}
+        <img
+          src="images/logo/metamask-fox.svg"
           width={width ?? '42'}
           height={height ?? '42'}
-          followMouse={false}
         />
       </div>
     </div>

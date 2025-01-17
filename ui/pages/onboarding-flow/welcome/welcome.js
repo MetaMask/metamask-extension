@@ -1,11 +1,9 @@
-import EventEmitter from 'events';
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
 ///: END:ONLY_INCLUDE_IF
-import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import { Text } from '../../../components/component-library';
 import CheckBox from '../../../components/ui/check-box';
@@ -47,7 +45,6 @@ export default function OnboardingWelcome() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const [eventEmitter] = useState(new EventEmitter());
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const [termsChecked, setTermsChecked] = useState(false);
@@ -150,10 +147,11 @@ export default function OnboardingWelcome() {
               {t('welcomeToMetaMaskIntro')}
             </Text>
             <div className="onboarding-welcome__mascot">
-              <Mascot
-                animationEventEmitter={eventEmitter}
-                width="250"
-                height="250"
+              <img
+                src="images/logo/metamask-fox.svg"
+                width="225px"
+                height="225px"
+                alt="metamask-fox"
               />
             </div>
           </div>
@@ -174,7 +172,7 @@ export default function OnboardingWelcome() {
                 src="/images/onboarding-welcome-say-hello.svg"
                 width="169"
                 height="237"
-                alt=""
+                alt="onboarding-welcome-say-hello"
               />
             </div>
           </div>
@@ -195,7 +193,7 @@ export default function OnboardingWelcome() {
                 src="/images/onboarding-welcome-decentralised-apps.svg"
                 width="327"
                 height="256"
-                alt=""
+                alt="onboarding-welcome-decentralised-apps"
               />
             </div>
           </div>
@@ -222,10 +220,11 @@ export default function OnboardingWelcome() {
             {t('installExtensionDescription')}
           </Text>
           <div className="onboarding-welcome__mascot">
-            <Mascot
-              animationEventEmitter={eventEmitter}
-              width="250"
-              height="250"
+            <img
+              src="images/logo/metamask-fox.svg"
+              width="225px"
+              height="225px"
+              alt="metamask-fox"
             />
           </div>
         </div>
