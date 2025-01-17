@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Schalten Sie dies ein, um sich Unterschriftsanfragen in einem erweiterten Format anzeigen zu lassen."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Verbesserte Transaktionsanfragen"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Schalten Sie dies ein, um sich Transaktionsanfragen in einem erweiterten Format anzeigen zu lassen."
-  },
   "refreshList": {
     "message": "Liste aktualisieren"
   },

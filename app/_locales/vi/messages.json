@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Bật tính năng này để xem các yêu cầu chữ ký ở định dạng nâng cao."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Yêu cầu giao dịch được cải thiện"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Bật tính năng này để xem các yêu cầu giao dịch ở định dạng nâng cao."
-  },
   "refreshList": {
     "message": "Làm mới danh sách"
   },
