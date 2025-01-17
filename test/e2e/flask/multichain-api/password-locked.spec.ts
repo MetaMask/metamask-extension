@@ -1,5 +1,10 @@
 import { strict as assert } from 'assert';
-import { ACCOUNT_1, WINDOW_TITLES, withFixtures } from '../../helpers';
+import {
+  ACCOUNT_1,
+  WALLET_PASSWORD,
+  WINDOW_TITLES,
+  withFixtures,
+} from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import {
@@ -24,10 +29,7 @@ describe("A dapp is connected with account and chain permissions previously gran
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
-        async ({
-          driver,
-          extensionId,
-        }: FixtureCallbackArgs) => {
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
           await openMultichainDappAndConnectWalletWithExternallyConnectable(
             driver,
             extensionId,
@@ -55,6 +57,31 @@ describe("A dapp is connected with account and chain permissions previously gran
             'Should prompt user to unlock Metamask Extension',
           );
 
+          /**
+           * We unlock metamask extension to assert a transfer request is being made
+           */
+          await driver.fill('[data-testid="unlock-password"]', WALLET_PASSWORD);
+          await driver.clickElementSafe('[data-testid="unlock-submit"]');
+
+          const transferRequestWebElement = await driver.findElement({
+            text: 'Transfer request',
+            type: 'h3',
+          });
+
+          assert.ok(
+            transferRequestWebElement,
+            'Should be attempting to make via wallet extension transfer',
+          );
+
+          await driver.clickElementSafe(
+            '[data-testid="confirm-footer-cancel-button"]',
+          );
+
+          /**
+           * We lock extension again to repeat action and assertion for `wallet_addEthereumChain`
+           */
+          await passwordLockMetamaskExtension(driver);
+
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.MultichainTestDApp,
           );
@@ -75,6 +102,22 @@ describe("A dapp is connected with account and chain permissions previously gran
           assert.ok(
             unlockExtensionPageWebElement1,
             'Should prompt user to unlock Metamask Extension',
+          );
+
+          /**
+           * We unlock metamask extension to assert a request for adding chain is being made
+           */
+          await driver.fill('[data-testid="unlock-password"]', WALLET_PASSWORD);
+          await driver.clickElementSafe('[data-testid="unlock-submit"]');
+
+          const addChainWebElement = await driver.findElement({
+            text: 'Add Gnosis',
+            type: 'h3',
+          });
+
+          assert.ok(
+            addChainWebElement,
+            'Should be attempting to add Gnosis Chain',
           );
         },
       );
