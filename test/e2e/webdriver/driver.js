@@ -609,10 +609,18 @@ class Driver {
         await element.click();
         return;
       } catch (error) {
-        if (
-          error.name === 'StaleElementReferenceError' &&
-          attempt < retries - 1
-        ) {
+        const retryableErrors = [
+          'StaleElementReferenceError',
+          'ElementClickInterceptedError',
+          'ElementNotInteractableError',
+        ];
+
+        if (retryableErrors.includes(error.name) && attempt < retries - 1) {
+          console.warn(
+            `Retrying click (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
+            }`,
+          );
           await this.delay(1000);
         } else {
           throw error;
