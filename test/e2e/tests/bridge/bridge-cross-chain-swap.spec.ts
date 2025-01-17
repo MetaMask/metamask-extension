@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 import { ethers } from 'ethers';
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
-import { BridgePage, getBridgeFixtures } from './bridge-test-utils';
+import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 import { Tenderly, addFundsToAccount } from '../../tenderly-network';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -38,16 +38,11 @@ describe('Bridge tests @no-mmi', function (this: Suite) {
 
         const bridgePage = new BridgeQuotePage(driver);
         await bridgePage.enterBridgeQuote('.3', 'ETH', 'Ethereum', 'Linea');
+        await bridgePage.submitQuote();
 
-        // TODO
-        // Submit bridge button missing
-        await driver.clickElement({
-          text: 'Submit',
-          tag: 'button',
-        });
+        // BUGBUG: Github issue 29793 has changed the flow, should land on activity
 
         // TODO: move this to activity object page
-        // Go and check activity
         const activity = await driver.findElement(
           '[data-testid="activity-list-item-action"]',
         );
