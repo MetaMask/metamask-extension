@@ -258,7 +258,7 @@
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
-    "@blockaid/ppom_release": "^1.5.3",
+    "@blockaid/ppom_release": "^1.5.5",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/tx": "^4.1.1",
     "@ethersproject/abi": "^5.6.4",
