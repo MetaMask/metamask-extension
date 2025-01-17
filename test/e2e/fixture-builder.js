@@ -494,7 +494,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappMultichain({
+  withPermissionControllerConnectedToMultichainTestDapp({
     account = '',
     useLocalhostHostname = false,
   } = {}) {
@@ -541,7 +541,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappMultichainWithTwoAccounts({
+  withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts({
     scopes = ['eip155:1337'],
   }) {
     const optionalScopes = scopes
@@ -773,11 +773,6 @@ class FixtureBuilder {
           lastSelected: 1665507800000,
           name: 'Account 2',
         },
-        [ERC_4337_ACCOUNT]: {
-          address: ERC_4337_ACCOUNT,
-          lastSelected: 1665507600000,
-          name: 'Account 4',
-        },
       },
     });
   }
@@ -841,11 +836,6 @@ class FixtureBuilder {
         tokenNetworkFilter: {},
       },
     });
-  }
-
-  withPreferencesControllerAndFeatureFlag(flags) {
-    merge(this.fixture.data.PreferencesController, flags);
-    return this;
   }
 
   withAccountsController(data) {
@@ -1372,6 +1362,9 @@ class FixtureBuilder {
           origin: 'https://app.ens.domains',
           permissions: {
             eth_accounts: {
+              id: 'oKXoF_MNlffiR2u1Y3mDE',
+              parentCapability: 'eth_accounts',
+              invoker: 'https://app.ens.domains',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -1382,9 +1375,6 @@ class FixtureBuilder {
                 },
               ],
               date: 1708029792962,
-              id: 'oKXoF_MNlffiR2u1Y3mDE',
-              invoker: 'https://app.ens.domains',
-              parentCapability: 'eth_accounts',
             },
           },
         },
@@ -1392,6 +1382,9 @@ class FixtureBuilder {
           origin: 'https://app.uniswap.org',
           permissions: {
             eth_accounts: {
+              id: 'vaa88u5Iv3VmsJwG3bDKW',
+              invoker: 'https://app.uniswap.org',
+              parentCapability: 'eth_accounts',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -1402,9 +1395,6 @@ class FixtureBuilder {
                 },
               ],
               date: 1708029870079,
-              id: 'vaa88u5Iv3VmsJwG3bDKW',
-              invoker: 'https://app.uniswap.org',
-              parentCapability: 'eth_accounts',
             },
           },
         },
@@ -1412,20 +1402,20 @@ class FixtureBuilder {
           origin: 'https://www.dextools.io',
           permissions: {
             eth_accounts: {
+              id: 'bvvPcFtIhkFyHyW0Tmwi4',
+              invoker: 'https://www.dextools.io',
+              parentCapability: 'eth_accounts',
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
-                    'eip155:1337:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
-                    'eip155:1337:0xa5c5293e124d04e2f85e8553851001fd2f192647',
-                    'eip155:1337:0xb9504634e5788208933b51ae7440b478bfadf865',
+                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                    '0xa5c5293e124d04e2f85e8553851001fd2f192647',
+                    '0xb9504634e5788208933b51ae7440b478bfadf865',
                   ],
                 },
               ],
               date: 1708029948170,
-              id: 'bvvPcFtIhkFyHyW0Tmwi4',
-              invoker: 'https://www.dextools.io',
-              parentCapability: 'eth_accounts',
             },
           },
         },
@@ -1433,18 +1423,16 @@ class FixtureBuilder {
           origin: 'https://coinmarketcap.com',
           permissions: {
             eth_accounts: {
-              caveats: [
-                {
-                  type: 'restrictReturnedAccounts',
-                  value: [
-                    'eip155:1337:0xbee150bdc171c7d4190891e78234f791a3ac7b24',
-                  ],
-                },
-              ],
-              date: 1708030049641,
               id: 'AiblK84K1Cic-Y0FDSzMD',
               invoker: 'https://coinmarketcap.com',
               parentCapability: 'eth_accounts',
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0xbee150bdc171c7d4190891e78234f791a3ac7b24'],
+                },
+              ],
+              date: 1708030049641,
             },
           },
         },
