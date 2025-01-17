@@ -17,7 +17,6 @@ import {
   setFromTokenInputValue,
   setToChain,
   setToToken,
-  setFromChain,
   resetInputFields,
   setToChainId,
   updateQuoteRequestParams,
@@ -133,23 +132,6 @@ describe('Ducks - Bridge', () => {
       } as never);
       store.dispatch(setBridgeFeatureFlags() as never);
       expect(mockSetBridgeFeatureFlags).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('setFromChain', () => {
-    it('calls the selectSrcNetwork background action', async () => {
-      const mockSelectSrcNetwork = jest.fn().mockReturnValue({});
-      setBackgroundConnection({
-        [BridgeUserAction.SELECT_SRC_NETWORK]: mockSelectSrcNetwork,
-      } as never);
-
-      await store.dispatch(setFromChain(CHAIN_IDS.MAINNET) as never);
-
-      expect(mockSelectSrcNetwork).toHaveBeenCalledTimes(1);
-      expect(mockSelectSrcNetwork).toHaveBeenCalledWith(
-        '0x1',
-        expect.anything(),
-      );
     });
   });
 
