@@ -1,0 +1,108 @@
+diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
+index 61246f51500c8cab48f18296a73629fb73454caa..34396ba143e3ebcb04fa2c80f7a35d1abd06710e 100644
+--- a/dist/assetsUtil.cjs
++++ b/dist/assetsUtil.cjs
+@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
+-exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedStakedBalanceNetworks = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
++exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedStakedBalanceNetworks = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+ const utils_1 = require("@metamask/utils");
+ const bn_js_1 = __importDefault(require("bn.js"));
+@@ -368,4 +368,19 @@ async function fetchTokenContractExchangeRates({ tokenPricesService, nativeCurre
+     }, {});
+ }
+ exports.fetchTokenContractExchangeRates = fetchTokenContractExchangeRates;
++/**
++ * Function to search for a specific value in a given map and return the key
++ * @param map - map input to search value
++ * @param value - the value to search for
++ * @returns returns key that corresponds to the value
++ */
++function getKeyByValue(map, value) {
++    for (const [key, val] of map.entries()) {
++        if (val === value) {
++            return key;
++        }
++    }
++    return null; // Return null if no match is found
++}
++exports.getKeyByValue = getKeyByValue;
+ //# sourceMappingURL=assetsUtil.cjs.map
+\ No newline at end of file
+diff --git a/dist/assetsUtil.mjs b/dist/assetsUtil.mjs
+index 1e14797c8e1cd48e75287b37c29eb6065daac5e6..c288b56227bd7779982083be4cae9674d01ae1dd 100644
+--- a/dist/assetsUtil.mjs
++++ b/dist/assetsUtil.mjs
+@@ -354,4 +354,18 @@ export async function fetchTokenContractExchangeRates({ tokenPricesService, nati
+         };
+     }, {});
+ }
++/**
++ * Function to search for a specific value in a given map and return the key
++ * @param map - map input to search value
++ * @param value - the value to search for
++ * @returns returns key that corresponds to the value
++ */
++export function getKeyByValue(map, value) {
++    for (const [key, val] of map.entries()) {
++        if (val === value) {
++            return key;
++        }
++    }
++    return null; // Return null if no match is found
++}
+ //# sourceMappingURL=assetsUtil.mjs.map
+\ No newline at end of file
+diff --git a/dist/crypto-compare-service/crypto-compare.cjs b/dist/crypto-compare-service/crypto-compare.cjs
+index 4cdf9c15053fb4acbc8aa7cade912e87c7aaf224..7bddcf4322f7825affdf34116778ba08b7676951 100644
+--- a/dist/crypto-compare-service/crypto-compare.cjs
++++ b/dist/crypto-compare-service/crypto-compare.cjs
+@@ -2,6 +2,7 @@
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.fetchMultiExchangeRate = exports.fetchExchangeRate = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
++const assetsUtil_1 = require("../assetsUtil.cjs");
+ /**
+  * A map from native currency symbol to CryptoCompare identifier.
+  * This is only needed when the values don't match.
+@@ -105,12 +106,14 @@ exports.fetchExchangeRate = fetchExchangeRate;
+  * @returns Promise resolving to exchange rates for given currencies.
+  */
+ async function fetchMultiExchangeRate(fiatCurrency, cryptocurrencies, includeUSDRate) {
+-    const url = getMultiPricingURL(cryptocurrencies, [fiatCurrency], includeUSDRate);
++    const fsyms = cryptocurrencies.map((nativeCurrency) => nativeSymbolOverrides.get(nativeCurrency) ?? nativeCurrency);
++    const url = getMultiPricingURL(fsyms, [fiatCurrency], includeUSDRate);
+     const response = await (0, controller_utils_1.handleFetch)(url);
+     handleErrorResponse(response);
+     const rates = {};
+     for (const [cryptocurrency, values] of Object.entries(response)) {
+-        rates[cryptocurrency.toLowerCase()] = {
++        const key = (0, assetsUtil_1.getKeyByValue)(nativeSymbolOverrides, cryptocurrency);
++        rates[key?.toLowerCase() ?? cryptocurrency.toLowerCase()] = {
+             [fiatCurrency.toLowerCase()]: values[fiatCurrency.toUpperCase()],
+             ...(includeUSDRate && { usd: values.USD }),
+         };
+diff --git a/dist/crypto-compare-service/crypto-compare.mjs b/dist/crypto-compare-service/crypto-compare.mjs
+index 58db2280159669c1b48fb94a9164b8e0be2850a7..74e0560718d42202e9183ff7ff1bfdac1424506e 100644
+--- a/dist/crypto-compare-service/crypto-compare.mjs
++++ b/dist/crypto-compare-service/crypto-compare.mjs
+@@ -101,12 +101,14 @@ export async function fetchExchangeRate(currency, nativeCurrency, includeUSDRate
+  * @returns Promise resolving to exchange rates for given currencies.
+  */
+ export async function fetchMultiExchangeRate(fiatCurrency, cryptocurrencies, includeUSDRate) {
+-    const url = getMultiPricingURL(cryptocurrencies, [fiatCurrency], includeUSDRate);
++    const fsyms = cryptocurrencies.map((nativeCurrency) => nativeSymbolOverrides.get(nativeCurrency) ?? nativeCurrency);
++    const url = getMultiPricingURL(fsyms, [fiatCurrency], includeUSDRate);
+     const response = await handleFetch(url);
+     handleErrorResponse(response);
+     const rates = {};
+     for (const [cryptocurrency, values] of Object.entries(response)) {
+-        rates[cryptocurrency.toLowerCase()] = {
++        const key = getKeyByValue(nativeSymbolOverrides, cryptocurrency);
++        rates[key?.toLowerCase() ?? cryptocurrency.toLowerCase()] = {
+             [fiatCurrency.toLowerCase()]: values[fiatCurrency.toUpperCase()],
+             ...(includeUSDRate && { usd: values.USD }),
+         };
