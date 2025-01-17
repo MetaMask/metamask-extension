@@ -14,7 +14,10 @@ describe('Send flow', function (this: Suite) {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
+        console.log('Browser: ', driver.browser);
+        if (driver.browser === 'chrome') {
+          await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
+        }
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.clickOnSendButton();
@@ -73,7 +76,9 @@ describe('Send full flow of USD', function (this: Suite) {
         mockSendTransaction: true,
       },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
+        if (driver.browser === 'chrome') {
+          await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
+        }
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         assert.equal(
@@ -224,7 +229,9 @@ describe('Send full flow of SOL', function (this: Suite) {
         mockSendTransaction: true,
       },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
+        if (driver.browser === 'chrome') {
+          await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
+        }
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         assert.equal(
@@ -369,7 +376,9 @@ describe('Send flow flow', function (this: Suite) {
         mockSendTransaction: false,
       },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
+        if (driver.browser === 'chrome') {
+          await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
+        }
         const homePage = new NonEvmHomepage(driver);
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
