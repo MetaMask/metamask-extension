@@ -793,6 +793,19 @@ export default function PrepareSwapPage({
       'prepare-swap-page__receive-amount',
     );
   }
+
+  const swapToTokenFiatValue = useTokenFiatAmount(
+    selectedToToken.address,
+    receiveToAmountFormatted || 0,
+    selectedToToken.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+  );
+
+  console.log('swapToTokenFiatValue', swapToTokenFiatValue);
+
   if (fromTokenInputValue) {
     fromTokenAmountClassName = getClassNameForCharLength(
       fromTokenInputValue,
@@ -1046,6 +1059,20 @@ export default function PrepareSwapPage({
             <div className="prepare-swap-page__balance-message">
               {selectedToToken?.string && yourTokenToBalance}
             </div>
+            {receiveToAmountFormatted && swapToTokenFiatValue && (
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.flexEnd}
+                alignItems={AlignItems.flexEnd}
+              >
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {swapToTokenFiatValue}
+                </Text>
+              </Box>
+            )}
           </Box>
           <Box
             display={DISPLAY.FLEX}
