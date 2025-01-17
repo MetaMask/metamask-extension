@@ -22,8 +22,11 @@ jobs:
         # For a `push` event, the branch is `github.ref_name`.
         if: ${{ !startsWith(github.head_ref || github.ref_name, 'Version-v') }}
         run: |
-          yarn lint:changelog
-          echo "result=success" >> "$GITHUB_ENV"
+          if yarn lint:changelog; then
+            echo "result=success" >> $GITHUB_ENV
+          else
+            echo "result=failure" >> $GITHUB_ENV
+          fi
 
       - name: Validate release candidate changelog
         id: validate-rc-changelog
@@ -31,15 +34,12 @@ jobs:
         # For a `push` event, the branch is `github.ref_name`.
         if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
         run: |
-          .circleci/scripts/validate-changelog-in-rc.sh
-          echo "result=success" >> "$GITHUB_ENV"
-        continue-on-error: true
+          if .circleci/scripts/validate-changelog-in-rc.sh; then
+            echo "result=success" >> $GITHUB_ENV
+          else
+            echo "result=failure" >> $GITHUB_ENV
+          fi
 
       - name: Set result
         id: set-result
-        run: |
-          if [[ -z "$result" ]]; then
-            echo "result=failure" >> "$GITHUB_OUTPUT"
-          else
-            echo "result=success" >> "$GITHUB_OUTPUT"
-          fi
+        run: echo "result=${{ env.result }}" >> $GITHUB_OUTPUT
