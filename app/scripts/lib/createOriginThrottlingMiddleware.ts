@@ -1,13 +1,16 @@
 import { providerErrors } from '@metamask/rpc-errors';
-import { JsonRpcError, JsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { errorCodes } from '@metamask/rpc-errors';
-import { BLOCKABLE_METHODS } from '../../../shared/constants/origin-throttling';
-import type { Json } from '@metamask/utils';
+import type {
+  Json,
+  JsonRpcError,
+  JsonRpcResponse,
+  JsonRpcRequest,
+} from '@metamask/utils';
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-  JsonRpcEngineReturnHandler,
 } from '@metamask/json-rpc-engine';
+import { BLOCKABLE_METHODS } from '../../../shared/constants/origin-throttling';
 
 export type ExtendedJSONRPCRequest = JsonRpcRequest & { origin: string };
 
