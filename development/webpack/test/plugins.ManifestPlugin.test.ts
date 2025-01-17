@@ -281,4 +281,56 @@ describe('ManifestPlugin', () => {
       }
     }
   });
+
+  describe('manifest flags in development mode', () => {
+    const testManifest = {} as chrome.runtime.Manifest;
+    const mockFlags = { remoteFeatureFlags: { testFlag: true } };
+
+    it('adds manifest flags in development mode', () => {
+      const transform = transformManifest({ lockdown: true, test: false }, true);
+      assert(transform, 'transform should be truthy');
+
+      // Mock fs.readFileSync
+      const fs = require('fs');
+      const originalReadFileSync = fs.readFileSync;
+      fs.readFileSync = () => JSON.stringify(mockFlags);
+
+      try {
+        const transformed = transform(testManifest, 'chrome');
+        assert.deepStrictEqual(
+          transformed._flags,
+          mockFlags,
+          'manifest should have flags in development mode'
+        );
+      } finally {
+        // Restore original readFileSync
+        fs.readFileSync = originalReadFileSync;
+      }
+    });
+
+    it('handles missing manifest flags file', () => {
+      const transform = transformManifest({ lockdown: true, test: false }, true);
+      assert(transform, 'transform should be truthy');
+
+      // Mock fs.readFileSync to throw ENOENT
+      const fs = require('fs');
+      const originalReadFileSync = fs.readFileSync;
+      fs.readFileSync = () => {
+        const error = new Error('ENOENT');
+        throw error;
+      };
+
+      try {
+        const transformed = transform(testManifest, 'chrome');
+        assert.deepStrictEqual(
+          transformed._flags,
+          { remoteFeatureFlags: {} },
+          'manifest should have default flags when file is missing'
+        );
+      } finally {
+        // Restore original readFileSync
+        fs.readFileSync = originalReadFileSync;
+      }
+    });
+  });
 });

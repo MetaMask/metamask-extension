@@ -1,10 +1,3 @@
-let manifestFlags: { remoteFeatureFlags: Record<string, unknown> };
-try {
-  manifestFlags = require('../../../../../.manifest-flags.json');
-} catch (error) {
-  manifestFlags = { remoteFeatureFlags: {} };
-}
-
 /**
  * Returns a function that will transform a manifest JSON object based on the
  * given build args.
@@ -41,11 +34,28 @@ export function transformManifest(
   }
 
   /**
-   * This function sets predefined flags in the manifest's _flags property.
+   * This function sets predefined flags in the manifest's _flags property
+   * that are stored in the .manifest-flags.json file.
    *
    * @param browserManifest - The Chrome extension manifest object to modify
    */
   function addManifestFlags(browserManifest: chrome.runtime.Manifest) {
+    let manifestFlags = { remoteFeatureFlags: {} };
+
+    try {
+      const fs = require('fs');
+      const manifestFlagsContent = fs.readFileSync(
+        '.manifest-flags.json',
+        'utf8',
+      );
+      manifestFlags = JSON.parse(manifestFlagsContent);
+    } catch (error: unknown) {
+      // Only ignore the error if the file doesn't exist
+      if (error instanceof Error && error.message !== 'ENOENT') {
+        throw error;
+      }
+    }
+
     browserManifest._flags = manifestFlags;
   }
 
