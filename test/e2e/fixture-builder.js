@@ -479,7 +479,7 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [selectedAccount.toLowerCase(), ACCOUNT_2],
+                  value: [selectedAccount.toLowerCase()],
                 },
               ],
               date: 1664388714636,
@@ -588,7 +588,7 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [ACCOUNT_1, ACCOUNT_2],
+                  value: [ACCOUNT_1],
                 },
               ],
               date: 1664388714636,
@@ -605,7 +605,7 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [ACCOUNT_1, ACCOUNT_2],
+                  value: [ACCOUNT_1],
                 },
               ],
               date: 1664388714636,
