@@ -42,4 +42,4 @@ jobs:
 
       - name: Set result
         id: set-result
-        run: echo "result=${{ env.result }}" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=result::${{ env.result }}"
