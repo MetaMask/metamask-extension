@@ -4,8 +4,8 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
 import { mapSnapBorderRadiusToExtensionBorderRadius } from '../snap-ui-renderer/utils';
 
 export type SnapUISkeletonProps = {
-  width: number | string;
-  height: number | string;
+  width?: number | string;
+  height?: number | string;
   borderRadius?: BorderRadius;
 };
 
@@ -16,8 +16,8 @@ export const SnapUISkeleton: FunctionComponent<SnapUISkeletonProps> = ({
 }) => {
   return (
     <Skeleton
-      width={width}
-      height={height}
+      width={width || '100%'}
+      height={height || 16}
       borderRadius={mapSnapBorderRadiusToExtensionBorderRadius(borderRadius)}
     />
   );
