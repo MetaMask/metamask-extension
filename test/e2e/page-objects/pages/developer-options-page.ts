@@ -1,6 +1,9 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
-import { MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS } from '../../constants';
+import {
+  MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
+  MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
+} from '../../constants';
 
 class DevelopOptions {
   private readonly driver: Driver;
@@ -47,7 +50,10 @@ class DevelopOptions {
     const remoteFeatureFlagsState = await element.getText();
     assert.equal(
       remoteFeatureFlagsState,
-      JSON.stringify(MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS),
+      JSON.stringify({
+        ...MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
+        ...MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
+      }),
     );
   }
 }

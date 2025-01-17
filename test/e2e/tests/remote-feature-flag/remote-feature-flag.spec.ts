@@ -52,7 +52,7 @@ describe('Remote feature flag', function (this: Suite) {
     );
   });
 
-  it('offers the option to pass into manifest file for developers', async function () {
+  it('offers the option to pass into manifest file for developers along with original response', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
