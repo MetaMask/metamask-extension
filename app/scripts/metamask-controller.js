@@ -7251,7 +7251,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * A method that is called by the background when a particular environment type is closed (fullscreen, popup, notification).
-   * Currently used to stop polling in the gasFeeController for only that environement type
+   * Currently used to stop polling controllers for only that environement type
    *
    * @param environmentType
    */
@@ -7261,8 +7261,15 @@ export default class MetamaskController extends EventEmitter {
     const pollingTokensToDisconnect =
       this.appStateController.state[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
+      // We don't know which controller the token is associated with, so try them all.
+      // Consider storing the tokens per controller in state instead.
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.currencyRateController.stopPollingByPollingToken(pollingToken);
+      this.tokenRatesController.stopPollingByPollingToken(pollingToken);
+      this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
+      this.tokenListController.stopPollingByPollingToken(pollingToken);
+      this.tokenBalancesController.stopPollingByPollingToken(pollingToken);
+      this.accountTrackerController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
         appStatePollingTokenType,
