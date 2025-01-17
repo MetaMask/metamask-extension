@@ -78,7 +78,7 @@ ${Object.entries(env)
   }
 
   it('should have the correct defaults', () => {
-    const config: Configuration = getWebpackConfig([]);
+    const config: Configuration = getWebpackConfig();
     // check that options are valid
     const { options } = webpack(config);
     assert.strictEqual(options.name, 'MetaMask – development');
