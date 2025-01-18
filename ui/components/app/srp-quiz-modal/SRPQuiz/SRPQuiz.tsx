@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -31,7 +30,6 @@ import { ModalContent } from '../../../component-library/modal-content/deprecate
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import QuizContent from '../QuizContent';
 import { JSXDict, QuizStage } from '../types';
-import { getHdKeyringTypeIndex } from '../../../../selectors';
 
 const wrongAnswerIcon = (
   <Icon
@@ -60,7 +58,7 @@ const openSupportArticle = (): void => {
 };
 
 export type SRPQuizProps = {
-  accountId: string; // The account id will be used to determine which HD keyring to use.
+  keyringId: string;
   isOpen: boolean;
   onClose: () => void;
   closeAfterCompleting?: boolean;
@@ -72,9 +70,6 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const t = useI18nContext();
-  const typeIndex = useSelector((state) =>
-    getHdKeyringTypeIndex(state, props.accountId),
-  );
 
   // This should not be a state variable, because it's derivable from the state variable `stage`
   // (Making it a state variable forces the component to render twice)
@@ -229,7 +224,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
           {
             label: t('continue'),
             onClick: () => {
-              history.push(`${REVEAL_SEED_ROUTE}/${typeIndex}`);
+              history.push(`${REVEAL_SEED_ROUTE}/${props.keyringId}`);
               if (props.closeAfterCompleting) {
                 props.onClose();
               }

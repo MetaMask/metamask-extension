@@ -29,13 +29,15 @@ const mockRequestRevealSeedWords = jest
   .fn()
   .mockImplementation(mockSuccessfulSRPReveal);
 const mockShowModal = jest.fn();
-const mockUseParams = jest.fn().mockReturnValue({ typeIndex: 1 });
+const mockUseParams = jest
+  .fn()
+  .mockReturnValue({ keyringId: 'ULID01234567890ABCDEFGHIJKLMN' });
 const password = 'password';
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
-  requestRevealSeedWords: (userPassword, typeIndex) =>
-    mockRequestRevealSeedWords(userPassword, typeIndex),
+  requestRevealSeedWords: (userPassword, keyringId) =>
+    mockRequestRevealSeedWords(userPassword, keyringId),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -362,9 +364,9 @@ describe('Reveal Seed Page', () => {
   });
 
   describe('multi-srp', () => {
-    it('passes the typeIndex to the requestRevealSeedWords action', async () => {
-      const mockTypeIndex = 2;
-      mockUseParams.mockReturnValue({ typeIndex: mockTypeIndex });
+    it('passes the keyringId to the requestRevealSeedWords action', async () => {
+      const keyringId = 'ULID01234567890ABCDEFGHIJKLMN';
+      mockUseParams.mockReturnValue({ keyringId });
       const { queryByTestId, queryByText } = renderWithProvider(
         <RevealSeedPage />,
         mockStore,
@@ -379,14 +381,14 @@ describe('Reveal Seed Page', () => {
       await waitFor(() => {
         expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
           password,
-          mockTypeIndex,
+          keyringId,
         );
       });
     });
 
-    it('passes the typeIndex 1 if there is no param', async () => {
-      const expectedTypeIndex = 1;
-      mockUseParams.mockReturnValue({ typeIndex: undefined });
+    it('passes the keyringId if there is no param', async () => {
+      const keyringId = 'ULID01234567890ABCDEFGHIJKLMN';
+      mockUseParams.mockReturnValue({ keyringId });
       const { queryByTestId, queryByText } = renderWithProvider(
         <RevealSeedPage />,
         mockStore,
@@ -401,7 +403,7 @@ describe('Reveal Seed Page', () => {
       await waitFor(() => {
         expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
           password,
-          expectedTypeIndex,
+          keyringId,
         );
       });
     });

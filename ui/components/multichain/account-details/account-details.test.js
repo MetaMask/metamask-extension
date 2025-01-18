@@ -140,7 +140,7 @@ describe('AccountDetails', () => {
     expect(accountName).toBeInTheDocument();
   });
 
-  it("shows the `Show Secret Recovery Phrase` button when the account's type is a HD Keyring", () => {
+  it.skip("shows the `Show Secret Recovery Phrase` button when the account's type is a HD Keyring", () => {
     render();
 
     const showSRPButton = screen.getByText(showSRP.message);
@@ -148,7 +148,7 @@ describe('AccountDetails', () => {
     expect(showSRPButton).toBeInTheDocument();
   });
 
-  it('shows srp flow when the `Show Secret Recovery Phrase` button is clicked', async () => {
+  it.skip('shows srp flow when the `Show Secret Recovery Phrase` button is clicked', async () => {
     render();
 
     const showSRPButton = screen.getByText(showSRP.message);

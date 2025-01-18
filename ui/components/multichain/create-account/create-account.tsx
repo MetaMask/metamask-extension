@@ -4,13 +4,16 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import {
+  KeyringMetadata,
+  KeyringObject,
+  KeyringTypes,
+} from '@metamask/keyring-controller';
 import {
   Box,
   ButtonPrimary,
@@ -57,8 +60,8 @@ type Props = {
    * Callback to select the SRP
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  onSelectSRP: () => void;
-  selectedKeyringIndex: number;
+  onSelectSRP?: () => void;
+  selectedKeyringId?: string;
   ///: END:ONLY_INCLUDE_IF
 };
 
@@ -77,7 +80,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         onCreateAccount,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         onSelectSRP,
-        selectedKeyringIndex,
+        selectedKeyringId,
         ///: END:ONLY_INCLUDE_IF
         onActionComplete,
       }: CreateAccountProps<C>,
@@ -113,14 +116,15 @@ export const CreateAccount: CreateAccountComponent = React.memo(
 
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       const keyrings = useSelector(getMetaMaskKeyrings);
-      const hdKeyrings = useMemo(
-        () =>
-          keyrings.filter(
-            (keyring: KeyringObject) => keyring.type === KeyringTypes.hd,
-          ),
-        [keyrings],
+      const selectedKeyring = keyrings.find(
+        (keyring: KeyringObject & { metadata: KeyringMetadata }) =>
+          keyring.metadata.id === selectedKeyringId,
       );
-      const selectedKeyring = hdKeyrings[selectedKeyringIndex];
+      const hdKeyrings = keyrings.filter(
+        (keyring: KeyringObject & { metadata: KeyringMetadata }) =>
+          keyring.type === KeyringTypes.hd,
+      );
+      const selectedKeyringIndex = hdKeyrings.indexOf(selectedKeyring);
       ///: END:ONLY_INCLUDE_IF(multi-srp)
 
       const onSubmit = useCallback(
@@ -157,7 +161,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           <FormTextField
             ref={ref}
             size={FormTextFieldSize.Lg}
-            gap={1}
+            gap={2}
             autoFocus
             id="account-name"
             label={t('accountName')}
@@ -175,7 +179,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-            hdKeyrings.length > 1 ? (
+            hdKeyrings.length > 1 && onSelectSRP ? (
               <Box marginBottom={3}>
                 <SelectSRP
                   onClick={onSelectSRP}

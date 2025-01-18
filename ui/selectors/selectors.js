@@ -536,7 +536,10 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings;
+  return state.metamask.keyrings.map((keyring, index) => ({
+    ...keyring,
+    metadata: state.metamask.keyringsMetadata?.[index] || {},
+  }));
 }
 
 /**
@@ -3064,14 +3067,3 @@ export function getKeyringSnapAccounts(state) {
   return keyringAccounts;
 }
 ///: END:ONLY_INCLUDE_IF
-
-export function getHdKeyringTypeIndex(state, account) {
-  const selectedAccount =
-    getInternalAccount(state, account) ?? getSelectedInternalAccount(state);
-  const keyrings = getMetaMaskKeyrings(state);
-  const hdKeyrings = keyrings.filter((kr) => kr.type === KeyringType.hdKeyTree);
-
-  return hdKeyrings.findIndex((kr) =>
-    kr.accounts.find((address) => address === selectedAccount.address),
-  );
-}

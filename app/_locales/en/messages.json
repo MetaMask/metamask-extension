@@ -2589,6 +2589,8 @@
     "message": "Word $1 is incorrect or misspelled.",
     "description": "$1 is the word that is incorrect or misspelled"
   },
+  "importSRPWordErrorAlternative": {
+    "message": "Word $1 and $2 is incorrect or misspelled.",
     "description": "$1 and $2 are multiple words that are mispelled."
   },
   "importSecretRecoveryPhrase": {
@@ -2596,6 +2598,7 @@
   },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
+  },
   "importSelectedTokensDescription": {
     "message": "Only the tokens you've selected will appear in your wallet. You can always import hidden tokens later by searching for them."
   },

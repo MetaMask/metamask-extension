@@ -17,6 +17,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
+  getMetaMaskKeyrings,
   getUseBlockie,
 } from '../../../selectors';
 import {
@@ -42,6 +43,9 @@ import SRPQuiz from '../../app/srp-quiz-modal';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
+import { EthKeyring } from '@metamask/keyring-internal-api';
+import { KeyringMetadata } from '@metamask/keyring-controller';
+import { Json } from '@metamask/utils';
 
 export enum AttemptExportState {
   None = 'None',
@@ -58,9 +62,20 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const {
-    id: accountId,
     metadata: { name },
   } = useSelector((state) => getInternalAccountByAddress(state, address));
+  const keyrings: (EthKeyring<Json> & {
+    accounts: string[];
+    metadata: KeyringMetadata;
+  })[] = useSelector(getMetaMaskKeyrings);
+  const keyringId = keyrings.find((kr) =>
+    kr.accounts.includes(address),
+  )?.metadata.id;
+
+  if (!keyringId) {
+    throw new Error('Keyring not found');
+  }
+
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
     AttemptExportState.None,
@@ -185,7 +200,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
         holdToRevealType="PrivateKey"
       />
       <SRPQuiz
-        accountId={accountId}
+        keyringId={keyringId}
         isOpen={srpQuizModalVisible}
         onClose={() => {
           setSrpQuizModalVisible(false);

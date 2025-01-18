@@ -45,7 +45,7 @@ const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
 export default function RevealSeedPage() {
   const history = useHistory();
-  const { typeIndex } = useParams();
+  const { keyringId } = useParams();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -77,7 +77,7 @@ export default function RevealSeedPage() {
     setSeedWords(null);
     setCompletedLongPress(false);
     setError(null);
-    dispatch(requestRevealSeedWords(password, Number(typeIndex ?? 1)))
+    dispatch(requestRevealSeedWords(password, keyringId))
       .then((revealedSeedWords) => {
         trackEvent({
           category: MetaMetricsEventCategory.Keys,

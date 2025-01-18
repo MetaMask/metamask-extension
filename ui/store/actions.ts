@@ -385,17 +385,17 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function getSeedPhrase(password: string, typeIndex: string) {
+export async function getSeedPhrase(password: string, keyringId: string) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
     'getSeedPhrase',
-    [password, typeIndex],
+    [password, keyringId],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
 export function requestRevealSeedWords(
   password: string,
-  typeIndex: number,
+  keyringId: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -403,7 +403,7 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await getSeedPhrase(password, typeIndex);
+      const seedPhrase = await getSeedPhrase(password, keyringId);
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -514,7 +514,7 @@ export function importNewAccount(
 
 export function addNewAccount(
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  keyringIndex?: number,
+  keyringId?: string,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
@@ -525,11 +525,10 @@ export function addNewAccount(
     );
     ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     const keyrings = getMetaMaskKeyrings(getState());
-    const hdKeyrings = keyrings.filter(
-      (keyring) => keyring.type === KeyringTypes.hd,
+    const selectedKeyring = keyrings.find(
+      (keyring) => keyring.metadata.id === keyringId,
     );
-    const selectedKeyring = hdKeyrings[keyringIndex];
-    oldAccounts = selectedKeyring?.accounts || hdKeyrings[0]?.accounts;
+    oldAccounts = selectedKeyring?.accounts || keyrings[0]?.accounts;
     ///: END:ONLY_INCLUDE_IF
 
     dispatch(showLoadingIndication());
@@ -539,7 +538,7 @@ export function addNewAccount(
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         Object.keys(oldAccounts).length,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        keyringIndex || 0,
+        keyringId,
         ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {

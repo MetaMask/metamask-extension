@@ -1,7 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { KeyringTypes } from '@metamask/keyring-controller';
-import { EthKeyring, InternalAccount } from '@metamask/keyring-api';
+import {
+  KeyringObject,
+  KeyringMetadata,
+  KeyringTypes,
+} from '@metamask/keyring-controller';
+import { EthKeyring, InternalAccount } from '@metamask/keyring-internal-api';
 import { Json } from '@metamask/utils';
 import Card from '../../../ui/card';
 import {
@@ -38,11 +42,12 @@ export const SRPList = ({
   onActionComplete,
   hideShowAccounts,
 }: {
-  onActionComplete: (id: number) => void;
+  onActionComplete: (id: string) => void;
   hideShowAccounts?: boolean;
 }) => {
   const keyrings: (EthKeyring<Json> & {
     accounts: string[];
+    metadata: KeyringMetadata;
   })[] = useSelector(getMetaMaskKeyrings);
   const accounts: InternalAccount[] = useSelector(getInternalAccounts);
   const accountBalances: Record<string, string> = useSelector(
@@ -86,7 +91,12 @@ export const SRPList = ({
     <Box padding={4}>
       {hdKeyrings.map((keyring, index) => (
         <Card
-          onClick={() => onActionComplete(index)}
+          onClick={() =>
+            onActionComplete(
+              (keyring as KeyringObject & { metadata: KeyringMetadata })
+                .metadata.id,
+            )
+          }
           className="select-srp__container"
           marginBottom={3}
         >

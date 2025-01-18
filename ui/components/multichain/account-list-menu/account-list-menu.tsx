@@ -73,6 +73,7 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
+  getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
@@ -317,7 +318,8 @@ export const AccountListMenu = ({
 
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  const [selectedKeyringIndex, setSelectedKeyringIndex] = useState(0);
+  const primaryKeyringId = useSelector(getMetaMaskKeyrings)[0]?.metadata.id;
+  const [selectedKeyringId, setSelectedKeyringId] = useState(primaryKeyringId);
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -407,7 +409,7 @@ export const AccountListMenu = ({
                 }
               }}
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-              selectedKeyringIndex={selectedKeyringIndex}
+              selectedKeyringId={selectedKeyringId}
               onSelectSRP={() => setActionMode(ACTION_MODES.SELECT_SRP)}
               ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
@@ -457,8 +459,8 @@ export const AccountListMenu = ({
           ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
           actionMode === ACTION_MODES.SELECT_SRP && (
             <SRPList
-              onActionComplete={(keyringIndex: number) => {
-                setSelectedKeyringIndex(keyringIndex);
+              onActionComplete={(keyringId: string) => {
+                setSelectedKeyringId(keyringId);
                 setActionMode(ACTION_MODES.ADD);
               }}
             />

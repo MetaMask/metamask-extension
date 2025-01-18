@@ -350,6 +350,12 @@ describe('selectors', () => {
             ],
           },
         ],
+        keyringsMetadata: [
+          {
+            id: 'ULID01234567890ABCDEFGHIJKLMN',
+            name: '',
+          },
+        ],
         permissionHistory: {
           'https://remix.ethereum.org': {
             eth_accounts: {
