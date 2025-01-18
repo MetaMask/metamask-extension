@@ -16,12 +16,13 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
+import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
-import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
-import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
+import { getIsRevokeSetApprovalForAll } from '../info/utils';
+import { getIsRevokeDAIPermit } from '../utils';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
@@ -84,6 +85,14 @@ const getTitle = (
         if (tokenStandard === TokenStandard.ERC721) {
           return t('setApprovalForAllRedesignedTitle');
         }
+
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit) {
+          return t('confirmTitleRevokeApproveTransaction');
+        }
+
         return t('confirmTitlePermitTokens');
       }
       return t('confirmTitleSignature');
@@ -136,6 +145,14 @@ const getDescription = (
         if (tokenStandard === TokenStandard.ERC721) {
           return t('confirmTitleDescApproveTransaction');
         }
+
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit) {
+          return '';
+        }
+
         return t('confirmTitleDescPermitSignature');
       }
       return t('confirmTitleDescSign');

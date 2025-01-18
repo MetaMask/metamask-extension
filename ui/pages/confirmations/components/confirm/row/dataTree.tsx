@@ -201,6 +201,10 @@ const DataField = memo(
       return <ConfirmInfoRowAddress address={value} chainId={chainId} />;
     }
 
+    if (type === 'bool') {
+      return <ConfirmInfoRowText text={String(value)} />;
+    }
+
     return <ConfirmInfoRowText text={sanitizeString(value)} />;
   },
 );
