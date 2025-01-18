@@ -489,7 +489,6 @@ const PrepareBridgePage = () => {
                   : undefined;
               toChainClientId && dispatch(setActiveNetwork(toChainClientId));
               dispatch(setFromToken(toToken));
-              dispatch(setFromTokenInputValue(null));
               fromChain?.chainId && dispatch(setToChain(fromChain.chainId));
               fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               dispatch(setToToken(fromToken));
