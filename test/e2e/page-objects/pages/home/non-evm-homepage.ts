@@ -9,6 +9,12 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
 
+  async check_pageIsLoaded(): Promise<void> {
+    await super.check_pageIsLoaded();
+    if (this.driver.browser === 'firefox') {
+      await this.driver.delay(2000);
+    }
+  }
   /**
    * Clicks the send button on the non-EVM account homepage.
    */

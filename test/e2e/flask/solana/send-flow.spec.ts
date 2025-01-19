@@ -17,7 +17,7 @@ describe('Send flow', function (this: Suite) {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
-        await driver.delay(2000);
+        a
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
@@ -77,7 +77,6 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
-        await driver.delay(2000);
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
@@ -229,7 +228,6 @@ describe('Send full flow of SOL', function (this: Suite) {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
-        await driver.delay(2000);
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
@@ -375,7 +373,6 @@ describe('Send flow flow', function (this: Suite) {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
-        await driver.delay(2000);
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
