@@ -14,6 +14,7 @@ export const TOGGLEABLE_ALERT_TYPES = [
   AlertTypes.smartTransactionsMigration,
 ];
 
+// test
 export enum Web3ShimUsageAlertStates {
   recorded = 1,
   dismissed = 2,
