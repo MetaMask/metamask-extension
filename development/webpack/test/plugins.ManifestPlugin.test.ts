@@ -287,7 +287,10 @@ describe('ManifestPlugin', () => {
     const mockFlags = { remoteFeatureFlags: { testFlag: true } };
 
     it('adds manifest flags in development mode', () => {
-      const transform = transformManifest({ lockdown: true, test: false }, true);
+      const transform = transformManifest(
+        { lockdown: true, test: false },
+        true,
+      );
       assert(transform, 'transform should be truthy');
 
       // Mock fs.readFileSync
@@ -300,7 +303,7 @@ describe('ManifestPlugin', () => {
         assert.deepStrictEqual(
           transformed._flags,
           mockFlags,
-          'manifest should have flags in development mode'
+          'manifest should have flags in development mode',
         );
       } finally {
         // Restore original readFileSync
@@ -309,7 +312,10 @@ describe('ManifestPlugin', () => {
     });
 
     it('handles missing manifest flags file', () => {
-      const transform = transformManifest({ lockdown: true, test: false }, true);
+      const transform = transformManifest(
+        { lockdown: true, test: false },
+        true,
+      );
       assert(transform, 'transform should be truthy');
 
       // Mock fs.readFileSync to throw ENOENT
@@ -325,7 +331,7 @@ describe('ManifestPlugin', () => {
         assert.deepStrictEqual(
           transformed._flags,
           { remoteFeatureFlags: {} },
-          'manifest should have default flags when file is missing'
+          'manifest should have default flags when file is missing',
         );
       } finally {
         // Restore original readFileSync
