@@ -17,7 +17,6 @@ describe('Send flow', function (this: Suite) {
         await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
-        a
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
