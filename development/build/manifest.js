@@ -31,13 +31,7 @@ async function loadManifestFlags() {
   }
 }
 
-// Initialize with default value
-let manifestFlags = { remoteFeatureFlags: {} };
-
-// Load flags asynchronously
-loadManifestFlags().then((flags) => {
-  manifestFlags = flags;
-});
+const manifestFlags = loadManifestFlags();
 
 module.exports = createManifestTasks;
 
