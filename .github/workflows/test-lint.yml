@@ -19,3 +19,6 @@ jobs:
 
       - name: Verify locales
         run: yarn verify-locales --quiet
+
+      - name: Check circular dependencies
+        run: yarn circular-deps:check
