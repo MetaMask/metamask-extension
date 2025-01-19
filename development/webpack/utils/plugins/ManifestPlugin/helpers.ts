@@ -51,7 +51,7 @@ export function transformManifest(
       manifestFlags = JSON.parse(manifestFlagsContent);
     } catch (error: unknown) {
       // Only ignore the error if the file doesn't exist
-      if (error instanceof Error && error.message !== 'ENOENT') {
+      if (error instanceof Error && 'code' in error && error.code !== 'ENOENT') {
         throw error;
       }
     }
