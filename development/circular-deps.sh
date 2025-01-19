@@ -5,16 +5,14 @@ set -u
 set -o pipefail
 
 COMMAND="${1:-}"
-if [[ "$COMMAND" != "check" && "$COMMAND" != "update" ]]; then
-  echo "Usage: $0 [check|update]"
+if [[ "$COMMAND" != "check" && "$COMMAND" != "fix" ]]; then
+  echo "Usage: $0 [check|fix]"
   exit 1
 fi
 
 # Print instructions for how to resolve circular dependency issues
 print_resolution_steps() {
-  echo "You can resolve this by either:"
-  echo "1. Add comment '@metamaskbot update-circular-deps' on this PR"
-  echo "2. Run 'yarn circular-deps:update' locally and commit the changes."
+  echo "To resolve this issue, run 'yarn circular-deps:fix' locally and commit the changes."
 }
 
 # Normalizes JSON output by sorting both the individual cycles and the array of cycles.
@@ -41,7 +39,11 @@ madge_json() {
   yarn madge $MADGE_ARGS | normalize_json
 }
 
-if [[ "$COMMAND" == "check" ]]; then
+if [[ "$COMMAND" == "fix" ]]; then
+  # Generate circular dependencies and update the file
+  madge_json > circular-deps.json || true
+  echo "Wrote circular dependencies to circular-deps.json"
+else
   # Check if circular-deps.json exists
   if [ ! -f circular-deps.json ]; then
     echo "Error: circular-deps.json does not exist."
@@ -64,9 +66,4 @@ if [[ "$COMMAND" == "check" ]]; then
 
   rm circular-deps.temp.json
   echo "Circular dependencies check passed."
-else
-  # Generate circular dependencies and update the file
-  madge_json > circular-deps.json || true
-
-  echo "Wrote circular dependencies to circular-deps.json"
 fi

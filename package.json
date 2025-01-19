@@ -24,7 +24,7 @@
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
     "circular-deps:check": "./development/circular-deps.sh check",
-    "circular-deps:update": "./development/circular-deps.sh update",
+    "circular-deps:fix": "./development/circular-deps.sh update",
     "start:test": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
     "start:test:flask": "yarn start:test --build-type flask --apply-lavamoat=false",
     "start:test:mv2:flask": "ENABLE_MV3=false yarn start:test:flask --apply-lavamoat=false --snow=false",
