@@ -113,7 +113,6 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
-import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -2976,24 +2975,6 @@ export function getMetaMetricsDataDeletionTimestamp(state) {
 
 export function getMetaMetricsDataDeletionStatus(state) {
   return state.metamask.metaMetricsDataDeletionStatus;
-}
-
-/**
- * Gets the remote feature flags by combining flags from both the manifest and state.
- * Manifest flags take precedence and will override any duplicate flags from state.
- * This allows for both static (manifest) and dynamic (state) feature flag configuration.
- *
- * @param {object} state - The MetaMask state object
- * @returns {object} Combined feature flags object with manifest flags taking precedence over state flags
- */
-export function getRemoteFeatureFlags(state) {
-  const manifestFlags = getManifestFlags().remoteFeatureFlags;
-  const stateFlags = state.metamask.remoteFeatureFlags;
-
-  return {
-    ...stateFlags,
-    ...manifestFlags,
-  };
 }
 
 /**
