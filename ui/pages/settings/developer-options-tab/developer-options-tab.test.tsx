@@ -20,7 +20,8 @@ jest.mock('../../../store/actions.ts', () => ({
     mockSetServiceWorkerKeepAlivePreference,
 }));
 
-jest.mock('../../../selectors/remote-feature-flag', () => ({
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
   getRemoteFeatureFlags: jest.fn(() => mockRemoteFeatureFlags),
 }));
 

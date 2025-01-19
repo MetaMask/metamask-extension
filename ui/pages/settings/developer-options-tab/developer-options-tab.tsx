@@ -37,7 +37,7 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';
-import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flag';
+import { getRemoteFeatureFlags } from '../../../selectors';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { ProfileSyncDevSettings } from './profile-sync';

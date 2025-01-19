@@ -1,5 +1,5 @@
 import * as manifestFlags from '../../shared/lib/manifestFlags';
-import { getRemoteFeatureFlags } from './remote-feature-flag';
+import { getRemoteFeatureFlags } from './remote-feature-flags';
 
 describe('#getRemoteFeatureFlags', () => {
   let getManifestFlagsMock: jest.SpyInstance;
