@@ -436,6 +436,7 @@
     "single-call-balance-checker-abi": "^1.0.0",
     "ts-mixer": "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch",
     "tslib": "~2.6.0",
+    "ulid": "^2.3.0",
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
