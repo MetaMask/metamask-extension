@@ -7,10 +7,12 @@ import { PersistanceManager } from './Stores/PersistanceManager';
 
 const platform = new ExtensionPlatform();
 
-const inTest = process.env.IN_TEST;
-
-const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
-const sentryLocalStore = new PersistanceManager({ localStore });
+// This instance of `localStore` is used by Sentry to get the persisted state
+const sentryLocalStore = new PersistanceManager({
+  localStore: process.env.IN_TEST
+    ? new ReadOnlyNetworkStore()
+    : new ExtensionStore(),
+});
 
 /**
  * Get the persisted wallet state.
