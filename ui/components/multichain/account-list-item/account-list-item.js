@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -54,6 +54,7 @@ import {
   getShowFiatInTestnets,
   getChainIdsToPoll,
   getSnapsMetadata,
+  getMetaMaskKeyrings,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
@@ -74,7 +75,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { getAccountLabels } from '../../../helpers/utils/accounts';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -102,12 +103,18 @@ const AccountListItem = ({
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
   const snapMetadata = useSelector(getSnapsMetadata);
-  const accountLabel = getAccountLabel(
-    account.metadata.keyring.type,
-    account,
-    account.metadata.keyring.type === KeyringType.snap
-      ? getSnapName(snapMetadata)(account.metadata?.snap.id)
-      : null,
+  const keyrings = useSelector(getMetaMaskKeyrings);
+  const accountLabels = useMemo(
+    () =>
+      getAccountLabels(
+        account.metadata.keyring.type,
+        account,
+        keyrings,
+        account.metadata.keyring.type === KeyringType.snap
+          ? getSnapName(snapMetadata)(account.metadata?.snap.id)
+          : null,
+      ),
+    [account, keyrings, snapMetadata],
   );
 
   const useBlockie = useSelector(getUseBlockie);
@@ -412,20 +419,25 @@ const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {accountLabel ? (
-          <Tag
-            label={accountLabel}
-            labelProps={{
-              variant: TextVariant.bodyXs,
-              color: Color.textAlternative,
-            }}
-            startIconName={
-              account.metadata.keyring.type === KeyringType.snap
-                ? IconName.Snaps
-                : null
-            }
-          />
-        ) : null}
+        {accountLabels.length > 0
+          ? accountLabels.map((label) => {
+              return (
+                <Tag
+                  key={label}
+                  label={label}
+                  labelProps={{
+                    variant: TextVariant.bodyXs,
+                    color: Color.textAlternative,
+                  }}
+                  startIconName={
+                    account.metadata.keyring.type === KeyringType.snap
+                      ? IconName.Snaps
+                      : null
+                  }
+                />
+              );
+            })
+          : null}
       </Box>
 
       {menuType === AccountListItemMenuTypes.None ? null : (
