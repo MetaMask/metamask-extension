@@ -188,6 +188,9 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
+      - validate-fixtures-schema-integrity:
+          requires:
+            - prep-build
       - test-storybook:
           requires:
             - prep-deps
@@ -228,6 +231,7 @@ workflows:
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
             - test-e2e-chrome-vault-decryption
+            - validate-fixtures-schema-integrity
             - test-e2e-chrome-webpack
             - test-storybook
       - benchmark:
@@ -1306,3 +1310,20 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'whew - everything passed!'
+
+  validate-fixtures-schema-integrity:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:e2e:single
+          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/fixtures/fixture-schema-integrity.spec.ts --browser chrome
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
