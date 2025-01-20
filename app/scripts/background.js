@@ -1301,8 +1301,8 @@ async function onInstall() {
   // and is therefore an install
   if (process.env.IN_TEST) {
     addAppInstalledEvent();
-  } else if (storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
-    // If isFirstTimeInstall is true then this is a fresh installation
+  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+    // If storeAlreadyExisted is true then this is a fresh installation
     // and an app installed event should be tracked.
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
