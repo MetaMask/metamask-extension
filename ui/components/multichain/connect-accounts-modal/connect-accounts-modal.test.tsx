@@ -1,6 +1,7 @@
 import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { waitFor } from '@testing-library/react';
+import type { NewPlugin } from 'pretty-format';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
@@ -13,6 +14,46 @@ import { shortenAddress } from '../../../helpers/utils/util';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { ConnectAccountsModal } from './connect-accounts-modal';
+
+// Add custom serializer to handle floating point precision in SVG transforms
+const svgTransformSerializer: NewPlugin = {
+  test: (val: unknown): val is string => {
+    return typeof val === 'string' && val.includes('transform="translate');
+  },
+  serialize: (
+    val: unknown,
+    config,
+    indentation,
+    depth,
+    refs,
+    printer,
+  ): string => {
+    const stringVal = val as string;
+    // Round all floating point numbers in transform attributes to 3 decimal places
+    const roundedTransforms = stringVal.replace(
+      /transform="translate\(([-\d.]+)\s+([-\d.]+)\)\s+rotate\(([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\)"/gu,
+      (
+        _: string,
+        x: string,
+        y: string,
+        angle: string,
+        cx: string,
+        cy: string,
+      ) => {
+        const roundToThree = (num: string): number =>
+          Number(parseFloat(num).toFixed(3));
+        return `transform="translate(${roundToThree(x)} ${roundToThree(
+          y,
+        )}) rotate(${roundToThree(angle)} ${roundToThree(cx)} ${roundToThree(
+          cy,
+        )})"`;
+      },
+    );
+    return printer(roundedTransforms, config, indentation, depth, refs);
+  },
+};
+
+expect.addSnapshotSerializer(svgTransformSerializer);
 
 const mockAccount = createMockInternalAccount();
 const mockBtcAccount = createMockInternalAccount({
