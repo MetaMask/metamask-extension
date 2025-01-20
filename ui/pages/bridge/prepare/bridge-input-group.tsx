@@ -89,15 +89,15 @@ export const BridgeInputGroup = ({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const isAmountReadOnly =
+    amountFieldProps?.readOnly || amountFieldProps?.disabled;
+
   useEffect(() => {
-    if (inputRef.current) {
+    if (!isAmountReadOnly && inputRef.current) {
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
       inputRef.current.focus();
     }
-  }, [amountFieldProps]);
-
-  const isAmountReadOnly =
-    amountFieldProps?.readOnly || amountFieldProps?.disabled;
+  }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -161,7 +161,6 @@ export const BridgeInputGroup = ({
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
-          autoFocus={false}
         >
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (

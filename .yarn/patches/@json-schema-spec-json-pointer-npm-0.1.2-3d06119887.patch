@@ -1,0 +1,13 @@
+diff --git a/lib/index.js b/lib/index.js
+index f5795884311124b221d91f488ed45750eb6e9c80..e030d6f8d8e85e6d1350c565d36ad48bc49af881 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -25,7 +25,7 @@ class Ptr {
+         });
+         return `/${tokens.join("/")}`;
+     }
+-    eval(instance) {
++    shmeval(instance) {
+         for (const token of this.tokens) {
+             if (instance.hasOwnProperty(token)) {
+                 instance = instance[token];

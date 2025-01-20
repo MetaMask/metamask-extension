@@ -18,12 +18,6 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
 
-export enum SendFlowPlaceHolders {
-  AMOUNT = 'Enter amount to send',
-  RECIPIENT = 'Enter receiving address',
-  LOADING = 'Preparing transaction',
-}
-
 export function btcToSats(btc: number): number {
   // Watchout, we're not using BigNumber(s) here (but that's ok for test purposes)
   return btc * SATS_IN_1_BTC;
@@ -193,7 +187,7 @@ export async function withBtcAccountSnap(
   await withFixtures(
     {
       fixtures: new FixtureBuilder()
-        .withPreferencesControllerAndFeatureFlag({
+        .withPreferencesController({
           bitcoinSupportEnabled: bitcoinSupportEnabled ?? true,
         })
         .build(),

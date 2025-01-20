@@ -89,6 +89,8 @@ export class SwapPage {
     }
 
     // Enter Swap Quantity
+    await this.page.waitForTimeout(1000);
+    await this.tokenQty.waitFor({ state: 'visible' });
     await this.tokenQty.fill(options.qty);
     this.swapQty = options.qty;
 
