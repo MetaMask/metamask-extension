@@ -6381,24 +6381,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^11.9.0":
-  version: 11.9.0
-  resolution: "@metamask/snaps-rpc-methods@npm:11.9.0"
-  dependencies:
-    "@metamask/key-tree": "npm:^10.0.2"
-    "@metamask/permission-controller": "npm:^11.0.5"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/snaps-sdk": "npm:^6.15.0"
-    "@metamask/snaps-utils": "npm:^8.8.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.0.1"
-    "@noble/hashes": "npm:^1.3.1"
-    luxon: "npm:^3.5.0"
-  checksum: 10/44d47d3d8dcaa349863f2df2622c6fedc15e56e77d00ee97caadf3cebef6ddca06c8d4fa199b196a067bbdce59ec9a867446c133658b098216746bc23e7245f8
-  languageName: node
-  linkType: hard
-
-"@metamask/snaps-rpc-methods@npm:^11.9.1":
+"@metamask/snaps-rpc-methods@npm:^11.9.0, @metamask/snaps-rpc-methods@npm:^11.9.1":
   version: 11.9.1
   resolution: "@metamask/snaps-rpc-methods@npm:11.9.1"
   dependencies:
