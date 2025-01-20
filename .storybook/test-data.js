@@ -1424,17 +1424,27 @@ const state = {
     subjects: {
       'https://app.uniswap.org': {
         permissions: {
-          eth_accounts: {
-            invoker: 'https://app.uniswap.org',
-            parentCapability: 'eth_accounts',
-            id: 'a7342e4b-beae-4525-a36c-c0635fd03359',
-            date: 1620710693178,
+          'endowment:caip25': {
             caveats: [
               {
-                type: 'restrictReturnedAccounts',
-                value: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1': {
+                      accounts: [
+                        'eip155:1:0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+                      ],
+                    },
+                  },
+                  isMultichainOrigin: false,
+                },
               },
             ],
+            invoker: 'https://app.uniswap.org',
+            id: 'a7342e4b-beae-4525-a36c-c0635fd03359',
+            date: 1620710693178,
+            parentCapability: 'endowment:caip25',
           },
         },
       },
