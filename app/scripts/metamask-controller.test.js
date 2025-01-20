@@ -40,7 +40,10 @@ import {
 } from '@metamask/multichain';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
-import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
+import {
+  HardwareDeviceNames,
+  HardwareKeyringType,
+} from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
@@ -2159,6 +2162,38 @@ describe('MetaMaskController', () => {
             });
           },
         );
+      });
+
+      describe('getHardwareTypeForMetric', () => {
+        it.each(['ledger', 'lattice', 'trezor', 'qr'])(
+          'should return the correct type for %s',
+          async (type) => {
+            jest
+              .spyOn(metamaskController.keyringController, 'withKeyring')
+              .mockResolvedValue({ type });
+
+            const result = await metamaskController.getHardwareTypeForMetric(
+              '0x123',
+            );
+
+            expect(result).toBe(HardwareKeyringType[type]);
+          },
+        );
+
+        it('should handle special case for oneKey', async () => {
+          jest
+            .spyOn(metamaskController.keyringController, 'withKeyring')
+            .mockResolvedValue({
+              type: 'trezor',
+              bridge: { minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION },
+            });
+
+          const result = await metamaskController.getHardwareTypeForMetric(
+            '0x123',
+          );
+
+          expect(result).toBe('OneKey Hardware');
+        });
       });
 
       describe('forgetDevice', () => {
