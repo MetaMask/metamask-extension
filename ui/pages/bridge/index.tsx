@@ -39,6 +39,8 @@ import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
+import { getMultichainNetwork } from '../../selectors/multichain';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -94,6 +96,9 @@ const CrossChainSwap = () => {
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
+  const multichainNetwork = useSelector(getMultichainNetwork);
+  const isSolana = multichainNetwork.chainId === MultichainNetworks.SOLANA;
+
   return (
     <Page className="bridge__container">
       <Header
@@ -117,7 +122,7 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {t('bridge')}
+        {isSolana ? t('swap') : t('bridge')}
       </Header>
       <Content padding={0}>
         <Switch>

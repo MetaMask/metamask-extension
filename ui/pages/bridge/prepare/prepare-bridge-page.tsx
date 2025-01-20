@@ -97,6 +97,8 @@ import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { getMultichainNetwork } from '../../../selectors/multichain';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -365,6 +367,9 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search]);
 
+  const multichainNetwork = useSelector(getMultichainNetwork);
+  const isSolana = multichainNetwork.chainId === MultichainNetworks.SOLANA;
+
   return (
     <Column className="prepare-bridge-page" gap={8}>
       <BridgeInputGroup
@@ -522,7 +527,7 @@ const PrepareBridgePage = () => {
               dispatch(setToChain(networkConfig.chainId));
               dispatch(setToToken(null));
             },
-            header: t('bridgeTo'),
+            header: isSolana ? t('swapSwapTo') : t('bridgeTo'),
             shouldDisableNetwork: ({ chainId }) =>
               chainId === fromChain?.chainId,
           }}

@@ -40,6 +40,8 @@ import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
+import { getMultichainNetwork } from '../../../selectors/multichain';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 export const BridgeInputGroup = ({
   header,
@@ -98,6 +100,9 @@ export const BridgeInputGroup = ({
       inputRef.current.focus();
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
+
+  const multichainNetwork = useSelector(getMultichainNetwork);
+  const isSolana = multichainNetwork.chainId === MultichainNetworks.SOLANA;
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -172,7 +177,7 @@ export const BridgeInputGroup = ({
                 fontWeight={FontWeight.Normal}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                {t('bridgeTo')}
+                {isSolana ? t('swapSwapTo') : t('bridgeTo')}
               </Button>
             ) : (
               <BridgeAssetPickerButton
