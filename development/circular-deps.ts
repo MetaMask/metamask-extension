@@ -128,6 +128,19 @@ async function fix(): Promise<void> {
   }
 }
 
+/**
+ * Simplified version of stripJsonComments that removes any line that
+ * starts with // (ignoring whitespace).
+ *
+ * @param jsonc
+ */
+function stripJsonComments(jsonc: string): string {
+  return jsonc
+    .split('\n')
+    .filter((line) => !line.trim().startsWith('//'))
+    .join('\n');
+}
+
 async function check(): Promise<void> {
   const resolutionSteps =
     'To resolve this issue, run `yarn circular-deps:fix` locally and commit the changes.';
@@ -140,17 +153,18 @@ async function check(): Promise<void> {
       process.exit(1);
     }
 
-    // Get current circular dependencies
-    const currentDeps = await getMadgeCircularDeps();
+    // Determine actual circular dependencies in the codebase
+    const actualDeps = await getMadgeCircularDeps();
 
-    // Read existing file
-    const existingDeps = JSON.parse(fs.readFileSync(TARGET_FILE, 'utf-8'));
+    // Read existing file and strip comments
+    const fileContents = fs.readFileSync(TARGET_FILE, 'utf-8');
+    const baselineDeps = JSON.parse(stripJsonComments(fileContents));
 
     // Compare dependencies
-    const currentStr = JSON.stringify(currentDeps);
-    const existingStr = JSON.stringify(existingDeps);
+    const actualStr = JSON.stringify(actualDeps);
+    const baselineStr = JSON.stringify(baselineDeps);
 
-    if (currentStr !== existingStr) {
+    if (actualStr !== baselineStr) {
       console.error(
         `Error: Codebase circular dependencies are out of sync in ${TARGET_FILE}`,
       );
