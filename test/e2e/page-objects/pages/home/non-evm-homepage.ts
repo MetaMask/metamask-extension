@@ -15,6 +15,7 @@ class NonEvmHomepage extends HomePage {
       await this.driver.delay(2000);
     }
   }
+
   /**
    * Clicks the send button on the non-EVM account homepage.
    */

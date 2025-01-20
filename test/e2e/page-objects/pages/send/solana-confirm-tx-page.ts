@@ -55,7 +55,15 @@ class ConfirmSolanaTxPage {
    */
   async clickOnSend(): Promise<void> {
     const sendButton = await this.driver.findElement(this.sendButton);
+
     await sendButton.click();
+    await this.driver.waitForSelector(
+      {
+        text: 'Close',
+        tag: 'span',
+      },
+      { timeout: 10000 },
+    );
   }
 
   async isSendButtonEnabled(): Promise<boolean> {
