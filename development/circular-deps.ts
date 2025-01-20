@@ -6,19 +6,46 @@ import fg from 'fast-glob';
 
 const TARGET_FILE = 'circular-deps.json';
 
-// Files and patterns to ignore
+/**
+ * Patterns for files and directories to ignore when checking for circular dependencies:
+ * - test files and directories
+ * - storybook files and directories
+ * - any file with .test., .spec., or .stories. in its name
+ */
 const IGNORE_PATTERNS = [
+  // Test files and directories
   '**/test/**',
   '**/tests/**',
-  '**/stories/**',
-  '**/storybook/**',
   '**/*.test.*',
   '**/*.spec.*',
+
+  // Storybook files and directories
+  '**/stories/**',
+  '**/storybook/**',
   '**/*.stories.*',
 ];
 
-// Entry point patterns to check for circular dependencies
-const ENTRYPOINT_PATTERNS = ['app/**/*', 'shared/**/*', 'ui/**/*'];
+/**
+ * Source code directories to check for circular dependencies.
+ * These are the main app directories containing production code.
+ */
+const ENTRYPOINT_PATTERNS = [
+  'app/**/*', // Main application code
+  'shared/**/*', // Shared utilities and components
+  'ui/**/*', // UI components and styles
+];
+
+// Converts a glob pattern to a RegExp patter
+function globToRegExp(pattern: string): RegExp {
+  return new RegExp(
+    pattern
+      // Convert '**' to '.*' to match any characters.
+      .replace(/\*\*/gu, '.*')
+      // Convert '*' to '[^/]*' to match any characters except directory separators.
+      .replace(/\*/gu, '[^/]*'),
+    'u',
+  );
+}
 
 /**
  * Circular dependencies are represented as an array of arrays, where each
@@ -31,11 +58,12 @@ type CircularDeps = string[][];
  * of cycles. This ensures consistent output regardless of cycle starting point.
  *
  * Example:
- *   Input cycle:  B -> C -> A -> B
- *   Output cycle: A -> B -> C -> A
+ * Input cycle:  B -> C -> A -> B
+ * Output cycle: A -> B -> C -> A
  *
  * The normalization allows for reliable diff comparisons by eliminating
  * ordering variations.
+ *…
  *
  * @param cycles
  */
@@ -47,10 +75,7 @@ function normalizeJson(cycles: CircularDeps): CircularDeps {
 const MADGE_CONFIG = {
   circular: true,
   extensions: ['js', 'jsx', 'ts', 'tsx'],
-  excludeRegExp: IGNORE_PATTERNS.map(
-    (pattern) =>
-      new RegExp(pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*')),
-  ),
+  excludeRegExp: IGNORE_PATTERNS.map(globToRegExp),
   tsConfig: 'tsconfig.json',
   webpackConfig: 'webpack.config.js',
 };
