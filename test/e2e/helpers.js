@@ -748,7 +748,7 @@ async function clickSignOnRedesignedSignatureConfirmation({
   if (snapSigInsights) {
     // there is no condition we can wait for to know the snap is ready,
     // so we have to add a small delay as the last alternative to avoid flakiness.
-    await driver.delay(regularDelayMs);
+    await driver.delay(largeDelayMs);
   }
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });

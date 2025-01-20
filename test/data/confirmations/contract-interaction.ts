@@ -161,6 +161,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       to: '0x88aa6343307ec9a652ccddda3646e62b2f1a5125',
       value: '0x3782dace9d900000',
     },
+    gasLimitNoBuffer: '0xab77',
     type: TransactionType.contractInteraction,
     userEditedGasLimit: false,
     userFeeLevel: 'medium',
