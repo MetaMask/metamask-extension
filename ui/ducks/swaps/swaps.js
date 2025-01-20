@@ -834,7 +834,7 @@ export const fetchQuotesAndSetQuoteState = (
         );
 
         // Firefox and Chrome have different implementations of the APIs
-        // that we rely on for communication accross the app. On Chrome big
+        // that we rely on for communication across the app. On Chrome big
         // numbers are converted into number strings, on firefox they remain
         // Big Number objects. As such, we convert them here for both
         // browsers.
