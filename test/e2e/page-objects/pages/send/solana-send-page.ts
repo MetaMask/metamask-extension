@@ -19,6 +19,8 @@ class SendSolanaPage {
     tag: 'button',
   };
 
+  private readonly clearToAddressField = '#send-clear-button';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -56,9 +58,18 @@ class SendSolanaPage {
     await this.driver.pasteIntoField(this.sendAmountInput, amount);
   }
 
+  async clearToAddress(): Promise<void> {
+    const input = await this.driver.waitForSelector(this.clearToAddressField, {
+      timeout: 10000,
+    });
+    await input.click();
+  }
+
   async setToAddress(toAddress: string): Promise<void> {
     await this.driver.waitForControllersLoaded();
-    await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
+    await this.driver.waitForSelector(this.toAddressInput, {
+      timeout: 10000,
+    });
     await this.driver.pasteIntoField(this.toAddressInput, toAddress);
   }
 
@@ -90,6 +101,18 @@ class SendSolanaPage {
       return await continueButton.isEnabled();
     } catch (e) {
       console.log('Continue button not enabled', e);
+      return false;
+    }
+  }
+
+  async isAmountInputDisplayed(): Promise<boolean> {
+    try {
+      const input = await this.driver.waitForSelector(this.sendAmountInput, {
+        timeout: 1000,
+      });
+      return await input.isDisplayed();
+    } catch (e) {
+      console.log('Send amount input not displayed', e);
       return false;
     }
   }

@@ -32,14 +32,6 @@ describe('Send flow', function (this: Suite) {
           true,
           'Invalid Solana address should appear and it does not',
         );
-        await sendSolanaPage.setToAddress('');
-        assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
-            'To address is required',
-          ),
-          true,
-          'To address is required should appear and it does not',
-        );
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
         assert.equal(
@@ -56,6 +48,17 @@ describe('Send flow', function (this: Suite) {
           ),
           true,
           'Amount must be greater than 0 text is not displayed',
+        );
+        await sendSolanaPage.clearToAddress();
+        assert.equal(
+          await sendSolanaPage.isContinueButtonEnabled(),
+          false,
+          'Continue button is enabled and it shouldn`t',
+        );
+        assert.equal(
+          await sendSolanaPage.isAmountInputDisplayed(),
+          false,
+          'Amount input should appear and it does not',
         );
       },
     );
