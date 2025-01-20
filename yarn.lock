@@ -4035,10 +4035,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@json-schema-spec/json-pointer@npm:^0.1.2":
+"@json-schema-spec/json-pointer@npm:0.1.2":
   version: 0.1.2
   resolution: "@json-schema-spec/json-pointer@npm:0.1.2"
   checksum: 10/2a691ffc11f1a266ca4d0c9e2c99791679d580f343ef69746fad623d1abcf4953adde987890e41f906767d7729604c0182341e9012388b73a44d5b21fb296453
+  languageName: node
+  linkType: hard
+
+"@json-schema-spec/json-pointer@patch:@json-schema-spec/json-pointer@npm%3A0.1.2#~/.yarn/patches/@json-schema-spec-json-pointer-npm-0.1.2-3d06119887.patch":
+  version: 0.1.2
+  resolution: "@json-schema-spec/json-pointer@patch:@json-schema-spec/json-pointer@npm%3A0.1.2#~/.yarn/patches/@json-schema-spec-json-pointer-npm-0.1.2-3d06119887.patch::version=0.1.2&hash=8ff707"
+  checksum: 10/b957be819e3f744e8546014064f9fd8e45aa133985384bf91ae5f20688a087e12da3cb9046cd163e57ed1bea90c95ff7ed9a3e817f4c5e47377a8b330177915e
   languageName: node
   linkType: hard
 
@@ -4083,29 +4090,29 @@ __metadata:
   linkType: hard
 
 "@json-schema-tools/meta-schema@npm:^1.6.10":
-  version: 1.7.4
-  resolution: "@json-schema-tools/meta-schema@npm:1.7.4"
-  checksum: 10/6a688260eaac550d372325a39e7d4f44db7904a3fcaa3d3e0bf318b259007326592b53e511025ff35010ba0e0314dba338fd169338c5ea090328663f3e7cbd46
+  version: 1.7.5
+  resolution: "@json-schema-tools/meta-schema@npm:1.7.5"
+  checksum: 10/707dc3a285c26c37d00f418e9d0ef8a2ad1c23d4936ad5aab0ce94c9ae36a7a6125c4ca5048513af64b7e6e527b5472a1701d1f709c379acdd7ad12f6409d2cd
   languageName: node
   linkType: hard
 
-"@json-schema-tools/reference-resolver@npm:1.2.4":
-  version: 1.2.4
-  resolution: "@json-schema-tools/reference-resolver@npm:1.2.4"
+"@json-schema-tools/reference-resolver@npm:1.2.6":
+  version: 1.2.6
+  resolution: "@json-schema-tools/reference-resolver@npm:1.2.6"
   dependencies:
     "@json-schema-spec/json-pointer": "npm:^0.1.2"
     isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/1ad98d011e5aad72000112215615715593a0a244ca82dbf6008cc93bfcd14ef99a0796ab4e808faee083dc13182dc9ab2d01ca5db4f44ca880f45de2f5ea2437
+  checksum: 10/91d6b4b2ac43f8163fd27bde6d826f29f339e9c7ce3b7e2b73b85e891fa78e3702fd487deda143a0701879cbc2fe28c53a4efce4cd2d2dd2fe6e82b64bbd9c9c
   languageName: node
   linkType: hard
 
-"@json-schema-tools/reference-resolver@npm:^1.2.1, @json-schema-tools/reference-resolver@npm:^1.2.4":
-  version: 1.2.5
-  resolution: "@json-schema-tools/reference-resolver@npm:1.2.5"
+"@json-schema-tools/reference-resolver@patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch":
+  version: 1.2.6
+  resolution: "@json-schema-tools/reference-resolver@patch:@json-schema-tools/reference-resolver@npm%3A1.2.6#~/.yarn/patches/@json-schema-tools-reference-resolver-npm-1.2.6-4e1497c16d.patch::version=1.2.6&hash=6fefb6"
   dependencies:
     "@json-schema-spec/json-pointer": "npm:^0.1.2"
     isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/0f48098ea6df853a56fc7c758974eee4c5b7e3979123f49f52929c82a1eb263c7d0154efc6671325920d670494b05cae4d4625c6204023b4b1fed6e5f93ccb96
+  checksum: 10/91534095e488dc091a6d9bf807a065697cdc2c070bbda70ebd0817569c46daa8cfb56b4e625a9d9ddaa0d08c5fdc40db3ef39cae97a16b682e8b593f1febf062
   languageName: node
   linkType: hard
 
@@ -4932,6 +4939,13 @@ __metadata:
   dependencies:
     "@metamask/base-controller": "npm:^6.0.0"
   checksum: 10/0f8c9112a6514fd2dc4c135d1ab0445f627451d0583ef2eb92f52f133a448fd97b67d5aa615b7409f4380a01590546376ccc6b728d94cf32a4b62686e18c0a4d
+  languageName: node
+  linkType: hard
+
+"@metamask/api-specs@npm:^0.10.12":
+  version: 0.10.12
+  resolution: "@metamask/api-specs@npm:0.10.12"
+  checksum: 10/e592f27f350994688d3d54a8a8db16de033011ef665efe3283a77431914d8d69d1c3312fad33e4245b4984e1223b04c98da3d0a68c7f9577cf8290ba441c52ee
   languageName: node
   linkType: hard
 
@@ -5830,6 +5844,23 @@ __metadata:
   version: 3.1.1
   resolution: "@metamask/metamask-eth-abis@npm:3.1.1"
   checksum: 10/2d456882c5180eaf02d07f578ee8b8806d18639349d086a6b3b68c87e7ea294749efc332bfe7c1d5fb700933e71f31a46d3cd07b94c4e91c80faea5f9729bf0d
+  languageName: node
+  linkType: hard
+
+"@metamask/multichain@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/multichain@npm:2.0.0"
+  dependencies:
+    "@metamask/api-specs": "npm:^0.10.12"
+    "@metamask/controller-utils": "npm:^11.4.4"
+    "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.1"
+    "@metamask/utils": "npm:^10.0.0"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@metamask/network-controller": ^22.0.0
+    "@metamask/permission-controller": ^11.0.0
+  checksum: 10/3ae5a1b76070f06b952c1781d36b075a11cc7e94cb3dec35f93e20ed29c5e356cec320079e583e92e3cce52613c125c740bdd020fae0da30a2503b2eb3a2dca0
   languageName: node
   linkType: hard
 
@@ -6979,9 +7010,9 @@ __metadata:
   linkType: hard
 
 "@open-rpc/meta-schema@npm:^1.14.6":
-  version: 1.14.6
-  resolution: "@open-rpc/meta-schema@npm:1.14.6"
-  checksum: 10/7cb672ea42c143c3fcb177ad04b935d56c38cb28fc7ede0a0bb50293e0e49dee81046c2d43bc57c8bbf9efbbb76356d60b4a8e408a03ecc8fa5952ef3e342316
+  version: 1.14.9
+  resolution: "@open-rpc/meta-schema@npm:1.14.9"
+  checksum: 10/51505dcf7aa1a2285c78953c9b33711cede5f2765aa37dcb9ee7756d689e2ff2a89cfc6039504f0569c52a805fb9aa18f30a7c02ad7a06e793c801e43b419104
   languageName: node
   linkType: hard
 
@@ -13310,13 +13341,13 @@ __metadata:
   linkType: hard
 
 "axios@npm:^1.1.3":
-  version: 1.7.7
-  resolution: "axios@npm:1.7.7"
+  version: 1.7.4
+  resolution: "axios@npm:1.7.4"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/7f875ea13b9298cd7b40fd09985209f7a38d38321f1118c701520939de2f113c4ba137832fe8e3f811f99a38e12c8225481011023209a77b0c0641270e20cde1
+  checksum: 10/7a1429be1e3d0c2e1b96d4bba4d113efbfabc7c724bed107beb535c782c7bea447ff634886b0c7c43395a264d085450d009eb1154b5f38a8bae49d469fdcbc61
   languageName: node
   linkType: hard
 
@@ -26690,6 +26721,7 @@ __metadata:
     "@metamask/message-manager": "npm:^11.0.0"
     "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/multichain": "npm:^2.0.0"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
     "@metamask/notification-services-controller": "npm:^0.15.0"
