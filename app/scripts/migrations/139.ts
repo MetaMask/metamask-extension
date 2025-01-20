@@ -1,5 +1,17 @@
-import { hasProperty, isObject } from '@metamask/utils';
+import { hasProperty, hexToBigInt, isObject } from '@metamask/utils';
+import type {
+  CaipChainId,
+  CaipAccountId,
+  Json,
+  Hex,
+  NonEmptyArray,
+} from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+import type {
+  Caveat,
+  PermissionConstraint,
+  ValidPermission,
+} from '@metamask/permission-controller';
 
 type VersionedData = {
   meta: { version: number };
@@ -8,9 +20,75 @@ type VersionedData = {
 
 export const version = 139;
 
+// In-lined from @metamask/multichain
+const Caip25CaveatType = 'authorizedScopes';
+const Caip25EndowmentPermissionName = 'endowment:caip25';
+
+type InternalScopeObject = {
+  accounts: CaipAccountId[];
+};
+
+type InternalScopesObject = Record<CaipChainId, InternalScopeObject>;
+
+type Caip25CaveatValue = {
+  requiredScopes: InternalScopesObject;
+  optionalScopes: InternalScopesObject;
+  sessionProperties?: Record<string, Json>;
+  isMultichainOrigin: boolean;
+};
+
+// Locally defined types
+type Caip25Caveat = Caveat<typeof Caip25CaveatType, Caip25CaveatValue>;
+type Caip25Permission = ValidPermission<
+  typeof Caip25EndowmentPermissionName,
+  Caip25Caveat
+>;
+
+const PermissionNames = {
+  eth_accounts: 'eth_accounts',
+  permittedChains: 'endowment:permitted-chains',
+} as const;
+
+// a map of the networks built into the extension at the time of this migration to their chain IDs
+// copied from shared/constants/network.ts (https://github.com/MetaMask/metamask-extension/blob/5b5c04a16fb7937a6e9d59b1debe4713978ef39d/shared/constants/network.ts#L535)
+const BUILT_IN_NETWORKS: ReadonlyMap<string, Hex> = new Map([
+  ['sepolia', '0xaa36a7'],
+  ['mainnet', '0x1'],
+  ['linea-sepolia', '0xe705'],
+  ['linea-mainnet', '0xe708'],
+]);
+
+const snapsPrefixes = ['npm:', 'local:'] as const;
+
+function isPermissionConstraint(obj: unknown): obj is PermissionConstraint {
+  return (
+    isObject(obj) &&
+    obj !== null &&
+    hasProperty(obj, 'caveats') &&
+    Array.isArray(obj.caveats) &&
+    obj.caveats.length > 0 &&
+    hasProperty(obj, 'date') &&
+    typeof obj.date === 'number' &&
+    hasProperty(obj, 'id') &&
+    typeof obj.id === 'string' &&
+    hasProperty(obj, 'invoker') &&
+    typeof obj.invoker === 'string' &&
+    hasProperty(obj, 'parentCapability') &&
+    typeof obj.parentCapability === 'string'
+  );
+}
+
+function isNonEmptyArrayOfStrings(obj: unknown): obj is NonEmptyArray<string> {
+  return (
+    Array.isArray(obj) &&
+    obj.length > 0 &&
+    obj.every((item) => typeof item === 'string')
+  );
+}
+
 /**
- * This migration deletes properties from state which have been removed in
- * previous commits.
+ * This migration transforms `eth_accounts` and `permittedChains` permissions into
+ * an equivalent CAIP-25 permission.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.
@@ -25,65 +103,328 @@ export async function migrate(
 ): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  transformState(versionedData.data);
+
+  const newState = transformState(versionedData.data);
+  versionedData.data = newState as Record<string, unknown>;
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
-  if (
-    hasProperty(state, 'AppStateController') &&
-    isObject(state.AppStateController)
-  ) {
-    // Removed in 33cc8d587aad05c0b41871ba3676676a3ce5680e with a migration, but
-    // still persists for some people for some reason
-    // See https://metamask.sentry.io/issues/6223008336/events/723c5195130e4c5584b53a6656a85595/
-    delete state.AppStateController.collectiblesDropdownState;
-    // Removed in 4ea52511eb7934bf0ce6b9b7d570a525120229ce
-    delete state.AppStateController.serviceWorkerLastActiveTime;
-    // Removed in 24e0a9030b1a715a008e0c5dfaf9c552bcdb304e with a migration, but
-    // still persists for some people for some reason
-    // See https://metamask.sentry.io/issues/6223008336/events/a2cc42d6ed79485a8b2e9072d8033720/
-    delete state.AppStateController.showPortfolioTooltip;
+function transformState(oldState: Record<string, unknown>) {
+  const newState = cloneDeep(oldState);
+  if (!hasProperty(newState, 'PermissionController')) {
+    return oldState;
+  }
+
+  if (!isObject(newState.PermissionController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
+      ),
+    );
+    return oldState;
   }
 
   if (
-    hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController)
+    !hasProperty(newState, 'NetworkController') ||
+    !isObject(newState.NetworkController)
   ) {
-    // Removed in 555d42b9ead0f4919356ff16e11c663c5e38639e
-    delete state.NetworkController.networkConfigurations;
-    // Removed in 800a9d3a177446ff2d05e3e95ec06b3658474207 with a migration, but
-    // still persists for some people for some reason
-    // See: https://metamask.sentry.io/issues/6011869130/events/039861ddb07f4b39b947edba3bbd710e/
-    delete state.NetworkController.providerConfig;
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController is ${typeof newState.NetworkController}`,
+      ),
+    );
+    return oldState;
+  }
+
+  if (!hasProperty(newState, 'SelectedNetworkController')) {
+    console.warn(
+      `Migration ${version}: typeof state.SelectedNetworkController is ${typeof newState.SelectedNetworkController}`,
+    );
+    // This matches how the `SelectedNetworkController` is initialized
+    // See https://github.com/MetaMask/core/blob/e692641040be470f7f4ad2d58692b0668e6443b3/packages/selected-network-controller/src/SelectedNetworkController.ts#L27
+    newState.SelectedNetworkController = {
+      domains: {},
+    };
+  }
+
+  if (!isObject(newState.SelectedNetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.SelectedNetworkController is ${typeof newState.SelectedNetworkController}`,
+      ),
+    );
+    return oldState;
+  }
+
+  const {
+    NetworkController: {
+      selectedNetworkClientId,
+      networkConfigurationsByChainId,
+    },
+    PermissionController: { subjects },
+  } = newState;
+
+  if (!isObject(subjects)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.PermissionController.subjects is ${typeof subjects}`,
+      ),
+    );
+    return oldState;
+  }
+
+  if (!selectedNetworkClientId || typeof selectedNetworkClientId !== 'string') {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController.selectedNetworkClientId is ${typeof selectedNetworkClientId}`,
+      ),
+    );
+    return oldState;
+  }
+
+  if (!isObject(networkConfigurationsByChainId)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is ${typeof newState
+          .NetworkController.networkConfigurationsByChainId}`,
+      ),
+    );
+    return oldState;
   }
 
   if (
-    hasProperty(state, 'PreferencesController') &&
-    isObject(state.PreferencesController)
+    !hasProperty(newState.SelectedNetworkController, 'domains') ||
+    !isObject(newState.SelectedNetworkController.domains)
   ) {
-    // Removed in 6c84e9604c7160dd91c685f301f3c8bd128ad3e3
-    delete state.PreferencesController.customNetworkListEnabled;
-    // Removed in e6ecd956b054a29481071e4eded2f8cd17d137d2
-    delete state.PreferencesController.disabledRpcMethodPreferences;
-    // Removed in 8125473dc53476b6685c5e85918f89bce87e3006
-    delete state.PreferencesController.eip1559V2Enabled;
-    // Removed in 699ddccc76302df6130835dc6655077806bf6335
-    delete state.PreferencesController.hasDismissedOpenSeaToBlockaidBanner;
-    // I could find references to this in the commit history, but don't know
-    // where it was removed
-    delete state.PreferencesController.hasMigratedFromOpenSeaToBlockaid;
-    // Removed in f988dc1c5ef98ec72212d1f58e736556273b68f7
-    delete state.PreferencesController.improvedTokenAllowanceEnabled;
-    // Removed in 315c043785cd5d7a4b0f7e974097ccac18a6b241
-    delete state.PreferencesController.infuraBlocked;
-    // Removed in 4f66dc948fee54b8491227414342ab0d373475f1 with a migration, but
-    // still persists for some people for some reason
-    // See: https://metamask.sentry.io/issues/6042074159/events/5711f95785d741739e5d0fa5ad19e7c0/
-    delete state.PreferencesController.useCollectibleDetection;
-    // Removed in eb987a47b51ce410de0047ec883bb4549ce80c85
-    delete state.PreferencesController.useStaticTokenList;
+    const { domains } = newState.SelectedNetworkController;
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: typeof state.SelectedNetworkController.domains is ${typeof domains}`,
+      ),
+    );
+    return oldState;
   }
 
-  return state;
+  const { domains } = newState.SelectedNetworkController;
+
+  const getChainIdForNetworkClientId = (
+    networkClientId: string,
+    propertyName: string,
+  ): string | undefined => {
+    let malformedDataErrorFound = false;
+    let matchingChainId: string | undefined;
+    for (const [chainId, networkConfiguration] of Object.entries(
+      networkConfigurationsByChainId,
+    )) {
+      if (!isObject(networkConfiguration)) {
+        global.sentry?.captureException(
+          new Error(
+            `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"] is ${typeof networkConfiguration}`,
+          ),
+        );
+        malformedDataErrorFound = true;
+        continue;
+      }
+      if (!Array.isArray(networkConfiguration.rpcEndpoints)) {
+        global.sentry?.captureException(
+          new Error(
+            `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints is ${typeof networkConfiguration.rpcEndpoints}`,
+          ),
+        );
+        malformedDataErrorFound = true;
+        continue;
+      }
+
+      for (const rpcEndpoint of networkConfiguration.rpcEndpoints) {
+        if (!isObject(rpcEndpoint)) {
+          global.sentry?.captureException(
+            new Error(
+              `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints[] is ${typeof rpcEndpoint}`,
+            ),
+          );
+          malformedDataErrorFound = true;
+          continue;
+        }
+
+        if (rpcEndpoint.networkClientId === networkClientId) {
+          matchingChainId = chainId;
+        }
+      }
+    }
+    if (malformedDataErrorFound) {
+      return undefined;
+    }
+
+    if (matchingChainId) {
+      return matchingChainId;
+    }
+
+    const builtInChainId = BUILT_IN_NETWORKS.get(networkClientId);
+    if (!builtInChainId) {
+      global.sentry?.captureException(
+        new Error(
+          `Migration ${version}: No chainId found for ${propertyName} "${networkClientId}"`,
+        ),
+      );
+    }
+    return builtInChainId;
+  };
+
+  const currentChainId = getChainIdForNetworkClientId(
+    selectedNetworkClientId,
+    'selectedNetworkClientId',
+  );
+  if (!currentChainId) {
+    return oldState;
+  }
+
+  // perform mutations on the cloned state
+  for (const [origin, subject] of Object.entries(subjects)) {
+    if (!isObject(subject)) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
+        ),
+      );
+      return oldState;
+    }
+
+    if (
+      !hasProperty(subject, 'permissions') ||
+      !isObject(subject.permissions)
+    ) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof subject.permissions}`,
+        ),
+      );
+      return oldState;
+    }
+
+    const { permissions } = subject;
+
+    let basePermission: PermissionConstraint | undefined;
+
+    let ethAccounts: string[] = [];
+    const ethAccountsPermission = permissions[PermissionNames.eth_accounts];
+    const permittedChainsPermission =
+      permissions[PermissionNames.permittedChains];
+
+    // if there is no eth_accounts permission we can't create a valid CAIP-25 permission so we remove the permission
+    if (permittedChainsPermission && !ethAccountsPermission) {
+      delete permissions[PermissionNames.permittedChains];
+      continue;
+    }
+    if (!isPermissionConstraint(ethAccountsPermission)) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
+            PermissionNames.eth_accounts
+          }: ${JSON.stringify(ethAccountsPermission)}`,
+        ),
+      );
+      return oldState;
+    }
+    const accountsCaveatValue = ethAccountsPermission.caveats?.[0]?.value;
+    if (!isNonEmptyArrayOfStrings(accountsCaveatValue)) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
+            PermissionNames.eth_accounts
+          }].caveats[0].value of type ${typeof ethAccountsPermission
+            .caveats?.[0]?.value}`,
+        ),
+      );
+      return oldState;
+    }
+    ethAccounts = accountsCaveatValue;
+    basePermission = ethAccountsPermission;
+
+    delete permissions[PermissionNames.eth_accounts];
+
+    let chainIds: string[] = [];
+    // this permission is new so it may not exist
+    if (permittedChainsPermission) {
+      if (!isPermissionConstraint(permittedChainsPermission)) {
+        global.sentry?.captureException?.(
+          new Error(
+            `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
+              PermissionNames.permittedChains
+            }]: ${JSON.stringify(permittedChainsPermission)}`,
+          ),
+        );
+        return oldState;
+      }
+      const chainsCaveatValue = permittedChainsPermission.caveats?.[0]?.value;
+      if (!isNonEmptyArrayOfStrings(chainsCaveatValue)) {
+        global.sentry?.captureException?.(
+          new Error(
+            `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
+              PermissionNames.permittedChains
+            }].caveats[0].value of type ${typeof permittedChainsPermission
+              .caveats?.[0]?.value}`,
+          ),
+        );
+        return oldState;
+      }
+      chainIds = chainsCaveatValue;
+      basePermission ??= permittedChainsPermission;
+      delete permissions[PermissionNames.permittedChains];
+    }
+
+    if (chainIds.length === 0) {
+      chainIds = [currentChainId];
+
+      const networkClientIdForOrigin = domains[origin];
+      if (
+        networkClientIdForOrigin &&
+        typeof networkClientIdForOrigin === 'string'
+      ) {
+        const chainIdForOrigin = getChainIdForNetworkClientId(
+          networkClientIdForOrigin,
+          'networkClientIdForOrigin',
+        );
+        if (chainIdForOrigin) {
+          chainIds = [chainIdForOrigin];
+        }
+      }
+    }
+
+    const isSnap = snapsPrefixes.some((prefix) => origin.startsWith(prefix));
+    const scopes: InternalScopesObject = {};
+    const scopeStrings: CaipChainId[] = isSnap
+      ? []
+      : chainIds.map<CaipChainId>(
+          (chainId) => `eip155:${hexToBigInt(chainId).toString(10)}`,
+        );
+    scopeStrings.push('wallet:eip155');
+
+    scopeStrings.forEach((scopeString) => {
+      const caipAccounts = ethAccounts.map<CaipAccountId>(
+        (account) => `${scopeString}:${account}`,
+      );
+      scopes[scopeString] = {
+        accounts: caipAccounts,
+      };
+    });
+
+    const caip25Permission: Caip25Permission = {
+      ...basePermission,
+      parentCapability: Caip25EndowmentPermissionName,
+      caveats: [
+        {
+          type: Caip25CaveatType,
+          value: {
+            requiredScopes: {},
+            optionalScopes: scopes,
+            isMultichainOrigin: false,
+          },
+        },
+      ],
+    };
+
+    permissions[Caip25EndowmentPermissionName] = caip25Permission;
+  }
+
+  return newState;
 }

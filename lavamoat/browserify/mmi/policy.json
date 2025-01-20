@@ -1517,6 +1517,16 @@
         "uuid": true
       }
     },
+    "@metamask/multichain": {
+      "packages": {
+        "@metamask/multichain>@metamask/api-specs": true,
+        "@metamask/controller-utils": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "lodash": true
+      }
+    },
     "@metamask/name-controller": {
       "globals": {
         "fetch": true
