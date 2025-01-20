@@ -1,8 +1,8 @@
 import { EthAccountType } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { sha256FromString } from 'ethereumjs-util';
 import { v4 as uuid } from 'uuid';
 import { cloneDeep } from 'lodash';
-import { Json } from '@metamask/utils';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 
 type VersionedData = {
@@ -16,21 +16,9 @@ export type Identity = {
   lastSelected?: number;
 };
 
-export type InternalAccountV1 = {
-  type: string;
-  id: string;
-  options: Record<string, Json>;
-  metadata: {
-    name: string;
-    importTime: number;
-    keyring: {
-      type: string;
-    };
-    lastSelected?: number;
-  };
-  address: string;
-  methods: string[];
-};
+// The `InternalAccount` has been updated with `@metamask/keyring-api@13.0.0`, so we
+// omit the new field to re-use the original type for that migration.
+export type InternalAccountV1 = Omit<InternalAccount, 'scopes'>;
 
 export const version = 105;
 
