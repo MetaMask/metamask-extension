@@ -131,12 +131,12 @@ describe('Editing Confirm Transaction', function () {
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
           css: '[data-testid="first-gas-field"]',
-          text: '0.0008 ETH',
+          text: '0.0002 ETH',
         });
 
         await driver.waitForSelector({
           css: '[data-testid="native-currency"]',
-          text: '$1.44',
+          text: '$0.30',
         });
 
         // confirms the transaction
