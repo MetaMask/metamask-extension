@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Activez cette option pour afficher les demandes de signature dans un format amélioré."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Demandes de transaction améliorées"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Activez cette option pour afficher les demandes de transaction dans un format amélioré."
-  },
   "refreshList": {
     "message": "Rafraîchir la liste"
   },

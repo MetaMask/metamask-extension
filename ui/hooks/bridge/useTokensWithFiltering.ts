@@ -44,13 +44,11 @@ type FilterPredicate = (
  *
  * @param tokenList - a mapping of token addresses in the selected chainId to token metadata from the bridge-api
  * @param topTokens - a list of top tokens from the swap-api
- * @param tokenAddressAllowlistByChainId - a mapping of all supported chainIds to a Set of allowed token addresses
  * @param chainId - the selected src/dest chainId
  */
 export const useTokensWithFiltering = (
   tokenList: Record<string, SwapsTokenObject>,
   topTokens: { address: string }[],
-  tokenAddressAllowlistByChainId: Record<string, Set<string>>,
   chainId?: ChainId | Hex,
 ) => {
   const { token: tokenAddressFromUrl } = useParams();
@@ -103,12 +101,6 @@ export const useTokensWithFiltering = (
     };
   };
 
-  // This returns whether the token is blocked by any of the supported chainIds
-  const isTokenBlocked = (tokenAddress: string, tokenChainId: string) =>
-    !tokenAddressAllowlistByChainId[tokenChainId]?.has(
-      tokenAddress.toLowerCase(),
-    );
-
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
     (shouldAddToken: FilterPredicate) =>
@@ -137,10 +129,7 @@ export const useTokensWithFiltering = (
               token.symbol,
               token.address ?? undefined,
               token.chainId,
-            ) &&
-            (token.address
-              ? !isTokenBlocked(token.address, token.chainId)
-              : true)
+            )
           ) {
             // If there's no address, set it to the native address in swaps/bridge
             yield { ...token, address: token.address || zeroAddress() };
@@ -154,10 +143,7 @@ export const useTokensWithFiltering = (
               token.symbol,
               token.address ?? undefined,
               token.chainId,
-            ) &&
-            (token.address
-              ? !isTokenBlocked(token.address, token.chainId)
-              : true)
+            )
           ) {
             yield {
               ...token,

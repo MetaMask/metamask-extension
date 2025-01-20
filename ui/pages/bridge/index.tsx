@@ -17,11 +17,8 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import {
-  getCurrentChainId,
-  getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
-import { getIsBridgeChain, getIsBridgeEnabled } from '../../selectors';
+import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
+import { getIsBridgeEnabled } from '../../selectors';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -30,7 +27,7 @@ import {
   Page,
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import { resetBridgeState, setFromChain } from '../../ducks/bridge/actions';
+import { resetBridgeState } from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
@@ -51,15 +48,7 @@ const CrossChainSwap = () => {
   const dispatch = useDispatch();
 
   const isBridgeEnabled = useSelector(getIsBridgeEnabled);
-  const isBridgeChain = useSelector(getIsBridgeChain);
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
-  const chainId = useSelector(getCurrentChainId);
-
-  useEffect(() => {
-    if (isBridgeChain && isBridgeEnabled && chainId) {
-      dispatch(setFromChain(chainId));
-    }
-  }, [isBridgeChain, isBridgeEnabled, chainId]);
 
   const resetControllerAndInputStates = async () => {
     await dispatch(resetBridgeState());
