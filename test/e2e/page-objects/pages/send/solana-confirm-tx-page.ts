@@ -79,12 +79,12 @@ class ConfirmSolanaTxPage {
 
   async isInsufficientBalanceDisplayed(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(
+      await this.driver.waitForSelector(
         {
           text: 'Insufficient balance',
           tag: 'p',
         },
-        1000,
+        { timeout: 1500 },
       );
     } catch (e) {
       console.log('Insufficient balance message not displayed', e);
