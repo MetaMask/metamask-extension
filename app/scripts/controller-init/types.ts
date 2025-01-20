@@ -43,12 +43,17 @@ export type BaseRestrictedControllerMessenger = RestrictedControllerMessenger<
  * Request to initialize and return a controller instance.
  * Includes standard data and methods not coupled to any specific controller.
  */
-export type ControllerInitRequest = {
+export type ControllerInitRequest<
+  ControllerMessengerType extends void | BaseRestrictedControllerMessenger = void,
+  InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
+> = {
   /**
-   * Base controller messenger for the client.
-   * Used to generate controller and init messengers for each controller.
+   * Required controller messenger instance.
+   * Generated using the callback specified in `getControllerMessengerCallback`.
    */
-  baseControllerMessenger: BaseControllerMessenger;
+  controllerMessenger: ControllerMessengerType extends BaseRestrictedControllerMessenger
+    ? ControllerMessengerType
+    : never;
 
   /**
    * Retrieve a controller instance by name.
@@ -99,6 +104,14 @@ export type ControllerInitRequest = {
    * Includes data and callbacks required to generate metrics.
    */
   getTransactionMetricsRequest(): TransactionMetricsRequest;
+
+  /**
+   * Required initialization messenger instance.
+   * Generated using the callback specified in `getInitMessengerCallback`
+   */
+  initMessenger: InitMessengerType extends BaseRestrictedControllerMessenger
+    ? InitMessengerType
+    : never;
 
   /**
    * The full persisted state for all controllers.

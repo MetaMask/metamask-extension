@@ -2302,19 +2302,24 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    const controllerInitFunctions = [
-      () => ({ controller: this.networkController }),
-      () => ({ controller: this.preferencesController }),
-      () => ({ controller: this.gasFeeController }),
-      PPOMControllerInit,
-      () => ({ controller: this.onboardingController }),
-      () => ({ controller: this.keyringController }),
+    const initControllersByName = [
+      this.networkController,
+      this.preferencesController,
+      this.gasFeeController,
+      this.onboardingController,
+      this.keyringController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      () => ({ controller: this.transactionUpdateController }),
+      this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IF
-      TransactionControllerInit,
-      () => ({ controller: this.smartTransactionsController }),
-    ];
+      this.smartTransactionsController,
+    ].reduce((controllersByName, controller) => {
+      controllersByName[controller.name] = controller;
+      return controllersByName;
+    }, {});
+    const controllerInitFunctions = {
+      PPOMController: PPOMControllerInit,
+      TransactionController: TransactionControllerInit,
+    };
 
     const {
       controllerApi,
@@ -2322,6 +2327,7 @@ export default class MetamaskController extends EventEmitter {
       controllerPersistedState,
       controllersByName,
     } = this.#initControllers({
+      initControllersByName,
       initState,
       initFunctions: controllerInitFunctions,
     });

@@ -2,16 +2,13 @@ import { PPOMController } from '@metamask/ppom-validator';
 import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
 import * as PPOMModule from '../../lib/ppom/ppom';
 import { ControllerInitFunction } from '../types';
-import {
-  getPPOMControllerInitMessenger,
-  getPPOMControllerMessenger,
-} from '../messengers/ppom-controller-messenger';
 
 export const PPOMControllerInit: ControllerInitFunction<PPOMController> = (
   request,
 ) => {
   const {
-    baseControllerMessenger,
+    controllerMessenger,
+    initMessenger,
     getController,
     getGlobalChainId,
     getProvider,
@@ -19,12 +16,6 @@ export const PPOMControllerInit: ControllerInitFunction<PPOMController> = (
   } = request;
 
   const preferencesController = () => getController('PreferencesController');
-
-  const controllerMessenger = getPPOMControllerMessenger(
-    baseControllerMessenger,
-  );
-
-  const initMessenger = getPPOMControllerInitMessenger(baseControllerMessenger);
 
   const controller = new PPOMController({
     messenger: controllerMessenger,

@@ -41,18 +41,15 @@ import {
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
-import {
-  getTransactionControllerInitMessenger,
-  getTransactionControllerMessenger,
-  TransactionControllerInitMessenger,
-} from '../messengers/transaction-controller-messenger';
+import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController
 > = (request) => {
   const {
-    baseControllerMessenger,
+    controllerMessenger,
+    initMessenger,
     getFlatState,
     getGlobalChainId,
     getPermittedAccounts,
@@ -71,14 +68,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     transactionUpdateController,
     ///: END:ONLY_INCLUDE_IF
   } = getControllers(request);
-
-  const controllerMessenger = getTransactionControllerMessenger(
-    baseControllerMessenger,
-  );
-
-  const initMessenger = getTransactionControllerInitMessenger(
-    baseControllerMessenger,
-  );
 
   const controller: TransactionController = new TransactionController({
     getCurrentNetworkEIP1559Compatibility: () =>
