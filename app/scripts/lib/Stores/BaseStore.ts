@@ -38,46 +38,27 @@ export type MetaMaskStorageStructure = {
 export type EmptyState = Omit<MetaMaskStorageStructure, 'data' | 'meta'>;
 
 /**
- * The BaseStore class is an Abstract Class meant to be extended by other classes
- * that implement the methods and properties marked as abstract. There are a
- * few properties and methods that are not abstract and are implemented here to
- * be consumed by the extending classes. At the time of writing this class
- * there are only two extending classes: ReadOnlyNetworkStore and
- * ExtensionStore. Both of these extending classes are the result of
- * refactoring the previous storage implementation to TypeScript while
- * consolidating some logic related to storage that was external to the
- * implementation of those storage systems. ReadOnlyNetworkStore is a class
- * that is used while in an End To End or other Test environment where the full
- * chrome storage API may not be available. ExtensionStore is the class that is
- * used when the full chrome storage API is available. While Chrome is the
- * target of this documentation, Firefox also has a mostly identical storage
- * API that is used interchangeably.
+ * The BaseStore class is an abstract class designed to be extended by other
+ * classes that implement the abstract methods `set` and `get`. This class
+ * provides the foundation for different storage implementations, enabling
+ * them to adhere to a consistent interface for retrieving and setting
+ * application state.
  *
- * The classes that extend this system take on the responsibilities listed here
- * 1. Retrieve the current state from the underlying storage system. If that
- * state is unavailable, then the storage system should return a default state
- * in the case that this is the first time the extension has been installed. If
- * the state is not available due to some form of possible corruption, using
- * the best methods available to detect such things, then a backup of the vault
- * should be inserted into a state tree that otherwise resembles a first time
- * installation. If the backup of the vault is unavailable, then a default
- * state tree should be used. In any case we should provide clear and concise
- * communication to the user about what happened and their best recourse for
- * handling the situation if the extension cannot gracefully recover.
+ * Responsibilities of extending classes:
+ * 1. **Retrieve State:**
+ * - Implement a `get` method that retrieves the current state from the
+ * underlying storage system. This method should handle scenarios where
+ * the state is unavailable by providing a fallback, such as returning
+ * null` or an appropriate default value.
  *
- * 2. Set the current state to the underlying storage system. This should be
- * implemented in such a way that the current metadata is stored in a separate
- * key that is tracked by the storage system. This metadata should *not* be a
- * input to the set method. If the underlying storage system allows for partial
- * state objects it should be sufficient to pass the data key, which is the
- * full MetaMask state tree. If not, then the metadata should be supplied by
- * the storage system itself.
+ * 2. **Set State:**
+ * - Implement a `set` method that updates the state in the underlying
+ * storage system. This method should handle necessary validation or
+ * error handling to ensure the state is persisted correctly.
  *
- * 3. Provide a method for generating a first time state tree. This method is
- * implemented as a part of this Abstract class and should not be overwritten
- * unless future work requires specific implementations for different storage
- * systems. This method should return a state tree that is the default state
- * tree for a new install.
+ * This class does not provide any concrete implementation for these methods,
+ * leaving the specifics to the extending classes based on the storage
+ * mechanism they represent.
  */
 export abstract class BaseStore {
   abstract set(state: IntermediaryStateType): Promise<void>;

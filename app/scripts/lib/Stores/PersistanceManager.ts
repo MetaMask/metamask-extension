@@ -8,6 +8,36 @@ import {
 import ExtensionStore from './ExtensionStore';
 import ReadOnlyNetworkStore from './ReadOnlyNetworkStore';
 
+/**
+ * The PersistanceManager class serves as a high-level manager for handling
+ * storage-related operations using a local storage system. It provides methods to read
+ * and write state, manage metadata, and handle errors or corruption in the
+ * underlying storage system.
+ *
+ * Key Responsibilities:
+ *
+ * 1. **State Management:**
+ * - Tracks the most recently retrieved state
+ * - reads state from the storage system
+ * - writes updated state to the storage system
+ *
+ * 2. **Metadata Handling:**
+ * - Manages a `metadata` object containing versioning information for the
+ * state tree. The version is used to ensure consistency and proper
+ * handling of migrations.
+ *
+ * 3. **Error Management:**
+ * - Tracks whether data persistence is failing and logs appropriate errors
+ * - Captures exceptions during write operations and reports them using
+ * Sentry
+ *
+ *
+ * Usage:
+ * The `PersistanceManager` is instantiated with a `localStore`, which is an
+ * implementation of the `BaseStore` class (either `ExtensionStore` or
+ * `ReadOnlyNetworkStore`). It provides methods for setting and retrieving
+ * state, managing metadata, and handling cleanup tasks.
+ */
 export class PersistanceManager {
   /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
@@ -34,8 +64,6 @@ export class PersistanceManager {
    */
   #metadata?: { version: number };
 
-  stateCorruptionDetected: boolean;
-
   isExtensionInitialized: boolean;
 
   localStore: ExtensionStore | ReadOnlyNetworkStore;
@@ -45,7 +73,6 @@ export class PersistanceManager {
   }: {
     localStore: ExtensionStore | ReadOnlyNetworkStore;
   }) {
-    this.stateCorruptionDetected = false;
     this.dataPersistenceFailing = false;
     this.mostRecentRetrievedState = null;
     this.isExtensionInitialized = false;
