@@ -20,12 +20,6 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 const SIMPLEHASH_URL = 'https://api.simplehash.com';
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
 
-export enum SendFlowPlaceHolders {
-  AMOUNT = 'Enter amount to send',
-  RECIPIENT = 'Enter receiving address',
-  LOADING = 'Preparing transaction',
-}
-
 export function btcToSats(btc: number): number {
   // Watchout, we're not using BigNumber(s) here (but that's ok for test purposes)
   return btc * SATS_IN_1_BTC;
