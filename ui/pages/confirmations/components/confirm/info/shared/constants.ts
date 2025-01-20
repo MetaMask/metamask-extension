@@ -1,3 +1,6 @@
 export const HEX_ZERO = '0x0';
 
 export const TOKEN_VALUE_UNLIMITED_THRESHOLD = 10 ** 15;
+
+export const DAI_CONTRACT_ADDRESS =
+  '0x6B175474E89094C44Da98b954EedeAC495271d0F';
