@@ -107,6 +107,7 @@ function getOptions(
           throw new Error('Invalid checksums');
         }
       },
+      optional: true,
     },
     repo: {
       alias: 'r',
@@ -245,8 +246,7 @@ export async function extractFrom(
 
     const paths: string[] = [];
     for (const { path, binary, checksum } of downloads) {
-      if (checksums) {
-        // check the target's checksum matches the expected checksum
+      if (checksums?.binaries[binary as Binary]) {
         say(`verifying checksum for ${binary}`);
         const expected = checksums.binaries[binary as Binary];
         if (checksum === expected) {
@@ -256,6 +256,8 @@ export async function extractFrom(
             `checksum mismatch for ${binary}, expected ${expected}, got ${checksum}`,
           );
         }
+      } else {
+        say(`skipping checksum verification for ${binary}`);
       }
       // add the *final* path to the list of binaries
       paths.push(join(dir, relative(tempDir, path)));
