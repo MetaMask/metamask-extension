@@ -278,7 +278,7 @@ class ConnectHardwareForm extends Component {
       });
   };
 
-  onUnlockAccounts = async (device, path) => {
+  onUnlockAccounts = async (deviceName, path) => {
     const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
       this.props;
     const { selectedAccounts } = this.state;
@@ -292,15 +292,9 @@ class ConnectHardwareForm extends Component {
         ? this.context.t('hardwareWalletLegacyDescription')
         : '';
 
-    // Get preferred device name for metrics.
-    const metricDeviceName = await this.props.getDeviceNameForMetric(
-      device,
-      path,
-    );
-
     return unlockHardwareWalletAccounts(
       selectedAccounts,
-      device,
+      deviceName,
       path || null,
       description,
     )
@@ -310,7 +304,7 @@ class ConnectHardwareForm extends Component {
           event: MetaMetricsEventName.AccountAdded,
           properties: {
             account_type: MetaMetricsEventAccountType.Hardware,
-            account_hardware_type: metricDeviceName,
+            account_hardware_type: deviceName,
           },
         });
         history.push(mostRecentOverviewPage);
@@ -321,7 +315,7 @@ class ConnectHardwareForm extends Component {
           event: MetaMetricsEventName.AccountAddFailed,
           properties: {
             account_type: MetaMetricsEventAccountType.Hardware,
-            account_hardware_type: metricDeviceName,
+            account_hardware_type: deviceName,
             error: e.message,
           },
         });
@@ -447,7 +441,6 @@ class ConnectHardwareForm extends Component {
 ConnectHardwareForm.propTypes = {
   connectHardware: PropTypes.func,
   checkHardwareStatus: PropTypes.func,
-  getDeviceNameForMetric: PropTypes.func,
   forgetDevice: PropTypes.func,
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
@@ -480,9 +473,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     connectHardware: (deviceName, page, hdPath, t) => {
       return dispatch(actions.connectHardware(deviceName, page, hdPath, t));
-    },
-    getDeviceNameForMetric: (deviceName, hdPath) => {
-      return dispatch(actions.getDeviceNameForMetric(deviceName, hdPath));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));
