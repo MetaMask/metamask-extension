@@ -187,7 +187,7 @@ export async function withBtcAccountSnap(
   await withFixtures(
     {
       fixtures: new FixtureBuilder()
-        .withPreferencesControllerAndFeatureFlag({
+        .withPreferencesController({
           bitcoinSupportEnabled: bitcoinSupportEnabled ?? true,
         })
         .build(),

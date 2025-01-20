@@ -1045,8 +1045,8 @@
   "confirmTitleTransaction": {
     "message": "Solicitação de transação"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Para proteger seus ativos e informações de login, é recomendável que você recuse a solicitação."
+  "confirmationAlertDetails": {
+    "message": "Para proteger seus ativos, é recomendável que você recuse a solicitação."
   },
   "confirmationAlertModalTitle": {
     "message": "Esta solicitação é suspeita"
@@ -4316,12 +4316,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "Ative para ver as solicitações de assinatura em um formato aprimorado."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Solicitações de transação aprimoradas"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Ative esta opção para ver as solicitações de transação em formato aprimorado."
-  },
   "refreshList": {
     "message": "Atualizar lista"
   },
@@ -5971,18 +5965,6 @@
   "toAddress": {
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Isso permite que você selecione uma rede para cada site em vez de uma única rede selecionada para todos eles. O recurso evitará que você alterne manualmente entre redes, o que pode atrapalhar sua experiência de usuário em determinados sites."
-  },
-  "toggleRequestQueueField": {
-    "message": "Selecionar redes para cada site"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Não"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Sim"
   },
   "token": {
     "message": "Token"

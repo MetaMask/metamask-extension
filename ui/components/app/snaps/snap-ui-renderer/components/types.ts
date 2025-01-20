@@ -13,6 +13,7 @@ export type UIComponentParams<T extends JSXElement> = {
     placeholder?: string;
   };
   t: (key: string) => string;
+  contentBackgroundColor: string | undefined;
 };
 
 export type UIComponent = {
