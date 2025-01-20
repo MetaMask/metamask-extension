@@ -80,7 +80,7 @@ describe('Connect More Accounts Modal', () => {
     await waitFor(() => {
       // Get the HTML content and normalize the transform values
       const html = baseElement.innerHTML.replace(
-        /transform="translate\([-\d.]+\s+[-\d.]+\)\s+rotate\([-\d.]+\s+[-\d.]+\s+[-\d.]+\)"/g,
+        /transform="translate\([-\d.]+\s+[-\d.]+\)\s+rotate\([-\d.]+\s+[-\d.]+\s+[-\d.]+\)"/gu,
         'transform="[SVG_TRANSFORM]"',
       );
       // Create a new div with the normalized HTML
