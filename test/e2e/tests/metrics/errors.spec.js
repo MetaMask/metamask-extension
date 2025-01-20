@@ -875,7 +875,6 @@ describe('Sentry errors', function () {
           walletAddress: false,
         },
         destTokensLoadingStatus: false,
-        srcTokensLoadingStatus: false,
         quotesLastFetched: true,
         quotesLoadingStatus: true,
         quotesRefreshCount: true,
@@ -903,6 +902,13 @@ describe('Sentry errors', function () {
         // This can get wiped out during initialization due to a bug in
         // the "resetState" method
         swapsFeatureFlags: true,
+      },
+      // Part of the AuthenticationController store, but initialized as undefined
+      // Only populated once the client is authenticated
+      sessionData: {
+        accessToken: false,
+        expiresIn: true,
+        profile: true,
       },
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler

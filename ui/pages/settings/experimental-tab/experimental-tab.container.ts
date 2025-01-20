@@ -7,11 +7,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  setUseRequestQueue,
   setPetnamesEnabled,
   setFeatureNotificationsEnabled,
   setRedesignedConfirmationsEnabled,
-  setRedesignedTransactionsEnabled,
   setWatchEthereumAccountEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSolanaSupportEnabled,
@@ -26,11 +24,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getUseRequestQueue,
   getPetnamesEnabled,
   getFeatureNotificationsEnabled,
   getRedesignedConfirmationsEnabled,
-  getRedesignedTransactionsEnabled,
   getIsWatchEthereumAccountEnabled,
 } from '../../../selectors';
 import type {
@@ -52,11 +48,9 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: getIsAddSnapAccountEnabled(state),
     ///: END:ONLY_INCLUDE_IF
-    useRequestQueue: getUseRequestQueue(state),
     petnamesEnabled,
     featureNotificationsEnabled,
     redesignedConfirmationsEnabled: getRedesignedConfirmationsEnabled(state),
-    redesignedTransactionsEnabled: getRedesignedTransactionsEnabled(state),
   };
 };
 
@@ -75,7 +69,6 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     setAddSnapAccountEnabled: (value: boolean) =>
       setAddSnapAccountEnabled(value),
     ///: END:ONLY_INCLUDE_IF
-    setUseRequestQueue: (value: boolean) => setUseRequestQueue(value),
     setPetnamesEnabled: (value: boolean) => {
       return dispatch(setPetnamesEnabled(value));
     },
@@ -84,8 +77,6 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     },
     setRedesignedConfirmationsEnabled: (value: boolean) =>
       dispatch(setRedesignedConfirmationsEnabled(value)),
-    setRedesignedTransactionsEnabled: (value: boolean) =>
-      dispatch(setRedesignedTransactionsEnabled(value)),
   };
 };
 

@@ -1045,9 +1045,6 @@
   "confirmTitleTransaction": {
     "message": "Hiling na Transaksyon"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Para protektahan ang iyong mga asset at impormasyon sa pag-login, iminumungkahi namin na tanggihan mo ang kahilingan."
-  },
   "confirmationAlertModalTitle": {
     "message": "Kahina-hinala ang kahilingang ito"
   },
@@ -4316,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "I-on ito upang makita ang mga hiling sa pirma sa isang pinahusay na format."
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Pinahusay na mga hiling sa transaksyon"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "I-on ito upang makita ang mga hiling sa transaksyon sa isang pinahusay na format."
-  },
   "refreshList": {
     "message": "I-refresh ang listahan"
   },
@@ -5971,18 +5962,6 @@
   "toAddress": {
     "message": "Para kay/sa: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "Pinahihintulutan ka nitong pumili ng network para sa bawat site sa halip na iisang piniling network para sa lahat ng site. Pipigilan ka ng feature na ito na magpalit ng network nang mano-mano, na maaaring makasira sa iyong karanasan bilang user sa ilang partikular na site."
-  },
-  "toggleRequestQueueField": {
-    "message": "Piliin ang mga network para sa bawat site"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Naka-off"
-  },
-  "toggleRequestQueueOn": {
-    "message": "Naka-on"
   },
   "token": {
     "message": "Token"
