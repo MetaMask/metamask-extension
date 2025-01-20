@@ -66,11 +66,30 @@ class SendSolanaPage {
   }
 
   async setToAddress(toAddress: string): Promise<void> {
-    await this.driver.waitForControllersLoaded();
-    await this.driver.waitForSelector(this.toAddressInput, {
-      timeout: 10000,
-    });
-    await this.driver.fill(this.toAddressInput, toAddress);
+    let failed = true;
+    for (let i = 0; i < 5 && failed; i++) {
+      try {
+        await this.driver.waitForControllersLoaded();
+        await this.driver.waitForSelector(this.toAddressInput, {
+          timeout: 5000,
+        });
+        await this.driver.fill(this.toAddressInput, toAddress);
+        failed = false;
+      } catch (err: unknown) {
+        console.log('To address input not displayed', err);
+        if (
+          err &&
+          typeof err === 'object' &&
+          'name' in err &&
+          err.name === 'StaleElementReferenceError'
+        ) {
+          console.log('StaleElementReferenceError encountered, retrying...');
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        } else {
+          throw err;
+        }
+      }
+    }
   }
 
   async clickOnContinue(): Promise<void> {
