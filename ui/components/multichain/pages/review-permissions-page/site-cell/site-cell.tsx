@@ -64,8 +64,13 @@ export const SiteCell: React.FC<SiteCellProps> = ({
       isEqualCaseInsensitive(selectedAccountAddress, address),
     ),
   );
-  const selectedNetworks = allNetworks.filter(({ chainId }) =>
-    selectedChainIds.includes(chainId),
+  const selectedNetworks = allNetworks.filter(
+    ({ chainId }) =>
+      selectedChainIds.includes(chainId) &&
+      ![
+        'bip122:000000000019d6689c085ae165831e93',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      ].includes(chainId),
   );
 
   const selectedChainIdsLength = selectedChainIds.length;

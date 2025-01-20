@@ -28,9 +28,21 @@ export const useAccountTotalFiatBalance = (
   account,
   shouldHideZeroBalanceTokens,
 ) => {
-  const currentChainId = useSelector(getCurrentChainId);
+  // useMultichainSelector
+  // getMultichainGetCurrentChainId
+  const chainId = useSelector(getCurrentChainId);
+  const currentChainId = [
+    'bip122:000000000019d6689c085ae165831e93',
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  ].includes(chainId)
+    ? '0x1'
+    : chainId;
+
+  console.log('-->', { currentChainId });
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
+
+  console.log({ conversionRate, currentCurrency });
 
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
@@ -173,6 +185,7 @@ export const useAccountTotalFiatBalance = (
     totalWeiBalance = '0x0';
   }
 
+  console.log('useAccountTotalFiatBalance ->', { orderedTokenList });
   return {
     formattedFiat,
     totalWeiBalance,

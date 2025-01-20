@@ -5,6 +5,7 @@ import {
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { NetworkStatus } from '../../constants/network';
+// import type { MultichainNetworkControllerState as InternalMultichainNetworkControllerState } from '../../../app/scripts/controllers/multichain-network-controller/MultichainNetworkController';
 import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
@@ -33,15 +34,29 @@ export type ProviderConfigState = NetworkConfigurationsByChainIdState &
   SelectedNetworkClientIdState;
 
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
-  (state: NetworkConfigurationsByChainIdState) =>
-    state.metamask.networkConfigurationsByChainId,
+  (state: NetworkConfigurationsByChainIdState) => {
+    return {
+      ...state.metamask.networkConfigurationsByChainId,
+      // @ts-expect-error - TS is not recognizing the type of the networkConfigurationsByChainId property
+      ...state.metamask.multichainNetworkConfigurationsByChainId,
+    };
+  },
   (networkConfigurationsByChainId) => networkConfigurationsByChainId,
 );
 
-export function getSelectedNetworkClientId(
-  state: SelectedNetworkClientIdState,
-) {
-  return state.metamask.selectedNetworkClientId;
+export function getSelectedNetworkClientId(state: any, isEvm?: boolean) {
+  if (isEvm || !state.metamask.nonEvmSelected) {
+    console.log(
+      'getSelectedNetworkClientId selector (EVM):',
+      state.metamask.selectedNetworkClientId,
+    );
+    return state.metamask.selectedNetworkClientId;
+  }
+  console.log(
+    'getSelectedNetworkClientId selector (non-EVM):',
+    state.metamask.multichainSelectedNetworkChainId,
+  );
+  return state.metamask.multichainSelectedNetworkChainId;
 }
 
 /**
@@ -54,6 +69,34 @@ export const getProviderConfig = createSelector(
   (state: ProviderConfigState) => getNetworkConfigurationsByChainId(state),
   getSelectedNetworkClientId,
   (networkConfigurationsByChainId, selectedNetworkClientId) => {
+    console.log(
+      'networkConfigurationsByChainId',
+      networkConfigurationsByChainId,
+    );
+    if (selectedNetworkClientId === 'bip122:000000000019d6689c085ae165831e93') {
+      return {
+        chainId: selectedNetworkClientId,
+        ticker: 'BTC',
+        rpcPrefs: {},
+        type: undefined,
+        id: selectedNetworkClientId,
+        nickname: 'Bitcoin Mainnet',
+        rpcUrl: undefined,
+      };
+    }
+
+    if (selectedNetworkClientId === 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp') {
+      return {
+        chainId: selectedNetworkClientId,
+        ticker: 'SOL',
+        rpcPrefs: {},
+        type: undefined,
+        id: selectedNetworkClientId,
+        nickname: 'Solana Mainnet',
+        rpcUrl: undefined,
+      };
+    }
+
     for (const network of Object.values(networkConfigurationsByChainId)) {
       for (const rpcEndpoint of network.rpcEndpoints) {
         if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
@@ -97,8 +140,17 @@ export function getNetworkConfigurations(
  *
  * @param state - Redux state object.
  */
-export function isNetworkLoading(state: NetworkState) {
+export function isNetworkLoading(state: any) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  console.log(
+    'isNetworkLoading selector:',
+    state.metamask.networksMetadata,
+    selectedNetworkClientId,
+  );
+  if (state.metamask.nonEvmSelected) {
+    return false;
+  }
+
   return (
     selectedNetworkClientId &&
     state.metamask.networksMetadata[selectedNetworkClientId].status !==
@@ -106,9 +158,13 @@ export function isNetworkLoading(state: NetworkState) {
   );
 }
 
-export function getInfuraBlocked(
-  state: SelectedNetworkClientIdState & NetworksMetadataState,
-) {
+export function getInfuraBlocked(state: any) {
+  console.log('getInfuraBlocked selector:', state.metamask.networksMetadata);
+
+  if (state.metamask.nonEvmSelected) {
+    return false;
+  }
+
   return (
     state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
       .status === NetworkStatus.Blocked
@@ -119,3 +175,5 @@ export function getCurrentChainId(state: ProviderConfigState) {
   const { chainId } = getProviderConfig(state);
   return chainId;
 }
+
+export function getNetworkForAccount(state: any, account?)

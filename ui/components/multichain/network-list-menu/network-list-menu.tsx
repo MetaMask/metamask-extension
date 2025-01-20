@@ -295,34 +295,40 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         onClick={() => {
+          // Non-EVM networks don't have a networkClientId, so we use the chainId as a fallback
           const { networkClientId } =
             network.rpcEndpoints[network.defaultRpcEndpointIndex];
-          dispatch(setActiveNetwork(networkClientId));
+          dispatch(setActiveNetwork(networkClientId, network.chainId));
+          console.log(
+            'set active network to:',
+            networkClientId,
+            network.chainId,
+          );
           dispatch(toggleNetworkMenu());
-          dispatch(updateCustomNonce(''));
-          dispatch(setNextNonce(''));
-          dispatch(detectNfts());
+          // dispatch(updateCustomNonce(''));
+          // dispatch(setNextNonce(''));
+          // dispatch(detectNfts());
 
           // as a user, I don't want my network selection to force update my filter when I have "All Networks" toggled on
           // however, if I am already filtered on "Current Network", we'll want to filter by the selected network when the network changes
-          if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
-            dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
-          } else if (process.env.PORTFOLIO_VIEW) {
-            dispatch(setTokenNetworkFilter(allOpts));
-          }
+          // if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
+          //   dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
+          // } else if (process.env.PORTFOLIO_VIEW) {
+          //   dispatch(setTokenNetworkFilter(allOpts));
+          // }
 
-          if (permittedAccountAddresses.length > 0) {
-            grantPermittedChain(selectedTabOrigin, network.chainId);
-            if (!permittedChainIds.includes(network.chainId)) {
-              dispatch(showPermittedNetworkToast());
-            }
-          }
+          // if (permittedAccountAddresses.length > 0) {
+          //   grantPermittedChain(selectedTabOrigin, network.chainId);
+          //   if (!permittedChainIds.includes(network.chainId)) {
+          //     dispatch(showPermittedNetworkToast());
+          //   }
+          // }
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
           // network has changed due to user action
-          if (selectedTabOrigin && domains[selectedTabOrigin]) {
-            setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
-          }
+          // if (selectedTabOrigin && domains[selectedTabOrigin]) {
+          //   setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
+          // }
 
           trackEvent({
             event: MetaMetricsEventName.NavNetworkSwitched,

@@ -134,6 +134,7 @@ export function getMultichainNetwork(
 ): MultichainNetwork {
   const isEvm = getMultichainIsEvm(state, account);
 
+  console.log({ account, isEvm });
   if (isEvm) {
     // EVM networks
     const evmChainId: Hex = getCurrentChainId(state);

@@ -3665,9 +3665,15 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setActiveNetwork: (networkConfigurationId) => {
+      setActiveNetwork: (networkConfigurationId, chainId) => {
+        console.log('metamask-controller -> setActiveNetwork');
+        console.log('metamask-controller:', {
+          networkConfigurationId,
+          chainId,
+        });
         return this.multichainNetworkController.setActiveNetwork(
           networkConfigurationId,
+          chainId,
         );
       },
       // Avoids returning the promise so that initial call to switch network
@@ -6215,6 +6221,7 @@ export default class MetamaskController extends EventEmitter {
         },
         // network configuration-related
         setActiveNetwork: async (networkClientId) => {
+          console.log('setActiveNetwork', networkClientId);
           await this.networkController.setActiveNetwork(networkClientId);
           // if the origin has the eth_accounts permission
           // we set per dapp network selection state

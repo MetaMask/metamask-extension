@@ -2541,12 +2541,15 @@ export function updateNetwork(
 
 export function setActiveNetwork(
   networkConfigurationId: string,
+  chainId?: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  console.log('setActiveNetwork action:', { networkConfigurationId, chainId });
   return async (dispatch) => {
     log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
     try {
       await submitRequestToBackground('setActiveNetwork', [
         networkConfigurationId,
+        chainId,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -4475,6 +4478,7 @@ export function getNextNonce(
   address,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
+    console.log('getNextNonce');
     const networkClientId = getSelectedNetworkClientId(getState());
     let nextNonce;
     try {

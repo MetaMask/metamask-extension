@@ -6,6 +6,7 @@ import {
 } from '@metamask/base-controller';
 import type { AccountsControllerSetSelectedAccountAction } from '@metamask/accounts-controller';
 import type {
+  NetworkConfiguration,
   NetworkControllerGetNetworkConfigurationByNetworkClientId,
   NetworkControllerSetActiveNetworkAction,
   NetworkControllerGetStateAction,
@@ -13,51 +14,55 @@ import type {
 } from '@metamask/network-controller';
 import type { Draft } from 'immer';
 
-import { BITCOIN_TOKEN_IMAGE_URL, SOLANA_TOKEN_IMAGE_URL } from '../../../../shared/constants/multichain/networks';
-
 const controllerName = 'MultichainNetworkController';
-
-export type NetworkConfiguration = {
-  chainId: string;
-  isEvm: boolean;
-  metadata: {
-    logo: string;
-    name: string;
-  }
-};
 
 /**
  * State used by the {@link MultichainNetworkController} to cache network configurations.
  */
 export type MultichainNetworkControllerState = {
-  networks: Record<string, NetworkConfiguration>;
-  activeNetwork: string;
+  multichainNetworkConfigurationsByChainId: Record<string, NetworkConfiguration>;
+  multichainSelectedNetworkChainId: string;
+  nonEvmSelected: boolean;
 };
 
 /**
  * Default state of the {@link MultichainNetworkController}.
  */
 export const defaultState: MultichainNetworkControllerState = {
-  networks: {
+  multichainNetworkConfigurationsByChainId: {
     'bip122:000000000019d6689c085ae165831e93': {
+      // @ts-expect-error: We want to use CAIP-2 instead of hex.
       chainId: 'bip122:000000000019d6689c085ae165831e93',
-      isEvm: false,
-      metadata: {
-        logo: BITCOIN_TOKEN_IMAGE_URL,
-        name: 'Bitcoin',
-
-      }
+      blockExplorerUrls: [],
+      defaultRpcEndpointIndex: 0,
+      name: 'Bitcoin Mainnet',
+      nativeCurrency: 'BTC',
+      rpcEndpoints: [{
+        networkClientId: 'random-id-1',
+        // @ts-expect-error:just ignore
+        type: 'custom',
+        url: 'https://random.com',
+      }],
     },
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+      // @ts-expect-error: We want to use CAIP-2 instead of hex.
       chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      isEvm: false,
-      metadata: {
-        logo: SOLANA_TOKEN_IMAGE_URL,
-        name: 'Solana',
-      }
+      blockExplorerUrls: [],
+      defaultRpcEndpointIndex: 0,
+      name: 'Solana Mainnet',
+      nativeCurrency: 'SOL',
+      rpcEndpoints: [
+        {
+          networkClientId: 'random-id-2',
+          // @ts-expect-error:just ignore
+          type: 'custom',
+          url: 'https://random.com',
+        }
+      ],
     },
   },
-  activeNetwork: 'bip122:000000000019d6689c085ae165831e93',
+  multichainSelectedNetworkChainId: 'bip122:000000000019d6689c085ae165831e93',
+  nonEvmSelected: false,
 };
 
 /**
@@ -120,8 +125,9 @@ export type MultichainNetworkControllerMessenger = RestrictedControllerMessenger
  * the `anonymous` flag.
  */
 const multichainNetworkControllerMetadata = {
-  networks: { persist: true, anonymous: false },
-  activeNetwork: { persist: true, anonymous: false },
+  multichainNetworkConfigurationsByChainId: { persist: true, anonymous: false },
+  multichainSelectedNetworkChainId: { persist: true, anonymous: false },
+  nonEvmSelected: { persist: true, anonymous: false },
 };
 
 /**
@@ -153,14 +159,28 @@ export class MultichainNetworkController extends BaseController<
   }
 
   async setActiveNetwork(networkConfigurationId: string, chainId?: string): Promise<void> {
-    console.log('setActiveNetwork in MultichainNetworkController', networkConfigurationId, chainId);
-    if (chainId) {
+    console.log('start setActiveNetwork in MultichainNetworkController', networkConfigurationId, chainId);
+    if (chainId === 'bip122:000000000019d6689c085ae165831e93' || chainId === 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp') {
+      console.log(
+        'MultichainNetworkController: update network configuration',
+        networkConfigurationId,
+        chainId,
+      );
       this.update((state: Draft<MultichainNetworkControllerState>) => {
-        state.activeNetwork = chainId;
+        state.multichainSelectedNetworkChainId = chainId;
+        state.nonEvmSelected = true;
        });
       return;
     }
 
+    console.log(
+      'MultichainNetworkController: update network configuration on NetworkController',
+      networkConfigurationId,
+      chainId,
+    );
+    this.update((state: Draft<MultichainNetworkControllerState>) => {
+      state.nonEvmSelected = false;
+     });
     const _networkConfiguration = await this.messagingSystem.call(
       'NetworkController:getNetworkConfigurationByNetworkClientId',
       networkConfigurationId

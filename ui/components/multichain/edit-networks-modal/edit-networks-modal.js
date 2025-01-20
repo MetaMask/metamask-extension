@@ -124,9 +124,19 @@ export const EditNetworksModal = ({
               }}
               startAccessory={
                 <Checkbox
-                  isChecked={selectedChainIds.includes(network.chainId)}
+                  isChecked={
+                    selectedChainIds.includes(network.chainId) &&
+                    ![
+                      'bip122:000000000019d6689c085ae165831e93',
+                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                    ].includes(network.chainId)
+                  }
                 />
               }
+              disabled={[
+                'bip122:000000000019d6689c085ae165831e93',
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+              ].includes(network.chainId)}
             />
           ))}
           <Box padding={4}>

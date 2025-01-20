@@ -41,6 +41,7 @@ export const useMultichainAccountTotalFiatBalance = (
   loading: boolean;
   orderedTokenList: { iconUrl: string; symbol: string; fiatBalance: string }[];
 } => {
+  console.log({ acctype: account.type });
   if (isEvmAccountType(account.type)) {
     return useAccountTotalFiatBalance(account, shouldHideZeroBalanceTokens);
   }

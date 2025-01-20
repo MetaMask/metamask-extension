@@ -99,7 +99,16 @@ function generateIncomingNetworkPreferences(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const incomingTxnPreferences: Record<string, any> = {};
 
-  Object.values(networkConfigurations).forEach((network) => {
+  const entries = Object.entries(networkConfigurations);
+  const filteredEntries = entries.filter(
+    ([key, _value]) =>
+      key !== 'bip122:000000000019d6689c085ae165831e93' &&
+      key !== 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  );
+  const filteredNetworkConfigurations: Record<Hex, NetworkConfiguration> =
+    Object.fromEntries(filteredEntries);
+
+  Object.values(filteredNetworkConfigurations).forEach((network) => {
     incomingTxnPreferences[network.chainId] = {
       isShowIncomingTransactions:
         incomingTransactionsPreferences[network.chainId],
