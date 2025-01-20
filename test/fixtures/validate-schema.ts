@@ -2,22 +2,22 @@ import { defaultFixture } from '../e2e/default-fixture';
 
 type SchemaType = string | SchemaType[] | { [key: string]: SchemaType } | null;
 
-interface StateData {
+type StateData = {
   data: Record<string, unknown>;
   meta: {
     version: number;
   };
-}
+};
 
-interface FixtureData {
+type FixtureData = {
   data: Record<string, unknown>;
-}
+};
 
-interface SchemaMismatch {
+type SchemaMismatch = {
   controller: string;
   currentSchema: SchemaType;
   fixtureSchema: SchemaType;
-}
+};
 
 function normalizeSchema(schema: SchemaType): SchemaType {
   if (Array.isArray(schema)) {
@@ -102,4 +102,38 @@ function getObjectSchema(obj: unknown): SchemaType {
     return schema;
   }
   return typeof obj;
+}
+
+export function isFixturesStateSchemaValid(stateData: unknown): boolean {
+  const defaultData = defaultFixture() as FixtureData;
+  const typedStateData = stateData as StateData;
+  const mismatches: SchemaMismatch[] = [];
+
+  Object.keys(defaultData.data).forEach((controllerName) => {
+    const currentController = typedStateData.data[controllerName];
+    const fixtureController = defaultData.data[controllerName];
+
+    const currentSchema = normalizeSchema(getObjectSchema(currentController));
+    const fixtureSchema = normalizeSchema(getObjectSchema(fixtureController));
+
+    if (JSON.stringify(currentSchema) !== JSON.stringify(fixtureSchema)) {
+      mismatches.push({
+        controller: controllerName,
+        currentSchema,
+        fixtureSchema,
+      });
+    }
+  });
+
+  if (mismatches.length > 0) {
+    console.error('Schema validation failed for multiple controllers:');
+    mismatches.forEach(({ controller, currentSchema, fixtureSchema }) => {
+      console.error(`\n${controller}:`);
+      console.error('Current Schema:', JSON.stringify(currentSchema, null, 2));
+      console.error('Fixture Schema:', JSON.stringify(fixtureSchema, null, 2));
+    });
+    return false; // Return false if there are mismatches
+  }
+
+  return true; // Return true if no mismatches
 }

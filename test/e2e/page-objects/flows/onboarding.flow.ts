@@ -63,27 +63,20 @@ export const createNewWalletOnboardingFlow = async ({
  * @param [options.seedPhrase] - The seed phrase to import. Defaults to E2E_SRP.
  * @param [options.password] - The password to use. Defaults to WALLET_PASSWORD.
  * @param [options.fillSrpWordByWord] - Whether to fill the SRP word by word. Defaults to false.
- * @param [options.waitForControllers] - Whether to wait for the controllers to be loaded. Defaults to true.
  */
 export const importSRPOnboardingFlow = async ({
   driver,
   seedPhrase = E2E_SRP,
   password = WALLET_PASSWORD,
   fillSrpWordByWord = false,
-  waitForControllers = true,
 }: {
   driver: Driver;
   seedPhrase?: string;
   password?: string;
   fillSrpWordByWord?: boolean;
-  waitForControllers?: boolean;
 }): Promise<void> => {
   console.log('Starting the import of SRP onboarding flow');
-  if (waitForControllers) {
-    await driver.navigate(undefined, { waitForControllers });
-  } else {
-    await driver.navigate();
-  }
+  await driver.navigate();
 
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();

@@ -9,7 +9,7 @@ const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
 // The e2e tests currently configure state in the schema of migration 74.
 // This requires us to specify network state in the old schema, so it can run through the migrations.
 // We could bump this to latest, but it breaks too many other things to handle right now.
-const FIXTURE_STATE_METADATA_VERSION = 134;
+const FIXTURE_STATE_METADATA_VERSION = 74;
 
 const E2E_SRP =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
@@ -104,7 +104,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
         hadAdvancedGasFeesSetPriorToMigration92_3: false,
-        lastViewedUserSurvey: "",
+        lastViewedUserSurvey: '',
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
         nftsDetectionNoticeDismissed: true,
@@ -119,11 +119,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         showPermissionsTour: false,
         showTestnetMessageInDropdown: true,
         slides: [],
-        surveyLinkLastClickedOrClosed: "",
+        surveyLinkLastClickedOrClosed: '',
         switchedNetworkNeverShowMessage: false,
         termsOfUseLastAgreed:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
-        timeoutMinutes: "",
+        timeoutMinutes: '',
         trezorModel: null,
       },
       BridgeController: {
@@ -175,11 +175,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       MetaMetricsController: {
         dataCollectionForMarketing: false,
         eventsBeforeMetricsOptIn: [],
-        dataCollectionForMarketing: false,
         fragments: {},
         latestNonAnonymousEventTimestamp: 0,
         marketingCampaignCookieId: null,
-        metaMetricsId: "",
+        metaMetricsId: '',
         participateInMetaMetrics: false,
         previousUserTraits: {},
         segmentApiCalls: {},
@@ -302,8 +301,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       SelectedNetworkController: {
         domains: {},
       },
-      SmartTransactionsController: {
-      },
+      SmartTransactionsController: {},
       SubjectMetadataController: {
         subjectMetadata: {
           'https://metamask.github.io': {
