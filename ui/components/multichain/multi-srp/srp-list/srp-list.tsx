@@ -88,9 +88,10 @@ export const SRPList = ({
   );
 
   return (
-    <Box padding={4}>
+    <Box padding={4} data-testid="srp-list">
       {hdKeyrings.map((keyring, index) => (
         <Card
+          data-testid={`hd-keyring-${keyring.metadata.id}`}
           onClick={() =>
             onActionComplete(
               (keyring as KeyringObject & { metadata: KeyringMetadata })

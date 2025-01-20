@@ -12,6 +12,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
+import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
 import SecurityTab from './security-tab.container';
 
 const mockOpenDeleteMetaMetricsDataModal = jest.fn();
@@ -46,6 +47,12 @@ jest.mock('../../../ducks/app/app.ts', () => {
     },
   };
 });
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  // eslint-disable-next-line react/display-name
+  withRouter: (Component) => (props) => <Component {...props} />,
+}));
 
 describe('Security Tab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
@@ -135,7 +142,13 @@ describe('Security Tab', () => {
   });
 
   it('toggles SRP Quiz', async () => {
-    renderWithProviders(<SecurityTab />, mockStore);
+    const mockHistoryPush = jest.fn();
+    const mockProps = {
+      history: {
+        push: mockHistoryPush,
+      },
+    };
+    renderWithProviders(<SecurityTab {...mockProps} />, mockStore);
 
     expect(
       screen.queryByTestId(`srp_stage_introduction`),
@@ -143,15 +156,9 @@ describe('Security Tab', () => {
 
     fireEvent.click(screen.getByTestId('reveal-seed-words'));
 
-    expect(screen.getByTestId(`srp_stage_introduction`)).toBeInTheDocument();
-
-    const container = screen.getByTestId('srp-quiz-header');
-    const checkbox = queryByRole(container, 'button');
-    fireEvent.click(checkbox);
-
-    expect(
-      screen.queryByTestId(`srp_stage_introduction`),
-    ).not.toBeInTheDocument();
+    expect(mockHistoryPush).toHaveBeenCalledWith({
+      pathname: REVEAL_SRP_LIST_ROUTE,
+    });
   });
 
   it('sets IPFS gateway', async () => {
