@@ -5200,11 +5200,16 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
-   * @param {number} accountCount
-   * @param {string} keyringId
+   * @param {number} accountCount - The number of accounts to create
+   * @param {string} keyringId - The keyring identifier.
    * @returns {Promise<string>} The address of the newly-created account.
    */
-  async addNewAccount(accountCount, keyringId) {
+  async addNewAccount(
+    accountCount,
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    keyringId,
+    ///: END:ONLY_INCLUDE_IF
+  ) {
     const oldAccounts = await this.keyringController.getAccounts();
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
