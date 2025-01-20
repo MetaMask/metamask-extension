@@ -89,6 +89,14 @@ diff --git a/dist/crypto-compare-service/crypto-compare.mjs b/dist/crypto-compar
 index 58db2280159669c1b48fb94a9164b8e0be2850a7..74e0560718d42202e9183ff7ff1bfdac1424506e 100644
 --- a/dist/crypto-compare-service/crypto-compare.mjs
 +++ b/dist/crypto-compare-service/crypto-compare.mjs
+@@ -1,6 +1,7 @@
+ import { handleFetch } from "@metamask/controller-utils";
++import { getKeyByValue } from "../assetsUtil.mjs";
+ /**
+  * A map from native currency symbol to CryptoCompare identifier.
+  * This is only needed when the values don't match.
+  */
+ const nativeSymbolOverrides = new Map([
 @@ -101,12 +101,14 @@ export async function fetchExchangeRate(currency, nativeCurrency, includeUSDRate
   * @returns Promise resolving to exchange rates for given currencies.
   */
