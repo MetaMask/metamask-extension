@@ -4,7 +4,17 @@ import fs from 'fs';
 import madge from '@lgbot/madge';
 import fg from 'fast-glob';
 
-const TARGET_FILE = 'circular-deps.json';
+const TARGET_FILE = 'circular-deps.jsonc';
+
+const FILE_HEADER = `// This is a machine-generated file that tracks circular dependencies in the codebase.
+// To understand changes in this file:
+// - Each array represents a cycle of imports where the last file imports the first
+// - The cycles are sorted alphabetically for consistent diffs
+// - To update this file, run: yarn circular-deps:fix
+// - To prevent new circular dependencies, ensure your changes don't add new cycles
+// - For more information contact the Extension Platform team.
+
+`;
 
 /**
  * Patterns for files and directories to ignore when checking for circular dependencies:
@@ -107,7 +117,10 @@ async function fix(): Promise<void> {
   try {
     console.log('Generating circular dependencies...');
     const circularDeps = await getMadgeCircularDeps();
-    fs.writeFileSync(TARGET_FILE, JSON.stringify(circularDeps, null, 2));
+    fs.writeFileSync(
+      TARGET_FILE,
+      `${FILE_HEADER + JSON.stringify(circularDeps, null, 2)}\n`,
+    );
     console.log(`Wrote circular dependencies to ${TARGET_FILE}`);
   } catch (error) {
     console.error('Error while fixing circular dependencies:', error);
