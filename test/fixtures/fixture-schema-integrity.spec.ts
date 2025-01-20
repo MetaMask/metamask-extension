@@ -22,14 +22,6 @@ describe('Fixture Schema Integrity', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
-        options: {
-          args: [
-            '--no-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--disable-setuid-sandbox',
-          ],
-        },
       },
       async ({ driver: testDriver }) => {
         driver = testDriver;
