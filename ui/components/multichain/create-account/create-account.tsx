@@ -9,11 +9,14 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import {
   KeyringMetadata,
   KeyringObject,
   KeyringTypes,
 } from '@metamask/keyring-controller';
+///: END:ONLY_INCLUDE_IF
+
 import {
   Box,
   ButtonPrimary,
@@ -27,7 +30,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
 import {
   getMetaMaskAccountsOrdered,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   getMetaMaskKeyrings,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -37,9 +42,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
+
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 import { SelectSRP } from '../multi-srp/select-srp/select-srp';
 ///: END:ONLY_INCLUDE_IF
+
 type Props = {
   /**
    * Callback to get the next available account name.
@@ -113,7 +120,6 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         trimmedAccountName || defaultAccountName,
         defaultAccountName,
       );
-
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       const keyrings = useSelector(getMetaMaskKeyrings);
       const selectedKeyring = keyrings.find(

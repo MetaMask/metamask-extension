@@ -5201,21 +5201,16 @@ export default class MetamaskController extends EventEmitter {
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
    * @param {number} accountCount - The number of accounts to create
-   * @param {string} keyringId - The keyring identifier.
+   * @param {string} _keyringId - The keyring identifier.
    * @returns {Promise<string>} The address of the newly-created account.
    */
-  async addNewAccount(
-    accountCount,
-    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-    keyringId,
-    ///: END:ONLY_INCLUDE_IF
-  ) {
+  async addNewAccount(accountCount, _keyringId) {
     const oldAccounts = await this.keyringController.getAccounts();
 
     const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-      keyringId,
+      _keyringId,
       ///: END:ONLY_INCLUDE_IF
     );
 
@@ -5233,14 +5228,19 @@ export default class MetamaskController extends EventEmitter {
    *
    * Called when the first account is created and on unlocking the vault.
    *
-   * @param password
-   * @param keyringId - This is the identifier for the hd keyring.
+   * @param {string} password
+   * @param {string} _keyringId - This is the identifier for the hd keyring.
    * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
    * encoded as an array of UTF-8 bytes.
    */
-  async getSeedPhrase(password, keyringId) {
+  async getSeedPhrase(password, _keyringId) {
     return this._convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(password, keyringId),
+      await this.keyringController.exportSeedPhrase(
+        password,
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        _keyringId,
+        ///: END:ONLY_INCLUDE_IF
+      ),
     );
   }
 

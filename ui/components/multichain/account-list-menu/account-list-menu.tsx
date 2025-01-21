@@ -77,7 +77,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   generateNewHdKeyring,
+  ///: END:ONLY_INCLUDE_IF
   setSelectedAccount,
 } from '../../../store/actions';
 import {

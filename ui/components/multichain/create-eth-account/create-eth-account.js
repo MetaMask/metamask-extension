@@ -19,7 +19,13 @@ export const CreateEthAccount = ({
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name) => {
-    const newAccountAddress = await dispatch(addNewAccount(selectedKeyringId));
+    const newAccountAddress = await dispatch(
+      addNewAccount(
+        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+        selectedKeyringId,
+        ///: END:ONLY_INCLUDE_IF(multi-srp)
+      ),
+    );
     if (name) {
       dispatch(setAccountLabel(newAccountAddress, name));
     }
