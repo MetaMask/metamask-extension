@@ -910,7 +910,7 @@
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": true
+        "@metamask/eth-snap-keyring>@metamask/utils": true
       }
     },
     "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
@@ -938,7 +938,7 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/utils": true,
+        "@metamask/accounts-controller>@metamask/utils": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "uuid": true
       }
@@ -1229,7 +1229,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
-        "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/utils": true,
+        "@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
@@ -1282,13 +1282,15 @@
     "@metamask/eth-snap-keyring": {
       "globals": {
         "URL": true,
-        "console.error": true
+        "console.error": true,
+        "console.info": true
       },
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/eth-snap-keyring>@metamask/utils": true,
         "webpack>events": true,
@@ -1444,14 +1446,6 @@
         "@metamask/keyring-api>bech32": true
       }
     },
-    "@metamask/profile-sync-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": true,
-        "@metamask/keyring-api>bech32": true
-      }
-    },
     "@metamask/keyring-controller": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -1484,7 +1478,8 @@
       },
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": true
+        "@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": true,
+        "bitcoin-address-validation": true
       }
     },
     "@metamask/logging-controller": {
@@ -1714,7 +1709,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/profile-sync-controller>@metamask/keyring-api": true,
+        "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/network-controller": true,
         "@metamask/profile-sync-controller>@noble/ciphers": true,
@@ -2022,7 +2017,7 @@
         "semver": true
       }
     },
-    "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": {
+    "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2037,7 +2032,7 @@
         "semver": true
       }
     },
-    "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": {
+    "@metamask/accounts-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2187,21 +2182,6 @@
         "semver": true
       }
     },
-    "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
     "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -2308,21 +2288,6 @@
       }
     },
     "@metamask/keyring-api>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
