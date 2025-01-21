@@ -57,6 +57,7 @@ describe(`migration #${version}`, () => {
     };
     // @ts-expect-error testing when keyringsMetadata is undefined
     const newData = await migrate(oldData);
+    expect(newData.data.KeyringController?.keyrings).toBeDefined();
     expect(newData.data.KeyringController?.keyringsMetadata).toHaveLength(1);
     expect(newData.data.KeyringController?.keyringsMetadata[0]).toHaveProperty(
       'name',

@@ -27,21 +27,21 @@ function transformState(state: VersionedData['data']) {
 
   const { KeyringController } = state;
 
-  if (
-    KeyringController &&
-    (!Array.isArray(KeyringController.keyringsMetadata) ||
-      (Array.isArray(KeyringController.keyringsMetadata) &&
-        KeyringController.keyringsMetadata.length === 0))
-  ) {
-    const newKeyringsMetadata = KeyringController.keyrings.map((kr) => {
-      return {
-        id: ulid(),
-        name: kr.type,
-      };
+  if (KeyringController && Array.isArray(KeyringController.keyrings)) {
+    if (!Array.isArray(KeyringController.keyringsMetadata)) {
+      KeyringController.keyringsMetadata = [];
+    }
+
+    const newKeyringsMetadata = KeyringController.keyrings.map((kr, index) => {
+      return (
+        KeyringController.keyringsMetadata[index] || {
+          id: ulid(),
+          name: kr.type,
+        }
+      );
     });
 
     KeyringController.keyringsMetadata = newKeyringsMetadata;
-    return state;
   }
 
   return state;
