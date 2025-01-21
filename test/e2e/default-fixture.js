@@ -119,6 +119,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         showPermissionsTour: false,
         showTestnetMessageInDropdown: true,
         slides: [],
+        snapsInstallPrivacyWarningShown: true,
         surveyLinkLastClickedOrClosed: '',
         switchedNetworkNeverShowMessage: false,
         termsOfUseLastAgreed:
