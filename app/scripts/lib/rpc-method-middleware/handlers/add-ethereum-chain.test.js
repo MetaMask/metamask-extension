@@ -69,8 +69,6 @@ const createMockedHandler = () => {
     setActiveNetwork: jest.fn(),
     requestUserApproval: jest.fn().mockResolvedValue(123),
     getCaveat: jest.fn(),
-    startApprovalFlow: () => ({ id: 'approvalFlowId' }),
-    endApprovalFlow: jest.fn(),
     addNetwork: jest.fn().mockResolvedValue({
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [{ networkClientId: 123 }],
@@ -185,10 +183,8 @@ describe('addEthereumChainHandler', () => {
       end,
       NON_INFURA_CHAIN_ID,
       123,
-      'approvalFlowId',
       {
-        isAddFlow: true,
-        endApprovalFlow: mocks.endApprovalFlow,
+        autoApprove: true,
         getCaveat: mocks.getCaveat,
         setActiveNetwork: mocks.setActiveNetwork,
         requestPermittedChainsPermissionForOrigin:
@@ -254,10 +250,8 @@ describe('addEthereumChainHandler', () => {
           end,
           '0x1',
           123,
-          'approvalFlowId',
           {
-            isAddFlow: true,
-            endApprovalFlow: mocks.endApprovalFlow,
+            autoApprove: true,
             getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionForOrigin:
@@ -270,7 +264,7 @@ describe('addEthereumChainHandler', () => {
     });
 
     describe('if the proposed networkConfiguration does not have a different rpcUrl from the one already in state', () => {
-      it('should only switch to the existing networkConfiguration if one already exists for the given chain id', async () => {
+      it('should only switch to the existing networkConfiguration if one already exists for the given chain id without auto approving the chain permission', async () => {
         const { mocks, end, handler } = createMockedHandler();
         mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
         mocks.getNetworkConfigurationByChainId.mockReturnValue(
@@ -303,10 +297,8 @@ describe('addEthereumChainHandler', () => {
           end,
           '0xa',
           createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
-          undefined,
           {
-            isAddFlow: true,
-            endApprovalFlow: mocks.endApprovalFlow,
+            autoApprove: false,
             getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionForOrigin:
