@@ -125,6 +125,7 @@ export const unrestrictedMethods = Object.freeze([
   'eth_getUncleCountByBlockNumber',
   'eth_getWork',
   'eth_hashrate',
+  'eth_maxPriorityFeePerGas',
   'eth_mining',
   'eth_newBlockFilter',
   'eth_newFilter',
