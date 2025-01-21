@@ -30,6 +30,7 @@ import {
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
   setNextNonce,
+  setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -54,7 +55,6 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
-  getSelectedNetworkClientId,
   getPrioritizedUnapprovedTemplatedConfirmations,
 } from '../../../selectors';
 import {
@@ -72,6 +72,7 @@ import {
   getSendToAccounts,
   findKeyringForAddress,
 } from '../../../ducks/metamask/metamask';
+import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   addHexPrefix,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -486,6 +487,8 @@ export const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
+    setSmartTransactionsRefreshInterval: (interval) =>
+      dispatch(setSmartTransactionsRefreshInterval(interval)),
   };
 };
 

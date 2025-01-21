@@ -153,6 +153,7 @@
     flex-flow: column;
     flex: 1 1 auto;
     height: 0;
+    overflow-y: auto;
   }
 
   &__notice {

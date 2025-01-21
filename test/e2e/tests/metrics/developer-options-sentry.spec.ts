@@ -4,7 +4,7 @@ import { withFixtures, sentryRegEx } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import SettingsPage from '../../page-objects/pages/settings-page';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import DevelopOptions from '../../page-objects/pages/developer-options-page';
 import ErrorPage from '../../page-objects/pages/error-page';

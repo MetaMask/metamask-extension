@@ -24,11 +24,11 @@ import { NetworkState } from '@metamask/network-controller';
 import {
   MessageParamsPersonal,
   MessageParamsTyped,
+  OriginalRequest,
   SignatureController,
 } from '@metamask/signature-controller';
-import { OriginalRequest } from '@metamask/message-manager';
-import { InternalAccount } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -42,7 +42,6 @@ import {
   ConnectionRequest,
   MMIControllerMessenger,
 } from '../../../shared/constants/mmi-controller';
-import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import AccountTrackerController from './account-tracker-controller';
 import { AppStateController } from './app-state-controller';
@@ -84,8 +83,6 @@ export class MMIController {
   private getPendingNonce: (address: string) => Promise<any>;
 
   private accountTrackerController: AccountTrackerController;
-
-  private metaMetricsController: MetaMetricsController;
 
   #networkControllerState: NetworkState;
 
@@ -141,7 +138,6 @@ export class MMIController {
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
     this.accountTrackerController = opts.accountTrackerController;
-    this.metaMetricsController = opts.metaMetricsController;
     this.permissionController = opts.permissionController;
     this.signatureController = opts.signatureController;
     this.platform = opts.platform;
@@ -315,7 +311,7 @@ export class MMIController {
           }
         }
 
-        const txList = this.txStateManager.getTransactions({}, [], false); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
+        const txList = this.txStateManager.getTransactions(); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
           updateCustodianTransactions({
@@ -767,7 +763,9 @@ export class MMIController {
           name: internalAccount.metadata.name,
         };
       });
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const { metaMetricsId } = this.messagingSystem.call(
+      'MetaMetricsController:getState',
+    );
     const getAccountDetails = (address: string) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;

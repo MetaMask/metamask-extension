@@ -71,6 +71,7 @@ const config: PlaywrightTestConfig = {
         ...devices['Desktop Chrome'],
         headless: true,
       },
+      fullyParallel: false,
     },
     // Global: universal, common, shared, and non feature related tests
     {

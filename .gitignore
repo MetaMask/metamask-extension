@@ -1,3 +1,6 @@
+.yalc
+yalc.lock
+
 npm-debug.log
 yarn-error.log
 node_modules

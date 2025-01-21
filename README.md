@@ -8,11 +8,11 @@ MetaMask supports Firefox, Google Chrome, and Chromium-based browsers. We recomm
 
 For up to the minute news, follow us on [X](https://x.com/MetaMask).
 
-To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
+To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://docs.metamask.io/).
 
 To learn how to contribute to the MetaMask codebase, visit our [Contributor Docs](https://github.com/MetaMask/contributor-docs).
 
-To learn how to contribute to the MetaMask Extension project itself, visit our [Extension Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
+To learn how to contribute to the MetaMask Extension project itself, visit our [Extension Docs](https://github.com/MetaMask/metamask-extension/tree/main/docs).
 
 ## GitHub Codespaces quickstart
 

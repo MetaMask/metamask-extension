@@ -7,10 +7,10 @@ import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { editExistingTransaction } from '../../../ducks/send';
 import {
   contractExchangeRateSelector,
-  getCurrentCurrency,
   selectConversionRateByChainId,
   selectNetworkConfigurationByChainId,
 } from '../../../selectors';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../../store/actions';
 import {

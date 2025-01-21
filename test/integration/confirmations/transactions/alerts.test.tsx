@@ -1,12 +1,13 @@
 import { randomUUID } from 'crypto';
-import { act, fireEvent, screen } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
+import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { createMockImplementation, mock4byte } from '../../helpers';
+import { integrationTestRender } from '../../../lib/render-helpers';
 import { createTestProviderTools } from '../../../stub/provider';
+import mockMetaMaskState from '../../data/integration-init-state.json';
+import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
@@ -15,7 +16,17 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -92,6 +103,10 @@ describe('Contract Interaction Confirmation Alerts', () => {
     setupSubmitRequestToBackgroundMocks();
     const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
     mock4byte(APPROVE_NFT_HEX_SIG);
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -129,7 +144,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -182,7 +197,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -228,7 +243,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -274,7 +289,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -349,9 +364,9 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    expect(await screen.getByTestId('inline-alert')).toBeInTheDocument();
+    expect(await screen.findByTestId('inline-alert')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -362,7 +377,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),
     ).toHaveTextContent(
-      'This transaction won’t go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.',
+      "This transaction won't go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.",
     );
   });
 
@@ -390,7 +405,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    fireEvent.click(screen.getByTestId('inline-alert'));
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
@@ -410,5 +425,74 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       await screen.findByTestId('alert-modal-action-showGasFeeModal'),
     ).toHaveTextContent('Update gas options');
+  });
+
+  it('displays the alert for signing and submitting alerts', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
+    const unapprovedTransaction = mockedMetaMaskState.transactions[0];
+    const signedTransaction = getUnapprovedApproveTransaction(
+      account.address,
+      randomUUID(),
+      pendingTransactionTime - 1000,
+    );
+    signedTransaction.status = 'signed';
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedMetaMaskState,
+          gasEstimateType: 'none',
+          pendingApprovalCount: 2,
+          pendingApprovals: {
+            [pendingTransactionId]: {
+              id: pendingTransactionId,
+              origin: 'origin',
+              time: pendingTransactionTime,
+              type: ApprovalType.Transaction,
+              requestData: {
+                txId: pendingTransactionId,
+              },
+              requestState: null,
+              expectsResult: false,
+            },
+            [signedTransaction.id]: {
+              id: signedTransaction.id,
+              origin: 'origin',
+              time: pendingTransactionTime - 1000,
+              type: ApprovalType.Transaction,
+              requestData: {
+                txId: signedTransaction.id,
+              },
+              requestState: null,
+              expectsResult: false,
+            },
+          },
+          transactions: [unapprovedTransaction, signedTransaction],
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    const alerts = await screen.findAllByTestId('confirm-banner-alert');
+
+    expect(
+      alerts.some((alert) =>
+        alert.textContent?.includes(
+          'A previous transaction is still being signed or submitted',
+        ),
+      ),
+    ).toBe(true);
+
+    expect(
+      await screen.findByTestId('confirm-footer-button'),
+    ).toBeInTheDocument();
+    expect(await screen.findByTestId('confirm-footer-button')).toBeDisabled();
   });
 });

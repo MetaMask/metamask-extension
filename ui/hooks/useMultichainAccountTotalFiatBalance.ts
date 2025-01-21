@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   getMultichainCurrencyImage,
   getMultichainBalances,
@@ -31,9 +32,9 @@ export const useMultichainAccountTotalFiatBalance = (
   tokensWithBalances: {
     address: string;
     symbol: string;
-    decimals: string;
-    isERC721: boolean;
-    image: string;
+    decimals: number;
+    isERC721?: boolean;
+    image?: string;
   }[];
   totalWeiBalance?: string;
   totalBalance?: string;

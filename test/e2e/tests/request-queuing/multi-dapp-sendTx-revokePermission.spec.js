@@ -8,7 +8,6 @@ const {
   WINDOW_TITLES,
   defaultGanacheOptions,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks revokePermissions', function () {
   it('should close transaction for revoked permission of eth_accounts but show queued tx from second dapp on a different network.', async function () {
@@ -19,7 +18,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
@@ -37,9 +35,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
 
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
@@ -124,7 +119,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
       },

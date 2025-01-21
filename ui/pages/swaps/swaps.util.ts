@@ -823,7 +823,7 @@ export const getSwap1559GasFeeEstimates = async (
   };
 };
 
-async function getTransaction1559GasFeeEstimates(
+export async function getTransaction1559GasFeeEstimates(
   transactionParams: TransactionParams,
   estimatedBaseFee: Hex,
   chainId: Hex,

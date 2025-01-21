@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from './header-navbar';
-import SettingsPage from './settings-page';
+import SettingsPage from './settings/settings-page';
 import DevelopOptionsPage from './developer-options-page';
 
 const FEEDBACK_MESSAGE =

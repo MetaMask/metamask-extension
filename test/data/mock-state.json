@@ -10,12 +10,17 @@
     "url": "https://metamask.github.io/test-dapp/"
   },
   "appState": {
+    "isAccountMenuOpen": false,
+    "confirmationExchangeRates": {},
+    "nextNonce": 71,
+    "welcomeScreenSeen": false,
+    "pendingTokens": {},
+    "customTokenAmount": "10",
     "networkDropdownOpen": false,
     "importNftsModal": {
       "open": false
     },
     "showPermittedNetworkToastOpen": false,
-    "gasIsLoading": false,
     "isLoading": false,
     "modal": {
       "open": false,
@@ -27,8 +32,7 @@
         "name": null
       }
     },
-    "warning": null,
-    "customTokenAmount": "10"
+    "warning": null
   },
   "confirmAlerts": {
     "alerts": [],
@@ -55,6 +59,8 @@
     }
   },
   "metamask": {
+    "allTokens": {},
+    "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
     "dismissSeedBackUpReminder": false,
@@ -368,6 +374,39 @@
             "version": "5.1.2"
           }
         ]
+      },
+      "local:snap-id": {
+        "id": "local:snap-id",
+        "origin": "local:snap-id",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {},
+        "manifest": {
+          "description": "mock snap description",
+          "proposedName": "mock snap name",
+          "repository": {
+            "type": "git",
+            "url": "https://127.0.0.1"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-dialog",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
       }
     },
     "preferences": {
@@ -379,6 +418,7 @@
       "showNativeTokenAsMainBalance": true,
       "showTestNetworks": true,
       "smartTransactionsOptInStatus": true,
+      "tokenNetworkFilter": {},
       "tokenSortConfig": {
         "key": "tokenFiatAmount",
         "order": "dsc",
@@ -386,7 +426,6 @@
       }
     },
     "ensResolutionsByAddress": {},
-    "isAccountMenuOpen": false,
     "isUnlocked": true,
     "alertEnabledness": {
       "unconnectedAccount": true
@@ -398,26 +437,30 @@
         "name": "Custom Mainnet RPC",
         "nativeCurrency": "ETH",
         "defaultRpcEndpointIndex": 0,
+        "ticker": "ETH",
         "rpcEndpoints": [
           {
             "type": "custom",
             "url": "https://testrpc.com",
             "networkClientId": "testNetworkConfigurationId"
           }
-        ]
+        ],
+        "blockExplorerUrls": []
       },
       "0x5": {
         "chainId": "0x5",
         "name": "Goerli",
         "nativeCurrency": "ETH",
         "defaultRpcEndpointIndex": 0,
+        "ticker": "ETH",
         "rpcEndpoints": [
           {
             "type": "custom",
             "url": "https://goerli.com",
             "networkClientId": "goerli"
           }
-        ]
+        ],
+        "blockExplorerUrls": []
       }
     },
     "internalAccounts": {
@@ -533,7 +576,7 @@
             },
             "snap": {
               "enabled": true,
-              "id": "snap-id",
+              "id": "local:snap-id",
               "name": "snap-name"
             }
           },
@@ -636,22 +679,6 @@
         "auditUrls": ["auditUrl1", "auditUrl2"],
         "version": "1.1.6",
         "lastUpdated": "September 26, 2024"
-      }
-    },
-    "notifications": {
-      "test": {
-        "id": "test",
-        "origin": "local:http://localhost:8086/",
-        "createdDate": 1652967897732,
-        "readDate": null,
-        "message": "Hello, http://localhost:8086!"
-      },
-      "test2": {
-        "id": "test2",
-        "origin": "local:http://localhost:8086/",
-        "createdDate": 1652967897732,
-        "readDate": 1652967897732,
-        "message": "Hello, http://localhost:8086!"
       }
     },
     "accountsByChainId": {
@@ -1123,6 +1150,7 @@
           "gas": "0x5208",
           "gasPrice": "0x3b9aca00"
         },
+        "gasLimitNoBuffer": "0x5208",
         "history": [
           {
             "id": 8393540981007587,
@@ -1172,6 +1200,7 @@
           "gasPrice": "0x3b9aca00",
           "nonce": "0xb5"
         },
+        "gasLimitNoBuffer": "0xcf08",
         "history": [
           {
             "id": 3387511061307736,
@@ -1304,6 +1333,7 @@
           "gasPrice": "0x3b9aca00",
           "nonce": "0xb6"
         },
+        "gasLimitNoBuffer": "0xcf08",
         "history": [
           {
             "id": 3387511061307737,
@@ -1436,6 +1466,7 @@
           "gasPrice": "0x12a05f200",
           "nonce": "0xb7"
         },
+        "gasLimitNoBuffer": "0xcf08",
         "history": [
           {
             "id": 3387511061307738,
@@ -1569,6 +1600,7 @@
           "gas": "0x6169e",
           "nonce": "0xb8"
         },
+        "gasLimitNoBuffer": "0x6169e",
         "history": [
           {
             "id": 3387511061307739,
@@ -1706,6 +1738,7 @@
           "gasPrice": "0x3b9aca00",
           "nonce": "0xb9"
         },
+        "gasLimitNoBuffer": "0xd508",
         "history": [
           {
             "id": 3387511061307740,
@@ -1838,6 +1871,7 @@
           "gasPrice": "0x3b9aca00",
           "gas": "0x5208"
         },
+        "gasLimitNoBuffer": "0x5208",
         "history": [
           {
             "id": 3387511061307741,
@@ -1899,6 +1933,7 @@
     "watchEthereumAccountEnabled": false,
     "bitcoinSupportEnabled": false,
     "bitcoinTestnetSupportEnabled": false,
+    "solanaSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
@@ -2027,6 +2062,9 @@
           }
         }
       }
+    },
+    "bridgeStatusState": {
+      "txHistory": {}
     }
   },
   "ramps": {

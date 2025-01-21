@@ -57,6 +57,10 @@
     height: 0;
 
     &__list {
+      &__duplicate-contact-banner {
+        padding: 8px 16px 0 16px;
+      }
+
       &__link {
         @include design-system.Paragraph;
 

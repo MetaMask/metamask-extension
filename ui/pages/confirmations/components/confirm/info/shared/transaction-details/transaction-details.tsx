@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
@@ -20,6 +20,8 @@ import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/conf
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
 import { HEX_ZERO } from '../constants';
+import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
+import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -98,9 +100,8 @@ const AmountRow = () => {
   const { currency } = useUserPreferencedCurrency(PRIMARY);
 
   const value = currentConfirmation?.txParams?.value;
-  const simulationData = currentConfirmation?.simulationData;
 
-  if (!value || value === HEX_ZERO || !simulationData?.error) {
+  if (!value || value === HEX_ZERO) {
     return null;
   }
 
@@ -149,6 +150,11 @@ export const TransactionDetails = () => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const hasValueAndNativeBalanceMismatch = useMemo(
+    () => checkValueAndNativeBalanceMismatch(currentConfirmation),
+    [currentConfirmation],
+  );
 
   return (
     <>
@@ -156,8 +162,11 @@ export const TransactionDetails = () => {
         <OriginRow />
         <RecipientRow />
         {showAdvancedDetails && <MethodDataRow />}
+        <SigningInWithRow />
       </ConfirmInfoSection>
-      <AmountRow />
+      {(showAdvancedDetails || hasValueAndNativeBalanceMismatch) && (
+        <AmountRow />
+      )}
       <PaymasterRow />
     </>
   );

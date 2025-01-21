@@ -10,7 +10,7 @@ import {
   openDAppWithContract,
   TestSuiteArguments,
 } from '../transactions/shared';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {
@@ -41,7 +41,7 @@ describe('Queued Confirmations', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPreferencesControllerUseRequestQueueEnabled()
+
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
@@ -86,7 +86,7 @@ describe('Queued Confirmations', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPreferencesControllerUseRequestQueueEnabled()
+
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
@@ -141,7 +141,6 @@ describe('Queued Confirmations', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: { redesignedConfirmationsEnabled: true },
-              useRequestQueue: true,
             })
             .withSelectedNetworkControllerPerDomain()
             .build(),
@@ -168,7 +167,7 @@ describe('Queued Confirmations', function () {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
+            contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
           await connectToDappTwoAndSwitchBackToOne(driver, contractAddress);
@@ -193,7 +192,7 @@ describe('Queued Confirmations', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
-            .withPreferencesControllerUseRequestQueueEnabled()
+
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
               metaMetricsId: 'fake-metrics-id',
@@ -281,7 +280,6 @@ describe('Queued Confirmations', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: { redesignedConfirmationsEnabled: true },
-              useRequestQueue: true,
             })
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
@@ -317,7 +315,7 @@ describe('Queued Confirmations', function () {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
+            contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
           await connectToDappTwoAndSwitchBackToOne(driver, contractAddress);

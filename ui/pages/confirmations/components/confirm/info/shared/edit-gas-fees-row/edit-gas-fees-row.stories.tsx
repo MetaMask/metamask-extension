@@ -35,6 +35,7 @@ export const DefaultStory = () => (
   <EditGasFeesRow
     fiatFee="$1"
     nativeFee="0.001 ETH"
+    fiatFeeWith18SignificantDigits="0.001234"
     supportsEIP1559={true}
     setShowCustomizeGasPopover={() => {}}
   />

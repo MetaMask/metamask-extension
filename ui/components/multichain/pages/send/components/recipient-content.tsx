@@ -95,7 +95,7 @@ export const SendPageRecipientContent = ({
   const ipfsGateway = useSelector(getIpfsGateway);
 
   const nftImageURL = useGetAssetImageUrl(
-    sendAsset.details?.image ?? null,
+    sendAsset.details?.image ?? undefined,
     ipfsGateway,
   );
 
@@ -165,6 +165,7 @@ export const SendPageRecipientContent = ({
       <SendPageRow>
         <AssetPickerAmount
           header={t('sendSelectReceiveAsset')}
+          action="receive"
           asset={isSwapAllowed ? receiveAsset : sendAsset}
           sendingAsset={
             isSwapAllowed &&

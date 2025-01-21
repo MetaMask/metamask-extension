@@ -19,6 +19,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
  * @param props.onChange - The function to handle search query changes.
  * @param props.isNFTSearch - Indicates if the search is for NFTs.
  * @param props.props - Additional props for the containing Box component.
+ * @param props.placeholder - A custom placeholder for the search input.
+ * @param props.autoFocus
  * @returns The rendered search component.
  */
 export const Search = ({
@@ -26,11 +28,15 @@ export const Search = ({
   onChange,
   isNFTSearch = false,
   props,
+  placeholder,
+  autoFocus = true,
 }: {
   searchQuery: string;
   onChange: (value: string) => void;
   isNFTSearch?: boolean;
   props?: React.ComponentProps<typeof Box>;
+  placeholder?: JSX.Element | string | null;
+  autoFocus?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -38,21 +44,26 @@ export const Search = ({
     <Box padding={4} {...props}>
       <TextFieldSearch
         borderRadius={BorderRadius.LG}
-        placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
+        placeholder={
+          placeholder ??
+          t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
+        }
         value={searchQuery}
         onChange={(e) => onChange(e.target.value)}
         error={false}
-        autoFocus
+        autoFocus={autoFocus}
         autoComplete={false}
         width={BlockSize.Full}
         clearButtonOnClick={() => onChange('')}
         clearButtonProps={{
           size: ButtonIconSize.Sm,
         }}
+        style={{ paddingInline: 8 }}
         showClearButton
         className="asset-picker-modal__search-list"
         inputProps={{
           'data-testid': 'asset-picker-modal-search-input',
+          marginRight: 0,
         }}
         endAccessory={null}
         size={TextFieldSearchSize.Lg}

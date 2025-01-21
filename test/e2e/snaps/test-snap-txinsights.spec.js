@@ -101,16 +101,12 @@ describe('Test Snap TxInsights', function () {
         // wait for and switch to insight snap pane
         await driver.waitForSelector({
           text: 'Insights Example Snap',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Insights Example Snap',
-          tag: 'button',
+          tag: 'span',
         });
 
         // check that txinsightstest tab contains the right info
         await driver.waitForSelector({
-          css: '.snap-ui-renderer__content',
+          css: 'p',
           text: 'ERC-20',
         });
       },

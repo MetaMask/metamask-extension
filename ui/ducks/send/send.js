@@ -38,8 +38,12 @@ import {
   isTokenBalanceSufficient,
 } from '../../pages/confirmations/send/send.utils';
 import {
-  getAdvancedInlineGasShown,
   getCurrentChainId,
+  getSelectedNetworkClientId,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
+import {
+  getAdvancedInlineGasShown,
   getGasPriceInHexWei,
   getIsMainnet,
   getTargetAccount,
@@ -53,7 +57,6 @@ import {
   getSelectedInternalAccount,
   getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
-  getSelectedNetworkClientId,
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../selectors';
@@ -101,7 +104,6 @@ import {
 import {
   getGasEstimateType,
   getNativeCurrency,
-  getProviderConfig,
   getTokens,
 } from '../metamask/metamask';
 

@@ -17,7 +17,6 @@ import {
   setDataCollectionForMarketing,
 } from '../../../store/actions';
 import {
-  getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
@@ -53,7 +52,6 @@ export default function OnboardingMetametrics() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -82,22 +80,20 @@ export default function OnboardingMetametrics() {
         },
       );
 
-      if (participateInMetaMetrics) {
-        trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AppInstalled,
-        });
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AppInstalled,
+      });
 
-        trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: {
-            is_metrics_opted_in: true,
-            has_marketing_consent: Boolean(dataCollectionForMarketing),
-            location: 'onboarding_metametrics',
-          },
-        });
-      }
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          is_metrics_opted_in: true,
+          has_marketing_consent: Boolean(dataCollectionForMarketing),
+          location: 'onboarding_metametrics',
+        },
+      });
     } finally {
       history.push(nextRoute);
     }

@@ -3,14 +3,15 @@ import { useSelector } from 'react-redux';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getShouldShowFiat,
   txDataSelector,
   getCurrentKeyring,
   getTokenExchangeRates,
   getPreferences,
   selectConversionRateByChainId,
+  selectNetworkConfigurationByChainId,
 } from '../../../selectors';
 
 import {
@@ -120,6 +121,9 @@ export const generateUseSelectorRouter =
       selector === getCurrentCurrency
     ) {
       return 'USD';
+    }
+    if (selector === selectNetworkConfigurationByChainId) {
+      return '2';
     }
     if (
       selector === getMultichainShouldShowFiat ||
