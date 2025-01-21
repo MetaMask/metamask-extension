@@ -177,7 +177,6 @@
   "accountsConnected": {
     "message": "Accounts connected"
   },
-
   "accountsPermissionsTitle": {
     "message": "See your accounts and suggest transactions"
   },
@@ -2530,9 +2529,6 @@
     "message": "Import",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Import account"
-  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -2576,14 +2572,8 @@
   "importPrivateKey": {
     "message": "Import Private Key"
   },
-  "importSRPAccountsDescription": {
-    "message": "Select the accounts to import as part of this Secret Recovery Phrase"
-  },
   "importSRPDescription": {
     "message": "Enter your wallet's secret recovery phrase. You can import any Ethereum, Solana, or Bitcoin secret recovery phrase."
-  },
-  "importSRPPlaceholder": {
-    "message": "Recovery phrase"
   },
   "importSRPWordError": {
     "message": "Word $1 is incorrect or misspelled.",
