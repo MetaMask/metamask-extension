@@ -2353,9 +2353,6 @@
     "message": "Εισαγωγή",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Εισαγωγή λογαριασμού"
-  },
   "importAccountError": {
     "message": "Σφάλμα κατά την εισαγωγή του λογαριασμού."
   },

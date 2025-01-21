@@ -117,9 +117,6 @@
     "message": "आयात",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "खाता आयात"
-  },
   "importAccountMsg": {
     "message": "आयात किए गए खाते आपके मूल रूप से बनाए गए मेटामास्क अकाउंट सीडफ्रेज से संबद्ध नहीं होंगे। आयात किए गए खातों के बारे में और जानें"
   },

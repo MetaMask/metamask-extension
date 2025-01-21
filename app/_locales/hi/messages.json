@@ -2353,9 +2353,6 @@
     "message": "इम्पोर्ट करें",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "अकाउंट इम्पोर्ट करें"
-  },
   "importAccountError": {
     "message": "अकाउंट इम्पोर्ट करने में गड़बड़ी।"
   },

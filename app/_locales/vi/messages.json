@@ -2353,9 +2353,6 @@
     "message": "Nhập",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Nhập tài khoản"
-  },
   "importAccountError": {
     "message": "Lỗi khi nhập tài khoản."
   },

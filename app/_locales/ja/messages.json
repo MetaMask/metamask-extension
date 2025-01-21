@@ -2353,9 +2353,6 @@
     "message": "インポート",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "アカウントをインポート"
-  },
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"
   },

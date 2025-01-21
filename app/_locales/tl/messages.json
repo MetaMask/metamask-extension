@@ -2353,9 +2353,6 @@
     "message": "Mag-import",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Mag-import ng Account"
-  },
   "importAccountError": {
     "message": "Error sa pag-import ng account."
   },

@@ -2353,9 +2353,6 @@
     "message": "가져오기",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "계정 가져오기"
-  },
   "importAccountError": {
     "message": "계정 가져오기 오류"
   },

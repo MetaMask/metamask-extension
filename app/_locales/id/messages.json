@@ -2353,9 +2353,6 @@
     "message": "Impor",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Impor akun"
-  },
   "importAccountError": {
     "message": "Terjadi kesalahan saat mengimpor akun."
   },

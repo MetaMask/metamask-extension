@@ -2353,9 +2353,6 @@
     "message": "Importer",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importer le compte"
-  },
   "importAccountError": {
     "message": "Erreur d’importation de compte."
   },
