@@ -4313,12 +4313,6 @@
   "redesignedConfirmationsToggleDescription": {
     "message": "この機能をオンにすると、強化された形式で署名要求が表示されます。"
   },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "改善されたトランザクション要求"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "トランザクション要求を強化された形式で表示するには、この機能をオンにします。"
-  },
   "refreshList": {
     "message": "リストを更新"
   },

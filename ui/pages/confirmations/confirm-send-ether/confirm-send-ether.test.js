@@ -33,6 +33,7 @@ const sendEther = {
   userEditedGasLimit: false,
   chainId: '0x5',
   loadingDefaults: false,
+  gasLimitNoBuffer: '0x5208',
   dappSuggestedGasFees: {
     maxPriorityFeePerGas: '0x3b9aca00',
     maxFeePerGas: '0x2540be400',
