@@ -110,9 +110,6 @@ export const SENTRY_BACKGROUND_STATE = {
       destTokens: {},
       destTopAssets: [],
       destTokensLoadingStatus: true,
-      srcTokens: {},
-      srcTopAssets: [],
-      srcTokensLoadingStatus: true,
       quoteRequest: {
         walletAddress: false,
         srcTokenAddress: true,
@@ -249,7 +246,6 @@ export const SENTRY_BACKGROUND_STATE = {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
       redesignedConfirmationsEnabled: true,
-      redesignedTransactionsEnabled: false,
       isRedesignedConfirmationsDeveloperEnabled: false,
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
