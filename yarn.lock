@@ -6517,10 +6517,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:8.13.0":
-  version: 8.13.0
-  resolution: "@metamask/test-dapp@npm:8.13.0"
-  checksum: 10/b588e562ce81d94e22e8c19b6b160b6dc1c5f68314edaeeb3c886a0676d4bd21205c741d039a1a8ad2dfc1e87109239d18da17c322fbaa99f527b543b0032786
+"@metamask/test-dapp@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/test-dapp@npm:9.0.0"
+  checksum: 10/c16a7614c886cd0652d4bce2de36a045557697449b979c6044c46abebcbf3002e0a0e31e4e42cc9ccf8b246e3cdaffdaa43c585afd66786c3752a3aed702e3ab
   languageName: node
   linkType: hard
 
@@ -26766,7 +26766,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^8.8.0"
     "@metamask/solana-wallet-snap": "npm:^1.0.4"
     "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:8.13.0"
+    "@metamask/test-dapp": "npm:9.0.0"
     "@metamask/transaction-controller": "npm:^43.0.0"
     "@metamask/user-operation-controller": "npm:^21.0.0"
     "@metamask/utils": "npm:^10.0.1"
