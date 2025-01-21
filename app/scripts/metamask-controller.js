@@ -183,7 +183,6 @@ import {
   walletGetSession,
   walletRevokeSession,
   walletInvokeMethod,
-  caipPermissionAdapterMiddleware,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain';
 import {
@@ -6451,21 +6450,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(createUnsupportedMethodMiddleware(UNSUPPORTED_RPC_METHODS));
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    engine.push((req, res, next, end) =>
-      caipPermissionAdapterMiddleware(req, res, next, end, {
-        getCaveatForOrigin: this.permissionController.getCaveat.bind(
-          this.permissionController,
-          origin,
-        ),
-        getNetworkConfigurationByNetworkClientId:
-          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-            this.networkController,
-          ),
-      }),
-    );
-    ///: END:ONLY_INCLUDE_IF
 
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
