@@ -1043,7 +1043,6 @@ async function buildEventFragmentProperties({
     getSwapAndSendMetricsProps(transactionMeta);
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
-
   let properties = {
     chain_id: chainId,
     referrer,

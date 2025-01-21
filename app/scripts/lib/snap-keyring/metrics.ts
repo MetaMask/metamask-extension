@@ -3,6 +3,7 @@ import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-c
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { GetSnap } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 
 type AllowedActions =
   | GetSnap
@@ -20,7 +21,7 @@ export type SnapAndHardwareMessenger = RestrictedControllerMessenger<
 export async function getSnapAndHardwareInfoForMetrics(
   getAccountType: (address: string) => Promise<string>,
   getDeviceModel: (address: string) => Promise<string>,
-  getHardwareTypeForMetric: (address: string) => Promise<string>,
+  getHardwareTypeForMetric: (address: string) => Promise<HardwareKeyringType>,
   messenger: SnapAndHardwareMessenger,
 ) {
   // If it's coming from a unit test, there's no messenger
