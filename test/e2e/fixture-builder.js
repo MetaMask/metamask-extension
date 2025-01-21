@@ -490,7 +490,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappWithChain() {
+  withPermissionControllerConnectedToTestDappWithChains(chainIds) {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -515,7 +515,43 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictNetworkSwitching',
-                  value: ['0x539'],
+                  value: chainIds,
+                },
+              ],
+              date: 1664388714637,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withPermissionControllerConnectedToTestDappWithTwoChains() {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [DEFAULT_FIXTURE_ACCOUNT.toLowerCase()],
+                },
+              ],
+              date: 1664388714636,
+            },
+            'endowment:permitted-chains': {
+              id: 'D7cac0a2e3BD8f349506a',
+              parentCapability: 'endowment:permitted-chains',
+              invoker: DAPP_URL,
+              caveats: [
+                {
+                  type: 'restrictNetworkSwitching',
+                  value: ['0x539', '0x53a'],
                 },
               ],
               date: 1664388714637,
