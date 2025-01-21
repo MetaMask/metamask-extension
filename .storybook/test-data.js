@@ -1252,6 +1252,16 @@ const state = {
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
       },
     ],
+    keyringsMetadata: [
+      {
+        id: 'ULID01234567890ABCDEFGHIJKLMN',
+        name: '',
+      },
+      {
+        id: '01JJ44GJVKFT4D563A7Z23HZ02',
+        name: '',
+      },
+    ],
     ...mockNetworkState(
       {
         id: 'test-networkConfigurationId-1',
