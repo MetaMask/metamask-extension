@@ -133,6 +133,11 @@ async function requestPermissionsImplementation(
   }
 
   if (caip25Approval) {
+    // TODO: make sure this `caip25Approval` is still caip25 compliant format
+    // TODO: investigate `grantPermissionsForOrigin` returning error 'The method "metadata" does not exist / is not available.'
+    // I imagine UI has to return only `endowment:caip25` part of the response (see slack message) -
+    // - or metamaskController method returns only the part I need from `approvalController.addAndShowApprovalRequest`
+
     const grantedCaip25Permissions = grantPermissionsForOrigin(caip25Approval);
     const caip25Endowment =
       grantedCaip25Permissions[Caip25EndowmentPermissionName];

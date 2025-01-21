@@ -21,14 +21,16 @@ import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 import {
   ConnectPage,
-  getCommonAccounts,
+  getRequestedAccounts,
   getRequestedChains,
 } from './connect-page/connect-page';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
-  const requestedAccounts = getCommonAccounts(permissionsRequest?.permissions);
+  const requestedAccounts = getRequestedAccounts(
+    permissionsRequest?.permissions,
+  );
 
   if (requestedAccounts) {
     return new Set(

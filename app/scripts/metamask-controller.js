@@ -5551,7 +5551,10 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const id = nanoid();
-    await this.approvalController.addAndShowApprovalRequest({
+
+    // TODO: not only does UI become able to READ in this format, it should also RETURN in this compliant format
+    // TODO: go back to UI, change the change I previously did, to fit the format we are passing in line 5566, and THEN return the response data also in this caip25 compliant format
+    return this.approvalController.addAndShowApprovalRequest({
       id,
       origin,
       requestData: {
@@ -5559,21 +5562,19 @@ export default class MetamaskController extends EventEmitter {
           id,
           origin,
         },
-        permissions: caveatValueWithAccounts.optionalScopes,
+        permissions: {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: caveatValueWithAccounts,
+              },
+            ],
+          },
+        },
       },
       type: MethodNames.RequestPermissions,
     });
-
-    return {
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: caveatValueWithAccounts,
-          },
-        ],
-      },
-    };
   }
 
   // ---------------------------------------------------------------------------
