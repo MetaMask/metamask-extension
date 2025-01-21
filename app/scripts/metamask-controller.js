@@ -5124,19 +5124,6 @@ export default class MetamaskController extends EventEmitter {
         },
       );
 
-    // // Set the account label to Trezor 1 / Ledger 1 / QR Hardware 1, etc
-    // this.preferencesController.setAccountLabel(unlockedAccount, label);
-    // // Select the account
-    // this.preferencesController.setSelectedAddress(unlockedAccount);
-
-    // It is expected that the account also exist in the accounts-controller
-    // in other case, an error shall be thrown
-    const keyring = await this.getKeyringForDevice(deviceName, hdPath);
-    keyring.setAccountToUnlock(index);
-    // const unlockedAccount =
-    //   await this.keyringController.addNewAccountForKeyring(keyring);
-    // const hardwareDeviceName =
-    //   deviceName === HardwareDeviceNames.qr ? keyring.getName() : deviceName;
     const account =
       this.accountsController.getAccountByAddress(unlockedAccount);
     this.setAccountName(
