@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,7 +32,12 @@ import {
   ///: END:ONLY_INCLUDE_IF
   updateCustomNonce,
 } from '../../../../../store/actions';
-import { isSignatureTransactionType } from '../../../utils';
+import { selectUseTransactionSimulations } from '../../../selectors/preferences';
+
+import {
+  isPermitSignatureRequest,
+  isSIWESignatureRequest,
+} from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -159,7 +167,9 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const customNonceValue = useSelector(getCustomNonceValue);
-
+  const useTransactionSimulations = useSelector(
+    selectUseTransactionSimulations,
+  );
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext();
   const { from } = getConfirmationSender(currentConfirmation);
@@ -177,10 +187,17 @@ const Footer = () => {
     return false;
   });
 
-  const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isSIWE = isSIWESignatureRequest(currentConfirmation);
+  const isPermit = isPermitSignatureRequest(currentConfirmation);
+  const isPermitSimulationShown = isPermit && useTransactionSimulations;
+  const isPersonalSign =
+    currentConfirmation?.type === TransactionType.personalSign;
 
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSignature) ||
+    (!isScrollToBottomCompleted &&
+      !isSIWE &&
+      !isPermitSimulationShown &&
+      !isPersonalSign) ||
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiSubmitDisabled ||
     ///: END:ONLY_INCLUDE_IF

@@ -143,6 +143,7 @@ describe('Test Snap ethereum_provider', function () {
         await driver.clickElement('#signTypedDataButton');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementSafe('.confirm-scroll-to-bottom__button');
         await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'button',
