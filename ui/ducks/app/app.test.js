@@ -231,6 +231,7 @@ describe('App State', () => {
     const hdPaths = {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'",
+      onekey: "m/44'/60'/0'/0",
       lattice: "m/44'/60'/0'/0",
     };
     const state = reduceApp(metamaskState, {
