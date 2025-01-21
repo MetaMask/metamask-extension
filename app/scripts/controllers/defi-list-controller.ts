@@ -259,13 +259,7 @@ export class DefiListController extends BaseController<
       state.accountPositions[accountAddress] = null;
     });
 
-    // const accountPositions = await this.#getGroupedPositions(accountAddress);
-    // TODO Remove this hack once we have proper accounts
-    const accountPositions = await this.#getGroupedPositions(
-      /[0-7]/.test(accountAddress.slice(-1).toLowerCase())
-        ? '0x08e82c749fef839ff97e7d17de29b4fdd87b04d7'
-        : '0xaa62cf7caaf0c7e50deaa9d5d0b907472f00b258',
-    );
+    const accountPositions = await this.#getGroupedPositions(accountAddress);
 
     console.log('UPDATED STATE', { accountPositions });
 
@@ -278,9 +272,9 @@ export class DefiListController extends BaseController<
     const positions = (await fetchWithCache({
       url: `https://defi-services.metamask-institutional.io/defi-data/positions/${accountAddress}`,
       functionName: '#getGroupedPositions',
-    })) as DefiPositionResponse[]; // TODO: Response validation
+    })) as { data: DefiPositionResponse[] }; // TODO: Response validation
 
-    const groupedPositions = groupPositionsByProtocolAndChain(positions);
+    const groupedPositions = groupPositionsByProtocolAndChain(positions.data);
 
     return groupedPositions;
   }

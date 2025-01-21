@@ -46,6 +46,8 @@ export const DefiList = () => {
   const currentNetwork = useSelector(getCurrentNetwork);
   const chainId = parseInt(currentNetwork?.chainId.replace('0x', ''), 16);
 
+  console.log('DEFI POSITIONS EXTENSION', defiPositions);
+
   return (
     <>
       {!defiPositions ? (
