@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { EthKeyring } from '@metamask/keyring-internal-api';
+import { KeyringMetadata } from '@metamask/keyring-controller';
+import { Json } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -43,9 +46,6 @@ import SRPQuiz from '../../app/srp-quiz-modal';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
-import { EthKeyring } from '@metamask/keyring-internal-api';
-import { KeyringMetadata } from '@metamask/keyring-controller';
-import { Json } from '@metamask/utils';
 
 export enum AttemptExportState {
   None = 'None',
@@ -68,9 +68,8 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     accounts: string[];
     metadata: KeyringMetadata;
   })[] = useSelector(getMetaMaskKeyrings);
-  const keyringId = keyrings.find((kr) =>
-    kr.accounts.includes(address),
-  )?.metadata.id;
+  const keyringId = keyrings.find((kr) => kr.accounts.includes(address))
+    ?.metadata.id;
 
   if (!keyringId) {
     throw new Error('Keyring not found');
