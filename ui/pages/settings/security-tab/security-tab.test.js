@@ -48,10 +48,21 @@ jest.mock('../../../ducks/app/app.ts', () => {
   };
 });
 
+const mockHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   // eslint-disable-next-line react/display-name
-  withRouter: (Component) => (props) => <Component {...props} />,
+  withRouter: (Component) => (props) =>
+    (
+      <Component
+        {...props}
+        {...{
+          history: {
+            push: mockHistoryPush,
+          },
+        }}
+      />
+    ),
 }));
 
 describe('Security Tab', () => {
@@ -142,13 +153,7 @@ describe('Security Tab', () => {
   });
 
   it('toggles SRP Quiz', async () => {
-    const mockHistoryPush = jest.fn();
-    const mockProps = {
-      history: {
-        push: mockHistoryPush,
-      },
-    };
-    renderWithProviders(<SecurityTab {...mockProps} />, mockStore);
+    renderWithProviders(<SecurityTab />, mockStore);
 
     expect(
       screen.queryByTestId(`srp_stage_introduction`),
