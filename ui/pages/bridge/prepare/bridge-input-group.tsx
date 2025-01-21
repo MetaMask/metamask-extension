@@ -39,9 +39,9 @@ import { shortenString } from '../../../helpers/utils/util';
 import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 export const BridgeInputGroup = ({
   header,

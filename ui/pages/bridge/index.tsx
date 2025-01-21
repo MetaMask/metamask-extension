@@ -35,12 +35,12 @@ import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
+import { getMultichainNetwork } from '../../selectors/multichain';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
-import { getMultichainNetwork } from '../../selectors/multichain';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
