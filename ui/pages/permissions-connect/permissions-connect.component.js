@@ -13,29 +13,22 @@ import PermissionPageContainer from '../../components/app/permission-page-contai
 import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 import PermissionConnectHeader from '../../components/app/permission-connect-header';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../shared/constants/permissions';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
-import { ConnectPage } from './connect-page/connect-page';
+import {
+  ConnectPage,
+  getCommonAccounts,
+  getRequestedChains,
+} from './connect-page/connect-page';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
-  const permission =
-    permissionsRequest?.permissions?.[RestrictedMethods.eth_accounts];
-  const requestedAccounts = permission?.caveats?.find(
-    (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-  )?.value;
+  const requestedAccounts = getCommonAccounts(permissionsRequest?.permissions);
 
   if (requestedAccounts) {
     return new Set(
@@ -51,8 +44,7 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
 }
 
 function getRequestedChainIds(permissionsRequest) {
-  return permissionsRequest?.permissions?.[PermissionNames.permittedChains]
-    ?.caveats[0]?.value;
+  return getRequestedChains(permissionsRequest?.permissions);
 }
 
 export default class PermissionConnect extends Component {

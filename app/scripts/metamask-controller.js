@@ -5524,20 +5524,11 @@ export default class MetamaskController extends EventEmitter {
       delete permissions[PermissionNames.permittedChains];
     }
 
-    const id = nanoid();
-    const legacyApproval =
-      await this.approvalController.addAndShowApprovalRequest({
-        id,
-        origin,
-        requestData: {
-          metadata: {
-            id,
-            origin,
-          },
-          permissions,
-        },
-        type: MethodNames.RequestPermissions,
-      });
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.[0]?.value ?? [];
+
+    const requestedAccounts =
+      permissions[PermissionNames.eth_accounts]?.caveats?.[0]?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -5551,13 +5542,27 @@ export default class MetamaskController extends EventEmitter {
 
     const caveatValueWithChains = setPermittedEthChainIds(
       newCaveatValue,
-      isSnapId(origin) ? [] : legacyApproval.approvedChainIds,
+      isSnapId(origin) ? [] : requestedChains,
     );
 
     const caveatValueWithAccounts = setEthAccounts(
       caveatValueWithChains,
-      legacyApproval.approvedAccounts,
+      requestedAccounts,
     );
+
+    const id = nanoid();
+    await this.approvalController.addAndShowApprovalRequest({
+      id,
+      origin,
+      requestData: {
+        metadata: {
+          id,
+          origin,
+        },
+        permissions: caveatValueWithAccounts.optionalScopes,
+      },
+      type: MethodNames.RequestPermissions,
+    });
 
     return {
       [Caip25EndowmentPermissionName]: {

@@ -3,6 +3,12 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import {
+  CaipAccountId,
+  CaipChainId,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
@@ -32,20 +38,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
 import { getMultichainNetwork } from '../../../selectors/multichain';
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 
 export type ConnectPageRequest = {
   id: string;
   origin: string;
-  permissions?: Record<
-    string,
-    { caveats?: { type: string; value: string[] }[] }
-  >;
+  permissions?: Record<string, { accounts: string[] }>;
 };
 
 export type ConnectPageProps = {
@@ -56,6 +55,56 @@ export type ConnectPageProps = {
   activeTabOrigin: string;
 };
 
+// TODO: where do we store this util function?
+export function getCommonAccounts(
+  permissions?: Record<string, { accounts: string[] }>,
+): string[] {
+  if (!permissions) {
+    return [];
+  }
+  const scopedAccountArrays = Object.values(permissions).map(
+    (obj) => obj.accounts,
+  );
+
+  if (scopedAccountArrays.length === 0) {
+    return [];
+  }
+
+  const accountArrays = scopedAccountArrays.map((array) =>
+    array.map((accountId) => {
+      const { address } = parseCaipAccountId(accountId as CaipAccountId);
+      return address;
+    }),
+  );
+
+  // TODO: get every unique acc instead of only common accounts
+  return accountArrays.reduce((commonAccounts, currentAccounts) => {
+    return commonAccounts.filter((account) =>
+      currentAccounts.includes(account),
+    );
+  });
+}
+
+// TODO: where do we store this util function?
+export function getRequestedChains(
+  permissions?: Record<string, { accounts: string[] }>,
+): string[] {
+  if (!permissions) {
+    return [];
+  }
+  const result: number[] = [];
+
+  for (const scope of Object.keys(permissions)) {
+    const { reference } = parseCaipChainId(scope as CaipChainId);
+    if (reference !== undefined) {
+      // TODO: safely parse number
+      result.push(Number(reference));
+    }
+  }
+
+  return result.map((chainId) => decimalToPrefixedHex(chainId));
+}
+
 export const ConnectPage: React.FC<ConnectPageProps> = ({
   request,
   permissionsRequestId,
@@ -64,19 +113,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
 
-  const ethAccountsPermission =
-    request?.permissions?.[RestrictedMethods.eth_accounts];
-  const requestedAccounts =
-    ethAccountsPermission?.caveats?.find(
-      (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-    )?.value || [];
-
-  const permittedChainsPermission =
-    request?.permissions?.[EndowmentTypes.permittedChains];
-  const requestedChainIds =
-    permittedChainsPermission?.caveats?.find(
-      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-    )?.value || [];
+  const requestedAccounts = getCommonAccounts(request?.permissions);
+  const requestedChainIds = getRequestedChains(request?.permissions);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(

@@ -35,6 +35,7 @@ import {
   CONNECT_SNAP_RESULT_ROUTE,
 } from '../../helpers/constants/routes';
 import PermissionApproval from './permissions-connect.component';
+import { getCommonAccounts } from './connect-page/connect-page';
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -54,9 +55,8 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
-  const isRequestingAccounts = Boolean(
-    permissionsRequest?.permissions?.eth_accounts,
-  );
+  const isRequestingAccounts =
+    getCommonAccounts(permissionsRequest?.permissions).length > 0;
 
   const { metadata = {} } = permissionsRequest || {};
   const { origin } = metadata;
