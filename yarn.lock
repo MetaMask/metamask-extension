@@ -5483,7 +5483,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-token-tracker@npm:^10.0.1":
+"@metamask/eth-token-tracker@npm:10.0.1":
   version: 10.0.1
   resolution: "@metamask/eth-token-tracker@npm:10.0.1"
   dependencies:
@@ -5497,6 +5497,23 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.21.0
   checksum: 10/4111d17f1a9da98897d40fcc42e28302fb2b85868b30c5fef889e5ec0bdeee2d5e22cf5756d02036ef6525820a4f545803d9da8ebb0dcd1668a532b7182aaea3
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-token-tracker@patch:@metamask/eth-token-tracker@npm%3A10.0.1#~/.yarn/patches/@metamask-eth-token-tracker-npm-10.0.1-42cbb857ff.patch":
+  version: 10.0.1
+  resolution: "@metamask/eth-token-tracker@patch:@metamask/eth-token-tracker@npm%3A10.0.1#~/.yarn/patches/@metamask-eth-token-tracker-npm-10.0.1-42cbb857ff.patch::version=10.0.1&hash=e1536c"
+  dependencies:
+    "@metamask/eth-block-tracker": "npm:^11.0.3"
+    "@metamask/ethjs-contract": "npm:^0.4.1"
+    "@metamask/ethjs-query": "npm:^0.7.1"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    bn.js: "npm:^5.2.1"
+    deep-equal: "npm:^2.2.0"
+    human-standard-token-abi: "npm:^2.0.0"
+  peerDependencies:
+    "@babel/runtime": ^7.21.0
+  checksum: 10/d91c4349ea08e7ddd1fb6d6977d3cc47ff9e17e4cf1b9dc93d6cb54b5fbc4b6a3eebcb8ad25e9472e892a764effb4d9e667a30b33ce4207d687039e8f54a997f
   languageName: node
   linkType: hard
 
@@ -26745,7 +26762,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.2"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^8.1.0"
-    "@metamask/eth-token-tracker": "npm:^10.0.1"
+    "@metamask/eth-token-tracker": "patch:@metamask/eth-token-tracker@npm%3A10.0.1#~/.yarn/patches/@metamask-eth-token-tracker-npm-10.0.1-42cbb857ff.patch"
     "@metamask/eth-trezor-keyring": "npm:^6.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
