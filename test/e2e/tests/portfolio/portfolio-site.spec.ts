@@ -1,6 +1,6 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import { EMPTY_E2E_TEST_PAGE_TITLE } from '../../constants';
+import { PORTFOLIO_PAGE_TITLE, MOCK_META_METRICS_ID } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { emptyHtmlPage } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -26,20 +26,23 @@ describe('Portfolio site', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockPortfolioSite,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         await new HomePage(driver).openPortfolioPage();
-
-        // Click Portfolio site
-        await driver.switchToWindowWithTitle(EMPTY_E2E_TEST_PAGE_TITLE);
+        await driver.switchToWindowWithTitle(PORTFOLIO_PAGE_TITLE);
 
         // Verify site
         await driver.waitForUrl({
-          url: 'https://portfolio.metamask.io/?metamaskEntry=ext_portfolio_button&metametricsId=null&metricsEnabled=false&marketingEnabled=false',
+          url: `https://portfolio.metamask.io/?metamaskEntry=ext_portfolio_button&metametricsId=${MOCK_META_METRICS_ID}&metricsEnabled=true&marketingEnabled=false`,
         });
       },
     );
