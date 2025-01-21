@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload 'dist-beta' to S3
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
-        uses: metamask/github-tools/.github/actions/upload-s3@5d1f7a2558428c28ecd167e43b4c3aa926a3b162
+        uses: metamask/github-tools/.github/actions/upload-s3@9e44a92234ed7abfd6e7e5bba1349f4f50f62c1e
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload 'builds-beta' to S3
         if: ${{ steps.needs-beta-build.outputs.NEEDS_BETA_BUILD == 'true' }}
-        uses: metamask/github-tools/.github/actions/upload-s3@5d1f7a2558428c28ecd167e43b4c3aa926a3b162
+        uses: metamask/github-tools/.github/actions/upload-s3@9e44a92234ed7abfd6e7e5bba1349f4f50f62c1e
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
