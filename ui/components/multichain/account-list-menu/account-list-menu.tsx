@@ -73,9 +73,13 @@ import {
   getDefaultHomeActiveTabName,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
+  getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import {
+  generateNewHdKeyring,
+  setSelectedAccount,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -133,6 +137,10 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+import { ImportSRP } from '../multi-srp/import-srp';
+import { SRPList } from '../multi-srp/srp-list';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -152,6 +160,11 @@ const ACTION_MODES = {
   ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  CREATE_SRP: 'create-srp',
+  IMPORT_SRP: 'import-srp',
+  SELECT_SRP: 'select-srp',
+  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -177,7 +190,15 @@ export const getActionTitle = (
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
-      return t('importAccount');
+      return t('importPrivateKey');
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    case ACTION_MODES.CREATE_SRP:
+      return t('createSecretRecoveryPhrase');
+    case ACTION_MODES.IMPORT_SRP:
+      return t('importSecretRecoveryPhrase');
+    case ACTION_MODES.SELECT_SRP:
+      return t('addAccount');
+    ///: END:ONLY_INCLUDE_IF
     default:
       return t('selectAnAccount');
   }
@@ -296,6 +317,10 @@ export const AccountListMenu = ({
   );
 
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  const primaryKeyringId = useSelector(getMetaMaskKeyrings)[0]?.metadata.id;
+  const [selectedKeyringId, setSelectedKeyringId] = useState(primaryKeyringId);
+  ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
@@ -324,6 +349,8 @@ export const AccountListMenu = ({
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
+    } else if (actionMode === ACTION_MODES.SELECT_SRP) {
+      onBack = () => setActionMode(ACTION_MODES.ADD);
     } else {
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
@@ -381,6 +408,10 @@ export const AccountListMenu = ({
                   setActionMode(ACTION_MODES.LIST);
                 }
               }}
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              selectedKeyringId={selectedKeyringId}
+              onSelectSRP={() => setActionMode(ACTION_MODES.SELECT_SRP)}
+              ///: END:ONLY_INCLUDE_IF(multi-srp)
             />
           </Box>
         ) : null}
@@ -402,6 +433,41 @@ export const AccountListMenu = ({
             />
           </Box>
         ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          actionMode === ACTION_MODES.IMPORT_SRP && (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingTop={0}
+            >
+              <ImportSRP
+                onActionComplete={(confirmed: boolean) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+          actionMode === ACTION_MODES.SELECT_SRP && (
+            <SRPList
+              onActionComplete={(keyringId: string) => {
+                setSelectedKeyringId(keyringId);
+                setActionMode(ACTION_MODES.ADD);
+              }}
+            />
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
+
         {/* Add / Import / Hardware Menu */}
         {actionMode === ACTION_MODES.MENU ? (
           <Box padding={4}>
@@ -512,6 +578,37 @@ export const AccountListMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Import}
+                  onClick={async () => {
+                    await dispatch(generateNewHdKeyring());
+                    onClose();
+                  }}
+                  data-testid="multichain-account-menu-popover-create-new-srp"
+                >
+                  {t('createNewSRP')}
+                </ButtonLink>
+              </Box>
+            }
+            {
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Import}
+                  onClick={() => {
+                    setActionMode(ACTION_MODES.IMPORT_SRP);
+                  }}
+                  data-testid="multichain-account-menu-popover-import-srp"
+                >
+                  {t('importSecretRecoveryPhrase')}
+                </ButtonLink>
+              </Box>
+              ///: END:ONLY_INCLUDE_IF
+            }
             <Box marginTop={4}>
               <ButtonLink
                 size={ButtonLinkSize.Sm}
@@ -529,7 +626,7 @@ export const AccountListMenu = ({
                   setActionMode(ACTION_MODES.IMPORT);
                 }}
               >
-                {t('importAccount')}
+                {t('importPrivateKey')}
               </ButtonLink>
             </Box>
             <Box marginTop={4}>

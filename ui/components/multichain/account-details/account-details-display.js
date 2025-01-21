@@ -9,8 +9,12 @@ import { setAccountLabel } from '../../../store/actions';
 import {
   getHardwareWalletType,
   getInternalAccountByAddress,
+  getMetaMaskKeyrings,
 } from '../../../selectors';
-import { isAbleToExportAccount } from '../../../helpers/utils/util';
+import {
+  isAbleToExportAccount,
+  isAbleToRevealSrp,
+} from '../../../helpers/utils/util';
 import {
   Box,
   ButtonSecondary,
@@ -40,11 +44,16 @@ export const AccountDetailsDisplay = ({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
+  const keyrings = useSelector(getMetaMaskKeyrings);
 
+  const account = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
+  );
   const {
     metadata: { keyring },
-  } = useSelector((state) => getInternalAccountByAddress(state, address));
+  } = account;
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
+  const exportSRPFeatureaEnabled = isAbleToRevealSrp(account, keyrings);
 
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
@@ -74,6 +83,29 @@ export const AccountDetailsDisplay = ({
       <QrCodeView Qr={{ data: address }} />
       {exportPrivateKeyFeatureEnabled ? (
         <ButtonSecondary
+          data-testid="account-details-display-export-private-key"
+          block
+          size={ButtonSecondarySize.Lg}
+          variant={TextVariant.bodyMd}
+          marginBottom={1}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Accounts,
+              event: MetaMetricsEventName.KeyExportSelected,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Pkey,
+                location: 'Account Details Modal',
+              },
+            });
+            onExportClick('PrivateKey');
+          }}
+        >
+          {t('showPrivateKey')}
+        </ButtonSecondary>
+      ) : null}
+      {exportSRPFeatureaEnabled ? (
+        <ButtonSecondary
+          data-testid="account-details-display-export-srp"
           block
           size={ButtonSecondarySize.Lg}
           variant={TextVariant.bodyMd}
@@ -86,10 +118,10 @@ export const AccountDetailsDisplay = ({
                 location: 'Account Details Modal',
               },
             });
-            onExportClick();
+            onExportClick('SRP');
           }}
         >
-          {t('showPrivateKey')}
+          {t('showSRP')}
         </ButtonSecondary>
       ) : null}
     </Box>

@@ -119,6 +119,9 @@ type AppState = {
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   errorInSettings: string | null;
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  showNewSRPAddedToast: boolean;
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export type AppSliceState = {
@@ -214,6 +217,9 @@ const initialState: AppState = {
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   errorInSettings: null,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  showNewSRPAddedToast: false,
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export default function reduceApp(
@@ -733,6 +739,13 @@ export default function reduceApp(
           snapName: '',
           result: 'none',
         },
+      };
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+    case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
+      return {
+        ...appState,
+        showNewSRPAddedToast: action.payload,
       };
     ///: END:ONLY_INCLUDE_IF
 

@@ -269,6 +269,20 @@
         "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
       }
     ],
+    "keyringsMetadata": [
+      {
+        "id": "ULID01234567890ABCDEFGHIJKLMN",
+        "name": ""
+      },
+      {
+        "id": "ULID01234567890ABCDEFGHIJKLMN",
+        "name": ""
+      },
+      {
+        "id": "ULID01234567890ABCDEFGHIJKLMN",
+        "name": ""
+      }
+    ],
     "identities": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",

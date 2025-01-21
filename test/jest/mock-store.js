@@ -365,6 +365,16 @@ export const createSwapsMockStore = () => {
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
+      keyringsMetadata: [
+        {
+          id: 'ULID01234567890ABCDEFGHIJKLMN',
+          name: '',
+        },
+        {
+          id: 'ULID01234567890ABCDEFGHIJKLMN',
+          name: '',
+        },
+      ],
       ...mockNetworkState({
         chainId: CHAIN_IDS.MAINNET,
         ticker: CURRENCY_SYMBOLS.ETH,

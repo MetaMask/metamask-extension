@@ -2227,6 +2227,8 @@ describe('MetaMaskController', () => {
 
       describe('forgetDevice', () => {
         it('should throw if it receives an unknown device name', async () => {
+          // mock keyringController.update
+          jest.spyOn(metamaskController.keyringController, 'update');
           const result = metamaskController.forgetDevice(
             'Some random device name',
           );
