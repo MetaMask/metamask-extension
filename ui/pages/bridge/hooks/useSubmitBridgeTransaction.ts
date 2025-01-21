@@ -137,7 +137,15 @@ export default function useSubmitBridgeTransaction() {
       startPollingForBridgeTxStatus({
         bridgeTxMeta,
         statusRequest,
-        quoteResponse,
+        quoteResponse: {
+          ...quoteResponse,
+          sentAmount: {
+            amount: quoteResponse.sentAmount.amount.toString(),
+            valueInCurrency: quoteResponse.sentAmount.valueInCurrency
+              ? quoteResponse.sentAmount.valueInCurrency.toString()
+              : null,
+          },
+        },
         slippagePercentage: slippage ?? 0,
         startTime: bridgeTxMeta.time,
       }),

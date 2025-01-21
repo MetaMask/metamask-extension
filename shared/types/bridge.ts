@@ -175,7 +175,6 @@ export enum RequestStatus {
   ERROR,
 }
 export enum BridgeUserAction {
-  SELECT_SRC_NETWORK = 'selectSrcNetwork',
   SELECT_DEST_NETWORK = 'selectDestNetwork',
   UPDATE_QUOTE_PARAMS = 'updateBridgeQuoteRequestParams',
 }
@@ -186,9 +185,6 @@ export enum BridgeBackgroundAction {
 }
 export type BridgeControllerState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
-  srcTokens: Record<string, SwapsTokenObject>;
-  srcTopAssets: { address: string }[];
-  srcTokensLoadingStatus?: RequestStatus;
   destTokensLoadingStatus?: RequestStatus;
   destTokens: Record<string, SwapsTokenObject>;
   destTopAssets: { address: string }[];

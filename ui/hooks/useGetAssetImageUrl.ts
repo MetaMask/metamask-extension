@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { getAssetImageURL } from '../helpers/utils/util';
 
-const useGetAssetImageUrl = (image: string | null, ipfsGateway: string) => {
+const useGetAssetImageUrl = (
+  image: string | undefined,
+  ipfsGateway: string,
+) => {
   const [imageUrl, setImageUrl] = useState<string>('');
 
   useEffect(() => {

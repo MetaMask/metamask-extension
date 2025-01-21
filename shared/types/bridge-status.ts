@@ -146,9 +146,8 @@ export enum BridgeStatusAction {
   GET_STATE = 'getState',
 }
 
-// The BigNumber values are serialized to strings
 export type QuoteMetadataSerialized = {
-  sentAmount: { amount: string; fiat: string | null };
+  sentAmount: { amount: string; valueInCurrency: string | null };
 };
 
 export type StartPollingForBridgeTxStatusArgs = {
@@ -161,6 +160,11 @@ export type StartPollingForBridgeTxStatusArgs = {
   targetContractAddress?: BridgeHistoryItem['targetContractAddress'];
 };
 
+/**
+ * Chrome: The BigNumber values are automatically serialized to strings when sent to the background
+ * Firefox: The BigNumber values are not serialized to strings when sent to the background,
+ * so we force the ui to do it manually, by using StartPollingForBridgeTxStatusArgsSerialized type on the startPollingForBridgeTxStatus action
+ */
 export type StartPollingForBridgeTxStatusArgsSerialized = Omit<
   StartPollingForBridgeTxStatusArgs,
   'quoteResponse'

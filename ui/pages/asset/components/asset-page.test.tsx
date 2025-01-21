@@ -55,6 +55,9 @@ describe('AssetPage', () => {
     localeMessages: {
       currentLocale: 'en',
     },
+    appState: {
+      confirmationExchangeRates: {},
+    },
     metamask: {
       tokenList: {},
       tokenBalances: {

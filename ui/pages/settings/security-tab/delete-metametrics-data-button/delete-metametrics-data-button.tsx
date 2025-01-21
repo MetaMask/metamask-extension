@@ -22,6 +22,7 @@ import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
   getMetaMetricsId,
+  getParticipateInMetaMetrics,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
   getLatestMetricsEventTimestamp,
@@ -71,8 +72,8 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
       const latestMetricsEventTimestamp = useSelector(
         getLatestMetricsEventTimestamp,
       );
-
-      let dataDeletionButtonDisabled = Boolean(!metaMetricsId);
+      const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+      let dataDeletionButtonDisabled = !isMetaMetricsEnabled;
       if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
         dataDeletionButtonDisabled =
           [
@@ -97,7 +98,6 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
           <Box
             ref={ref}
             className="settings-page__content-row"
-            data-testid="delete-metametrics-data-button"
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             gap={4}
@@ -127,6 +127,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
                 </Box>
               )}
               <ButtonPrimary
+                data-testid="delete-metametrics-data-button"
                 className="settings-page__button"
                 onClick={() => {
                   dispatch(openDeleteMetaMetricsDataModal());

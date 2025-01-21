@@ -83,7 +83,11 @@ const browserAPIRequestDomains =
  */
 const privateHostMatchers = [
   // { pattern: RegExp, host: string }
-  { pattern: /^.*\.btc.*\.quiknode.pro$/iu, host: '*.btc*.quiknode.pro' },
+  { pattern: /^.*\.btc.*\.quiknode\.pro$/iu, host: '*.btc*.quiknode.pro' },
+  {
+    pattern: /^.*-solana.*-.*\.mainnet\.rpcpool\.com/iu,
+    host: '*solana*.mainnet.rpcpool.com',
+  },
 ];
 
 /**
@@ -753,7 +757,29 @@ async function setupMocking(
       return {
         ok: true,
         statusCode: 200,
-        json: [{ feature1: true }, { feature2: false }],
+        json: [
+          { feature1: true },
+          { feature2: false },
+          {
+            feature3: [
+              {
+                value: 'valueA',
+                name: 'groupA',
+                scope: { type: 'threshold', value: 0.3 },
+              },
+              {
+                value: 'valueB',
+                name: 'groupB',
+                scope: { type: 'threshold', value: 0.5 },
+              },
+              {
+                scope: { type: 'threshold', value: 1 },
+                value: 'valueC',
+                name: 'groupC',
+              },
+            ],
+          },
+        ],
       };
     });
 

@@ -1,11 +1,13 @@
 import { cloneDeep } from 'lodash';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain';
 import {
   diffMap,
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,
 } from './selectors';
-import { PermissionNames } from './specifications';
 
 describe('PermissionController selectors', () => {
   describe('diffMap', () => {
@@ -53,25 +55,72 @@ describe('PermissionController selectors', () => {
           'foo.bar': {
             origin: 'foo.bar',
             permissions: {
-              eth_accounts: {
-                caveats: [{ type: 'restrictReturnedAccounts', value: ['0x1'] }],
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x1'],
+                        },
+                      },
+                      optionalScopes: {
+                        'bip122:000000000019d6689c085ae165831e93': {
+                          accounts: [
+                            'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
               },
             },
           },
           'bar.baz': {
             origin: 'bar.baz',
             permissions: {
-              eth_accounts: {
-                caveats: [{ type: 'restrictReturnedAccounts', value: ['0x2'] }],
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x2'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
               },
             },
           },
           'baz.bizz': {
             origin: 'baz.fizz',
             permissions: {
-              eth_accounts: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
-                  { type: 'restrictReturnedAccounts', value: ['0x1', '0x2'] },
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x1'],
+                        },
+                      },
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x2'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
                 ],
               },
             },
@@ -125,11 +174,23 @@ describe('PermissionController selectors', () => {
           'foo.bar': {
             origin: 'foo.bar',
             permissions: {
-              [PermissionNames.permittedChains]: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
                   {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1'],
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: [],
+                        },
+                      },
+                      optionalScopes: {
+                        'bip122:000000000019d6689c085ae165831e93': {
+                          accounts: [],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
                   },
                 ],
               },
@@ -138,11 +199,19 @@ describe('PermissionController selectors', () => {
           'bar.baz': {
             origin: 'bar.baz',
             permissions: {
-              [PermissionNames.permittedChains]: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
                   {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x2'],
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:2': {
+                          accounts: [],
+                        },
+                      },
+                      optionalScopes: {},
+                      isMultichainOrigin: true,
+                    },
                   },
                 ],
               },
@@ -151,17 +220,29 @@ describe('PermissionController selectors', () => {
           'baz.bizz': {
             origin: 'baz.fizz',
             permissions: {
-              [PermissionNames.permittedChains]: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
                   {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1', '0x2'],
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: [],
+                        },
+                      },
+                      optionalScopes: {
+                        'eip155:2': {
+                          accounts: [],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
                   },
                 ],
               },
             },
           },
-          'no.accounts': {
+          'no.chains': {
             // we shouldn't see this in the result
             permissions: {
               foobar: {},

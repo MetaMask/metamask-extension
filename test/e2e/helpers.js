@@ -748,7 +748,7 @@ async function clickSignOnRedesignedSignatureConfirmation({
   if (snapSigInsights) {
     // there is no condition we can wait for to know the snap is ready,
     // so we have to add a small delay as the last alternative to avoid flakiness.
-    await driver.delay(regularDelayMs);
+    await driver.delay(largeDelayMs);
   }
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -929,46 +929,6 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
 }
 
 /**
- * Rather than using the FixtureBuilder#withPreferencesController to set the setting
- * we need to manually set the setting because the migration #132 overrides this.
- * We should be able to remove this when we delete the redesignedTransactionsEnabled setting.
- *
- * @param driver
- */
-async function tempToggleSettingRedesignedTransactionConfirmations(driver) {
-  // Ensure we are on the extension window
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  // Open settings menu button
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
-
-  // Click settings from dropdown menu
-  await driver.clickElement('[data-testid="global-menu-settings"]');
-
-  // Click Experimental tab
-  const experimentalTabRawLocator = {
-    text: 'Experimental',
-    tag: 'div',
-  };
-  await driver.clickElement(experimentalTabRawLocator);
-
-  // Click redesigned transactions toggle
-  await driver.clickElement(
-    '[data-testid="toggle-redesigned-transactions-container"]',
-  );
-
-  // Close settings page
-  await driver.clickElement(
-    '.settings-page__header__title-container__close-button',
-  );
-}
-
-/**
  * Opens the account options menu safely, handling potential race conditions
  * with the MMI build.
  *
@@ -1037,7 +997,6 @@ module.exports = {
   editGasFeeForm,
   clickNestedButton,
   tempToggleSettingRedesignedConfirmations,
-  tempToggleSettingRedesignedTransactionConfirmations,
   openMenuSafe,
   sentryRegEx,
   createWebSocketConnection,

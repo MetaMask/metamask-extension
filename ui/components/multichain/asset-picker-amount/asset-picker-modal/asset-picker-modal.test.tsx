@@ -65,6 +65,12 @@ jest.mock('../../../../hooks/useMultichainBalances', () => ({
   useMultichainBalances: () => mockUseMultichainBalances(),
 }));
 
+jest.mock('../../../../hooks/useNfts', () => ({
+  useNfts: () => ({
+    currentlyOwnedNfts: [],
+  }),
+}));
+
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;
@@ -196,6 +202,7 @@ describe('AssetPickerModal', () => {
           type: AssetType.NFT,
           tokenId: 5,
           image: 'nft image',
+          address: '',
         }}
         sendingAsset={undefined}
       />,

@@ -21,30 +21,6 @@ describe('confirmation.utils', () => {
 
     const unsupportedTransactionType = TransactionType.swap;
 
-    describe('when user setting is enabled', () => {
-      it('should return true for supported transaction types', () => {
-        supportedTransactionTypes.forEach((transactionType) => {
-          expect(
-            shouldUseRedesignForTransactions({
-              transactionMetadataType: transactionType,
-              isRedesignedTransactionsUserSettingEnabled: true, // user setting enabled
-              isRedesignedConfirmationsDeveloperEnabled: false, // developer mode disabled
-            }),
-          ).toBe(true);
-        });
-      });
-
-      it('should return false for unsupported transaction types', () => {
-        expect(
-          shouldUseRedesignForTransactions({
-            transactionMetadataType: unsupportedTransactionType,
-            isRedesignedTransactionsUserSettingEnabled: true, // user setting enabled
-            isRedesignedConfirmationsDeveloperEnabled: false, // developer mode disabled
-          }),
-        ).toBe(false);
-      });
-    });
-
     describe('when developer mode is enabled', () => {
       const originalEnv = process.env;
 
@@ -63,7 +39,6 @@ describe('confirmation.utils', () => {
           expect(
             shouldUseRedesignForTransactions({
               transactionMetadataType: transactionType,
-              isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
               isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
             }),
           ).toBe(true);
@@ -75,7 +50,6 @@ describe('confirmation.utils', () => {
           expect(
             shouldUseRedesignForTransactions({
               transactionMetadataType: transactionType,
-              isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
               isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
             }),
           ).toBe(true);
@@ -88,37 +62,9 @@ describe('confirmation.utils', () => {
         expect(
           shouldUseRedesignForTransactions({
             transactionMetadataType: unsupportedTransactionType,
-            isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
             isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
           }),
         ).toBe(false);
-      });
-    });
-
-    describe('when both user setting and developer mode are disabled', () => {
-      const originalEnv = process.env;
-
-      beforeEach(() => {
-        process.env = { ...originalEnv };
-        process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
-      });
-
-      afterEach(() => {
-        process.env = originalEnv;
-      });
-
-      it('should return false for all transaction types', () => {
-        [...supportedTransactionTypes, unsupportedTransactionType].forEach(
-          (transactionType) => {
-            expect(
-              shouldUseRedesignForTransactions({
-                transactionMetadataType: transactionType,
-                isRedesignedTransactionsUserSettingEnabled: false, // user setting disabled
-                isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
-              }),
-            ).toBe(false);
-          },
-        );
       });
     });
   });

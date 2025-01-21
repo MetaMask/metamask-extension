@@ -640,19 +640,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('useRequestQueue', () => {
-    it('defaults useRequestQueue to true', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useRequestQueue).toStrictEqual(true);
-    });
-
-    it('setUseRequestQueue to false', () => {
-      const { controller } = setupController({});
-      controller.setUseRequestQueue(false);
-      expect(controller.state.useRequestQueue).toStrictEqual(false);
-    });
-  });
-
   describe('addSnapAccountEnabled', () => {
     it('defaults addSnapAccountEnabled to false', () => {
       const { controller } = setupController({});
@@ -739,7 +726,6 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
-        redesignedTransactionsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
         isRedesignedConfirmationsDeveloperEnabled: false,
@@ -770,7 +756,6 @@ describe('preferences controller', () => {
         petnamesEnabled: true,
         privacyMode: false,
         redesignedConfirmationsEnabled: true,
-        redesignedTransactionsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
         isRedesignedConfirmationsDeveloperEnabled: false,

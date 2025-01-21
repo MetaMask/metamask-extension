@@ -63,7 +63,7 @@ export function getLatestSubmittedTxWithNonce(
 
 export async function isSmartContractAddress(address) {
   const { isContractAddress } = await readAddressAsContract(
-    global.eth,
+    global.ethereumProvider,
     address,
   );
   return isContractAddress;

@@ -40,6 +40,7 @@ import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors'
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../ducks/locale/locale';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -122,7 +123,7 @@ export function useTransactionDisplayData(transactionGroup) {
     bridgeHistoryItem,
     srcTxMeta: transactionGroup.initialTransaction,
   });
-  const destChainName = destNetwork?.name;
+  const destChainName = NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork?.chainId];
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group

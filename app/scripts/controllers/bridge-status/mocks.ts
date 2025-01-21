@@ -236,7 +236,7 @@ export const getMockStartPollingForBridgeTxStatusArgs = ({
     },
     approval: null,
     estimatedProcessingTimeInSeconds: 15,
-    sentAmount: { amount: '1.234', fiat: null },
+    sentAmount: { amount: '1.234', valueInCurrency: null },
   },
   startTime: 1729964825189,
   slippagePercentage: 0,

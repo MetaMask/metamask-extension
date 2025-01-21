@@ -7,7 +7,6 @@ import {
   ApprovalsMetaMaskState,
   getIsRedesignedConfirmationsDeveloperEnabled,
   getRedesignedConfirmationsEnabled,
-  getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
   oldestPendingConfirmationSelector,
   selectPendingApproval,
@@ -35,10 +34,6 @@ const useCurrentConfirmation = () => {
     getRedesignedConfirmationsEnabled,
   );
 
-  const isRedesignedTransactionsUserSettingEnabled = useSelector(
-    getRedesignedTransactionsEnabled,
-  );
-
   const isRedesignedConfirmationsDeveloperEnabled = useSelector(
     getIsRedesignedConfirmationsDeveloperEnabled,
   );
@@ -64,7 +59,6 @@ const useCurrentConfirmation = () => {
 
   const useRedesignedForTransaction = shouldUseRedesignForTransactions({
     transactionMetadataType: transactionMetadata?.type,
-    isRedesignedTransactionsUserSettingEnabled,
     isRedesignedConfirmationsDeveloperEnabled,
   });
 

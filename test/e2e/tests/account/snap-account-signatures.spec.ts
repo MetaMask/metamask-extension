@@ -30,11 +30,7 @@ describe('Snap Account Signatures @no-mmi', function (this: Suite) {
       await withFixtures(
         {
           dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp({
-              restrictReturnedAccounts: false,
-            })
-            .build(),
+          fixtures: new FixtureBuilder().build(),
           title,
         },
         async ({ driver }: { driver: Driver }) => {
@@ -62,8 +58,12 @@ describe('Snap Account Signatures @no-mmi', function (this: Suite) {
           await experimentalSettings.check_pageIsLoaded();
           await experimentalSettings.toggleRedesignedSignature();
 
+          // Connect the SSK account
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.connectAccount({ publicAddress: newPublicKey });
+
           // Run all 5 signature types
-          await new TestDapp(driver).openTestDappPage();
           await personalSignWithSnapAccount(
             driver,
             newPublicKey,

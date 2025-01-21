@@ -57,6 +57,7 @@ import {
   CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -155,6 +156,7 @@ export default class Home extends PureComponent {
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
+    haveBridgeQuotes: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
     swapsFetchParams: PropTypes.object,
@@ -216,6 +218,7 @@ export default class Home extends PureComponent {
     const {
       closeNotificationPopup,
       haveSwapsQuotes,
+      haveBridgeQuotes,
       isNotification,
       pendingApprovals,
       showAwaitingSwapScreen,
@@ -231,7 +234,10 @@ export default class Home extends PureComponent {
       pendingApprovals.length ||
       (!isNotification &&
         !stayOnHomePage &&
-        (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
+        (showAwaitingSwapScreen ||
+          haveSwapsQuotes ||
+          swapsFetchParams ||
+          haveBridgeQuotes))
     ) {
       this.state.redirecting = true;
     }
@@ -285,6 +291,7 @@ export default class Home extends PureComponent {
       history,
       isNotification,
       haveSwapsQuotes,
+      haveBridgeQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
@@ -302,6 +309,8 @@ export default class Home extends PureComponent {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
       history.push(PREPARE_SWAP_ROUTE);
+    } else if (canRedirect && haveBridgeQuotes) {
+      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length) {
       navigateToConfirmation(
         pendingApprovals[0].id,

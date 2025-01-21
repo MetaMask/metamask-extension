@@ -125,7 +125,6 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": true,
       "isMultiAccountBalancesEnabled": "boolean",
       "showIncomingTransactions": "object"
     },
@@ -153,9 +152,7 @@
           }
         },
         "destTokens": {},
-        "destTopAssets": {},
-        "srcTokens": {},
-        "srcTopAssets": {}
+        "destTopAssets": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

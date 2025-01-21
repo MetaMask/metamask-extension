@@ -97,10 +97,6 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       this.setBridgeFeatureFlags.bind(this),
     );
     this.messagingSystem.registerActionHandler(
-      `${BRIDGE_CONTROLLER_NAME}:selectSrcNetwork`,
-      this.selectSrcNetwork.bind(this),
-    );
-    this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:selectDestNetwork`,
       this.selectDestNetwork.bind(this),
     );
@@ -213,22 +209,6 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     this.setIntervalLength(
       bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].refreshRate,
     );
-  };
-
-  selectSrcNetwork = async (chainId: Hex) => {
-    this.update((state) => {
-      state.bridgeState.srcTokensLoadingStatus = RequestStatus.LOADING;
-      return state;
-    });
-    try {
-      await this.#setTopAssets(chainId, 'srcTopAssets');
-      await this.#setTokens(chainId, 'srcTokens');
-    } finally {
-      this.update((state) => {
-        state.bridgeState.srcTokensLoadingStatus = RequestStatus.FETCHED;
-        return state;
-      });
-    }
   };
 
   selectDestNetwork = async (chainId: Hex) => {

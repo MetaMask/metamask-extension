@@ -15,7 +15,11 @@ import { TabName } from '../../../components/multichain/asset-picker-amount/asse
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getLocale } from '../../../selectors';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import {
+  formatCurrencyAmount,
+  formatTokenAmount,
+  isNativeAddress,
+} from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
@@ -85,15 +89,15 @@ export const BridgeInputGroup = ({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const isAmountReadOnly =
+    amountFieldProps?.readOnly || amountFieldProps?.disabled;
+
   useEffect(() => {
-    if (inputRef.current) {
+    if (!isAmountReadOnly && inputRef.current) {
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
       inputRef.current.focus();
     }
-  }, [amountFieldProps]);
-
-  const isAmountReadOnly =
-    amountFieldProps?.readOnly || amountFieldProps?.disabled;
+  }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -157,7 +161,6 @@ export const BridgeInputGroup = ({
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
-          autoFocus={false}
         >
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (
@@ -234,7 +237,7 @@ export const BridgeInputGroup = ({
             : undefined}
           {onMaxButtonClick &&
             token &&
-            token.type !== AssetType.native &&
+            !isNativeAddress(token.address) &&
             balanceAmount && (
               <ButtonLink
                 variant={TextVariant.bodyMd}

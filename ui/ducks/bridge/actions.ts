@@ -68,17 +68,6 @@ export const resetBridgeState = () => {
 };
 
 // User actions
-export const setFromChain = (chainId: Hex) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      callBridgeControllerMethod<Hex>(
-        BridgeUserAction.SELECT_SRC_NETWORK,
-        chainId,
-      ),
-    );
-  };
-};
-
 export const setToChain = (chainId: Hex) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(

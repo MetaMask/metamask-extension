@@ -1,5 +1,6 @@
 import pify from 'pify';
-import type EthQuery from '@metamask/eth-query';
+import type { Provider } from '@metamask/network-controller';
+import { addHexPrefix, padToEven } from 'ethereumjs-util';
 
 export type Contract = {
   contractCode: string | null;
@@ -7,14 +8,16 @@ export type Contract = {
 };
 
 export const readAddressAsContract = async (
-  ethQuery: EthQuery,
+  provider: Provider,
   address: string,
 ): Promise<Contract> => {
   let contractCode: string | null = null;
   try {
-    if (ethQuery && 'getCode' in ethQuery) {
-      contractCode = await pify(ethQuery.getCode.bind(ethQuery))(address);
-    }
+    const { result } = await pify(provider.sendAsync.bind(provider))({
+      method: 'eth_getCode',
+      params: [address, 'latest'],
+    });
+    contractCode = addHexPrefix(padToEven(result.slice(2)));
   } catch (err) {
     // TODO(@dbrans): Dangerous to swallow errors here.
     contractCode = null;
