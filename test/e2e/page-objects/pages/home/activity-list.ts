@@ -4,6 +4,9 @@ import { Driver } from '../../../webdriver/driver';
 class ActivityListPage {
   private readonly driver: Driver;
 
+  private readonly activityListAction =
+    '[data-testid="activity-list-item-action"]';
+
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions = {
@@ -19,11 +22,38 @@ class ActivityListPage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
-  private readonly activityListAction =
-    '[data-testid="activity-list-item-action"]';
+  private readonly viewTransactionOnExplorerButton = {
+    text: 'View on block explorer',
+    tag: 'a',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * This function clicks on the activity at the specified index.
+   * Note: this function need to be called after check_completedTxNumberDisplayedInActivity to reduce flakiness.
+   *
+   * @param expectedNumber - The 1-based index of the activity to be clicked.
+   */
+  async clickOnActivity(expectedNumber: number): Promise<void> {
+    console.log(`Clicking on activity ${expectedNumber}`);
+    const activities = await this.driver.findElements(this.activityListAction);
+    await activities[expectedNumber - 1].click();
+  }
+
+  /**
+   * This function clicks on the "View on block explorer" button for the specified transaction.
+   *
+   * @param expectedNumber - The 1-based index of the transaction to be clicked.
+   */
+  async viewTransactionOnExplorer(expectedNumber: number): Promise<void> {
+    console.log(
+      `Viewing transaction on explorer for transaction ${expectedNumber}`,
+    );
+    await this.clickOnActivity(expectedNumber);
+    await this.driver.clickElement(this.viewTransactionOnExplorerButton);
   }
 
   /**

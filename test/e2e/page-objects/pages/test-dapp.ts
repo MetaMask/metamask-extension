@@ -13,6 +13,8 @@ class TestDapp {
     tag: 'button',
   };
 
+  private readonly addNetworkButton = '#addEthereumChain';
+
   private readonly confirmDepositButton =
     '[data-testid="confirm-footer-button"]';
 
@@ -233,8 +235,16 @@ class TestDapp {
     });
   }
 
-  public async clickAddTokenToWallet() {
+  async clickAddTokenToWallet() {
     await this.driver.clickElement(this.addTokensToWalletButton);
+  }
+
+  async clickAddNetworkButton() {
+    await this.driver.clickElement(this.addNetworkButton);
+  }
+
+  async clickConnectAccountButton() {
+    await this.driver.clickElement(this.connectAccountButton);
   }
 
   async clickSimpleSendButton() {
@@ -320,7 +330,7 @@ class TestDapp {
     publicAddress?: string;
   }) {
     console.log('Connect account to test dapp');
-    await this.driver.clickElement(this.connectAccountButton);
+    await this.clickConnectAccountButton();
     if (connectAccountButtonEnabled) {
       await this.confirmConnectAccountModal();
     } else {
