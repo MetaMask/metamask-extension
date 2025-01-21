@@ -396,7 +396,7 @@
     "message": "Alert"
   },
   "alertActionBuy": {
-    "message": "Buy ETH"
+    "message": "Buy $1"
   },
   "alertActionUpdateGas": {
     "message": "Update gas limit"
@@ -429,7 +429,7 @@
     "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
   },
   "alertMessageInsufficientBalance2": {
-    "message": "You do not have enough ETH in your account to pay for network fees."
+    "message": "You do not have enough $1 in your account to pay for network fees."
   },
   "alertMessageNetworkBusy": {
     "message": "Gas prices are high and estimates are less accurate."
