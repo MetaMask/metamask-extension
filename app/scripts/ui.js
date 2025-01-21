@@ -1,7 +1,11 @@
 // Disabled to allow setting up initial state hooks first
 
+// This import sets up safe intrinsics required for LavaDome to function securely.
+// It must be run before any less trusted code so that no such code can undermine it.
+import '@lavamoat/lavadome-react';
+
 // This import sets up global functions required for Sentry to function.
-// It must be run first in case an error is thrown later during initialization.
+// It must be run as soon as possible in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 import '../../development/wdyr';
 
