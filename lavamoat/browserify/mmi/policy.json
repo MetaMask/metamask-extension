@@ -1290,9 +1290,10 @@
       },
       "packages": {
         "@babel/runtime": true,
+        "@ethersproject/bignumber": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
-        "eth-method-registry>@metamask/ethjs-contract": true,
-        "eth-method-registry>@metamask/ethjs-query": true,
         "@metamask/safe-event-emitter": true,
         "bn.js": true,
         "@metamask/eth-token-tracker>deep-equal": true,
