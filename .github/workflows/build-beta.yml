@@ -11,6 +11,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # By default, the checkout action checks out the last merge commit for pull requests.
+          # Source: https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request
+          # However, we need the head commit (the latest commit pushed to the source branch)
+          # because in the workflow, we would like to parse the latest commit message.
+          # Specifying `ref` ensures that the head commit is checked out directly.
+          # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+          # For a `push` event, the head commit hash is `github.sha`.
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Needs beta build
