@@ -184,7 +184,7 @@ export const ImportSRP = ({
                 }}
                 value={secretRecoveryPhrase[index]}
                 autoComplete={false}
-                onPaste={(event) => {
+                onPaste={(event: React.ClipboardEvent) => {
                   const newSrp = event.clipboardData.getData('text');
 
                   if (newSrp.trim().match(/\s/u)) {

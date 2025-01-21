@@ -115,8 +115,8 @@ export const SRPList = ({
                   variant={TextVariant.bodySm}
                   color={TextColor.primaryDefault}
                   className="srp-list__show-accounts"
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  onClick={(event: React.MouseEvent) => {
+                    event.stopPropagation();
                     setShowAccounts({
                       ...showAccounts,
                       [index]: !showAccounts[index],

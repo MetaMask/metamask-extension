@@ -58,7 +58,7 @@ CreateEthAccount.propTypes = {
    * Callback to select the SRP
    */
   ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  onSelectSRP: PropTypes.func.isRequired,
-  selectedKeyringId: PropTypes.string.isRequired,
+  onSelectSRP: PropTypes.func,
+  selectedKeyringId: PropTypes.string,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 };
