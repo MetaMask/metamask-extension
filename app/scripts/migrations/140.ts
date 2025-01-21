@@ -12,7 +12,7 @@ export type VersionedData = {
   };
 };
 
-export const version = 138;
+export const version = 140;
 const ulid = monotonicFactory();
 
 function transformState(state: VersionedData['data']) {
