@@ -69,7 +69,7 @@ describe('Revoke Dapp Permissions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+          .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
           .build(),
         title: this.test?.fullTitle(),
       },
@@ -127,7 +127,7 @@ describe('Revoke Dapp Permissions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+          .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
           .build(),
         title: this.test?.fullTitle(),
       },
