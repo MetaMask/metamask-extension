@@ -74,6 +74,7 @@ const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
+  onekey: TREZOR_HD_PATHS,
 };
 
 const getErrorMessage = (errorCode, t) => {

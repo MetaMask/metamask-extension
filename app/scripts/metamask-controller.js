@@ -7649,7 +7649,10 @@ export default class MetamaskController extends EventEmitter {
           keyring.appName = 'MetaMask';
         }
 
-        if (options.name === HardwareDeviceNames.trezor) {
+        if (
+          options.name === HardwareDeviceNames.trezor ||
+          options.name === HardwareDeviceNames.oneKey
+        ) {
           const model = keyring.getModel();
           this.appStateController.setTrezorModel(model);
         }
