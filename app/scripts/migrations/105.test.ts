@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
-import { sha256FromString } from 'ethereumjs-util';
+import { sha256 } from '@noble/hashes/sha256';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { toBuffer } from 'ethereumjs-util';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { migrate } from './105';
 
@@ -18,7 +19,7 @@ global.sentry = {
 
 function addressToUUID(address: string): string {
   return uuid({
-    random: sha256FromString(address).slice(0, 16),
+    random: sha256(toBuffer(address)).slice(0, 16),
   });
 }
 
