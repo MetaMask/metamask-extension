@@ -796,7 +796,7 @@ export default function PrepareSwapPage({
 
   const swapToTokenFiatValue = useTokenFiatAmount(
     selectedToToken.address,
-    receiveToAmountFormatted || 0,
+    receiveToAmount || 0,
     selectedToToken.symbol,
     {
       showFiat: true,
