@@ -4347,7 +4347,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/evm-tools@npm:^1.3.0":
+"@ledgerhq/evm-tools@npm:1.3.0":
   version: 1.3.0
   resolution: "@ledgerhq/evm-tools@npm:1.3.0"
   dependencies:
@@ -4361,7 +4361,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-app-eth@npm:^6.42.0":
+"@ledgerhq/evm-tools@patch:@ledgerhq/evm-tools@npm%3A1.3.0#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.3.0-57435278f6.patch":
+  version: 1.3.0
+  resolution: "@ledgerhq/evm-tools@patch:@ledgerhq/evm-tools@npm%3A1.3.0#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.3.0-57435278f6.patch::version=1.3.0&hash=2f2218"
+  dependencies:
+    "@ethersproject/constants": "npm:^5.7.0"
+    "@ethersproject/hash": "npm:^5.7.0"
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.2"
+    "@ledgerhq/live-env": "npm:^2.4.1"
+    axios: "npm:1.7.7"
+    crypto-js: "npm:4.2.0"
+  checksum: 10/c3a98a0de38be7f1ee7484b62031f4382dc2691c9a4385d79a2a20cbbf7748a3c84bf19b00ec6aa487464d8d8d8debf529fdc286a4678d16912dce8a07ce3c4d
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-app-eth@npm:6.42.2":
   version: 6.42.2
   resolution: "@ledgerhq/hw-app-eth@npm:6.42.2"
   dependencies:
@@ -4380,6 +4394,28 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     semver: "npm:^7.3.5"
   checksum: 10/58a80daa4a1d6881fc0188ee68f6d3ff76c753e558e9b299cc0ae04859a111881c372445c06bc7c68f25b03aa51a31c335cc3fc4188c25552fc490c7da85fcdc
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-app-eth@patch:@ledgerhq/hw-app-eth@npm%3A6.42.2#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.42.2-46a44bfbf5.patch":
+  version: 6.42.2
+  resolution: "@ledgerhq/hw-app-eth@patch:@ledgerhq/hw-app-eth@npm%3A6.42.2#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.42.2-46a44bfbf5.patch::version=6.42.2&hash=5d4d32"
+  dependencies:
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/rlp": "npm:^5.7.0"
+    "@ethersproject/transactions": "npm:^5.7.0"
+    "@ledgerhq/cryptoassets-evm-signatures": "npm:^13.5.2"
+    "@ledgerhq/domain-service": "npm:^1.2.15"
+    "@ledgerhq/errors": "npm:^6.19.1"
+    "@ledgerhq/evm-tools": "npm:^1.3.0"
+    "@ledgerhq/hw-transport": "npm:^6.31.4"
+    "@ledgerhq/hw-transport-mocker": "npm:^6.29.4"
+    "@ledgerhq/logs": "npm:^6.12.0"
+    "@ledgerhq/types-live": "npm:^6.56.0"
+    axios: "npm:1.7.7"
+    bignumber.js: "npm:^9.1.2"
+    semver: "npm:^7.3.5"
+  checksum: 10/9f62c5eea23fddef9b67c9a70e9f0a7147eb05cd43a7579067d31a4899f0ef6d155cb0591736702e101794322cd0c496214c0121045e1ebf53e618a0ec2ee215
   languageName: node
   linkType: hard
 
