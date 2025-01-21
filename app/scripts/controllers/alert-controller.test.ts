@@ -163,6 +163,7 @@ describe('AlertController', () => {
           address: '0x1234567',
           options: {},
           methods: [],
+          scopes: ['eip155'],
           type: 'eip155:eoa',
           metadata: {
             name: '',
