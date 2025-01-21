@@ -12,6 +12,7 @@ import {
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {
@@ -228,6 +229,63 @@ describe('AccountListItem', () => {
     expect(tag.textContent).toBe(`${mockSnap.manifest.proposedName} (Beta)`);
   });
   ///: END:ONLY_INCLUDE_IF
+
+  describe('Multisrp pill', () => {
+    const mockSRPAccount = createMockInternalAccount({
+      address: '0xd5e099c71b797516c10ed0f0d895f429c2781111',
+    });
+    const mockSRPAccount2 = createMockInternalAccount({
+      address: '0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5',
+    });
+
+    const mockKeyrings = [
+      {
+        type: 'HD Key Tree',
+        accounts: [mockSRPAccount.address],
+      },
+      {
+        type: 'HD Key Tree',
+        accounts: [mockSRPAccount2.address],
+      },
+    ];
+
+    const mockInternalAccounts = {
+      accounts: {
+        [mockSRPAccount.id]: mockSRPAccount,
+        [mockSRPAccount2.id]: mockSRPAccount2,
+      },
+      selectedAccount: mockSRPAccount.id,
+    };
+
+    const mockStateWithTwoSRP = {
+      metamask: {
+        internalAccounts: mockInternalAccounts,
+        keyrings: mockKeyrings,
+      },
+    };
+
+    it('does not show srp pill if there is only one srp', async () => {
+      const { queryAllByTestId } = render();
+
+      const accountTagTestIdRegex = /^account-list-item-tag-.+-SRP #\d+$/u;
+      const srpPills = queryAllByTestId(accountTagTestIdRegex);
+
+      expect(srpPills).toHaveLength(0);
+    });
+
+    it('shows srp pill if there are more than one srp', async () => {
+      const { getByTestId } = render(
+        { account: mockSRPAccount },
+        mockStateWithTwoSRP,
+      );
+
+      const pillForAccount1 = getByTestId(
+        `account-list-item-tag-${mockSRPAccount.id}-SRP #1`,
+      );
+
+      expect(pillForAccount1).toBeInTheDocument();
+    });
+  });
 
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {

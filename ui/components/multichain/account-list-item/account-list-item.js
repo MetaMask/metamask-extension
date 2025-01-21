@@ -419,10 +419,12 @@ const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {accountLabels.length > 0
-          ? accountLabels.map((label) => {
+        {accountLabels.length > 0 ? (
+          <Box flexDirection={FlexDirection.Row}>
+            {accountLabels.map((label) => {
               return (
                 <Tag
+                  data-testid={`account-list-item-tag-${account.id}-${label}`}
                   key={label}
                   label={label}
                   labelProps={{
@@ -436,8 +438,9 @@ const AccountListItem = ({
                   }
                 />
               );
-            })
-          : null}
+            })}
+          </Box>
+        ) : null}
       </Box>
 
       {menuType === AccountListItemMenuTypes.None ? null : (
