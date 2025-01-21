@@ -74,7 +74,7 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
     expect(result).toEqual({
       account_type: 'accountType',
       device_model: 'deviceModel',
-      account_hardware_type: undefined,
+      account_hardware_type: 'hardwareType',
       account_snap_type: undefined,
       account_snap_version: undefined,
     });
