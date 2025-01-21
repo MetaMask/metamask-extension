@@ -30,7 +30,6 @@ import RpcListItem from '../rpc-list-item';
 import {
   getAllDomains,
   getOriginOfCurrentTab,
-  getPermittedAccountsForSelectedTab,
   getPermittedChainsForSelectedTab,
 } from '../../../../selectors';
 
@@ -46,9 +45,7 @@ export const SelectRpcUrlModal = ({
       networkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
     ];
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const permittedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
-  );
+
   const permittedChainIds = useSelector((state) =>
     getPermittedChainsForSelectedTab(state, selectedTabOrigin),
   );
@@ -96,19 +93,15 @@ export const SelectRpcUrlModal = ({
               setEditedNetwork({ chainId: networkConfiguration.chainId }),
             );
             dispatch(toggleNetworkMenu());
-            if (permittedAccountAddresses.length > 0) {
+            if (!permittedChainIds.includes(networkConfiguration.chainId)) {
               grantPermittedChain(
                 selectedTabOrigin,
                 networkConfiguration.chainId,
               );
-              if (!permittedChainIds.includes(networkConfiguration.chainId)) {
-                dispatch(showPermittedNetworkToast());
-              }
+              dispatch(showPermittedNetworkToast());
             }
-            if (
-              selectedTabOrigin &&
-              domains[selectedTabOrigin]
-            ) {
+
+            if (selectedTabOrigin && domains[selectedTabOrigin]) {
               setNetworkClientIdForDomain(
                 selectedTabOrigin,
                 rpcEndpoint.networkClientId,
