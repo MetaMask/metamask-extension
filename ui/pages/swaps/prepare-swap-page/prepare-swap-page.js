@@ -1073,7 +1073,7 @@ export default function PrepareSwapPage({
             marginTop={2}
             fontWeight={FontWeight.Normal}
             onClick={() => {
-              openBridgeExperience('Swaps', fromToken);
+              openBridgeExperience('Swaps', selectedFromToken);
             }}
             target="_blank"
             data-testid="prepare-swap-page-cross-chain-swaps-link"
