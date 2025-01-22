@@ -43,7 +43,7 @@ describe('useDecodedSignatureMetrics', () => {
     expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(0);
   });
 
-  it('should not call updateSignatureEventFragment if decodingLoading is true', async () => {
+  it('calls updateSignatureEventFragment with "decoding_in_progress" if decoding is loading ', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
       decodingLoading: true,
@@ -61,7 +61,12 @@ describe('useDecodedSignatureMetrics', () => {
       state,
     );
 
-    expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(0);
+    expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(1);
+    expect(mockUpdateSignatureEventFragment).toHaveBeenLastCalledWith({
+      properties: {
+        decoding_response: 'decoding_in_progress',
+      },
+    });
   });
 
   it('should call updateSignatureEventFragment with correct parameters if there are no state changes', async () => {
