@@ -16,6 +16,7 @@ import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
 import { StreamProvider } from '@metamask/providers';
+import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -362,6 +363,7 @@ function connectToAccountManager(connectionStream) {
 function setupWeb3Connection(connectionStream) {
   const providerStream = new StreamProvider(connectionStream, {
     jsonRpcStreamName: 'provider',
+    rpcMiddleware: [createIdRemapMiddleware()],
   });
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));
