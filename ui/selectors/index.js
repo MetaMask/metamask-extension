@@ -18,3 +18,8 @@ export * from './isAccountConnectedToCurrentTab';
 export * from './getPermittedAccountsForCurrentTab';
 export * from './getMultichainBalances';
 export * from './getMultichainNetworkProviders';
+export * from './getMultichainSelectedAccountCachedBalance';
+export * from './getMultichainIsEvm';
+export * from './getMultichainCurrentNetwork';
+export * from './getMultichainProviderConfig';
+export * from './getMultichainNetwork';

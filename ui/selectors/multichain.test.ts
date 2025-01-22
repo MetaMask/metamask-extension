@@ -27,21 +27,21 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { AccountsState } from './accounts';
 import {
-  MultichainState,
   getMultichainCurrentChainId,
   getMultichainCurrentCurrency,
   getMultichainDefaultToken,
-  getMultichainIsEvm,
   getMultichainIsMainnet,
   getMultichainNativeCurrency,
-  getMultichainNetwork,
-  getMultichainProviderConfig,
-  getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
   getMultichainIsBitcoin,
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
 } from './multichain';
+import { getMultichainNetwork } from './getMultichainNetwork';
+import { getMultichainProviderConfig } from './getMultichainProviderConfig';
+import { MultichainState } from './multichain.types';
+import { getMultichainIsEvm } from './getMultichainIsEvm';
+import { getMultichainSelectedAccountCachedBalance } from './getMultichainSelectedAccountCachedBalance';
 import { getMultichainNetworkProviders } from './getMultichainNetworkProviders';
 import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
