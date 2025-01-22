@@ -369,6 +369,44 @@ function sentryStartSpanManual<T>(
   return actual(spanOptions, callback);
 }
 
+export async function fetchWithSentryInstrumentation(
+  method: string,
+  url: string,
+) {
+  return await Sentry.startSpan(
+    { op: 'http.client', name: `${method} ${url}` },
+    async (span) => {
+      const parsedURL = new URL(url, location.origin);
+
+      span.setAttribute('http.request.method', method);
+
+      span.setAttribute('server.address', parsedURL.hostname);
+      span.setAttribute('server.port', parsedURL.port || undefined);
+
+      const response = await fetch(url, {
+        method,
+      });
+
+      span.setAttribute('http.response.status_code', response.status);
+      span.setAttribute(
+        'http.response_content_length',
+        Number(response.headers.get('content-length')),
+      );
+
+      const cloudflareRayId =
+        response.headers.get('CF-RAY') ??
+        response.headers.get('CF-Ray') ??
+        response.headers.get('CF-ray') ??
+        response.headers.get('cf_ray');
+      if (cloudflareRayId) {
+        span.setAttribute('CF-Ray', cloudflareRayId);
+      }
+
+      return response;
+    },
+  );
+}
+
 function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
   const actual = globalThis.sentry?.withIsolationScope;
 
