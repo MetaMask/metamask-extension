@@ -70,8 +70,6 @@ export const SiteCell: React.FC<SiteCellProps> = ({
 
   const selectedChainIdsLength = selectedChainIds.length;
 
-  console.log({ selectedChainIds, selectedAccounts, selectedNetworks });
-
   // Determine the messages for connected and not connected states
   const accountMessageConnectedState =
     selectedAccounts.length === 1

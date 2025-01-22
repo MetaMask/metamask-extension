@@ -141,6 +141,7 @@ export function getPermissionBackgroundApiMethods({
       legacyApproval.approvedAccounts,
     );
 
+    // TODO: remove `approvedChainIds` and `approvedAccounts` in `connect-page.tsx`, and re-order same as `metamask-controller.js`;
     permissionController.grantPermissions({
       subject: { origin },
       approvedPermissions: {

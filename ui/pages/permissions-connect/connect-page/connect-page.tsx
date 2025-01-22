@@ -3,13 +3,6 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import {
-  CaipAccountId,
-  CaipChainId,
-  parseCaipAccountId,
-  parseCaipChainId,
-} from '@metamask/utils';
-import { Caip25CaveatValue } from '@metamask/multichain';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
@@ -40,16 +33,17 @@ import {
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import { getMultichainNetwork } from '../../../selectors/multichain';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
-  CaveatTypes,
-  EndowmentTypes,
-} from '../../../../shared/constants/permissions';
+  getRequestedAccountsViaPermissionsRequest,
+  getRequestedChainsViaPermissionsRequest,
+  parseCaip25PermissionsResponse,
+  PermissionsRequest,
+} from './utils';
 
 export type ConnectPageRequest = {
   id: string;
   origin: string;
-  permissions?: Permissions;
+  permissions?: PermissionsRequest;
 };
 
 export type ConnectPageProps = {
@@ -60,61 +54,6 @@ export type ConnectPageProps = {
   activeTabOrigin: string;
 };
 
-type Permissions = Record<
-  string,
-  { caveats?: { type: string; value: Caip25CaveatValue }[] }
->;
-
-// TODO: where do we store this util function?
-function getCaip25CaveatValue(
-  permissions?: Permissions,
-): Caip25CaveatValue | undefined {
-  const caip25Permissions = permissions?.[EndowmentTypes.caip25];
-  return caip25Permissions?.caveats?.find(
-    (caveat) => caveat.type === CaveatTypes.caip25,
-  )?.value;
-}
-
-// TODO: where do we store this util function?
-export function getRequestedAccounts(permissions?: Permissions): string[] {
-  const caip25CaveatValue = getCaip25CaveatValue(permissions);
-  if (!caip25CaveatValue) {
-    return [];
-  }
-  const { optionalScopes } = caip25CaveatValue;
-
-  const allAccountsSet = new Set<string>();
-
-  for (const { accounts } of Object.values(optionalScopes)) {
-    accounts.forEach((accountId: CaipAccountId) =>
-      allAccountsSet.add(parseCaipAccountId(accountId).address),
-    );
-  }
-
-  return Array.from(allAccountsSet);
-}
-
-// TODO: where do we store this util function?
-export function getRequestedChains(permissions?: Permissions): string[] {
-  const caip25CaveatValue = getCaip25CaveatValue(permissions);
-  if (!caip25CaveatValue) {
-    return [];
-  }
-
-  const { optionalScopes } = caip25CaveatValue;
-  const result: number[] = [];
-
-  for (const scope of Object.keys(optionalScopes)) {
-    const { reference } = parseCaipChainId(scope as CaipChainId);
-    if (reference !== undefined) {
-      // TODO: safely parse number
-      result.push(Number(reference));
-    }
-  }
-
-  return result.map((chainId) => decimalToPrefixedHex(chainId));
-}
-
 export const ConnectPage: React.FC<ConnectPageProps> = ({
   request,
   permissionsRequestId,
@@ -123,8 +62,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
 
-  const requestedAccounts = getRequestedAccounts(request.permissions);
-  const requestedChainIds = getRequestedChains(request.permissions);
+  const requestedAccounts = getRequestedAccountsViaPermissionsRequest(
+    request.permissions,
+  );
+  const requestedChainIds = getRequestedChainsViaPermissionsRequest(
+    request.permissions,
+  );
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -181,8 +124,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = () => {
     const _request = {
       ...request,
-      approvedAccounts: selectedAccountAddresses,
-      approvedChainIds: selectedChainIds,
+      approvedAccounts: selectedAccountAddresses, // TODO: remove
+      approvedChainIds: selectedChainIds, // TODO: remove
+      response: parseCaip25PermissionsResponse(
+        selectedAccountAddresses,
+        selectedChainIds,
+      ),
     };
     approveConnection(_request);
   };

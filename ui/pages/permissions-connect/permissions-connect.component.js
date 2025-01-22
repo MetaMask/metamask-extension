@@ -19,16 +19,16 @@ import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
+import { ConnectPage } from './connect-page/connect-page';
 import {
-  ConnectPage,
-  getRequestedAccounts,
-  getRequestedChains,
-} from './connect-page/connect-page';
+  getRequestedAccountsViaPermissionsRequest,
+  getRequestedChainsViaPermissionsRequest,
+} from './connect-page/utils';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
-  const requestedAccounts = getRequestedAccounts(
+  const requestedAccounts = getRequestedAccountsViaPermissionsRequest(
     permissionsRequest?.permissions,
   );
 
@@ -46,7 +46,9 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
 }
 
 function getRequestedChainIds(permissionsRequest) {
-  return getRequestedChains(permissionsRequest?.permissions);
+  return getRequestedChainsViaPermissionsRequest(
+    permissionsRequest?.permissions,
+  );
 }
 
 export default class PermissionConnect extends Component {

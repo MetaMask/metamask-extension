@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
@@ -8,14 +9,11 @@ import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
-import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+
 import {
   BackgroundColor,
   Display,
@@ -24,9 +22,15 @@ import {
 import { Box } from '../../component-library';
 // eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import { getSelectedInternalAccount } from '../../../selectors';
+import {
+  getRequestedChainsViaPermissionsRequest,
+  parseCaip25PermissionsResponse,
+} from '../../../pages/permissions-connect/connect-page/utils';
+import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerContent } from '.';
 
-export default class PermissionPageContainer extends Component {
+class PermissionPageContainer extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
@@ -47,6 +51,7 @@ export default class PermissionPageContainer extends Component {
     }),
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
+    defaultAccount: PropTypes.string,
   };
 
   static defaultProps = {
@@ -55,6 +60,7 @@ export default class PermissionPageContainer extends Component {
     selectedAccounts: [],
     allAccountsSelected: false,
     currentPermissions: {},
+    defaultAccount: '',
   };
 
   static contextTypes = {
@@ -141,28 +147,28 @@ export default class PermissionPageContainer extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       selectedAccounts,
+      defaultAccount,
     } = this.props;
 
-    const approvedAccounts = selectedAccounts.map(
-      (selectedAccount) => selectedAccount.address,
-    );
+    const approvedAccounts =
+      selectedAccounts.length > 0
+        ? selectedAccounts.map((selectedAccount) => selectedAccount.address)
+        : [defaultAccount];
 
-    const permittedChainsPermission =
-      _request.permissions?.[PermissionNames.permittedChains];
-    const approvedChainIds = permittedChainsPermission?.caveats?.find(
-      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-    )?.value;
+    const approvedChainIds = getRequestedChainsViaPermissionsRequest(
+      _request.permissions,
+    );
 
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      ...(_request.permissions?.eth_accounts && { approvedAccounts }),
-      ...(_request.permissions?.[PermissionNames.permittedChains] && {
+      response: parseCaip25PermissionsResponse(
+        approvedAccounts,
         approvedChainIds,
-      }),
+      ),
     };
 
-    if (Object.keys(request.permissions).length > 0) {
+    if (Object.keys(request.response.permissions).length > 0) {
       approvePermissionsRequest(request);
     } else {
       rejectPermissionsRequest(request.metadata.id);
@@ -248,3 +254,9 @@ export default class PermissionPageContainer extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  defaultAccount: getSelectedInternalAccount(state).address,
+});
+
+export default connect(mapStateToProps)(PermissionPageContainer);

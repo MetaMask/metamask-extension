@@ -5524,6 +5524,32 @@ export default class MetamaskController extends EventEmitter {
       delete permissions[PermissionNames.permittedChains];
     }
 
+    // TODO: handle this request
+    // await window.ethereum.request({
+    //   "method": "wallet_requestPermissions",
+    //   "params": [
+    //    {
+
+    //      "eth_accounts": {
+    //          "caveats": [
+    //              {
+    //                  "type": "restrictReturnedAccounts",
+    //                  "value": []
+    //              }
+    //          ]
+    //      },
+    //      "endowment:permitted-chains": {
+    //          "caveats": [
+    //              {
+    //                  "type": "restrictNetworkSwitching",
+    //                  "value": []
+    //              }
+    //          ]
+    //      }
+    //    }
+    //  ],
+    //  });
+
     const requestedChains =
       permissions[PermissionNames.permittedChains]?.caveats?.[0]?.value ?? [];
 
@@ -5552,31 +5578,31 @@ export default class MetamaskController extends EventEmitter {
 
     const id = nanoid();
 
-    // TODO: not only does UI become able to READ in this format, it should also RETURN in this compliant format
-    // TODO: go back to UI, change the change I previously did, to fit the format we are passing in line 5566, and THEN return the response data also in this caip25 compliant format
-    return this.approvalController.addAndShowApprovalRequest({
-      id,
-      origin,
-      requestData: {
-        metadata: {
-          id,
-          origin,
-        },
-        permissions: {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: caveatValueWithAccounts,
-              },
-            ],
+    const { response } =
+      await this.approvalController.addAndShowApprovalRequest({
+        id,
+        origin,
+        requestData: {
+          metadata: {
+            id,
+            origin,
+          },
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: caveatValueWithAccounts,
+                },
+              ],
+            },
           },
         },
-      },
-      type: MethodNames.RequestPermissions,
-    });
-  }
+        type: MethodNames.RequestPermissions,
+      });
 
+    return response.permissions;
+  }
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
