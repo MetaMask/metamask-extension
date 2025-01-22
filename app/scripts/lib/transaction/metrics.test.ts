@@ -25,6 +25,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -74,7 +75,6 @@ const mockTransactionMetricsRequest = {
   trackEvent: jest.fn(),
   getIsSmartTransaction: jest.fn(),
   getSmartTransactionByMinedTxHash: jest.fn(),
-  getRedesignedTransactionsEnabled: jest.fn(),
   getMethodData: jest.fn(),
   getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
@@ -827,6 +827,67 @@ describe('Transaction metrics', () => {
       expect(
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).toHaveBeenCalledWith(expectedUniqueId);
+    });
+
+    it('should create, update, finalize event fragment with completion_time_onchain', async () => {
+      mockTransactionMeta.txReceipt = {
+        gasUsed: '0x123',
+        status: '0x0',
+      };
+      mockTransactionMeta.blockTimestamp = decimalToHex(124);
+      mockTransactionMeta.submittedTime = 123123;
+
+      await handleTransactionConfirmed(mockTransactionMetricsRequest, {
+        ...mockTransactionMeta,
+        actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const expectedUniqueId = 'transaction-submitted-1';
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+        actionId: mockActionId,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.finalized,
+        uniqueIdentifier: expectedUniqueId,
+        persist: true,
+        properties: expectedProperties,
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          completion_time: expect.any(String),
+          completion_time_onchain: '0.88',
+          gas_used: '0.000000291',
+          status: METRICS_STATUS_FAILED,
+        },
+      });
+
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
+        expectedUniqueId,
+        {
+          properties: expectedProperties,
+          sensitiveProperties: {
+            ...expectedSensitiveProperties,
+            completion_time: expect.any(String),
+            completion_time_onchain: '0.88',
+            gas_used: '0.000000291',
+            status: METRICS_STATUS_FAILED,
+          },
+        },
+      );
+
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId);
     });
   });
 

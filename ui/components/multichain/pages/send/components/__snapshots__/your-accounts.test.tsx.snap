@@ -1520,7 +1520,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           <p
             class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
           >
-            snap-name (Beta)
+            mock snap name (Beta)
           </p>
         </div>
       </div>

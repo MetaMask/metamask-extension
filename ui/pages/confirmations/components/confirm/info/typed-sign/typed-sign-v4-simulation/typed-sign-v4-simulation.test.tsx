@@ -167,7 +167,7 @@ describe('PermitSimulation', () => {
         mockStore,
       );
 
-      expect(await findByText('You receive')).toBeInTheDocument();
+      expect(await findByText('Listing price')).toBeInTheDocument();
       expect(await findByText('You list')).toBeInTheDocument();
     });
   });
