@@ -63,17 +63,22 @@ export function createDuplexStreamWrapper(mx, name) {
 
   const duplexWrapper = new Duplex({
     objectMode: true,
-
     read() {
-      // We do nothing special here; data is pushed when the internal substream emits 'data'..push(null);
+      // We do nothing special here; data is pushed when the internal substream emits 'data'
     },
-
     write(chunk, _encoding, callback) {
-      substream.write({
-        name: chunk.name,
-        ...chunk.data,
-      });
-      callback();
+      try {
+        substream.write(
+          {
+            name: chunk.name,
+            ...chunk.data,
+          },
+          callback,
+        );
+      } catch (error) {
+        // eslint-disable-next-line node/callback-return
+        callback(error); // No return needed as we're catching synchronous errors
+      }
     },
   });
 
@@ -82,6 +87,10 @@ export function createDuplexStreamWrapper(mx, name) {
       name,
       data: chunk,
     });
+  });
+
+  substream.on('error', (error) => {
+    duplexWrapper.destroy(error);
   });
 
   substream.on('end', () => {
