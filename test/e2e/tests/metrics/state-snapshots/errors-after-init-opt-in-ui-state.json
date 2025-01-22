@@ -167,6 +167,7 @@
     },
     "networkConfigurationsByChainId": "object",
     "keyrings": "object",
+    "keyringsMetadata": "object",
     "selectedAddress": "string",
     "useNonceField": false,
     "usePhishDetect": true,
