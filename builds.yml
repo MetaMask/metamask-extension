@@ -142,7 +142,8 @@ features:
       - ./{app,shared,ui}/**/solana/**
   multi-srp:
     assets:
-      - ./{app,shared,ui}/**/multi-srp/**
+      # srp-list is a special case and is used in the srp recovery flow now.
+      - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
 
 # Env variables that are required for all types of builds
 #
