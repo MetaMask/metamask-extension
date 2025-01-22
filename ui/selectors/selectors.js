@@ -130,6 +130,7 @@ import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,
   getMultichainNetworkProviders,
+  getMultichainCurrentNetwork,
 } from './multichain';
 
 /** `appState` slice selectors */
@@ -610,6 +611,13 @@ export function getSelectedAccountTokensAcrossChains(state) {
   const selectedAddress = getSelectedInternalAccount(state).address;
 
   const tokensByChain = {};
+  // const selectedAccount = getMaybeSelectedInternalAccount(state);
+  // const isEvm = isEvmAccountType(selectedAccount.type);
+
+  /*   if (!isEvm) {
+    const { allNonEvmTokens, metadata, balances } = state.metamask;
+
+  } */
 
   const nativeTokenBalancesByChainId =
     getSelectedAccountNativeTokenCachedBalanceByChainId(state);
@@ -646,6 +654,22 @@ export function getSelectedAccountTokensAcrossChains(state) {
 
   return tokensByChain;
 }
+
+export const getSelectedAccountNonEvmTokensForCurrentNetwork = createSelector(
+  getMultichainCurrentNetwork,
+  getAllNonEvmTokens,
+  getSelectedInternalAccount,
+  (currentNetwork, allNonEvmTokens, selectedInternalAccount) => {
+    console.log('🚀 ~ allNonEvmTokens:', allNonEvmTokens);
+    const selectedAccountTokens =
+      allNonEvmTokens[selectedInternalAccount.id] || [];
+    // TODO: use a helper function instead to get if an asset is on a current network
+    const filteredAssetsForCurrentNetwork = selectedAccountTokens.filter(
+      (asset) => asset.split('/')[0] === currentNetwork.chainId,
+    );
+    return filteredAssetsForCurrentNetwork;
+  },
+);
 
 /**
  * Retrieves native token information (symbol, decimals, name) for a given chainId from the state,
@@ -734,6 +758,13 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
+export function getAllNonEvmTokens(state) {
+  return state.metamask.allNonEvmTokens;
+}
+
+export function getAllNonEvmMetadata(state) {
+  return state.metamask.metadata;
+}
 /**
  * Get a flattened list of all ERC-20 tokens owned by the user.
  * Includes all tokens from all chains and accounts.
@@ -1432,7 +1463,8 @@ export const getAnySnapUpdateAvailable = createSelector(
 export const getHideSnapBranding = createDeepEqualSelector(
   [selectInstalledSnaps, selectSnapId],
   (installedSnaps, snapId) => {
-    return installedSnaps[snapId]?.hideSnapBranding;
+    return true;
+    //return installedSnaps[snapId]?.hideSnapBranding;
   },
 );
 

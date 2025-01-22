@@ -14,6 +14,7 @@ const PORTFOLIO_ORIGINS: string[] = [
   'https://stage.portfolio.metamask.io',
   'https://ramps-dev.portfolio.metamask.io',
   'https://portfolio-builds.metafi-dev.codefi.network',
+  'http://localhost:3000',
   ///: END:ONLY_INCLUDE_IF
 ];
 
@@ -29,6 +30,8 @@ const METAMASK_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.SubmitRequest,
   KeyringRpcMethod.RejectRequest,
+  KeyringRpcMethod.ListAccountTransactions,
+  'listAccountAssets',
 ];
 
 /**
@@ -57,6 +60,7 @@ const PORTFOLIO_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.GetAccount,
   KeyringRpcMethod.GetAccountBalances,
   KeyringRpcMethod.SubmitRequest,
+  KeyringRpcMethod.ListAccountTransactions,
 ];
 
 /**

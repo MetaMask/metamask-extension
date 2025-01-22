@@ -275,7 +275,10 @@ export class BalancesController extends BaseController<
 
     if (account.metadata.snap) {
       const scope = this.#getScopeFrom(account);
-      const assetTypes = MULTICHAIN_NETWORK_TO_ASSET_TYPES[scope];
+      // just for testing
+      const assetTypes =
+        MULTICHAIN_NETWORK_TO_ASSET_TYPES[MultichainNetworks.SOLANA_DEVNET];
+      // const assetTypes = MULTICHAIN_NETWORK_TO_ASSET_TYPES[scope];
 
       partialState.balances[account.id] = await this.#getBalances(
         account.id,
