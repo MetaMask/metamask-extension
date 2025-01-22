@@ -96,7 +96,6 @@
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
-      "redesignedConfirmationsEnabled": true,
       "smartTransactionsMigrationApplied": "boolean"
     },
     "firstTimeFlowType": "import",

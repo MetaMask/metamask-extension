@@ -41,7 +41,6 @@ const getMetaMaskStateWithUnapprovedPersonalSign = (accountAddress: string) => {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
     },
     unapprovedPersonalMsgs: {
       [pendingPersonalSignId]: {
