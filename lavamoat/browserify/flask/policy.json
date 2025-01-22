@@ -5582,6 +5582,7 @@
     "ulid": {
       "globals": {
         "console.error": true,
+        "crypto": true,
         "define": true
       }
     },

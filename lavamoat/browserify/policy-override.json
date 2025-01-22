@@ -163,6 +163,11 @@
       "packages": {
         "immer": true
       }
+    },
+    "ulid": {
+      "globals": {
+        "crypto": true
+      }
     }
   }
 }
