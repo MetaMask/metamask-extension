@@ -490,7 +490,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTestDappWithChain() {
+  withPermissionControllerConnectedToTestDappWithChains(chainIds) {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -515,7 +515,7 @@ class FixtureBuilder {
               caveats: [
                 {
                   type: 'restrictNetworkSwitching',
-                  value: ['0x539'],
+                  value: chainIds,
                 },
               ],
               date: 1664388714637,
