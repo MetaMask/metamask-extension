@@ -3,10 +3,9 @@ import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { Hex } from '@metamask/utils';
 // eslint-disable-next-line import/no-restricted-paths
 import {
-  StartPollingForBridgeTxStatusArgs,
-  StatusRequest,
   StatusTypes,
   BridgeStatusControllerState,
+  StartPollingForBridgeTxStatusArgsSerialized,
 } from '../../../../shared/types/bridge-status';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
@@ -15,7 +14,7 @@ import {
   REFRESH_INTERVAL_MS,
 } from './constants';
 import { BridgeStatusControllerMessenger } from './types';
-import { fetchBridgeTxStatus } from './utils';
+import { fetchBridgeTxStatus, getStatusRequestWithSrcTxHash } from './utils';
 
 const metadata: StateMetadata<{
   bridgeStatusState: BridgeStatusControllerState;
@@ -28,16 +27,19 @@ const metadata: StateMetadata<{
   },
 };
 
-type SrcTxHash = string;
+/** The input to start polling for the {@link BridgeStatusController} */
+type BridgeStatusPollingInput = FetchBridgeTxStatusArgs;
+
+type SrcTxMetaId = string;
 export type FetchBridgeTxStatusArgs = {
-  statusRequest: StatusRequest;
+  bridgeTxMetaId: string;
 };
-export default class BridgeStatusController extends StaticIntervalPollingController<
+export default class BridgeStatusController extends StaticIntervalPollingController<BridgeStatusPollingInput>()<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   { bridgeStatusState: BridgeStatusControllerState },
   BridgeStatusControllerMessenger
 > {
-  #pollingTokensBySrcTxHash: Record<SrcTxHash, string> = {};
+  #pollingTokensByTxMetaId: Record<SrcTxMetaId, string> = {};
 
   constructor({
     messenger,
@@ -123,115 +125,115 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     const historyItems = Object.values(bridgeStatusState.txHistory);
     const incompleteHistoryItems = historyItems
       .filter(
-        (historyItem) => historyItem.status.status !== StatusTypes.COMPLETE,
+        (historyItem) =>
+          historyItem.status.status === StatusTypes.PENDING ||
+          historyItem.status.status === StatusTypes.UNKNOWN,
       )
       .filter((historyItem) => {
         // Check if we are already polling this tx, if so, skip restarting polling for that
-        const srcTxHash = historyItem.status.srcChain.txHash;
-        const pollingToken = this.#pollingTokensBySrcTxHash[srcTxHash];
+        const srcTxMetaId = historyItem.txMetaId;
+        const pollingToken = this.#pollingTokensByTxMetaId[srcTxMetaId];
         return !pollingToken;
       });
 
     incompleteHistoryItems.forEach((historyItem) => {
-      const statusRequest = {
-        bridgeId: historyItem.quote.bridgeId,
-        srcTxHash: historyItem.status.srcChain.txHash,
-        bridge: historyItem.quote.bridges[0],
-        srcChainId: historyItem.quote.srcChainId,
-        destChainId: historyItem.quote.destChainId,
-        quote: historyItem.quote,
-        refuel: Boolean(historyItem.quote.refuel),
-      };
+      const bridgeTxMetaId = historyItem.txMetaId;
 
-      const hexSourceChainId = decimalToPrefixedHex(statusRequest.srcChainId);
-      const networkClientId = this.messagingSystem.call(
-        'NetworkController:findNetworkClientIdByChainId',
-        hexSourceChainId,
-      );
-
-      // We manually call startPollingByNetworkClientId() here rather than go through startPollingForBridgeTxStatus()
+      // We manually call startPolling() here rather than go through startPollingForBridgeTxStatus()
       // because we don't want to overwrite the existing historyItem in state
-      const options: FetchBridgeTxStatusArgs = { statusRequest };
-      this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] =
-        this.startPollingByNetworkClientId(networkClientId, options);
+      this.#pollingTokensByTxMetaId[bridgeTxMetaId] = this.startPolling({
+        bridgeTxMetaId,
+      });
     });
   };
 
   startPollingForBridgeTxStatus = (
-    startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgs,
+    startPollingForBridgeTxStatusArgs: StartPollingForBridgeTxStatusArgsSerialized,
   ) => {
     const {
+      bridgeTxMeta,
       statusRequest,
       quoteResponse,
       startTime,
       slippagePercentage,
-      pricingData,
       initialDestAssetBalance,
       targetContractAddress,
     } = startPollingForBridgeTxStatusArgs;
-    const hexSourceChainId = decimalToPrefixedHex(statusRequest.srcChainId);
-
     const { bridgeStatusState } = this.state;
     const { address: account } = this.#getSelectedAccount();
 
     // Write all non-status fields to state so we can reference the quote in Activity list without the Bridge API
     // We know it's in progress but not the exact status yet
+    const txHistoryItem = {
+      txMetaId: bridgeTxMeta.id,
+      quote: quoteResponse.quote,
+      startTime,
+      estimatedProcessingTimeInSeconds:
+        quoteResponse.estimatedProcessingTimeInSeconds,
+      slippagePercentage,
+      pricingData: {
+        amountSent: quoteResponse.sentAmount.amount,
+      },
+      initialDestAssetBalance,
+      targetContractAddress,
+      account,
+      status: {
+        // We always have a PENDING status when we start polling for a tx, don't need the Bridge API for that
+        // Also we know the bare minimum fields for status at this point in time
+        status: StatusTypes.PENDING,
+        srcChain: {
+          chainId: statusRequest.srcChainId,
+          txHash: statusRequest.srcTxHash,
+        },
+      },
+    };
     this.update((_state) => {
       _state.bridgeStatusState = {
         ...bridgeStatusState,
         txHistory: {
           ...bridgeStatusState.txHistory,
-          [statusRequest.srcTxHash]: {
-            quote: quoteResponse.quote,
-            startTime,
-            estimatedProcessingTimeInSeconds:
-              quoteResponse.estimatedProcessingTimeInSeconds,
-            slippagePercentage,
-            pricingData,
-            initialDestAssetBalance,
-            targetContractAddress,
-            account,
-            status: {
-              // We always have a PENDING status when we start polling for a tx, don't need the Bridge API for that
-              // Also we know the bare minimum fields for status at this point in time
-              status: StatusTypes.PENDING,
-              srcChain: {
-                chainId: statusRequest.srcChainId,
-                txHash: statusRequest.srcTxHash,
-              },
-            },
-          },
+          // Use the txMeta.id as the key so we can reference the txMeta in TransactionController
+          [bridgeTxMeta.id]: txHistoryItem,
         },
       };
     });
 
-    const networkClientId = this.messagingSystem.call(
-      'NetworkController:findNetworkClientIdByChainId',
-      hexSourceChainId,
-    );
-    this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash] =
-      this.startPollingByNetworkClientId(networkClientId, { statusRequest });
+    this.#pollingTokensByTxMetaId[bridgeTxMeta.id] = this.startPolling({
+      bridgeTxMetaId: bridgeTxMeta.id,
+    });
   };
 
-  // This will be called after you call this.startPollingByNetworkClientId()
-  // The args passed in are the args you passed in to startPollingByNetworkClientId()
-  _executePoll = async (
-    _networkClientId: string,
-    fetchBridgeTxStatusArgs: FetchBridgeTxStatusArgs,
-  ) => {
-    await this.#fetchBridgeTxStatus(fetchBridgeTxStatusArgs);
+  // This will be called after you call this.startPolling()
+  // The args passed in are the args you passed in to startPolling()
+  _executePoll = async (pollingInput: BridgeStatusPollingInput) => {
+    await this.#fetchBridgeTxStatus(pollingInput);
   };
 
   #getSelectedAccount() {
     return this.messagingSystem.call('AccountsController:getSelectedAccount');
   }
 
-  #fetchBridgeTxStatus = async ({ statusRequest }: FetchBridgeTxStatusArgs) => {
+  #fetchBridgeTxStatus = async ({
+    bridgeTxMetaId,
+  }: FetchBridgeTxStatusArgs) => {
     const { bridgeStatusState } = this.state;
 
     try {
       // We try here because we receive 500 errors from Bridge API if we try to fetch immediately after submitting the source tx
       // Oddly mostly happens on Optimism, never on Arbitrum. By the 2nd fetch, the Bridge API responds properly.
+      // Also srcTxHash may not be available immediately for STX, so we don't want to fetch in those cases
+      const historyItem = bridgeStatusState.txHistory[bridgeTxMetaId];
+      const srcTxHash = this.#getSrcTxHash(bridgeTxMetaId);
+      if (!srcTxHash) {
+        return;
+      }
+
+      this.#updateSrcTxHash(bridgeTxMetaId, srcTxHash);
+
+      const statusRequest = getStatusRequestWithSrcTxHash(
+        historyItem.quote,
+        srcTxHash,
+      );
       const status = await fetchBridgeTxStatus(statusRequest);
 
       // No need to purge these on network change or account change, TransactionController does not purge either.
@@ -240,13 +242,13 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       // First stab at this will not stop polling when you are on a different account
       this.update((_state) => {
         const bridgeHistoryItem =
-          _state.bridgeStatusState.txHistory[statusRequest.srcTxHash];
+          _state.bridgeStatusState.txHistory[bridgeTxMetaId];
 
         _state.bridgeStatusState = {
           ...bridgeStatusState,
           txHistory: {
             ...bridgeStatusState.txHistory,
-            [statusRequest.srcTxHash]: {
+            [bridgeTxMetaId]: {
               ...bridgeHistoryItem,
               status,
             },
@@ -254,8 +256,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         };
       });
 
-      const pollingToken =
-        this.#pollingTokensBySrcTxHash[statusRequest.srcTxHash];
+      const pollingToken = this.#pollingTokensByTxMetaId[bridgeTxMetaId];
       if (status.status === StatusTypes.COMPLETE && pollingToken) {
         this.stopPollingByPollingToken(pollingToken);
       }
@@ -264,43 +265,86 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
     }
   };
 
+  #getSrcTxHash = (bridgeTxMetaId: string): string | undefined => {
+    const { bridgeStatusState } = this.state;
+    // Prefer the srcTxHash from bridgeStatusState so we don't have to l ook up in TransactionController
+    // But it is possible to have bridgeHistoryItem in state without the srcTxHash yet when it is an STX
+    const srcTxHash =
+      bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash;
+
+    if (srcTxHash) {
+      return srcTxHash;
+    }
+
+    // Look up in TransactionController if txMeta has been updated with the srcTxHash
+    const txControllerState = this.messagingSystem.call(
+      'TransactionController:getState',
+    );
+    const txMeta = txControllerState.transactions.find(
+      (tx) => tx.id === bridgeTxMetaId,
+    );
+    return txMeta?.hash;
+  };
+
+  #updateSrcTxHash = (bridgeTxMetaId: string, srcTxHash: string) => {
+    const { bridgeStatusState } = this.state;
+    if (bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain.txHash) {
+      return;
+    }
+
+    this.update((_state) => {
+      _state.bridgeStatusState = {
+        ...bridgeStatusState,
+        txHistory: {
+          ...bridgeStatusState.txHistory,
+          [bridgeTxMetaId]: {
+            ...bridgeStatusState.txHistory[bridgeTxMetaId],
+            status: {
+              ...bridgeStatusState.txHistory[bridgeTxMetaId].status,
+              srcChain: {
+                ...bridgeStatusState.txHistory[bridgeTxMetaId].status.srcChain,
+                txHash: srcTxHash,
+              },
+            },
+          },
+        },
+      };
+    });
+  };
+
   // Wipes the bridge status for the given address and chainId
-  // Will match either source or destination chainId to the selectedChainId
+  // Will match only source chainId to the selectedChainId
   #wipeBridgeStatusByChainId = (address: string, selectedChainId: Hex) => {
-    const sourceTxHashesToDelete = Object.keys(
+    const sourceTxMetaIdsToDelete = Object.keys(
       this.state.bridgeStatusState.txHistory,
-    ).filter((sourceTxHash) => {
+    ).filter((txMetaId) => {
       const bridgeHistoryItem =
-        this.state.bridgeStatusState.txHistory[sourceTxHash];
+        this.state.bridgeStatusState.txHistory[txMetaId];
 
       const hexSourceChainId = decimalToPrefixedHex(
         bridgeHistoryItem.quote.srcChainId,
       );
-      const hexDestChainId = decimalToPrefixedHex(
-        bridgeHistoryItem.quote.destChainId,
-      );
 
       return (
         bridgeHistoryItem.account === address &&
-        (hexSourceChainId === selectedChainId ||
-          hexDestChainId === selectedChainId)
+        hexSourceChainId === selectedChainId
       );
     });
 
-    sourceTxHashesToDelete.forEach((sourceTxHash) => {
-      const pollingToken = this.#pollingTokensBySrcTxHash[sourceTxHash];
+    sourceTxMetaIdsToDelete.forEach((sourceTxMetaId) => {
+      const pollingToken = this.#pollingTokensByTxMetaId[sourceTxMetaId];
 
       if (pollingToken) {
         this.stopPollingByPollingToken(
-          this.#pollingTokensBySrcTxHash[sourceTxHash],
+          this.#pollingTokensByTxMetaId[sourceTxMetaId],
         );
       }
     });
 
     this.update((_state) => {
-      _state.bridgeStatusState.txHistory = sourceTxHashesToDelete.reduce(
-        (acc, sourceTxHash) => {
-          delete acc[sourceTxHash];
+      _state.bridgeStatusState.txHistory = sourceTxMetaIdsToDelete.reduce(
+        (acc, sourceTxMetaId) => {
+          delete acc[sourceTxMetaId];
           return acc;
         },
         _state.bridgeStatusState.txHistory,

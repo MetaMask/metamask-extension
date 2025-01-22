@@ -1,8 +1,7 @@
-import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
@@ -12,14 +11,18 @@ import {
   withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
+  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  initializePages,
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
@@ -36,6 +39,7 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
       }: TestSuiteArguments) => {
         const addresses = await (ganacheServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
+        await initializePages(driver);
 
         await openDappAndTriggerSignature(
           driver,
@@ -43,12 +47,12 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
         );
 
         await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
+        await assertHeaderInfoBalance();
 
         await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
+        await assertPastedAddress();
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.delay(1000);
 
         await assertInfoValues(driver);
         await scrollAndConfirmAndAssertConfirm(driver);
@@ -77,14 +81,15 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
+        await initializePages(driver);
+        const confirmation = new SignTypedData(driver);
+
         await openDappAndTriggerSignature(
           driver,
           SignatureType.SignTypedDataV3,
         );
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -93,13 +98,9 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
           location: 'confirmation',
         });
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await driver.waitForSelector({
-          css: '#signTypedDataV3Result',
-          text: 'Error: User rejected the request.',
-        });
+        await assertRejectedSignature();
       },
       mockSignatureRejected,
     );
@@ -107,47 +108,23 @@ describe('Confirmation Signature - Sign Typed Data V3 @no-mmi', function (this: 
 });
 
 async function assertInfoValues(driver: Driver) {
+  const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const contractPetName = driver.findElement({
-    css: '.name__value',
-    text: '0xCcCCc...ccccC',
-  });
-
-  const primaryType = driver.findElement({ text: 'Mail' });
-  const fromName = driver.findElement({ text: 'Cow' });
-  const fromAddress = driver.findElement({
-    css: '.name__value',
-    text: '0xCD2a3...DD826',
-  });
-  const toName = driver.findElement({ text: 'Bob' });
-  const toAddress = driver.findElement({
-    css: '.name__value',
-    text: '0xbBbBB...bBBbB',
-  });
-  const contents = driver.findElement({ text: 'Hello, Bob!' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await contractPetName, 'contractPetName');
-  assert.ok(await primaryType, 'primaryType');
-  assert.ok(await fromName, 'fromName');
-  assert.ok(await fromAddress, 'fromAddress');
-  assert.ok(await toName, 'toName');
-  assert.ok(await toAddress, 'toAddress');
-  assert.ok(await contents, 'contents');
+  await signTypedData.verifyOrigin();
+  await signTypedData.verifyContractPetName();
+  await signTypedData.verifyPrimaryType();
+  await signTypedData.verifyFromName();
+  await signTypedData.verifyFromAddress();
+  await signTypedData.verifyToName();
+  await signTypedData.verifyToAddress();
+  await signTypedData.verifyContents();
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  const testDapp = new TestDapp(driver);
   await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle('E2E Test Dapp');
-  await driver.clickElement('#signTypedDataV3Verify');
-  await driver.waitForSelector({
-    css: '#signTypedDataV3Result',
-    text: '0x0a22f7796a2a70c8dc918e7e6eb8452c8f2999d1a1eb5ad714473d36270a40d6724472e5609948c778a07216bd082b60b6f6853d6354c731fd8ccdd3a2f4af261b',
-  });
-
-  await driver.waitForSelector({
-    css: '#signTypedDataV3VerifyResult',
-    text: publicAddress,
-  });
+  await testDapp.check_successSignTypedDataV3(publicAddress);
+  await testDapp.verify_successSignTypedDataV3Result(
+    '0x0a22f7796a2a70c8dc918e7e6eb8452c8f2999d1a1eb5ad714473d36270a40d6724472e5609948c778a07216bd082b60b6f6853d6354c731fd8ccdd3a2f4af261b',
+  );
 }

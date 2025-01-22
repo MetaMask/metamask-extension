@@ -1,4 +1,4 @@
-import HomePage from '../pages/homepage';
+import HomePage from '../pages/home/homepage';
 import ConfirmTxPage from '../pages/send/confirm-tx-page';
 import SendTokenPage from '../pages/send/send-token-page';
 import { Driver } from '../../webdriver/driver';
@@ -76,6 +76,42 @@ export const sendRedesignedTransactionToAddress = async ({
   const sendToPage = new SendTokenPage(driver);
   await sendToPage.check_pageIsLoaded();
   await sendToPage.fillRecipient(recipientAddress);
+  await sendToPage.fillAmount(amount);
+  await sendToPage.goToNextScreen();
+
+  // confirm transaction when user lands on confirm transaction screen
+  const transactionConfirmationPage = new TransactionConfirmation(driver);
+  await transactionConfirmationPage.clickFooterConfirmButton();
+};
+
+/**
+ * This function initiates the steps required to send a transaction from the homepage to final confirmation.
+ *
+ * @param params - An object containing the parameters.
+ * @param params.driver - The webdriver instance.
+ * @param params.recipientAccount - The recipient account.
+ * @param params.amount - The amount of the asset to be sent in the transaction.
+ */
+export const sendRedesignedTransactionToAccount = async ({
+  driver,
+  recipientAccount,
+  amount,
+}: {
+  driver: Driver;
+  recipientAccount: string;
+  amount: string;
+}): Promise<void> => {
+  console.log(
+    `Start flow to send amount ${amount} to recipient account ${recipientAccount} on home screen`,
+  );
+  // click send button on homepage to start flow
+  const homePage = new HomePage(driver);
+  await homePage.startSendFlow();
+
+  // user should land on send token screen to fill recipient and amount
+  const sendToPage = new SendTokenPage(driver);
+  await sendToPage.check_pageIsLoaded();
+  await sendToPage.selectRecipientAccount(recipientAccount);
   await sendToPage.fillAmount(amount);
   await sendToPage.goToNextScreen();
 

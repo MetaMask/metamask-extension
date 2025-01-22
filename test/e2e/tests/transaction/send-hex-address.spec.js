@@ -3,7 +3,6 @@ const {
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
-  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -57,6 +56,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
       },
     );
   });
+
   it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
@@ -121,8 +121,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
         // Send TST
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
@@ -145,8 +143,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.findElement({
-          css: '.confirm-page-container-summary__title',
-          text: '0',
+          css: 'h2',
+          text: '0 ETH',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement(
@@ -170,6 +168,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       },
     );
   });
+
   it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
@@ -184,8 +183,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
-
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         // Send TST
         await driver.clickElement(
@@ -210,8 +207,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.findElement({
-          css: '.confirm-page-container-summary__title',
-          text: '0',
+          css: 'h2',
+          text: '0 ETH',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement(

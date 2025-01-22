@@ -13,6 +13,9 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getInternalAccounts,
   getIsDynamicTokenListAvailable,
   getIsMainnet,
@@ -26,8 +29,8 @@ import {
   getCurrentNetwork,
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
+  getPendingTokens,
 } from '../../../selectors';
-import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   addImportedTokens,
   clearPendingTokens,
@@ -88,10 +91,7 @@ import {
 } from '../../../helpers/utils/util';
 import { tokenInfoGetter } from '../../../helpers/utils/token-util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getNativeCurrency,
-  getPendingTokens,
-} from '../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

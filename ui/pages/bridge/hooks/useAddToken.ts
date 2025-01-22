@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { QuoteResponse } from '../types';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import type { QuoteResponse } from '../../../../shared/types/bridge';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { addToken, addNetwork } from '../../../store/actions';
 import {
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../../../shared/modules/selectors/networks';
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 
 export default function useAddToken() {
   const dispatch = useDispatch();
@@ -34,9 +34,9 @@ export default function useAddToken() {
 
   const addDestToken = async (quoteResponse: QuoteResponse) => {
     // Look up the destination chain
-    const hexDestChainId = new Numeric(quoteResponse.quote.destChainId, 10)
-      .toPrefixedHexString()
-      .toLowerCase() as `0x${string}`;
+    const hexDestChainId = decimalToPrefixedHex(
+      quoteResponse.quote.destChainId,
+    );
     const foundDestNetworkConfig: NetworkConfiguration | undefined =
       networkConfigurations[hexDestChainId];
     let addedDestNetworkConfig: NetworkConfiguration | undefined;

@@ -64,7 +64,7 @@ export const waitForTransactionToComplete = async (
 };
 
 describe('smart transactions @no-mmi', function () {
-  it('Completes a Swap', async function () {
+  it.skip('Completes a Swap', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),

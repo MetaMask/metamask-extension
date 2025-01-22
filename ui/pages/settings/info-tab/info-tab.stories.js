@@ -5,6 +5,6 @@ export default {
   title: 'Pages/Settings/InfoTab',
 };
 
-export const DefaultStory = () => <InfoTab />;
+export const DefaultStory = () => <InfoTab remoteFeatureFlags={{}} />;
 
 DefaultStory.storyName = 'Default';

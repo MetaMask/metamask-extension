@@ -131,7 +131,7 @@ function FunctionContainer({
   const t = useI18nContext();
 
   const paramRows = (
-    <Box paddingLeft={2}>
+    <Box paddingLeft={2} data-testid={`advanced-details-${method.name}-params`}>
       {method.params.map((param, paramIndex) => (
         <ParamRow
           key={paramIndex}

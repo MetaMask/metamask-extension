@@ -1,7 +1,5 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -9,66 +7,32 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation } from '../../helpers';
+import { getMetaMaskStateWithUnapprovedPermitSign } from './signature-helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
-
-const getMetaMaskStateWithUnapprovedPermitSign = (accountAddress: string) => {
-  const pendingPermitId = 'eae47d40-42a3-11ef-9253-b105fa7dfc9c';
-  const pendingPermitTime = new Date().getTime();
-  const messageParams = {
-    from: accountAddress,
-    version: 'v4',
-    data: `{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permit":[{"name":"owner","type":"address"},{"name":"spender","type":"address"},{"name":"value","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","domain":{"name":"MyToken","version":"1","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","chainId":1},"message":{"owner":"${accountAddress}","spender":"0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","value":3000,"nonce":0,"deadline":50000000000}}`,
-    origin: 'https://metamask.github.io',
-    signatureMethod: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-  };
-  return {
-    ...mockMetaMaskState,
-    preferences: {
-      ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
-    },
-    unapprovedTypedMessages: {
-      [pendingPermitId]: {
-        id: pendingPermitId,
-        chainId: CHAIN_IDS.SEPOLIA,
-        status: 'unapproved',
-        time: pendingPermitTime,
-        type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
-        securityProviderResponse: null,
-        msgParams: messageParams,
-      },
-    },
-    unapprovedTypedMessagesCount: 1,
-    pendingApprovals: {
-      [pendingPermitId]: {
-        id: pendingPermitId,
-        origin: 'origin',
-        time: pendingPermitTime,
-        type: ApprovalType.EthSignTypedData,
-        requestData: {
-          ...messageParams,
-          metamaskId: pendingPermitId,
-        },
-        requestState: null,
-        expectsResult: false,
-      },
-    },
-    pendingApprovalCount: 1,
-  };
-};
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 describe('Permit Confirmation', () => {
   beforeEach(() => {
@@ -78,6 +42,10 @@ describe('Permit Confirmation', () => {
         getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
       }),
     );
+    mockedAssetDetails.mockImplementation(() => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -94,6 +62,7 @@ describe('Permit Confirmation', () => {
     const accountName = account.metadata.name;
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
+      'Permit',
     );
 
     await act(async () => {
@@ -181,6 +150,7 @@ describe('Permit Confirmation', () => {
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
+      'Permit',
     );
 
     await act(async () => {
@@ -239,6 +209,7 @@ describe('Permit Confirmation', () => {
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
+      'Permit',
     );
 
     await act(async () => {
@@ -294,6 +265,7 @@ describe('Permit Confirmation', () => {
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
+      'Permit',
     );
 
     await act(async () => {

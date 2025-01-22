@@ -8,6 +8,16 @@ const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 type Notification = NotificationServicesController.Types.INotification;
 
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
+  return {
+    ...original,
+    useHistory: () => ({
+      push: jest.fn(),
+    }),
+  };
+});
+
 describe('NotificationDetailButton', () => {
   const defaultProps = {
     variant: ButtonVariant.Primary,

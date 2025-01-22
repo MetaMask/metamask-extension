@@ -23,6 +23,7 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../selectors', () => ({
   getCurrentChainId: () => '0x1',
+  getSelectedAddress: () => '0xselectedAddress',
   getRpcPrefsForCurrentProvider: () => {
     return {};
   },

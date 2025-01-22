@@ -7,7 +7,7 @@ exports[`create-snap-account confirmation should match snapshot 1`] = `
   >
     <div
       class="mm-box confirmation-page__content mm-box--padding-4"
-      style="margin-top: 0px; overflow-y: auto;"
+      style="overflow-y: auto;"
     >
       <div
         class="mm-box create-snap-account-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"

@@ -11,7 +11,6 @@ const GET_FEES_REQUEST_INCLUDES = {
       from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
       value: '0x1bc16d674ec80000',
-      gas: '0xf4240',
       nonce: '0x0',
     },
   ],
@@ -60,7 +59,6 @@ const GET_BATCH_STATUS_RESPONSE_PENDING = {
     minedTx: 'not_mined',
     wouldRevertMessage: null,
     minedHash: '',
-    duplicated: false,
     timedOut: false,
     proxied: false,
     type: 'sentinel',
@@ -77,7 +75,6 @@ const GET_BATCH_STATUS_RESPONSE_SUCCESS = {
     wouldRevertMessage: null,
     minedHash:
       '0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5',
-    duplicated: true,
     timedOut: true,
     proxied: false,
     type: 'sentinel',

@@ -700,9 +700,6 @@
   "loading": {
     "message": "Nilo-load..."
   },
-  "loadingTokens": {
-    "message": "Nilo-load ang Mga Token..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -821,9 +818,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Hindi Available ang Rate ng Conversion"
-  },
-  "noTransactions": {
-    "message": "Wala kang transaksyon"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
@@ -1590,10 +1584,6 @@
   },
   "whatsThis": {
     "message": "Ano ito?"
-  },
-  "xOfYPending": {
-    "message": "$1 sa $2 ang nakabinbin",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."

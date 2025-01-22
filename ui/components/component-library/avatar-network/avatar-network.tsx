@@ -7,6 +7,7 @@ import {
   TextColor,
   BackgroundColor,
   BorderColor,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
@@ -22,7 +23,7 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
       showHalo,
       color = TextColor.textDefault,
       backgroundColor = BackgroundColor.backgroundAlternative,
-      borderColor = BorderColor.transparent,
+      borderColor = BorderColor.backgroundDefault,
       className = '',
       ...props
     }: AvatarNetworkProps<C>,
@@ -52,6 +53,8 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
           showHalo ? 'mm-avatar-network--with-halo' : '',
           className,
         )}
+        borderRadius={BorderRadius.MD}
+        borderWidth={1}
         {...{
           backgroundColor,
           borderColor,

@@ -12,10 +12,10 @@ import {
   generateERC20TransferData,
   generateERC721TransferData,
 } from '../../pages/confirmations/send/send.utils';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
   getConfirmationExchangeRates,
-  getCurrentChainId,
   getTokenExchangeRates,
 } from '../../selectors';
 import { getGasFeeEstimates, getNativeCurrency } from '../metamask/metamask';
@@ -48,10 +48,15 @@ jest.mock('../../pages/confirmations/send/send.utils', () => ({
   getAssetTransferData: jest.fn(),
 }));
 
+jest.mock('../../../shared/modules/selectors/networks', () => ({
+  getCurrentChainId: jest.fn(),
+  getNetworkConfigurationsByChainId: jest.fn(),
+  getSelectedNetworkClientId: jest.fn(),
+}));
+
 jest.mock('../../selectors', () => ({
   checkNetworkAndAccountSupports1559: jest.fn(),
   getConfirmationExchangeRates: jest.fn(),
-  getCurrentChainId: jest.fn(),
   getGasPriceInHexWei: jest.fn(),
   getTokenExchangeRates: jest.fn(),
 }));

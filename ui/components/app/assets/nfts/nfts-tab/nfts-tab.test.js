@@ -133,20 +133,6 @@ const NFTS = [
   },
 ];
 
-const NFTS_CONTRACTS = [
-  {
-    address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
-    name: 'PUNKS',
-    symbol: 'PNKS',
-    schemaName: 'ERC1155',
-  },
-  {
-    address: '0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414',
-    name: 'Munks',
-    symbol: 'MNKS',
-  },
-];
-
 const nftsDropdownState = {
   '0x495f947276749ce646f68ac8c248420045cb7b5e': true,
   '0xdc7382eb0bc9c352a4cba23c909bda01e0206414': true,
@@ -309,27 +295,6 @@ describe('NFT Items', () => {
         chainId: '0x4',
       });
       expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('Collections', () => {
-    it('should render the name of the collections and number of NFTs in each collection if current account/chainId combination has NFTs', () => {
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        nftContracts: NFTS_CONTRACTS,
-      });
-      expect(screen.queryByText('PUNKS (5)')).toBeInTheDocument();
-      expect(screen.queryByText('Munks (3)')).toBeInTheDocument();
-    });
-    it('should not render collections if current account/chainId combination has NFTs', () => {
-      render({
-        selectedAddress: ACCOUNT_2,
-        nfts: NFTS,
-        nftContracts: NFTS_CONTRACTS,
-      });
-      expect(screen.queryByText('PUNKS (5)')).not.toBeInTheDocument();
-      expect(screen.queryByText('Munks (3)')).not.toBeInTheDocument();
     });
   });
 

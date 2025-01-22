@@ -1,13 +1,9 @@
 import React, { useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  EthAccountType,
-  InternalAccount,
-  KeyringAccountType,
-} from '@metamask/keyring-api';
+import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getUpdatedAndSortedAccounts,
-  getInternalAccounts,
   getSelectedInternalAccount,
 } from '../../../../../selectors';
 import { AccountListItem } from '../../..';
@@ -16,13 +12,11 @@ import {
   updateRecipient,
   updateRecipientUserInput,
 } from '../../../../../ducks/send';
-import { mergeAccounts } from '../../../account-list-menu/account-list-menu';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
 import { SendPageRow } from '.';
 
 type SendPageYourAccountsProps = {
@@ -39,19 +33,18 @@ export const SendPageYourAccounts = ({
 
   // Your Accounts
   const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
-    return mergeAccounts(accounts, internalAccounts).filter(
-      (account: InternalAccount) => allowedAccountTypes.includes(account.type),
+  const filteredAccounts = useMemo(() => {
+    return accounts.filter((account: InternalAccount) =>
+      allowedAccountTypes.includes(account.type),
     );
-  }, [accounts, internalAccounts]);
+  }, [accounts]);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
   return (
     <SendPageRow>
       {/* TODO: Replace `any` with type */}
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      {mergedAccounts.map((account: any) => (
+      {filteredAccounts.map((account: any) => (
         <AccountListItem
           account={account}
           selected={selectedAccount.address === account.address}

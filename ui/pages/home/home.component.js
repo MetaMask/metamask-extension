@@ -54,15 +54,11 @@ import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-r
 ///: END:ONLY_INCLUDE_IF
 import {
   RESTORE_VAULT_ROUTE,
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
-  CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -80,6 +76,7 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
+import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { AccountType } from '../../../shared/constants/custody';
 ///: END:ONLY_INCLUDE_IF
@@ -128,9 +125,6 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    hasTransactionPendingApprovals: PropTypes.bool.isRequired,
-    hasWatchTokenPendingApprovals: PropTypes.bool,
-    hasWatchNftPendingApprovals: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
@@ -158,7 +152,6 @@ export default class Home extends PureComponent {
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
-    firstPermissionsRequestId: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
@@ -167,6 +160,7 @@ export default class Home extends PureComponent {
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
+    haveBridgeQuotes: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
     swapsFetchParams: PropTypes.object,
@@ -175,9 +169,7 @@ export default class Home extends PureComponent {
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
-    pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
-      .isRequired,
+    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -229,14 +221,12 @@ export default class Home extends PureComponent {
 
     const {
       closeNotificationPopup,
-      firstPermissionsRequestId,
       haveSwapsQuotes,
+      haveBridgeQuotes,
       isNotification,
+      pendingApprovals,
       showAwaitingSwapScreen,
-      hasWatchTokenPendingApprovals,
-      hasWatchNftPendingApprovals,
       swapsFetchParams,
-      hasTransactionPendingApprovals,
       location,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
@@ -245,13 +235,13 @@ export default class Home extends PureComponent {
       this.state.notificationClosing = true;
       closeNotificationPopup();
     } else if (
-      firstPermissionsRequestId ||
-      hasTransactionPendingApprovals ||
-      hasWatchTokenPendingApprovals ||
-      hasWatchNftPendingApprovals ||
+      pendingApprovals.length ||
       (!isNotification &&
         !stayOnHomePage &&
-        (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
+        (showAwaitingSwapScreen ||
+          haveSwapsQuotes ||
+          swapsFetchParams ||
+          haveBridgeQuotes))
     ) {
       this.state.redirecting = true;
     }
@@ -302,18 +292,14 @@ export default class Home extends PureComponent {
 
   checkStatusAndNavigate() {
     const {
-      firstPermissionsRequestId,
       history,
       isNotification,
-      hasTransactionPendingApprovals,
-      hasWatchTokenPendingApprovals,
-      hasWatchNftPendingApprovals,
       haveSwapsQuotes,
+      haveBridgeQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
-      pendingConfirmations,
-      pendingConfirmationsPrioritized,
+      pendingApprovals,
       hasApprovalFlows,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
@@ -327,18 +313,15 @@ export default class Home extends PureComponent {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
       history.push(PREPARE_SWAP_ROUTE);
-    } else if (firstPermissionsRequestId) {
-      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
-    } else if (pendingConfirmationsPrioritized.length > 0) {
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
-    } else if (hasTransactionPendingApprovals) {
-      history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (hasWatchTokenPendingApprovals) {
-      history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
-    } else if (hasWatchNftPendingApprovals) {
-      history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
-    } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
+    } else if (canRedirect && haveBridgeQuotes) {
+      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+    } else if (pendingApprovals.length) {
+      navigateToConfirmation(
+        pendingApprovals[0].id,
+        pendingApprovals,
+        hasApprovalFlows,
+        history,
+      );
     }
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.checkInstitutionalConnectRequest();

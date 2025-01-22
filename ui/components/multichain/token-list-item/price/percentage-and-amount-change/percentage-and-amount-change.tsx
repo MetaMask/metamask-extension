@@ -9,9 +9,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
-  getCurrentCurrency,
   getSelectedAccountCachedBalance,
   getTokensMarketData,
 } from '../../../../../selectors';
@@ -20,6 +19,7 @@ import { EtherDenomination } from '../../../../../../shared/constants/common';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 import {
   getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
 import {

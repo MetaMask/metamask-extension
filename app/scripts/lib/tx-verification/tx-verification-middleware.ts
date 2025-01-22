@@ -20,9 +20,7 @@ import {
   TRUSTED_SIGNERS,
 } from '../../../../shared/constants/verification';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getCurrentChainId } from '../../../../ui/selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 export type TxParams = {
   chainId?: `0x${string}`;

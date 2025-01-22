@@ -7,10 +7,9 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
+} from '../../../shared/types/bridge';
 import * as util from '../../helpers/utils/util';
+import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
 import bridgeReducer from './bridge';
 import {
   setBridgeFeatureFlags,
@@ -18,12 +17,13 @@ import {
   setFromTokenInputValue,
   setToChain,
   setToToken,
-  setFromChain,
   resetInputFields,
   setToChainId,
   updateQuoteRequestParams,
   resetBridgeState,
   setDestTokenExchangeRates,
+  setWasTxDeclined,
+  setSlippage,
 } from './actions';
 
 const middleware = [thunk];
@@ -34,6 +34,21 @@ describe('Ducks - Bridge', () => {
 
   beforeEach(() => {
     store.clearActions();
+  });
+
+  describe('setSlippage', () => {
+    it('calls the "bridge/setSlippage" action', () => {
+      const state = store.getState().bridge;
+      const actionPayload = 0.1;
+
+      store.dispatch(setSlippage(actionPayload as never) as never);
+
+      // Check redux state
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/setSlippage');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState.slippage).toStrictEqual(actionPayload);
+    });
   });
 
   describe('setToChainId', () => {
@@ -120,23 +135,6 @@ describe('Ducks - Bridge', () => {
     });
   });
 
-  describe('setFromChain', () => {
-    it('calls the selectSrcNetwork background action', async () => {
-      const mockSelectSrcNetwork = jest.fn().mockReturnValue({});
-      setBackgroundConnection({
-        [BridgeUserAction.SELECT_SRC_NETWORK]: mockSelectSrcNetwork,
-      } as never);
-
-      await store.dispatch(setFromChain(CHAIN_IDS.MAINNET) as never);
-
-      expect(mockSelectSrcNetwork).toHaveBeenCalledTimes(1);
-      expect(mockSelectSrcNetwork).toHaveBeenCalledWith(
-        '0x1',
-        expect.anything(),
-      );
-    });
-  });
-
   describe('resetInputFields', () => {
     it('resets to initalState', async () => {
       const state = store.getState().bridge;
@@ -149,10 +147,13 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         fromToken: null,
         toToken: null,
+        slippage: BRIDGE_DEFAULT_SLIPPAGE,
         fromTokenInputValue: null,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
         toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
+        wasTxDeclined: false,
+        toTokenUsdExchangeRate: null,
       });
     });
   });
@@ -188,7 +189,9 @@ describe('Ducks - Bridge', () => {
     it('dispatches action to the bridge controller', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore({}, { fromTokenInputValue: '10' }),
+        createBridgeMockStore({
+          bridgeSliceOverrides: { fromTokenInputValue: '10' },
+        }),
       );
       const state = mockStore.getState().bridge;
       const mockResetBridgeState = jest.fn();
@@ -211,13 +214,17 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        sortOrder: 0,
+        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
         toTokenExchangeRate: null,
+        wasTxDeclined: false,
+        toTokenUsdExchangeRate: null,
       });
     });
   });
+
   describe('setDestTokenExchangeRates', () => {
     it('fetches token prices and updates dest exchange rates in state, native dest token', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -258,7 +265,7 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.356628,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
     });
 
@@ -303,8 +310,19 @@ describe('Ducks - Bridge', () => {
       expect(newState).toStrictEqual({
         toChainId: null,
         toTokenExchangeRate: 0.999881,
-        sortOrder: 0,
+        sortOrder: 'cost_ascending',
       });
+    });
+  });
+
+  describe('setWasTxDeclined', () => {
+    it('sets the wasTxDeclined flag to true', () => {
+      const state = store.getState().bridge;
+      store.dispatch(setWasTxDeclined(true));
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/setWasTxDeclined');
+      const newState = bridgeReducer(state, actions[0]);
+      expect(newState.wasTxDeclined).toStrictEqual(true);
     });
   });
 });

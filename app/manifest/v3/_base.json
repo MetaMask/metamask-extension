@@ -50,7 +50,9 @@
     "http://localhost:8545/",
     "file://*/*",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "ws://*/*",
+    "wss://*/*"
   ],
   "icons": {
     "16": "images/icon-16.png",

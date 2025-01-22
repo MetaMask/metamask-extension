@@ -29,12 +29,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   updateCustomNonce,
 } from '../../../../../store/actions';
-import { selectUseTransactionSimulations } from '../../../selectors/preferences';
-
-import {
-  isPermitSignatureRequest,
-  isSIWESignatureRequest,
-} from '../../../utils';
+import { isSignatureTransactionType } from '../../../utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { getConfirmationSender } from '../utils';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -96,14 +91,14 @@ const ConfirmButton = ({
     useState<boolean>(false);
 
   const {
+    alerts,
     hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
-    fieldAlerts,
     hasUnconfirmedFieldDangerAlerts,
     unconfirmedFieldDangerAlerts,
   } = useAlerts(alertOwnerId);
 
-  const hasDangerBlockingAlerts = fieldAlerts.some(
+  const hasDangerBlockingAlerts = alerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
   );
 
@@ -164,9 +159,7 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const customNonceValue = useSelector(getCustomNonceValue);
-  const useTransactionSimulations = useSelector(
-    selectUseTransactionSimulations,
-  );
+
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext();
   const { from } = getConfirmationSender(currentConfirmation);
@@ -184,12 +177,10 @@ const Footer = () => {
     return false;
   });
 
-  const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const isPermit = isPermitSignatureRequest(currentConfirmation);
-  const isPermitSimulationShown = isPermit && useTransactionSimulations;
+  const isSignature = isSignatureTransactionType(currentConfirmation);
 
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSIWE && !isPermitSimulationShown) ||
+    (!isScrollToBottomCompleted && !isSignature) ||
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiSubmitDisabled ||
     ///: END:ONLY_INCLUDE_IF

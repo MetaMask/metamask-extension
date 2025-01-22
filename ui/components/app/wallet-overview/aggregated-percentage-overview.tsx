@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
-  getCurrentChainId,
 } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 // TODO: Remove restricted import

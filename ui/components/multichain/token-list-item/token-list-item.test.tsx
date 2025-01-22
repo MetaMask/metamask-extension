@@ -124,11 +124,12 @@ describe('TokenListItem', () => {
       title: '',
       chainId: '0x1',
     };
-    const { getByText } = renderWithProvider(
+    const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('should display warning scam modal', () => {
@@ -152,10 +153,11 @@ describe('TokenListItem', () => {
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
     };
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
+    expect(container).toMatchSnapshot();
 
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
@@ -180,11 +182,12 @@ describe('TokenListItem', () => {
       tokenSymbol: 'SCAM_TOKEN',
       chainId: '0x1',
     };
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
 
+    expect(container).toMatchSnapshot();
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
@@ -209,11 +212,12 @@ describe('TokenListItem', () => {
       chainId: '0x1',
     };
 
-    const { getByText } = renderWithProvider(
+    const { getByText, container } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('handles click action and fires onClick', () => {
@@ -232,7 +236,7 @@ describe('TokenListItem', () => {
 
   it('handles clicking staking opens tab', async () => {
     const store = configureMockStore()(state);
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId, container } = renderWithProvider(
       <TokenListItem isStakeable {...props} />,
       store,
     );
@@ -243,6 +247,7 @@ describe('TokenListItem', () => {
 
     expect(stakeButton).toBeInTheDocument();
     expect(stakeButton).not.toBeDisabled();
+    expect(container).toMatchSnapshot();
 
     stakeButton && fireEvent.click(stakeButton);
     expect(openTabSpy).toHaveBeenCalledTimes(1);

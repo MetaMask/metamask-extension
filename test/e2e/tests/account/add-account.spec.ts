@@ -1,17 +1,18 @@
 import { E2E_SRP } from '../../default-fixture';
 import FixtureBuilder from '../../fixture-builder';
+import { ACCOUNT_TYPE } from '../../constants';
 import {
   WALLET_PASSWORD,
   defaultGanacheOptions,
-  tempToggleSettingRedesignedTransactionConfirmations,
   withFixtures,
 } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
-import { sendTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
+import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 
@@ -26,8 +27,6 @@ describe('Add account', function () {
       async ({ driver, ganacheServer }) => {
         await completeImportSRPOnboardingFlow({ driver });
 
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
@@ -38,7 +37,9 @@ describe('Add account', function () {
         const newAccountName = 'Account 2';
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccount();
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Ethereum,
+        });
         await headerNavbar.check_accountLabel(newAccountName);
         await homePage.check_expectedBalanceIsDisplayed();
 
@@ -49,16 +50,17 @@ describe('Add account', function () {
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
         await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
-        await sendTransactionToAccount({
+
+        await sendRedesignedTransactionToAccount({
           driver,
           recipientAccount: newAccountName,
           amount: '2.8',
-          gasFee: '0.000042',
-          totalFee: '2.800042',
         });
+
         await homePage.check_pageIsLoaded();
-        await homePage.check_confirmedTxNumberDisplayedInActivity();
-        await homePage.check_txAmountInActivity('-2.8 ETH');
+        const activityList = new ActivityListPage(driver);
+        await activityList.check_confirmedTxNumberDisplayedInActivity();
+        await activityList.check_txAmountInActivity('-2.8 ETH');
 
         // Lock wallet and recover via SRP in "forget password" option
         await headerNavbar.lockMetaMask();
@@ -100,7 +102,9 @@ describe('Add account', function () {
         // Create new account with default name Account 2
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.addNewAccount();
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Ethereum,
+        });
         await headerNavbar.check_accountLabel('Account 2');
         await homePage.check_expectedBalanceIsDisplayed();
 
