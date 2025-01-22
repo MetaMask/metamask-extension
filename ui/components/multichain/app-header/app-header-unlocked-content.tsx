@@ -56,7 +56,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
-import { MultichainNetwork } from '../../../selectors/multichain';
+import { MultichainNetwork } from '../../../selectors/multichain.types';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;

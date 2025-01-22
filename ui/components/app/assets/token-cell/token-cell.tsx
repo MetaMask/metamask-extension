@@ -10,8 +10,8 @@ import {
 import {
   isChainIdMainnet,
   getImageForChainId,
-  getMultichainIsEvm,
 } from '../../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../../selectors/getMultichainIsEvm';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { getIntlLocale } from '../../../../ducks/locale/locale';

@@ -96,10 +96,8 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
 ///: END:ONLY_INCLUDE_IF
-import {
-  getMultichainIsEvm,
-  getMultichainNativeCurrency,
-} from '../../../selectors/multichain';
+import { getMultichainNativeCurrency } from '../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../selectors/getMultichainIsEvm';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 

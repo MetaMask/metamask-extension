@@ -1,4 +1,4 @@
-import { MultichainState, BalancesState } from './multichain';
+import { MultichainState, BalancesState } from './multichain.types';
 
 export function getMultichainBalances(
   state: MultichainState,

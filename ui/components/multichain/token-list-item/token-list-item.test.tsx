@@ -11,7 +11,7 @@ import {
   getCurrencyRates,
   getNetworkConfigurationIdByChainId,
 } from '../../../selectors';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../selectors/getMultichainIsEvm';
 import { TokenListItem } from '.';
 
 const state = {

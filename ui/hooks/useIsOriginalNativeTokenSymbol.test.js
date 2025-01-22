@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import * as fetchWithCacheModule from '../../shared/lib/fetch-with-cache';
 import { useSafeChainsListValidationSelector } from '../selectors';
-import { getMultichainIsEvm } from '../selectors/multichain';
+import { getMultichainIsEvm } from '../selectors/getMultichainIsEvm';
 import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol'; // Adjust the import path accordingly
 
 jest.mock('react-redux', () => {

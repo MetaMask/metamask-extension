@@ -23,10 +23,10 @@ import { EtherDenomination } from '../../../../shared/constants/common';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
   getMultichainCurrentCurrency,
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../selectors/getMultichainIsEvm';
 
 // Why this number?
 // 20 gwei * 21000 gasLimit = 420,000 gwei

@@ -2,7 +2,7 @@ import {
   MultichainProviderConfig,
   MULTICHAIN_PROVIDER_CONFIGS,
 } from '../../shared/constants/multichain/networks';
-import { MultichainState } from './multichain';
+import { MultichainState } from './multichain.types';
 
 export function getMultichainNetworkProviders(
   _state: MultichainState,

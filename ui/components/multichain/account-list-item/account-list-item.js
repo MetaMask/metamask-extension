@@ -59,9 +59,9 @@ import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
-  getMultichainNetwork,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/getMultichainNetwork';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

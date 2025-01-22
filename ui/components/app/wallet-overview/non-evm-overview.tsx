@@ -6,10 +6,12 @@ import { BtcAccountType } from '@metamask/keyring-api';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsMainnet,
+} from '../../../selectors/multichain';
+import {
   ///: END:ONLY_INCLUDE_IF
   getMultichainProviderConfig,
-  getMultichainSelectedAccountCachedBalance,
-} from '../../../selectors/multichain';
+} from '../../../selectors/getMultichainProviderConfig';
+import { getMultichainSelectedAccountCachedBalance } from '../../../selectors/getMultichainSelectedAccountCachedBalance';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';

@@ -1,6 +1,6 @@
 import { getAccountLink } from '@metamask/etherscan-link';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { MultichainNetwork } from '../../../selectors/multichain';
+import { MultichainNetwork } from '../../../selectors/multichain.types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
