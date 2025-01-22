@@ -159,6 +159,10 @@ export type ControllerInitResult<ControllerType extends Controller> = {
 /**
  * Function to initialize a controller instance and return associated data.
  */
-export type ControllerInitFunction<ControllerType extends Controller> = (
-  request: ControllerInitRequest,
+export type ControllerInitFunction<
+  ControllerType extends Controller,
+  ControllerMessengerType extends void | BaseRestrictedControllerMessenger = void,
+  InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
+> = (
+  request: ControllerInitRequest<ControllerMessengerType, InitMessengerType>,
 ) => ControllerInitResult<ControllerType>;

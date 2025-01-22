@@ -2302,7 +2302,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    const initControllersByName = [
+    const existingControllers = [
       this.networkController,
       this.preferencesController,
       this.gasFeeController,
@@ -2312,10 +2312,8 @@ export default class MetamaskController extends EventEmitter {
       this.transactionUpdateController,
       ///: END:ONLY_INCLUDE_IF
       this.smartTransactionsController,
-    ].reduce((controllersByName, controller) => {
-      controllersByName[controller.name] = controller;
-      return controllersByName;
-    }, {});
+    ];
+
     const controllerInitFunctions = {
       PPOMController: PPOMControllerInit,
       TransactionController: TransactionControllerInit,
@@ -2327,9 +2325,9 @@ export default class MetamaskController extends EventEmitter {
       controllerPersistedState,
       controllersByName,
     } = this.#initControllers({
-      initControllersByName,
-      initState,
+      existingControllers,
       initFunctions: controllerInitFunctions,
+      initState,
     });
 
     this.controllerApi = controllerApi;
@@ -7352,9 +7350,8 @@ export default class MetamaskController extends EventEmitter {
     return this.networkController.state.selectedNetworkClientId;
   }
 
-  #initControllers({ initFunctions, initState }) {
+  #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
-      baseControllerMessenger: this.controllerMessenger,
       getFlatState: this.getState.bind(this),
       getGlobalChainId: this.#getGlobalChainId.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
@@ -7366,6 +7363,8 @@ export default class MetamaskController extends EventEmitter {
     };
 
     return initControllers({
+      baseControllerMessenger: this.controllerMessenger,
+      existingControllers,
       initFunctions,
       initRequest,
     });

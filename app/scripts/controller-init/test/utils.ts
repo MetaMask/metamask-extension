@@ -1,3 +1,4 @@
+import { ControllerMessenger } from '@metamask/base-controller';
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
@@ -23,12 +24,13 @@ export function buildControllerMessengerMock(
 
 export function buildControllerInitRequestMock() {
   return {
-    baseControllerMessenger: buildControllerMessengerMock(),
+    controllerMessenger: buildControllerMessengerMock(),
     getController: jest.fn(),
     getGlobalChainId: jest.fn().mockReturnValue(CHAIN_ID_MOCK),
     getPermittedAccounts: jest.fn(),
     getProvider: jest.fn(),
     getTransactionMetricsRequest: jest.fn(),
+    initMessenger: buildControllerMessengerMock(),
     persistedState: {},
   } as unknown as jest.Mocked<ControllerInitRequest>;
 }
