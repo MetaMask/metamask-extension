@@ -68,13 +68,7 @@ export function createDuplexStreamWrapper(mx, name) {
     },
     write(chunk, _encoding, callback) {
       try {
-        substream.write(
-          {
-            name: chunk.name,
-            ...chunk.data,
-          },
-          callback,
-        );
+        substream.write(chunk.data, callback);
       } catch (error) {
         // eslint-disable-next-line node/callback-return
         callback(error); // No return needed as we're catching synchronous errors
@@ -87,10 +81,6 @@ export function createDuplexStreamWrapper(mx, name) {
       name,
       data: chunk,
     });
-  });
-
-  substream.on('error', (error) => {
-    duplexWrapper.destroy(error);
   });
 
   substream.on('end', () => {
