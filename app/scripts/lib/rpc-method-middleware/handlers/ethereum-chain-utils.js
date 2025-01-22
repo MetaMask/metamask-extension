@@ -165,11 +165,11 @@ export function validateAddEthereumChainParams(params) {
  * @param {string} chainId - The chainId being switched to.
  * @param {string} networkClientId - The network client being switched to.
  * @param {object} hooks - The hooks object.
+ * @param {Boolean} [hooks.autoApprove] - Whether or not any permission changes should prompt the user for approval or be automatically approved.
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
  * @param {Function} hooks.requestPermittedChainsPermissionForOrigin - The callback to request a new permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
- * @param hooks.autoApprove
  * @returns a null response on success or an error if user rejects an approval when autoApprove is false or on unexpected errors.
  */
 export async function switchChain(
