@@ -22,6 +22,18 @@ const decodingData: DecodingData = {
 };
 
 describe('useDecodedSignatureMetrics', () => {
+  /**
+   * Use fake timer since the tests test the decoding_latency value which is flaky.
+   * Without the fake timer, the value may show as 0 or 0.0001.
+   */
+  beforeAll(() => {
+    jest.useFakeTimers({ now: 10 });
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   it('should not call updateSignatureEventFragment if supportedByDecodingAPI is false', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
