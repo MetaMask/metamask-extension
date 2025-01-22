@@ -4876,7 +4876,7 @@ export default class MetamaskController extends EventEmitter {
 
   async attemptLedgerTransportCreation() {
     return await this.#withKeyringForDevice(
-      HardwareDeviceNames.ledger,
+      { name: HardwareDeviceNames.ledger },
       async (keyring) => keyring.attemptMakeApp(),
     );
   }
