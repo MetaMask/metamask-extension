@@ -187,7 +187,7 @@ describe('Add Ethereum Chain', function () {
           });
 
           await driver.executeScript(
-            `window.ethereum.request(${switchEthereumChainRequest})`,
+            `window.ethereum.request(${addEthereumChainRequest})`,
           );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
