@@ -209,8 +209,8 @@ export async function switchChain(
 
     await setActiveNetwork(networkClientId);
     response.result = null;
+    return end();
   } catch (error) {
     return end(error);
   }
-  return end();
 }
