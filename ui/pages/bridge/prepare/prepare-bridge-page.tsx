@@ -95,8 +95,7 @@ import { getCurrentKeyring, getLocale } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import { getMultichainIsSolana } from '../../../selectors/multichain';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -367,8 +366,7 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search]);
 
-  const multichainNetwork = useSelector(getMultichainNetwork);
-  const isSolana = multichainNetwork.chainId === MultichainNetworks.SOLANA;
+  const isSolana = useSelector(getMultichainIsSolana);
 
   return (
     <Column className="prepare-bridge-page" gap={8}>

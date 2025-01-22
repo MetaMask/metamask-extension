@@ -39,8 +39,7 @@ import { shortenString } from '../../../helpers/utils/util';
 import type { BridgeToken } from '../../../../shared/types/bridge';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { getMultichainNetwork } from '../../../selectors/multichain';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { getMultichainIsSolana } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 export const BridgeInputGroup = ({
@@ -101,8 +100,7 @@ export const BridgeInputGroup = ({
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
-  const multichainNetwork = useSelector(getMultichainNetwork);
-  const isSolana = multichainNetwork.chainId === MultichainNetworks.SOLANA;
+  const isSolana = useSelector(getMultichainIsSolana);
 
   return (
     <Column paddingInline={6} gap={1}>
