@@ -8,7 +8,6 @@ import {
 import {
   Caip25CaveatType,
   Caip25CaveatValue,
-  Caip25EndowmentPermissionName,
   setEthAccounts,
   setPermittedEthChainIds,
 } from '@metamask/multichain';
@@ -22,6 +21,18 @@ export type PermissionsRequest = Record<
   string,
   { caveats?: { type: string; value: Caip25CaveatValue }[] }
 >;
+
+/**
+ * Safely parses a string to a number, returning undefined if parsing fails.
+ *
+ * @param value - The string to parse.
+ * @returns The parsed number or undefined if parsing fails.
+ */
+// TODO: I'm assuming we should have already something like this in such a big code base, where is it ? Or do we keep this implementation ?
+function safeParseInt(value: string): number | undefined {
+  const parsed = parseInt(value, 10);
+  return isNaN(parsed) ? undefined : parsed;
+}
 
 /**
  * Takes in an incoming {@link PermissionsRequest} and attempts to return the {@link Caip25CaveatValue} with the Ethereum accounts set.
@@ -86,12 +97,13 @@ export function getRequestedChainsViaPermissionsRequest(
       continue;
     }
 
-    // TODO: [perhaps create ticket?]
+    // TODO: [perhaps create multichain ticket?]
     // if I pass something other than a number here (for example, scope "eip:155", we get "0x0"). Is this expected behaviour?
     const { reference } = parseCaipChainId(scope as CaipChainId);
-    if (reference !== undefined) {
-      // TODO: safely parse number
-      result.push(Number(reference));
+    const parsedReference = safeParseInt(reference);
+
+    if (parsedReference) {
+      result.push(parsedReference);
     }
   }
 
@@ -110,7 +122,7 @@ export function parseCaip25PermissionsResponse(
   addresses: string[],
   hexChainIds: string[],
 ) {
-  const caveatValue = {
+  const caveatValue: Caip25CaveatValue = {
     requiredScopes: {},
     optionalScopes: {
       'wallet:eip155': {
@@ -132,10 +144,10 @@ export function parseCaip25PermissionsResponse(
 
   return {
     permissions: {
-      [Caip25EndowmentPermissionName]: {
+      [EndowmentTypes.caip25]: {
         caveats: [
           {
-            type: Caip25CaveatType,
+            type: CaveatTypes.caip25,
             value: caveatValueWithAccounts,
           },
         ],

@@ -87,12 +87,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
   const currentlySelectedNetworkChainId =
     currentlySelectedNetwork.network.chainId;
-  // If globally selected network is a test network, include that in the default selcted networks for connection request
+  // If globally selected network is a test network, include that in the default selected networks for connection request
   const selectedTestNetwork = testNetworks.find(
     (network: { chainId: string }) =>
       network.chainId === currentlySelectedNetworkChainId,
   );
 
+  // TODO: /!\/!\/!\ I need to handle a case where user requests several networks and some might not be configured, how should we proceed ? /!\/!\/!\
   const selectedNetworksList = selectedTestNetwork
     ? [...nonTestNetworks, selectedTestNetwork]
     : nonTestNetworks;
