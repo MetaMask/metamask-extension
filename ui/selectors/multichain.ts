@@ -221,6 +221,16 @@ export function getMultichainIsBitcoin(
   return !isEvm && symbol === 'BTC';
 }
 
+export function getMultichainIsSolana(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'SOL';
+}
+
 /**
  * Retrieves the provider configuration for a multichain network.
  *
