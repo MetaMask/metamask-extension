@@ -65,6 +65,7 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - solana
+      - solana-swaps
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -139,6 +140,7 @@ features:
   solana:
     assets:
       - ./{app,shared,ui}/**/solana/**
+  solana-swaps:
 
 # Env variables that are required for all types of builds
 #
