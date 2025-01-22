@@ -31,7 +31,7 @@ import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
-import { setupMultiplex } from './lib/stream-utils';
+import { setupMultiplex, createDuplexStreamWrapper } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
@@ -348,7 +348,8 @@ function connectToAccountManager(connectionStream) {
     controllerConnectionStream,
   );
 
-  setupWeb3Connection(mx.createStream('provider'));
+  const providerStream = createDuplexStreamWrapper(mx, 'provider');
+  setupWeb3Connection(providerStream);
 
   return backgroundConnection;
 }
@@ -360,7 +361,7 @@ function connectToAccountManager(connectionStream) {
  */
 function setupWeb3Connection(connectionStream) {
   const providerStream = new StreamProvider(connectionStream, {
-    multiplexing: false,
+    jsonRpcStreamName: 'provider',
   });
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));

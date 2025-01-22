@@ -6182,7 +6182,7 @@ __metadata:
 
 "@metamask/providers@patch:@metamask/providers@npm%3A18.2.0#~/.yarn/patches/@metamask-providers-npm-18.2.0-3616fe3170.patch":
   version: 18.2.0
-  resolution: "@metamask/providers@patch:@metamask/providers@npm%3A18.2.0#~/.yarn/patches/@metamask-providers-npm-18.2.0-3616fe3170.patch::version=18.2.0&hash=ebdfd0"
+  resolution: "@metamask/providers@patch:@metamask/providers@npm%3A18.2.0#~/.yarn/patches/@metamask-providers-npm-18.2.0-3616fe3170.patch::version=18.2.0&hash=ba3cce"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.0.1"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.5"
@@ -6197,7 +6197,7 @@ __metadata:
     readable-stream: "npm:^3.6.2"
   peerDependencies:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/ea56489bba7aa68d2700ed3ff43a3d4f0486c6c373320775c0d78f1e2644bc04f3eec433fbbc1a69d5166ec4d021b7dff0372fa0bde8ebae2ec3c7c813ef8de9
+  checksum: 10/89734421fd5598f1fb48d88aeaebfe2b3a078bde1aecb9d758fa3296f22aef4709ff856f87e483445985a00a246404b42e2b7668f43901f4a7918789a83c6d2e
   languageName: node
   linkType: hard
 

@@ -1,5 +1,5 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { pipeline } from 'readable-stream';
+import { Duplex, pipeline } from 'readable-stream';
 
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 
@@ -49,4 +49,44 @@ export function isStreamWritable(stream) {
   return Boolean(
     stream.writable && !stream.destroyed && !stream._writableState?.ended,
   );
+}
+
+/**
+ * Creates a duplex stream wrapper for a substream.
+ *
+ * @param {ObjectMultiplex} mx - The multiplexer.
+ * @param {string} name - The name of the substream to create.
+ * @returns {Duplex} A fresh duplex that simply forwards data to/from substream.
+ */
+export function createDuplexStreamWrapper(mx, name) {
+  const substream = mx.createStream(name);
+
+  const duplexWrapper = new Duplex({
+    objectMode: true,
+
+    read() {
+      // We do nothing special here; data is pushed when the internal substream emits 'data'..push(null);
+    },
+
+    write(chunk, _encoding, callback) {
+      substream.write({
+        name: chunk.name,
+        ...chunk.data,
+      });
+      callback();
+    },
+  });
+
+  substream.on('data', (chunk) => {
+    duplexWrapper.push({
+      name,
+      data: chunk,
+    });
+  });
+
+  substream.on('end', () => {
+    duplexWrapper.push(null);
+  });
+
+  return duplexWrapper;
 }
