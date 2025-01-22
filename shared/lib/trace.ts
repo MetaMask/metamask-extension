@@ -382,6 +382,14 @@ export async function fetchWithSentryInstrumentation(
   method: string,
   url: string,
 ) {
+  const response = await fetch(url, {
+    method,
+  });
+  // Do not create spans for outgoing requests to a 'sentry.io' domain.
+  if (!url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u)) {
+    return response;
+  }
+
   return await Sentry.startSpan(
     { op: 'http.client', name: `${method} ${url}` },
     async (span) => {
@@ -391,10 +399,6 @@ export async function fetchWithSentryInstrumentation(
 
       span.setAttribute('server.address', parsedURL.hostname);
       span.setAttribute('server.port', parsedURL.port || undefined);
-
-      const response = await fetch(url, {
-        method,
-      });
 
       span.setAttribute('http.response.status_code', response.status);
       span.setAttribute(
