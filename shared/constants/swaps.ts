@@ -1,3 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+import { MultichainNetworks } from './multichain/networks';
+///: END:ONLY_INCLUDE_IF
 import {
   ETH_TOKEN_IMAGE_URL,
   TEST_ETH_TOKEN_IMAGE_URL,
@@ -181,6 +184,9 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.ZKSYNC_ERA,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  MultichainNetworks.SOLANA,
+  ///: END:ONLY_INCLUDE_IF
 ] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
