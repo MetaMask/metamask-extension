@@ -9,10 +9,15 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import BridgeQuotePage, {
+  BridgeQuote,
+} from '../../page-objects/pages/bridge/quote-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import { sleep } from '@metamask/test-bundler/dist/utils';
 
 describe('Bridge tests @no-mmi', function (this: Suite) {
-  it('Cross chain swap ETH from Ethereum to Linea', async function () {
+  let txCount = 1;
+  it('Execute various bridge transactions', async function () {
     await withFixtures(
       getBridgeFixtures(this.test?.fullTitle(), {
         'extension-config': {
@@ -32,31 +37,55 @@ describe('Bridge tests @no-mmi', function (this: Suite) {
 
         await importAccount(driver, wallet.privateKey);
 
-        // Navigate to Bridge page
-        const homePage = new HomePage(driver);
-        await homePage.startBridgeFlow();
+        await bridgeTransaction(driver, {
+          amount: '.03',
+          tokenFrom: 'ETH',
+          tokenTo: 'ETH',
+          fromChain: 'Ethereum',
+          toChain: 'Linea',
+        });
 
-        const bridgePage = new BridgeQuotePage(driver);
-        await bridgePage.enterBridgeQuote('.3', 'ETH', 'Ethereum', 'Linea');
-        await bridgePage.submitQuote();
+        await bridgeTransaction(driver, {
+          amount: '.03',
+          tokenFrom: 'ETH',
+          tokenTo: 'USDC',
+          fromChain: 'Ethereum',
+          toChain: 'Linea',
+        });
 
-        // BUGBUG: Github issue 29793 has changed the flow, should land on activity
-
-        // TODO: move this to activity object page
-        const activity = await driver.findElement(
-          '[data-testid="activity-list-item-action"]',
-        );
-        assert.equal(await activity.getText(), 'Bridge to Linea Mainnet');
-
-        const primaryCurrency = await driver.findElement(
-          '[data-testid="transaction-list-item-primary-currency"]',
-        );
-        assert.equal(await primaryCurrency.getText(), '-1 ETH');
-
-        await driver.clickElement('[data-testid="activity-list-item-action"]');
+        await bridgeTransaction(driver, {
+          amount: '.05',
+          tokenFrom: 'ETH',
+          tokenTo: 'WETH',
+          fromChain: 'Ethereum',
+          toChain: 'Linea',
+        });
       },
     );
   });
+
+  async function bridgeTransaction(driver: any, quote: BridgeQuote) {
+    // Navigate to Bridge page
+    const homePage = new HomePage(driver);
+    await homePage.startBridgeFlow();
+
+    const bridgePage = new BridgeQuotePage(driver);
+    await bridgePage.enterBridgeQuote(quote);
+    await bridgePage.submitQuote();
+
+    // BUGBUG: Github issue 29793 has changed the flow, should land on activity
+    await bridgePage.goBack();
+    await homePage.goToActivityList();
+
+    const activityList = new ActivityListPage(driver);
+    await activityList.check_txAction(`Bridge to ${quote.toChain}`);
+    await activityList.check_txAmountInActivity(
+      `-0${quote.amount} ${quote.tokenFrom}`,
+    );
+    await activityList.check_completedBridgeTransactionActivity(txCount++);
+
+    await sleep(500);
+  }
 
   async function importAccount(driver: any, privateKey: any) {
     const headerNavbar = new HeaderNavbar(driver);
