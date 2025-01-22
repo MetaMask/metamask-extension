@@ -47,111 +47,110 @@ export const PermissionCellStatus = ({
 }) => {
   const t = useI18nContext();
 
-  const renderAccountsGroup = () => (
-    <>
-      {networks.length > 0 ? (
-        <Box
-          as="span"
-          className="permission-cell__status__accounts-group-box"
-          display={Display.InlineFlex}
-        >
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {networks?.map((network, index) => (
-              <Box
-                key={`${network.name}_${index}`}
-                display={Display.Flex}
-                justifyContent={JustifyContent.flexStart}
-                alignItems={AlignItems.center}
-                marginTop={2}
-              >
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
-                  name={network.name}
-                />
-                <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                  {network.name}
-                </Text>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      ) : (
-        <Box
-          as="span"
-          className="permission-cell__status__accounts-group-box"
-          display={Display.InlineFlex}
-        >
-          <Tooltip
-            position="bottom"
-            html={
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-              >
-                <Text
-                  variant={TextVariant.headingSm}
-                  color={TextColor.textAlternative}
-                  textAlign={TextAlign.Center}
-                >
-                  {t('accounts')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                >
-                  {accounts.map((account, index) => (
-                    <Box
-                      key={`${account.avatarValue}_${index}`}
-                      display={Display.Flex}
-                      justifyContent={JustifyContent.flexStart}
-                      alignItems={AlignItems.center}
-                      marginTop={2}
-                    >
-                      <AvatarAccount
-                        address={account.avatarValue}
-                        size={AvatarAccountSize.Xs}
-                        borderColor={BorderColor.backgroundDefault}
-                      />
-                      <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                        {account.avatarName}
-                      </Text>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-            }
+  const renderNetworksGroup = () => (
+    <Box
+      as="span"
+      className="permission-cell__status__accounts-group-box"
+      display={Display.InlineFlex}
+    >
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        {networks?.map((network, index) => (
+          <Box
+            key={`${network.name}_${index}`}
+            display={Display.Flex}
+            justifyContent={JustifyContent.flexStart}
+            alignItems={AlignItems.center}
+            marginTop={2}
           >
-            <AvatarGroup
-              limit={3}
-              members={accounts}
-              avatarType={AvatarType.ACCOUNT}
-              size={AvatarTokenSize.Xs}
-              width={BlockSize.Min}
-              borderColor={BorderColor.backgroundDefault}
-              marginLeft={4}
-              paddingLeft={4}
+            <AvatarNetwork
+              size={AvatarNetworkSize.Xs}
+              src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+              name={network.name}
             />
-          </Tooltip>
-        </Box>
-      )}
-    </>
+            <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+              {network.name}
+            </Text>
+          </Box>
+        ))}
+      </Box>
+    </Box>
   );
+  const renderAccountsGroup = () => (
+    <Box
+      as="span"
+      className="permission-cell__status__accounts-group-box"
+      display={Display.InlineFlex}
+    >
+      <Tooltip
+        position="bottom"
+        html={
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+          >
+            <Text
+              variant={TextVariant.headingSm}
+              color={TextColor.textAlternative}
+              textAlign={TextAlign.Center}
+            >
+              {t('accounts')}
+            </Text>
+            <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+              {accounts.map((account, index) => (
+                <Box
+                  key={`${account.avatarValue}_${index}`}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.flexStart}
+                  alignItems={AlignItems.center}
+                  marginTop={2}
+                >
+                  <AvatarAccount
+                    address={account.avatarValue}
+                    size={AvatarAccountSize.Xs}
+                    borderColor={BorderColor.backgroundDefault}
+                  />
+                  <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+                    {account.avatarName}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        }
+      >
+        <AvatarGroup
+          limit={3}
+          members={accounts}
+          avatarType={AvatarType.ACCOUNT}
+          size={AvatarTokenSize.Xs}
+          width={BlockSize.Min}
+          borderColor={BorderColor.backgroundDefault}
+          marginLeft={4}
+          paddingLeft={4}
+        />
+      </Tooltip>
+    </Box>
+  );
+
+  const renderGroup = () =>
+    networks.length > 0 ? renderNetworksGroup() : renderAccountsGroup();
+  const shouldRenderGroup =
+    (accounts && accounts.length) || (networks && networks.length);
 
   const getStatusMessage = () => {
     if (revoked) {
-      return accounts && accounts.length
-        ? t('permissionRevokedForAccounts', [renderAccountsGroup()])
+      return shouldRenderGroup
+        ? t('permissionRevokedForAccounts', [renderGroup()])
         : t('permissionRevoked');
     }
 
     if (dateApproved) {
-      return accounts && accounts.length
+      return shouldRenderGroup
         ? t('approvedOnForAccounts', [
             formatDate(dateApproved, 'yyyy-MM-dd'),
-            renderAccountsGroup(),
+            renderGroup(),
           ])
         : t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')]);
     }
@@ -160,8 +159,8 @@ export const PermissionCellStatus = ({
       return t('approved');
     }
 
-    return accounts && accounts.length
-      ? t('permissionRequestedForAccounts', [renderAccountsGroup()])
+    return shouldRenderGroup
+      ? t('permissionRequestedForAccounts', [renderGroup()])
       : t('permissionRequested');
   };
 
