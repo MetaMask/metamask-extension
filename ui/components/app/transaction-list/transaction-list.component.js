@@ -337,7 +337,7 @@ export default function TransactionList({
       <Box className="transaction-list" {...boxProps}>
         {/* TODO: Non-EVM transactions are not paginated for now. */}
         <Box className="transaction-list__transactions">
-          {nonEvmTransactions.transactions.length > 0 ? (
+          {nonEvmTransactions?.transactions.length > 0 ? (
             <Box className="transaction-list__completed-transactions">
               {groupNonEvmTransactionsByDate(nonEvmTransactions).map(
                 (dateGroup) => (
