@@ -30,23 +30,17 @@ const REDESIGN_DEV_TRANSACTION_TYPES = [...REDESIGN_USER_TRANSACTION_TYPES];
  * based on user settings and developer mode
  *
  * @param opts.transactionMetadataType - The type of transaction to check
- * @param opts.isRedesignedTransactionsUserSettingEnabled - Whether the user has enabled the redesigned flow
  * @param opts.isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
  */
 export function shouldUseRedesignForTransactions({
   transactionMetadataType,
-  isRedesignedTransactionsUserSettingEnabled,
   isRedesignedConfirmationsDeveloperEnabled,
 }: {
   transactionMetadataType?: TransactionType;
-  isRedesignedTransactionsUserSettingEnabled: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
 }): boolean {
   return (
-    shouldUseRedesignForTransactionsUserMode(
-      isRedesignedTransactionsUserSettingEnabled,
-      transactionMetadataType,
-    ) ||
+    shouldUseRedesignForTransactionsUserMode(transactionMetadataType) ||
     shouldUseRedesignForTransactionsDeveloperMode(
       isRedesignedConfirmationsDeveloperEnabled,
       transactionMetadataType,
@@ -59,28 +53,21 @@ export function shouldUseRedesignForTransactions({
  * based on user settings and developer mode
  *
  * @param opts.approvalType - The type of signature approval to check
- * @param opts.isRedesignedSignaturesUserSettingEnabled - Whether the user has enabled the redesigned flow
  * @param opts.isRedesignedConfirmationsDeveloperEnabled - Whether developer mode is enabled
  */
 export function shouldUseRedesignForSignatures({
   approvalType,
-  isRedesignedSignaturesUserSettingEnabled,
   isRedesignedConfirmationsDeveloperEnabled,
 }: {
   approvalType?: ApprovalType;
-  isRedesignedSignaturesUserSettingEnabled: boolean;
   isRedesignedConfirmationsDeveloperEnabled: boolean;
 }): boolean {
   const isRedesignedConfirmationsDeveloperSettingEnabled =
     process.env.ENABLE_CONFIRMATION_REDESIGN === 'true' ||
     isRedesignedConfirmationsDeveloperEnabled;
 
-  if (!isCorrectSignatureApprovalType(approvalType)) {
-    return false;
-  }
-
   return (
-    isRedesignedSignaturesUserSettingEnabled ||
+    isCorrectSignatureApprovalType(approvalType) ||
     isRedesignedConfirmationsDeveloperSettingEnabled
   );
 }
@@ -155,15 +142,10 @@ function shouldUseRedesignForTransactionsDeveloperMode(
  * Determines if the redesigned confirmation flow should be used for transactions
  * when in user mode
  *
- * @param isRedesignedTransactionsUserSettingEnabled - Whether the user has enabled the redesigned flow
  * @param transactionMetadataType - The type of transaction to check
  */
 function shouldUseRedesignForTransactionsUserMode(
-  isRedesignedTransactionsUserSettingEnabled: boolean,
   transactionMetadataType?: TransactionType,
 ): boolean {
-  return (
-    isRedesignedTransactionsUserSettingEnabled &&
-    isCorrectUserTransactionType(transactionMetadataType)
-  );
+  return isCorrectUserTransactionType(transactionMetadataType);
 }

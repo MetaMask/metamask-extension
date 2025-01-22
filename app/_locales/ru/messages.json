@@ -4307,18 +4307,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "Защитите свои средства"
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Улучшенные запросы подписи"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Включите эту опцию, чтобы видеть запросы на подпись в расширенном формате."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Улучшенные запросы транзакций"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Включите эту опцию, чтобы видеть запросы транзакций в расширенном формате."
-  },
   "refreshList": {
     "message": "Обновить список"
   },
