@@ -69,8 +69,6 @@ const createMockedHandler = () => {
     setActiveNetwork: jest.fn(),
     requestUserApproval: jest.fn().mockResolvedValue(123),
     getCaveat: jest.fn(),
-    startApprovalFlow: () => ({ id: 'approvalFlowId' }),
-    endApprovalFlow: jest.fn(),
     addNetwork: jest.fn().mockResolvedValue({
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [{ networkClientId: 123 }],
@@ -185,10 +183,8 @@ describe('addEthereumChainHandler', () => {
       end,
       NON_INFURA_CHAIN_ID,
       123,
-      'approvalFlowId',
       {
         isAddFlow: true,
-        endApprovalFlow: mocks.endApprovalFlow,
         getCaveat: mocks.getCaveat,
         setActiveNetwork: mocks.setActiveNetwork,
         requestPermittedChainsPermissionForOrigin:
@@ -254,10 +250,8 @@ describe('addEthereumChainHandler', () => {
           end,
           '0x1',
           123,
-          'approvalFlowId',
           {
             isAddFlow: true,
-            endApprovalFlow: mocks.endApprovalFlow,
             getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionForOrigin:
@@ -303,10 +297,8 @@ describe('addEthereumChainHandler', () => {
           end,
           '0xa',
           createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
-          undefined,
           {
             isAddFlow: true,
-            endApprovalFlow: mocks.endApprovalFlow,
             getCaveat: mocks.getCaveat,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionForOrigin:
