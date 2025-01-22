@@ -23,7 +23,18 @@ jobs:
         id: get-merge-base
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          echo "HEAD: $(git rev-parse HEAD)"
+          echo "origin/BASE_REF: $(git rev-parse origin/${BASE_REF})"
+          echo "BASE_REF: ${BASE_REF}"
+          echo "HEAD_REF: ${HEAD_REF}"
+          echo "BASE_SHA: ${BASE_SHA}"
+          echo "HEAD_SHA: ${HEAD_SHA}"
+          echo "broken merge-base: $(git merge-base "${BASE_SHA}" "${HEAD_SHA}")"
+          echo "fixed merge-base: $(git merge-base "origin/${BASE_REF}" HEAD)"
           merge_base="$(git merge-base "origin/${BASE_REF}" HEAD)"
           echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
           echo "Merge base is '${merge_base}'"

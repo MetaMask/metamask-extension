@@ -85,9 +85,6 @@ jobs:
   publish-prerelease:
     name: Publish prerelease
     if: ${{ github.event_name == 'pull_request' }}
-    needs:
-      - wait-for-circleci-workflow-status
-      - build-beta
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
