@@ -167,7 +167,7 @@ describe('Add Ethereum Chain', function () {
 
           assert.deepEqual(beforePermittedChains, []);
 
-          const switchEthereumChainRequest = JSON.stringify({
+          const addEthereumChainRequest = JSON.stringify({
             jsonrpc: '2.0',
             method: 'wallet_addEthereumChain',
             params: [
