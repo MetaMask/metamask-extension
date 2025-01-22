@@ -1,6 +1,5 @@
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
-import { generateGanacheOptions } from '../../helpers';
 import {
   BRIDGE_CLIENT_ID,
   BRIDGE_DEV_API_BASE_URL,

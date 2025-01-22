@@ -205,6 +205,7 @@ export const BridgeInputGroup = ({
                 networkImageSrc={networkImageSrc}
                 asset={(token as never) ?? undefined}
                 networkProps={networkProps}
+                data-testid='bridge-source-button'
               />
             )
           }
