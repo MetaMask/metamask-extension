@@ -7,7 +7,7 @@ import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { SnapDelineator } from '../snap-delineator';
 import { getSnapMetadata, getMemoizedInterface } from '../../../../selectors';
-import { Box } from '../../../component-library';
+import { Box, IconName } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
@@ -17,9 +17,11 @@ import {
   BackgroundColor,
   BlockSize,
   Display,
+  IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
@@ -43,6 +45,8 @@ const SnapUIRendererComponent = ({
   contentBackgroundColor,
 }) => {
   const t = useI18nContext();
+  const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
+    useScrollRequired();
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
@@ -75,6 +79,49 @@ const SnapUIRendererComponent = ({
     mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
     BackgroundColor.backgroundAlternative;
 
+  // The renderer should only have a footer if there is a default cancel action
+  // or if the footer component has been used.
+  const hasFooter = onCancel || content?.props?.children?.[1] !== undefined;
+  const requiresScroll = content?.props?.children?.[1]?.props?.requireScroll;
+
+  if (requiresScroll) {
+    if (isScrollable && !isScrolledToBottom) {
+      const scrollArrow = {
+        element: 'AvatarIcon',
+        key: 'snap-ui-renderer__scroll-arrow',
+        props: {
+          iconName: IconName.Arrow2Down,
+          backgroundColor: BackgroundColor.infoDefault,
+          color: IconColor.primaryInverse,
+          className: 'snap-ui-renderer__scroll-button',
+          style: {
+            cursor: 'pointer',
+            position: 'absolute',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            right: 0,
+            left: 0,
+            bottom: 0,
+          },
+          onClick: scrollToBottom,
+        },
+      };
+      // Insert the scroll arrow before the footer
+      content.props.children.splice(-1, 0, scrollArrow);
+    }
+
+    // Add ref and onScroll to the content to properly use the scrollRequired hook
+    content.props.ref = ref;
+    content.props.onScroll = onScroll;
+
+    // Pass the isScrolledToBottom variable to the footer as a prop
+    const footer = content.props.children[content.props.children.length - 1];
+    footer.props = {
+      ...footer.props,
+      isScrolledToBottom,
+    };
+  }
+
   const sections = useMemo(
     () =>
       content &&
@@ -87,7 +134,17 @@ const SnapUIRendererComponent = ({
         t,
         contentBackgroundColor: backgroundColor,
       }),
-    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
+    // We want to pass the isScrolledToBottom variableto components when it changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      content,
+      onCancel,
+      useFooter,
+      promptLegacyProps,
+      t,
+      backgroundColor,
+      isScrolledToBottom,
+    ],
   );
 
   if (isLoading || !content) {
@@ -105,10 +162,6 @@ const SnapUIRendererComponent = ({
   }
 
   const { state: initialState, context } = interfaceState;
-
-  // The renderer should only have a footer if there is a default cancel action
-  // or if the footer component has been used.
-  const hasFooter = onCancel || content?.props?.children?.[1] !== undefined;
 
   return useDelineator ? (
     <SnapDelineator
