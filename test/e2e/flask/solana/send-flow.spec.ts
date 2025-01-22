@@ -361,7 +361,7 @@ describe('Send full flow of SOL', function (this: Suite) {
     );
   });
 });
-describe('Send flow flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   it('and Transaction fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
