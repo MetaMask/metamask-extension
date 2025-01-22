@@ -50,43 +50,7 @@ export async function checkAndDownloadBinaries(
   cachePath: string,
   platform: Platform,
   arch: Architecture,
-  checksums: Checksums = {
-    algorithm: 'sha256',
-    binaries: {
-      anvil: {
-        'win32-amd64': '',
-        'win32-arm64': '',
-        'linux-amd64': '',
-        'linux-arm64': '',
-        'darwin-amd64': '',
-        'darwin-arm64': '',
-      },
-      forge: {
-        'win32-amd64': '',
-        'win32-arm64': '',
-        'linux-amd64': '',
-        'linux-arm64': '',
-        'darwin-amd64': '',
-        'darwin-arm64': '',
-      },
-      cast: {
-        'win32-amd64': '',
-        'win32-arm64': '',
-        'linux-amd64': '',
-        'linux-arm64': '',
-        'darwin-amd64': '',
-        'darwin-arm64': '',
-      },
-      chisel: {
-        'win32-amd64': '',
-        'win32-arm64': '',
-        'linux-amd64': '',
-        'linux-arm64': '',
-        'darwin-amd64': '',
-        'darwin-arm64': '',
-      },
-    },
-  },
+  checksums?: Checksums,
 ): Promise<Dir> {
   let downloadedBinaries: Dir;
   try {

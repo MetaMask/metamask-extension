@@ -213,43 +213,6 @@ describe('foundryup', () => {
     const mockUrl = new URL('https://example.com/binaries');
     const mockBinaries = ['forge'];
     const mockCachePath = './test-cache-path';
-    const defaultChecksums = {
-      algorithm: 'sha256',
-      binaries: {
-        forge: {
-          'win32-amd64': 'mock-checksum',
-          'win32-arm64': 'mock-checksum',
-          'linux-amd64': 'mock-checksum',
-          'linux-arm64': 'mock-checksum',
-          'darwin-amd64': 'mock-checksum',
-          'darwin-arm64': 'mock-checksum',
-        },
-        anvil: {
-          'win32-amd64': 'mock-checksum',
-          'win32-arm64': 'mock-checksum',
-          'linux-amd64': 'mock-checksum',
-          'linux-arm64': 'mock-checksum',
-          'darwin-amd64': 'mock-checksum',
-          'darwin-arm64': 'mock-checksum',
-        },
-        cast: {
-          'win32-amd64': 'mock-checksum',
-          'win32-arm64': 'mock-checksum',
-          'linux-amd64': 'mock-checksum',
-          'linux-arm64': 'mock-checksum',
-          'darwin-amd64': 'mock-checksum',
-          'darwin-arm64': 'mock-checksum',
-        },
-        chisel: {
-          'win32-amd64': 'mock-checksum',
-          'win32-arm64': 'mock-checksum',
-          'linux-amd64': 'mock-checksum',
-          'linux-arm64': 'mock-checksum',
-          'darwin-amd64': 'mock-checksum',
-          'darwin-arm64': 'mock-checksum',
-        },
-      },
-    };
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -271,7 +234,6 @@ describe('foundryup', () => {
           mockCachePath,
           Platform.Linux,
           Architecture.Amd64,
-          defaultChecksums,
         ),
       ).rejects.toThrow();
     });
