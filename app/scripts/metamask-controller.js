@@ -171,6 +171,9 @@ import {
   setEthAccounts,
   addPermittedEthChainId,
 } from '@metamask/multichain';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
+///: END:ONLY_INCLUDE_IF
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -287,9 +290,6 @@ import { submitSmartTransactionHook } from './lib/transaction/smart-transactions
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { MultichainTransactionsController } from './lib/transaction/MultichainTransactionsController';
-///: END:ONLY_INCLUDE_IF
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';

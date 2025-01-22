@@ -21,7 +21,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
-import { MultichainTransactionsControllerState } from '../../shared/types/multichain/transactions';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
