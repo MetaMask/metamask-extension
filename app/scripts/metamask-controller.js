@@ -146,7 +146,6 @@ import {
   getLocalizedSnapManifest,
   stripSnapPrefix,
   ///: END:ONLY_INCLUDE_IF
-  isSnapId,
 } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
@@ -5412,12 +5411,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} options.autoApprove - If the chain should be granted without prompting for user approval.
    */
   async requestPermittedChainsPermission({ origin, chainId, autoApprove }) {
-    if (isSnapId(origin)) {
-      throw new Error(
-        `Cannot request permittedChains permission for Snaps with origin "${origin}"`,
-      );
-    }
-
     if (!autoApprove) {
       await this.requestApprovalPermittedChainsPermission(origin, chainId);
     }
@@ -5462,12 +5455,6 @@ export default class MetamaskController extends EventEmitter {
     chainId,
     autoApprove,
   }) {
-    if (isSnapId(origin)) {
-      throw new Error(
-        `Cannot request permittedChains permission for Snaps with origin "${origin}"`,
-      );
-    }
-
     if (!autoApprove) {
       await this.requestApprovalPermittedChainsPermission(origin, chainId);
     }
@@ -5520,10 +5507,6 @@ export default class MetamaskController extends EventEmitter {
       permissions[PermissionNames.permittedChains] = {};
     }
 
-    if (isSnapId(origin)) {
-      delete permissions[PermissionNames.permittedChains];
-    }
-
     const id = nanoid();
     const legacyApproval =
       await this.approvalController.addAndShowApprovalRequest({
@@ -5551,7 +5534,7 @@ export default class MetamaskController extends EventEmitter {
 
     const caveatValueWithChains = setPermittedEthChainIds(
       newCaveatValue,
-      isSnapId(origin) ? [] : legacyApproval.approvedChainIds,
+      legacyApproval.approvedChainIds,
     );
 
     const caveatValueWithAccounts = setEthAccounts(

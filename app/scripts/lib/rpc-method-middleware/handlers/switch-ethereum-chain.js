@@ -64,10 +64,18 @@ async function switchEthereumChainHandler(
     );
   }
 
-  return switchChain(res, end, chainId, networkClientIdToSwitchTo, null, {
-    setActiveNetwork,
-    getCaveat,
-    requestPermittedChainsPermissionForOrigin,
-    requestPermittedChainsPermissionIncrementalForOrigin,
-  });
+  return switchChain(
+    res,
+    end,
+    chainId,
+    networkClientIdToSwitchTo,
+    null,
+    origin,
+    {
+      setActiveNetwork,
+      getCaveat,
+      requestPermittedChainsPermissionForOrigin,
+      requestPermittedChainsPermissionIncrementalForOrigin,
+    },
+  );
 }

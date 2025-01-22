@@ -193,14 +193,22 @@ async function addEthereumChainHandler(
     const { networkClientId } =
       updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
-    return switchChain(res, end, chainId, networkClientId, approvalFlowId, {
-      isAddFlow: true,
-      setActiveNetwork,
-      getCaveat,
-      endApprovalFlow,
-      requestPermittedChainsPermissionForOrigin,
-      requestPermittedChainsPermissionIncrementalForOrigin,
-    });
+    return switchChain(
+      res,
+      end,
+      chainId,
+      networkClientId,
+      approvalFlowId,
+      origin,
+      {
+        isAddFlow: true,
+        setActiveNetwork,
+        getCaveat,
+        endApprovalFlow,
+        requestPermittedChainsPermissionForOrigin,
+        requestPermittedChainsPermissionIncrementalForOrigin,
+      },
+    );
   } else if (approvalFlowId) {
     endApprovalFlow({ id: approvalFlowId });
   }

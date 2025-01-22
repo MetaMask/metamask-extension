@@ -1,4 +1,5 @@
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -165,6 +166,7 @@ export function validateAddEthereumChainParams(params) {
  * @param {string} chainId - The chainId being switched to.
  * @param {string} networkClientId - The network client being switched to.
  * @param {string} [approvalFlowId] - The optional approval flow ID to handle.
+ * @param {string} origin - The origin of the request.
  * @param {object} hooks - The hooks object.
  * @param {boolean} hooks.isAddFlow - The boolean determining if this call originates from wallet_addEthereumChain.
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
@@ -180,6 +182,7 @@ export async function switchChain(
   chainId,
   networkClientId,
   approvalFlowId,
+  origin,
   {
     isAddFlow,
     setActiveNetwork,
@@ -201,13 +204,13 @@ export async function switchChain(
       if (!ethChainIds.includes(chainId)) {
         await requestPermittedChainsPermissionIncrementalForOrigin({
           chainId,
-          autoApprove: isAddFlow,
+          autoApprove: isAddFlow || isSnapId(origin),
         });
       }
     } else {
       await requestPermittedChainsPermissionForOrigin({
         chainId,
-        autoApprove: isAddFlow,
+        autoApprove: isAddFlow || isSnapId(origin),
       });
     }
 
