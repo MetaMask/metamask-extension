@@ -5323,26 +5323,6 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-
-  /**
-   * Removes the
-   *
-   * @param {string} targetChainId - The chain ID to stop exposing
-   * to third parties.
-   */
-  // removeNetwork(chainId) {
-  //   this.networkController.removeNetwork(chainId)
-
-  //   try {
-  //     this.networkController.findNetworkClientIdByChainId(chainId)
-  //   } catch (err) {
-  //     if (err?.message === "Couldn't find networkClientId for chainId") {
-  //       this.removeAllChainIdPermissions(chainId);
-  //     }
-  //   }
-  // }
-
-
   /**
    * Stops exposing the account with the specified address to all third parties.
    * Exposed accounts are stored in caveats of the eth_accounts permission. This
