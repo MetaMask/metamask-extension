@@ -38,7 +38,7 @@ const getPermittedChains = async (driver: Driver) => {
 };
 
 describe('Add Ethereum Chain', function () {
-  describe('the dapp is not already permitted to use the chain being added', () => {
+  describe('the dapp is not already permitted to use the chain being added and the dapp is on a different chain from the chain being added', () => {
     it('automatically permits and switches to the chain when the rpc endpoint is added and no rpc endpoint previously existed for the chain', async function () {
       await withFixtures(
         {
@@ -199,6 +199,112 @@ describe('Add Ethereum Chain', function () {
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x53a']);
+        },
+      );
+    });
+  });
+
+  describe('the dapp is not already permitted to use the chain being added and the dapp is on the same chain as the chain being added', () => {
+    it('automatically permits and switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder().build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          await unlockWallet(driver);
+          await openDapp(driver);
+
+          const beforePermittedChains = await getPermittedChains(driver);
+
+          assert.deepEqual(beforePermittedChains, []);
+
+          const switchEthereumChainRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0x539',
+                chainName: 'Localhost 8545 alternative',
+                nativeCurrency: {
+                  name: '',
+                  symbol: 'ETH',
+                  decimals: 18,
+                },
+                // this does not match what already exists in the NetworkController
+                rpcUrls: ['http://127.0.0.1:8545'],
+                blockExplorerUrls: [],
+              },
+            ],
+          });
+
+          await driver.executeScript(
+            `window.ethereum.request(${switchEthereumChainRequest})`,
+          );
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.clickElement({ text: 'Approve', tag: 'button' });
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+          const afterPermittedChains = await getPermittedChains(driver);
+          assert.deepEqual(afterPermittedChains, ['0x539']);
+        },
+      );
+    });
+
+    it('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerDoubleGanache()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          await unlockWallet(driver);
+          await openDapp(driver);
+
+          const beforePermittedChains = await getPermittedChains(driver);
+
+          assert.deepEqual(beforePermittedChains, []);
+
+          const addEthereumChainRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0x539',
+                chainName: 'Localhost 8545',
+                nativeCurrency: {
+                  name: '',
+                  symbol: 'ETH',
+                  decimals: 18,
+                },
+                // this matches what already exists in the NetworkController
+                rpcUrls: ['http://localhost:8545'],
+                blockExplorerUrls: [],
+              },
+            ],
+          });
+
+          await driver.executeScript(
+            `window.ethereum.request(${addEthereumChainRequest})`,
+          );
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.findElement({ text: 'Use your enabled networks' });
+          await driver.findElement({ text: 'Localhost 8545' });
+          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+          const afterPermittedChains = await getPermittedChains(driver);
+          assert.deepEqual(afterPermittedChains, ['0x539']);
         },
       );
     });
