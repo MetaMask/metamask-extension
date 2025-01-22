@@ -14,13 +14,13 @@ import {
   getUseTokenDetection,
 } from '../../../../selectors';
 import {
-  getMultichainIsEvm,
-  getMultichainSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsBitcoin,
   getMultichainSelectedAccountCachedBalanceIsZero,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../../selectors/getMultichainIsEvm';
+import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/getMultichainSelectedAccountCachedBalance';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {

@@ -13,10 +13,8 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import {
-  getMultichainCurrentNetwork,
-  getMultichainDefaultToken,
-} from '../../../selectors/multichain';
+import { getMultichainDefaultToken } from '../../../selectors/multichain';
+import { getMultichainCurrentNetwork } from '../../../selectors/getMultichainCurrentNetwork';
 import useRamps, {
   RampsMetaMaskEntry,
 } from '../../../hooks/ramps/useRamps/useRamps';

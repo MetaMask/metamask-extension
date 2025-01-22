@@ -3,10 +3,10 @@ import BigNumber from 'bignumber.js';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
   getMultichainCurrentCurrency,
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
   getMultichainConversionRate,
 } from '../selectors/multichain';
+import { getMultichainIsEvm } from '../selectors/getMultichainIsEvm';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
 import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';

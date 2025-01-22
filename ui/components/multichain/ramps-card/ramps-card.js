@@ -10,10 +10,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getMultichainDefaultToken,
-  getMultichainCurrentNetwork,
-} from '../../../selectors/multichain';
+import { getMultichainDefaultToken } from '../../../selectors/multichain';
+import { getMultichainCurrentNetwork } from '../../../selectors/getMultichainCurrentNetwork';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

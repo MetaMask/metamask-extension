@@ -10,11 +10,11 @@ import {
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getApprovalRequestsByType } from './approvals';
 import {
-  getInternalAccount,
-  getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getTargetSubjectMetadata,
-} from './selectors';
+  getSubjectMetadata,
+} from './getMetaMaskAccounts';
+import { getMetaMaskAccountsOrdered } from './getMetaMaskAccountsOrdered';
 import { getSelectedInternalAccount } from './accounts';
 
 // selectors
@@ -71,17 +71,6 @@ export function getPermittedChains(state, origin) {
   );
 }
 
-/**
- * Selects the permitted accounts from the eth_accounts permission for the
- * origin of the current tab.
- *
- * @param {object} state - The current state.
- * @returns {Array<string>} An empty array or an array of accounts.
- */
-export function getPermittedAccountsForCurrentTab(state) {
-  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
-}
-
 export function getPermittedAccountsForSelectedTab(state, activeTab) {
   return getPermittedAccounts(state, activeTab);
 }
@@ -120,10 +109,6 @@ export function getPermittedChainsByOrigin(state) {
     }
     return acc;
   }, {});
-}
-
-export function getSubjectMetadata(state) {
-  return state.metamask.subjectMetadata;
 }
 
 /**
@@ -268,14 +253,6 @@ export function getAddressConnectedSubjectMap(state) {
   return addressConnectedIconMap;
 }
 
-export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
-  getPermittedAccountsForCurrentTab,
-  (_state, address) => address,
-  (permittedAccounts, address) => {
-    return permittedAccounts.some((account) => account === address);
-  },
-);
-
 // selector helpers
 function getCaip25PermissionFromSubject(subject = {}) {
   return subject.permissions?.[Caip25EndowmentPermissionName] || {};
@@ -308,70 +285,6 @@ function getChainsFromPermission(caip25Permission) {
 
 function subjectSelector(state, origin) {
   return origin && state.metamask.subjects?.[origin];
-}
-
-export function getAccountToConnectToActiveTab(state) {
-  const selectedInternalAccount = getSelectedInternalAccount(state);
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-
-  const {
-    metamask: {
-      internalAccounts: { accounts },
-    },
-  } = state;
-  const numberOfAccounts = Object.keys(accounts).length;
-
-  if (
-    connectedAccounts.length &&
-    connectedAccounts.length !== numberOfAccounts
-  ) {
-    if (
-      connectedAccounts.findIndex(
-        (address) => address === selectedInternalAccount.address,
-      ) === -1
-    ) {
-      return getInternalAccount(state, selectedInternalAccount.id);
-    }
-  }
-
-  return undefined;
-}
-
-export function getOrderedConnectedAccountsForActiveTab(state) {
-  const {
-    activeTab,
-    metamask: { permissionHistory },
-  } = state;
-
-  const permissionHistoryByAccount =
-    // eslint-disable-next-line camelcase
-    permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
-  const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-
-  return orderedAccounts
-    .filter((account) => connectedAccounts.includes(account.address))
-    .filter((account) => isEvmAccountType(account.type))
-    .map((account) => ({
-      ...account,
-      metadata: {
-        ...account.metadata,
-        lastActive: permissionHistoryByAccount?.[account.address],
-      },
-    }))
-    .sort(
-      ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
-        if (lastSelectedA === lastSelectedB) {
-          return 0;
-        } else if (lastSelectedA === undefined) {
-          return 1;
-        } else if (lastSelectedB === undefined) {
-          return -1;
-        }
-
-        return lastSelectedB - lastSelectedA;
-      },
-    );
 }
 
 export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {

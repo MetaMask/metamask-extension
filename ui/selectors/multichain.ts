@@ -8,7 +8,6 @@ import { NetworkType } from '@metamask/controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
-  MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
 } from '../../shared/constants/multichain/networks';
@@ -42,6 +41,8 @@ import {
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from './selectors';
+import { getMultichainNetworkProviders } from './getMultichainNetworkProviders';
+import { getMultichainBalances } from './getMultichainBalances';
 
 export type RatesState = {
   metamask: RatesControllerState;
@@ -120,13 +121,6 @@ export const InternalAccountPropType = PropTypes.shape({
   }).isRequired,
   type: PropTypes.string.isRequired,
 });
-
-export function getMultichainNetworkProviders(
-  _state: MultichainState,
-): MultichainProviderConfig[] {
-  // TODO: need state from the ChainController?
-  return Object.values(MULTICHAIN_PROVIDER_CONFIGS);
-}
 
 export function getMultichainNetwork(
   state: MultichainState,
@@ -350,12 +344,6 @@ export function getMultichainIsTestnet(
       // update this for other non-EVM networks later!
       (providerConfig as MultichainProviderConfig).chainId ===
         MultichainNetworks.BITCOIN_TESTNET;
-}
-
-export function getMultichainBalances(
-  state: MultichainState,
-): BalancesState['metamask']['balances'] {
-  return state.metamask.balances;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
