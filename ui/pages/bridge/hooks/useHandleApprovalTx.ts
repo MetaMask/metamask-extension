@@ -15,18 +15,8 @@ import { getBridgeERC20Allowance } from '../../../ducks/bridge/actions';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import useHandleTx from './useHandleTx';
 
-const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
-const APPROVAL_TX_ERROR = 'Approve transaction failed';
-
-export const isAllowanceResetError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(ALLOWANCE_RESET_ERROR);
-};
-
-export const isApprovalTxError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(APPROVAL_TX_ERROR);
-};
+export const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
+export const APPROVAL_TX_ERROR = 'Approve transaction failed';
 
 export default function useHandleApprovalTx() {
   const { handleTx } = useHandleTx();

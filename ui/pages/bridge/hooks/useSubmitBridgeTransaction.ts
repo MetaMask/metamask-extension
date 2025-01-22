@@ -33,13 +33,23 @@ import {
 } from '../../../../shared/types/bridge-status';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx, {
-  isApprovalTxError,
-  isAllowanceResetError,
+  APPROVAL_TX_ERROR,
+  ALLOWANCE_RESET_ERROR,
 } from './useHandleApprovalTx';
 import useHandleBridgeTx from './useHandleBridgeTx';
 
 const debugLog = createProjectLogger('bridge');
 const LINEA_DELAY_MS = 5000;
+
+export const isAllowanceResetError = (error: unknown): boolean => {
+  const errorMessage = (error as Error).message ?? '';
+  return errorMessage.includes(ALLOWANCE_RESET_ERROR);
+};
+
+export const isApprovalTxError = (error: unknown): boolean => {
+  const errorMessage = (error as Error).message ?? '';
+  return errorMessage.includes(APPROVAL_TX_ERROR);
+};
 
 const isHardwareWalletUserRejection = (error: unknown): boolean => {
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
