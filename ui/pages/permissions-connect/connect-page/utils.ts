@@ -23,7 +23,12 @@ export type PermissionsRequest = Record<
   { caveats?: { type: string; value: Caip25CaveatValue }[] }
 >;
 
-// TODO: jsdocs
+/**
+ * Takes in an incoming {@link PermissionsRequest} and attempts to return the {@link Caip25CaveatValue} with the Ethereum accounts set.
+ *
+ * @param permissions - The {@link PermissionsRequest} with the target name of the CAIP-25 endowment permission.
+ * @returns The {@link Caip25CaveatValue} with the Ethereum accounts set. If {@link Caip25CaveatType} is not found, returns `undefined`.
+ */
 function getCaip25CaveatValue(
   permissions?: PermissionsRequest,
 ): Caip25CaveatValue | undefined {
@@ -33,7 +38,12 @@ function getCaip25CaveatValue(
   )?.value;
 }
 
-// TODO: jsdocs
+/**
+ * Takes in an incoming {@link PermissionsRequest} and attempts to return the list of requested Ethereum accounts.
+ *
+ * @param permissions - The {@link PermissionsRequest} with the target name of the CAIP-25 endowment permission.
+ * @returns The list of requested Ethereum accounts.
+ */
 export function getRequestedAccountsViaPermissionsRequest(
   permissions?: PermissionsRequest,
 ): string[] {
@@ -54,7 +64,12 @@ export function getRequestedAccountsViaPermissionsRequest(
   return Array.from(allAccountsSet);
 }
 
-// TODO: jsdocs
+/**
+ * Takes in an incoming {@link PermissionsRequest} and attempts to return the list of requested chains.
+ *
+ * @param permissions - The {@link PermissionsRequest} with the target name of the CAIP-25 endowment permission.
+ * @returns The list of requested chains.
+ */
 export function getRequestedChainsViaPermissionsRequest(
   permissions?: PermissionsRequest,
 ): string[] {
@@ -72,7 +87,7 @@ export function getRequestedChainsViaPermissionsRequest(
     }
 
     // TODO: [perhaps create ticket?]
-    // if I pass something other than a number here (for example, word wallet, we get "0x0"). Is this expected behaviour?
+    // if I pass something other than a number here (for example, scope "eip:155", we get "0x0"). Is this expected behaviour?
     const { reference } = parseCaipChainId(scope as CaipChainId);
     if (reference !== undefined) {
       // TODO: safely parse number
@@ -83,7 +98,14 @@ export function getRequestedChainsViaPermissionsRequest(
   return result.map((chainId) => decimalToPrefixedHex(chainId));
 }
 
-// TODO: explicit return type, jsdocs
+/**
+ * Parses the CAIP-25 authorized permissions object after UI confirmation.
+ *
+ * @param addresses - The list of permitted addresses.
+ * @param hexChainIds - The list of permitted chains.
+ * @returns
+ */
+// TODO: advice, should we move this behaviour to @metamask/multichain lib?
 export function parseCaip25PermissionsResponse(
   addresses: string[],
   hexChainIds: string[],

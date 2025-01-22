@@ -5524,32 +5524,6 @@ export default class MetamaskController extends EventEmitter {
       delete permissions[PermissionNames.permittedChains];
     }
 
-    // TODO: handle this request
-    // await window.ethereum.request({
-    //   "method": "wallet_requestPermissions",
-    //   "params": [
-    //    {
-
-    //      "eth_accounts": {
-    //          "caveats": [
-    //              {
-    //                  "type": "restrictReturnedAccounts",
-    //                  "value": []
-    //              }
-    //          ]
-    //      },
-    //      "endowment:permitted-chains": {
-    //          "caveats": [
-    //              {
-    //                  "type": "restrictNetworkSwitching",
-    //                  "value": []
-    //              }
-    //          ]
-    //      }
-    //    }
-    //  ],
-    //  });
-
     const requestedChains =
       permissions[PermissionNames.permittedChains]?.caveats?.[0]?.value ?? [];
 
