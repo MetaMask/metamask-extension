@@ -16,7 +16,7 @@ import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
 
 /**
- * Union of all controllers.
+ * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
   | GasFeeController
@@ -37,7 +37,7 @@ export type Controller =
     });
 
 /**
- * Flat state object for all controllers.
+ * Flat state object for all controllers supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
 export type ControllerFlatState = AccountsController['state'] &

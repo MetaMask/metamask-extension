@@ -101,7 +101,7 @@ describe('Controller Init Utils', () => {
     });
 
     describe('provides getController method', () => {
-      it('that returns controller', () => {
+      it('that returns initialized controller', () => {
         const requestMock = buildControllerInitRequestMock();
         const initMock = buildControllerFunctionMock();
 
@@ -139,6 +139,26 @@ describe('Controller Init Utils', () => {
         ).toThrow(
           'Controller requested before it was initialized: InvalidController',
         );
+      });
+
+      it('that returns existing controllers', () => {
+        const requestMock = buildControllerInitRequestMock();
+        const initMock = buildControllerFunctionMock();
+
+        initControllers({
+          baseControllerMessenger: buildControllerMessengerMock(),
+          existingControllers: [buildControllerMock(CONTROLLER_NAME_2_MOCK)],
+          initFunctions: {
+            [CONTROLLER_NAME_MOCK]: initMock,
+          },
+          initRequest: requestMock,
+        });
+
+        const { getController } = initMock.mock.calls[0][0];
+
+        expect(
+          getController(CONTROLLER_NAME_2_MOCK as ControllerName),
+        ).toStrictEqual({ name: CONTROLLER_NAME_2_MOCK });
       });
     });
 
@@ -251,6 +271,74 @@ describe('Controller Init Utils', () => {
         test1: { name: CONTROLLER_NAME_MOCK },
         test3: { name: 'TestController3' },
       });
+    });
+
+    it('provides controller messenger using callback', () => {
+      const requestMock = buildControllerInitRequestMock();
+      const initMock = buildControllerFunctionMock();
+
+      initControllers({
+        baseControllerMessenger: buildControllerMessengerMock(),
+        initFunctions: {
+          [CONTROLLER_NAME_MOCK]: initMock,
+        },
+        initRequest: requestMock,
+      });
+
+      const { controllerMessenger } = initMock.mock.calls[0][0];
+
+      expect(controllerMessenger).toBeDefined();
+    });
+
+    it('provides no controller messenger if no callback', () => {
+      const requestMock = buildControllerInitRequestMock();
+      const initMock = buildControllerFunctionMock();
+
+      initControllers({
+        baseControllerMessenger: buildControllerMessengerMock(),
+        initFunctions: {
+          TestName: initMock,
+        } as InitFunctions,
+        initRequest: requestMock,
+      });
+
+      const { controllerMessenger } = initMock.mock.calls[0][0];
+
+      expect(controllerMessenger).toBeUndefined();
+    });
+
+    it('provides initialization messenger using callback', () => {
+      const requestMock = buildControllerInitRequestMock();
+      const initMock = buildControllerFunctionMock();
+
+      initControllers({
+        baseControllerMessenger: buildControllerMessengerMock(),
+        initFunctions: {
+          [CONTROLLER_NAME_MOCK]: initMock,
+        },
+        initRequest: requestMock,
+      });
+
+      const { initMessenger } = initMock.mock.calls[0][0];
+
+      expect(initMessenger).toBeDefined();
+    });
+
+    it('provides no initialization messenger if no callback', () => {
+      const requestMock = buildControllerInitRequestMock();
+      const initMock = buildControllerFunctionMock();
+
+      initControllers({
+        baseControllerMessenger: buildControllerMessengerMock(),
+        initFunctions: {
+          TestName: initMock,
+        } as InitFunctions,
+        initRequest: requestMock,
+      });
+
+      const { initMessenger } = initMock.mock.calls[0][0];
+
+      expect(initMessenger).toBeUndefined();
     });
   });
 });
