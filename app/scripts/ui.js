@@ -32,7 +32,7 @@ import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
-import { setupMultiplex, createDuplexStreamWrapper } from './lib/stream-utils';
+import { setupMultiplex, createSubstreamWrapper } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
@@ -349,7 +349,7 @@ function connectToAccountManager(connectionStream) {
     controllerConnectionStream,
   );
 
-  const providerStream = createDuplexStreamWrapper(mx, 'provider');
+  const providerStream = createSubstreamWrapper(mx, 'provider');
   setupWeb3Connection(providerStream);
 
   return backgroundConnection;
