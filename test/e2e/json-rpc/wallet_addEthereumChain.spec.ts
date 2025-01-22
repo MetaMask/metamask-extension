@@ -191,6 +191,8 @@ describe('Add Ethereum Chain', function () {
           );
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.findElement({ text: 'Use your enabled networks' });
+          await driver.findElement({ text: 'Localhost 8546' });
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
