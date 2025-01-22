@@ -67,6 +67,12 @@ export function getRequestedChainsViaPermissionsRequest(
   const result: number[] = [];
 
   for (const scope of Object.keys(optionalScopes)) {
+    if (scope === 'wallet:eip155') {
+      continue;
+    }
+
+    // TODO: [perhaps create ticket?]
+    // if I pass something other than a number here (for example, word wallet, we get "0x0"). Is this expected behaviour?
     const { reference } = parseCaipChainId(scope as CaipChainId);
     if (reference !== undefined) {
       // TODO: safely parse number
@@ -94,7 +100,7 @@ export function parseCaip25PermissionsResponse(
 
   const caveatValueWithChains = setPermittedEthChainIds(
     caveatValue,
-    hexChainIds.filter((c) => c !== '0x0') as Hex[],
+    hexChainIds as Hex[],
   );
 
   const caveatValueWithAccounts = setEthAccounts(
