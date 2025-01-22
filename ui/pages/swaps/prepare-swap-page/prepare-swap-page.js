@@ -794,9 +794,16 @@ export default function PrepareSwapPage({
     );
   }
 
+  const toTokenBalance =
+    usedQuote?.destinationAmount &&
+    calcTokenAmount(
+      usedQuote?.destinationAmount || '0',
+      selectedToToken.decimals || 18,
+    );
+
   const swapToTokenFiatValue = useTokenFiatAmount(
     selectedToToken.address,
-    receiveToAmount || 0,
+    toTokenBalance || 0,
     selectedToToken.symbol,
     {
       showFiat: true,
