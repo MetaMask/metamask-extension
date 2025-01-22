@@ -2068,19 +2068,21 @@ describe('MetaMaskController', () => {
     describe('NetworkConfiguration is removed', () => {
       it('should remove the permitted chain from all existing permissions', () => {
         jest
-        .spyOn(metamaskController, 'removeAllChainIdPermissions')
-        .mockReturnValue();
+          .spyOn(metamaskController, 'removeAllChainIdPermissions')
+          .mockReturnValue();
 
         metamaskController.controllerMessenger.publish(
           'NetworkController:networkRemoved',
           {
-            chainId: '0xdeadbeef'
-          }
-        )
+            chainId: '0xdeadbeef',
+          },
+        );
 
-        expect(metamaskController.removeAllChainIdPermissions).toHaveBeenCalledWith('0xdeadbeef')
-      })
-    })
+        expect(
+          metamaskController.removeAllChainIdPermissions,
+        ).toHaveBeenCalledWith('0xdeadbeef');
+      });
+    });
 
     describe('#getApi', () => {
       it('getState', () => {

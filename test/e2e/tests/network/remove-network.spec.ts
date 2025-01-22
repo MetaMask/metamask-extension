@@ -1,5 +1,9 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import {
+  CaveatConstraint,
+  PermissionConstraint,
+} from '@metamask/permission-controller';
 import FixtureBuilder from '../../fixture-builder';
 import {
   defaultGanacheOptions,
@@ -12,7 +16,6 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
-import { CaveatConstraint, PermissionConstraint } from '@metamask/permission-controller';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
 
@@ -44,7 +47,10 @@ describe('Remove Network:', function (this: Suite) {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappWithChains(['0x539', '0x53a'])
+          .withPermissionControllerConnectedToTestDappWithChains([
+            '0x539',
+            '0x53a',
+          ])
           .withNetworkController({
             providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
@@ -79,9 +85,9 @@ describe('Remove Network:', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
 
-        const beforePermittedChains = await getPermittedChains(driver)
+        const beforePermittedChains = await getPermittedChains(driver);
 
-        assert.deepEqual(beforePermittedChains, ['0x539', '0x53a'])
+        assert.deepEqual(beforePermittedChains, ['0x539', '0x53a']);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -104,13 +110,11 @@ describe('Remove Network:', function (this: Suite) {
         await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Delete', tag: 'button' });
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const afterPermittedChains = await getPermittedChains(driver)
+        const afterPermittedChains = await getPermittedChains(driver);
 
-        assert.deepEqual(afterPermittedChains, ['0x539'])
+        assert.deepEqual(afterPermittedChains, ['0x539']);
       },
     );
   });
@@ -120,7 +124,10 @@ describe('Remove Network:', function (this: Suite) {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDappWithChains(['0x539', '0x53a'])
+          .withPermissionControllerConnectedToTestDappWithChains([
+            '0x539',
+            '0x53a',
+          ])
           .withNetworkController({
             providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
@@ -163,9 +170,9 @@ describe('Remove Network:', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
 
-        const beforePermittedChains = await getPermittedChains(driver)
+        const beforePermittedChains = await getPermittedChains(driver);
 
-        assert.deepEqual(beforePermittedChains, ['0x539', '0x53a'])
+        assert.deepEqual(beforePermittedChains, ['0x539', '0x53a']);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -207,13 +214,11 @@ describe('Remove Network:', function (this: Suite) {
         // Save the network
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const afterPermittedChains = await getPermittedChains(driver)
+        const afterPermittedChains = await getPermittedChains(driver);
 
-        assert.deepEqual(afterPermittedChains, ['0x539', '0x53a'])
+        assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
       },
     );
   });

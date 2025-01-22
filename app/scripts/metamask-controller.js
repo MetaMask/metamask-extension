@@ -3114,9 +3114,12 @@ export default class MetamaskController extends EventEmitter {
       getPermittedChainsByOrigin,
     );
 
-    this.controllerMessenger.subscribe('NetworkController:networkRemoved', ({chainId}) => {
-      this.removeAllChainIdPermissions(chainId)
-    })
+    this.controllerMessenger.subscribe(
+      'NetworkController:networkRemoved',
+      ({ chainId }) => {
+        this.removeAllChainIdPermissions(chainId);
+      },
+    );
 
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
