@@ -36,6 +36,7 @@ const METAMASK_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
   KeyringRpcMethod.ListAccountTransactions,
+  KeyringRpcMethod.ListAccountAssets,
 ];
 
 /**
@@ -57,6 +58,7 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
   KeyringRpcMethod.ListAccountTransactions,
+  KeyringRpcMethod.ListAccountAssets,
 ];
 
 /**
@@ -77,6 +79,7 @@ const PORTFOLIO_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
   KeyringRpcMethod.ListAccountTransactions,
+  KeyringRpcMethod.ListAccountAssets,
 ];
 
 /**
