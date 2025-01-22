@@ -5,6 +5,7 @@ module.exports = {
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/helpers/foundry/**/*.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
