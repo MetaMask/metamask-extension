@@ -5,6 +5,7 @@ import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
+import { Caip25EndowmentPermissionName } from '@metamask/multichain';
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
@@ -20,8 +21,6 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-// eslint-disable-next-line import/no-restricted-paths
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { getSelectedInternalAccount } from '../../../selectors';
 import {
   getRequestedChainsViaPermissionsRequest,
@@ -177,7 +176,7 @@ class PermissionPageContainer extends Component {
 
   onLeftFooterClick = () => {
     const requestedPermissions = this.getRequestedPermissions();
-    if (requestedPermissions[PermissionNames.permittedChains] === undefined) {
+    if (requestedPermissions[Caip25EndowmentPermissionName] === undefined) {
       this.goBack();
     } else {
       this.onCancel();
@@ -207,7 +206,7 @@ class PermissionPageContainer extends Component {
     };
 
     const footerLeftActionText = requestedPermissions[
-      PermissionNames.permittedChains
+      Caip25EndowmentPermissionName
     ]
       ? this.context.t('cancel')
       : this.context.t('back');
