@@ -112,22 +112,6 @@ describe('ConnectPage', () => {
                 },
               ],
             },
-            // [RestrictedMethods.eth_accounts]: {
-            //   caveats: [
-            //     {
-            //       type: CaveatTypes.restrictReturnedAccounts,
-            //       value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-            //     },
-            //   ],
-            // },
-            // [EndowmentTypes.permittedChains]: {
-            //   caveats: [
-            //     {
-            //       type: CaveatTypes.restrictNetworkSwitching,
-            //       value: ['0x1'],
-            //     },
-            //   ],
-            // },
           },
         },
         permissionsRequestId: '1',
