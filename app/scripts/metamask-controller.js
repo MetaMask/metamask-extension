@@ -172,6 +172,9 @@ import {
   setEthAccounts,
   addPermittedEthChainId,
 } from '@metamask/multichain';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
+///: END:ONLY_INCLUDE_IF
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -989,6 +992,27 @@ export default class MetamaskController extends EventEmitter {
       allAnnouncements: UI_NOTIFICATIONS,
       state: initState.AnnouncementController,
     });
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    const multichainTransactionsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MultichainTransactionsController',
+        allowedEvents: [
+          'AccountsController:accountAdded',
+          'AccountsController:accountRemoved',
+        ],
+        allowedActions: [
+          'AccountsController:listMultichainAccounts',
+          'SnapController:handleRequest',
+        ],
+      });
+
+    this.multichainTransactionsController =
+      new MultichainTransactionsController({
+        messenger: multichainTransactionsControllerMessenger,
+        state: initState.MultichainTransactionsController,
+      });
+    ///: END:ONLY_INCLUDE_IF
 
     const networkOrderMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkOrderController',
@@ -2539,6 +2563,9 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      MultichainTransactionsController: this.multichainTransactionsController,
+      ///: END:ONLY_INCLUDE_IF
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
@@ -2595,6 +2622,9 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        MultichainTransactionsController: this.multichainTransactionsController,
+        ///: END:ONLY_INCLUDE_IF
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
@@ -3291,6 +3321,11 @@ export default class MetamaskController extends EventEmitter {
     );
     this.multichainBalancesController.start();
     this.multichainBalancesController.updateBalances();
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    this.multichainTransactionsController.start();
+    this.multichainTransactionsController.updateTransactions();
+    ///: END:ONLY_INCLUDE_IF
 
     this.controllerMessenger.subscribe(
       'CurrencyRateController:stateChange',
@@ -4413,6 +4448,11 @@ export default class MetamaskController extends EventEmitter {
       multichainUpdateBalances: () =>
         this.multichainBalancesController.updateBalances(),
 
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      // MultichainTransactionsController
+      multichainUpdateTransactions: () =>
+        this.multichainTransactionsController.updateTransactions(),
+      ///: END:ONLY_INCLUDE_IF
       // Transaction Decode
       decodeTransactionData: (request) =>
         decodeTransactionData({

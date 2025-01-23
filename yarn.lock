@@ -5803,6 +5803,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/multichain-transactions-controller@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@metamask/multichain-transactions-controller@npm:0.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^7.1.1"
+    "@metamask/keyring-api": "npm:^14.0.0"
+    "@metamask/keyring-internal-api": "npm:^2.0.1"
+    "@metamask/keyring-snap-client": "npm:^3.0.0"
+    "@metamask/polling-controller": "npm:^12.0.2"
+    "@metamask/snaps-controllers": "npm:^9.10.0"
+    "@metamask/snaps-sdk": "npm:^6.7.0"
+    "@metamask/snaps-utils": "npm:^8.3.0"
+    "@metamask/utils": "npm:^11.0.1"
+    "@types/uuid": "npm:^8.3.0"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^21.0.0
+    "@metamask/snaps-controllers": ^9.10.0
+  checksum: 10/ab9d258cbfaedf6b6193811c757934bbae34abd9ea5b182f3376c41c8b362852e26a8e7042fb06c1526d9c357c38ad1750eec15e962659bbedc467169240301e
+  languageName: node
+  linkType: hard
+
 "@metamask/multichain@npm:^2.1.0":
   version: 2.1.0
   resolution: "@metamask/multichain@npm:2.1.0"
@@ -26699,6 +26722,7 @@ __metadata:
     "@metamask/message-signing-snap": "npm:^0.6.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain": "npm:^2.1.0"
+    "@metamask/multichain-transactions-controller": "npm:^0.0.1"
     "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch"
     "@metamask/notification-services-controller": "npm:^0.16.0"
