@@ -153,7 +153,6 @@ export async function downloadAndInstallFoundryBinaries(): Promise<void> {
   say('done!');
 }
 
-// Move the auto-execution logic to a separate function
 export function main() {
   downloadAndInstallFoundryBinaries().catch((error) => {
     console.error('Error:', error);
@@ -161,7 +160,7 @@ export function main() {
   });
 }
 
-// Only run if this is the main module (not being imported for tests)
+// Only run `main` if this is the main module (not being imported for tests)
 if (require.main === module) {
   main();
 }
