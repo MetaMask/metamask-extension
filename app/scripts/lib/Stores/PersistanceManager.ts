@@ -105,7 +105,7 @@ export class PersistanceManager {
     }
     if (!this.#metadata) {
       throw new Error(
-        'MetaMask - metadata must be set on instance of ExtensionStore before calling "set"',
+        'MetaMask - metadata must be set before calling "set"',
       );
     }
     try {
