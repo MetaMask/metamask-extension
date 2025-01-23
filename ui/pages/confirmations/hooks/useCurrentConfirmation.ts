@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
   getIsRedesignedConfirmationsDeveloperEnabled,
-  getRedesignedConfirmationsEnabled,
   getUnapprovedTransaction,
   oldestPendingConfirmationSelector,
   selectPendingApproval,
@@ -30,10 +29,6 @@ const useCurrentConfirmation = () => {
   const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
 
-  const isRedesignedSignaturesUserSettingEnabled = useSelector(
-    getRedesignedConfirmationsEnabled,
-  );
-
   const isRedesignedConfirmationsDeveloperEnabled = useSelector(
     getIsRedesignedConfirmationsDeveloperEnabled,
   );
@@ -53,7 +48,6 @@ const useCurrentConfirmation = () => {
 
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({
     approvalType: pendingApproval?.type as ApprovalType,
-    isRedesignedSignaturesUserSettingEnabled,
     isRedesignedConfirmationsDeveloperEnabled,
   });
 

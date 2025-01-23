@@ -32,7 +32,6 @@ describe('Metrics @no-mmi', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
-              redesignedConfirmationsEnabled: true,
               isRedesignedConfirmationsDeveloperEnabled: true,
             },
           })
