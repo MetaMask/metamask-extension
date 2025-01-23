@@ -197,11 +197,33 @@ jobs:
           git config --global user.email 'metamaskbot@users.noreply.github.com'
           git commit -am "Update LavaMoat policies"
           git push
+      ## Yes, it would be nice to use the local diff before the commit is made, but we need to include potential multiple updates in the history of the PR
+      - name: Compare policy changes
+        run: |
+          if [[ $HAS_CHANGES == 'true' ]]
+          then
+            git fetch origin ${{ github.base_ref }}
+            main_diff=$(git diff origin/${{ github.base_ref }} lavamoat/browserify/main/policy.json | md5sum | cut -d' ' -f1)
+            for folder in lavamoat/browserify/*/; do
+              if [ "$folder" != "lavamoat/browserify/main/" ]; then
+                file="${folder}policy.json"
+                if [ -f "$file" ]; then
+                  diff=$(git diff origin/${{ github.base_ref }} "$file" | md5sum | cut -d' ' -f1)
+                  if [ "$diff" = "$main_diff" ]; then
+                    echo "✅ ${folder}policy.json changes match main/policy.json policy changes"
+                  else
+                    echo "👀 ${folder}policy.json changes **differ from** main/policy.json policy changes"
+                  fi
+                fi
+              fi
+            done > does_diff_diff.txt
+          fi
+      ## Note the use of `cat -` to include the file contents and the echo in the comment
       - name: Post comment
         run: |
           if [[ $HAS_CHANGES == 'true' ]]
           then
-            echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff' |  gh pr comment "${PR_NUMBER}" --body-file -
+            echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt |  gh pr comment "${PR_NUMBER}" --body-file -
           else
             gh pr comment "${PR_NUMBER}" --body 'No policy changes'
           fi

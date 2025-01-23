@@ -162,6 +162,9 @@ const migrations = [
   require('./136'),
   require('./137'),
   require('./138'),
+  require('./139'),
+  require('./140'),
+  require('./141'),
 ];
 
 export default migrations;

@@ -91,6 +91,7 @@ const baseStore = {
         txParams: { ...mockTxParams },
         status: 'unapproved',
         simulationData: {},
+        gasLimitNoBuffer: '0x5208',
       },
     ],
     gasEstimateType: GasEstimateTypes.legacy,
@@ -181,6 +182,7 @@ const baseStore = {
       type: 'simpleSend',
       history: [],
       userFeeLevel: 'medium',
+      gasLimitNoBuffer: '0x5208',
       defaultGasEstimates: {
         estimateType: 'medium',
         gas: '0x5208',

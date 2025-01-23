@@ -222,6 +222,22 @@ export async function mockSolanaRatesCall(mockServer: Mockttp) {
     });
 }
 
+export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getTokenAccountsByOwner',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result: [], // Empty for now, it has been mocked to avoid network calls.
+        },
+      };
+    });
+}
+
 export async function withSolanaAccountSnap(
   {
     title,
@@ -257,6 +273,7 @@ export async function withSolanaAccountSnap(
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
             await mockSolanaRatesCall(mockServer),
+            await mockGetTokenAccountsByOwner(mockServer),
             await mockGetSignaturesForAddress(mockServer),
             await mockMultiCoinPrice(mockServer),
             await mockGetLatestBlockhash(mockServer),

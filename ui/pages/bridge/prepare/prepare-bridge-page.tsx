@@ -93,6 +93,7 @@ import { getCurrentKeyring, getLocale, getTokenList } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
+import { getMultichainIsSolana } from '../../../selectors/multichain';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -369,6 +370,8 @@ const PrepareBridgePage = () => {
     }
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
+  const isSolana = useSelector(getMultichainIsSolana);
+
   return (
     <Column className="prepare-bridge-page" gap={8}>
       <BridgeInputGroup
@@ -489,7 +492,6 @@ const PrepareBridgePage = () => {
                   : undefined;
               toChainClientId && dispatch(setActiveNetwork(toChainClientId));
               dispatch(setFromToken(toToken));
-              dispatch(setFromTokenInputValue(null));
               fromChain?.chainId && dispatch(setToChain(fromChain.chainId));
               fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               dispatch(setToToken(fromToken));
@@ -521,7 +523,7 @@ const PrepareBridgePage = () => {
               dispatch(setToChain(networkConfig.chainId));
               dispatch(setToToken(null));
             },
-            header: t('bridgeTo'),
+            header: isSolana ? t('swapSwapTo') : t('bridgeTo'),
             shouldDisableNetwork: ({ chainId }) =>
               chainId === fromChain?.chainId,
           }}

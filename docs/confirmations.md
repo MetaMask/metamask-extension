@@ -297,10 +297,6 @@ We recommend the use of a `try finally` block to ensure the flow is ended even i
 
 In rare scenarios where an approval flow is initialized within another approval flow, the popup will remain open until the parent approval flow has been ended.
 
-#### Example
-
-For an example usage, see the [add network middleware](../app/scripts/lib/rpc-method-middleware/handlers/add-ethereum-chain.js) and the call to `startApprovalFlow`.
-
 ## Result Pages
 
 ### Overview
