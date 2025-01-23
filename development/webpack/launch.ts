@@ -21,7 +21,7 @@ import type { Child, PTY, Stdio, StdName } from './types.ts';
 const rawArgv = process.argv.slice(2);
 
 const alias = { cache: 'c', help: 'h', watch: 'h' };
-type Args = Partial<Record<keyof typeof alias, boolean>>;
+type Args = { [x in keyof typeof alias]?: boolean };
 const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 
 if (args.cache === false || args.help === true || args.watch === true) {
