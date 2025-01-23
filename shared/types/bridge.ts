@@ -1,7 +1,6 @@
 import type { Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
 import type { AssetType } from '../constants/transaction';
-import type { SwapsTokenObject } from '../constants/swaps';
 
 export type ChainConfiguration = {
   isActiveSrc: boolean;
@@ -185,9 +184,6 @@ export enum BridgeBackgroundAction {
 }
 export type BridgeControllerState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
-  destTokensLoadingStatus?: RequestStatus;
-  destTokens: Record<string, SwapsTokenObject>;
-  destTopAssets: { address: string }[];
   quoteRequest: Partial<QuoteRequest>;
   quotes: (QuoteResponse & L1GasFees)[];
   quotesInitialLoadTime?: number;
