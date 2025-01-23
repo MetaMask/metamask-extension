@@ -6,12 +6,12 @@ import { PersistanceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
 import { IntermediaryStateType } from './base-store';
 
-jest.mock('./ExtensionStore', () => {
+jest.mock('./extension-store', () => {
   return jest.fn().mockImplementation(() => {
     return { set: jest.fn(), get: jest.fn() };
   });
 });
-jest.mock('./ReadOnlyNetworkStore');
+jest.mock('./read-only-network-store');
 jest.mock('@sentry/browser', () => ({
   captureException: jest.fn(),
 }));
@@ -59,7 +59,7 @@ describe('PersistanceManager', () => {
 
     it('throws if metadata has not been set', async () => {
       await expect(manager.set({ appState: { test: true } })).rejects.toThrow(
-        'MetaMask - metadata must be set on instance of ExtensionStore before calling "set"',
+        'MetaMask - metadata must be set before calling "set"',
       );
     });
 

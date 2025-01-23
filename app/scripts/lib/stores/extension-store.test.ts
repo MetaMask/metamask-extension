@@ -1,5 +1,4 @@
 import browser from 'webextension-polyfill';
-import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import ExtensionStore from './extension-store';
 
 const MOCK_STATE = { data: {}, meta: { version: 1 } };
@@ -7,10 +6,6 @@ const MOCK_STATE = { data: {}, meta: { version: 1 } };
 jest.mock('webextension-polyfill', () => ({
   runtime: { lastError: null },
   storage: { local: true },
-}));
-
-jest.mock('../../../../shared/modules/browser-runtime.utils', () => ({
-  checkForLastError: jest.fn(),
 }));
 
 const setup = (
@@ -79,18 +74,6 @@ describe('ExtensionStore', () => {
 
       expect(setMock).toHaveBeenCalledWith(MOCK_STATE);
     });
-
-    it('throws an error if checkForLastError returns an error after setting', async () => {
-      const setMock = jest.fn();
-      setMock.mockResolvedValueOnce(undefined);
-      const fakeError = new Error('Some set error');
-      (checkForLastError as jest.Mock).mockReturnValueOnce(fakeError);
-
-      const localStore = setup({ localMock: { set: setMock } });
-      await expect(
-        localStore.set({ data: { abc: 123 }, meta: { version: 10 } }),
-      ).rejects.toThrow('Some set error');
-    });
   });
 
   describe('get', () => {
@@ -107,16 +90,6 @@ describe('ExtensionStore', () => {
       await localStore.get();
 
       expect(getMock).toHaveBeenCalledWith(null);
-    });
-
-    it('throws an error if checkForLastError returns an error', async () => {
-      const getMock = jest.fn();
-      getMock.mockResolvedValueOnce({ test: true });
-      const fakeError = new Error('Some browser error');
-      (checkForLastError as jest.Mock).mockReturnValueOnce(fakeError);
-
-      const localStore = setup({ localMock: { get: getMock } });
-      await expect(localStore.get()).rejects.toThrow('Some browser error');
     });
   });
 });

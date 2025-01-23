@@ -1,6 +1,5 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import {
   type IntermediaryStateType,
   MetaMaskStorageStructure,
@@ -33,12 +32,7 @@ export default class ExtensionStore extends BaseStore {
       return null;
     }
     const { local } = browser.storage;
-    const result = await local.get(null);
-    const err = checkForLastError();
-    if (err) {
-      throw err;
-    }
-    return result;
+    return await local.get(null);
   }
 
   /**
@@ -60,10 +54,6 @@ export default class ExtensionStore extends BaseStore {
       );
     }
     const { local } = browser.storage;
-    await local.set(obj);
-    const err = checkForLastError();
-    if (err) {
-      throw err;
-    }
+    return await local.set(obj);
   }
 }
