@@ -42,14 +42,13 @@ export default class ExtensionStore extends BaseStore {
   }
 
   /**
-   * Sets the key in local state
+   * Overwrite data in `local` extension storage area
    *
-   * @param obj - The key to set
+   * @param obj - The data to set
    * @param obj.data - The MetaMask State tree
    * @param obj.meta - The metadata object
    * @param obj.meta.version - The version of the state tree determined by the
    * migration
-   * @returns a promise resolving to undefined.
    */
   async set(obj: {
     data: IntermediaryStateType;
