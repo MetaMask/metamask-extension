@@ -1442,8 +1442,6 @@ describe('MetaMaskController', () => {
                 },
               },
             },
-            approvedChainIds: ['0x1', '0x5'],
-            approvedAccounts: ['0xdeadbeef'],
           });
 
         const result = await metamaskController.requestCaip25Approval(
@@ -1504,8 +1502,6 @@ describe('MetaMaskController', () => {
                 },
               },
             },
-            approvedChainIds: ['0x1', '0x5'],
-            approvedAccounts: ['0xdeadbeef'],
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
