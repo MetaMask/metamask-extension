@@ -440,13 +440,9 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
             .build(),
-          ganacheOptions: {
-            ...defaultGanacheOptions,
-            concurrent: [{ port: 8546, chainId: '0x539' }],
-          },
+          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
@@ -471,7 +467,7 @@ describe('Add Ethereum Chain', function () {
                   decimals: 18,
                 },
                 // this does not match what already exists in the NetworkController as an endpoint for this chain
-                rpcUrls: ['http://127.0.0.1:8546'],
+                rpcUrls: ['http://127.0.0.1:8545'],
                 blockExplorerUrls: [],
               },
             ],
