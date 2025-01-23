@@ -28,7 +28,6 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           .withPermissionControllerSnapAccountConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
-              redesignedConfirmationsEnabled: true,
               isRedesignedConfirmationsDeveloperEnabled: true,
             },
           })

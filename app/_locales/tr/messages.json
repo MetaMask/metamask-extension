@@ -4307,12 +4307,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "Paranızı koruyun"
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "İmza talepleri iyileştirildi"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "İmza taleplerini geliştirilmiş bir biçimde görmek için bunu açın."
-  },
   "refreshList": {
     "message": "Listeyi yenile"
   },

@@ -80,7 +80,6 @@ function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
       .withPermissionControllerConnectedToTestDapp()
       .withPreferencesController({
         preferences: {
-          redesignedConfirmationsEnabled: true,
           isRedesignedConfirmationsDeveloperEnabled: true,
         },
       })
@@ -99,7 +98,6 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
       .withPermissionControllerConnectedToTestDapp()
       .withPreferencesController({
         preferences: {
-          redesignedConfirmationsEnabled: true,
           isRedesignedConfirmationsDeveloperEnabled: true,
         },
       })

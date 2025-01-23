@@ -42,7 +42,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -68,7 +67,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -97,7 +95,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             })
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -141,7 +138,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
               useTransactionSimulations: false,
@@ -189,7 +185,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -216,7 +211,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
               useNonceField: true,
@@ -248,7 +242,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -279,7 +272,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
               useNonceField: true,
@@ -310,7 +302,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })

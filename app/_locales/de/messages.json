@@ -4307,12 +4307,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "Schützen Sie Ihre Gelder."
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Verbesserte Unterschriftsanfrage"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Schalten Sie dies ein, um sich Unterschriftsanfragen in einem erweiterten Format anzeigen zu lassen."
-  },
   "refreshList": {
     "message": "Liste aktualisieren"
   },

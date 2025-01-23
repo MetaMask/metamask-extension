@@ -30,7 +30,6 @@ describe('Alert for insufficient funds', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
-              redesignedConfirmationsEnabled: true,
               isRedesignedConfirmationsDeveloperEnabled: true,
             },
           })

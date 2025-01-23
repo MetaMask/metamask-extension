@@ -32,7 +32,6 @@ describe('Metrics', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
-              redesignedConfirmationsEnabled: true,
               isRedesignedConfirmationsDeveloperEnabled: true,
             },
           })

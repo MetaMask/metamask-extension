@@ -25,7 +25,6 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -58,7 +57,6 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })

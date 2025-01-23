@@ -56,7 +56,6 @@ describe('Snap Account Signatures', function (this: Suite) {
 
           const experimentalSettings = new ExperimentalSettings(driver);
           await experimentalSettings.check_pageIsLoaded();
-          await experimentalSettings.toggleRedesignedSignature();
 
           // Connect the SSK account
           const testDapp = new TestDapp(driver);

@@ -29,7 +29,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -70,7 +69,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
-              redesignedConfirmationsEnabled: true,
               isRedesignedConfirmationsDeveloperEnabled: true,
             },
           })
@@ -109,7 +107,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
-              redesignedConfirmationsEnabled: true,
               isRedesignedConfirmationsDeveloperEnabled: true,
             },
           })
@@ -148,7 +145,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
-              redesignedConfirmationsEnabled: true,
               isRedesignedConfirmationsDeveloperEnabled: true,
             },
           })

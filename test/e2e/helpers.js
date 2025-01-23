@@ -715,30 +715,6 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
  * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
  */
-async function clickSignOnSignatureConfirmation({
-  driver,
-  snapSigInsights = false,
-}) {
-  if (snapSigInsights) {
-    // there is no condition we can wait for to know the snap is ready,
-    // so we have to add a small delay as the last alternative to avoid flakiness.
-    await driver.delay(largeDelayMs);
-  }
-  await driver.waitForSelector(
-    { text: 'Sign', tag: 'button' },
-    { state: 'enabled' },
-  );
-  await driver.clickElement({ text: 'Sign', tag: 'button' });
-}
-
-/**
- * This method handles clicking the sign button on signature confirmation
- * screen.
- *
- * @param {object} options - Options for the function.
- * @param {WebDriver} options.driver - The WebDriver instance controlling the browser.
- * @param {boolean} [options.snapSigInsights] - Whether to wait for the insights snap to be ready before clicking the sign button.
- */
 async function clickSignOnRedesignedSignatureConfirmation({
   driver,
   snapSigInsights = false,
@@ -752,25 +728,6 @@ async function clickSignOnRedesignedSignatureConfirmation({
   }
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
-}
-
-/**
- * Some signing methods have extra security that requires the user to click a
- * button to validate that they have verified the details. This method handles
- * performing the necessary steps to click that button.
- *
- * @param {WebDriver} driver
- */
-async function validateContractDetails(driver) {
-  const verifyDetailsBtnSelector =
-    '.signature-request-content__verify-contract-details';
-
-  await driver.clickElement(verifyDetailsBtnSelector);
-  await driver.clickElement({ text: 'Got it', tag: 'button' });
-
-  await driver.clickElementSafe(
-    '[data-testid="signature-request-scroll-button"]',
-  );
 }
 
 /**
@@ -894,6 +851,7 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 }
 
 /**
+<<<<<<< HEAD
  * Rather than using the FixtureBuilder#withPreferencesController to set the setting
  * we need to manually set the setting because the migration #122 overrides this.
  * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
@@ -924,6 +882,8 @@ async function tempToggleSettingRedesignedConfirmations(driver) {
 }
 
 /**
+=======
+>>>>>>> 7727de33503e8d9ec44a5ed1ae5e36176eb6d045
  * Opens the account options menu safely, handling potential race conditions
  * with the MMI build.
  *
@@ -975,9 +935,7 @@ module.exports = {
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  clickSignOnSignatureConfirmation,
   clickSignOnRedesignedSignatureConfirmation,
-  validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
   assertInAnyOrder,
@@ -986,7 +944,6 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
-  tempToggleSettingRedesignedConfirmations,
   openMenuSafe,
   sentryRegEx,
   createWebSocketConnection,
