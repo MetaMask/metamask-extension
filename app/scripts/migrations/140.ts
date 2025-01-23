@@ -1,7 +1,8 @@
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import { hasProperty } from '@metamask/utils';
 import { monotonicFactory } from 'ulid';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isObject } from 'lodash';
+import { AccountsControllerState } from '@metamask/accounts-controller';
 
 export type VersionedData = {
   meta: {
@@ -9,6 +10,7 @@ export type VersionedData = {
   };
   data: {
     KeyringController?: KeyringControllerState;
+    AccountsController?: AccountsControllerState;
   };
 };
 
@@ -25,21 +27,36 @@ function transformState(state: VersionedData['data']) {
     return state;
   }
 
-  const { KeyringController } = state;
+  // The vault with the keyrings is currently locked. We can use the number of keyring types to infer the number of keyringsMetadata to create
+  const { KeyringController, AccountsController } = state;
+
+  let numberOfKeyringMetadataToCreate = 0;
+
+  if (
+    isObject(AccountsController) &&
+    hasProperty(AccountsController, 'internalAccounts') &&
+    hasProperty(
+      AccountsController.internalAccounts as AccountsControllerState['internalAccounts'],
+      'accounts',
+    )
+  ) {
+    numberOfKeyringMetadataToCreate = Object.values(
+      AccountsController.internalAccounts.accounts,
+    ).length;
+  }
 
   if (KeyringController && Array.isArray(KeyringController.keyrings)) {
     if (!Array.isArray(KeyringController.keyringsMetadata)) {
       KeyringController.keyringsMetadata = [];
     }
 
-    const newKeyringsMetadata = KeyringController.keyrings.map((kr, index) => {
-      return (
-        KeyringController.keyringsMetadata[index] || {
-          id: ulid(),
-          name: kr.type,
-        }
-      );
-    });
+    const newKeyringsMetadata = Array.from(
+      { length: numberOfKeyringMetadataToCreate },
+      () => ({
+        id: ulid(),
+        name: '',
+      }),
+    );
 
     KeyringController.keyringsMetadata = newKeyringsMetadata;
   }
