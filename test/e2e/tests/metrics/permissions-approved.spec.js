@@ -44,7 +44,7 @@ async function mockSegment(mockServer) {
 }
 
 describe('Permissions Approved Event', function () {
-  it('Successfully tracked when connecting to dapp @no-mmi', async function () {
+  it('Successfully tracked when connecting to dapp', async function () {
     await withFixtures(
       {
         dapp: true,
