@@ -619,11 +619,6 @@
         "@metamask/controller-utils": true
       }
     },
-    "@metamask/announcement-controller": {
-      "packages": {
-        "@metamask/announcement-controller>@metamask/base-controller": true
-      }
-    },
     "@metamask/announcement-controller>@metamask/base-controller": {
       "globals": {
         "setTimeout": true

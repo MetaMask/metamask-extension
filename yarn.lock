@@ -4910,15 +4910,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/announcement-controller@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/announcement-controller@npm:7.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^6.0.0"
-  checksum: 10/0f8c9112a6514fd2dc4c135d1ab0445f627451d0583ef2eb92f52f133a448fd97b67d5aa615b7409f4380a01590546376ccc6b728d94cf32a4b62686e18c0a4d
-  languageName: node
-  linkType: hard
-
 "@metamask/api-specs@npm:^0.9.3":
   version: 0.9.3
   resolution: "@metamask/api-specs@npm:0.9.3"
@@ -26491,7 +26482,6 @@ __metadata:
     "@metamask/account-watcher": "npm:^4.1.2"
     "@metamask/accounts-controller": "npm:^20.0.0"
     "@metamask/address-book-controller": "npm:^6.0.0"
-    "@metamask/announcement-controller": "npm:^7.0.0"
     "@metamask/api-specs": "npm:^0.9.3"
     "@metamask/approval-controller": "npm:^7.0.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A45.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-45.1.0-d914c453f0.patch"
