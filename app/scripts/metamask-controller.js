@@ -13,6 +13,7 @@ import {
   RatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
+  MultichainAssetsController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -793,6 +794,28 @@ export default class MetamaskController extends EventEmitter {
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled: !this.preferencesController.state.useNftDetection,
     });
+
+    // MultichainAssetsController
+    const multichainAssetsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MultichainAssetsController',
+        allowedEvents: [
+          'AccountsController:accountAdded',
+          'AccountsController:accountRemoved',
+        ],
+        allowedActions: [
+          'SnapController:handleRequest',
+          'SnapController:getAll',
+          'PermissionController:getPermissions',
+          'AccountsController:listMultichainAccounts',
+        ],
+      });
+
+    this.multichainAssetsController = new MultichainAssetsController({
+      messenger: multichainAssetsControllerMessenger,
+    });
+
+    // MultichainAssetsController
 
     const metaMetricsControllerMessenger =
       this.controllerMessenger.getRestricted({
@@ -2595,6 +2618,7 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
+        MultichainAssetsController: this.multichainAssetsController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,

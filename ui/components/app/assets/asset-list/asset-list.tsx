@@ -51,6 +51,7 @@ import {
 } from '../../../../../shared/constants/transaction';
 import AssetListControlBar from './asset-list-control-bar';
 import NativeToken from './native-token';
+import TokenListNonEvm from '../token-list/token-list-non-evm';
 
 export type TokenWithBalance = {
   address: string;
@@ -207,22 +208,27 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   return (
     <>
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
-      <TokenList
-        // nativeToken is still needed to avoid breaking flask build's support for bitcoin
-        // TODO: refactor this to no longer be needed for non-evm chains
-        nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
-        onTokenClick={(chainId: string, tokenAddress: string) => {
-          onClickAsset(chainId, tokenAddress);
-          trackEvent({
-            event: MetaMetricsEventName.TokenScreenOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: primaryCurrencyProperties.suffix,
-              location: 'Home',
-            },
-          });
-        }}
-      />
+      {isEvm ? (
+        <TokenList
+          // nativeToken is still needed to avoid breaking flask build's support for bitcoin
+          // TODO: refactor this to no longer be needed for non-evm chains
+          nativeToken={!isEvm && <NativeToken onClickAsset={onClickAsset} />}
+          onTokenClick={(chainId: string, tokenAddress: string) => {
+            onClickAsset(chainId, tokenAddress);
+            trackEvent({
+              event: MetaMetricsEventName.TokenScreenOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                token_symbol: primaryCurrencyProperties.suffix,
+                location: 'Home',
+              },
+            });
+          }}
+        />
+      ) : (
+        <TokenListNonEvm onTokenClick={() => {}} />
+      )}
+
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         shouldShowBuy ? (
