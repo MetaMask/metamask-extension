@@ -34,8 +34,8 @@ import {
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
 } from '../../helpers/constants/routes';
+import { EndowmentTypes } from '../../../shared/constants/permissions';
 import PermissionApproval from './permissions-connect.component';
-import { getRequestedAccountsViaPermissionsRequest } from './connect-page/utils';
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -55,9 +55,9 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
-  const isRequestingAccounts =
-    getRequestedAccountsViaPermissionsRequest(permissionsRequest?.permissions)
-      .length > 0;
+  const isRequestingAccounts = Boolean(
+    permissionsRequest?.permissions?.[EndowmentTypes.caip25],
+  );
 
   const { metadata = {} } = permissionsRequest || {};
   const { origin } = metadata;
