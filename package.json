@@ -339,7 +339,7 @@
     "@metamask/ppom-validator": "0.36.0",
     "@metamask/preinstalled-example-snap": "^0.3.0",
     "@metamask/profile-sync-controller": "^4.1.0",
-    "@metamask/providers": "^18.2.0",
+    "@metamask/providers": "patch:@metamask/providers@npm%3A18.3.1#~/.yarn/patches/@metamask-providers-npm-18.3.1-27270fe12b.patch",
     "@metamask/queued-request-controller": "^7.0.1",
     "@metamask/rate-limit-controller": "^6.0.0",
     "@metamask/remote-feature-flag-controller": "^1.3.0",

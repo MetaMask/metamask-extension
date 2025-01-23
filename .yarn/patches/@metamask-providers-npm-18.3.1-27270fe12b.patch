@@ -1,0 +1,203 @@
+diff --git a/dist/MetaMaskInpageProvider.cjs b/dist/MetaMaskInpageProvider.cjs
+index 2182ef4ca38ad6f682b92f2043ceef4e1df40986..048f5ebc5bcf239682b44faae7dd5bf963db628f 100644
+--- a/dist/MetaMaskInpageProvider.cjs
++++ b/dist/MetaMaskInpageProvider.cjs
+@@ -31,17 +31,14 @@ class MetaMaskInpageProvider extends StreamProvider_1.AbstractStreamProvider {
+      *
+      * @param connectionStream - A Node.js duplex stream.
+      * @param options - An options bag.
+-     * @param options.jsonRpcStreamName - The name of the internal JSON-RPC stream.
+-     * Default: `metamask-provider`.
+      * @param options.logger - The logging API to use. Default: `console`.
+      * @param options.maxEventListeners - The maximum number of event
+      * listeners. Default: 100.
+      * @param options.shouldSendMetadata - Whether the provider should
+      * send page metadata. Default: `true`.
+      */
+-    constructor(connectionStream, { jsonRpcStreamName = exports.MetaMaskInpageProviderStreamName, logger = console, maxEventListeners = 100, shouldSendMetadata, } = {}) {
++    constructor(connectionStream, { logger = console, maxEventListeners = 100, shouldSendMetadata, } = {}) {
+         super(connectionStream, {
+-            jsonRpcStreamName,
+             logger,
+             maxEventListeners,
+             rpcMiddleware: (0, utils_1.getDefaultExternalMiddleware)(logger),
+diff --git a/dist/MetaMaskInpageProvider.d.cts b/dist/MetaMaskInpageProvider.d.cts
+index 88b54c73596ea11126468fbfc52f8b3e4badf487..2701ba0096afe1855c151793d9efee45a7ea7d68 100644
+--- a/dist/MetaMaskInpageProvider.d.cts
++++ b/dist/MetaMaskInpageProvider.d.cts
+@@ -44,15 +44,13 @@ export declare class MetaMaskInpageProvider extends AbstractStreamProvider {
+      *
+      * @param connectionStream - A Node.js duplex stream.
+      * @param options - An options bag.
+-     * @param options.jsonRpcStreamName - The name of the internal JSON-RPC stream.
+-     * Default: `metamask-provider`.
+      * @param options.logger - The logging API to use. Default: `console`.
+      * @param options.maxEventListeners - The maximum number of event
+      * listeners. Default: 100.
+      * @param options.shouldSendMetadata - Whether the provider should
+      * send page metadata. Default: `true`.
+      */
+-    constructor(connectionStream: Duplex, { jsonRpcStreamName, logger, maxEventListeners, shouldSendMetadata, }?: MetaMaskInpageProviderOptions);
++    constructor(connectionStream: Duplex, { logger, maxEventListeners, shouldSendMetadata, }?: MetaMaskInpageProviderOptions);
+     get chainId(): string | null;
+     get networkVersion(): string | null;
+     get selectedAddress(): string | null;
+diff --git a/dist/StreamProvider.cjs b/dist/StreamProvider.cjs
+index 340e5179e02bedc6854b0d7b5a8861bab101b5ec..4c7ffee4be4e69b2103a7f8d3cf942a7b5e8feb2 100644
+--- a/dist/StreamProvider.cjs
++++ b/dist/StreamProvider.cjs
+@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.StreamProvider = exports.AbstractStreamProvider = void 0;
+ const json_rpc_middleware_stream_1 = require("@metamask/json-rpc-middleware-stream");
+-const object_multiplex_1 = __importDefault(require("@metamask/object-multiplex"));
+ const is_stream_1 = require("is-stream/index.js");
+ const readable_stream_1 = require("readable-stream");
+ const BaseProvider_1 = require("./BaseProvider.cjs");
+@@ -23,29 +22,25 @@ class AbstractStreamProvider extends BaseProvider_1.BaseProvider {
+      *
+      * @param connectionStream - A Node.js duplex stream.
+      * @param options - An options bag.
+-     * @param options.jsonRpcStreamName - The name of the internal JSON-RPC stream.
+      * @param options.logger - The logging API to use. Default: `console`.
+      * @param options.maxEventListeners - The maximum number of event
+      * listeners. Default: 100.
+      * @param options.rpcMiddleware - The RPC middleware stack to use.
+      */
+-    constructor(connectionStream, { jsonRpcStreamName, logger = console, maxEventListeners = 100, rpcMiddleware = [], }) {
++    constructor(connectionStream, { logger = console, maxEventListeners = 100, rpcMiddleware = [], } = {}) {
+         super({ logger, maxEventListeners, rpcMiddleware });
+         if (!(0, is_stream_1.duplex)(connectionStream)) {
+             throw new Error(messages_1.default.errors.invalidDuplexStream());
+         }
+         // Bind functions to prevent consumers from making unbound calls
+         this._handleStreamDisconnect = this._handleStreamDisconnect.bind(this);
+-        // Set up connectionStream multiplexing
+-        const mux = new object_multiplex_1.default();
+-        (0, readable_stream_1.pipeline)(connectionStream, mux, connectionStream, this._handleStreamDisconnect.bind(this, 'MetaMask'));
+         // Set up RPC connection
+         // Typecast: The type of `Duplex` is incompatible with the type of
+         // `JsonRpcConnection`.
+         this._jsonRpcConnection = (0, json_rpc_middleware_stream_1.createStreamMiddleware)({
+             retryOnMessage: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
+         });
+-        (0, readable_stream_1.pipeline)(this._jsonRpcConnection.stream, mux.createStream(jsonRpcStreamName), this._jsonRpcConnection.stream, this._handleStreamDisconnect.bind(this, 'MetaMask RpcProvider'));
++        (0, readable_stream_1.pipeline)(connectionStream, this._jsonRpcConnection.stream, connectionStream, this._handleStreamDisconnect.bind(this, 'MetaMask RpcProvider'));
+         // Wire up the JsonRpcEngine to the JSON-RPC connection stream
+         this._rpcEngine.push(this._jsonRpcConnection.middleware);
+         // Handle JSON-RPC notifications
+diff --git a/dist/StreamProvider.d.cts b/dist/StreamProvider.d.cts
+index 5528633cb48d370c0a08f1f6951ef3960bcda17a..33aec7331989045ccb35f04907430fa72a4eef4f 100644
+--- a/dist/StreamProvider.d.cts
++++ b/dist/StreamProvider.d.cts
+@@ -4,12 +4,7 @@ import type { Json, JsonRpcParams } from "@metamask/utils";
+ import type { Duplex } from "readable-stream";
+ import type { BaseProviderOptions } from "./BaseProvider.cjs";
+ import { BaseProvider } from "./BaseProvider.cjs";
+-export type StreamProviderOptions = {
+-    /**
+-     * The name of the stream used to connect to the wallet.
+-     */
+-    jsonRpcStreamName: string;
+-} & BaseProviderOptions;
++export type StreamProviderOptions = BaseProviderOptions;
+ export type JsonRpcConnection = {
+     events: SafeEventEmitter;
+     middleware: JsonRpcMiddleware<JsonRpcParams, Json>;
+@@ -28,13 +23,12 @@ export declare abstract class AbstractStreamProvider extends BaseProvider {
+      *
+      * @param connectionStream - A Node.js duplex stream.
+      * @param options - An options bag.
+-     * @param options.jsonRpcStreamName - The name of the internal JSON-RPC stream.
+      * @param options.logger - The logging API to use. Default: `console`.
+      * @param options.maxEventListeners - The maximum number of event
+      * listeners. Default: 100.
+      * @param options.rpcMiddleware - The RPC middleware stack to use.
+      */
+-    constructor(connectionStream: Duplex, { jsonRpcStreamName, logger, maxEventListeners, rpcMiddleware, }: StreamProviderOptions);
++    constructor(connectionStream: Duplex, { logger, maxEventListeners, rpcMiddleware, }?: StreamProviderOptions);
+     /**
+      * MUST be called by child classes.
+      *
+diff --git a/dist/extension-provider/createExternalExtensionProvider.cjs b/dist/extension-provider/createExternalExtensionProvider.cjs
+index 2e5c44e9a9080c5abbbb9351c40914bff5043edd..9653a235002cc4e526344dc7506db67da212a3e4 100644
+--- a/dist/extension-provider/createExternalExtensionProvider.cjs
++++ b/dist/extension-provider/createExternalExtensionProvider.cjs
+@@ -5,8 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.createExternalExtensionProvider = createExternalExtensionProvider;
+ exports.getBuildType = getBuildType;
++const object_multiplex_1 = __importDefault(require("@metamask/object-multiplex"));
+ const detect_browser_1 = require("detect-browser");
+ const extension_port_stream_1 = require("extension-port-stream");
++const readable_stream_1 = require("readable-stream");
+ const external_extension_config_json_1 = __importDefault(require("./external-extension-config.json"));
+ const MetaMaskInpageProvider_1 = require("../MetaMaskInpageProvider.cjs");
+ const StreamProvider_1 = require("../StreamProvider.cjs");
+@@ -24,8 +26,16 @@ function createExternalExtensionProvider(typeOrId = 'stable') {
+         const extensionId = getExtensionId(typeOrId);
+         const metamaskPort = chrome.runtime.connect(extensionId);
+         const pluginStream = new extension_port_stream_1.PortDuplexStream(metamaskPort);
+-        provider = new StreamProvider_1.StreamProvider(pluginStream, {
+-            jsonRpcStreamName: MetaMaskInpageProvider_1.MetaMaskInpageProviderStreamName,
++        const streamName = MetaMaskInpageProvider_1.MetaMaskInpageProviderStreamName;
++        const mux = new object_multiplex_1.default();
++        (0, readable_stream_1.pipeline)(pluginStream, mux, pluginStream, (error) => {
++            let warningMsg = `MetaMask: Lost connection to "${streamName}".`;
++            if (error?.stack) {
++                warningMsg += `\n${error.stack}`;
++            }
++            console.warn(warningMsg);
++        });
++        provider = new StreamProvider_1.StreamProvider(mux.createStream(streamName), {
+             logger: console,
+             rpcMiddleware: (0, utils_1.getDefaultExternalMiddleware)(console),
+         });
+diff --git a/dist/initializeInpageProvider.cjs b/dist/initializeInpageProvider.cjs
+index 792011aa7596e86ca59bc22eacb58438cf6e0e73..da51e25266886f975f91aae557c1de3f5ffa1c92 100644
+--- a/dist/initializeInpageProvider.cjs
++++ b/dist/initializeInpageProvider.cjs
+@@ -1,8 +1,13 @@
+ "use strict";
++var __importDefault = (this && this.__importDefault) || function (mod) {
++    return (mod && mod.__esModule) ? mod : { "default": mod };
++};
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.initializeProvider = initializeProvider;
+ exports.setGlobalProvider = setGlobalProvider;
+ exports.announceCaip294WalletData = announceCaip294WalletData;
++const object_multiplex_1 = __importDefault(require("@metamask/object-multiplex"));
++const readable_stream_1 = require("readable-stream");
+ const CAIP294_1 = require("./CAIP294.cjs");
+ const EIP6963_1 = require("./EIP6963.cjs");
+ const createExternalExtensionProvider_1 = require("./extension-provider/createExternalExtensionProvider.cjs");
+@@ -22,9 +27,16 @@ const shimWeb3_1 = require("./shimWeb3.cjs");
+  * @param options.logger - The logging API to use. Default: `console`.
+  * @returns The initialized provider (whether set or not).
+  */
+-function initializeProvider({ connectionStream, jsonRpcStreamName, logger = console, maxEventListeners = 100, providerInfo, shouldSendMetadata = true, shouldSetOnWindow = true, shouldShimWeb3 = false, }) {
+-    const provider = new MetaMaskInpageProvider_1.MetaMaskInpageProvider(connectionStream, {
+-        jsonRpcStreamName,
++function initializeProvider({ connectionStream, jsonRpcStreamName = MetaMaskInpageProvider_1.MetaMaskInpageProviderStreamName, logger = console, maxEventListeners = 100, providerInfo, shouldSendMetadata = true, shouldSetOnWindow = true, shouldShimWeb3 = false, }) {
++    const mux = new object_multiplex_1.default();
++    (0, readable_stream_1.pipeline)(connectionStream, mux, connectionStream, (error) => {
++        let warningMsg = `MetaMask: Lost connection to "${jsonRpcStreamName}".`;
++        if (error?.stack) {
++            warningMsg += `\n${error.stack}`;
++        }
++        console.warn(warningMsg);
++    });
++    const provider = new MetaMaskInpageProvider_1.MetaMaskInpageProvider(mux.createStream(jsonRpcStreamName), {
+         logger,
+         maxEventListeners,
+         shouldSendMetadata,
+diff --git a/dist/initializeInpageProvider.d.cts b/dist/initializeInpageProvider.d.cts
+index 525864d3d399125fc743522782ad37bbf86cf3eb..14b26b82d90d274c6c09962a38ebcbe3b3ef6780 100644
+--- a/dist/initializeInpageProvider.d.cts
++++ b/dist/initializeInpageProvider.d.cts
+@@ -1,4 +1,4 @@
+-import type { Duplex } from "readable-stream";
++import { type Duplex } from "readable-stream";
+ import type { CAIP294WalletData } from "./CAIP294.cjs";
+ import type { MetaMaskInpageProviderOptions } from "./MetaMaskInpageProvider.cjs";
+ import { MetaMaskInpageProvider } from "./MetaMaskInpageProvider.cjs";

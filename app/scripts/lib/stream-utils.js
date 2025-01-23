@@ -1,5 +1,5 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { PassThrough, pipeline } from 'readable-stream';
+import { pipeline } from 'readable-stream';
 
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 
@@ -49,42 +49,4 @@ export function isStreamWritable(stream) {
   return Boolean(
     stream.writable && !stream.destroyed && !stream._writableState?.ended,
   );
-}
-
-/**
- * Creates a wrapper around a multiplexed substream that handles message wrapping/unwrapping.
- * This wrapper provides a duplex stream interface where:
- * - Writing to the wrapper unwraps the message and sends the payload to the substream
- * - Reading from the wrapper wraps the substream data with stream name and payload
- *
- * @param {ObjectMultiplex} mx - The multiplexer instance to create the substream from
- * @param {string} name - The name of the substream to create
- * @returns {PassThrough} A duplex stream that handles message wrapping/unwrapping
- */
-export function createSubstreamWrapper(mx, name) {
-  const substream = mx.createStream(name);
-  const duplexWrapper = new PassThrough({
-    objectMode: true,
-    transform(chunk, _encoding, callback) {
-      try {
-        substream.write(chunk.data, callback);
-      } catch (error) {
-        // eslint-disable-next-line node/callback-return
-        callback(error); // No return needed as we're catching synchronous errors
-      }
-    },
-  });
-
-  substream.on('data', (chunk) => {
-    duplexWrapper.push({
-      name,
-      data: chunk,
-    });
-  });
-
-  substream.on('end', () => {
-    duplexWrapper.push(null);
-  });
-
-  return duplexWrapper;
 }
