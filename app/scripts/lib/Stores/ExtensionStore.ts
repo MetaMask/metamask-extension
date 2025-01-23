@@ -23,9 +23,9 @@ export default class ExtensionStore extends BaseStore {
   }
 
   /**
-   * Returns all of the keys currently saved
+   * Return all data in `local` extension storage area.
    *
-   * @returns the key-value map from local storage
+   * @returns All data stored`local` extension storage area.
    */
   async get(): Promise<MetaMaskStorageStructure | null> {
     if (!this.isSupported) {
