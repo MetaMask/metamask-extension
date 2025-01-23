@@ -62,7 +62,7 @@ export class PersistanceManager {
    * a well functioning (typical) install should match the latest migration's
    * version number.
    */
-  #metadata?: { version: number };
+  metadata?: { version: number };
 
   isExtensionInitialized: boolean;
 
@@ -80,36 +80,15 @@ export class PersistanceManager {
     this.localStore = localStore;
   }
 
-  /**
-   * Sets the current metadata. The set method that is implemented in storage
-   * classes only requires an object that is set on the 'data' key. The
-   * metadata key of this class is set on the 'meta' key of the underlying
-   * storage implementation (e.g. chrome.storage.local).
-   */
-  set metadata(metadata: { version: number } | undefined) {
-    this.#metadata = metadata;
-  }
-
-  /**
-   * Gets the current metadata object and returns it. The underlying key is
-   * private and implemented in the BaseStore class so that the extending class
-   * can access it through this getter.
-   */
-  get metadata(): { version: number } | undefined {
-    return this.#metadata;
-  }
-
   async set(state: IntermediaryStateType) {
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }
-    if (!this.#metadata) {
-      throw new Error(
-        'MetaMask - metadata must be set before calling "set"',
-      );
+    if (!this.metadata) {
+      throw new Error('MetaMask - metadata must be set before calling "set"');
     }
     try {
-      await this.localStore.set({ data: state, meta: this.#metadata });
+      await this.localStore.set({ data: state, meta: this.metadata });
 
       if (this.dataPersistenceFailing) {
         this.dataPersistenceFailing = false;
