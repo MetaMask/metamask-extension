@@ -541,6 +541,24 @@ describe('MetaMetricsController', function () {
   });
 
   describe('setParticipateInMetaMetrics', function () {
+    it('should set dataCollectionForMarketing to false if not provided to update the value in userTraits', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              participateInMetaMetrics: false,
+              dataCollectionForMarketing: null,
+            },
+          },
+        },
+        async ({ controller }) => {
+          await controller.setParticipateInMetaMetrics(true);
+          expect(controller.state.dataCollectionForMarketing).toStrictEqual(
+            false,
+          );
+        },
+      );
+    });
     it('should update the value of participateInMetaMetrics', async function () {
       await withController(
         {

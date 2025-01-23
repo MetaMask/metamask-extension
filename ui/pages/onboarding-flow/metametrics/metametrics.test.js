@@ -10,10 +10,7 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/_locales/en/messages.json';
-import {
-  setParticipateInMetaMetrics,
-  setDataCollectionForMarketing,
-} from '../../../store/actions';
+import { setParticipateInMetaMetrics } from '../../../store/actions';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
@@ -110,24 +107,6 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(mockPushHistory).toHaveBeenCalledWith(
-        ONBOARDING_CREATE_PASSWORD_ROUTE,
-      );
-    });
-  });
-
-  it('should set setDataCollectionForMarketing to false when clicking cancel', async () => {
-    const { queryByText } = renderWithProvider(
-      <OnboardingMetametrics />,
-      mockStore,
-    );
-
-    const confirmCancel = queryByText(noThanks.message);
-
-    fireEvent.click(confirmCancel);
-
-    await waitFor(() => {
-      expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
       expect(mockPushHistory).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );

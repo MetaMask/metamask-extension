@@ -807,7 +807,14 @@ export default class MetaMetricsController extends BaseController<
     participateInMetaMetrics: boolean,
   ): Promise<string | null> {
     const { metaMetricsId: existingMetaMetricsId } = this.state;
-
+    if (
+      participateInMetaMetrics &&
+      this.state.dataCollectionForMarketing === null
+    ) {
+      this.update((state) => {
+        state.dataCollectionForMarketing = false;
+      });
+    }
     const metaMetricsId =
       participateInMetaMetrics && !existingMetaMetricsId
         ? this.generateMetaMetricsId()
@@ -1238,7 +1245,6 @@ export default class MetaMetricsController extends BaseController<
         metamaskState.preferences.tokenNetworkFilter || {},
       ),
     };
-
     if (!previousUserTraits) {
       this.update((state) => {
         state.previousUserTraits = currentTraits;
@@ -1246,6 +1252,11 @@ export default class MetaMetricsController extends BaseController<
       return currentTraits;
     }
 
+    console.log(
+      'previousUserTraits',
+      this.state.participateInMetaMetrics,
+      this.state.dataCollectionForMarketing,
+    );
     if (previousUserTraits && !isEqual(previousUserTraits, currentTraits)) {
       const updates = pickBy(currentTraits, (v, k) => {
         // @ts-expect-error It's okay that `k` may not be a key of `previousUserTraits`, because we assume `isEqual` can handle it
