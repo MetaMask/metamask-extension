@@ -231,7 +231,7 @@ describe('Sentry errors', function () {
     ],
   };
 
-  describe('before initialization, after opting out of metrics @no-mmi', function () {
+  describe('before initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -303,7 +303,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('before initialization, after opting into metrics @no-mmi', function () {
+  describe('before initialization, after opting into metrics', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -573,7 +573,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting out of metrics @no-mmi', function () {
+  describe('after initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -644,7 +644,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting into metrics @no-mmi', function () {
+  describe('after initialization, after opting into metrics', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -862,7 +862,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should not have extra properties in UI state mask @no-mmi', async function () {
+  it('should not have extra properties in UI state mask', async function () {
     const expectedMissingState = {
       bridgeState: {
         // This can get wiped out during initialization due to a bug in
