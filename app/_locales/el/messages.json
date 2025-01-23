@@ -736,9 +736,6 @@
     "message": "Δ",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Δεν υποστηρίζεται η δραστηριότητα στα Bitcoins"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
