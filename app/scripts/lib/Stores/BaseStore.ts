@@ -47,9 +47,8 @@ export type EmptyState = Omit<MetaMaskStorageStructure, 'data' | 'meta'>;
  * Responsibilities of extending classes:
  * 1. **Retrieve State:**
  * - Implement a `get` method that retrieves the current state from the
- * underlying storage system. This method should handle scenarios where
- * the state is unavailable by providing a fallback, such as returning
- * null` or an appropriate default value.
+ * underlying storage system. This method should return `null` when the
+ * state is unavailable.
  *
  * 2. **Set State:**
  * - Implement a `set` method that updates the state in the underlying
