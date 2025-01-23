@@ -9,7 +9,7 @@ type UnionToIntersection<U> = ((k: U) => void) extends (k: infer I) => void
   : never;
 
 type LastInUnion<U extends PropertyKey> = UnionToIntersection<
-  U extends string | number | symbol ? () => U : never
+  U extends PropertyKey ? () => U : never
 > extends () => infer Last
   ? Last
   : never;

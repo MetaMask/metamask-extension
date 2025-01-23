@@ -9,7 +9,7 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "foundryup": "tsx --tsconfig ./test/helpers/foundry/tsconfig.json ./test/helpers/foundry/foundryup.ts",
+    "foundryup": "tsx ./test/helpers/foundry/foundryup.ts",
     "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
@@ -671,7 +671,7 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "ttest": "^2.1.1",
-    "typescript": "~5.4.5",
+    "typescript": "~5.7.2",
     "unzipper": "^0.12.3",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",

@@ -8,15 +8,14 @@ import { createHash } from 'node:crypto';
 import { cwd, exit } from 'node:process';
 import { parse as parseYaml } from 'yaml';
 import {
-  extractFrom,
   getVersion,
   isCodedError,
   noop,
-  parseArgs,
-  printBanner,
   say,
   transformChecksums,
-} from './helpers';
+} from './utils';
+import { extractFrom } from './extract';
+import { parseArgs, printBanner } from './options';
 import { Architecture, Checksums, Extension, Platform } from './types';
 
 export function getCacheDirectory(): string {

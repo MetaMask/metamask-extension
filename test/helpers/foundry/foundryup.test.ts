@@ -8,7 +8,8 @@ import {
   getBinaryArchiveUrl,
   getCacheDirectory,
 } from './foundryup';
-import { isCodedError, parseArgs } from './helpers';
+import { isCodedError } from './utils';
+import { parseArgs } from './options';
 import type { Checksums } from './types';
 import { Architecture, Platform } from './types';
 
