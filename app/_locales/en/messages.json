@@ -759,9 +759,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin activity is not supported"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -3497,6 +3494,9 @@
   },
   "noThanks": {
     "message": "No thanks"
+  },
+  "noTransactions": {
+    "message": "You have no transactions"
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."

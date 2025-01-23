@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import type { RatesControllerState } from '@metamask/assets-controllers';
+import type {
+  MultichainBalancesControllerState,
+  RatesControllerState,
+} from '@metamask/assets-controllers';
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
@@ -20,7 +24,6 @@ import {
 } from '../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { BalancesControllerState } from '../../app/scripts/lib/accounts/BalancesController';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -48,12 +51,17 @@ export type RatesState = {
 };
 
 export type BalancesState = {
-  metamask: BalancesControllerState;
+  metamask: MultichainBalancesControllerState;
+};
+
+export type TransactionsState = {
+  metamask: MultichainTransactionsControllerState;
 };
 
 export type MultichainState = AccountsState &
   RatesState &
   BalancesState &
+  TransactionsState &
   NetworkState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
@@ -366,6 +374,26 @@ export function getMultichainBalances(
   state: MultichainState,
 ): BalancesState['metamask']['balances'] {
   return state.metamask.balances;
+}
+
+export function getMultichainTransactions(
+  state: MultichainState,
+): TransactionsState['metamask']['nonEvmTransactions'] {
+  return state.metamask.nonEvmTransactions;
+}
+
+export function getSelectedAccountMultichainTransactions(
+  state: MultichainState,
+):
+  | { transactions: Transaction[]; next: string | null; lastUpdated: number }
+  | undefined {
+  const selectedAccount = getSelectedInternalAccount(state);
+
+  if (isEvmAccountType(selectedAccount.type)) {
+    return undefined;
+  }
+
+  return state.metamask.nonEvmTransactions[selectedAccount.id];
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
