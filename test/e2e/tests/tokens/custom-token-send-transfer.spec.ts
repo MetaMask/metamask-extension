@@ -5,7 +5,6 @@ import {
   defaultGanacheOptions,
   openDapp,
   WINDOW_TITLES,
-  tempToggleSettingRedesignedTransactionConfirmations,
   unlockWallet,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -13,7 +12,6 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ConfirmTxPage from '../../page-objects/pages/send/confirm-tx-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
@@ -27,187 +25,7 @@ describe('Transfer custom tokens @no-mmi', function () {
   const GAS_LIMIT = '60000';
   const GAS_PRICE = '10';
 
-  describe('Old confirmation screens', function () {
-    it('send custom tokens from extension customizing gas values', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
-          ganacheOptions: defaultGanacheOptions,
-          smartContract,
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver }) => {
-          await unlockWallet(driver);
-
-          await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          const homePage = new HomePage(driver);
-          const assetListPage = new AssetListPage(driver);
-          const sendTokenPage = new SendTokenPage(driver);
-          const confirmTxPage = new ConfirmTxPage(driver);
-          const activityListPage = new ActivityListPage(driver);
-
-          await homePage.check_pageIsLoaded();
-
-          await assetListPage.openTokenDetails(symbol);
-          await assetListPage.clickSendButton();
-
-          await sendTokenPage.check_pageIsLoaded();
-          await sendTokenPage.fillRecipient(recipientAddress);
-          await sendTokenPage.fillAmount('1');
-          await sendTokenPage.clickContinueButton();
-
-          // check transaction details
-          const estimatedGasFee = '0.00008455';
-          const totalAmount = `${valueWithSymbol('1')} + 0.00008455`;
-          await confirmTxPage.check_pageIsLoaded(estimatedGasFee, totalAmount);
-
-          // check function name and hex data details in hex tab
-          await confirmTxPage.check_functionTypeAndHexData(
-            'Transfer',
-            '0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97',
-          );
-
-          // edit gas fee
-          await confirmTxPage.switchToDetailsTab();
-          await confirmTxPage.editGasFee('60000', '10');
-          await confirmTxPage.clickConfirmButton();
-
-          // check that transaction has completed correctly and is displayed in the activity list
-          await activityListPage.check_txAction(`Send ${symbol}`);
-          await activityListPage.check_txAmountInActivity(
-            valueWithSymbol('-1'),
-          );
-        },
-      );
-    });
-
-    it('transfer custom tokens from dapp customizing gas values', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withTokensControllerERC20()
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          smartContract,
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver, contractRegistry }) => {
-          const contractAddress = await contractRegistry.getContractAddress(
-            smartContract,
-          );
-          await unlockWallet(driver);
-
-          await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          const testDapp = new TestDapp(driver);
-          const confirmTxPage = new ConfirmTxPage(driver);
-          const activityListPage = new ActivityListPage(driver);
-          const homepage = new HomePage(driver);
-          const assetListPage = new AssetListPage(driver);
-
-          // transfer token from dapp
-          await openDapp(driver, contractAddress);
-          await testDapp.check_pageIsLoaded();
-          await testDapp.clickTransferTokens();
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          const estimatedGasFee = '0.00010321';
-          const totalAmount = `${valueWithSymbol('1.5')} + ${estimatedGasFee}`;
-          await confirmTxPage.check_pageIsLoaded(estimatedGasFee, totalAmount);
-
-          // edit gas fee
-          await confirmTxPage.switchToDetailsTab();
-          await confirmTxPage.editGasFee(GAS_LIMIT, GAS_PRICE);
-          await confirmTxPage.clickConfirmButton();
-
-          // in extension, check that transaction has completed correctly and is displayed in the activity list
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-
-          await homepage.goToActivityList();
-          await activityListPage.check_txAction(`Send ${symbol}`);
-          await activityListPage.check_txAmountInActivity(
-            valueWithSymbol('-1.5'),
-          );
-
-          // check token amount is correct after transaction
-          await homepage.goToTokensTab();
-          await assetListPage.check_tokenExistsInList(
-            symbol,
-            valueWithSymbol('8.5'),
-          );
-        },
-      );
-    });
-
-    it('transfer custom tokens from dapp without specifying gas', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withTokensControllerERC20()
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          smartContract,
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver, contractRegistry }) => {
-          const contractAddress = await contractRegistry.getContractAddress(
-            smartContract,
-          );
-
-          await unlockWallet(driver);
-
-          await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
-          const testDapp = new TestDapp(driver);
-          const confirmTxPage = new ConfirmTxPage(driver);
-          const activityListPage = new ActivityListPage(driver);
-          const homepage = new HomePage(driver);
-          const assetListPage = new AssetListPage(driver);
-
-          // transfer token from dapp
-          await openDapp(driver, contractAddress);
-          await testDapp.check_pageIsLoaded();
-          await testDapp.clickTransferTokensWithoutGas();
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          const estimatedGasFee = '0.00103214';
-          const totalAmount = `${valueWithSymbol('1.5')} + ${estimatedGasFee}`;
-          await confirmTxPage.check_pageIsLoaded(estimatedGasFee, totalAmount);
-          await confirmTxPage.clickConfirmButton();
-
-          // in extension, check that transaction has completed correctly and is displayed in the activity list
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-
-          await homepage.goToActivityList();
-          await activityListPage.check_txAction(`Send ${symbol}`);
-          await activityListPage.check_txAmountInActivity(
-            valueWithSymbol('-1.5'),
-          );
-
-          // check token amount is correct after transaction
-          await homepage.goToTokensTab();
-          await assetListPage.check_tokenExistsInList(
-            symbol,
-            valueWithSymbol('8.5'),
-          );
-        },
-      );
-    });
-  });
-
-  describe('Redesigned confirmation screens', function () {
+  describe('Confirmation Screens - (Redesigned)', function () {
     it('send custom tokens from extension customizing gas values', async function () {
       await withFixtures(
         {
