@@ -230,8 +230,6 @@ env:
   # Variables that are modified with hardcoded code
   ###
 
-  # Used to enable confirmation redesigned pages
-  - ENABLE_CONFIRMATION_REDESIGN: ''
   # URL of the decoding API used to provide additional data from signature requests
   - DECODING_API_URL: 'https://signature-insights.api.cx.metamask.io/v1'
   # Determines if feature flagged Settings Page - Developer Options should be used

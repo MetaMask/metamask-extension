@@ -195,7 +195,6 @@ function finalizeSignatureFragment(
  *  that should be tracked for methods rate limited by random sample.
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
- * @param {Function} opts.isRedesignedConfirmationsDeveloperEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
@@ -213,7 +212,6 @@ export default function createRPCMethodTrackingMiddleware({
   globalRateLimitMaxAmount = 10, // max of events in the globalRateLimitTimeout window. pass 0 for no global rate limit
   getAccountType,
   getDeviceModel,
-  isRedesignedConfirmationsDeveloperEnabled,
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
@@ -318,8 +316,6 @@ export default function createRPCMethodTrackingMiddleware({
         if (
           shouldUseRedesignForSignatures({
             approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
-            isRedesignedConfirmationsDeveloperEnabled:
-              isRedesignedConfirmationsDeveloperEnabled(),
           })
         ) {
           eventProperties.ui_customizations = [

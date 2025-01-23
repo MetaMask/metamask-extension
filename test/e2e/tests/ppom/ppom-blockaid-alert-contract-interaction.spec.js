@@ -194,9 +194,6 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction @no-mmi', functio
           })
           .withPreferencesController({
             securityAlertsEnabled: true,
-            preferences: {
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
           })
           .build(),
         defaultGanacheOptions,

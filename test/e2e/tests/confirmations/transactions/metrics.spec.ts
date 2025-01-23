@@ -30,11 +30,6 @@ describe('Metrics @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
             participateInMetaMetrics: true,

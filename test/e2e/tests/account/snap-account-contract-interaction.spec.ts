@@ -26,11 +26,6 @@ describe('Snap Account Contract interaction @no-mmi', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
         ganacheOptions: multipleGanacheOptionsForType2Transactions,
         smartContract,

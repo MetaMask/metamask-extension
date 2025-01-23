@@ -334,15 +334,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('isRedesignedConfirmationsFeatureEnabled', () => {
-    const { controller } = setupController({});
-    it('isRedesignedConfirmationsFeatureEnabled should default to false', () => {
-      expect(
-        controller.state.preferences.isRedesignedConfirmationsDeveloperEnabled,
-      ).toStrictEqual(false);
-    });
-  });
-
   describe('setUseSafeChainsListValidation', function () {
     const { controller } = setupController({});
     it('should default to true', function () {
@@ -727,7 +718,6 @@ describe('preferences controller', () => {
         petnamesEnabled: true,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
@@ -756,7 +746,6 @@ describe('preferences controller', () => {
         privacyMode: false,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,

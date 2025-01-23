@@ -78,11 +78,6 @@ function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
     dapp: true,
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
-      .withPreferencesController({
-        preferences: {
-          isRedesignedConfirmationsDeveloperEnabled: true,
-        },
-      })
       .build(),
     ganacheOptions: defaultGanacheOptions,
     smartContract: SMART_CONTRACTS.HST,
@@ -96,11 +91,6 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
     dapp: true,
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
-      .withPreferencesController({
-        preferences: {
-          isRedesignedConfirmationsDeveloperEnabled: true,
-        },
-      })
       .build(),
     ganacheOptions: defaultGanacheOptionsForType2Transactions,
     smartContract: SMART_CONTRACTS.HST,
