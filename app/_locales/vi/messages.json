@@ -4304,12 +4304,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "Bảo vệ tiền của bạn"
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Yêu cầu chữ ký được cải thiện"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Bật tính năng này để xem các yêu cầu chữ ký ở định dạng nâng cao."
-  },
   "refreshList": {
     "message": "Làm mới danh sách"
   },

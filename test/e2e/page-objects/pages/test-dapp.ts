@@ -24,9 +24,6 @@ class TestDapp {
   private readonly confirmScrollToBottomButtonRedesign =
     '.confirm-scroll-to-bottom__button';
 
-  private readonly confirmSignatureButton =
-    '[data-testid="page-container-footer-next"]';
-
   private readonly confirmSignatureButtonRedesign =
     '[data-testid="confirm-footer-button"]';
 
@@ -80,11 +77,6 @@ class TestDapp {
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
 
-  private readonly personalSignSignatureRequestMessage = {
-    text: 'personal_sign',
-    tag: 'div',
-  };
-
   private readonly personalSignVerifyButton = '#personalSignVerify';
 
   private personalSignSigUtilResultSelector =
@@ -95,11 +87,6 @@ class TestDapp {
   private readonly signPermitButton = '#signPermit';
 
   private readonly signPermitResult = '#signPermitResult';
-
-  private readonly signPermitSignatureRequestMessage = {
-    text: 'Permit',
-    tag: 'p',
-  };
 
   private readonly signPermitVerifyButton = '#signPermitVerify';
 
@@ -114,11 +101,6 @@ class TestDapp {
   private readonly signTypedDataButton = '#signTypedData';
 
   private readonly signTypedDataResult = '#signTypedDataResult';
-
-  private readonly signTypedDataSignatureRequestMessage = {
-    text: 'Hi, Alice!',
-    tag: 'div',
-  };
 
   private readonly signTypedDataV3Button = '#signTypedDataV3';
 
@@ -704,9 +686,8 @@ class TestDapp {
     console.log('Sign message with personal sign');
     await this.clickPersonalSign();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(this.personalSignSignatureRequestMessage);
     await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
+      this.confirmSignatureButtonRedesign,
     );
   }
 
@@ -717,9 +698,8 @@ class TestDapp {
     console.log('Sign message with signPermit');
     await this.clickPermit();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(this.signPermitSignatureRequestMessage);
     await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
+      this.confirmSignatureButtonRedesign,
     );
   }
 
@@ -730,11 +710,8 @@ class TestDapp {
     console.log('Sign message with signTypedData');
     await this.clickSignTypedData();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataSignatureRequestMessage,
-    );
     await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
+      this.confirmSignatureButtonRedesign,
     );
   }
 
@@ -750,39 +727,44 @@ class TestDapp {
     );
     await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
     await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButton,
+      this.confirmSignatureButtonRedesign,
+    );
+  }
+
+  async signTypedDataV3Redesign() {
+    await this.clickSignTypedDatav3();
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.waitForSelector(
+      this.signTypedDataV3V4SignatureRequestMessageRedesign,
+    );
+    await this.driver.clickElementSafe(
+      this.confirmScrollToBottomButtonRedesign,
+      200,
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmSignatureButtonRedesign,
     );
   }
 
   /**
    * Sign a message with the signTypedDataV4 method.
    *
-   * @param confirmationRedesign - Indicates whether the redesigned signature confirmation flow is used. Defaults to false.
    */
-  async signTypedDataV4(confirmationRedesign: boolean = false) {
+  async signTypedDataV4() {
     console.log('Sign message with signTypedDataV4');
     await this.clickSignTypedDatav4();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    if (confirmationRedesign) {
-      await this.driver.waitForSelector(
-        this.signTypedDataV3V4SignatureRequestMessageRedesign,
-      );
-      await this.driver.clickElementSafe(
-        this.confirmScrollToBottomButtonRedesign,
-        200,
-      );
-      await this.driver.clickElementAndWaitForWindowToClose(
-        this.confirmSignatureButtonRedesign,
-      );
-    } else {
-      await this.driver.waitForSelector(
-        this.signTypedDataV3V4SignatureRequestMessage,
-      );
-      await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-      await this.driver.clickElementAndWaitForWindowToClose(
-        this.confirmSignatureButton,
-      );
-    }
+
+    await this.driver.waitForSelector(
+      this.signTypedDataV3V4SignatureRequestMessageRedesign,
+    );
+    await this.driver.clickElementSafe(
+      this.confirmScrollToBottomButtonRedesign,
+      200,
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmSignatureButtonRedesign,
+    );
   }
 
   async pasteIntoEip747ContractAddressInput() {

@@ -4304,12 +4304,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "Proteja sus fondos."
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Solicitudes de firma mejoradas"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Active esta opción para ver las solicitudes de firma en un formato mejorado."
-  },
   "refreshList": {
     "message": "Actualizar lista"
   },

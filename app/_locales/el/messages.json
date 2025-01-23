@@ -4304,12 +4304,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "Προστατέψτε τα κεφάλαιά σας"
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Αιτήματα βελτιωμένων υπογραφών"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Ενεργοποιήστε το για να δείτε αιτήματα υπογραφών σε βελτιωμένη μορφή."
-  },
   "refreshList": {
     "message": "Ανανέωση λίστας"
   },

@@ -4304,12 +4304,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "資産を守りましょう"
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "改善された署名要求"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "この機能をオンにすると、強化された形式で署名要求が表示されます。"
-  },
   "refreshList": {
     "message": "リストを更新"
   },
