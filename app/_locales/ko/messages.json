@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "비트코인 활동이 지원되지 않습니다."
-  },
   "bitcoinSupportSectionTitle": {
     "message": "비트코인"
   },
@@ -4306,18 +4303,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "자신의 자금을 지키세요"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "개선된 서명 요청"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "이 기능을 켜면 개선된 형식의 서명 요청을 확인할 수 있습니다."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "개선된 트랜잭션 요청"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "이 기능을 켜면 개선된 형식의 트랜잭션 요청을 확인할 수 있습니다."
   },
   "refreshList": {
     "message": "새로 고침 목록"

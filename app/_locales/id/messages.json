@@ -736,9 +736,6 @@
     "message": "M",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Aktivitas Bitcoin tidak didukung"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -4306,18 +4303,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Lindungi dana Anda"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Penyempurnaan permintaan tanda tangan"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Aktifkan ini untuk melihat permintaan tanda tangan dalam format yang disempurnakan."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Penyempurnaan permintaan transaksi"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Aktifkan ini untuk melihat permintaan transaksi dalam format yang disempurnakan."
   },
   "refreshList": {
     "message": "Segarkan daftar"
