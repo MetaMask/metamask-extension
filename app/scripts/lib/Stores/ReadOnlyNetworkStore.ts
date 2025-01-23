@@ -71,7 +71,7 @@ export default class ReadOnlyNetworkStore extends BaseStore {
   }
 
   /**
-   * Sets the key in local state
+   * Overwrite in-memory copy of state.
    *
    * @param obj - The data to set
    * @param obj.data - The MetaMask State tree
