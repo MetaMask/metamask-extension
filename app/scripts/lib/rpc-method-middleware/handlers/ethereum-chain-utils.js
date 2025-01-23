@@ -165,7 +165,7 @@ export function validateAddEthereumChainParams(params) {
  * @param {string} chainId - The chainId being switched to.
  * @param {string} networkClientId - The network client being switched to.
  * @param {object} hooks - The hooks object.
- * @param {Boolean} [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
+ * @param {boolean} [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
  * @param {Function} hooks.requestPermittedChainsPermissionForOrigin - The callback to request a new permittedChains-equivalent CAIP-25 permission.

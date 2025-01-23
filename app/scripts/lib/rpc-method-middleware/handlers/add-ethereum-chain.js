@@ -182,7 +182,6 @@ async function addEthereumChainHandler(
     }
   }
 
-
   const { networkClientId } =
     updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
