@@ -310,7 +310,7 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('the dapp is already permitted to use the chain being added, and the dapp has a different chain from the chain being added selected', () => {
+  describe('the dapp is already permitted to use the chain being added, and the dapp is on a different chain from the chain being added', () => {
     it('automatically switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
