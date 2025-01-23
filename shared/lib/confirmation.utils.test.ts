@@ -92,7 +92,6 @@ describe('confirmation.utils', () => {
         expect(
           shouldUseRedesignForSignatures({
             approvalType,
-            isRedesignedSignaturesUserSettingEnabled: true, // user setting enabled
             isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
           }),
         ).toBe(true);
@@ -106,7 +105,6 @@ describe('confirmation.utils', () => {
         expect(
           shouldUseRedesignForSignatures({
             approvalType,
-            isRedesignedSignaturesUserSettingEnabled: false, // user setting disabled
             isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
           }),
         ).toBe(true);
@@ -118,7 +116,6 @@ describe('confirmation.utils', () => {
         expect(
           shouldUseRedesignForSignatures({
             approvalType,
-            isRedesignedSignaturesUserSettingEnabled: false, // user setting disabled
             isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
           }),
         ).toBe(true);
@@ -131,23 +128,21 @@ describe('confirmation.utils', () => {
       expect(
         shouldUseRedesignForSignatures({
           approvalType: unsupportedApprovalType,
-          isRedesignedSignaturesUserSettingEnabled: true, // user setting enabled
-          isRedesignedConfirmationsDeveloperEnabled: true, // developer setting enabled
+          isRedesignedConfirmationsDeveloperEnabled: false, // developer setting enabled
         }),
       ).toBe(false);
     });
 
-    it('should return false when both user setting and developer mode are disabled', () => {
+    it('should return true when a signature type is supported', () => {
       process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
 
       supportedSignatureApprovalTypes.forEach((approvalType) => {
         expect(
           shouldUseRedesignForSignatures({
             approvalType,
-            isRedesignedSignaturesUserSettingEnabled: false, // user setting disabled
             isRedesignedConfirmationsDeveloperEnabled: false, // developer setting disabled
           }),
-        ).toBe(false);
+        ).toBe(true);
       });
     });
   });

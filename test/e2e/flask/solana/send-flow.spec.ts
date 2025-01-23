@@ -88,13 +88,13 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         );
         assert.equal(
           await homePage.check_ifSwapButtonIsClickable(),
-          false,
-          'Swap button is enabled and it shouldn`t',
+          true,
+          'Swap button is not enabled and it should',
         );
         assert.equal(
           await homePage.check_ifBridgeButtonIsClickable(),
-          false,
-          'Bridge button is enabled  and it should`t',
+          true,
+          'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
@@ -238,13 +238,13 @@ describe('Send full flow of SOL', function (this: Suite) {
         );
         assert.equal(
           await homePage.check_ifSwapButtonIsClickable(),
-          false,
-          'Swap button is enabled and it shouldn`t',
+          true,
+          'Swap button is not enabled and it should',
         );
         assert.equal(
           await homePage.check_ifBridgeButtonIsClickable(),
-          false,
-          'Bridge button is enabled  and it should`t',
+          true,
+          'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
@@ -382,13 +382,13 @@ describe('Send flow', function (this: Suite) {
         );
         assert.equal(
           await homePage.check_ifSwapButtonIsClickable(),
-          false,
-          'Swap button is enabled and it should`t',
+          true,
+          'Swap button is not enabled and it should',
         );
         assert.equal(
           await homePage.check_ifBridgeButtonIsClickable(),
-          false,
-          'Bridge button is enabled and it should`t',
+          true,
+          'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);

@@ -109,7 +109,6 @@ export type Preferences = {
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
-  redesignedConfirmationsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
   privacyMode: boolean;
@@ -221,7 +220,6 @@ export const getDefaultPreferencesControllerState =
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,
       petnamesEnabled: true,
-      redesignedConfirmationsEnabled: true,
       featureNotificationsEnabled: false,
       isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,

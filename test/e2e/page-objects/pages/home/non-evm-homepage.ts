@@ -16,6 +16,8 @@ class NonEvmHomepage extends HomePage {
     }
   }
 
+  protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
+
   /**
    * Clicks the send button on the non-EVM account homepage.
    */
