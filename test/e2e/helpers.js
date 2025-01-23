@@ -851,41 +851,7 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 }
 
 /**
-<<<<<<< HEAD
- * Rather than using the FixtureBuilder#withPreferencesController to set the setting
- * we need to manually set the setting because the migration #122 overrides this.
- * We should be able to remove this when we delete the redesignedConfirmationsEnabled setting.
- *
- * @param driver
- */
-async function tempToggleSettingRedesignedConfirmations(driver) {
-  // Ensure we are on the extension window
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  // Open settings menu button
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // Click settings from dropdown menu
-  await driver.clickElement('[data-testid="global-menu-settings"]');
-
-  // Click Experimental tab
-  const experimentalTabRawLocator = {
-    text: 'Experimental',
-    tag: 'div',
-  };
-  await driver.clickElement(experimentalTabRawLocator);
-
-  // Click redesignedConfirmationsEnabled toggle
-  await driver.clickElement(
-    '[data-testid="toggle-redesigned-confirmations-container"]',
-  );
-}
-
-/**
-=======
->>>>>>> 7727de33503e8d9ec44a5ed1ae5e36176eb6d045
- * Opens the account options menu safely, handling potential race conditions
- * with the MMI build.
+ * Opens the account options menu safely
  *
  * @param {WebDriver} driver - The WebDriver instance used to interact with the browser.
  * @returns {Promise<void>} A promise that resolves when the menu is opened and any necessary waits are complete.
