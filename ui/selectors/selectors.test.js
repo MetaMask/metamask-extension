@@ -13,8 +13,12 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
-import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import * as networkSelectors from '../../shared/modules/selectors/networks';
 import * as selectors from './selectors';
+
+jest.mock('../../shared/modules/selectors/networks', () => ({
+  ...jest.requireActual('../../shared/modules/selectors/networks'),
+}));
 
 jest.mock('../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../app/scripts/lib/util'),
@@ -189,7 +193,7 @@ describe('Selectors', () => {
 
       expect(selectors.getSwitchedNetworkDetails(state)).toStrictEqual({
         imageUrl: './images/eth_logo.svg',
-        nickname: getProviderConfig(state).nickname,
+        nickname: networkSelectors.getProviderConfig(state).nickname,
         origin,
       });
     });
@@ -301,7 +305,6 @@ describe('Selectors', () => {
       },
       metamask: {
         isUnlocked: true,
-        useRequestQueue: true,
         selectedTabOrigin: SELECTED_ORIGIN,
         unapprovedDecryptMsgs: [],
         unapprovedPersonalMsgs: [],
@@ -1079,16 +1082,6 @@ describe('Selectors', () => {
     );
   });
 
-  it('#getGasIsLoading', () => {
-    const gasIsLoading = selectors.getGasIsLoading(mockState);
-    expect(gasIsLoading).toStrictEqual(false);
-  });
-
-  it('#getCurrentCurrency', () => {
-    const currentCurrency = selectors.getCurrentCurrency(mockState);
-    expect(currentCurrency).toStrictEqual('usd');
-  });
-
   it('#getTotalUnapprovedCount', () => {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);
@@ -1159,33 +1152,6 @@ describe('Selectors', () => {
   it('#getAppIsLoading', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);
-  });
-  it('#getNotifications', () => {
-    const notifications = selectors.getNotifications(mockState);
-
-    expect(notifications).toStrictEqual([
-      mockState.metamask.notifications.test,
-      mockState.metamask.notifications.test2,
-    ]);
-  });
-  it('#getReadNotificationsCount', () => {
-    const readNotificationsCount =
-      selectors.getReadNotificationsCount(mockState);
-    expect(readNotificationsCount).toStrictEqual(1);
-  });
-  it('#getUnreadNotificationsCount', () => {
-    const unreadNotificationCount =
-      selectors.getUnreadNotificationsCount(mockState);
-
-    expect(unreadNotificationCount).toStrictEqual(1);
-  });
-
-  it('#getUnreadNotifications', () => {
-    const unreadNotifications = selectors.getUnreadNotifications(mockState);
-
-    expect(unreadNotifications).toStrictEqual([
-      mockState.metamask.notifications.test,
-    ]);
   });
 
   it('#getUseCurrencyRateCheck', () => {
@@ -1325,6 +1291,7 @@ describe('Selectors', () => {
       'npm:@metamask/test-snap-networkAccess': false,
       'npm:@metamask/test-snap-notify': false,
       'npm:@metamask/test-snap-wasm': false,
+      'local:snap-id': false,
     });
   });
 
@@ -1414,15 +1381,25 @@ describe('Selectors', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
@@ -1456,6 +1433,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1481,6 +1459,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         pinned: true,
         hidden: false,
         active: false,
@@ -1505,6 +1484,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1531,6 +1511,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1548,7 +1529,7 @@ describe('Selectors', () => {
           name: 'Snap Account 1',
           snap: {
             enabled: true,
-            id: 'snap-id',
+            id: 'local:snap-id',
             name: 'snap-name',
           },
         },
@@ -1564,6 +1545,7 @@ describe('Selectors', () => {
         pinned: false,
         active: false,
         type: 'eip155:eoa',
+        scopes: ['eip155'],
       },
       {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
@@ -1583,6 +1565,7 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        scopes: ['eip155'],
         address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
@@ -1976,6 +1959,288 @@ describe('#getConnectedSitesList', () => {
     it('returns `undefined` if there are no EVM accounts', () => {
       const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
       expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
+    });
+  });
+
+  describe('getSwapsDefaultToken', () => {
+    it('returns the token object for the current chainId when no overrideChainId is provided', () => {
+      const expectedToken = {
+        symbol: 'ETH',
+        name: 'Ether',
+        address: '0x0000000000000000000000000000000000000000',
+        decimals: 18,
+        balance: '966987986469506564059',
+        string: '966.988',
+        iconUrl: './images/black-eth-logo.svg',
+      };
+
+      const result = selectors.getSwapsDefaultToken(mockState);
+
+      expect(result).toStrictEqual(expectedToken);
+    });
+
+    it('returns the token object for the overridden chainId when overrideChainId is provided', () => {
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
+      const expectedToken = {
+        symbol: 'POL',
+        name: 'Polygon',
+        address: '0x0000000000000000000000000000000000000000',
+        decimals: 18,
+        balance: '966987986469506564059',
+        string: '966.988',
+        iconUrl: './images/pol-token.svg',
+      };
+
+      const result = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+
+      expect(result).toStrictEqual(expectedToken);
+      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('getIsSwapsChain', () => {
+    it('returns true for an allowed chainId in production environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId', // corresponds to mainnet RPC in mockState
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns true for an allowed chainId in development environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'goerli',
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false for a disallowed chainId in production environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
+          networkConfigurationsByChainId: {
+            '0x8080': {
+              chainId: '0x8080',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  type: 'custom',
+                  url: 'https://testrpc.com',
+                  networkClientId: 'fooChain',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('returns false for a disallowed chainId in development environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
+          networkConfigurationsByChainId: {
+            '0x8080': {
+              chainId: '0x8080',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  type: 'custom',
+                  url: 'https://testrpc.com',
+                  networkClientId: 'fooChain',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectors.getIsSwapsChain(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('respects the overrideChainId parameter', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
+
+      const result = selectors.getIsSwapsChain(mockState, '0x89');
+      expect(result).toBe(true);
+      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('getIsBridgeChain', () => {
+    it('returns true for an allowed bridge chainId', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId', // corresponds to mainnet RPC in mockState
+        },
+      };
+
+      const result = selectors.getIsBridgeChain(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false for a disallowed bridge chainId', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
+          networkConfigurationsByChainId: {
+            '0x8080': {
+              chainId: '0x8080',
+              name: 'Custom Mainnet RPC',
+              nativeCurrency: 'ETH',
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  type: 'custom',
+                  url: 'https://testrpc.com',
+                  networkClientId: 'fooChain',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = selectors.getIsBridgeChain(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('respects the overrideChainId parameter', () => {
+      const getCurrentChainIdSpy = jest.spyOn(
+        networkSelectors,
+        'getCurrentChainId',
+      );
+
+      const result = selectors.getIsBridgeChain(mockState, '0x89');
+
+      expect(result).toBe(true);
+      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+  });
+
+  describe('#getRemoteFeatureFlags', () => {
+    it('returns remoteFeatureFlags in state', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            existingFlag: true,
+          },
+        },
+      };
+      expect(selectors.getRemoteFeatureFlags(state)).toStrictEqual({
+        existingFlag: true,
+      });
+    });
+  });
+
+  describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
+    beforeEach(() => {
+      process.env.PORTFOLIO_VIEW = 'true';
+    });
+
+    afterEach(() => {
+      process.env.PORTFOLIO_VIEW = undefined;
+    });
+
+    it('returns true when the token network filter is equal to the current network', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        true,
+      );
+    });
+
+    it('returns false when the token network filter is on multiple networks', () => {
+      const state = {
+        metamask: {
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+              '0x89': true,
+            },
+          },
+          selectedNetworkClientId: 'mainnetNetworkConfigurationId',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                { networkClientId: 'mainnetNetworkConfigurationId' },
+              ],
+            },
+          },
+        },
+      };
+      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
+        false,
+      );
     });
   });
 });

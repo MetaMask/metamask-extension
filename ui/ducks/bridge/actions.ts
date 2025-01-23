@@ -1,19 +1,16 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
+  QuoteRequest,
+} from '../../../shared/types/bridge';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { QuoteRequest } from '../../pages/bridge/types';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
   bridgeSlice,
   setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
 } from './bridge';
 
@@ -25,6 +22,8 @@ const {
   resetInputFields,
   setSortOrder,
   setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
 } = bridgeSlice.actions;
 
 export {
@@ -34,9 +33,12 @@ export {
   setFromToken,
   setFromTokenInputValue,
   setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
 };
 
 const callBridgeControllerMethod = <T>(
@@ -66,28 +68,6 @@ export const resetBridgeState = () => {
 };
 
 // User actions
-export const setFromChain = (chainId: Hex) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      callBridgeControllerMethod<Hex>(
-        BridgeUserAction.SELECT_SRC_NETWORK,
-        chainId,
-      ),
-    );
-  };
-};
-
-export const setToChain = (chainId: Hex) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      callBridgeControllerMethod<Hex>(
-        BridgeUserAction.SELECT_DEST_NETWORK,
-        chainId,
-      ),
-    );
-  };
-};
-
 export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(

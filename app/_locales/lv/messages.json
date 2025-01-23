@@ -381,9 +381,6 @@
   "loading": {
     "message": "Notiek ielāde..."
   },
-  "loadingTokens": {
-    "message": "Ielādē marķierus..."
-  },
   "localhost": {
     "message": "Resursdators 8545"
   },
@@ -445,9 +442,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
-  },
-  "noTransactions": {
-    "message": "Jums nav neviena darījuma."
   },
   "noWebcamFound": {
     "message": "Jūsu datora tīmekļa kamera netika atrasta. Lūdzu, mēģiniet vēlreiz."

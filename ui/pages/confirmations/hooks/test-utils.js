@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getShouldShowFiat,
   txDataSelector,
   getCurrentKeyring,

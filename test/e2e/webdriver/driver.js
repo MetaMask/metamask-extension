@@ -355,7 +355,7 @@ class Driver {
     // bucket that can include the state attribute to wait for elements that
     // match the selector to be removed from the DOM.
     let element;
-    if (!['visible', 'detached'].includes(state)) {
+    if (!['visible', 'detached', 'enabled'].includes(state)) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
@@ -368,7 +368,13 @@ class Driver {
         until.stalenessOf(await this.findElement(rawLocator)),
         timeout,
       );
+    } else if (state === 'enabled') {
+      element = await this.driver.wait(
+        until.elementIsEnabled(await this.findElement(rawLocator)),
+        timeout,
+      );
     }
+
     return wrapElementWithAPI(element, this);
   }
 
@@ -499,13 +505,14 @@ class Driver {
    * and returns a reference to the first matching element.
    *
    * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found element.
    */
-  async findElement(rawLocator) {
+  async findElement(rawLocator, timeout = this.timeout) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.driver.wait(
       until.elementLocated(locator),
-      this.timeout,
+      timeout,
     );
     return wrapElementWithAPI(element, this);
   }
@@ -540,13 +547,14 @@ class Driver {
    * Finds a clickable element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
-  async findClickableElement(rawLocator) {
-    const element = await this.findElement(rawLocator);
+  async findClickableElement(rawLocator, timeout = this.timeout) {
+    const element = await this.findElement(rawLocator, timeout);
     await Promise.all([
-      this.driver.wait(until.elementIsVisible(element), this.timeout),
-      this.driver.wait(until.elementIsEnabled(element), this.timeout),
+      this.driver.wait(until.elementIsVisible(element), timeout),
+      this.driver.wait(until.elementIsEnabled(element), timeout),
     ]);
     return wrapElementWithAPI(element, this);
   }
@@ -601,10 +609,18 @@ class Driver {
         await element.click();
         return;
       } catch (error) {
-        if (
-          error.name === 'StaleElementReferenceError' &&
-          attempt < retries - 1
-        ) {
+        const retryableErrors = [
+          'StaleElementReferenceError',
+          'ElementClickInterceptedError',
+          'ElementNotInteractableError',
+        ];
+
+        if (retryableErrors.includes(error.name) && attempt < retries - 1) {
+          console.warn(
+            `Retrying click (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
+            }`,
+          );
           await this.delay(1000);
         } else {
           throw error;
@@ -691,12 +707,15 @@ class Driver {
   async clickElementSafe(rawLocator, timeout = 1000) {
     try {
       const locator = this.buildLocator(rawLocator);
-
       const elements = await this.driver.wait(
         until.elementsLocated(locator),
         timeout,
       );
 
+      await Promise.all([
+        this.driver.wait(until.elementIsVisible(elements[0]), timeout),
+        this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
+      ]);
       await elements[0].click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
@@ -768,6 +787,29 @@ class Driver {
   }
 
   /**
+   * Waits for a condition to be met within a given timeout period.
+   *
+   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {object} options - Options for the wait.
+   * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
+   * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
+   * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
+   * @throws {Error} Throws an error if the condition is not met within the timeout period.
+   */
+  async waitUntil(condition, options) {
+    const { timeout, interval } = options;
+    const endTime = Date.now() + timeout;
+
+    while (Date.now() < endTime) {
+      if (await condition()) {
+        return true;
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+    throw new Error('Condition not met within timeout');
+  }
+
+  /**
    * Checks if an element that matches the given locator is present on the page.
    *
    * @param {string | object} rawLocator - Element locator
@@ -805,15 +847,13 @@ class Driver {
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
   async pasteIntoField(rawLocator, contentToPaste) {
-    // Throw if double-quote is present in content to paste
-    // so that we don't have to worry about escaping double-quotes
-    if (contentToPaste.includes('"')) {
-      throw new Error('Cannot paste content with double-quote');
-    }
     // Click to focus the field
     await this.clickElement(rawLocator);
     await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste}")`,
+      `navigator.clipboard.writeText("${contentToPaste.replace(
+        /"/gu,
+        '\\"',
+      )}")`,
     );
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }

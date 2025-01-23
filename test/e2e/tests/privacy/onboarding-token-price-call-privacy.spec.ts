@@ -2,7 +2,7 @@ import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
   importSRPOnboardingFlow,
@@ -24,7 +24,7 @@ async function mockTokenPriceApi(
   ];
 }
 
-describe('MetaMask onboarding @no-mmi', function () {
+describe('MetaMask onboarding', function () {
   it("doesn't make any token price API requests before create new wallet onboarding is completed", async function () {
     await withFixtures(
       {

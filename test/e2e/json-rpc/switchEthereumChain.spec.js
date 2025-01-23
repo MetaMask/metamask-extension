@@ -30,31 +30,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Open settings menu button
-        const accountOptionsMenuSelector =
-          '[data-testid="account-options-menu-button"]';
-        await driver.waitForSelector(accountOptionsMenuSelector);
-        await driver.clickElement(accountOptionsMenuSelector);
-
-        // Click settings from dropdown menu
-        const globalMenuSettingsSelector =
-          '[data-testid="global-menu-settings"]';
-        await driver.waitForSelector(globalMenuSettingsSelector);
-        await driver.clickElement(globalMenuSettingsSelector);
-
-        // Click Experimental tab
-        const experimentalTabRawLocator = {
-          text: 'Experimental',
-          tag: 'div',
-        };
-        await driver.clickElement(experimentalTabRawLocator);
-
-        // Toggle off request queue setting (on by default now)
-        await driver.clickElement(
-          '[data-testid="experimental-setting-toggle-request-queue"]',
-        );
-
         // open two dapps
         const dappOne = await openDapp(driver, undefined, DAPP_URL);
         const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
@@ -108,6 +83,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
@@ -118,30 +94,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Open settings menu button
-        const accountOptionsMenuSelector =
-          '[data-testid="account-options-menu-button"]';
-        await driver.waitForSelector(accountOptionsMenuSelector);
-        await driver.clickElement(accountOptionsMenuSelector);
-
-        // Click settings from dropdown menu
-        const globalMenuSettingsSelector =
-          '[data-testid="global-menu-settings"]';
-        await driver.waitForSelector(globalMenuSettingsSelector);
-        await driver.clickElement(globalMenuSettingsSelector);
-
-        // Click Experimental tab
-        const experimentalTabRawLocator = {
-          text: 'Experimental',
-          tag: 'div',
-        };
-        await driver.clickElement(experimentalTabRawLocator);
-
-        // Toggle off request queue setting (on by default now)
-        await driver.clickElement(
-          '[data-testid="experimental-setting-toggle-request-queue"]',
-        );
 
         // open two dapps
         await openDapp(driver, undefined, DAPP_URL);
@@ -253,30 +205,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Open settings menu button
-        const accountOptionsMenuSelector =
-          '[data-testid="account-options-menu-button"]';
-        await driver.waitForSelector(accountOptionsMenuSelector);
-        await driver.clickElement(accountOptionsMenuSelector);
-
-        // Click settings from dropdown menu
-        const globalMenuSettingsSelector =
-          '[data-testid="global-menu-settings"]';
-        await driver.waitForSelector(globalMenuSettingsSelector);
-        await driver.clickElement(globalMenuSettingsSelector);
-
-        // Click Experimental tab
-        const experimentalTabRawLocator = {
-          text: 'Experimental',
-          tag: 'div',
-        };
-        await driver.clickElement(experimentalTabRawLocator);
-
-        // Toggle off request queue setting (on by default now)
-        await driver.clickElement(
-          '[data-testid="experimental-setting-toggle-request-queue"]',
-        );
-
         // open two dapps
         const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
         const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -385,30 +313,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Open settings menu button
-        const accountOptionsMenuSelector =
-          '[data-testid="account-options-menu-button"]';
-        await driver.waitForSelector(accountOptionsMenuSelector);
-        await driver.clickElement(accountOptionsMenuSelector);
-
-        // Click settings from dropdown menu
-        const globalMenuSettingsSelector =
-          '[data-testid="global-menu-settings"]';
-        await driver.waitForSelector(globalMenuSettingsSelector);
-        await driver.clickElement(globalMenuSettingsSelector);
-
-        // Click Experimental tab
-        const experimentalTabRawLocator = {
-          text: 'Experimental',
-          tag: 'div',
-        };
-        await driver.clickElement(experimentalTabRawLocator);
-
-        // Toggle off request queue setting (on by default now)
-        await driver.clickElement(
-          '[data-testid="experimental-setting-toggle-request-queue"]',
-        );
-
         // open two dapps
         const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
         const dappOne = await openDapp(driver, undefined, DAPP_URL);
@@ -482,12 +386,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // Switch to notification that should still be switchEthereumChain request but with an warning.
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // THIS IS BROKEN
-        // await driver.findElement({
-        //   span: 'span',
-        //   text: 'Switching networks will cancel all pending confirmations',
-        // });
-
         // Cancel switchEthereumChain with queued pending tx
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
@@ -497,8 +395,13 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // Switch to new pending tx notification
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
-          text: 'Sending ETH',
-          tag: 'span',
+          text: 'Transfer request',
+          tag: 'h3',
+        });
+
+        await driver.findElement({
+          text: '0 ETH',
+          tag: 'h2',
         });
 
         // Confirm pending tx

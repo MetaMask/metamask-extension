@@ -47,7 +47,7 @@ describe('Token Details', function () {
 
   const openTokenDetails = async (driver: Driver) => {
     await driver.clickElement('[data-testid="account-overview__asset-tab"]');
-    const [, tkn] = await driver.findElements(
+    const [, , tkn] = await driver.findElements(
       '[data-testid="multichain-token-list-button"]',
     );
     await tkn.click();
@@ -102,6 +102,9 @@ describe('Token Details', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await importToken(driver);
+        await driver.clickElement(
+          '.actionable-message__message button[aria-label="Close"]',
+        );
         await openTokenDetails(driver);
         await verifyToken(driver);
       },
@@ -157,6 +160,9 @@ describe('Token Details', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await importToken(driver);
+        await driver.clickElement(
+          '.actionable-message__message button[aria-label="Close"]',
+        );
         await openTokenDetails(driver);
         await verifyToken(driver);
 

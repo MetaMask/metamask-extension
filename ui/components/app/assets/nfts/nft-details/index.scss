@@ -108,7 +108,7 @@ $spacer-break-small: 16px;
     padding-left: 16px;
     padding-right: 16px;
     border-radius: var(--Spacing-sm, 8px);
-    border: 1px solid var(--border-muted, #d6d9dc);
+    border: 1px solid var(--color-border-muted);
   }
 
   &__nft-attribute-frame {

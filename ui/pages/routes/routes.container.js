@@ -2,33 +2,31 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getCurrentChainId,
+  isNetworkLoading,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
+import {
   getAllAccountsOnNetworkAreEmpty,
-  getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   getTheme,
   getIsTestnet,
-  getCurrentChainId,
   getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
-  getSelectedAccount,
   getSwitchedNetworkDetails,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-  getUseRequestQueue,
   getCurrentNetwork,
+  getSelectedInternalAccount,
   oldestPendingConfirmationSelector,
   getUnapprovedTransactions,
   getPendingApprovals,
 } from '../../selectors';
-import {
-  isNetworkLoading,
-  getProviderConfig,
-} from '../../../shared/modules/selectors/networks';
 import {
   lockMetamask,
   hideImportNftsModal,
@@ -64,7 +62,7 @@ function mapStateToProps(state) {
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
-  const account = getSelectedAccount(state);
+  const account = getSelectedInternalAccount(state);
   const activeTabOrigin = activeTab?.origin;
   const currentNetwork = getCurrentNetwork(state);
 
@@ -95,7 +93,6 @@ function mapStateToProps(state) {
     providerType: getProviderConfig(state).type,
     theme: getTheme(state),
     sendStage: getSendStage(state),
-    isNetworkUsed: getIsNetworkUsed(state),
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
     showExtensionInFullSizeView: getShowExtensionInFullSizeView(state),
@@ -104,8 +101,8 @@ function mapStateToProps(state) {
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
     completedOnboarding,
-    isAccountMenuOpen: state.metamask.isAccountMenuOpen,
-    isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
+    isAccountMenuOpen: state.appState.isAccountMenuOpen,
+    isNetworkMenuOpen: state.appState.isNetworkMenuOpen,
     isImportTokensModalOpen: state.appState.importTokensModalOpen,
     isBasicConfigurationModalOpen: state.appState.showBasicFunctionalityModal,
     isDeprecatedNetworkModalOpen: state.appState.deprecatedNetworkModalOpen,
@@ -120,7 +117,6 @@ function mapStateToProps(state) {
     switchedNetworkNeverShowMessage:
       selectSwitchedNetworkNeverShowMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
-    useRequestQueue: getUseRequestQueue(state),
     oldestPendingApproval,
     pendingApprovals,
     transactionsMetadata,

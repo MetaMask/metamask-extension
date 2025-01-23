@@ -37,8 +37,8 @@ describe('Multiple transactions', function () {
 
         // confirms second transaction
         await driver.waitForSelector({
-          text: 'Reject 2 transactions',
-          tag: 'a',
+          text: 'Reject all',
+          tag: 'button',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -99,13 +99,13 @@ describe('Multiple transactions', function () {
 
         // rejects second transaction
         await driver.waitForSelector({
-          text: 'Reject 2 transactions',
-          tag: 'a',
+          text: 'Reject all',
+          tag: 'button',
         });
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
         await driver.assertElementNotPresent('.loading-overlay__spinner');
         // rejects first transaction
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(
@@ -115,11 +115,6 @@ describe('Multiple transactions', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-
-        const isTransactionListEmpty = await driver.isElementPresentAndVisible(
-          '.transaction-list__empty-text',
-        );
-        assert.equal(isTransactionListEmpty, true);
 
         // The previous isTransactionListEmpty wait already serves as the guard here for the assertElementNotPresent
         await driver.assertElementNotPresent(

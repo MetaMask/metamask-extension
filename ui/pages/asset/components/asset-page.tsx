@@ -6,7 +6,6 @@ import { isEqual } from 'lodash';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import {
-  getCurrentCurrency,
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsSwapsChain,
@@ -22,6 +21,7 @@ import {
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
+  AlignItems,
   Display,
   FlexDirection,
   IconColor,
@@ -30,6 +30,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -45,15 +47,23 @@ import TokenCell from '../../../components/app/assets/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
 import { getPricePrecision, localizeLargeNumber } from '../util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
+import {
+  getImageForChainId,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
@@ -72,7 +82,7 @@ export type Asset = (
       /** The number of decimal places to move left when displaying balances */
       decimals: number;
       /** An array of token list sources the asset appears in, e.g. [1inch,Sushiswap]  */
-      aggregators?: [];
+      aggregators?: string[];
     }
 ) & {
   /** The hexadecimal chain id */
@@ -101,11 +111,21 @@ const AssetPage = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
-  const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+
+  const { chainId, type, symbol, name, image, decimals } = asset;
+
+  // These need to be specific to the asset and not the current chain
+  const defaultSwapsToken = useSelector(
+    (state) => getSwapsDefaultToken(state, chainId),
+    isEqual,
+  );
+  const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
+  const isBridgeChain = useSelector((state) =>
+    getIsBridgeChain(state, chainId),
+  );
+
   const account = useSelector(getSelectedInternalAccount, isEqual);
-  const isSwapsChain = useSelector(getIsSwapsChain);
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
@@ -128,11 +148,10 @@ const AssetPage = ({
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<Hex, Hex>;
 
-  const { tokenBalances } = useTokenBalances();
+  const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
   const selectedAccountTokenBalancesAcrossChains =
     tokenBalances[selectedAccount.address];
 
-  const { chainId, type, symbol, name, image, decimals } = asset;
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -141,6 +160,9 @@ const AssetPage = ({
     type === AssetType.token
       ? toChecksumHexAddress(asset.address)
       : getNativeTokenAddress(chainId);
+
+  const tokenHexBalance =
+    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
 
   const balance = calculateTokenBalance({
     isNative: type === AssetType.native,
@@ -153,7 +175,7 @@ const AssetPage = ({
 
   // Market and conversion rate data
   const baseCurrency = marketData[chainId]?.[address]?.currency;
-  const tokenMarketPrice = marketData[chainId]?.[address]?.price || 0;
+  const tokenMarketPrice = marketData[chainId]?.[address]?.price || undefined;
   const tokenExchangeRate =
     type === AssetType.native
       ? currencyRates[symbol]?.conversionRate
@@ -178,10 +200,10 @@ const AssetPage = ({
       tokenMarketDetails.allTimeHigh > 0 ||
       tokenMarketDetails.allTimeLow > 0);
 
-  // this is needed in order to assign the correct balances to TokenButtons before sending/swapping
-  // without this, the balances we be populated as zero until the user refreshes the screen: https://github.com/MetaMask/metamask-extension/issues/28509
+  // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
+
   asset.balance = {
-    value: '', // decimal value not needed
+    value: hexToDecimal(tokenHexBalance),
     display: String(balance),
     fiat: String(tokenFiatAmount),
   };
@@ -198,6 +220,12 @@ const AssetPage = ({
       ),
     [account.address, isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId],
   );
+
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+  const networkName = networkConfigurationsByChainId[chainId]?.name;
+  const tokenChainImage = getImageForChainId(chainId);
 
   return (
     <Box
@@ -269,7 +297,9 @@ const AssetPage = ({
           chainId={chainId}
           symbol={symbol}
           image={image}
-          tokenFiatAmount={showFiat ? tokenFiatAmount : null}
+          tokenFiatAmount={
+            showFiat && tokenMarketPrice ? tokenFiatAmount : null
+          }
           string={balance?.toString()}
         />
         <Box
@@ -293,6 +323,22 @@ const AssetPage = ({
                 flexDirection={FlexDirection.Column}
                 gap={2}
               >
+                {renderRow(
+                  t('network'),
+                  <Text
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    gap={1}
+                    data-testid="asset-network"
+                  >
+                    <AvatarNetwork
+                      src={tokenChainImage}
+                      name={networkName}
+                      size={AvatarNetworkSize.Sm}
+                    />
+                    {networkName}
+                  </Text>,
+                )}
                 {type === AssetType.token && (
                   <Box>
                     {renderRow(
@@ -317,7 +363,13 @@ const AssetPage = ({
                           >
                             {t('tokenList')}
                           </Text>
-                          <Text>{asset.aggregators.join(', ')}</Text>
+                          <Text>
+                            {asset.aggregators
+                              .map((agg) =>
+                                agg.replace(/^metamask$/iu, 'MetaMask'),
+                              )
+                              .join(', ')}
+                          </Text>
                         </Box>
                       )}
                     </Box>

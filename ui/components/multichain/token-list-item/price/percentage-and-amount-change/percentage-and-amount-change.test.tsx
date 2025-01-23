@@ -5,13 +5,13 @@ import { zeroAddress } from 'ethereumjs-util';
 import { MarketDataDetails } from '@metamask/assets-controllers';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import {
-  getCurrentCurrency,
   getSelectedAccountCachedBalance,
   getTokensMarketData,
-  getCurrentChainId,
 } from '../../../../../selectors';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
 import { PercentageAndAmountChange } from './percentage-and-amount-change';
@@ -25,13 +25,16 @@ jest.mock('../../../../../ducks/locale/locale', () => ({
 }));
 
 jest.mock('../../../../../selectors', () => ({
-  getCurrentCurrency: jest.fn(),
   getSelectedAccountCachedBalance: jest.fn(),
   getTokensMarketData: jest.fn(),
+}));
+
+jest.mock('../../../../../../shared/modules/selectors/networks', () => ({
   getCurrentChainId: jest.fn(),
 }));
 
 jest.mock('../../../../../ducks/metamask/metamask', () => ({
+  getCurrentCurrency: jest.fn(),
   getConversionRate: jest.fn(),
   getNativeCurrency: jest.fn(),
 }));

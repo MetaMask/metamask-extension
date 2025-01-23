@@ -22,6 +22,7 @@ const middlewares = [thunk];
 
 const mockShowNetworkDropdown = jest.fn();
 const mockHideNetworkDropdown = jest.fn();
+const mockFetchWithCache = jest.fn();
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
@@ -34,6 +35,7 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 jest.mock('../../store/actions', () => ({
+  ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
@@ -90,6 +92,11 @@ jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
 
 jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
+);
+
+jest.mock(
+  '../../../shared/lib/fetch-with-cache',
+  () => () => mockFetchWithCache,
 );
 
 jest.mock('../../hooks/useMultiPolling', () => ({
@@ -205,7 +212,6 @@ describe('toast display', () => {
       announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
-      usedNetworks: [],
       pendingApprovals: {},
       pendingApprovalCount: 0,
       preferences: {
@@ -234,7 +240,6 @@ describe('toast display', () => {
       announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
-      usedNetworks: [],
       pendingApprovals: {},
       pendingApprovalCount: 0,
       swapsState: { swapsFeatureIsLive: true },
@@ -274,16 +279,24 @@ describe('toast display', () => {
       subjects: {
         [mockOrigin]: {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [mockAccount.address],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [`eip155:1:${mockAccount.address}`],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               date: 1719910288437,
               invoker: 'https://metamask.github.io',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },

@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import {
-  AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
@@ -41,11 +40,9 @@ import {
 } from '../../component-library';
 import {
   getMetaMetricsId,
-  getTestNetworkBackgroundColor,
   getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
   getMarketData,
-  getNetworkConfigurationIdByChainId,
   getCurrencyRates,
 } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
@@ -56,7 +53,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
+import {
+  CURRENCY_SYMBOLS,
+  NON_EVM_CURRENCY_SYMBOLS,
+} from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -66,6 +66,8 @@ import {
   SafeChain,
   useSafeChains,
 } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 
 type TokenListItemProps = {
@@ -79,6 +81,8 @@ type TokenListItemProps = {
   tooltipText?: string;
   isNativeCurrency?: boolean;
   isStakeable?: boolean;
+  isTitleNetworkName?: boolean;
+  isTitleHidden?: boolean;
   tokenChainImage?: string;
   chainId: string;
   address?: string | null;
@@ -101,6 +105,8 @@ export const TokenListItem = ({
   isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
+  isTitleNetworkName = false,
+  isTitleHidden = false,
   address = null,
   showPercentage = false,
   privacyMode = false,
@@ -138,11 +144,21 @@ export const TokenListItem = ({
   const history = useHistory();
 
   const getTokenTitle = () => {
+    if (isTitleNetworkName) {
+      return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+        chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+      ];
+    }
+    if (isTitleHidden) {
+      return undefined;
+    }
     switch (title) {
       case CURRENCY_SYMBOLS.ETH:
         return t('networkNameEthereum');
-      case CURRENCY_SYMBOLS.BTC:
+      case NON_EVM_CURRENCY_SYMBOLS.BTC:
         return t('networkNameBitcoin');
+      case NON_EVM_CURRENCY_SYMBOLS.SOL:
+        return t('networkNameSolana');
       default:
         return title;
     }
@@ -155,9 +171,8 @@ export const TokenListItem = ({
     : null;
 
   const tokenTitle = getTokenTitle();
-  const tokenMainTitleToDisplay = shouldShowPercentage
-    ? tokenTitle
-    : tokenSymbol;
+  const tokenMainTitleToDisplay =
+    shouldShowPercentage && !isTitleNetworkName ? tokenTitle : tokenSymbol;
 
   const stakeableTitle = (
     <Box
@@ -211,16 +226,15 @@ export const TokenListItem = ({
     </Box>
   );
   // Used for badge icon
-  const allNetworks: Record<string, string> = useSelector(
-    getNetworkConfigurationIdByChainId,
-  );
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   return (
     <Box
       className={classnames('multichain-token-list-item', className || {})}
       display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={FlexDirection.Row}
+      width={BlockSize.Full}
+      height={BlockSize.Full}
       gap={4}
       data-testid="multichain-token-list-item"
       title={tooltipText ? t(tooltipText) : undefined}
@@ -236,6 +250,8 @@ export const TokenListItem = ({
         paddingBottom={2}
         paddingLeft={4}
         paddingRight={4}
+        width={BlockSize.Full}
+        style={{ height: 62 }}
         data-testid="multichain-token-list-button"
         {...(onClick && {
           as: 'a',
@@ -265,9 +281,10 @@ export const TokenListItem = ({
           badge={
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
-              name={allNetworks?.[chainId] || ''}
+              name={allNetworks?.[chainId as Hex]?.name}
               src={tokenChainImage || undefined}
-              backgroundColor={testNetworkBackgroundColor}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              borderWidth={2}
               className="multichain-token-list-item__badge__avatar-network"
             />
           }
@@ -282,156 +299,127 @@ export const TokenListItem = ({
           flexDirection={FlexDirection.Column}
           width={BlockSize.Full}
           style={{ flexGrow: 1, overflow: 'hidden' }}
+          justifyContent={JustifyContent.center}
         >
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
-            gap={1}
           >
-            <Box
-              width={isStakeable ? BlockSize.Half : BlockSize.OneThird}
-              display={Display.InlineBlock}
-            >
-              {title?.length > 12 ? (
-                <Tooltip
-                  position="bottom"
-                  html={title}
-                  tooltipInnerClassName="multichain-token-list-item__tooltip"
-                >
-                  <Text
-                    as="span"
-                    fontWeight={FontWeight.Medium}
-                    variant={TextVariant.bodyMd}
-                    display={Display.Block}
-                    ellipsis
-                  >
-                    {isStakeable ? (
-                      <>
-                        {tokenMainTitleToDisplay} {stakeableTitle}
-                      </>
-                    ) : (
-                      tokenMainTitleToDisplay
-                    )}
-                  </Text>
-                </Tooltip>
-              ) : (
+            {title?.length > 12 ? (
+              <Tooltip
+                position="bottom"
+                html={title}
+                tooltipInnerClassName="multichain-token-list-item__tooltip"
+              >
                 <Text
                   as="span"
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
+                  display={Display.Block}
                   ellipsis
                 >
-                  {isStakeable ? (
-                    <Box display={Display.InlineBlock}>
-                      {tokenMainTitleToDisplay}
-                      {stakeableTitle}
-                    </Box>
-                  ) : (
-                    tokenMainTitleToDisplay
-                  )}
+                  {tokenMainTitleToDisplay}
+                  {isStakeable && stakeableTitle}
                 </Text>
-              )}
-
-              {shouldShowPercentage ? (
-                <PercentageChange
-                  value={
-                    isNativeCurrency
-                      ? multiChainMarketData?.[chainId]?.[
-                          getNativeTokenAddress(chainId as Hex)
-                        ]?.pricePercentChange1d
-                      : tokenPercentageChange
-                  }
-                  address={
-                    isNativeCurrency
-                      ? getNativeTokenAddress(chainId as Hex)
-                      : (address as `0x${string}`)
-                  }
-                />
-              ) : (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                  data-testid="multichain-token-list-item-token-name"
-                  ellipsis
-                >
-                  {tokenTitle}
-                </Text>
-              )}
-            </Box>
+              </Tooltip>
+            ) : (
+              <Text
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.bodyMd}
+                ellipsis
+              >
+                {tokenMainTitleToDisplay}
+                {isStakeable && stakeableTitle}
+              </Text>
+            )}
 
             {showScamWarning ? (
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
-                alignItems={AlignItems.flexEnd}
-              >
-                <ButtonIcon
-                  iconName={IconName.Danger}
-                  onClick={(
-                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                  ) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setShowScamWarningModal(true);
-                  }}
-                  color={IconColor.errorDefault}
-                  size={ButtonIconSize.Md}
-                  backgroundColor={BackgroundColor.transparent}
-                  data-testid="scam-warning"
-                  ariaLabel={''}
-                />
-
-                <SensitiveText
-                  data-testid="multichain-token-list-item-value"
-                  color={TextColor.textAlternative}
-                  variant={TextVariant.bodyMd}
-                  textAlign={TextAlign.End}
-                  isHidden={privacyMode}
-                  length={SensitiveTextLength.Short}
-                >
-                  {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
-                </SensitiveText>
-              </Box>
+              <ButtonIcon
+                iconName={IconName.Danger}
+                onClick={(
+                  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                ) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowScamWarningModal(true);
+                }}
+                color={IconColor.errorDefault}
+                size={ButtonIconSize.Md}
+                backgroundColor={BackgroundColor.transparent}
+                data-testid="scam-warning"
+                ariaLabel={''}
+              />
             ) : (
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
-                alignItems={AlignItems.flexEnd}
+              <SensitiveText
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.bodyMd}
+                textAlign={TextAlign.End}
+                data-testid="multichain-token-list-item-secondary-value"
+                ellipsis={isStakeable}
+                isHidden={privacyMode}
+                length={SensitiveTextLength.Medium}
               >
-                <SensitiveText
-                  fontWeight={FontWeight.Medium}
-                  variant={TextVariant.bodyMd}
-                  width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
-                  textAlign={TextAlign.End}
-                  data-testid="multichain-token-list-item-secondary-value"
-                  ellipsis={isStakeable}
-                  isHidden={privacyMode}
-                  length={SensitiveTextLength.Medium}
-                >
-                  {secondary}
-                </SensitiveText>
-                <SensitiveText
-                  data-testid="multichain-token-list-item-value"
-                  color={TextColor.textAlternative}
-                  variant={TextVariant.bodySmMedium}
-                  textAlign={TextAlign.End}
-                  isHidden={privacyMode}
-                  length={SensitiveTextLength.Short}
-                >
-                  {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
-                </SensitiveText>
-              </Box>
+                {secondary}
+              </SensitiveText>
             )}
           </Box>
+
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
-            gap={1}
-          ></Box>
+          >
+            {shouldShowPercentage ? (
+              <PercentageChange
+                value={
+                  isNativeCurrency
+                    ? multiChainMarketData?.[chainId]?.[
+                        getNativeTokenAddress(chainId as Hex)
+                      ]?.pricePercentChange1d
+                    : tokenPercentageChange
+                }
+                address={
+                  isNativeCurrency
+                    ? getNativeTokenAddress(chainId as Hex)
+                    : (address as `0x${string}`)
+                }
+              />
+            ) : (
+              <Text
+                variant={TextVariant.bodySmMedium}
+                color={TextColor.textAlternative}
+                data-testid="multichain-token-list-item-token-name"
+                ellipsis
+              >
+                {tokenTitle}
+              </Text>
+            )}
+
+            {showScamWarning ? (
+              <SensitiveText
+                data-testid="multichain-token-list-item-value"
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMd}
+                textAlign={TextAlign.End}
+                isHidden={privacyMode}
+                length={SensitiveTextLength.Short}
+              >
+                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+              </SensitiveText>
+            ) : (
+              <SensitiveText
+                data-testid="multichain-token-list-item-value"
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodySmMedium}
+                textAlign={TextAlign.End}
+                isHidden={privacyMode}
+                length={SensitiveTextLength.Short}
+              >
+                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+              </SensitiveText>
+            )}
+          </Box>
         </Box>
       </Box>
       {isEvm && showScamWarningModal ? (

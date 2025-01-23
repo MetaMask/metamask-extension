@@ -178,12 +178,15 @@ describe('AddContact component', () => {
     expect(saveButton).toBeDisabled();
   });
 
-  it('should display error message when name entered is an existing account name', () => {
+  it('should display error message when name entered is an existing account name', async () => {
     const duplicateName = 'Account 1';
 
     const store = configureMockStore(middleware)(state);
 
-    const { getByText } = renderWithProvider(<AddContact {...props} />, store);
+    const { getByText, findByText } = renderWithProvider(
+      <AddContact {...props} />,
+      store,
+    );
 
     const nameInput = document.getElementById('nickname');
 
@@ -191,7 +194,7 @@ describe('AddContact component', () => {
 
     const saveButton = getByText('Save');
 
-    expect(getByText('Name is already in use')).toBeDefined();
+    expect(await findByText('Name is already in use')).toBeDefined();
     expect(saveButton).toBeDisabled();
   });
 
@@ -212,10 +215,10 @@ describe('AddContact component', () => {
     expect(saveButton).toBeDisabled();
   });
 
-  it('should display error when ENS inserts a name that is already in use', () => {
+  it('should display error when ENS inserts a name that is already in use', async () => {
     const store = configureMockStore(middleware)(state);
 
-    const { getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText, findByText } = renderWithProvider(
       <AddContact {...props} />,
       store,
     );
@@ -231,7 +234,7 @@ describe('AddContact component', () => {
 
     const saveButton = getByText('Save');
 
-    expect(getByText('Name is already in use')).toBeDefined();
+    expect(await findByText('Name is already in use')).toBeDefined();
     expect(saveButton).toBeDisabled();
   });
 });

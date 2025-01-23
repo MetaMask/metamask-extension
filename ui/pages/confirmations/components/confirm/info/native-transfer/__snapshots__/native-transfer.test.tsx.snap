@@ -8,13 +8,188 @@ exports[`NativeTransferInfo renders correctly 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
     >
-      G
+      E
     </div>
     <h2
       class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
     >
       0 ETH
     </h2>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__transaction-flow"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              From
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-top-1"
+          data-testid="sender-address"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <div
+                class=""
+              >
+                <div
+                  class="identicon"
+                  style="height: 16px; width: 16px; border-radius: 8px;"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
+                  >
+                    <svg
+                      height="16"
+                      width="16"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#C81420"
+                        height="16"
+                        transform="translate(-2.752618452452339 -2.6325616818687707) rotate(385.9 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#E9F500"
+                        height="16"
+                        transform="translate(5.337234703363199 6.214964079596694) rotate(184.5 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FAB300"
+                        height="16"
+                        transform="translate(0.9077275996181156 -13.015140953188144) rotate(431.3 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                data-testid="confirm-info-row-display-name"
+              >
+                0x2e0D7...5d09B
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span
+        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-muted"
+        style="mask-image: url('./images/icons/arrow-right.svg');"
+      />
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              To
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-top-1"
+          data-testid="recipient-address"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            >
+              <div
+                class=""
+              >
+                <div
+                  class="identicon"
+                  style="height: 16px; width: 16px; border-radius: 8px;"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
+                  >
+                    <svg
+                      height="16"
+                      width="16"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#C81420"
+                        height="16"
+                        transform="translate(-2.752618452452339 -2.6325616818687707) rotate(385.9 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#E9F500"
+                        height="16"
+                        transform="translate(5.337234703363199 6.214964079596694) rotate(184.5 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FAB300"
+                        height="16"
+                        transform="translate(0.9077275996181156 -13.015140953188144) rotate(431.3 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+                data-testid="confirm-info-row-display-name"
+              >
+                0x2e0D7...5d09B
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
@@ -107,7 +282,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
-    data-testid="confirmation__transaction-flow"
+    data-testid="confirmation__token-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -130,7 +305,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
         >
           G
         </div>
@@ -138,6 +313,53 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-origin-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-2"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
         </p>
       </div>
     </div>
@@ -158,7 +380,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-2"
+              aria-describedby="tippy-tooltip-3"
               class=""
               data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
               data-tooltipped=""
@@ -180,10 +402,11 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 119);"
@@ -254,7 +477,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-3"
+              aria-describedby="tippy-tooltip-4"
               class=""
               data-original-title="Amount paid to process the transaction on network."
               data-tooltipped=""
@@ -273,18 +496,6 @@ exports[`NativeTransferInfo renders correctly 1`] = `
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
-          data-testid="first-gas-field"
-        >
-          0.0001 ETH
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
-          data-testid="native-currency"
-        >
-          $0.08
-        </p>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="edit-gas-fee-icon"
@@ -298,6 +509,18 @@ exports[`NativeTransferInfo renders correctly 1`] = `
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-default"
+          data-testid="first-gas-field"
+        >
+          0.0001 ETH
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-alternative"
+          data-testid="native-currency"
+        >
+          $0.08
+        </p>
       </div>
     </div>
     <div

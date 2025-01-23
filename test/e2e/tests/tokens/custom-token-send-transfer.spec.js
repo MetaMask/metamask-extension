@@ -1,4 +1,6 @@
-const { strict: assert } = require('assert');
+const {
+  mockedSourcifyTokenSend,
+} = require('../confirmations/transactions/erc20-token-send-redesign.spec');
 const {
   withFixtures,
   defaultGanacheOptions,
@@ -8,14 +10,16 @@ const {
   editGasFeeForm,
   WINDOW_TITLES,
   clickNestedButton,
+  veryLargeDelayMs,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
-describe('Transfer custom tokens @no-mmi', function () {
+describe('Transfer custom tokens', function () {
   const smartContract = SMART_CONTRACTS.HST;
+
   it('send custom tokens from extension customizing gas values', async function () {
     await withFixtures(
       {
@@ -24,6 +28,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
+        testSpecificMock: mocks,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -49,35 +54,11 @@ describe('Transfer custom tokens @no-mmi', function () {
         // check transaction details
         await driver.waitForSelector({
           text: '1 TST',
-          tag: 'h1',
-        });
-        await driver.waitForSelector({
-          text: 'Transfer',
-          css: '.confirm-page-container-summary__action__name',
-        });
-        const estimatedGasFee = await driver.findElements(
-          '.currency-display-component__text',
-        );
-        assert.notEqual(
-          await estimatedGasFee[1].getText(),
-          '0',
-          'Estimated gas fee should not be 0',
-        );
-
-        // check function name and hex data details in hex tab
-        await clickNestedButton(driver, 'Hex');
-        await driver.waitForSelector({
-          text: 'Transfer',
-          tag: 'span',
-        });
-        await driver.waitForSelector({
-          tag: 'p',
-          text: '0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97',
+          tag: 'h2',
         });
 
         // edit gas fee
-        await clickNestedButton(driver, 'Details');
-        await driver.clickElement({ text: 'Edit', tag: 'button' });
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
         await editGasFeeForm(driver, '60000', '10');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -108,6 +89,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
+        testSpecificMock: mocks,
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
@@ -117,12 +99,15 @@ describe('Transfer custom tokens @no-mmi', function () {
 
         // transfer token from dapp
         await openDapp(driver, contractAddress);
+        await driver.delay(veryLargeDelayMs);
+
         await driver.clickElement({ text: 'Transfer Tokens', tag: 'button' });
-        await switchToNotificationWindow(driver);
-        await driver.waitForSelector({ text: '1.5 TST', tag: 'h1' });
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.waitForSelector({ text: '1.5 TST', tag: 'h2' });
 
         // edit gas fee
-        await driver.clickElement({ text: 'Edit', tag: 'button' });
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
         await editGasFeeForm(driver, '60000', '10');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -144,14 +129,10 @@ describe('Transfer custom tokens @no-mmi', function () {
 
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');
-        const tokenAmount = await driver.findElement(
-          {
-            css: '[data-testid="multichain-token-list-item-value"]',
-            text: '8.5 TST',
-          },
-          { timeout: 10000 },
-        );
-        assert.ok(tokenAmount, 'Token amount is not correct');
+        await driver.waitForSelector({
+          css: '[data-testid="multichain-token-list-item-value"]',
+          text: '8.5 TST',
+        });
       },
     );
   });
@@ -167,6 +148,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
+        testSpecificMock: mocks,
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
@@ -176,12 +158,13 @@ describe('Transfer custom tokens @no-mmi', function () {
 
         // transfer token from dapp
         await openDapp(driver, contractAddress);
+        await driver.delay(veryLargeDelayMs);
         await driver.clickElement({
           text: 'Transfer Tokens Without Gas',
           tag: 'button',
         });
         await switchToNotificationWindow(driver);
-        await driver.waitForSelector({ text: '1.5 TST', tag: 'h1' });
+        await driver.waitForSelector({ text: '1.5 TST', tag: 'h2' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // in extension, check that transaction has completed correctly and is displayed in the activity list
@@ -206,15 +189,15 @@ describe('Transfer custom tokens @no-mmi', function () {
 
         // check token amount is correct after transaction
         await clickNestedButton(driver, 'Tokens');
-        const tokenAmount = await driver.findElement(
-          {
-            css: '[data-testid="multichain-token-list-item-value"]',
-            text: '8.5 TST',
-          },
-          { timeout: 10000 },
-        );
-        assert.ok(tokenAmount, 'Token amount is not correct');
+        await driver.waitForSelector({
+          css: '[data-testid="multichain-token-list-item-value"]',
+          text: '8.5 TST',
+        });
       },
     );
   });
+
+  async function mocks(server) {
+    return [await mockedSourcifyTokenSend(server)];
+  }
 });

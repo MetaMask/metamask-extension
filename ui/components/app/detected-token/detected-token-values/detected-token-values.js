@@ -8,8 +8,8 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getSelectedAddress,
   getUseCurrencyRateCheck,
 } from '../../../../selectors';
