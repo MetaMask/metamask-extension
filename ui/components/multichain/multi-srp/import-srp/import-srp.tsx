@@ -55,6 +55,8 @@ export const ImportSRP = ({
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
       await dispatch(actions.addNewMnemonicToVault(joinedSrp));
+      // Clear the secret recovery phrase after importing
+      setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
     }
   }
 
