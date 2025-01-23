@@ -23,5 +23,7 @@ jobs:
         run: |
           if ! git diff --exit-code; then
               echo "::error::Working tree dirty."
+              echo "Policy may need updating. Follow the process here:"
+              echo "https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md"
               exit 1
           fi

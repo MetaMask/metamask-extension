@@ -223,7 +223,7 @@ jobs:
         run: |
           if [[ $HAS_CHANGES == 'true' ]]
           then
-            echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt |  gh pr comment "${PR_NUMBER}" --body-file -
+            echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n📜Process doc: https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md\n\n' | cat - does_diff_diff.txt |  gh pr comment "${PR_NUMBER}" --body-file -
           else
             gh pr comment "${PR_NUMBER}" --body 'No policy changes'
           fi
