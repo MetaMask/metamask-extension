@@ -1567,11 +1567,19 @@ describe('MetaMaskController', () => {
                 origin: 'test.com',
               },
               permissions: {
-                [PermissionNames.permittedChains]: {
+                [Caip25EndowmentPermissionName]: {
                   caveats: [
                     {
-                      type: CaveatTypes.restrictNetworkSwitching,
-                      value: ['0x1'],
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'eip155:1': {
+                            accounts: [],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                 },
