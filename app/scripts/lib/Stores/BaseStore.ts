@@ -54,10 +54,6 @@ export type EmptyState = Omit<MetaMaskStorageStructure, 'data' | 'meta'>;
  * - Implement a `set` method that updates the state in the underlying
  * storage system. This method should handle necessary validation or
  * error handling to ensure the state is persisted correctly.
- *
- * This class does not provide any concrete implementation for these methods,
- * leaving the specifics to the extending classes based on the storage
- * mechanism they represent.
  */
 export abstract class BaseStore {
   abstract set(state: IntermediaryStateType): Promise<void>;
