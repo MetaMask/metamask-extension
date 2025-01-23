@@ -96,8 +96,6 @@
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
-      "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
       "smartTransactionsMigrationApplied": "boolean"
     },
     "firstTimeFlowType": "import",
@@ -263,6 +261,7 @@
     "cryptocurrencies": ["btc", "sol"],
     "snaps": "object",
     "jobs": "object",
+    "events": "object",
     "database": null,
     "lastUpdated": null,
     "databaseUnavailable": "boolean",
@@ -340,8 +339,6 @@
           "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
         }
       },
-      "srcTokens": {},
-      "srcTopAssets": {},
       "destTokens": {},
       "destTopAssets": {},
       "quoteRequest": {
