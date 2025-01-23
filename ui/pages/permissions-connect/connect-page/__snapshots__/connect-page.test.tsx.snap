@@ -396,7 +396,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                 <span
                   class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--width-max mm-box--color-text-alternative"
                 >
-                  Requesting for
+                  Requesting for Custom Mainnet RPC
                 </span>
                 <div
                   aria-describedby="tippy-tooltip-6"
@@ -415,16 +415,6 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                       <div
                         class="mm-box mm-box--rounded-full"
                         style="margin-left: 0px;"
-                      >
-                        <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
-                        >
-                          G
-                        </div>
-                      </div>
-                      <div
-                        class="mm-box mm-box--rounded-full"
-                        style="margin-left: -8px;"
                       >
                         <div
                           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"

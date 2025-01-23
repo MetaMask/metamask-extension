@@ -1,12 +1,11 @@
 import React from 'react';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
 import { overrideAccountsFromMockState } from '../../../../test/jest/mocks';
 import {
   MOCK_ACCOUNT_BIP122_P2WPKH,
@@ -95,22 +94,40 @@ describe('ConnectPage', () => {
           id: '1',
           origin: mockTestDappUrl,
           permissions: {
-            [RestrictedMethods.eth_accounts]: {
+            [Caip25EndowmentPermissionName]: {
               caveats: [
                 {
-                  type: CaveatTypes.restrictReturnedAccounts,
-                  value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [
+                          'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
             },
-            [EndowmentTypes.permittedChains]: {
-              caveats: [
-                {
-                  type: CaveatTypes.restrictNetworkSwitching,
-                  value: ['0x1'],
-                },
-              ],
-            },
+            // [RestrictedMethods.eth_accounts]: {
+            //   caveats: [
+            //     {
+            //       type: CaveatTypes.restrictReturnedAccounts,
+            //       value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+            //     },
+            //   ],
+            // },
+            // [EndowmentTypes.permittedChains]: {
+            //   caveats: [
+            //     {
+            //       type: CaveatTypes.restrictNetworkSwitching,
+            //       value: ['0x1'],
+            //     },
+            //   ],
+            // },
           },
         },
         permissionsRequestId: '1',
