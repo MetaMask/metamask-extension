@@ -581,22 +581,6 @@ export const AccountListMenu = ({
               ///: END:ONLY_INCLUDE_IF
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-              <Box marginTop={4}>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Import}
-                  onClick={async () => {
-                    await dispatch(generateNewHdKeyring());
-                    onClose();
-                  }}
-                  data-testid="multichain-account-menu-popover-create-new-srp"
-                >
-                  {t('createNewSRP')}
-                </ButtonLink>
-              </Box>
-            }
-            {
               <Box marginTop={4}>
                 <ButtonLink
                   size={ButtonLinkSize.Sm}
