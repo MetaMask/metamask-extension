@@ -13,6 +13,7 @@ import {
   RatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
+  MultichainBalancesController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -259,7 +260,6 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
-import { BalancesController as MultichainBalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -1009,7 +1009,7 @@ export default class MetamaskController extends EventEmitter {
 
     const multichainBalancesControllerMessenger =
       this.controllerMessenger.getRestricted({
-        name: 'BalancesController',
+        name: 'MultichainBalancesController',
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',
