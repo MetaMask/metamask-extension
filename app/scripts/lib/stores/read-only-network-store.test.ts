@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import nock from 'nock';
-import ReadOnlyNetworkStore from './ReadOnlyNetworkStore';
-import { MetaMaskStorageStructure } from './BaseStore';
+import ReadOnlyNetworkStore from './read-only-network-store';
+import { MetaMaskStorageStructure } from './base-store';
 
 const FIXTURE_SERVER_HOST = 'localhost';
 const FIXTURE_SERVER_PORT = 12345;

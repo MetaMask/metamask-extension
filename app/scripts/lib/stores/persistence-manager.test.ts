@@ -2,9 +2,9 @@
 import { captureException } from '@sentry/browser';
 import log from 'loglevel';
 
-import { PersistanceManager } from './PersistanceManager';
-import ExtensionStore from './ExtensionStore';
-import { IntermediaryStateType } from './BaseStore';
+import { PersistanceManager } from './persistence-manager';
+import ExtensionStore from './extension-store';
+import { IntermediaryStateType } from './base-store';
 
 jest.mock('./ExtensionStore', () => {
   return jest.fn().mockImplementation(() => {

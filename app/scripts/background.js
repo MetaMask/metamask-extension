@@ -49,9 +49,9 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
-import { PersistanceManager } from './lib/Stores/PersistanceManager';
-import ExtensionStore from './lib/Stores/ExtensionStore';
-import ReadOnlyNetworkStore from './lib/Stores/ReadOnlyNetworkStore';
+import { PersistanceManager } from './lib/stores/persistence-manager';
+import ExtensionStore from './lib/stores/extension-store';
+import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';

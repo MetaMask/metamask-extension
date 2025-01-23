@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
-import ExtensionStore from './ExtensionStore';
+import ExtensionStore from './extension-store';
 
 const MOCK_STATE = { data: {}, meta: { version: 1 } };
 

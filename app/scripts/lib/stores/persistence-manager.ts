@@ -4,9 +4,9 @@ import { isEmpty } from 'lodash';
 import {
   type IntermediaryStateType,
   MetaMaskStorageStructure,
-} from './BaseStore';
-import ExtensionStore from './ExtensionStore';
-import ReadOnlyNetworkStore from './ReadOnlyNetworkStore';
+} from './base-store';
+import ExtensionStore from './extension-store';
+import ReadOnlyNetworkStore from './read-only-network-store';
 
 /**
  * The PersistanceManager class serves as a high-level manager for handling

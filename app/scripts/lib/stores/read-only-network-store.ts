@@ -4,7 +4,7 @@ import {
   type IntermediaryStateType,
   BaseStore,
   MetaMaskStorageStructure,
-} from './BaseStore';
+} from './base-store';
 
 const fetchWithTimeout = getFetchWithTimeout();
 

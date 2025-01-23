@@ -5,7 +5,7 @@ import {
   type IntermediaryStateType,
   MetaMaskStorageStructure,
   BaseStore,
-} from './BaseStore';
+} from './base-store';
 
 /**
  * An implementation of the MetaMask Extension BaseStore system that uses the
