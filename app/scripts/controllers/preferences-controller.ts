@@ -190,7 +190,7 @@ export const getDefaultPreferencesControllerState =
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
-    solanaSupportEnabled: false,
+    solanaSupportEnabled: true,
     ///: END:ONLY_INCLUDE_IF
     bitcoinSupportEnabled: false,
     bitcoinTestnetSupportEnabled: false,
