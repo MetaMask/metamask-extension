@@ -4802,13 +4802,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/rpc-allowlist@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@metamask-institutional/rpc-allowlist@npm:1.0.3"
-  checksum: 10/caed69a7855328d3261f7499bc024c772fc61f050c574c9e76a0dc565779e9d842a89ed01af33eaf268ac6b3b3624be7b7a8183329f734d08751ee98d5c18472
-  languageName: node
-  linkType: hard
-
 "@metamask-institutional/sdk@npm:^0.2.0":
   version: 0.2.0
   resolution: "@metamask-institutional/sdk@npm:0.2.0"
@@ -26605,9 +26598,7 @@ __metadata:
     "@metamask-institutional/extension": "npm:^0.3.28"
     "@metamask-institutional/institutional-features": "npm:^1.3.6"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.1"
-    "@metamask-institutional/rpc-allowlist": "npm:^1.0.3"
     "@metamask-institutional/sdk": "npm:^0.2.0"
-    "@metamask-institutional/transaction-update": "npm:^0.2.6"
     "@metamask-institutional/types": "npm:^1.2.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
