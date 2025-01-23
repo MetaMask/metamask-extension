@@ -747,72 +747,262 @@ class FixtureBuilder {
     return this;
   }
 
-  withAccountsControllerImportedAccount() {
-    return this.withAccountsController({
-      internalAccounts: {
-        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
-        accounts: {
-          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
-            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
-            address: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
-            options: {},
-            methods: [
-              'personal_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
-            metadata: {
-              name: 'Account 1',
-              lastSelected: 1665507600000,
-              keyring: {
-                type: 'HD Key Tree',
+  withSolanaAccountImportedAccount() {
+    return this.withKeyringController({
+      type: 'HD Key Tree',
+      accounts: ['0xb28fc0be7c9e22c3ca3da9780a8ab32c4938f09f'],
+    })
+      .withKeyringController({
+        type: 'Snap Keyring',
+        accounts: ['Fj21RDVsrm2E3nbhP7XTP6PBXWgdsZP6PcaorW7Gi6Nr'],
+      })
+      .withPreferencesController({
+        identities: {
+          '0xb28fc0be7c9e22c3ca3da9780a8ab32c4938f09f': {
+            address: '0xb28fc0be7c9e22c3ca3da9780a8ab32c4938f09f',
+            name: 'Account 1',
+            lastSelected: 1737582248417,
+          },
+          Fj21RDVsrm2E3nbhP7XTP6PBXWgdsZP6PcaorW7Gi6Nr: {
+            address: 'Fj21RDVsrm2E3nbhP7XTP6PBXWgdsZP6PcaorW7Gi6Nr',
+            name: 'Solana Account 1',
+            lastSelected: 1737582306582,
+          },
+        },
+        lostIdentities: {
+          '0xb28fc0be7c9e22c3ca3da9780a8ab32c4938f09f': {
+            address: '0xb28fc0be7c9e22c3ca3da9780a8ab32c4938f09f',
+            name: 'Account 1',
+            lastSelected: 1737582248417,
+          },
+          Fj21RDVsrm2E3nbhP7XTP6PBXWgdsZP6PcaorW7Gi6Nr: {
+            address: 'Fj21RDVsrm2E3nbhP7XTP6PBXWgdsZP6PcaorW7Gi6Nr',
+            name: 'Solana Account 1',
+            lastSelected: 1737582306582,
+          },
+        },
+        selectedAddress: 'C7epTbBSo6nbrG4nGUhuFZ58zE3RJgzgbuKauSHHVLjM',
+      })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            '89468e8f-2ad4-4e16-a761-40b227dc933e': {
+              id: '89468e8f-2ad4-4e16-a761-40b227dc933e',
+              address: '0xb28fc0be7c9e22c3ca3da9780a8ab32c4938f09f',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              scopes: ['eip155'],
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Account 1',
+                importTime: 1737582248416,
+                lastSelected: 1737582248417,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            '842018e7-94e7-4ab2-a41e-a54689f43a15': {
+              type: 'solana:data-account',
+              id: '842018e7-94e7-4ab2-a41e-a54689f43a15',
+              address: 'Fj21RDVsrm2E3nbhP7XTP6PBXWgdsZP6PcaorW7Gi6Nr',
+              options: {
+                scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+              },
+              methods: ['sendAndConfirmTransaction'],
+              scopes: [
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+                'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+              ],
+              metadata: {
+                name: 'Solana Account 1',
+                importTime: 1737582306580,
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+                snap: {
+                  id: 'npm:@metamask/solana-wallet-snap',
+                  name: 'Solana',
+                  enabled: true,
+                },
+                lastSelected: 1737582306582,
+                nameLastUpdatedAt: 1737582306583,
               },
             },
           },
-          '58093703-57e9-4ea9-8545-49e8a75cb084': {
-            id: '58093703-57e9-4ea9-8545-49e8a75cb084',
-            address: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
-            options: {},
-            methods: [
-              'personal_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
-            metadata: {
-              name: 'Account 2',
-              keyring: {
-                type: 'HD Key Tree',
+          selectedAccount: '842018e7-94e7-4ab2-a41e-a54689f43a15',
+        },
+      })
+      .withPermissionController({
+        subjects: {
+          'npm:@metamask/solana-wallet-snap': {
+            origin: 'npm:@metamask/solana-wallet-snap',
+            permissions: {
+              'endowment:rpc': {
+                id: 'QiFE6zG2tk7z-CddZ2sCK',
+                parentCapability: 'endowment:rpc',
+                invoker: 'npm:@metamask/solana-wallet-snap',
+                caveats: [
+                  {
+                    type: 'rpcOrigin',
+                    value: {
+                      dapps: true,
+                      snaps: false,
+                    },
+                  },
+                ],
+                date: 1737582234907,
               },
-            },
-          },
-          'dd658aab-abf2-4f53-b735-c8a57151d447': {
-            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
-            address: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
-            options: {},
-            methods: [
-              'personal_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            type: 'eip155:eoa',
-            metadata: {
-              name: 'Account 3',
-              keyring: {
-                type: 'HD Key Tree',
+              'endowment:keyring': {
+                id: 'UtnOLXPwHUOM7xvdIqDlA',
+                parentCapability: 'endowment:keyring',
+                invoker: 'npm:@metamask/solana-wallet-snap',
+                caveats: [
+                  {
+                    type: 'keyringOrigin',
+                    value: {
+                      allowedOrigins: [
+                        'http://localhost:3000',
+                        'https://portfolio.metamask.io',
+                        'https://portfolio-builds.metafi-dev.codefi.network',
+                        'https://dev.portfolio.metamask.io',
+                        'https://ramps-dev.portfolio.metamask.io',
+                      ],
+                    },
+                  },
+                ],
+                date: 1737582234907,
+              },
+              snap_getBip32Entropy: {
+                id: 'uPfpYdauTnYdbKwkuqrAg',
+                parentCapability: 'snap_getBip32Entropy',
+                invoker: 'npm:@metamask/solana-wallet-snap',
+                caveats: [
+                  {
+                    type: 'permittedDerivationPaths',
+                    value: [
+                      {
+                        path: ['m', "44'", "501'"],
+                        curve: 'ed25519',
+                      },
+                    ],
+                  },
+                ],
+                date: 1737582234907,
+              },
+              'endowment:network-access': {
+                id: 'xk0Un2O0N1ddsgHVFiSA2',
+                parentCapability: 'endowment:network-access',
+                invoker: 'npm:@metamask/solana-wallet-snap',
+                caveats: null,
+                date: 1737582234907,
+              },
+              'endowment:cronjob': {
+                id: '9eSJntP04YZaZBpEeeeRy',
+                parentCapability: 'endowment:cronjob',
+                invoker: 'npm:@metamask/solana-wallet-snap',
+                caveats: [
+                  {
+                    type: 'snapCronjob',
+                    value: {
+                      jobs: [
+                        {
+                          expression: '* * * * *',
+                          request: {
+                            method: 'refreshTokenPrices',
+                            params: {},
+                          },
+                        },
+                        {
+                          expression: '* * * * *',
+                          request: {
+                            method: 'refreshTransactions',
+                            params: {},
+                          },
+                        },
+                      ],
+                    },
+                  },
+                ],
+                date: 1737582234907,
               },
             },
           },
         },
-      },
-    });
+      })
+      .withAccountsController({
+        internalAccounts: {
+          selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+          accounts: {
+            '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
+              id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+              address: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Account 1',
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            '58093703-57e9-4ea9-8545-49e8a75cb084': {
+              id: '58093703-57e9-4ea9-8545-49e8a75cb084',
+              address: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Account 2',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            'dd658aab-abf2-4f53-b735-c8a57151d447': {
+              id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+              address: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Account 3',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+          },
+        },
+      });
   }
 
   withAccountsControllerAdditionalAccountIdentities() {

@@ -245,12 +245,14 @@ export async function withSolanaAccountSnap(
     showNativeTokenAsMainBalance,
     mockCalls,
     mockSendTransaction,
+    importAccount,
   }: {
     title?: string;
     solanaSupportEnabled?: boolean;
     showNativeTokenAsMainBalance?: boolean;
     mockCalls?: boolean;
     mockSendTransaction?: boolean;
+    importAccount?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -262,6 +264,9 @@ export async function withSolanaAccountSnap(
     fixtures =
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
+  /* if (importAccount) {
+    fixtures = fixtures.withSolanaAccountImportedAccount();
+  } */
   await withFixtures(
     {
       fixtures: fixtures.build(),
@@ -286,14 +291,17 @@ export async function withSolanaAccountSnap(
       },
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
+
       await loginWithBalanceValidation(driver);
       const headerComponen = new HeaderNavbar(driver);
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.addAccount({
-        accountType: ACCOUNT_TYPE.Solana,
-        accountName: 'Solana 1',
-      });
+      if (!importAccount) {
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Solana,
+          accountName: 'Solana 1',
+        });
+      }
       await test(driver, mockServer);
     },
   );

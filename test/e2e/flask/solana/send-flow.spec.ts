@@ -12,9 +12,12 @@ describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
-      { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
+      {
+        title: this.test?.fullTitle(),
+        showNativeTokenAsMainBalance: true,
+        // importAccount: true,
+      },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         await homePage.clickOnSendButton();
@@ -76,7 +79,6 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         mockSendTransaction: true,
       },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         assert.equal(
@@ -227,7 +229,6 @@ describe('Send full flow of SOL', function (this: Suite) {
         mockSendTransaction: true,
       },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         assert.equal(
@@ -372,7 +373,6 @@ describe('Send flow', function (this: Suite) {
         mockSendTransaction: false,
       },
       async (driver) => {
-        await driver.refresh(); // workaround to not get an error due to https://consensyssoftware.atlassian.net/browse/SOL-87
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
         assert.equal(
