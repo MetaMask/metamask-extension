@@ -5,6 +5,7 @@ import {
   AlignItems,
   Display,
   FlexDirection,
+  FlexWrap,
   JustifyContent,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
@@ -49,5 +50,6 @@ export const box: UIComponentFactory<BoxElement> = ({
     alignItems: element.props.center && AlignItems.center,
     className: 'snap-ui-renderer__panel',
     color: TextColor.textDefault,
+    flexWrap: FlexWrap.Wrap, // ensures components can wrap horizontally
   },
 });
