@@ -125,8 +125,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = () => {
     const _request = {
       ...request,
-      approvedAccounts: selectedAccountAddresses, // TODO: remove
-      approvedChainIds: selectedChainIds, // TODO: remove
       response: parseCaip25PermissionsResponse(
         selectedAccountAddresses,
         selectedChainIds,

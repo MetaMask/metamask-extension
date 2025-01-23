@@ -6,10 +6,8 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
-import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { getPermissionBackgroundApiMethods } from './background-api';
-import { PermissionNames } from './specifications';
 
 describe('permission background API methods', () => {
   afterEach(() => {
@@ -466,13 +464,37 @@ describe('permission background API methods', () => {
   });
 
   describe('requestAccountsAndChainPermissionsWithId', () => {
+    const approvedPermissions = {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {},
+              optionalScopes: {
+                'eip155:1': {
+                  accounts: ['eip155:1:0xdeadbeef'],
+                },
+                'eip155:5': {
+                  accounts: ['eip155:5:0xdeadbeef'],
+                },
+              },
+              isMultichainOrigin: false,
+            },
+          },
+        ],
+      },
+    };
+
     it('requests eth_accounts and permittedChains approval and returns the request id', async () => {
       const approvalController = {
         addAndShowApprovalRequest: jest.fn().mockResolvedValue({
-          approvedChainIds: ['0x1', '0x5'],
-          approvedAccounts: ['0xdeadbeef'],
+          response: {
+            permissions: approvedPermissions,
+          },
         }),
       };
+
       const permissionController = {
         grantPermissions: jest.fn(),
       };
@@ -496,8 +518,18 @@ describe('permission background API methods', () => {
               origin: 'foo.com',
             },
             permissions: {
-              [RestrictedMethods.eth_accounts]: {},
-              [PermissionNames.permittedChains]: {},
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+              },
             },
           },
           type: MethodNames.RequestPermissions,
@@ -508,10 +540,12 @@ describe('permission background API methods', () => {
     it('grants a legacy CAIP-25 permission (isMultichainOrigin: false) with the approved eip155 chainIds and accounts', async () => {
       const approvalController = {
         addAndShowApprovalRequest: jest.fn().mockResolvedValue({
-          approvedChainIds: ['0x1', '0x5'],
-          approvedAccounts: ['0xdeadbeef'],
+          response: {
+            permissions: approvedPermissions,
+          },
         }),
       };
+
       const permissionController = {
         grantPermissions: jest.fn(),
       };
@@ -527,27 +561,7 @@ describe('permission background API methods', () => {
         subject: {
           origin: 'foo.com',
         },
-        approvedPermissions: {
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: {
-                  requiredScopes: {},
-                  optionalScopes: {
-                    'eip155:1': {
-                      accounts: ['eip155:1:0xdeadbeef'],
-                    },
-                    'eip155:5': {
-                      accounts: ['eip155:5:0xdeadbeef'],
-                    },
-                  },
-                  isMultichainOrigin: false,
-                },
-              },
-            ],
-          },
-        },
+        approvedPermissions,
       });
     });
   });
