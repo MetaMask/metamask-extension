@@ -160,7 +160,6 @@ describe('Routes Component', () => {
           accountsByChainId: {},
           pendingApprovals: {},
           approvalFlows: [],
-          announcements: {},
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
           preferences: {
@@ -209,7 +208,6 @@ describe('toast display', () => {
     metamask: {
       ...mockState.metamask,
       allTokens: {},
-      announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
       pendingApprovals: {},
@@ -237,7 +235,6 @@ describe('toast display', () => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
       pendingApprovals: {},
