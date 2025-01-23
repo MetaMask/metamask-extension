@@ -56,14 +56,12 @@ jest.mock('os', () => ({
   homedir: jest.fn().mockReturnValue('/home/user'),
 }));
 
-jest.mock('./helpers', () => ({
-  ...jest.requireActual('./helpers'),
+jest.mock('./options', () => ({
+  ...jest.requireActual('./options'),
   parseArgs: jest.fn(),
   printBanner: jest.fn(),
   say: jest.fn(),
   getVersion: jest.fn().mockReturnValue('0.1.0'),
-  isCodedError: jest.requireActual('./helpers').isCodedError,
-  noop: jest.requireActual('./helpers').noop,
   extractFrom: jest.fn().mockResolvedValue(['mock/path/to/binary']),
 }));
 
@@ -345,11 +343,11 @@ describe('foundryup', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      const mockedHelpers = jest.requireMock('./helpers');
+      const mockedOptions = jest.requireMock('./options');
 
-      mockedHelpers.parseArgs.mockReturnValue(mockArgs);
-      mockedHelpers.printBanner.mockImplementation(jest.fn());
-      mockedHelpers.say.mockImplementation(jest.fn());
+      mockedOptions.parseArgs.mockReturnValue(mockArgs);
+      mockedOptions.printBanner.mockImplementation(jest.fn());
+      mockedOptions.say.mockImplementation(jest.fn());
     });
 
     it('should execute all operations in correct order', async () => {
