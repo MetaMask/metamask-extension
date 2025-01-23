@@ -210,7 +210,6 @@ import {
   EndowmentPermissions,
   ExcludedSnapPermissions,
   ExcludedSnapEndowments,
-  CaveatTypes,
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
@@ -5410,6 +5409,15 @@ export default class MetamaskController extends EventEmitter {
    */
   async requestApprovalPermittedChainsPermission(origin, chainId) {
     // TODO: change this to Endowment:caip25 format, check UI usage of `PermissionNames.permittedChains`, and fix unit tests (if applicable)
+    const caveatValueWithChains = setPermittedEthChainIds(
+      {
+        requiredScopes: {},
+        optionalScopes: {},
+        isMultichainOrigin: false,
+      },
+      [chainId],
+    );
+
     const id = nanoid();
     await this.approvalController.addAndShowApprovalRequest({
       id,
@@ -5420,11 +5428,11 @@ export default class MetamaskController extends EventEmitter {
           origin,
         },
         permissions: {
-          [PermissionNames.permittedChains]: {
+          [Caip25EndowmentPermissionName]: {
             caveats: [
               {
-                type: CaveatTypes.restrictNetworkSwitching,
-                value: [chainId],
+                type: Caip25CaveatType,
+                value: caveatValueWithChains,
               },
             ],
           },
