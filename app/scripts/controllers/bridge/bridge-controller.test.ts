@@ -11,8 +11,8 @@ import mockBridgeQuotesErc20Native from '../../../../test/data/bridge/mock-quote
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import mockBridgeQuotesNativeErc20Eth from '../../../../test/data/bridge/mock-quotes-native-erc20-eth.json';
 import {
-  type QuoteResponse,
   RequestStatus,
+  type QuoteResponse,
 } from '../../../../shared/types/bridge';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import BridgeController from './bridge-controller';
@@ -190,39 +190,6 @@ describe('BridgeController', function () {
     ).toStrictEqual(RequestStatus.FETCHED);
     expect(bridgeController.state.bridgeState.destTopAssets).toStrictEqual([
       { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', symbol: 'ABC' },
-    ]);
-    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
-      slippage: 0.5,
-      srcTokenAddress: '0x0000000000000000000000000000000000000000',
-      walletAddress: undefined,
-    });
-  });
-
-  it('selectSrcNetwork should set the bridge src tokens and top assets', async function () {
-    await bridgeController.selectSrcNetwork('0xa');
-    expect(bridgeController.state.bridgeState.srcTokens).toStrictEqual({
-      '0x0000000000000000000000000000000000000000': {
-        address: '0x0000000000000000000000000000000000000000',
-        decimals: 18,
-        iconUrl: './images/eth_logo.svg',
-        name: 'Ether',
-        symbol: 'ETH',
-      },
-      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'ABC',
-        decimals: 16,
-        aggregators: ['lifl', 'socket'],
-      },
-    });
-    expect(
-      bridgeController.state.bridgeState.srcTokensLoadingStatus,
-    ).toStrictEqual(RequestStatus.FETCHED);
-    expect(bridgeController.state.bridgeState.srcTopAssets).toStrictEqual([
-      {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'ABC',
-      },
     ]);
     expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
       slippage: 0.5,

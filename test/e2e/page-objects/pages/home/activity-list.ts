@@ -148,6 +148,23 @@ class ActivityListPage {
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
     );
   }
+
+  /**
+   * Verifies that a specific warning message is displayed on the activity list.
+   *
+   * @param warningText - The expected warning text to validate against.
+   * @returns A promise that resolves if the warning message matches the expected text.
+   * @throws Assertion error if the warning message does not match the expected text.
+   */
+  async check_warningMessage(warningText: string): Promise<void> {
+    console.log(
+      `Check warning message "${warningText}" is displayed on activity list`,
+    );
+    await this.driver.waitForSelector({
+      tag: 'div',
+      text: warningText,
+    });
+  }
 }
 
 export default ActivityListPage;
