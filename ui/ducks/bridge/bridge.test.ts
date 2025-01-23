@@ -15,7 +15,6 @@ import {
   setBridgeFeatureFlags,
   setFromToken,
   setFromTokenInputValue,
-  setToChain,
   setToToken,
   resetInputFields,
   setToChainId,
@@ -63,26 +62,6 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/setToChainId');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.toChainId).toStrictEqual(actionPayload);
-    });
-  });
-
-  describe('setToChain', () => {
-    it('calls the selectDestNetwork background action', () => {
-      const actionPayload = CHAIN_IDS.OPTIMISM;
-
-      const mockSelectDestNetwork = jest.fn().mockReturnValue({});
-      setBackgroundConnection({
-        [BridgeUserAction.SELECT_DEST_NETWORK]: mockSelectDestNetwork,
-      } as never);
-
-      store.dispatch(setToChain(actionPayload as never) as never);
-
-      // Check background state
-      expect(mockSelectDestNetwork).toHaveBeenCalledTimes(1);
-      expect(mockSelectDestNetwork).toHaveBeenCalledWith(
-        '0xa',
-        expect.anything(),
-      );
     });
   });
 

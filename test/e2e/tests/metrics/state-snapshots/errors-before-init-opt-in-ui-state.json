@@ -159,9 +159,7 @@
               "0xe708": "object"
             }
           }
-        },
-        "destTokens": {},
-        "destTopAssets": {}
+        }
       }
     },
     "TransactionController": { "transactions": "object" },

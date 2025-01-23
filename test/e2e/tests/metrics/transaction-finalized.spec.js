@@ -134,7 +134,7 @@ const eventHasZeroAddressAnonymousId = (payload) =>
   payload.anonymousId === '0x0000000000000000';
 
 describe('Transaction Finalized Event', function () {
-  it('Successfully tracked when sending a transaction @no-mmi', async function () {
+  it('Successfully tracked when sending a transaction', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
