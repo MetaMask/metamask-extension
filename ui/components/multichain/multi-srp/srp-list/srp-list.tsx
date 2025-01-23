@@ -91,6 +91,7 @@ export const SRPList = ({
     <Box padding={4} data-testid="srp-list">
       {hdKeyrings.map((keyring, index) => (
         <Card
+          key={`srp-${index + 1}`}
           data-testid={`hd-keyring-${keyring.metadata.id}`}
           onClick={() =>
             onActionComplete(
@@ -109,7 +110,7 @@ export const SRPList = ({
             paddingLeft={4}
           >
             <Box>
-              <Text>Secret Phrase {index + 1}</Text>
+              <Text>{`Secret Phrase ${index + 1}`}</Text>
               {!hideShowAccounts && (
                 <Text
                   variant={TextVariant.bodySm}
@@ -141,6 +142,7 @@ export const SRPList = ({
               />
               {keyring.accounts.map((address: string) => (
                 <Box
+                  key={address}
                   display={Display.Flex}
                   flexDirection={FlexDirection.Row}
                   alignItems={AlignItems.center}
