@@ -363,7 +363,7 @@ export default class PermissionConnect extends Component {
                       this.cancelPermissionsRequest(requestId)
                     }
                     activeTabOrigin={origin}
-                    request={permissionsRequest}
+                    request={permissionsRequest || {}}
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
                   />
