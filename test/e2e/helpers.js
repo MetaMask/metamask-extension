@@ -858,19 +858,13 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 }
 
 /**
- * Opens the account options menu safely, handling potential race conditions
- * with the MMI build.
+ * Opens the account options menu safely
  *
  * @param {WebDriver} driver - The WebDriver instance used to interact with the browser.
  * @returns {Promise<void>} A promise that resolves when the menu is opened and any necessary waits are complete.
  */
 async function openMenuSafe(driver) {
   await driver.clickElement('[data-testid="account-options-menu-button"]');
-
-  // fix race condition with mmi build
-  if (process.env.MMI) {
-    await driver.waitForSelector('[data-testid="global-menu-mmi-portfolio"]');
-  }
 }
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;

@@ -3,7 +3,7 @@ import { logInWithBalanceValidation, withFixtures } from '../../helpers';
 import { BridgePage, getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
-describe('Click bridge button @no-mmi', function (this: Suite) {
+describe('Click bridge button', function (this: Suite) {
   it('loads placeholder swap route from wallet overview when flag is turned on', async function () {
     await withFixtures(
       getBridgeFixtures(this.test?.fullTitle(), {

@@ -13,7 +13,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
-  it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
+  it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -161,7 +161,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
+  it('should use dapp suggested estimates for transaction coming from dapp', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
