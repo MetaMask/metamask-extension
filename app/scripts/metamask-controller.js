@@ -5408,7 +5408,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {Hex} chainId - The chainId to add incrementally.
    */
   async requestApprovalPermittedChainsPermission(origin, chainId) {
-    // TODO: check UI usage of `PermissionNames.permittedChains`
     const caveatValueWithChains = setPermittedEthChainIds(
       {
         requiredScopes: {},
