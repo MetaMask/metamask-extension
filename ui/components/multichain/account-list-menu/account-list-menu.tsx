@@ -76,12 +76,7 @@ import {
   getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  generateNewHdKeyring,
-  ///: END:ONLY_INCLUDE_IF
-  setSelectedAccount,
-} from '../../../store/actions';
+import { setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -581,6 +576,7 @@ export const AccountListMenu = ({
               ///: END:ONLY_INCLUDE_IF
             }
             {
+              ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
               <Box marginTop={4}>
                 <ButtonLink
                   size={ButtonLinkSize.Sm}
