@@ -95,10 +95,10 @@ const migrator = new Migrator({
     : null,
 });
 
-const _localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
-const localStore = new PersistanceManager({ localStore: _localStore });
+const lStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const persistanceManager = new PersistanceManager({ localStore: lStore });
 global.stateHooks.getMostRecentPersistedState = () =>
-  localStore.mostRecentRetrievedState;
+  persistanceManager.mostRecentRetrievedState;
 
 const { sentry } = global;
 let firstTimeState = { ...rawFirstTimeState };
@@ -125,7 +125,8 @@ let controller;
 const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
-  global.stateHooks.metamaskGetState = localStore.get.bind(localStore);
+  global.stateHooks.metamaskGetState =
+    persistanceManager.get.bind(persistanceManager);
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -617,7 +618,8 @@ export async function loadStateFromPersistence() {
   // read from disk
   // first from preferred, async API:
   const preMigrationVersionedData =
-    (await localStore.get()) || migrator.generateInitialState(firstTimeState);
+    (await persistanceManager.get()) ||
+    migrator.generateInitialState(firstTimeState);
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
@@ -648,10 +650,10 @@ export async function loadStateFromPersistence() {
     );
   }
   // this initializes the meta/version data as a class variable to be used for future writes
-  localStore.metadata = versionedData.meta;
+  persistanceManager.metadata = versionedData.meta;
 
   // write to disk
-  localStore.set(versionedData.data);
+  persistanceManager.set(versionedData.data);
 
   // return just the data
   return versionedData;
@@ -813,7 +815,7 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    localStore,
+    persistanceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
@@ -837,7 +839,7 @@ export function setupController(
     storeAsStream(controller.store),
     debounce(1000),
     createStreamSink(async (state) => {
-      await localStore.set(state);
+      await persistanceManager.set(state);
       statePersistenceEvents.emit('state-persisted', state);
     }),
     (error) => {
@@ -1296,7 +1298,7 @@ const addAppInstalledEvent = () => {
 
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const storeAlreadyExisted = Boolean(await localStore.get());
+  const storeAlreadyExisted = Boolean(await persistanceManager.get());
   // If the store doesn't exist, then this is the first time running this script,
   // and is therefore an install
   if (process.env.IN_TEST) {
@@ -1352,7 +1354,7 @@ async function initBackground() {
         window.document?.documentElement?.classList.add('controller-loaded');
       }
     }
-    localStore.cleanUpMostRecentRetrievedState();
+    persistanceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
   }
