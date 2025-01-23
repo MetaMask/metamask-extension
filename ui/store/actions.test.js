@@ -18,10 +18,6 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-} from '../../shared/constants/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -2662,75 +2658,6 @@ describe('Actions', () => {
           sinon.match.func,
         ),
       ).toBe(true);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-  });
-
-  describe('grantPermittedChain', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls grantPermissionsIncremental in the background', async () => {
-      const store = mockStore();
-
-      background.grantPermissionsIncremental.callsFake((_, cb) => cb());
-      setBackgroundConnection(background);
-
-      await actions.grantPermittedChain('test.com', '0x1');
-      expect(
-        background.grantPermissionsIncremental.calledWith(
-          {
-            subject: { origin: 'test.com' },
-            approvedPermissions: {
-              [EndowmentTypes.permittedChains]: {
-                caveats: [
-                  {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1'],
-                  },
-                ],
-              },
-            },
-          },
-          sinon.match.func,
-        ),
-      ).toBe(true);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-  });
-
-  describe('grantPermittedChains', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls grantPermissions in the background', async () => {
-      const store = mockStore();
-
-      background.grantPermissions.callsFake((_, cb) => cb());
-      setBackgroundConnection(background);
-
-      await actions.grantPermittedChains('test.com', ['0x1', '0x2']);
-      expect(
-        background.grantPermissions.calledWith(
-          {
-            subject: { origin: 'test.com' },
-            approvedPermissions: {
-              [EndowmentTypes.permittedChains]: {
-                caveats: [
-                  {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1', '0x2'],
-                  },
-                ],
-              },
-            },
-          },
-          sinon.match.func,
-        ),
-      ).toBe(true);
-
       expect(store.getActions()).toStrictEqual([]);
     });
   });

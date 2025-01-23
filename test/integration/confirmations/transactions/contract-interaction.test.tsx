@@ -61,7 +61,6 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
       showConfirmationAdvancedDetails,
     },
     nextNonce: '8',

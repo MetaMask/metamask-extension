@@ -139,9 +139,6 @@ describe('Queued Confirmations', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
-            })
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
@@ -278,9 +275,6 @@ describe('Queued Confirmations', function () {
           fixtures: new FixtureBuilder()
             .withNetworkControllerTripleGanache()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: { redesignedConfirmationsEnabled: true },
-            })
             .withSelectedNetworkControllerPerDomain()
             .withMetaMetricsController({
               metaMetricsId: 'fake-metrics-id',

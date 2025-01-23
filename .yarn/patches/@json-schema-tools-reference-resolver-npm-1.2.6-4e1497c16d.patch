@@ -1,0 +1,13 @@
+diff --git a/build/resolve-pointer.js b/build/resolve-pointer.js
+index d5a8ec7486250cd17572eb0e0449725643fc9842..044e74bb51a46e9bf3547f6d7a84763b93260613 100644
+--- a/build/resolve-pointer.js
++++ b/build/resolve-pointer.js
+@@ -27,7 +27,7 @@ exports.default = (function (ref, root) {
+     try {
+         var withoutHash = ref.replace("#", "");
+         var pointer = json_pointer_1.default.parse(withoutHash);
+-        return pointer.eval(root);
++        return pointer.shmeval(root);
+     }
+     catch (e) {
+         throw new InvalidJsonPointerRefError(ref, e.message);
