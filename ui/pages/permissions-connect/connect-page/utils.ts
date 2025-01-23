@@ -6,7 +6,6 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import {
-  Caip25CaveatType,
   Caip25CaveatValue,
   setEthAccounts,
   setPermittedEthChainIds,
@@ -38,7 +37,7 @@ function safeParseInt(value: string): number | undefined {
  * Takes in an incoming {@link PermissionsRequest} and attempts to return the {@link Caip25CaveatValue} with the Ethereum accounts set.
  *
  * @param permissions - The {@link PermissionsRequest} with the target name of the CAIP-25 endowment permission.
- * @returns The {@link Caip25CaveatValue} with the Ethereum accounts set. If {@link Caip25CaveatType} is not found, returns `undefined`.
+ * @returns The {@link Caip25CaveatValue} with the Ethereum accounts set. If Caip25 Caveat Type is not found, returns `undefined`.
  */
 function getCaip25CaveatValue(
   permissions?: PermissionsRequest,
