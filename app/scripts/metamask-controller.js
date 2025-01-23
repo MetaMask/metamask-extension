@@ -3144,6 +3144,13 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
+      'NetworkController:networkRemoved',
+      ({ chainId }) => {
+        this.removeAllChainIdPermissions(chainId);
+      },
+    );
+
+    this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
         await this.txController.stopIncomingTransactionPolling();
