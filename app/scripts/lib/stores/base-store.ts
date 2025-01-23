@@ -35,7 +35,7 @@ export type MetaMaskStorageStructure = {
  * object. This type represents that empty object to be used in error handling
  * and state initialization.
  */
-export type EmptyState = Omit<MetaMaskStorageStructure, 'data' | 'meta'>;
+type EmptyState = Omit<MetaMaskStorageStructure, 'data' | 'meta'>;
 
 /**
  * The BaseStore class is an abstract class designed to be extended by other
