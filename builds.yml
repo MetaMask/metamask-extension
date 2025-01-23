@@ -65,7 +65,6 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - solana
-      - solana-swaps
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -82,6 +81,30 @@ buildTypes:
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
+
+  mmi:
+    id: 20
+    features:
+      - build-mmi
+    env:
+      - INFURA_MMI_PROJECT_ID
+      - SEGMENT_MMI_WRITE_KEY
+      - SENTRY_MMI_DSN
+      - INFURA_ENV_KEY_REF: INFURA_MMI_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.12.0/index.html
+      - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
+      - SUPPORT_LINK: https://support.metamask-institutional.io
+      - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
+      - SENTRY_DSN: SENTRY_MMI_DSN
+    # For some reason, MMI uses this type of versioning
+    # Leaving it on for backwards compatibility
+    isPrerelease: true
+    manifestOverrides: ./app/build-types/mmi/manifest/
+    buildNameOverride: MetaMask Institutional
 
 # Build types are composed of a set of features.
 # Each feature can have code fences that add new code
@@ -100,19 +123,22 @@ features:
       # Assets that are exclusively included in this feature and ignored in others
       # Supports globs
       - ./{app,shared,ui}/**/beta/**
+  build-mmi:
+    assets:
+      - src: ./app/build-types/mmi/images/
+        dest: images
+      - ./{app,shared,ui}/**/institutional/**
   build-flask:
     assets:
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
-  build-mmi:
   keyring-snaps:
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
   solana:
     assets:
       - ./{app,shared,ui}/**/solana/**
-  solana-swaps:
 
 # Env variables that are required for all types of builds
 #
@@ -152,6 +178,8 @@ env:
   - COMMITHASH: null
   - VERSION: null
   - IS_CODESIGN_BUILD: null
+
+  - SENTRY_MMI_DSN: ''
 
   ###
   # Storybook
