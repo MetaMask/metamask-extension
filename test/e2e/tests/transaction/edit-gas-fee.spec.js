@@ -161,7 +161,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
+  it('should use dapp suggested estimates for transaction coming from dapp', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
