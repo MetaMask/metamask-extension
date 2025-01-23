@@ -40,7 +40,7 @@ import {
   getSelectedInternalAccount,
   getQueuedRequestCount,
   getEditedNetwork,
-  pendingApprovalsSortedSelector,
+  selectPendingApprovalsForNavigation,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -96,6 +96,7 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
+    bridgeState,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
@@ -108,7 +109,7 @@ const mapStateToProps = (state) => {
   const totalUnapprovedAndQueuedRequestCount =
     totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
-  const pendingApprovals = pendingApprovalsSortedSelector(state);
+  const pendingApprovals = selectPendingApprovalsForNavigation(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
@@ -161,6 +162,7 @@ const mapStateToProps = (state) => {
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
+    haveBridgeQuotes: Boolean(Object.values(bridgeState?.quotes || {}).length),
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,

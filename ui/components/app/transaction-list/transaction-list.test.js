@@ -26,6 +26,25 @@ const defaultState = {
 const btcState = {
   metamask: {
     ...mockState.metamask,
+    nonEvmTransactions: {
+      [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
+        transactions: [
+          {
+            timestamp: 1733736433,
+            chain: MultichainNetworks.BITCOIN,
+            status: 'confirmed',
+            type: 'send',
+            account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+            from: [],
+            to: [],
+            fees: [],
+            events: [],
+          },
+        ],
+        next: null,
+        lastUpdated: expect.any(Number),
+      },
+    },
     internalAccounts: {
       ...mockState.metamask.internalAccounts,
       accounts: {
@@ -57,15 +76,21 @@ describe('TransactionList', () => {
     jest.clearAllMocks();
   });
 
-  it('renders TransactionList component and shows You have no transactions text', () => {
-    const { getByText } = render();
-    expect(getByText('You have no transactions')).toBeInTheDocument();
+  it('renders TransactionList component and does not show You have no transactions text', () => {
+    const { queryByText } = render();
+    expect(queryByText('You have no transactions')).toBeNull();
   });
 
-  it('renders TransactionList component and shows Bitcoin activity is not supported text', () => {
-    const { getByText, getByRole } = render(btcState);
+  it('renders TransactionList component and shows a Bitcoin Tx in the activity list', () => {
+    const { getByText, getByRole, getByTestId } = render(btcState);
 
-    expect(getByText('Bitcoin activity is not supported')).toBeInTheDocument();
+    // The activity list item has a status of "Confirmed" and a type of "Send"
+    expect(getByText('Confirmed')).toBeInTheDocument();
+    expect(getByText('Send')).toBeInTheDocument();
+
+    // A BTC activity list iteem exists
+    expect(getByTestId('activity-list-item')).toBeInTheDocument();
+
     const viewOnExplorerBtn = getByRole('button', {
       name: 'View on block explorer',
     });
@@ -86,18 +111,18 @@ describe('TransactionList', () => {
     });
   });
 
-  it('renders TransactionList component and shows Chain ID mismatch text if network name is not available', () => {
+  it('renders TransactionList component and does not show Chain ID mismatch text if network name is not available', () => {
     const store = configureStore(defaultState);
 
-    const { getByText } = renderWithProvider(
+    const { queryByText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <TransactionList tokenChainId="0x89" />
       </MetaMetricsContext.Provider>,
       store,
     );
     expect(
-      getByText('Please switch network to view transactions'),
-    ).toBeInTheDocument();
+      queryByText('Please switch network to view transactions'),
+    ).toBeNull();
   });
 
   it('renders TransactionList component and shows network name text', () => {
@@ -140,14 +165,16 @@ describe('TransactionList', () => {
     };
     const store = configureStore(defaultState2);
 
-    const { getByText } = renderWithProvider(
+    const { queryByText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <TransactionList tokenChainId="0xe708" />
       </MetaMetricsContext.Provider>,
       store,
     );
     expect(
-      getByText('Please switch to Linea Mainnet network to view transactions'),
-    ).toBeInTheDocument();
+      queryByText(
+        'Please switch to Linea Mainnet network to view transactions',
+      ),
+    ).toBeNull();
   });
 });

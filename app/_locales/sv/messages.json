@@ -375,9 +375,6 @@
   "loading": {
     "message": "Läser in..."
   },
-  "loadingTokens": {
-    "message": "Laddar tokens..."
-  },
   "lock": {
     "message": "Logga ut"
   },
@@ -433,9 +430,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Ingen omräkningskurs tillgänglig"
-  },
-  "noTransactions": {
-    "message": "Du har inga överföringar"
   },
   "noWebcamFound": {
     "message": "Din dators webbkamera hittades inte. Vänligen försök igen."

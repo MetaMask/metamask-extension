@@ -459,6 +459,7 @@ function TransactionListItemInner({
             !hasCancelled &&
             !isBridgeTx
           }
+          showErrorBanner={Boolean(error)}
           transactionStatus={() => (
             <TransactionStatusLabel
               isPending={isPending}
@@ -467,6 +468,7 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
               statusOnly
+              shouldShowTooltip={false}
               ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
               custodyStatusDisplayText={

@@ -5,7 +5,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../shared/constants/metametrics';
-import { SortOrder } from '../../pages/bridge/types';
+import { SortOrder } from '../../../shared/types/bridge';
 import {
   RequestParams,
   RequestMetadata,
@@ -104,6 +104,7 @@ export const useCrossChainSwapsEventTracker = () => {
           action_type: ActionType.CROSSCHAIN_V1,
           ...properties,
         },
+        value: 'value' in properties ? (properties.value as never) : undefined,
       });
     },
     [trackEvent],

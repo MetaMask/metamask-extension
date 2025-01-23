@@ -15,6 +15,7 @@ jest.mock('../../../store/actions', () => ({
   setTokenNetworkFilter: jest.fn(),
   updateSlides: jest.fn(),
   removeSlide: jest.fn(),
+  addImportedTokens: jest.fn(),
 }));
 
 // Mock the dispatch function

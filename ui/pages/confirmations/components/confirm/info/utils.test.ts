@@ -1,41 +1,31 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
-import { DecodedTransactionDataSource } from '../../../../../../shared/types/transaction-decode';
+import { TransactionDescription } from '@ethersproject/abi';
 import {
   getIsRevokeSetApprovalForAll,
   hasValueAndNativeBalanceMismatch,
+  isValidUTF8,
 } from './utils';
 
 describe('getIsRevokeSetApprovalForAll', () => {
   it('returns false if no data is passed as an argument', () => {
     const testValue = {
-      data: [],
-      source: DecodedTransactionDataSource.FourByte,
-    };
+      args: {},
+    } as TransactionDescription;
+
     const actual = getIsRevokeSetApprovalForAll(testValue);
 
     expect(actual).toEqual(false);
   });
 
-  it('returns true if no setApprovalForAll decoded tx is passed as an argument', () => {
+  it('returns true if setApprovalForAll decoded tx is passed as an argument', () => {
     const testValue = {
-      data: [
-        {
-          name: 'setApprovalForAll',
-          params: [
-            {
-              type: 'address',
-              value: '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B',
-            },
-            {
-              type: 'boolean',
-              value: false,
-            },
-          ],
-        },
-      ],
-      source: DecodedTransactionDataSource.FourByte,
-    };
+      name: 'setApprovalForAll',
+      args: {
+        _approved: false,
+      },
+    } as unknown as TransactionDescription;
+
     const actual = getIsRevokeSetApprovalForAll(testValue);
 
     expect(actual).toEqual(true);
@@ -139,5 +129,13 @@ describe('hasValueAndNativeBalanceMismatch', () => {
     } as unknown as TransactionMeta;
 
     expect(hasValueAndNativeBalanceMismatch(transaction)).toBe(true);
+  });
+});
+
+describe('isValidUTF8', () => {
+  it('returns true for valid UTF-8 string', () => {
+    expect(isValidUTF8('Hello')).toEqual(true);
+    expect(isValidUTF8('\xC3\x28')).toEqual(true);
+    expect(isValidUTF8('😀')).toEqual(true);
   });
 });

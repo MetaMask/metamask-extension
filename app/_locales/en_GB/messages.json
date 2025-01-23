@@ -732,9 +732,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin activity is not supported"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -2641,9 +2638,6 @@
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
   },
-  "loadingTokens": {
-    "message": "Loading tokens..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -3143,9 +3137,6 @@
   },
   "noThanks": {
     "message": "No thanks"
-  },
-  "noTransactions": {
-    "message": "You have no transactions"
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
@@ -4151,12 +4142,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Improved signature requests"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Turn this on to see signature requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"
@@ -5749,18 +5734,6 @@
   },
   "toggleEthSignOn": {
     "message": "ON (Not recommended)"
-  },
-  "toggleRequestQueueDescription": {
-    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
-  },
-  "toggleRequestQueueField": {
-    "message": "Select networks for each site"
-  },
-  "toggleRequestQueueOff": {
-    "message": "Off"
-  },
-  "toggleRequestQueueOn": {
-    "message": "On"
   },
   "token": {
     "message": "Token"

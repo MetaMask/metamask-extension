@@ -13,7 +13,7 @@
 # audit these changes on their own, and leave their analysis in a comment.
 # These codeowners will review this analysis, and review the policy changes in
 # further detail if warranted.
-lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain
+lavamoat/                            @MetaMask/extension-devs @MetaMask/policy-reviewers @MetaMask/supply-chain
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
@@ -62,12 +62,6 @@ app/scripts/lib/transaction/decode      @MetaMask/confirmations
 app/scripts/lib/transaction/metrics.*   @MetaMask/confirmations
 app/scripts/lib/transaction/util.*      @MetaMask/confirmations
 ui/pages/confirmations                  @MetaMask/confirmations
-
-# MMI team is responsible for code related with Institutioanl version of MetaMask
-ui/pages/institutional               @MetaMask/mmi
-ui/components/institutional          @MetaMask/mmi
-ui/ducks/institutional               @MetaMask/mmi
-ui/selectors/institutional           @MetaMask/mmi
 
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system

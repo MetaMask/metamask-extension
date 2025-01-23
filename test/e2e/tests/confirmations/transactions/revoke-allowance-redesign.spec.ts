@@ -3,12 +3,13 @@ import { MockttpServer } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
-import { mocked4BytesApprove } from './erc20-approve-redesign.spec';
 import {
   assertChangedSpendingCap,
   editSpendingCap,
-} from './increase-token-allowance-redesign.spec';
-import { openDAppWithContract, TestSuiteArguments } from './shared';
+  mocked4BytesApprove,
+  openDAppWithContract,
+  TestSuiteArguments,
+} from './shared';
 
 const {
   defaultGanacheOptions,
@@ -21,7 +22,7 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  describe('Submit an revoke transaction @no-mmi', function () {
+  describe('Submit an revoke transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
@@ -30,7 +31,6 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -68,7 +68,6 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })

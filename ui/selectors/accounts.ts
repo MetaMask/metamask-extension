@@ -1,8 +1,9 @@
 import {
   EthAccountType,
   BtcAccountType,
-  InternalAccount,
+  SolAccountType,
 } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   isBtcMainnetAddress,
@@ -17,6 +18,12 @@ function isBtcAccount(account: InternalAccount) {
   const { P2wpkh } = BtcAccountType;
 
   return Boolean(account && account.type === P2wpkh);
+}
+
+function isSolanaAccount(account: InternalAccount) {
+  const { DataAccount } = SolAccountType;
+
+  return Boolean(account && account.type === DataAccount);
 }
 
 export function getInternalAccounts(state: AccountsState) {
@@ -37,6 +44,10 @@ export function isSelectedInternalAccountEth(state: AccountsState) {
 
 export function isSelectedInternalAccountBtc(state: AccountsState) {
   return isBtcAccount(getSelectedInternalAccount(state));
+}
+
+export function isSelectedInternalAccountSolana(state: AccountsState) {
+  return isSolanaAccount(getSelectedInternalAccount(state));
 }
 
 function hasCreatedBtcAccount(

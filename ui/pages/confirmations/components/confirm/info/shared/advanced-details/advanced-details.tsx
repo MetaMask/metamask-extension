@@ -11,7 +11,6 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getUseNonceField,
 } from '../../../../../../../selectors';
 import {
   getNextNonce,
@@ -37,7 +36,6 @@ const NonceDetails = () => {
     }
   }, [currentConfirmation, dispatch]);
 
-  const enableCustomNonce = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
 
@@ -65,9 +63,7 @@ const NonceDetails = () => {
         <ConfirmInfoRowText
           data-testid="advanced-details-displayed-nonce"
           text={`${displayedNonce}`}
-          onEditClick={
-            enableCustomNonce ? () => openEditNonceModal() : undefined
-          }
+          onEditClick={() => openEditNonceModal()}
           editIconClassName="edit-nonce-btn"
           editIconDataTestId="edit-nonce-icon"
         />

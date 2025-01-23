@@ -16,12 +16,13 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
+import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
-import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
-import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
+import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
+import { getIsRevokeDAIPermit } from '../utils';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
@@ -84,6 +85,14 @@ const getTitle = (
         if (tokenStandard === TokenStandard.ERC721) {
           return t('setApprovalForAllRedesignedTitle');
         }
+
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit) {
+          return t('confirmTitleRevokeApproveTransaction');
+        }
+
         return t('confirmTitlePermitTokens');
       }
       return t('confirmTitleSignature');
@@ -136,6 +145,14 @@ const getDescription = (
         if (tokenStandard === TokenStandard.ERC721) {
           return t('confirmTitleDescApproveTransaction');
         }
+
+        const isRevokeDAIPermit = getIsRevokeDAIPermit(
+          confirmation as SignatureRequestType,
+        );
+        if (isRevokeDAIPermit) {
+          return '';
+        }
+
         return t('confirmTitleDescPermitSignature');
       }
       return t('confirmTitleDescSign');
@@ -173,19 +190,12 @@ const ConfirmTitle: React.FC = memo(() => {
   const { customSpendingCap, pending: spendingCapPending } =
     useCurrentSpendingCap(currentConfirmation);
 
-  let isRevokeSetApprovalForAll = false;
-  let revokePending = false;
-  const decodedResponse = useDecodedTransactionData(
-    TransactionType.tokenMethodSetApprovalForAll,
-  );
-  if (
-    currentConfirmation?.type === TransactionType.tokenMethodSetApprovalForAll
-  ) {
-    isRevokeSetApprovalForAll = getIsRevokeSetApprovalForAll(
-      decodedResponse.value,
-    );
-    revokePending = decodedResponse.pending;
-  }
+  const parsedTransactionData = useTokenTransactionData();
+
+  const isRevokeSetApprovalForAll =
+    currentConfirmation?.type ===
+      TransactionType.tokenMethodSetApprovalForAll &&
+    getIsRevokeSetApprovalForAll(parsedTransactionData);
 
   const title = useMemo(
     () =>
@@ -195,7 +205,7 @@ const ConfirmTitle: React.FC = memo(() => {
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
-        spendingCapPending || revokePending,
+        spendingCapPending,
         primaryType,
         tokenStandard,
       ),
@@ -205,7 +215,6 @@ const ConfirmTitle: React.FC = memo(() => {
       customSpendingCap,
       isRevokeSetApprovalForAll,
       spendingCapPending,
-      revokePending,
       primaryType,
       tokenStandard,
     ],
@@ -219,7 +228,7 @@ const ConfirmTitle: React.FC = memo(() => {
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
-        spendingCapPending || revokePending,
+        spendingCapPending,
         primaryType,
         tokenStandard,
       ),
@@ -229,7 +238,6 @@ const ConfirmTitle: React.FC = memo(() => {
       customSpendingCap,
       isRevokeSetApprovalForAll,
       spendingCapPending,
-      revokePending,
       primaryType,
       tokenStandard,
     ],

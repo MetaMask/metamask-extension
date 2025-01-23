@@ -1,4 +1,4 @@
-import { KeyringClient, Sender } from '@metamask/keyring-api';
+import { KeyringClient, Sender } from '@metamask/keyring-snap-client';
 import { HandlerType } from '@metamask/snaps-utils';
 import { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
 import { SnapId } from '@metamask/snaps-sdk';
@@ -58,7 +58,7 @@ export class MultichainWalletSnapClient {
     });
 
     // NOTE: The account's balance is going to be tracked automatically on when the new account
-    // will be added to the Snap bridge keyring (see `BalancesController:#handleOnAccountAdded`).
+    // will be added to the Snap bridge keyring (see `MultichainBalancesController:#handleOnAccountAdded`).
     // However, the balance won't be fetched right away. To workaround this, we trigger the
     // fetch explicitly here (since we are already in a `async` call) and wait for it to be updated!
     await multichainUpdateBalance(account.id);

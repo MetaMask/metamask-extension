@@ -1,8 +1,11 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { InternalAccount } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  getCurrentCurrency,
+  getNativeCurrency,
+} from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
@@ -40,11 +43,7 @@ import {
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
 } from './multichain';
-import {
-  getCurrentCurrency,
-  getSelectedAccountCachedBalance,
-  getShouldShowFiat,
-} from '.';
+import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
 type TestState = MultichainState &
   AccountsState & {
@@ -82,6 +81,13 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
           [MOCK_ACCOUNT_EOA.address]: {
             balance: '3',
           },
+        },
+      },
+      nonEvmTransactions: {
+        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
+          transactions: [],
+          next: null,
+          lastUpdated: 0,
         },
       },
       balances: {

@@ -27,8 +27,8 @@ import {
   OriginalRequest,
   SignatureController,
 } from '@metamask/signature-controller';
-import { InternalAccount } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths

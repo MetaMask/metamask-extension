@@ -42,17 +42,13 @@ import {
   getUnapprovedTransactions,
   selectTransactionMetadata,
   selectTransactionSender,
+  unapprovedPersonalMsgsSelector,
+  unapprovedDecryptMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedTypedMessagesSelector,
 } from './transactions';
 
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
-const unapprovedPersonalMsgsSelector = (state) =>
-  state.metamask.unapprovedPersonalMsgs;
-const unapprovedDecryptMsgsSelector = (state) =>
-  state.metamask.unapprovedDecryptMsgs;
-const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
-  state.metamask.unapprovedEncryptionPublicKeyMsgs;
-const unapprovedTypedMessagesSelector = (state) =>
-  state.metamask.unapprovedTypedMessages;
 
 export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedTxsSelector,
@@ -220,6 +216,7 @@ export const transactionFeeSelector = function (state, txData) {
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
+    gasLimitNoBuffer: txData.gasLimitNoBuffer,
   };
 
   if (networkAndAccountSupportsEIP1559) {

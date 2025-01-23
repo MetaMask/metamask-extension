@@ -2,6 +2,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
+import { ACCOUNT_TYPE } from '../../../constants';
 import { mockIdentityServices } from '../mocks';
 import { IDENTITY_TEAM_PASSWORD } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
@@ -16,7 +17,7 @@ import PrivacySettings from '../../../page-objects/pages/settings/privacy-settin
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 
-describe('Account syncing - New User @no-mmi', function () {
+describe('Account syncing - New User', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
@@ -64,7 +65,10 @@ describe('Account syncing - New User @no-mmi', function () {
 
           // Add a second account
           await accountListPage.openAccountOptionsMenu();
-          await accountListPage.addNewAccount('My Second Account');
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+            accountName: 'My Second Account',
+          });
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);

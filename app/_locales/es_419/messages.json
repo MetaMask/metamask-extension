@@ -1086,9 +1086,6 @@
   "loading": {
     "message": "Cargando..."
   },
-  "loadingTokens": {
-    "message": "Cargando tokens..."
-  },
   "localhost": {
     "message": "Host local 8545"
   },
@@ -1275,9 +1272,6 @@
   },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
-  },
-  "noTransactions": {
-    "message": "No tiene transacciones"
   },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getNetworkConfigurationIdByChainId,
   getTokenList,
 } from '../../../../selectors';

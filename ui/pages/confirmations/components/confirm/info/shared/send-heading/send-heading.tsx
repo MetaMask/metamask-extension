@@ -24,7 +24,6 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenValues } from '../../hooks/use-token-values';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import { useTokenDetails } from '../../hooks/useTokenDetails';
-import { ConfirmLoader } from '../confirm-loader/confirm-loader';
 
 const SendHeading = () => {
   const t = useI18nContext();
@@ -36,7 +35,6 @@ const SendHeading = () => {
     displayTransferValue,
     fiatDisplayValue,
     fiatValue,
-    pending,
   } = useTokenValues(transactionMeta);
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
@@ -88,10 +86,6 @@ const SendHeading = () => {
     );
 
   useSendingValueMetric({ transactionMeta, fiatValue });
-
-  if (pending) {
-    return <ConfirmLoader />;
-  }
 
   return (
     <Box

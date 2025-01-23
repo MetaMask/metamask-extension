@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
@@ -16,6 +16,12 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+} from '../../../../shared/constants/metametrics';
+import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -42,6 +48,8 @@ export const AccountOverviewLayout = ({
   const slides = useSelector(getSlides);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isLoading = useSelector(getAppIsLoading);
+  const trackEvent = useContext(MetaMetricsContext);
+  const [hasRendered, setHasRendered] = useState(false);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
@@ -76,8 +84,8 @@ export const AccountOverviewLayout = ({
     dispatch(updateSlides(defaultSlides));
   }, [hasZeroBalance]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleCarouselClick = (id: string) => {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (id === 'bridge') {
       openBridgeExperience(
         'Carousel',
@@ -85,15 +93,47 @@ export const AccountOverviewLayout = ({
         location.pathname.includes('asset') ? '&token=native' : '',
       );
     }
-  };
-  ///: END:ONLY_INCLUDE_IF
+    ///: END:ONLY_INCLUDE_IF
 
-  const handleRemoveSlide = (id: string) => {
+    trackEvent({
+      event: MetaMetricsEventName.BannerSelect,
+      category: MetaMetricsEventCategory.Banner,
+      properties: {
+        banner_name: id,
+      },
+    });
+  };
+
+  const handleRemoveSlide = (isLastSlide: boolean, id: string) => {
     if (id === 'fund' && hasZeroBalance) {
       return;
     }
+    if (isLastSlide) {
+      trackEvent({
+        event: MetaMetricsEventName.BannerCloseAll,
+        category: MetaMetricsEventCategory.Banner,
+      });
+    }
     dispatch(removeSlide(id));
   };
+
+  const handleRenderSlides = useCallback(
+    (renderedSlides: CarouselSlide[]) => {
+      if (!hasRendered) {
+        renderedSlides.forEach((slide) => {
+          trackEvent({
+            event: MetaMetricsEventName.BannerDisplay,
+            category: MetaMetricsEventCategory.Banner,
+            properties: {
+              banner_name: slide.id,
+            },
+          });
+        });
+        setHasRendered(true);
+      }
+    },
+    [hasRendered, trackEvent],
+  );
 
   return (
     <>
@@ -101,10 +141,9 @@ export const AccountOverviewLayout = ({
       <Carousel
         slides={slides}
         isLoading={isLoading}
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         onClick={handleCarouselClick}
-        ///: END:ONLY_INCLUDE_IF
         onClose={handleRemoveSlide}
+        onRenderSlides={handleRenderSlides}
       />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
     </>

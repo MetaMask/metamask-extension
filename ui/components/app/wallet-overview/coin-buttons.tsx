@@ -24,7 +24,8 @@ import {
 } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -96,11 +97,14 @@ import {
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
 ///: END:ONLY_INCLUDE_IF
 import {
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
+  getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+///: END:ONLY_INCLUDE_IF
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -159,12 +163,15 @@ const CoinButtons = ({
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
   // network).
-  const isEvm = useMultichainSelector(getMultichainIsEvm, account);
+  const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
+    getMultichainNetwork,
+    account,
+  );
   const multichainNativeToken = useMultichainSelector(
     getMultichainNativeCurrency,
     account,
   );
-  const nativeToken = isEvm ? 'ETH' : multichainNativeToken;
+  const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -330,7 +337,7 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const setCorrectChain = useCallback(async () => {
-    if (currentChainId !== chainId) {
+    if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
         const networkConfigurationId = networks[chainId];
         await dispatch(setActiveNetworkWithError(networkConfigurationId));
@@ -403,7 +410,44 @@ const CoinButtons = ({
     history.push(SEND_ROUTE);
   }, [chainId, account, setCorrectChain]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const handleBuyAndSellOnClick = useCallback(() => {
+    openBuyCryptoInPdapp(getChainId());
+    trackEvent({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        account_type: account.type,
+        location: 'Home',
+        text: 'Buy',
+        chain_id: chainId,
+        token_symbol: defaultSwapsToken,
+        ...getSnapAccountMetaMetricsPropertiesIfAny(account),
+      },
+    });
+  }, [chainId, defaultSwapsToken]);
+
+  const handleBridgeOnClick = useCallback(async () => {
+    if (!defaultSwapsToken) {
+      return;
+    }
+    await setCorrectChain();
+    openBridgeExperience(
+      'Home',
+      defaultSwapsToken,
+      location.pathname.includes('asset') ? '&token=native' : '',
+    );
+  }, [defaultSwapsToken, location, openBridgeExperience]);
+  ///: END:ONLY_INCLUDE_IF
+
   const handleSwapOnClick = useCallback(async () => {
+    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+    if (multichainChainId === MultichainNetworks.SOLANA) {
+      handleBridgeOnClick();
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IF
+
     await setCorrectChain();
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     global.platform.openTab({
@@ -445,35 +489,6 @@ const CoinButtons = ({
     mmiPortfolioUrl,
     ///: END:ONLY_INCLUDE_IF
   ]);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp(getChainId());
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        account_type: account.type,
-        location: 'Home',
-        text: 'Buy',
-        chain_id: chainId,
-        token_symbol: defaultSwapsToken,
-        ...getSnapAccountMetaMetricsPropertiesIfAny(account),
-      },
-    });
-  }, [chainId, defaultSwapsToken]);
-
-  const handleBridgeOnClick = useCallback(() => {
-    if (!defaultSwapsToken) {
-      return;
-    }
-    openBridgeExperience(
-      'Home',
-      defaultSwapsToken,
-      location.pathname.includes('asset') ? '&token=native' : '',
-    );
-  }, [defaultSwapsToken, location, openBridgeExperience]);
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>

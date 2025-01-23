@@ -125,7 +125,6 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": true,
       "isMultiAccountBalancesEnabled": "boolean",
       "showIncomingTransactions": "object"
     },
@@ -160,11 +159,7 @@
               "0xe708": "object"
             }
           }
-        },
-        "destTokens": {},
-        "destTopAssets": {},
-        "srcTokens": {},
-        "srcTopAssets": {}
+        }
       }
     },
     "TransactionController": { "transactions": "object" },

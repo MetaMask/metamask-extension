@@ -4,8 +4,206 @@ exports[`Info renders info section for approve request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__simulation_section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Estimated changes
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-11"
+              class=""
+              data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          You're giving someone else permission to withdraw NFTs from your account.
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Withdraw
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box"
+        style="margin-left: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              data-testid="simulation-token-value"
+            >
+              #0.0001
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <div
+              class="name name__missing"
+            >
+              <span
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+              <p
+                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              >
+                0x07614...3ad68
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
     data-testid="confirmation__approve-details"
   >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation__approve-spender"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Spender
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-8"
+              class=""
+              data-original-title="This is the address that will be able to withdraw your NFTs."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="confirmation__approve-spender-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
+              >
+                <svg
+                  height="16"
+                  width="16"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#C81420"
+                    height="16"
+                    transform="translate(-2.752618452452339 -2.6325616818687707) rotate(385.9 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#E9F500"
+                    height="16"
+                    transform="translate(5.337234703363199 6.214964079596694) rotate(184.5 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FAB300"
+                    height="16"
+                    transform="translate(0.9077275996181156 -13.015140953188144) rotate(431.3 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+            data-testid="confirm-info-row-display-name"
+          >
+            0x2e0D7...5d09B
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="transaction-details-origin-row"
@@ -24,7 +222,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-8"
+              aria-describedby="tippy-tooltip-9"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -73,7 +271,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-9"
+              aria-describedby="tippy-tooltip-10"
               class=""
               data-original-title="Amount paid to process the transaction on network."
               data-tooltipped=""
@@ -570,7 +768,7 @@ exports[`Info renders info section for personal sign request 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -581,7 +779,7 @@ exports[`Info renders info section for personal sign request 1`] = `
         aria-label="collapse-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
-        style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 8px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -639,7 +837,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-10"
+              aria-describedby="tippy-tooltip-12"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -726,6 +924,102 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation__approve-spender"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Permission for
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-13"
+              class=""
+              data-original-title="This is the address that will be able to withdraw your NFTs."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="confirmation__approve-spender-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 100, 242);"
+              >
+                <svg
+                  height="16"
+                  width="16"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#C81420"
+                    height="16"
+                    transform="translate(-2.752618452452339 -2.6325616818687707) rotate(385.9 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#E9F500"
+                    height="16"
+                    transform="translate(5.337234703363199 6.214964079596694) rotate(184.5 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FAB300"
+                    height="16"
+                    transform="translate(0.9077275996181156 -13.015140953188144) rotate(431.3 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+            data-testid="confirm-info-row-display-name"
+          >
+            0x2e0D7...5d09B
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      style="height: 1px; margin-left: -8px; margin-right: -8px;"
+    />
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="transaction-details-origin-row"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
@@ -742,7 +1036,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-11"
+              aria-describedby="tippy-tooltip-14"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -791,7 +1085,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-12"
+              aria-describedby="tippy-tooltip-15"
               class=""
               data-original-title="Amount paid to process the transaction on network."
               data-tooltipped=""
@@ -1019,7 +1313,7 @@ exports[`Info renders info section for typed sign request 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 4px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"

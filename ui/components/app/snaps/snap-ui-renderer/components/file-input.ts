@@ -6,14 +6,11 @@ export const fileInput: UIComponentFactory<FileInputElement> = ({
   element,
   form,
 }) => ({
-  element: 'SnapUIInput',
+  element: 'SnapUIFileInput',
   props: {
-    element: 'SnapUIFileInput',
-    props: {
-      name: element.props.name,
-      accept: element.props.accept,
-      compact: element.props.compact,
-      form,
-    },
+    name: element.props.name,
+    accept: element.props.accept,
+    compact: element.props.compact,
+    form,
   },
 });
