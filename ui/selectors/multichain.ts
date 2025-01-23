@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   MultichainBalancesControllerState,
@@ -8,6 +8,7 @@ import type {
 import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { NetworkType } from '@metamask/controller-utils';
+import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
@@ -53,9 +54,14 @@ export type BalancesState = {
   metamask: MultichainBalancesControllerState;
 };
 
+export type TransactionsState = {
+  metamask: MultichainTransactionsControllerState;
+};
+
 export type MultichainState = AccountsState &
   RatesState &
   BalancesState &
+  TransactionsState &
   NetworkState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
@@ -368,6 +374,26 @@ export function getMultichainBalances(
   state: MultichainState,
 ): BalancesState['metamask']['balances'] {
   return state.metamask.balances;
+}
+
+export function getMultichainTransactions(
+  state: MultichainState,
+): TransactionsState['metamask']['nonEvmTransactions'] {
+  return state.metamask.nonEvmTransactions;
+}
+
+export function getSelectedAccountMultichainTransactions(
+  state: MultichainState,
+):
+  | { transactions: Transaction[]; next: string | null; lastUpdated: number }
+  | undefined {
+  const selectedAccount = getSelectedInternalAccount(state);
+
+  if (isEvmAccountType(selectedAccount.type)) {
+    return undefined;
+  }
+
+  return state.metamask.nonEvmTransactions[selectedAccount.id];
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
