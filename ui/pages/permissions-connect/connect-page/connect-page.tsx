@@ -93,7 +93,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       network.chainId === currentlySelectedNetworkChainId,
   );
 
-  // TODO: /!\/!\/!\ I need to handle a case where user requests several networks and some might not be configured, how should we proceed ? /!\/!\/!\
   const selectedNetworksList = selectedTestNetwork
     ? [...nonTestNetworks, selectedTestNetwork]
     : nonTestNetworks;

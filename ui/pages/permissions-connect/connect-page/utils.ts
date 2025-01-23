@@ -96,8 +96,6 @@ export function getRequestedChainsViaPermissionsRequest(
       continue;
     }
 
-    // TODO: [perhaps create multichain ticket?]
-    // if I pass something other than a number here (for example, scope "eip:155", we get "0x0"). Is this expected behaviour?
     const { reference } = parseCaipChainId(scope as CaipChainId);
     const parsedReference = safeParseInt(reference);
 
