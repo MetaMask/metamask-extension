@@ -24,6 +24,7 @@ import {
   ValidPermission,
 } from '@metamask/permission-controller';
 import {
+  CaipChainId,
   Hex,
   isPlainObject,
   Json,
@@ -103,6 +104,8 @@ async function walletCreateSessionHandler(
     grantPermissions: (
       ...args: Parameters<AbstractPermissionController['grantPermissions']>
     ) => Record<string, ValidPermission<string, Caveat<string, Json>>>;
+    getNonEvmSupportedMethods: (scope: CaipChainId) => string[];
+    isNonEvmScopeSupported: (scope: CaipChainId) => boolean;
   },
 ) {
   const { origin } = req;
@@ -121,9 +124,11 @@ async function walletCreateSessionHandler(
 
     const supportedRequiredScopesObjects = getSupportedScopeObjects(
       normalizedRequiredScopes,
+      { getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods },
     );
     const supportedOptionalScopesObjects = getSupportedScopeObjects(
       normalizedOptionalScopes,
+      { getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods },
     );
 
     const existsNetworkClientForChainId = (chainId: Hex) => {
@@ -138,16 +143,20 @@ async function walletCreateSessionHandler(
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
       supportedRequiredScopesObjects,
       {
-        isChainIdSupported: existsNetworkClientForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: existsNetworkClientForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+        isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
       },
     );
 
     const { supportedScopes: supportedOptionalScopes } = bucketScopes(
       supportedOptionalScopesObjects,
       {
-        isChainIdSupported: existsNetworkClientForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: existsNetworkClientForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+        isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
       },
     );
 
@@ -264,5 +273,7 @@ export const walletCreateSession = {
     grantPermissions: true,
     sendMetrics: true,
     metamaskState: true,
+    getNonEvmSupportedMethods: true,
+    isNonEvmScopeSupported: true,
   },
 };

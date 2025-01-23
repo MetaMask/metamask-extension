@@ -50,11 +50,13 @@ export const CaveatFactories = Object.freeze({
 export const getCaveatSpecifications = ({
   listAccounts,
   findNetworkClientIdByChainId,
+  isNonEvmScopeSupported
 }) => {
   return {
     [Caip25CaveatType]: caip25CaveatBuilder({
       listAccounts,
       findNetworkClientIdByChainId,
+      isNonEvmScopeSupported,
     }),
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,

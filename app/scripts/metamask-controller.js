@@ -1353,6 +1353,8 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
           ),
+        // TODO: Fix this
+        isNonEvmScopeSupported: () => false,
       }),
       permissionSpecifications: {
         ...getPermissionSpecifications(),
@@ -6902,6 +6904,9 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             origin,
           ),
+        // TODO: Fix these
+        getNonEvmSupportedMethods: () => [],
+        isNonEvmScopeSupported: () => false,
       }),
     );
 
