@@ -3,6 +3,8 @@ import React, { useMemo } from 'react';
 import { useConfirmContext } from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
+import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
+
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -18,6 +20,7 @@ const Info = () => {
 
   // TODO: Create TransactionInfo and SignatureInfo components.
   useSmartTransactionFeatureFlags();
+  useTransactionFocusEffect();
 
   const ConfirmationInfoComponentMap = useMemo(
     () => ({
