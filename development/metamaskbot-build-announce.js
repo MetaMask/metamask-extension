@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
+const { promisify } = require('util');
 const { promises: fs } = require('fs');
+const execFile = promisify(require('child_process').execFile);
 const path = require('path');
 // Fetch is part of node js in future versions, thus triggering no-shadow
 // eslint-disable-next-line no-shadow
@@ -58,6 +60,7 @@ async function start() {
     MERGE_BASE_COMMIT_HASH,
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
+    HOST_URL,
   } = process.env;
 
   console.log('PR_NUMBER', PR_NUMBER);
@@ -65,6 +68,7 @@ async function start() {
   console.log('MERGE_BASE_COMMIT_HASH', MERGE_BASE_COMMIT_HASH);
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
   console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
+  console.log('HOST_URL', HOST_URL);
 
   if (!PR_NUMBER) {
     console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
@@ -97,6 +101,21 @@ async function start() {
       firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
   };
+
+  const commitMessage = (
+    await execFile('git', ['show', '-s', '--format=%s', HEAD_COMMIT_HASH])
+  ).stdout.trim();
+  const betaVersionRegex = /Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+/u;
+  const betaMatch = commitMessage.match(betaVersionRegex);
+
+  // only include beta build link if a beta version is detected in the commit message
+  if (betaMatch) {
+    const betaVersion = betaMatch[0].split('-beta.')[1];
+    console.log(`Beta version ${betaVersion} detected, adding beta build link`);
+    buildMap['builds (beta)'] = {
+      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}-beta.${betaVersion}.zip`,
+    };
+  }
 
   const buildContentRows = Object.entries(buildMap).map(([label, builds]) => {
     const buildLinks = Object.entries(builds).map(([platform, url]) => {
