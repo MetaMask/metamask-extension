@@ -281,48 +281,15 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               <div
                 class="identicon"
                 style="height: 32px; width: 32px; border-radius: 16px;"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
-                >
-                  <svg
-                    height="32"
-                    width="32"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#017B8E"
-                      height="32"
-                      transform="translate(0.7994460693567097 -0.8216011156969824) rotate(317.9 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#F2B602"
-                      height="32"
-                      transform="translate(-7.493396036912253 11.409935428284795) rotate(134.1 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FA8E00"
-                      height="32"
-                      transform="translate(-25.712272690754798 -11.558881043268883) rotate(364.0 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
+              />
             </div>
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
-              G
+              <img
+                alt="Goerli logo"
+                class="mm-avatar-network__network-image"
+              />
             </div>
           </div>
           <div
@@ -379,16 +346,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
-          <h2
-            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
-          >
-            Spending cap request
-          </h2>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
-          >
-            This site wants permission to spend your tokens.
-          </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
             data-testid="confirmation__simulation_section"
@@ -474,9 +431,9 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-25"
+                            aria-describedby="tippy-tooltip-20"
                             class=""
-                            data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
+                            data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
                             style="display: inline;"
                             tabindex="0"
@@ -486,7 +443,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                               data-testid="simulation-token-value"
                               style="padding-top: 1px; padding-bottom: 1px;"
                             >
-                              14,615,016,373,...
+                              Unlimited
                             </p>
                           </div>
                         </div>
@@ -527,9 +484,9 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-26"
+                            aria-describedby="tippy-tooltip-21"
                             class=""
-                            data-original-title="24,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
+                            data-original-title="2,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
                             style="display: inline;"
                             tabindex="0"
@@ -539,7 +496,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                               data-testid="simulation-token-value"
                               style="padding-top: 1px; padding-bottom: 1px;"
                             >
-                              24,615,016,373,...
+                              Unlimited
                             </p>
                           </div>
                         </div>
@@ -603,43 +560,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                     <div
                       class="identicon"
                       style="height: 16px; width: 16px; border-radius: 8px;"
-                    >
-                      <div
-                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 171, 0);"
-                      >
-                        <svg
-                          height="16"
-                          width="16"
-                          x="0"
-                          y="0"
-                        >
-                          <rect
-                            fill="#F97501"
-                            height="16"
-                            transform="translate(-0.4639690285287676 0.7692104848269922) rotate(259.7 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                          <rect
-                            fill="#016B8E"
-                            height="16"
-                            transform="translate(1.653484652652331 -5.548430987829864) rotate(421.5 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                          <rect
-                            fill="#F1F500"
-                            height="16"
-                            transform="translate(-6.169291543190866 12.666493418609923) rotate(157.6 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                    />
                   </div>
                   <p
                     class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -724,43 +645,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                     <div
                       class="identicon"
                       style="height: 16px; width: 16px; border-radius: 8px;"
-                    >
-                      <div
-                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 151, 242);"
-                      >
-                        <svg
-                          height="16"
-                          width="16"
-                          x="0"
-                          y="0"
-                        >
-                          <rect
-                            fill="#2362E1"
-                            height="16"
-                            transform="translate(1.7946650923962586 -2.667155311616761) rotate(458.4 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                          <rect
-                            fill="#F94301"
-                            height="16"
-                            transform="translate(-7.681729644825104 3.9961758177433153) rotate(268.8 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                          <rect
-                            fill="#FA7900"
-                            height="16"
-                            transform="translate(-4.538127039650711 14.740007940341687) rotate(117.3 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                    />
                   </div>
                   <p
                     class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -864,48 +749,15 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               <div
                 class="identicon"
                 style="height: 32px; width: 32px; border-radius: 16px;"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 59);"
-                >
-                  <svg
-                    height="32"
-                    width="32"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#017B8E"
-                      height="32"
-                      transform="translate(0.7994460693567097 -0.8216011156969824) rotate(317.9 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#F2B602"
-                      height="32"
-                      transform="translate(-7.493396036912253 11.409935428284795) rotate(134.1 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FA8E00"
-                      height="32"
-                      transform="translate(-25.712272690754798 -11.558881043268883) rotate(364.0 16 16)"
-                      width="32"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
+              />
             </div>
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
-              G
+              <img
+                alt="Goerli logo"
+                class="mm-avatar-network__network-image"
+              />
             </div>
           </div>
           <div
@@ -962,16 +814,6 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
-          <h2
-            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--color-text-default"
-          >
-            Spending cap request
-          </h2>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
-          >
-            This site wants permission to spend your tokens.
-          </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
             data-testid="confirmation__simulation_section"
@@ -1057,9 +899,9 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-17"
+                            aria-describedby="tippy-tooltip-14"
                             class=""
-                            data-original-title="14,615,016,373,309,029,182,036,848,327,162,830,196,559,325,429.75"
+                            data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
                             style="display: inline;"
                             tabindex="0"
@@ -1069,7 +911,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                               data-testid="simulation-token-value"
                               style="padding-top: 1px; padding-bottom: 1px;"
                             >
-                              14,615,016,373,...
+                              Unlimited
                             </p>
                           </div>
                         </div>
@@ -1133,43 +975,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                     <div
                       class="identicon"
                       style="height: 16px; width: 16px; border-radius: 8px;"
-                    >
-                      <div
-                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 171, 0);"
-                      >
-                        <svg
-                          height="16"
-                          width="16"
-                          x="0"
-                          y="0"
-                        >
-                          <rect
-                            fill="#F97501"
-                            height="16"
-                            transform="translate(-0.4639690285287676 0.7692104848269922) rotate(259.7 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                          <rect
-                            fill="#016B8E"
-                            height="16"
-                            transform="translate(1.653484652652331 -5.548430987829864) rotate(421.5 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                          <rect
-                            fill="#F1F500"
-                            height="16"
-                            transform="translate(-6.169291543190866 12.666493418609923) rotate(157.6 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                    />
                   </div>
                   <p
                     class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -1254,43 +1060,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                     <div
                       class="identicon"
                       style="height: 16px; width: 16px; border-radius: 8px;"
-                    >
-                      <div
-                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 151, 242);"
-                      >
-                        <svg
-                          height="16"
-                          width="16"
-                          x="0"
-                          y="0"
-                        >
-                          <rect
-                            fill="#2362E1"
-                            height="16"
-                            transform="translate(1.7946650923962586 -2.667155311616761) rotate(458.4 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                          <rect
-                            fill="#F94301"
-                            height="16"
-                            transform="translate(-7.681729644825104 3.9961758177433153) rotate(268.8 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                          <rect
-                            fill="#FA7900"
-                            height="16"
-                            transform="translate(-4.538127039650711 14.740007940341687) rotate(117.3 8 8)"
-                            width="16"
-                            x="0"
-                            y="0"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                    />
                   </div>
                   <p
                     class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"

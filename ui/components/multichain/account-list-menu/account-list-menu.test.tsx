@@ -84,15 +84,25 @@ const render = (
       subjects: {
         'https://test.dapp': {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [
+                          'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               invoker: 'https://test.dapp',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },
@@ -216,15 +226,29 @@ describe('AccountListMenu', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
-                caveats: [
-                  {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+              'https://test.dapp': {
+                permissions: {
+                  'endowment:caip25': {
+                    caveats: [
+                      {
+                        type: 'authorizedScopes',
+                        value: {
+                          requiredScopes: {},
+                          optionalScopes: {
+                            'eip155:1': {
+                              accounts: [
+                                'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                              ],
+                            },
+                          },
+                          isMultichainOrigin: false,
+                        },
+                      },
+                    ],
+                    invoker: 'https://test.dapp',
+                    parentCapability: 'endowment:caip25',
                   },
-                ],
-                invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                },
               },
             },
           },
@@ -343,15 +367,25 @@ describe('AccountListMenu', () => {
             subjects: {
               'https://test.dapp': {
                 permissions: {
-                  eth_accounts: {
+                  'endowment:caip25': {
                     caveats: [
                       {
-                        type: 'restrictReturnedAccounts',
-                        value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                        type: 'authorizedScopes',
+                        value: {
+                          requiredScopes: {},
+                          optionalScopes: {
+                            'eip155:1': {
+                              accounts: [
+                                'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                              ],
+                            },
+                          },
+                          isMultichainOrigin: false,
+                        },
                       },
                     ],
                     invoker: 'https://test.dapp',
-                    parentCapability: 'eth_accounts',
+                    parentCapability: 'endowment:caip25',
                   },
                 },
               },
@@ -454,15 +488,25 @@ describe('AccountListMenu', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },

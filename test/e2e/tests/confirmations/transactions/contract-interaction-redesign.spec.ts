@@ -33,7 +33,7 @@ const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 describe('Confirmation Redesign Contract Interaction Component', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
-  describe('Create a deposit transaction @no-mmi', function () {
+  describe('Create a deposit transaction', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy)`, async function () {
       await withFixtures(
         {
@@ -42,7 +42,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -68,7 +67,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -97,7 +95,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             })
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -141,7 +138,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
               useTransactionSimulations: false,
@@ -180,7 +176,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
   });
 
-  describe('Custom nonce editing @no-mmi', function () {
+  describe('Custom nonce editing', function () {
     it('Sends a contract interaction type 2 transaction without custom nonce editing (EIP1559)', async function () {
       await withFixtures(
         {
@@ -189,7 +185,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -216,7 +211,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
               useNonceField: true,
@@ -239,7 +233,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
   });
 
-  describe('Advanced Gas Details @no-mmi', function () {
+  describe('Advanced Gas Details', function () {
     it('Sends a contract interaction type 2 transaction (EIP1559) and checks the advanced gas details', async function () {
       await withFixtures(
         {
@@ -248,7 +242,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -279,7 +272,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
               useNonceField: true,
@@ -310,7 +302,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })

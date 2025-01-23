@@ -31,6 +31,7 @@ export default class PermissionPageContainer extends Component {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedAccounts: PropTypes.array,
+    requestedChainIds: PropTypes.array,
     allAccountsSelected: PropTypes.bool,
     currentPermissions: PropTypes.object,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
@@ -148,7 +149,7 @@ export default class PermissionPageContainer extends Component {
 
     const permittedChainsPermission =
       _request.permissions?.[PermissionNames.permittedChains];
-    const approvedChainIds = permittedChainsPermission?.caveats.find(
+    const approvedChainIds = permittedChainsPermission?.caveats?.find(
       (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
     )?.value;
 
@@ -183,6 +184,7 @@ export default class PermissionPageContainer extends Component {
       targetSubjectMetadata,
       selectedAccounts,
       allAccountsSelected,
+      requestedChainIds,
     } = this.props;
 
     const requestedPermissions = this.getRequestedPermissions();
@@ -216,6 +218,7 @@ export default class PermissionPageContainer extends Component {
           requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
           selectedPermissions={requestedPermissions}
+          requestedChainIds={requestedChainIds}
           selectedAccounts={selectedAccounts}
           allAccountsSelected={allAccountsSelected}
         />
