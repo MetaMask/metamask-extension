@@ -134,21 +134,6 @@ export const getToChain = createDeepEqualSelector(
     toChains.find(({ chainId }) => chainId === toChainId),
 );
 
-export const getToTokens = createDeepEqualSelector(
-  (state: BridgeAppState) => state.metamask.bridgeState.destTokens,
-  (state: BridgeAppState) => state.metamask.bridgeState.destTopAssets,
-  (state: BridgeAppState) =>
-    state.metamask.bridgeState.destTokensLoadingStatus ===
-    RequestStatus.LOADING,
-  (toTokens, toTopAssets, isLoading) => {
-    return {
-      isLoading,
-      toTokens: toTokens ?? {},
-      toTopAssets: toTopAssets ?? [],
-    };
-  },
-);
-
 export const getFromToken = createSelector(
   (state: BridgeAppState) => state.bridge.fromToken,
   getFromChain,
