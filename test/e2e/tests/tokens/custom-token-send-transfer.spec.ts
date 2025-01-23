@@ -66,12 +66,12 @@ describe('Transfer custom tokens @no-mmi', function () {
           );
 
           // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFee('60000', '10');
+          await tokenTransferRedesignedConfirmPage.editGasFee(GAS_LIMIT, GAS_PRICE);
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
           await activityListPage.check_txAction(`Send ${symbol}`);
-          await activityListPage.check_txAmountInActivity(`-1 ${symbol}`);
+          await activityListPage.check_txAmountInActivity(valueWithSymbol('-1'));
         },
       );
     });
@@ -131,11 +131,11 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           await homePage.goToActivityList();
           await activityListPage.check_txAction(`Send ${symbol}`);
-          await activityListPage.check_txAmountInActivity(`-1.5 ${symbol}`);
+          await activityListPage.check_txAmountInActivity(valueWithSymbol('-1.5'));
 
           // check token amount is correct after transaction
           await homePage.goToTokensTab();
-          await assetListPage.check_tokenExistsInList(symbol, `8.5 ${symbol}`);
+          await assetListPage.check_tokenExistsInList(symbol, valueWithSymbol('8.5'));
         },
       );
     });
@@ -189,11 +189,11 @@ describe('Transfer custom tokens @no-mmi', function () {
 
           await homePage.goToActivityList();
           await activityListPage.check_txAction(`Send ${symbol}`);
-          await activityListPage.check_txAmountInActivity(`-1.5 ${symbol}`);
+          await activityListPage.check_txAmountInActivity(valueWithSymbol('-1.5'));
 
           // check token amount is correct after transaction
           await homePage.goToTokensTab();
-          await assetListPage.check_tokenExistsInList(symbol, `8.5 ${symbol}`);
+          await assetListPage.check_tokenExistsInList(symbol, valueWithSymbol('8.5'));
         },
       );
     });
