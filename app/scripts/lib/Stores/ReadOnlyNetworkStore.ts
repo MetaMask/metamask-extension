@@ -73,12 +73,11 @@ export default class ReadOnlyNetworkStore extends BaseStore {
   /**
    * Sets the key in local state
    *
-   * @param obj - The key to set
+   * @param obj - The data to set
    * @param obj.data - The MetaMask State tree
    * @param obj.meta - The metadata object
    * @param obj.meta.version - The version of the state tree determined by the
    * migration
-   * @returns a promise resolving to undefined.
    */
   async set(obj: MetaMaskStorageStructure): Promise<void> {
     if (!obj) {
