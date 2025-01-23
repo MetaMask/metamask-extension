@@ -490,12 +490,10 @@ export const MAINNET_CHAINS = [
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
   capitalize(k) as Capitalize<typeof k>;
 
-export const TEST_NETWORK_TICKER_MAP: {
-  [K in Exclude<
-    NetworkType,
-    'localhost' | 'mainnet' | 'rpc' | 'linea-mainnet'
-  >]: string;
-} = {
+export const TEST_NETWORK_TICKER_MAP: Record<
+  Exclude<NetworkType, 'localhost' | 'mainnet' | 'rpc' | 'linea-mainnet'>,
+  string
+> = {
   [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
     CURRENCY_SYMBOLS.ETH
   }`,

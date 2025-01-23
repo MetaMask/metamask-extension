@@ -12,6 +12,7 @@ class DownloadStream extends Stream.PassThrough {
     });
   }
 }
+
 /**
  * Starts a download from the given URL.
  *
