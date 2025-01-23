@@ -168,6 +168,7 @@ export const BridgeInputGroup = ({
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (
               <Button
+                data-testid='bridge-destination-button'
                 onClick={onClickHandler}
                 size={ButtonSize.Lg}
                 paddingLeft={6}
@@ -183,6 +184,7 @@ export const BridgeInputGroup = ({
                 networkImageSrc={networkImageSrc}
                 asset={(token as never) ?? undefined}
                 networkProps={networkProps}
+                data-testid='bridge-source-button'
               />
             )
           }

@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
-import { generateGanacheOptions } from '../../helpers';
 import {
   BRIDGE_CLIENT_ID,
   BRIDGE_DEV_API_BASE_URL,
@@ -18,6 +17,7 @@ import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
 } from './constants';
+import { Tenderly } from '../../tenderly-network';
 
 const IS_FIREFOX = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -141,7 +141,7 @@ export const getBridgeFixtures = (
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
   })
-    .withNetworkControllerOnMainnet()
+    .withNetworkControllerOnTenderly(Tenderly.Mainnet.url)
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState();
 
@@ -152,15 +152,12 @@ export const getBridgeFixtures = (
   return {
     driverOptions: {
       // openDevToolsForTabs: true,
+      disableGanache: true,
     },
     fixtures: fixtureBuilder.build(),
     testSpecificMock: mockServer(featureFlags),
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    ganacheOptions: generateGanacheOptions({
-      hardfork: 'london',
-      chain: { chainId: CHAIN_IDS.MAINNET },
-    }),
     title,
   };
 };
