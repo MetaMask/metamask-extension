@@ -51,10 +51,7 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../shared/constants/permissions';
+import { CaveatTypes } from '../../shared/constants/permissions';
 import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController, {
@@ -963,8 +960,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedAccounts: [],
-            approvedChainIds: [],
+            response: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1005,8 +1001,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedAccounts: [],
-            approvedChainIds: [],
+            response: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1039,15 +1034,22 @@ describe('MetaMaskController', () => {
                 origin: 'test.com',
               },
               permissions: {
-                [RestrictedMethods.eth_accounts]: {
+                [Caip25EndowmentPermissionName]: {
                   caveats: [
                     {
-                      type: CaveatTypes.restrictReturnedAccounts,
-                      value: ['foo'],
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: ['wallet:eip155:foo'],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                 },
-                [PermissionNames.permittedChains]: {},
               },
             },
             type: 'wallet_requestPermissions',
@@ -1062,8 +1064,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedAccounts: [],
-            approvedChainIds: [],
+            response: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1096,12 +1097,22 @@ describe('MetaMaskController', () => {
                 origin: 'test.com',
               },
               permissions: {
-                [RestrictedMethods.eth_accounts]: {},
-                [PermissionNames.permittedChains]: {
+                [Caip25EndowmentPermissionName]: {
                   caveats: [
                     {
-                      type: CaveatTypes.restrictNetworkSwitching,
-                      value: ['0x64'],
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: [],
+                          },
+                          'eip155:100': {
+                            accounts: [],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                 },
@@ -1119,8 +1130,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedAccounts: [],
-            approvedChainIds: [],
+            response: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1161,19 +1171,22 @@ describe('MetaMaskController', () => {
                 origin: 'test.com',
               },
               permissions: {
-                [PermissionNames.eth_accounts]: {
+                [Caip25EndowmentPermissionName]: {
                   caveats: [
                     {
-                      type: CaveatTypes.restrictReturnedAccounts,
-                      value: ['foo'],
-                    },
-                  ],
-                },
-                [PermissionNames.permittedChains]: {
-                  caveats: [
-                    {
-                      type: CaveatTypes.restrictNetworkSwitching,
-                      value: ['0x64'],
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: ['wallet:eip155:foo'],
+                          },
+                          'eip155:100': {
+                            accounts: ['eip155:100:foo'],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                 },
@@ -1191,8 +1204,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedAccounts: [],
-            approvedChainIds: [],
+            response: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1225,11 +1237,19 @@ describe('MetaMaskController', () => {
                 origin: 'npm:snap',
               },
               permissions: {
-                [RestrictedMethods.eth_accounts]: {
+                [Caip25EndowmentPermissionName]: {
                   caveats: [
                     {
-                      type: CaveatTypes.restrictReturnedAccounts,
-                      value: ['foo'],
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: ['wallet:eip155:foo'],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                 },
@@ -1247,8 +1267,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedAccounts: [],
-            approvedChainIds: [],
+            response: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1281,7 +1300,22 @@ describe('MetaMaskController', () => {
                 origin: 'npm:snap',
               },
               permissions: {
-                [PermissionNames.eth_accounts]: {},
+                [Caip25EndowmentPermissionName]: {
+                  caveats: [
+                    {
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: [],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
+                    },
+                  ],
+                },
               },
             },
             type: 'wallet_requestPermissions',
@@ -1296,8 +1330,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedAccounts: [],
-            approvedChainIds: [],
+            response: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1338,11 +1371,19 @@ describe('MetaMaskController', () => {
                 origin: 'npm:snap',
               },
               permissions: {
-                [PermissionNames.eth_accounts]: {
+                [Caip25EndowmentPermissionName]: {
                   caveats: [
                     {
-                      type: CaveatTypes.restrictReturnedAccounts,
-                      value: ['foo'],
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: ['wallet:eip155:foo'],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
                     },
                   ],
                 },
@@ -1375,6 +1416,32 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
+            response: {
+              permissions: {
+                [Caip25EndowmentPermissionName]: {
+                  caveats: [
+                    {
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: ['wallet:eip155:0xdeadbeef'],
+                          },
+                          'eip155:1': {
+                            accounts: ['eip155:1:0xdeadbeef'],
+                          },
+                          'eip155:5': {
+                            accounts: ['eip155:5:0xdeadbeef'],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
             approvedChainIds: ['0x1', '0x5'],
             approvedAccounts: ['0xdeadbeef'],
           });
@@ -1417,6 +1484,26 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
+            response: {
+              permissions: {
+                [Caip25EndowmentPermissionName]: {
+                  caveats: [
+                    {
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: ['wallet:eip155:0xdeadbeef'],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
             approvedChainIds: ['0x1', '0x5'],
             approvedAccounts: ['0xdeadbeef'],
           });
