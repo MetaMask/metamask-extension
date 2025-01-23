@@ -9,13 +9,11 @@ import {
   defaultGanacheOptions,
   openDapp,
   regularDelayMs,
-  tinyDelayMs,
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { Mockttp } from '../../mock-e2e';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
 
