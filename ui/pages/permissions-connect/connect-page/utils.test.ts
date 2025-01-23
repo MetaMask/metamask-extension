@@ -3,8 +3,12 @@ import {
   CaveatTypes,
   EndowmentTypes,
 } from '../../../../shared/constants/permissions';
-import { getRequestedAccountsViaPermissionsRequest, getRequestedChainsViaPermissionsRequest, parseCaip25PermissionsResponse } from './utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  getRequestedAccountsViaPermissionsRequest,
+  getRequestedChainsViaPermissionsRequest,
+  parseCaip25PermissionsResponse,
+} from './utils';
 
 describe('getRequestedAccountsViaPermissionsRequest', () => {
   it('should return an empty array when `getCaip25CaveatValue` returns `undefined`', () => {
