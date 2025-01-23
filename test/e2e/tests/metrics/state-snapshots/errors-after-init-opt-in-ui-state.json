@@ -339,8 +339,6 @@
           "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
         }
       },
-      "destTokens": {},
-      "destTopAssets": {},
       "quoteRequest": {
         "srcTokenAddress": "0x0000000000000000000000000000000000000000",
         "slippage": 0.5

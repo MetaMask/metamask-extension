@@ -736,9 +736,6 @@
     "message": "M",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Aktivitas Bitcoin tidak didukung"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },

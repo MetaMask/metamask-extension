@@ -57,7 +57,7 @@ const expectedEventPropertiesBase = {
   ui_customizations: ['redesigned_confirmation'],
 };
 
-describe('Signature Approved Event @no-mmi', function () {
+describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
     await withFixtures(
       {
