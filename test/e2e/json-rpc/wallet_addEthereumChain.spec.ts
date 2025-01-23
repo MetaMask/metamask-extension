@@ -310,7 +310,7 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('the dapp is already permitted to use the chain being added', () => {
+  describe('the dapp is already permitted to use the chain being added, and the dapp is on a different chain from the chain being added', () => {
     it('automatically switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
@@ -430,6 +430,67 @@ describe('Add Ethereum Chain', function () {
 
           // should end on 1338
           await driver.findElement({ css: '#chainId', text: '0x53a' });
+        },
+      );
+    });
+  });
+  describe('the dapp is already permitted to use the chain being added, and the dapp is on the same chain as the chain being added, but the rpcEndpoint being proposed does not match any existing rpcEndpoints for the chain', () => {
+    it('prompts to add the rpc endpoint to the chain networkConfiguration and set it as the default', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          await unlockWallet(driver);
+          await openDapp(driver);
+
+          const beforePermittedChains = await getPermittedChains(driver);
+          assert.deepEqual(beforePermittedChains, ['0x539']);
+
+          await driver.findElement({ css: '#chainId', text: '0x539' });
+
+          const addEthereumChainRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0x539',
+                chainName: 'Alternative localhost chain 0x539',
+                nativeCurrency: {
+                  name: '',
+                  symbol: 'ETH',
+                  decimals: 18,
+                },
+                // this does not match what already exists in the NetworkController as an endpoint for this chain
+                rpcUrls: ['http://127.0.0.1:8545'],
+                blockExplorerUrls: [],
+              },
+            ],
+          });
+
+          await driver.executeScript(
+            `window.ethereum.request(${addEthereumChainRequest})`,
+          );
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.findElement({ text: 'Update Localhost 8545' });
+          await driver.clickElement({ text: 'Approve', tag: 'button' });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+
+          // go to network selector
+          await driver.findElement({ text: 'Localhost 8545' });
+          await driver.clickElement({ text: 'Localhost 8545' });
+
+          await driver.findElement({
+            text: 'Alternative localhost chain 0x539',
+          });
         },
       );
     });
