@@ -2280,7 +2280,7 @@
         "semver": true
       }
     },
-    "@metamask/multichain>@metamask/utils": {
+    "@metamask/message-manager>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2295,7 +2295,7 @@
         "semver": true
       }
     },
-    "@metamask/message-manager>@metamask/utils": {
+    "@metamask/multichain>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
