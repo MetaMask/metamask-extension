@@ -5,12 +5,15 @@ import { updateTransactionFocus } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
 
-const shouldSetFocused = (type: TransactionType) => {
+const shouldSetFocusedForType = (type: TransactionType) => {
   return (
-    type === TransactionType.simpleSend ||
     type === TransactionType.contractInteraction ||
+    type === TransactionType.deployContract ||
+    type === TransactionType.simpleSend ||
+    type === TransactionType.smart ||
     type === TransactionType.tokenMethodTransfer ||
-    type === TransactionType.deployContract
+    type === TransactionType.tokenMethodTransferFrom ||
+    type === TransactionType.tokenMethodSafeTransferFrom
   );
 };
 
@@ -32,38 +35,32 @@ export const useTransactionFocusEffect = () => {
   );
 
   useEffect(() => {
-    const mustBeMarked = shouldSetFocused(type as TransactionType);
-    const isAlreadyFocused = focusedConfirmation === id;
+    const shouldBeMarked = shouldSetFocusedForType(type as TransactionType);
 
-    if (!mustBeMarked) {
+    if (!shouldBeMarked) {
+      // If the transaction type is not one of the types that should be focused,
+      // we need to unfocus the previous focused confirmation and reset the focused confirmation
       if (focusedConfirmation) {
-        // Previous focused transaction is no longer focused
         setTransactionFocus(focusedConfirmation, false);
-        // No focused transaction
         setFocusedConfirmation(null);
       }
       return;
     }
 
-    if (isWindowFocused) {
-      if (!isAlreadyFocused) {
-        if (focusedConfirmation) {
-          // Previous focused transaction is no longer focused
-          setTransactionFocus(focusedConfirmation, false);
-        }
-        // New transaction is focused
-        setFocusedConfirmation(id);
-        setTransactionFocus(id, true);
-      }
-    }
-
-    if (!isWindowFocused) {
+    if (isWindowFocused && focusedConfirmation !== id) {
+      // If the window is focused and the focused confirmation is not the current one,
+      // we need to unfocus the previous focused confirmation and focus the current one
       if (focusedConfirmation) {
-        // Previous focused transaction is no longer focused
         setTransactionFocus(focusedConfirmation, false);
       }
-      // No focused transaction
+      // Set the focused confirmation to the current one
+      setFocusedConfirmation(id);
+      setTransactionFocus(id, true);
+    } else if (!isWindowFocused && focusedConfirmation) {
+      // If the window is not focused and there is a focused confirmation,
+      // we need to unfocus the focused confirmation
+      setTransactionFocus(focusedConfirmation, false);
       setFocusedConfirmation(null);
     }
-  }, [isWindowFocused, id]);
+  }, [isWindowFocused, id, focusedConfirmation, setTransactionFocus, type]);
 };
