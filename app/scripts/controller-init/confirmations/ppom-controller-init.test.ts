@@ -3,6 +3,7 @@ import {
   PPOMControllerMessenger,
 } from '@metamask/ppom-validator';
 import { ControllerMessenger } from '@metamask/base-controller';
+import { PreferencesController } from '../../controllers/preferences-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -16,11 +17,25 @@ type PPOMControllerOptions = ConstructorParameters<typeof PPOMController>[0];
 
 jest.mock('@metamask/ppom-validator');
 
-function buildControllerMock(options?: Record<string, unknown>) {
-  return {
+/**
+ * Build a mock PreferencesController.
+ *
+ * @param partialMock - A partial mock object for the PreferencesController, merged
+ * with the default mock.
+ * @returns A mock PreferencesController.
+ */
+function buildControllerMock(
+  partialMock?: Partial<PreferencesController>,
+): PreferencesController {
+  const defaultPreferencesControllerMock = {
     state: { securityAlertsEnabled: true },
-    ...options,
-  } as unknown as PPOMController;
+  };
+
+  // @ts-expect-error Incomplete mock, just includes properties used by code-under-test.
+  return {
+    ...defaultPreferencesControllerMock,
+    ...partialMock,
+  };
 }
 
 function buildInitRequestMock(): jest.Mocked<
@@ -46,17 +61,17 @@ describe('PPOM Controller Init', () => {
    * Extract a constructor option passed to the controller.
    *
    * @param option - The option to extract.
-   * @param controllerOptions - Any other controller options to initialize the controller with.
+   * @param dependencyProperties - Any properties required on the controller dependencies.
    * @returns The extracted option.
    */
   function testConstructorOption<T extends keyof PPOMControllerOptions>(
     option: T,
-    controllerOptions?: Record<string, unknown>,
+    dependencyProperties?: Record<string, unknown>,
   ): PPOMControllerOptions[T] {
     const requestMock = buildInitRequestMock();
 
     requestMock.getController.mockReturnValue(
-      buildControllerMock(controllerOptions),
+      buildControllerMock(dependencyProperties),
     );
 
     PPOMControllerInit(requestMock);

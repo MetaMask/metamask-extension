@@ -1,7 +1,6 @@
 import {
   BaseRestrictedControllerMessenger,
   ControllerInitRequest,
-  ControllerPersistedState,
 } from '../types';
 
 export const CHAIN_ID_MOCK = '0x123';
@@ -22,6 +21,6 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     getPermittedAccounts: jest.fn(),
     getProvider: jest.fn(),
     getTransactionMetricsRequest: jest.fn(),
-    persistedState: {} as ControllerPersistedState,
+    persistedState: {},
   };
 }

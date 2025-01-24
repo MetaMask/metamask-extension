@@ -4,6 +4,7 @@ import {
   TransactionControllerOptions,
 } from '@metamask/transaction-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
+import { NetworkController } from '@metamask/network-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import {
   getTransactionControllerInitMessenger,
@@ -15,11 +16,25 @@ import { TransactionControllerInit } from './transaction-controller-init';
 
 jest.mock('@metamask/transaction-controller');
 
-function buildControllerMock(options?: Record<string, unknown>) {
-  return {
+/**
+ * Build a mock NetworkController.
+ *
+ * @param partialMock - A partial mock object for the NetworkController, merged
+ * with the default mock.
+ * @returns A mock NetworkController.
+ */
+function buildControllerMock(
+  partialMock?: Partial<NetworkController>,
+): NetworkController {
+  const defaultNetworkControllerMock = {
     getNetworkClientRegistry: jest.fn().mockReturnValue({}),
-    ...options,
-  } as unknown as TransactionController;
+  };
+
+  // @ts-expect-error Incomplete mock, just includes properties used by code-under-test.
+  return {
+    ...defaultNetworkControllerMock,
+    ...partialMock,
+  };
 }
 
 function buildInitRequestMock(): jest.Mocked<
@@ -52,17 +67,17 @@ describe('Transaction Controller Init', () => {
    * Extract a constructor option passed to the controller.
    *
    * @param option - The option to extract.
-   * @param controllerOptions - Any other controller options to initialize the controller with.
+   * @param dependencyProperties - Any properties required on the controller dependencies.
    * @returns The extracted option.
    */
   function testConstructorOption<T extends keyof TransactionControllerOptions>(
     option: T,
-    controllerOptions: Record<string, unknown> = {},
+    dependencyProperties: Record<string, unknown> = {},
   ): TransactionControllerOptions[T] {
     const requestMock = buildInitRequestMock();
 
     requestMock.getController.mockReturnValue(
-      buildControllerMock(controllerOptions),
+      buildControllerMock(dependencyProperties),
     );
 
     TransactionControllerInit(requestMock);
