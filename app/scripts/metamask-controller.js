@@ -3930,6 +3930,8 @@ export default class MetamaskController extends EventEmitter {
       abortTransactionSigning:
         txController.abortTransactionSigning.bind(txController),
       getLayer1GasFee: txController.getLayer1GasFee.bind(txController),
+      updateTransactionFocus:
+        txController.updateTransactionFocus.bind(txController),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
