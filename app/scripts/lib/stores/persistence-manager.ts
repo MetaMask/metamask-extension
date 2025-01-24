@@ -58,9 +58,7 @@ export class PersistanceManager {
   /**
    * metadata is a property that holds the current metadata object. This object
    * includes a single key which is 'version' and contains the current version
-   * number of the state tree. This is only incremented via the migrator and in
-   * a well functioning (typical) install should match the latest migration's
-   * version number.
+   * number of the state tree.
    */
   metadata?: { version: number };
 
