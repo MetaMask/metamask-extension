@@ -17,6 +17,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import useMultiPolling from '../../../hooks/useMultiPolling';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 import NonEvmOverview from './non-evm-overview';
 
 // We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
@@ -60,7 +61,7 @@ const mockNonEvmAccount = {
       type: 'Snap Keyring',
     },
     snap: {
-      id: 'btc-snap-id',
+      id: BITCOIN_WALLET_SNAP_ID,
       name: 'btc-snap-name',
     },
   },
@@ -91,7 +92,7 @@ const mockMetamaskStore = {
     },
     selectedAccount: mockNonEvmAccount.id,
   },
-  // (Multichain) BalancesController
+  // MultichainBalancesController
   balances: {
     [mockNonEvmAccount.id]: {
       [MultichainNativeAssets.BITCOIN]: {
@@ -315,6 +316,8 @@ describe('NonEvmOverview', () => {
         location: 'Home',
         snap_id: mockNonEvmAccount.metadata.snap.id,
         text: 'Buy',
+        // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
+        token_symbol: expect.any(Object),
       },
     });
   });

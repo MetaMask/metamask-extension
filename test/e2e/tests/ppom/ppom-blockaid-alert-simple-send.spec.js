@@ -6,7 +6,6 @@ const {
   sendScreenToConfirmScreen,
   logInWithBalanceValidation,
   WINDOW_TITLES,
-  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const {
   mockMultiNetworkBalancePolling,
@@ -118,7 +117,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  *
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
-describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
+describe('Simple Send Security Alert - Blockaid', function () {
   it('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
@@ -209,8 +208,6 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       async ({ driver }) => {
         await logInWithBalanceValidation(driver);
 
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
         await sendScreenToConfirmScreen(
           driver,
           '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
@@ -219,7 +216,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
         const expectedTitle = 'Be careful';
 
         const bannerAlert = await driver.findElement({
-          css: bannerAlertSelector,
+          css: '[data-testid="confirm-banner-alert"]',
           text: expectedTitle,
         });
 

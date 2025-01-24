@@ -20,7 +20,7 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC721 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  describe('Submit an Approve transaction @no-mmi', function () {
+  describe('Submit an Approve transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
@@ -29,7 +29,6 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -61,7 +60,6 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -145,7 +143,7 @@ async function assertApproveDetails(driver: Driver) {
 
   await driver.waitForSelector({
     css: 'h2',
-    text: 'Allowance request',
+    text: 'Withdrawal request',
   });
 
   await driver.waitForSelector({

@@ -29,6 +29,8 @@ import {
 const { sentry } = global;
 
 const METHOD_SEND_TRANSACTION = 'eth_sendTransaction';
+export const METHOD_SIGN_TYPED_DATA_V3 = 'eth_signTypedData_v3';
+export const METHOD_SIGN_TYPED_DATA_V4 = 'eth_signTypedData_v4';
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
   result_type: BlockaidResultType.Errored,
@@ -132,16 +134,20 @@ export async function updateSecurityAlertResponse({
 export function handlePPOMError(
   error: unknown,
   logMessage: string,
+  source: SecurityAlertSource = SecurityAlertSource.API,
 ): SecurityAlertResponse {
   const errorData = getErrorData(error);
   const description = getErrorMessage(error);
 
-  sentry?.captureException(error);
+  if (source === SecurityAlertSource.Local) {
+    sentry?.captureException(error);
+  }
   console.error(logMessage, errorData);
 
   return {
     ...SECURITY_ALERT_RESPONSE_ERROR,
     description,
+    source,
   };
 }
 
@@ -169,7 +175,7 @@ function normalizePPOMRequest(
       request,
     )
   ) {
-    return request;
+    return sanitizeRequest(request);
   }
 
   const transactionParams = request.params[0];
@@ -179,6 +185,22 @@ function normalizePPOMRequest(
     ...request,
     params: [normalizedParams],
   };
+}
+
+function sanitizeRequest(request: JsonRpcRequest): JsonRpcRequest {
+  // This is a temporary fix to prevent a PPOM bypass
+  if (
+    request.method === METHOD_SIGN_TYPED_DATA_V4 ||
+    request.method === METHOD_SIGN_TYPED_DATA_V3
+  ) {
+    if (Array.isArray(request.params)) {
+      return {
+        ...request,
+        params: request.params.slice(0, 2),
+      };
+    }
+  }
+  return request;
 }
 
 function getErrorMessage(error: unknown) {
@@ -236,15 +258,23 @@ async function validateWithController(
   request: SecurityAlertsAPIRequest | JsonRpcRequest,
   chainId: string,
 ): Promise<SecurityAlertResponse> {
-  const response = (await ppomController.usePPOM(
-    (ppom: PPOM) => ppom.validateJsonRpc(request),
-    chainId,
-  )) as SecurityAlertResponse;
+  try {
+    const response = (await ppomController.usePPOM(
+      (ppom: PPOM) => ppom.validateJsonRpc(request),
+      chainId,
+    )) as SecurityAlertResponse;
 
-  return {
-    ...response,
-    source: SecurityAlertSource.Local,
-  };
+    return {
+      ...response,
+      source: SecurityAlertSource.Local,
+    };
+  } catch (error: unknown) {
+    return handlePPOMError(
+      error,
+      `Error validating request with PPOM controller`,
+      SecurityAlertSource.Local,
+    );
+  }
 }
 
 async function validateWithAPI(

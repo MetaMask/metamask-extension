@@ -1,6 +1,10 @@
 export const DummyQuotesNoApproval = {
   OP_0_005_ETH_TO_ARB: [
     {
+      sentAmount: {
+        amount: '0.005',
+        valueInCurrency: null,
+      },
       quote: {
         requestId: 'be448070-7849-4d14-bb35-8dcdaf7a4d69',
         srcChainId: 10,
@@ -392,6 +396,10 @@ export const DummyQuotesNoApproval = {
 export const DummyQuotesWithApproval = {
   ETH_11_USDC_TO_ARB: [
     {
+      sentAmount: {
+        amount: '1.0903750',
+        valueInCurrency: null,
+      },
       quote: {
         requestId: '0cd5caf6-9844-465b-89ad-9c89b639f432',
         srcChainId: 1,
@@ -812,6 +820,10 @@ export const DummyQuotesWithApproval = {
   ],
   ARB_11_USDC_TO_ETH: [
     {
+      sentAmount: {
+        amount: '1.0903750',
+        valueInCurrency: null,
+      },
       quote: {
         requestId: 'edbef62a-d3e6-4b33-aad5-9cdb81f85f53',
         srcChainId: 42161,
@@ -911,6 +923,10 @@ export const DummyQuotesWithApproval = {
   ],
   ARB_11_USDC_TO_OP: [
     {
+      sentAmount: {
+        amount: '1.0903750',
+        valueInCurrency: null,
+      },
       quote: {
         requestId: 'dc63e7e6-dc9b-4aa8-80bb-714192ecd801',
         srcChainId: 42161,
@@ -2461,6 +2477,10 @@ export const DummyQuotesWithApproval = {
   ],
   OP_11_USDC_TO_ARB: [
     {
+      sentAmount: {
+        amount: '1.1000000',
+        valueInCurrency: null,
+      },
       quote: {
         requestId: '01fa78fd-ed49-42b3-ab0e-94c7108feea9',
         srcChainId: 10,

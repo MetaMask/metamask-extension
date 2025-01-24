@@ -25,6 +25,7 @@ export const getUnapprovedContractInteractionTransaction = (
       maxFeePerGas: '0x5b06b0c0d',
       maxPriorityFeePerGas: '0x59682f00',
     },
+    gasLimitNoBuffer: '0x16a92',
     userEditedGasLimit: false,
     verifiedOnBlockchain: false,
     type: TransactionType.contractInteraction,

@@ -4,6 +4,9 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import React from 'react';
+import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
   Box,
   Icon,
@@ -25,8 +28,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
@@ -189,31 +190,58 @@ const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
   transactionId: string;
-}> = ({ inHeader, isTransactionsRedesign, transactionId, children }) => (
-  <Box
-    data-testid="simulation-details-layout"
-    className="simulation-details-layout"
-    display={Display.Flex}
-    flexDirection={FlexDirection.Column}
-    borderRadius={BorderRadius.LG}
-    borderColor={
-      isTransactionsRedesign
-        ? BorderColor.transparent
-        : BorderColor.borderDefault
-    }
-    padding={3}
-    margin={isTransactionsRedesign ? null : 4}
-    gap={3}
-  >
-    <HeaderLayout
-      isTransactionsRedesign={isTransactionsRedesign}
-      transactionId={transactionId}
+}> = ({ inHeader, isTransactionsRedesign, transactionId, children }) =>
+  isTransactionsRedesign ? (
+    <ConfirmInfoSection noPadding>
+      <Box
+        data-testid="simulation-details-layout"
+        className="simulation-details-layout"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        borderRadius={BorderRadius.LG}
+        borderColor={
+          isTransactionsRedesign
+            ? BorderColor.transparent
+            : BorderColor.borderDefault
+        }
+        padding={3}
+        margin={isTransactionsRedesign ? null : 4}
+        gap={3}
+      >
+        <HeaderLayout
+          isTransactionsRedesign={isTransactionsRedesign}
+          transactionId={transactionId}
+        >
+          {inHeader}
+        </HeaderLayout>
+        {children}
+      </Box>
+    </ConfirmInfoSection>
+  ) : (
+    <Box
+      data-testid="simulation-details-layout"
+      className="simulation-details-layout"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      borderRadius={BorderRadius.LG}
+      borderColor={
+        isTransactionsRedesign
+          ? BorderColor.transparent
+          : BorderColor.borderDefault
+      }
+      padding={3}
+      margin={isTransactionsRedesign ? null : 4}
+      gap={3}
     >
-      {inHeader}
-    </HeaderLayout>
-    {children}
-  </Box>
-);
+      <HeaderLayout
+        isTransactionsRedesign={isTransactionsRedesign}
+        transactionId={transactionId}
+      >
+        {inHeader}
+      </HeaderLayout>
+      {children}
+    </Box>
+  );
 
 /**
  * Preview of a transaction's effects using simulation data.

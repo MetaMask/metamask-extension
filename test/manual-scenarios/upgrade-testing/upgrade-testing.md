@@ -8,7 +8,7 @@ To ensure MetaMask extension's upgrade process is seamless and retains user data
 
 ### Pre-Upgrade Actions on Master Branch
 
-- **Given** the user checks out the master branch, runs `yarn` and `yarn start` to build locally, and has loaded the MetaMask extension. For instructions on how to load extension on Chrome and Firefox, check the guidelines [here for Chrome](https://github.com/MetaMask/metamask-extension/blob/develop/docs/add-to-chrome.md) and [here for Firefox](https://github.com/MetaMask/metamask-extension/blob/develop/docs/add-to-firefox.md).
+- **Given** the user checks out the master branch, runs `yarn` and `yarn start` to build locally, and has loaded the MetaMask extension. For instructions on how to load extension on Chrome and Firefox, check the guidelines [here for Chrome](https://github.com/MetaMask/metamask-extension/blob/main/docs/add-to-chrome.md) and [here for Firefox](https://github.com/MetaMask/metamask-extension/blob/main/docs/add-to-firefox.md).
 - **And** the user has successfully onboarded.
 - **And** the user creates two accounts.
 - **And** the user sends a transaction between these accounts.

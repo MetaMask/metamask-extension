@@ -253,7 +253,25 @@ describe('EthOverview', () => {
     });
 
     it('should open the Bridge URI when clicking on Bridge button on supported network', async () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const mockedStore = configureMockStore([thunk])({
+        ...store,
+        metamask: {
+          ...mockStore.metamask,
+          ...mockNetworkState({ chainId: '0xa86a' }),
+          useExternalServices: true,
+          bridgeState: {
+            bridgeFeatureFlags: {
+              extensionConfig: {
+                support: false,
+              },
+            },
+          },
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
 
       const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
 
@@ -261,15 +279,15 @@ describe('EthOverview', () => {
       expect(bridgeButton).not.toBeDisabled();
 
       fireEvent.click(bridgeButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
 
-      await waitFor(() =>
+      await waitFor(() => {
+        expect(openTabSpy).toHaveBeenCalledTimes(1);
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expect.stringContaining(
             '/bridge?metamaskEntry=ext_bridge_button',
           ),
-        }),
-      );
+        });
+      });
     });
 
     it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {

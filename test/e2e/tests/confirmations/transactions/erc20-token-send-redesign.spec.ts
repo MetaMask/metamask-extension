@@ -9,7 +9,7 @@ import {
 import { Mockttp } from '../../../mock-e2e';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
-import HomePage from '../../../page-objects/pages/homepage';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
@@ -19,7 +19,7 @@ import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
-describe('Confirmation Redesign ERC20 Token Send @no-mmi', function () {
+describe('Confirmation Redesign ERC20 Token Send', function () {
   describe('Wallet initiated', async function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
@@ -127,6 +127,7 @@ async function createWalletInitiatedTransactionAndAssertDetails(
 
   await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
+  await driver.delay(1000);
   await testDapp.clickERC20WatchAssetButton();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -172,6 +173,7 @@ async function createDAppInitiatedTransactionAndAssertDetails(
 
   await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
+  await driver.delay(1000);
   await testDapp.clickERC20WatchAssetButton();
 
   await driver.delay(veryLargeDelayMs);

@@ -10,7 +10,7 @@ import {
 } from '../../helpers/mock-server';
 import EditNetworkModal from '../../page-objects/pages/dialog/edit-network';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
@@ -24,7 +24,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 
 describe('MultiRpc:', function (this: Suite) {
-  it('should migrate to multi rpc @no-mmi', async function () {
+  it('should migrate to multi rpc', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -292,7 +292,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-  it('should select rpc from settings @no-mmi', async function () {
+  it('should select rpc from settings', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer

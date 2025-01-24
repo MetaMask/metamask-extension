@@ -22,7 +22,27 @@ const decodingData: DecodingData = {
 };
 
 describe('useDecodedSignatureMetrics', () => {
-  process.env.ENABLE_SIGNATURE_DECODING = 'true';
+  it('should not call updateSignatureEventFragment if supportedByDecodingAPI is false', async () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
+    });
+
+    const mockUpdateSignatureEventFragment = jest.fn();
+    jest
+      .spyOn(SignatureEventFragment, 'useSignatureEventFragment')
+      .mockImplementation(() => ({
+        updateSignatureEventFragment: mockUpdateSignatureEventFragment,
+      }));
+
+    renderHookWithConfirmContextProvider(
+      () => useDecodedSignatureMetrics(false),
+      state,
+    );
+
+    expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(0);
+  });
+
   it('should not call updateSignatureEventFragment if decodingLoading is true', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
@@ -37,7 +57,7 @@ describe('useDecodedSignatureMetrics', () => {
       }));
 
     renderHookWithConfirmContextProvider(
-      () => useDecodedSignatureMetrics(),
+      () => useDecodedSignatureMetrics(true),
       state,
     );
 
@@ -58,7 +78,7 @@ describe('useDecodedSignatureMetrics', () => {
       }));
 
     renderHookWithConfirmContextProvider(
-      () => useDecodedSignatureMetrics(),
+      () => useDecodedSignatureMetrics(true),
       state,
     );
 
@@ -67,6 +87,8 @@ describe('useDecodedSignatureMetrics', () => {
       properties: {
         decoding_change_types: [],
         decoding_response: 'NO_CHANGE',
+        decoding_description: null,
+        decoding_latency: 0,
       },
     });
   });
@@ -86,7 +108,7 @@ describe('useDecodedSignatureMetrics', () => {
       }));
 
     renderHookWithConfirmContextProvider(
-      () => useDecodedSignatureMetrics(),
+      () => useDecodedSignatureMetrics(true),
       state,
     );
 
@@ -95,6 +117,8 @@ describe('useDecodedSignatureMetrics', () => {
       properties: {
         decoding_change_types: ['APPROVE'],
         decoding_response: 'CHANGE',
+        decoding_description: null,
+        decoding_latency: 0,
       },
     });
   });
@@ -120,7 +144,7 @@ describe('useDecodedSignatureMetrics', () => {
       }));
 
     renderHookWithConfirmContextProvider(
-      () => useDecodedSignatureMetrics(),
+      () => useDecodedSignatureMetrics(true),
       state,
     );
 
@@ -129,6 +153,8 @@ describe('useDecodedSignatureMetrics', () => {
       properties: {
         decoding_change_types: [],
         decoding_response: 'SOME_ERROR',
+        decoding_description: 'some message',
+        decoding_latency: 0,
       },
     });
   });

@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-// @ts-expect-error lint fails otherwise
 import 'ses';
 import '../../../../../app/scripts/lockdown-run';
 import '../../../../../app/scripts/lockdown-more';

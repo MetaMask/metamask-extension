@@ -101,7 +101,7 @@ describe('AdvancedGasFeeGasLimit', () => {
       ),
     ).toBeInTheDocument();
     fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 8000000 },
+      target: { value: 80000000 },
     });
     expect(
       screen.queryByText(
@@ -154,7 +154,7 @@ describe('AdvancedGasFeeGasLimit', () => {
     );
     expect(
       screen.queryByText(
-        `Gas limit must be greater than 29999 and less than 7920050`,
+        `Gas limit must be greater than 29999 and less than 30000000`,
       ),
     ).toBeInTheDocument();
   });

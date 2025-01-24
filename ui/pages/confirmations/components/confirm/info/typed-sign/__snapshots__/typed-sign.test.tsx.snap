@@ -154,10 +154,11 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 65);"
@@ -274,10 +275,11 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
@@ -325,81 +327,6 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Signing in with
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 59);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#017B8E"
-                    height="16"
-                    transform="translate(0.39972303467835485 -0.4108005578484912) rotate(317.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F2B602"
-                    height="16"
-                    transform="translate(-3.7466980184561267 5.704967714142398) rotate(134.1 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FA8E00"
-                    height="16"
-                    transform="translate(-12.856136345377399 -5.7794405216344416) rotate(364.0 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x935E7...05477
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -412,7 +339,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -423,7 +350,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         aria-label="collapse-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
-        style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 8px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -602,10 +529,11 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 65);"
@@ -722,10 +650,11 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
@@ -773,81 +702,6 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
         </div>
       </div>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Signing in with
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 59);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#017B8E"
-                    height="16"
-                    transform="translate(0.39972303467835485 -0.4108005578484912) rotate(317.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F2B602"
-                    height="16"
-                    transform="translate(-3.7466980184561267 5.704967714142398) rotate(134.1 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FA8E00"
-                    height="16"
-                    transform="translate(-12.856136345377399 -5.7794405216344416) rotate(364.0 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x935E7...05477
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -860,7 +714,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -871,7 +725,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
         aria-label="collapse-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
-        style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 8px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -970,10 +824,11 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
@@ -1021,109 +876,23 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Signing in with
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="16"
-                    transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="16"
-                    transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="16"
-                    transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            Test Account
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
     data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
-        />
-      </button>
-      <button
-        aria-label="collapse-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        data-testid="sectionCollapseButton"
-        style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
-      >
-        <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-          style="mask-image: url('./images/icons/collapse.svg');"
         />
       </button>
       <div
@@ -1302,10 +1071,11 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
@@ -1378,10 +1148,11 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 183, 242);"
@@ -1454,10 +1225,11 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 143, 0);"
@@ -1626,10 +1398,11 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
@@ -1702,10 +1475,11 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 54, 0);"
@@ -1778,10 +1552,11 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 86);"
@@ -1915,10 +1690,11 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
@@ -1966,109 +1742,23 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Signing in with
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 59);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#017B8E"
-                    height="16"
-                    transform="translate(0.39972303467835485 -0.4108005578484912) rotate(317.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F2B602"
-                    height="16"
-                    transform="translate(-3.7466980184561267 5.704967714142398) rotate(134.1 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FA8E00"
-                    height="16"
-                    transform="translate(-12.856136345377399 -5.7794405216344416) rotate(364.0 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0x935E7...05477
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
     data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
-        />
-      </button>
-      <button
-        aria-label="collapse-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        data-testid="sectionCollapseButton"
-        style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
-      >
-        <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-          style="mask-image: url('./images/icons/collapse.svg');"
         />
       </button>
       <div
@@ -2197,10 +1887,11 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                        class=""
                       >
                         <div
-                          class="mm-avatar-account__jazzicon"
+                          class="identicon"
+                          style="height: 16px; width: 16px; border-radius: 8px;"
                         >
                           <div
                             style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
@@ -2325,10 +2016,11 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                        class=""
                       >
                         <div
-                          class="mm-avatar-account__jazzicon"
+                          class="identicon"
+                          style="height: 16px; width: 16px; border-radius: 8px;"
                         >
                           <div
                             style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
@@ -2487,10 +2179,11 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class=""
           >
             <div
-              class="mm-avatar-account__jazzicon"
+              class="identicon"
+              style="height: 16px; width: 16px; border-radius: 8px;"
             >
               <div
                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
@@ -2538,109 +2231,23 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Signing in with
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-        >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <div
-              class="mm-avatar-account__jazzicon"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="16"
-                    transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="16"
-                    transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="16"
-                    transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            Test Account
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
     data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
         aria-label="copy-button"
         class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        style="cursor: pointer; position: absolute; right: 32px; top: 4px;"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
           class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
-        />
-      </button>
-      <button
-        aria-label="collapse-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
-        data-testid="sectionCollapseButton"
-        style="cursor: pointer; position: absolute; right: 8px; top: 4px;"
-      >
-        <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-          style="mask-image: url('./images/icons/collapse.svg');"
         />
       </button>
       <div
@@ -2819,10 +2426,11 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
@@ -2895,10 +2503,11 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 183, 242);"
@@ -2971,10 +2580,11 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class=""
                           >
                             <div
-                              class="mm-avatar-account__jazzicon"
+                              class="identicon"
+                              style="height: 16px; width: 16px; border-radius: 8px;"
                             >
                               <div
                                 style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 143, 0);"
@@ -3143,10 +2753,11 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
@@ -3219,10 +2830,11 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 54, 0);"
@@ -3295,10 +2907,11 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class=""
                               >
                                 <div
-                                  class="mm-avatar-account__jazzicon"
+                                  class="identicon"
+                                  style="height: 16px; width: 16px; border-radius: 8px;"
                                 >
                                   <div
                                     style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 86);"

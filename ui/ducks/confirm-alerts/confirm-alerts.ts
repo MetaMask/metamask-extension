@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
 import { Severity } from '../../helpers/constants/design-system';
 
@@ -34,11 +35,6 @@ export type Alert = {
   isBlocking?: boolean;
 
   /**
-   * The message is a summary of the alert details.
-   */
-  message: string;
-
-  /**
    * The security provider associated with the alert.
    */
   provider?: SecurityProvider;
@@ -57,7 +53,31 @@ export type Alert = {
    * URL to report issue.
    */
   reportUrl?: string;
-};
+} & MessageOrContent;
+
+type MessageOrContent =
+  | {
+      /**
+       * The message is a summary of the alert details.
+       */
+      message: string;
+
+      /**
+       * Alert summary components can be used as an alternative to a message.
+       */
+      content?: ReactNode;
+    }
+  | {
+      /**
+       * The message is a summary of the alert details.
+       */
+      message?: string;
+
+      /**
+       * Alert summary components can be used as an alternative to a message.
+       */
+      content: ReactNode;
+    };
 
 /**
  * Represents the state of confirm alerts in the application.

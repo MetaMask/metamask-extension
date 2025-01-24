@@ -22,7 +22,6 @@ export enum RampsMetaMaskEntry {
   BtcBanner = 'ext_buy_banner_btc',
 }
 
-const portfolioUrl = process.env.PORTFOLIO_URL;
 const useRamps = (
   metamaskEntry: RampsMetaMaskEntry = RampsMetaMaskEntry.BuySellButton,
 ): IUseRamps => {
@@ -33,18 +32,25 @@ const useRamps = (
 
   const getBuyURI = useCallback(
     (_chainId: Hex | CaipChainId) => {
-      const params = new URLSearchParams();
-      params.set('metamaskEntry', metamaskEntry);
-      params.set('chainId', _chainId);
-      if (metaMetricsId) {
-        params.set('metametricsId', metaMetricsId);
-      }
-      params.set('metricsEnabled', String(isMetaMetricsEnabled));
-      if (isMarketingEnabled) {
-        params.set('marketingEnabled', String(isMarketingEnabled));
-      }
+      try {
+        const params = new URLSearchParams();
+        params.set('metamaskEntry', metamaskEntry);
+        params.set('chainId', _chainId);
+        if (metaMetricsId) {
+          params.set('metametricsId', metaMetricsId);
+        }
+        params.set('metricsEnabled', String(isMetaMetricsEnabled));
+        if (isMarketingEnabled) {
+          params.set('marketingEnabled', String(isMarketingEnabled));
+        }
 
-      return `${portfolioUrl}/buy?${params.toString()}`;
+        const url = new URL(process.env.PORTFOLIO_URL || '');
+        url.pathname = 'buy';
+        url.search = params.toString();
+        return url.toString();
+      } catch {
+        return 'https://portfolio.metamask.io/buy';
+      }
     },
     [metaMetricsId],
   );

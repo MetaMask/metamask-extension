@@ -1,7 +1,7 @@
 import { TransactionParams } from '@metamask/transaction-controller';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import HomePage from '../pages/homepage';
+import HomePage from '../pages/home/homepage';
 import SendTokenPage from '../pages/send/send-token-page';
 import TestDapp from '../pages/test-dapp';
 
