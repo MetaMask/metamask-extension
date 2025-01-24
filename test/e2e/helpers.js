@@ -64,7 +64,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     ganacheOptions,
     anvilOptions,
-    localNetwork,
+    localNode,
     smartContract,
     driverOptions,
     dappOptions,
@@ -84,14 +84,14 @@ async function withFixtures(options, testSuite) {
     manifestFlags,
   } = options;
 
-  // Validate localNetwork value
-  const allowedNetworks = ['ganache', 'anvil', 'bitcoin', 'solana'];
-  if (!allowedNetworks.includes(localNetwork)) {
-    throw new Error(`Invalid localNetwork value: '${localNetwork}'. Allowed values are: ${allowedNetworks.join(', ')}`);
+  // Validate localNode value
+  const allowedNodes = ['ganache', 'anvil', 'bitcoin', 'solana'];
+  if (!allowedNodes.includes(localNode)) {
+    throw new Error(`Invalid localNode: '${localNode}'. Allowed values are: ${allowedNodes.join(', ')}`);
   }
 
   // Check for unsupported networks
-  if (localNetwork === 'solana' || localNetwork === 'bitcoin') {
+  if (localNode === 'solana' || localNode === 'bitcoin') {
     return 'Not yet supported, but coming soon!';
   }
 
@@ -99,7 +99,7 @@ async function withFixtures(options, testSuite) {
   let ganacheServer;
   let anvilServer;
 
-  if (localNetwork === 'anvil') {
+  if (localNode === 'anvil') {
     anvilServer = new Anvil();
   } else if (!disableGanache) {
     ganacheServer = new Ganache();
@@ -634,17 +634,17 @@ const TEST_SEED_PHRASE_TWO =
  * or after a transaction is made.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache | Anvil} [localBlockchainServer] - The local server instance (optional).
+ * @param {Ganache | Anvil} [localNode] - The local server instance (optional).
  * @param {string} [address] - The address to check the balance for (optional).
  */
 const locateAccountBalanceDOM = async (
   driver,
-  localBlockchainServer,
+  localNode,
   address = null,
 ) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (localBlockchainServer) {
-    const balance = await localBlockchainServer.getBalance(address);
+  if (localNode) {
+    const balance = await localNode.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -719,10 +719,10 @@ async function createWebSocketConnection(driver, hostname) {
   }
 }
 
-const logInWithBalanceValidation = async (driver, localBlockchainServer) => {
+const logInWithBalanceValidation = async (driver, localNode) => {
   await unlockWallet(driver);
   // Wait for balance to load
-  await locateAccountBalanceDOM(driver, localBlockchainServer);
+  await locateAccountBalanceDOM(driver, localNode);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {

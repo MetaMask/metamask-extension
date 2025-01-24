@@ -12,13 +12,13 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Send ETH', function () {
-  describe.only('from inside MetaMask', function () {
+  describe('from inside MetaMask', function () {
     it('finds the transaction in the transactions list using default gas', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
-          localNetwork: 'anvil',
+          localNode: 'anvil',
         },
         async ({ driver, anvilServer }) => {
           await logInWithBalanceValidation(driver, anvilServer);
@@ -99,7 +99,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
-          localNetwork: 'anvil',
+          localNode: 'anvil',
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -148,7 +148,7 @@ describe('Send ETH', function () {
       );
     });
 
-    it.only('finds the transaction in the transactions list when sending to a Multisig Address', async function () {
+    it('finds the transaction in the transactions list when sending to a Multisig Address', async function () {
       const smartContract = SMART_CONTRACTS.MULTISIG;
       await withFixtures(
         {
@@ -158,7 +158,7 @@ describe('Send ETH', function () {
           },
           smartContract,
           title: this.test.fullTitle(),
-          localNetwork: 'anvil',
+          localNode: 'anvil',
         },
         async ({ driver, contractRegistry, anvilServer }) => {
           const contractAddress = await contractRegistry.getContractAddress(
@@ -212,7 +212,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
-          localNetwork: 'anvil',
+          localNode: 'anvil',
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -249,7 +249,7 @@ describe('Send ETH', function () {
               .withPermissionControllerConnectedToTestDapp()
               .build(),
             title: this.test.fullTitle(),
-            localNetwork: 'anvil',
+            localNode: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -326,7 +326,7 @@ describe('Send ETH', function () {
               hardfork: 'london',
             },
             title: this.test.fullTitle(),
-            localNetwork: 'anvil',
+            localNode: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -432,7 +432,7 @@ describe('Send ETH', function () {
               .withPreferencesControllerPetnamesDisabled()
               .build(),
             title: this.test.fullTitle(),
-            localNetwork: 'anvil',
+            localNode: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);

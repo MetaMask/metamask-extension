@@ -245,13 +245,13 @@ class HomePage {
   }
 
   async check_localBlockchainBalanceIsDisplayed(
-    localBlockchainServer?: Ganache | Anvil,
+    localNode?: Ganache | Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
-    if (localBlockchainServer) {
+    if (localNode) {
       expectedBalance = (
-        await localBlockchainServer.getBalance(address)
+        await localNode.getBalance(address)
       ).toString();
     } else {
       expectedBalance = '0';
