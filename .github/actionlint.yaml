@@ -1,0 +1,8 @@
+self-hosted-runner:
+  # Labels of self-hosted runner in array of strings.
+  labels:
+    - gha-mm-scale-set-ubuntu-22.04-amd64-med
+# # Configuration variables in array of strings defined in your repository or
+# # organization. `null` means disabling configuration variables check.
+# # Empty array means no configuration variable is allowed.
+# config-variables: null
