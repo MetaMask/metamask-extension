@@ -1,4 +1,4 @@
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScopes } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import {
   MOCK_ACCOUNTS,
@@ -58,7 +58,8 @@ describe('Accounts Selectors', () => {
           'eth_signTypedData_v3',
           'eth_signTypedData_v4',
         ],
-        type: 'eip155:eoa',
+        type: EthAccountType.Eoa,
+        scopes: [EthScopes.Namespace],
       });
     });
 
@@ -88,6 +89,7 @@ describe('Accounts Selectors', () => {
         },
         options: {},
         methods: ETH_EOA_METHODS,
+        scopes: [EthScopes.Namespace],
         type: EthAccountType.Eoa,
       };
       expect(
