@@ -263,7 +263,6 @@ export const SENTRY_BACKGROUND_STATE = {
     useCurrencyRateCheck: true,
     useMultiAccountBalanceChecker: true,
     useNftDetection: true,
-    useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
