@@ -71,19 +71,15 @@ export default class ReadOnlyNetworkStore extends BaseStore {
   /**
    * Overwrite in-memory copy of state.
    *
-   * @param obj - The data to set
-   * @param obj.data - The MetaMask State tree
-   * @param obj.meta - The metadata object
-   * @param obj.meta.version - The version of the state tree determined by the
-   * migration
+   * @param data - The data to set
    */
-  async set(obj: MetaMaskStorageStructure): Promise<void> {
-    if (!obj) {
+  async set(data: MetaMaskStorageStructure): Promise<void> {
+    if (!data) {
       throw new Error('MetaMask - updated state is missing');
     }
     if (!this.#initialized) {
       await this.#initializing;
     }
-    this.#state = obj;
+    this.#state = data;
   }
 }
