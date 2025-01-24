@@ -54,7 +54,9 @@ describe('ReadOnlyNetworkStore', () => {
     it('loads state from the network if fetch is successful and response is ok', async () => {
       setMockFixtureServerReply(MOCK_STATE);
       const store = setupReadOnlyNetworkStore();
+
       const result = await store.get();
+
       expect(result).toStrictEqual(MOCK_STATE);
     });
 
@@ -62,11 +64,11 @@ describe('ReadOnlyNetworkStore', () => {
       const logDebugSpy = jest
         .spyOn(log, 'debug')
         .mockImplementation(() => undefined);
-
       mockFixtureServerInterceptor().reply(400);
-
       const store = setupReadOnlyNetworkStore();
+
       const result = await store.get();
+
       expect(result).toBe(null);
       expect(logDebugSpy).toHaveBeenCalledWith(
         'Received response with a status of 400 Bad Request',
@@ -78,9 +80,10 @@ describe('ReadOnlyNetworkStore', () => {
       const logDebugSpy = jest
         .spyOn(log, 'debug')
         .mockImplementation(() => undefined);
-
       const store = setupReadOnlyNetworkStore();
+
       const result = await store.get();
+
       expect(result).toBe(null);
       expect(logDebugSpy).toHaveBeenCalledWith(
         "Error loading network state: 'request to http://localhost:12345/state.json failed, reason: error!'",
@@ -92,15 +95,18 @@ describe('ReadOnlyNetworkStore', () => {
     it('returns null if #state is null', async () => {
       mockFixtureServerInterceptor().reply(200);
       const store = setupReadOnlyNetworkStore();
+
       const result = await store.get();
+
       expect(result).toBe(null);
     });
 
     it('returns null if state is null', async () => {
       setMockFixtureServerReply(MOCK_STATE);
-
       const store = setupReadOnlyNetworkStore();
+
       const result = await store.get();
+
       expect(result).toStrictEqual(MOCK_STATE);
     });
   });
@@ -108,6 +114,7 @@ describe('ReadOnlyNetworkStore', () => {
   describe('set', () => {
     it('throws if not passed a state parameter', async () => {
       const store = setupReadOnlyNetworkStore();
+
       await expect(
         // @ts-expect-error Intentionally passing incorrect type
         store.set(undefined),
@@ -116,11 +123,13 @@ describe('ReadOnlyNetworkStore', () => {
 
     it('sets the state', async () => {
       const store = setupReadOnlyNetworkStore();
+
       await store.set({
         data: { appState: { test: true } },
         meta: { version: 10 },
       });
       const result = await store.get();
+
       expect(result).toStrictEqual({
         data: { appState: { test: true } },
         meta: { version: 10 },
