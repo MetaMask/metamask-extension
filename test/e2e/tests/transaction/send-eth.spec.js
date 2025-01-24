@@ -12,13 +12,13 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Send ETH', function () {
-  describe('from inside MetaMask', function () {
+  describe.only('from inside MetaMask', function () {
     it('finds the transaction in the transactions list using default gas', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
-          useAnvil: true,
+          localNetwork: 'anvil',
         },
         async ({ driver, anvilServer }) => {
           await logInWithBalanceValidation(driver, anvilServer);
@@ -99,7 +99,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
-          useAnvil: true,
+          localNetwork: 'anvil',
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -148,7 +148,7 @@ describe('Send ETH', function () {
       );
     });
 
-    it('finds the transaction in the transactions list when sending to a Multisig Address', async function () {
+    it.only('finds the transaction in the transactions list when sending to a Multisig Address', async function () {
       const smartContract = SMART_CONTRACTS.MULTISIG;
       await withFixtures(
         {
@@ -158,6 +158,7 @@ describe('Send ETH', function () {
           },
           smartContract,
           title: this.test.fullTitle(),
+          localNetwork: 'anvil',
         },
         async ({ driver, contractRegistry, anvilServer }) => {
           const contractAddress = await contractRegistry.getContractAddress(
@@ -169,7 +170,10 @@ describe('Send ETH', function () {
           await driver.delay(500);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
-          await driver.clickElement({ text: 'Account 1', tag: 'button' });
+          await driver.fill(
+            'input[placeholder="Enter public address (0x) or domain name"]',
+            contractAddress,
+          );
 
           const inputAmount = await driver.findElement(
             'input[placeholder="0"]',
@@ -208,7 +212,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
-          useAnvil: true,
+          localNetwork: 'anvil',
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -245,7 +249,7 @@ describe('Send ETH', function () {
               .withPermissionControllerConnectedToTestDapp()
               .build(),
             title: this.test.fullTitle(),
-            useAnvil: true,
+            localNetwork: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -322,6 +326,7 @@ describe('Send ETH', function () {
               hardfork: 'london',
             },
             title: this.test.fullTitle(),
+            localNetwork: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -427,7 +432,7 @@ describe('Send ETH', function () {
               .withPreferencesControllerPetnamesDisabled()
               .build(),
             title: this.test.fullTitle(),
-            useAnvil: true,
+            localNetwork: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);

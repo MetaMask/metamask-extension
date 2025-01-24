@@ -17,7 +17,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .build(),
         title: this.test.fullTitle(),
-        useAnvil: true,
+        localNetwork: 'anvil',
       },
       async ({ driver, anvilServer }) => {
         await logInWithBalanceValidation(driver, anvilServer);
@@ -63,7 +63,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .build(),
         title: this.test.fullTitle(),
-        useAnvil: true,
+        localNetwork: 'anvil',
       },
       async ({ driver, anvilServer }) => {
         await logInWithBalanceValidation(driver, anvilServer);
@@ -115,7 +115,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .build(),
         smartContract,
         title: this.test.fullTitle(),
-        useAnvil: true,
+        localNetwork: 'anvil',
       },
       async ({ driver, anvilServer }) => {
         await logInWithBalanceValidation(driver, anvilServer);
@@ -179,7 +179,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .build(),
         smartContract,
         title: this.test.fullTitle(),
-        useAnvil: true,
+        localNetwork: 'anvil',
       },
       async ({ driver, anvilServer }) => {
         await logInWithBalanceValidation(driver, anvilServer);
