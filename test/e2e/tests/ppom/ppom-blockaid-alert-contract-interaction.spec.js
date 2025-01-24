@@ -194,9 +194,6 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function () {
           })
           .withPreferencesController({
             securityAlertsEnabled: true,
-            preferences: {
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
           })
           .build(),
         defaultGanacheOptions,

@@ -103,7 +103,6 @@ export type TransactionMetricsRequest = {
     txhash: string | undefined,
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
-  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
 };
 
@@ -1023,8 +1022,6 @@ async function buildEventFragmentProperties({
 
   const isRedesignedForTransaction = shouldUseRedesignForTransactions({
     transactionMetadataType: transactionMeta.type as TransactionType,
-    isRedesignedConfirmationsDeveloperEnabled:
-      transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled(),
   });
   if (isRedesignedForTransaction) {
     uiCustomizations.push(
