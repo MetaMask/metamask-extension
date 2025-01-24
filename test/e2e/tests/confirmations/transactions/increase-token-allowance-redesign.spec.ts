@@ -18,7 +18,7 @@ import {
 } from './shared';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
-  describe('Submit an increase allowance transaction @no-mmi', function () {
+  describe('Submit an increase allowance transaction', function () {
     it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForLegacyTx(this),
@@ -80,7 +80,6 @@ function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
       .withPermissionControllerConnectedToTestDapp()
       .withPreferencesController({
         preferences: {
-          redesignedConfirmationsEnabled: true,
           isRedesignedConfirmationsDeveloperEnabled: true,
         },
       })
@@ -99,7 +98,6 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
       .withPermissionControllerConnectedToTestDapp()
       .withPreferencesController({
         preferences: {
-          redesignedConfirmationsEnabled: true,
           isRedesignedConfirmationsDeveloperEnabled: true,
         },
       })

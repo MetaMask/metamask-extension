@@ -16,7 +16,7 @@ const {
 const FixtureBuilder = require('../../../fixture-builder');
 
 describe('Confirmation Redesign Contract Deployment Component', function () {
-  describe('Create a deploy transaction @no-mmi', function () {
+  describe('Create a deploy transaction', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy)`, async function () {
       await withFixtures(
         {
@@ -25,7 +25,6 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })
@@ -58,7 +57,6 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
               preferences: {
-                redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
             })

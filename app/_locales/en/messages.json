@@ -759,9 +759,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin activity is not supported"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -3498,6 +3495,9 @@
   "noThanks": {
     "message": "No thanks"
   },
+  "noTransactions": {
+    "message": "You have no transactions"
+  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
@@ -4544,12 +4544,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Improved signature requests"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Turn this on to see signature requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"
