@@ -6,10 +6,8 @@ import { captureMessage } from '@sentry/browser';
 
 import { TransactionType } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   addToken,
-  addTransactionAndWaitForPublish,
   fetchAndSetQuotes,
   forceUpdateMetamaskState,
   resetSwapsPostFetchState,
@@ -30,6 +28,7 @@ import {
   fetchSmartTransactionFees,
   cancelSmartTransaction,
   getTransactions,
+  addTransactionBatch,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -1067,6 +1066,7 @@ export const signAndSendTransactions = (
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
+    const networkClientId = getSelectedNetwork(state).clientId;
     const hardwareWalletUsed = isHardwareWallet(state);
     const networkAndAccountSupports1559 =
       checkNetworkAndAccountSupports1559(state);
@@ -1257,6 +1257,8 @@ export const signAndSendTransactions = (
       history.push(AWAITING_SIGNATURES_ROUTE);
     }
 
+    const transactionBatchRequests = [];
+
     if (approveTxParams) {
       if (networkAndAccountSupports1559) {
         approveTxParams.maxFeePerGas = approveGasFeeEstimates?.maxFeePerGas;
@@ -1265,67 +1267,47 @@ export const signAndSendTransactions = (
         delete approveTxParams.gasPrice;
       }
 
-      debugLog('Creating approve transaction', approveTxParams);
-
-      try {
-        finalApproveTxMeta = await addTransactionAndWaitForPublish(
-          { ...approveTxParams, amount: '0x0' },
-          {
-            requireApproval: false,
-            type: TransactionType.swapApproval,
-            swaps: {
-              hasApproveTx: true,
-              meta: {
-                type: TransactionType.swapApproval,
-                sourceTokenSymbol: sourceTokenInfo.symbol,
-              },
-            },
-          },
-        );
-        if (
-          [
-            CHAIN_IDS.LINEA_MAINNET,
-            CHAIN_IDS.LINEA_GOERLI,
-            CHAIN_IDS.LINEA_SEPOLIA,
-          ].includes(chainId)
-        ) {
-          debugLog(
-            'Delaying submitting trade tx to make Linea confirmation more likely',
-          );
-          const waitPromise = new Promise((resolve) =>
-            setTimeout(resolve, 5000),
-          );
-          await waitPromise;
-        }
-      } catch (e) {
-        debugLog('Approve transaction failed', e);
-        await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-        history.push(SWAPS_ERROR_ROUTE);
-        return;
-      }
-    }
-
-    debugLog('Creating trade transaction', usedTradeTxParams);
-
-    try {
-      await addTransactionAndWaitForPublish(usedTradeTxParams, {
-        requireApproval: false,
-        type: TransactionType.swap,
+      transactionBatchRequests.push({
+        params: approveTxParams,
+        type: TransactionType.swapApproval,
         swaps: {
-          hasApproveTx: Boolean(approveTxParams),
+          hasApproveTx: true,
           meta: {
-            estimatedBaseFee: transactionGasFeeEstimates?.estimatedBaseFee,
+            type: TransactionType.swapApproval,
             sourceTokenSymbol: sourceTokenInfo.symbol,
-            destinationTokenSymbol: destinationTokenInfo.symbol,
-            type: TransactionType.swap,
-            destinationTokenDecimals: destinationTokenInfo.decimals,
-            destinationTokenAddress: destinationTokenInfo.address,
-            swapMetaData,
-            swapTokenValue,
-            approvalTxId: finalApproveTxMeta?.id,
           },
         },
       });
+    }
+
+    transactionBatchRequests.push({
+      params: usedTradeTxParams,
+      type: TransactionType.swap,
+      swaps: {
+        hasApproveTx: Boolean(approveTxParams),
+        meta: {
+          estimatedBaseFee: transactionGasFeeEstimates?.estimatedBaseFee,
+          sourceTokenSymbol: sourceTokenInfo.symbol,
+          destinationTokenSymbol: destinationTokenInfo.symbol,
+          type: TransactionType.swap,
+          destinationTokenDecimals: destinationTokenInfo.decimals,
+          destinationTokenAddress: destinationTokenInfo.address,
+          swapMetaData,
+          swapTokenValue,
+          approvalTxId: finalApproveTxMeta?.id,
+        },
+      },
+    });
+
+    try {
+      await addTransactionBatch(
+        {
+          networkClientId,
+          requests: transactionBatchRequests,
+          sequential: true,
+        },
+        { waitForSubmit: true },
+      );
     } catch (e) {
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR

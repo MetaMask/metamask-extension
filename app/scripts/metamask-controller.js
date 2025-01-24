@@ -3849,6 +3849,7 @@ export default class MetamaskController extends EventEmitter {
       estimateGas: this.estimateGas.bind(this),
       estimateGasFee: txController.estimateGasFee.bind(txController),
       getNextNonce: this.getNextNonce.bind(this),
+      addTransactionBatch: this.addTransactionBatch.bind(this),
       addTransaction: (transactionParams, transactionOptions) =>
         addTransaction(
           this.getAddTransactionRequest({
@@ -5699,6 +5700,14 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       transactionController: this.txController,
     });
+  }
+
+  async addTransactionBatch(request, { waitForSubmit = false } = {}) {
+    const result = await this.txController.addTransactionBatch(request);
+
+    if (waitForSubmit) {
+      await result.waitForSubmit();
+    }
   }
 
   //=============================================================================

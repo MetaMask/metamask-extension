@@ -30,6 +30,7 @@ import {
 } from '@metamask/name-controller';
 import {
   GasFeeEstimates,
+  TransactionBatchRequest,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -1123,6 +1124,16 @@ export async function addTransaction(
       origin: ORIGIN_METAMASK,
       actionId,
     },
+  ]);
+}
+
+export async function addTransactionBatch(
+  request: TransactionBatchRequest,
+  { waitForSubmit = false }: { waitForSubmit?: boolean } = {},
+) {
+  return await submitRequestToBackground('addTransactionBatch', [
+    request,
+    { waitForSubmit },
   ]);
 }
 
