@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
@@ -24,7 +23,6 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { getSelectedInternalAccount } from '../../../selectors';
 import {
   getRequestedSessionScopes,
   parseCaip25PermissionsResponse,
@@ -32,7 +30,7 @@ import {
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerContent } from '.';
 
-class PermissionPageContainer extends Component {
+export default class PermissionPageContainer extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
@@ -53,7 +51,7 @@ class PermissionPageContainer extends Component {
     }),
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
-    defaultAccount: PropTypes.string,
+    defaultAccountAddress: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -62,7 +60,6 @@ class PermissionPageContainer extends Component {
     selectedAccounts: [],
     allAccountsSelected: false,
     currentPermissions: {},
-    defaultAccount: '',
   };
 
   static contextTypes = {
@@ -149,13 +146,13 @@ class PermissionPageContainer extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       selectedAccounts,
-      defaultAccount,
+      defaultAccountAddress,
     } = this.props;
 
     const approvedAccounts =
       selectedAccounts.length > 0
         ? selectedAccounts.map((selectedAccount) => selectedAccount.address)
-        : [defaultAccount];
+        : [defaultAccountAddress];
 
     const requestedSessionsScopes = getRequestedSessionScopes(
       _request.permission,
@@ -257,9 +254,3 @@ class PermissionPageContainer extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  defaultAccount: getSelectedInternalAccount(state).address,
-});
-
-export default connect(mapStateToProps)(PermissionPageContainer);
