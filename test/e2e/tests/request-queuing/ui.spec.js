@@ -187,7 +187,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
-  it('should show network specific to domain @no-mmi', async function () {
+  it('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -248,7 +248,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('handles three confirmations on three confirmations concurrently @no-mmi', async function () {
+  it('handles three confirmations on three confirmations concurrently', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
@@ -369,7 +369,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should gracefully handle deleted network @no-mmi', async function () {
+  it('should gracefully handle deleted network', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -445,7 +445,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should signal from UI to dapp the network change @no-mmi', async function () {
+  it('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -606,7 +606,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should gracefully handle network connectivity failure for signatures @no-mmi', async function () {
+  it('should gracefully handle network connectivity failure for signatures', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -670,7 +670,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
-  it('should gracefully handle network connectivity failure for confirmations @no-mmi', async function () {
+  it('should gracefully handle network connectivity failure for confirmations', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
