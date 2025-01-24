@@ -60,10 +60,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import {
-  hexToDecimal,
-  decimalToPrefixedHex,
-} from '../../../../shared/modules/conversion.utils';
+import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import type { QuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
@@ -72,7 +69,6 @@ import {
   isQuoteExpired as isQuoteExpiredUtil,
 } from '../utils/quote';
 import { isValidQuoteRequest } from '../../../../shared/modules/bridge-utils/quote';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -94,10 +90,8 @@ import {
 } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
-import {
-  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  MULTICHAIN_API_CHAIN_ID_MAP,
-} from '../../../../shared/constants/bridge';
+import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
+import { formatChainIdToApi } from '../../../../shared/modules/bridge-utils/multichain';
 import {
   getMultichainCurrentCurrency,
   getMultichainIsSolana,
@@ -295,19 +289,14 @@ const PrepareBridgePage = () => {
               fromToken.decimals,
             ).toFixed()
           : undefined,
-      srcChainId: fromChain?.chainId
-        ? MULTICHAIN_API_CHAIN_ID_MAP[fromChain.chainId] ??
-          Number(hexToDecimal(fromChain.chainId))
-        : undefined,
-      destChainId: toChain?.chainId
-        ? MULTICHAIN_API_CHAIN_ID_MAP[toChain.chainId] ??
-          Number(hexToDecimal(toChain.chainId))
-        : undefined,
+      srcChainId: formatChainIdToApi(fromChain?.chainId),
+      destChainId: formatChainIdToApi(toChain?.chainId),
       // This override allows quotes to be returned when the rpcUrl is a tenderly fork
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
       insufficientBal: Boolean(providerConfig?.rpcUrl?.includes('tenderly')),
       slippage,
+      // TODO move this to controller when we can get address for Solana
       walletAddress: selectedAccount?.address,
     }),
     [

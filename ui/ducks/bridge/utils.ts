@@ -1,7 +1,6 @@
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/lib/utils';
-import type { ContractMarketData } from '@metamask/assets-controllers';
+import { type ContractMarketData } from '@metamask/assets-controllers';
 import {
   AddNetworkFields,
   NetworkConfiguration,
@@ -12,6 +11,7 @@ import type { TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 import { MultichainProviderConfig } from '../../../shared/constants/multichain/networks';
+import { getAddress } from '../../../shared/modules/bridge-utils/multichain';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -121,7 +121,7 @@ export const exchangeRateFromMarketData = (
 ) =>
   (
     marketData?.[chainId]?.[tokenAddress.toLowerCase() as Hex] ??
-    marketData?.[chainId]?.[getAddress(tokenAddress) as Hex]
+    marketData?.[chainId]?.[getAddress(tokenAddress)]
   )?.price;
 
 export const tokenAmountToCurrency = (

@@ -19,15 +19,11 @@ import {
   ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  MULTICHAIN_API_CHAIN_ID_MAP,
 } from '../../../shared/constants/bridge';
 import type { BridgeControllerState } from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
-import {
-  getProviderConfig,
-  getNetworkConfigurationsByChainId,
-} from '../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 import {
   type L1GasFees,
@@ -37,7 +33,6 @@ import {
   SortOrder,
   BridgeFeatureFlagsKey,
   RequestStatus,
-  ChainId,
 } from '../../../shared/types/bridge';
 import {
   calcAdjustedReturn,
@@ -57,12 +52,11 @@ import {
 } from '../../../shared/constants/network';
 import {
   getMultichainIsSolana,
-  getMultichainNetworkProviders,
   getMultichainProviderConfig,
-  MultichainState,
 } from '../../selectors/multichain';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
+  MultichainNetworks,
   MultichainProviderConfig,
 } from '../../../shared/constants/multichain/networks';
 import {
@@ -219,7 +213,7 @@ export const getToToken = createSelector(
         image:
           'https://assets.coingecko.com/coins/images/1082/large/solana-sol-logo.png?1605778738',
         type: AssetType.token,
-        chainId: MULTICHAIN_API_CHAIN_ID_MAP[ChainId.SOLANA],
+        chainId: MultichainNetworks.SOLANA,
       };
     }
     return toToken;

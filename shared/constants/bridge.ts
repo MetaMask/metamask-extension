@@ -1,11 +1,5 @@
 import { MultichainNetworks } from '@metamask/assets-controllers';
-import { ChainId } from '../types/bridge';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
-
-export const MULTICHAIN_API_CHAIN_ID_MAP = {
-  [ChainId.SOLANA.toString()]: MultichainNetworks.Solana,
-  [MultichainNetworks.Solana]: ChainId.SOLANA,
-};
 
 // TODO read from feature flags
 export const ALLOWED_BRIDGE_CHAIN_IDS = [

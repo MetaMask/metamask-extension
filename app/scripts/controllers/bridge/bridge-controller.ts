@@ -8,12 +8,14 @@ import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionParams } from '@metamask/transaction-controller';
 import type { ChainId } from '@metamask/controller-utils';
-import { MultichainNetworks } from '@metamask/assets-controllers';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
-  formatApiChainId,
 } from '../../../../shared/modules/bridge-utils/bridge.util';
+import {
+  formatChainIdFromApi,
+  isMultichainRequest,
+} from '../../../../shared/modules/bridge-utils/multichain';
 import {
   decimalToHex,
   sumHexes,
@@ -146,23 +148,25 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       this.#quotesFirstFetched = Date.now();
       const walletAddress =
         paramsToUpdate.walletAddress ?? this.#getSelectedAccount().address;
-      const srcChainIdInHex = formatApiChainId(
+      const normalizedSrcChainId = formatChainIdFromApi(
         updatedQuoteRequest.srcChainId.toString(),
       );
 
-      const insufficientBal =
-        srcChainIdInHex === MultichainNetworks.Solana
-          ? true
-          : paramsToUpdate.insufficientBal ||
-            !(await this.#hasSufficientBalance(updatedQuoteRequest));
+      const insufficientBal = isMultichainRequest(updatedQuoteRequest)
+        ? true
+        : paramsToUpdate.insufficientBal ||
+          !(await this.#hasSufficientBalance(updatedQuoteRequest));
 
-      const networkClientId = this.#getSelectedNetworkClientId(srcChainIdInHex);
+      // TODO fix lint error when network controller is updated
+      const networkClientId =
+        this.#getSelectedNetworkClientId(normalizedSrcChainId);
 
       this.startPolling({
         networkClientId,
         updatedQuoteRequest: {
           ...updatedQuoteRequest,
           walletAddress,
+          // TODO set this conditionally based on srcChainId + destChainId
           destWalletAddress: walletAddress,
           insufficientBal,
         },
