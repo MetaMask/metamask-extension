@@ -212,7 +212,7 @@ async function walletCreateSessionHandler(
       legacyApproval.approvedAccounts,
     );
 
-    const sessionScopes = getSessionScopes(caip25CaveatValue);
+    const sessionScopes = getSessionScopes(caip25CaveatValue, { getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods});
 
     hooks.grantPermissions({
       subject: {
