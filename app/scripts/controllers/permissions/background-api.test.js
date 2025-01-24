@@ -489,7 +489,7 @@ describe('permission background API methods', () => {
     it('requests eth_accounts and permittedChains approval and returns the request id', async () => {
       const approvalController = {
         addAndShowApprovalRequest: jest.fn().mockResolvedValue({
-          response: {
+          approvedSessionScopes: {
             permissions: approvedPermissions,
           },
         }),
@@ -540,7 +540,7 @@ describe('permission background API methods', () => {
     it('grants a legacy CAIP-25 permission (isMultichainOrigin: false) with the approved eip155 chainIds and accounts', async () => {
       const approvalController = {
         addAndShowApprovalRequest: jest.fn().mockResolvedValue({
-          response: {
+          approvedSessionScopes: {
             permissions: approvedPermissions,
           },
         }),
