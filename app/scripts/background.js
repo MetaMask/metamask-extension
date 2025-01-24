@@ -95,8 +95,8 @@ const migrator = new Migrator({
     : null,
 });
 
-const lStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
-const persistanceManager = new PersistanceManager({ localStore: lStore });
+const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const persistanceManager = new PersistanceManager({ localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
   persistanceManager.mostRecentRetrievedState;
 
