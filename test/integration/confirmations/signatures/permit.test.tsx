@@ -6,7 +6,6 @@ import {
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -251,5 +250,4 @@ describe('Permit Confirmation', () => {
     scope.done();
     expect(scope.isDone()).toBe(true);
   });
-
 });
