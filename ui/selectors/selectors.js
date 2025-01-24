@@ -112,12 +112,14 @@ import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getTargetSubjectMetadata,
-  getOriginOfCurrentTab,
   getMetaMaskAccounts,
   getSelectedAccount,
   getMetaMaskCachedBalances,
-  getMetaMaskAccountBalances,
 } from './getMetaMaskAccounts';
+import {
+  getMetaMaskAccountBalances,
+  getOriginOfCurrentTab,
+} from './accounts-core';
 import { getMetaMaskAccountsOrdered } from './getMetaMaskAccountsOrdered';
 import {
   getAllUnapprovedTransactions,

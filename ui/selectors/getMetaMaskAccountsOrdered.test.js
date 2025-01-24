@@ -1,5 +1,6 @@
 import mockState from '../../test/data/mock-state.json';
 import * as getMetaMaskAccounts from './getMetaMaskAccounts';
+import * as accountsCore from './accounts-core';
 
 describe('#getMetaMaskAccounts', () => {
   it('#getTargetSubjectMetadata', () => {
@@ -18,13 +19,13 @@ describe('#getMetaMaskAccounts', () => {
   describe('#getInternalAccount', () => {
     it("returns undefined if the account doesn't exist", () => {
       expect(
-        getMetaMaskAccounts.getInternalAccount(mockState, 'unknown'),
+        accountsCore.getInternalAccount(mockState, 'unknown'),
       ).toBeUndefined();
     });
 
     it('returns the account', () => {
       expect(
-        getMetaMaskAccounts.getInternalAccount(
+        accountsCore.getInternalAccount(
           mockState,
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         ),

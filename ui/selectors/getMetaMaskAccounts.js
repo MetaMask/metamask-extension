@@ -5,6 +5,11 @@ import { memoize } from 'lodash';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import {
+  getMetaMaskAccountBalances,
+  getMetaMaskKeyrings,
+  getSubjectMetadata,
+} from './accounts-core';
 import { getInternalAccounts, getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './getMultichainBalances';
 import { getMultichainNetworkProviders } from './getMultichainNetworkProviders';
@@ -67,16 +72,7 @@ export const getMetaMaskAccounts = createSelector(
       };
     }, {}),
 );
-/**
- * Get account balances state.
- *
- * @param {object} state - Redux state
- * @returns {object} A map of account addresses to account objects (which includes the account balance)
- */
 
-export function getMetaMaskAccountBalances(state) {
-  return state.metamask.accounts;
-}
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
 
@@ -106,6 +102,7 @@ export const getSelectedAccount = createDeepEqualSelector(
     return undefined;
   },
 );
+
 /**
  * Returns an array of internal accounts sorted by keyring.
  *
@@ -130,13 +127,6 @@ export const getInternalAccountsSortedByKeyring = createSelector(
   },
 );
 
-export function getInternalAccount(state, accountId) {
-  return state.metamask.internalAccounts.accounts[accountId];
-}
-export function getOriginOfCurrentTab(state) {
-  return state.activeTab.origin;
-}
-
 /**
  * @param {string} svgString - The raw SVG string to make embeddable.
  * @returns {string} The embeddable SVG string.
@@ -158,12 +148,4 @@ export function getTargetSubjectMetadata(state, origin) {
   }
 
   return metadata;
-}
-
-export function getSubjectMetadata(state) {
-  return state.metamask.subjectMetadata;
-}
-
-export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings;
 }

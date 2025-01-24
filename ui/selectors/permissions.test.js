@@ -8,7 +8,7 @@ import {
   getLastConnectedInfo,
   getPermissionsForActiveTab,
 } from './permissions';
-import { getOrderedConnectedAccountsForActiveTab } from './getOrderedConnectedAccountsForActiveTab';
+import { getOrderedConnectedAccountsForActiveTab } from './accounts-for-tab';
 
 describe('selectors', () => {
   describe('getConnectedSubjectsForSelectedAddress', () => {
