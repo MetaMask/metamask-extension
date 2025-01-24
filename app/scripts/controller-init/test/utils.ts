@@ -1,49 +1,27 @@
 import {
-  BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
   ControllerInitRequest,
+  ControllerPersistedState,
 } from '../types';
 
 export const CHAIN_ID_MOCK = '0x123';
 
-export function buildControllerMessengerMock(
-  recurse = true,
-): jest.Mocked<BaseControllerMessenger> {
+export function buildControllerInitRequestMock(): jest.Mocked<
+  Omit<
+    ControllerInitRequest<
+      BaseRestrictedControllerMessenger,
+      BaseRestrictedControllerMessenger
+    >,
+    'controllerMessenger' | 'initMessenger'
+  >
+> {
   return {
-    call: jest.fn(),
-    getRestricted: jest
-      .fn()
-      .mockReturnValue(recurse ? buildControllerMessengerMock(false) : {}),
-    publish: jest.fn(),
-    registerActionHandler: jest.fn(),
-    registerInitialEventPayload: jest.fn(),
-    subscribe: jest.fn(),
-  } as unknown as jest.Mocked<BaseControllerMessenger>;
-}
-
-export function buildControllerInitRequestMock() {
-  return {
-    controllerMessenger: buildControllerMessengerMock(),
     getController: jest.fn(),
+    getFlatState: jest.fn(),
     getGlobalChainId: jest.fn().mockReturnValue(CHAIN_ID_MOCK),
     getPermittedAccounts: jest.fn(),
     getProvider: jest.fn(),
     getTransactionMetricsRequest: jest.fn(),
-    initMessenger: buildControllerMessengerMock(),
-    persistedState: {},
-  } as unknown as jest.Mocked<ControllerInitRequest>;
-}
-
-export function expectValidMessengerCallback(
-  callback: (
-    messenger: BaseControllerMessenger,
-  ) => BaseRestrictedControllerMessenger,
-) {
-  const controllerMessengerMock = buildControllerMessengerMock();
-
-  expect(callback).toBeInstanceOf(Function);
-
-  callback(controllerMessengerMock);
-
-  expect(controllerMessengerMock.getRestricted).toHaveBeenCalled();
+    persistedState: {} as ControllerPersistedState,
+  };
 }

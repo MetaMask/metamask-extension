@@ -32,17 +32,22 @@ type BaseControllerInitRequest = ControllerInitRequest<
   BaseRestrictedControllerMessenger
 >;
 
-type BaseControllerInitFunction = ControllerInitFunction<
-  Controller,
-  BaseRestrictedControllerMessenger,
-  BaseRestrictedControllerMessenger
->;
-
 type ControllerMessengerCallback = (
   BaseControllerMessenger: BaseControllerMessenger,
 ) => BaseRestrictedControllerMessenger;
 
 type ControllersToInitialize = 'PPOMController' | 'TransactionController';
+
+type InitFunction<Name extends ControllersToInitialize> =
+  ControllerInitFunction<
+    ControllerByName[Name],
+    ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getMessenger']>,
+    ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
+  >;
+
+type InitFunctions = Partial<{
+  [name in ControllersToInitialize]: InitFunction<name>;
+}>;
 
 /**
  * Initialize the controllers according to the provided init objects.
@@ -64,18 +69,21 @@ export function initControllers({
 }: {
   baseControllerMessenger: BaseControllerMessenger;
   existingControllers?: Controller[];
-  initFunctions: Partial<
-    Record<ControllersToInitialize, BaseControllerInitFunction>
+  initFunctions: InitFunctions;
+  initRequest: Omit<
+    BaseControllerInitRequest,
+    'controllerMessenger' | 'getController' | 'initMessenger'
   >;
-  initRequest: Omit<ControllerInitRequest, 'getController'>;
 }): InitControllersResult {
   log('Initializing controllers', Object.keys(initFunctions).length);
 
-  const controllersByName = existingControllers.reduce((acc, controller) => {
+  const partialControllersByName = existingControllers.reduce<
+    Partial<ControllerByName>
+  >((acc, controller) => {
     // @ts-expect-error: Union too complex.
     acc[controller.name] = controller;
     return acc;
-  }, {} as ControllerByName);
+  }, {});
 
   const controllerPersistedState: Record<string, Controller> = {};
   const controllerMemState: Record<string, Controller> = {};
@@ -83,10 +91,12 @@ export function initControllers({
 
   const getController = <Name extends ControllerName>(
     name: Name,
-  ): ControllerByName[Name] => getControllerOrThrow(controllersByName, name);
+  ): ControllerByName[Name] =>
+    getControllerOrThrow(partialControllersByName as ControllerByName, name);
 
-  for (const [name, initFunction] of Object.entries(initFunctions)) {
-    const controllerName = name as ControllersToInitialize;
+  for (const [key, value] of Object.entries(initFunctions)) {
+    const controllerName = key as ControllersToInitialize;
+    const initFunction = value as InitFunction<typeof controllerName>;
     const messengerCallbacks = CONTROLLER_MESSENGERS[controllerName];
 
     const controllerMessengerCallback =
@@ -119,13 +129,15 @@ export function initControllers({
     const api = result.api ?? {};
 
     const persistedStateKey =
-      persistedStateKeyRaw === null ? undefined : persistedStateKeyRaw ?? name;
+      persistedStateKeyRaw === null
+        ? undefined
+        : persistedStateKeyRaw ?? controllerName;
 
     const memStateKey =
-      memStateKeyRaw === null ? undefined : memStateKeyRaw ?? name;
+      memStateKeyRaw === null ? undefined : memStateKeyRaw ?? controllerName;
 
-    // @ts-expect-error: Union too complex if name cast to `ControllerName`.
-    controllersByName[name] = controller;
+    partialControllersByName[controllerName] = controller as Controller &
+      undefined;
 
     controllerApi = {
       ...controllerApi,
@@ -140,7 +152,7 @@ export function initControllers({
       controllerMemState[memStateKey] = controller;
     }
 
-    log('Initialized controller', name, {
+    log('Initialized controller', controllerName, {
       api: Object.keys(api),
       persistedStateKey,
       memStateKey,
@@ -151,7 +163,7 @@ export function initControllers({
     controllerApi,
     controllerMemState,
     controllerPersistedState,
-    controllersByName,
+    controllersByName: partialControllersByName as ControllerByName,
   };
 }
 

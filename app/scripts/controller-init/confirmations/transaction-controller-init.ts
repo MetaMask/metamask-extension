@@ -1,5 +1,7 @@
 import {
+  CHAIN_IDS,
   TransactionController,
+  TransactionControllerMessenger,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
@@ -45,7 +47,9 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 import { ControllerFlatState } from '../controller-list';
 
 export const TransactionControllerInit: ControllerInitFunction<
-  TransactionController
+  TransactionController,
+  TransactionControllerMessenger,
+  TransactionControllerInitMessenger
 > = (request) => {
   const {
     controllerMessenger,
@@ -85,9 +89,17 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller type does not support undefined return value
     getPermittedAccounts,
     // @ts-expect-error Preferences controller uses Record rather than specific type
-    getSavedGasFees: (chainId: Hex) =>
-      preferencesController().state.advancedGasFee[chainId],
+    getSavedGasFees: () => {
+      const globalChainId = getGlobalChainId();
+      return preferencesController().state.advancedGasFee[globalChainId];
+    },
     incomingTransactions: {
+      etherscanApiKeysByChainId: {
+        // @ts-expect-error Controller does not support undefined values
+        [CHAIN_IDS.MAINNET]: process.env.ETHERSCAN_API_KEY,
+        // @ts-expect-error Controller does not support undefined values
+        [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
+      },
       includeTokenTransfers: false,
       isEnabled: () =>
         preferencesController().state.incomingTransactionsPreferences?.[
@@ -174,7 +186,12 @@ function getApi(
   };
 }
 
-function getControllers(request: ControllerInitRequest) {
+function getControllers(
+  request: ControllerInitRequest<
+    TransactionControllerMessenger,
+    TransactionControllerInitMessenger
+  >,
+) {
   return {
     gasFeeController: () => request.getController('GasFeeController'),
     keyringController: () => request.getController('KeyringController'),

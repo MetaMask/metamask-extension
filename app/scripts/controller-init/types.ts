@@ -5,6 +5,7 @@ import {
   EventConstraint,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
+import { Hex } from '@metamask/utils';
 import { TransactionMetricsRequest } from '../lib/transaction/metrics';
 import { Controller, ControllerFlatState } from './controller-list';
 
@@ -20,9 +21,9 @@ export type ControllerByName = {
  * Persisted state for all controllers.
  * e.g. `{ TransactionController: { transactions: [] } }`.
  */
-export type ControllerPersistedState = {
-  [name in ControllerName]: ControllerByName[name]['state'];
-};
+export type ControllerPersistedState = Partial<{
+  [name in ControllerName]: Partial<ControllerByName[name]['state']>;
+}>;
 
 /** Generic controller messenger using base template types. */
 export type BaseControllerMessenger = ControllerMessenger<
@@ -44,16 +45,14 @@ export type BaseRestrictedControllerMessenger = RestrictedControllerMessenger<
  * Includes standard data and methods not coupled to any specific controller.
  */
 export type ControllerInitRequest<
-  ControllerMessengerType extends void | BaseRestrictedControllerMessenger = void,
+  ControllerMessengerType extends BaseRestrictedControllerMessenger,
   InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
 > = {
   /**
    * Required controller messenger instance.
    * Generated using the callback specified in `getControllerMessengerCallback`.
    */
-  controllerMessenger: ControllerMessengerType extends BaseRestrictedControllerMessenger
-    ? ControllerMessengerType
-    : never;
+  controllerMessenger: ControllerMessengerType;
 
   /**
    * Retrieve a controller instance by name.
@@ -78,7 +77,7 @@ export type ControllerInitRequest<
    *
    * @deprecated Will be removed in the future pending multi-chain support.
    */
-  getGlobalChainId(): string;
+  getGlobalChainId(): Hex;
 
   /**
    * Retrieve the permitted accounts for a given origin.
@@ -106,20 +105,20 @@ export type ControllerInitRequest<
   getTransactionMetricsRequest(): TransactionMetricsRequest;
 
   /**
-   * Required initialization messenger instance.
-   * Generated using the callback specified in `getInitMessengerCallback`
-   */
-  initMessenger: InitMessengerType extends BaseRestrictedControllerMessenger
-    ? InitMessengerType
-    : never;
-
-  /**
    * The full persisted state for all controllers.
    * Includes controller name properties.
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
   persistedState: ControllerPersistedState;
-};
+} & (InitMessengerType extends BaseRestrictedControllerMessenger
+  ? {
+      /**
+       * Required initialization messenger instance.
+       * Generated using the callback specified in `getInitMessengerCallback`.
+       */
+      initMessenger: InitMessengerType;
+    }
+  : unknown);
 
 /**
  * A single background API method available to the UI.
@@ -151,7 +150,7 @@ export type ControllerInitResult<ControllerType extends Controller> = {
   /**
    * The key used to store the controller state in the memory-only store.
    * Defaults to the controller `name` property if `undefined`.
-   * If `null`, the controller state will not be stored in memory.
+   * If `null`, the controller state will not be synchronized with the UI state.
    */
   memStateKey?: string | null;
 };
@@ -161,7 +160,7 @@ export type ControllerInitResult<ControllerType extends Controller> = {
  */
 export type ControllerInitFunction<
   ControllerType extends Controller,
-  ControllerMessengerType extends void | BaseRestrictedControllerMessenger = void,
+  ControllerMessengerType extends BaseRestrictedControllerMessenger,
   InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
 > = (
   request: ControllerInitRequest<ControllerMessengerType, InitMessengerType>,

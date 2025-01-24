@@ -1,11 +1,17 @@
-import { PPOMController } from '@metamask/ppom-validator';
+import {
+  PPOMController,
+  PPOMControllerMessenger,
+} from '@metamask/ppom-validator';
 import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
 import * as PPOMModule from '../../lib/ppom/ppom';
 import { ControllerInitFunction } from '../types';
+import { PPOMControllerInitMessenger } from '../messengers/ppom-controller-messenger';
 
-export const PPOMControllerInit: ControllerInitFunction<PPOMController> = (
-  request,
-) => {
+export const PPOMControllerInit: ControllerInitFunction<
+  PPOMController,
+  PPOMControllerMessenger,
+  PPOMControllerInitMessenger
+> = (request) => {
   const {
     controllerMessenger,
     initMessenger,
@@ -26,6 +32,7 @@ export const PPOMControllerInit: ControllerInitFunction<PPOMController> = (
       PPOM: PPOMModule.PPOM,
       ppomInit: () => PPOMModule.default(process.env.PPOM_URI),
     },
+    // @ts-expect-error State type is not `Partial` in controller.
     state: persistedState.PPOMController,
     chainId: getGlobalChainId(),
     securityAlertsEnabled: preferencesController().state.securityAlertsEnabled,

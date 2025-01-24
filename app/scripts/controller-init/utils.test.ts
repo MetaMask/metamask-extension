@@ -1,15 +1,7 @@
 import { PPOMController } from '@metamask/ppom-validator';
-import { Controller } from './controller-list';
-import {
-  buildControllerInitRequestMock,
-  buildControllerMessengerMock,
-} from './test/utils';
-import {
-  BaseRestrictedControllerMessenger,
-  ControllerApi,
-  ControllerInitFunction,
-  ControllerName,
-} from './types';
+import { ControllerMessenger } from '@metamask/base-controller';
+import { buildControllerInitRequestMock } from './test/utils';
+import { ControllerApi, ControllerName } from './types';
 import { initControllers } from './utils';
 
 type InitFunctions = Parameters<typeof initControllers>[0]['initFunctions'];
@@ -41,21 +33,21 @@ function buildControllerInitResultMock({
 }
 
 function buildControllerFunctionMock() {
-  return (
-    jest.fn() as unknown as jest.MockedFn<
-      ControllerInitFunction<
-        Controller,
-        BaseRestrictedControllerMessenger,
-        BaseRestrictedControllerMessenger
-      >
-    >
-  ).mockReturnValue(buildControllerInitResultMock());
+  return jest.fn().mockReturnValue(buildControllerInitResultMock());
+}
+
+function buildInitRequestMock() {
+  return buildControllerInitRequestMock();
+}
+
+function buildControllerMessenger() {
+  return new ControllerMessenger();
 }
 
 describe('Controller Init Utils', () => {
   describe('initControllers', () => {
     it('returns controllers by name', () => {
-      const requestMock = buildControllerInitRequestMock();
+      const requestMock = buildInitRequestMock();
       const init1Mock = buildControllerFunctionMock();
       const init2Mock = buildControllerFunctionMock();
 
@@ -64,7 +56,7 @@ describe('Controller Init Utils', () => {
       );
 
       const { controllersByName } = initControllers({
-        baseControllerMessenger: buildControllerMessengerMock(),
+        baseControllerMessenger: new ControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: init1Mock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -88,7 +80,7 @@ describe('Controller Init Utils', () => {
       );
 
       initControllers({
-        baseControllerMessenger: buildControllerMessengerMock(),
+        baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: init1Mock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -106,7 +98,7 @@ describe('Controller Init Utils', () => {
         const initMock = buildControllerFunctionMock();
 
         initControllers({
-          baseControllerMessenger: buildControllerMessengerMock(),
+          baseControllerMessenger: buildControllerMessenger(),
           initFunctions: {
             [CONTROLLER_NAME_MOCK]: initMock,
           },
@@ -125,7 +117,7 @@ describe('Controller Init Utils', () => {
         const initMock = buildControllerFunctionMock();
 
         initControllers({
-          baseControllerMessenger: buildControllerMessengerMock(),
+          baseControllerMessenger: buildControllerMessenger(),
           initFunctions: {
             [CONTROLLER_NAME_MOCK]: initMock,
           },
@@ -146,7 +138,7 @@ describe('Controller Init Utils', () => {
         const initMock = buildControllerFunctionMock();
 
         initControllers({
-          baseControllerMessenger: buildControllerMessengerMock(),
+          baseControllerMessenger: buildControllerMessenger(),
           existingControllers: [buildControllerMock(CONTROLLER_NAME_2_MOCK)],
           initFunctions: {
             [CONTROLLER_NAME_MOCK]: initMock,
@@ -178,7 +170,7 @@ describe('Controller Init Utils', () => {
       );
 
       const { controllerApi } = initControllers({
-        baseControllerMessenger: buildControllerMessengerMock(),
+        baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -218,7 +210,7 @@ describe('Controller Init Utils', () => {
       );
 
       const { controllerPersistedState } = initControllers({
-        baseControllerMessenger: buildControllerMessengerMock(),
+        baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -258,7 +250,7 @@ describe('Controller Init Utils', () => {
       );
 
       const { controllerMemState } = initControllers({
-        baseControllerMessenger: buildControllerMessengerMock(),
+        baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
           [CONTROLLER_NAME_2_MOCK]: init2Mock,
@@ -278,7 +270,7 @@ describe('Controller Init Utils', () => {
       const initMock = buildControllerFunctionMock();
 
       initControllers({
-        baseControllerMessenger: buildControllerMessengerMock(),
+        baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
         },
@@ -295,7 +287,7 @@ describe('Controller Init Utils', () => {
       const initMock = buildControllerFunctionMock();
 
       initControllers({
-        baseControllerMessenger: buildControllerMessengerMock(),
+        baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           TestName: initMock,
         } as InitFunctions,
@@ -312,7 +304,7 @@ describe('Controller Init Utils', () => {
       const initMock = buildControllerFunctionMock();
 
       initControllers({
-        baseControllerMessenger: buildControllerMessengerMock(),
+        baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           [CONTROLLER_NAME_MOCK]: initMock,
         },
@@ -329,7 +321,7 @@ describe('Controller Init Utils', () => {
       const initMock = buildControllerFunctionMock();
 
       initControllers({
-        baseControllerMessenger: buildControllerMessengerMock(),
+        baseControllerMessenger: buildControllerMessenger(),
         initFunctions: {
           TestName: initMock,
         } as InitFunctions,
