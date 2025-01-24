@@ -51,7 +51,11 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { ENVIRONMENT } from '../../development/build/constants';
 import { SECOND } from '../../shared/constants/time';
-import { CaveatTypes } from '../../shared/constants/permissions';
+import {
+  CaveatTypes,
+  EndowmentTypes,
+  RestrictedEthMethods,
+} from '../../shared/constants/permissions';
 import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController, {
@@ -1476,6 +1480,7 @@ describe('MetaMaskController', () => {
       });
 
       it('returns the CAIP-25 approval with approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
+        const origin = 'npm:snap';
         jest
           .spyOn(
             metamaskController.approvalController,
@@ -1503,6 +1508,7 @@ describe('MetaMaskController', () => {
               },
             },
           });
+
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
           .mockReturnValue({
@@ -1511,9 +1517,57 @@ describe('MetaMaskController', () => {
             },
           });
 
-        const result = await metamaskController.requestCaip25Approval(
-          'npm:snap',
-          {},
+        const result = await metamaskController.requestCaip25Approval(origin, {
+          [RestrictedEthMethods.eth_accounts]: {
+            caveats: [
+              {
+                type: 'restrictReturnedAccounts',
+                value: ['0xdeadbeef'],
+              },
+            ],
+          },
+          [EndowmentTypes.permittedChains]: {
+            caveats: [
+              {
+                type: 'restrictNetworkSwitching',
+                value: ['0x1, 0x5'],
+              },
+            ],
+          },
+        });
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin,
+            requestData: expect.objectContaining({
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin,
+              },
+              permissions: {
+                [Caip25EndowmentPermissionName]: {
+                  caveats: [
+                    {
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: ['wallet:eip155:0xdeadbeef'],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
+                    },
+                  ],
+                },
+              },
+            }),
+            type: 'wallet_requestPermissions',
+          }),
         );
 
         expect(result).toStrictEqual({
