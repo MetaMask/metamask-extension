@@ -56,12 +56,13 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 .devcontainer/                       @MetaMask/extension-security-team @HowardBraham
 
 # Confirmations team to own code for confirmations on UI.
-app/scripts/lib/ppom                    @MetaMask/confirmations
-app/scripts/lib/signature               @MetaMask/confirmations
-app/scripts/lib/transaction/decode      @MetaMask/confirmations
-app/scripts/lib/transaction/metrics.*   @MetaMask/confirmations
-app/scripts/lib/transaction/util.*      @MetaMask/confirmations
-ui/pages/confirmations                  @MetaMask/confirmations
+app/scripts/controller-init/confirmations                         @MetaMask/confirmations
+app/scripts/lib/ppom                                              @MetaMask/confirmations
+app/scripts/lib/signature                                         @MetaMask/confirmations
+app/scripts/lib/transaction/decode                                @MetaMask/confirmations
+app/scripts/lib/transaction/metrics.*                             @MetaMask/confirmations
+app/scripts/lib/transaction/util.*                                @MetaMask/confirmations
+ui/pages/confirmations                                            @MetaMask/confirmations
 
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system

@@ -25,7 +25,7 @@ ignores:
   - '@metamask/test-dapp'
   - '@metamask/test-dapp-multichain'
   - '@metamask/design-tokens' # Only imported in index.css
-  - '@tsconfig/node20' # required dynamically by TS, used in tsconfig.json
+  - '@tsconfig/node22' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
   - 'chromedriver'
   - 'depcheck' # ooo meta
