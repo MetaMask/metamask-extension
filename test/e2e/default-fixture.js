@@ -138,8 +138,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               },
             },
           },
-          destTokens: {},
-          destTopAssets: [],
         },
       },
       CurrencyController: {

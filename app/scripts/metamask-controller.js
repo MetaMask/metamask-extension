@@ -3162,6 +3162,13 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
+      'NetworkController:networkRemoved',
+      ({ chainId }) => {
+        this.removeAllChainIdPermissions(chainId);
+      },
+    );
+
+    this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
         await this.txController.stopIncomingTransactionPolling();
@@ -4200,11 +4207,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE}`,
-        ),
-      [BridgeUserAction.SELECT_DEST_NETWORK]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.SELECT_DEST_NETWORK}`,
         ),
       [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
         this.controllerMessenger.call.bind(
