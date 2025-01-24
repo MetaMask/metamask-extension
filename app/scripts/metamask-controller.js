@@ -3202,7 +3202,7 @@ export default class MetamaskController extends EventEmitter {
 
         // remove any existing notification subscriptions for removed authorizations
         for (const [origin, authorization] of removedAuthorizations.entries()) {
-          const sessionScopes = getSessionScopes(authorization);
+          const sessionScopes = getSessionScopes(authorization, {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods});
           // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
           // then remove middleware and unsubscribe
           Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
@@ -3224,7 +3224,7 @@ export default class MetamaskController extends EventEmitter {
 
         // add new notification subscriptions for changed authorizations
         for (const [origin, authorization] of changedAuthorizations.entries()) {
-          const sessionScopes = getSessionScopes(authorization);
+          const sessionScopes = getSessionScopes(authorization, {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods});
 
           // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
           // then get the subscriptionManager going for that scope
@@ -3265,6 +3265,7 @@ export default class MetamaskController extends EventEmitter {
           if (previousAuthorization) {
             const previousSessionScopes = getSessionScopes(
               previousAuthorization,
+              {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods}
             );
 
             Object.entries(previousSessionScopes).forEach(
@@ -5797,6 +5798,13 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  getNonEvmSupportedMethods(scope) {
+    return this.controllerMessenger.call(
+      'MultichainRouter:getSupportedMethods',
+      scope
+    )
+  }
+
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
@@ -6924,10 +6932,7 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             origin,
           ),
-        getNonEvmSupportedMethods: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'MultichainRouter:getSupportedMethods',
-        ),
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
         isNonEvmScopeSupported: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'MultichainRouter:isSupportedScope',
@@ -7070,7 +7075,7 @@ export default class MetamaskController extends EventEmitter {
       );
 
       // add new notification subscriptions for changed authorizations
-      const sessionScopes = getSessionScopes(caip25Caveat.value);
+      const sessionScopes = getSessionScopes(caip25Caveat.value, {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods});
 
       // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
       // then get the subscriptionManager going for that scope
@@ -7966,7 +7971,7 @@ export default class MetamaskController extends EventEmitter {
         {
           method: NOTIFICATION_NAMES.sessionChanged,
           params: {
-            sessionScopes: getSessionScopes(newAuthorization),
+            sessionScopes: getSessionScopes(newAuthorization, {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods}),
           },
         },
         API_TYPE.CAIP_MULTICHAIN,
