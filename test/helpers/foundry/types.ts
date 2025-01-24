@@ -4,19 +4,19 @@ import type { InferredOptionTypes, Options } from 'yargs';
 
 // #region utils
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I,
-) => void
+type UnionToIntersection<U> = ((k: U) => void) extends (k: infer I) => void
   ? I
   : never;
 
-type LastInUnion<U> = UnionToIntersection<
-  U extends any ? () => U : never
+type LastInUnion<U extends PropertyKey> = UnionToIntersection<
+  U extends PropertyKey ? () => U : never
 > extends () => infer Last
   ? Last
   : never;
 
-type UnionToTuple<U, Last = LastInUnion<U>> = [U] extends [never]
+type UnionToTuple<U extends PropertyKey, Last = LastInUnion<U>> = [U] extends [
+  never,
+]
   ? []
   : [...UnionToTuple<Exclude<U, Last>>, Last];
 
