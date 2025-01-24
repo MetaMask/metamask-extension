@@ -64,7 +64,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     ganacheOptions,
     anvilOptions,
-    localNode,
+    localNetwork = 'ganache',
     smartContract,
     driverOptions,
     dappOptions,
@@ -84,22 +84,22 @@ async function withFixtures(options, testSuite) {
     manifestFlags,
   } = options;
 
-  // Validate localNode value
-  const allowedNodes = ['ganache', 'anvil', 'bitcoin', 'solana'];
-  if (!allowedNodes.includes(localNode)) {
-    throw new Error(`Invalid localNode: '${localNode}'. Allowed values are: ${allowedNodes.join(', ')}`);
+  // Validate localNetwork value
+  const allowedNetworks = ['ganache', 'anvil', 'bitcoin', 'solana'];
+  if (!allowedNetworks.includes(localNetwork)) {
+    throw new Error(`Invalid localNetwork value: '${localNetwork}'. Allowed values are: ${allowedNetworks.join(', ')}`);
   }
 
   // Check for unsupported networks
-  if (localNode === 'solana' || localNode === 'bitcoin') {
-    return 'Not yet supported, but coming soon!';
+  if (localNetwork === 'solana' || localNetwork === 'bitcoin') {
+    return 'Not yet supported, coming soon';
   }
 
   const fixtureServer = new FixtureServer();
   let ganacheServer;
   let anvilServer;
 
-  if (localNode === 'anvil') {
+  if (localNetwork === 'anvil') {
     anvilServer = new Anvil();
   } else if (!disableGanache) {
     ganacheServer = new Ganache();
