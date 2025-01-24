@@ -2099,19 +2099,19 @@ describe('MetaMaskController', () => {
     describe('NetworkConfiguration is removed', () => {
       it('should remove the permitted chain from all existing permissions', () => {
         jest
-          .spyOn(metamaskController, 'removeAllChainIdPermissions')
+          .spyOn(metamaskController, 'removeAllScopePermissions')
           .mockReturnValue();
 
         metamaskController.controllerMessenger.publish(
           'NetworkController:networkRemoved',
           {
-            chainId: '0xdeadbeef',
+            chainId: '0xa',
           },
         );
 
         expect(
-          metamaskController.removeAllChainIdPermissions,
-        ).toHaveBeenCalledWith('0xdeadbeef');
+          metamaskController.removeAllScopePermissions,
+        ).toHaveBeenCalledWith('eip155:10');
       });
     });
 
