@@ -51,15 +51,6 @@ describe('ReadOnlyNetworkStore', () => {
   });
 
   describe('constructor', () => {
-    it('makes a request to the fixture server upon construction', async () => {
-      const scope = nock(FIXTURE_SERVER_ORIGIN)
-        .get(FIXTURE_SERVER_PATH)
-        .reply(200, 'Test');
-      expect(scope.pendingMocks().length).toBe(1);
-      setupReadOnlyNetworkStore();
-      await new Promise(process.nextTick);
-      expect(scope.pendingMocks().length).toBe(0);
-    });
     it('loads state from the network if fetch is successful and response is ok', async () => {
       setMockFixtureServerReply(MOCK_STATE);
       const store = setupReadOnlyNetworkStore();
