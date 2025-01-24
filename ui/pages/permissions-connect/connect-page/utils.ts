@@ -38,7 +38,7 @@ export function getRequestedSessionScopes(
  * @param hexChainIds - The list of permitted chains.
  * @returns The granted permissions with the target name of the {@link Caip25EndowmentPermissionName}.
  */
-export function parseCaip25PermissionsResponse(
+export function getCaip25PermissionsResponse(
   addresses: string[],
   hexChainIds: string[],
 ): {

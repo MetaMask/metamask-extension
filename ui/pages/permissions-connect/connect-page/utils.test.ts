@@ -3,14 +3,14 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/multichain';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { parseCaip25PermissionsResponse } from './utils';
+import { getCaip25PermissionsResponse } from './utils';
 
-describe('parseCaip25PermissionsResponse', () => {
+describe('getCaip25PermissionsResponse', () => {
   it('should correctly parse CAIP-25 permissions response', () => {
     const addresses = ['0x4c286da233db3d63d44dc2ec8adc8b6dfb595cb4'];
     const hexChainIds = [CHAIN_IDS.ARBITRUM, CHAIN_IDS.LINEA_MAINNET];
 
-    const result = parseCaip25PermissionsResponse(addresses, hexChainIds);
+    const result = getCaip25PermissionsResponse(addresses, hexChainIds);
 
     expect(result).toEqual({
       permissions: {

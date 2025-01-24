@@ -25,7 +25,7 @@ import {
 import { Box } from '../../component-library';
 import {
   getRequestedSessionScopes,
-  parseCaip25PermissionsResponse,
+  getCaip25PermissionsResponse,
 } from '../../../pages/permissions-connect/connect-page/utils';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerContent } from '.';
@@ -162,7 +162,7 @@ export default class PermissionPageContainer extends Component {
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      approvedSessionScopes: parseCaip25PermissionsResponse(
+      approvedSessionScopes: getCaip25PermissionsResponse(
         approvedAccounts,
         approvedChainIds,
       ),

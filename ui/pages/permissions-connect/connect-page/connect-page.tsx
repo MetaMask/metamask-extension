@@ -36,7 +36,7 @@ import PermissionsConnectFooter from '../../../components/app/permissions-connec
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import {
   getRequestedSessionScopes,
-  parseCaip25PermissionsResponse,
+  getCaip25PermissionsResponse,
   PermissionsRequest,
 } from './utils';
 
@@ -123,7 +123,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = () => {
     const _request = {
       ...request,
-      approvedSessionScopes: parseCaip25PermissionsResponse(
+      approvedSessionScopes: getCaip25PermissionsResponse(
         selectedAccountAddresses,
         selectedChainIds,
       ),
