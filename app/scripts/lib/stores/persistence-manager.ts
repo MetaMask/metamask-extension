@@ -45,7 +45,7 @@ export class PersistanceManager {
    * used as a way of deduplicating error reports sent to sentry as it is
    * likely that multiple writes will fail concurrently.
    */
-  dataPersistenceFailing: boolean;
+  #dataPersistenceFailing: boolean;
 
   /**
    * mostRecentRetrievedState is a property that holds the most recent state
@@ -53,7 +53,7 @@ export class PersistanceManager {
    * operations it is beneficial to have a near real-time snapshot of the state
    * for sending data to sentry as well as other developer tooling.
    */
-  mostRecentRetrievedState: MetaMaskStorageStructure | null;
+  #mostRecentRetrievedState: MetaMaskStorageStructure | null;
 
   /**
    * metadata is a property that holds the current metadata object. This object
@@ -64,20 +64,20 @@ export class PersistanceManager {
    */
   metadata?: { version: number };
 
-  isExtensionInitialized: boolean;
+  #isExtensionInitialized: boolean;
 
-  localStore: ExtensionStore | ReadOnlyNetworkStore;
+  #localStore: ExtensionStore | ReadOnlyNetworkStore;
 
   constructor({
     localStore,
   }: {
     localStore: ExtensionStore | ReadOnlyNetworkStore;
   }) {
-    this.dataPersistenceFailing = false;
-    this.mostRecentRetrievedState = null;
-    this.isExtensionInitialized = false;
+    this.#dataPersistenceFailing = false;
+    this.#mostRecentRetrievedState = null;
+    this.#isExtensionInitialized = false;
 
-    this.localStore = localStore;
+    this.#localStore = localStore;
   }
 
   async set(state: IntermediaryStateType) {
@@ -88,38 +88,47 @@ export class PersistanceManager {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
     try {
-      await this.localStore.set({ data: state, meta: this.metadata });
-
-      if (this.dataPersistenceFailing) {
-        this.dataPersistenceFailing = false;
+      await this.#localStore.set({ data: state, meta: this.metadata });
+      if (this.#dataPersistenceFailing) {
+        this.#dataPersistenceFailing = false;
       }
     } catch (err) {
-      if (!this.dataPersistenceFailing) {
-        this.dataPersistenceFailing = true;
+      if (this.metadata.version === 17) {
+        console.log(
+          'this.#dataPersistenceFailing',
+          this.#dataPersistenceFailing,
+        );
+      }
+      if (!this.#dataPersistenceFailing) {
+        this.#dataPersistenceFailing = true;
         captureException(err);
       }
       log.error('error setting state in local store:', err);
     } finally {
-      this.isExtensionInitialized = true;
+      this.#isExtensionInitialized = true;
     }
   }
 
   async get() {
-    const result = await this.localStore.get();
+    const result = await this.#localStore.get();
 
     if (isEmpty(result)) {
-      this.mostRecentRetrievedState = null;
+      this.#mostRecentRetrievedState = null;
       return undefined;
     }
-    if (!this.isExtensionInitialized) {
-      this.mostRecentRetrievedState = result;
+    if (!this.#isExtensionInitialized) {
+      this.#mostRecentRetrievedState = result;
     }
     return result;
   }
 
+  get mostRecentRetrievedState() {
+    return this.#mostRecentRetrievedState;
+  }
+
   cleanUpMostRecentRetrievedState() {
-    if (this.mostRecentRetrievedState) {
-      this.mostRecentRetrievedState = null;
+    if (this.#mostRecentRetrievedState) {
+      this.#mostRecentRetrievedState = null;
     }
   }
 }

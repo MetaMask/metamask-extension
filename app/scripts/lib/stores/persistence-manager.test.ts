@@ -6,9 +6,12 @@ import { PersistanceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
 import { IntermediaryStateType } from './base-store';
 
+const mockStoreSet = jest.fn();
+const mockStoreGet = jest.fn();
+
 jest.mock('./extension-store', () => {
   return jest.fn().mockImplementation(() => {
-    return { set: jest.fn(), get: jest.fn() };
+    return { set: mockStoreSet, get: mockStoreGet };
   });
 });
 jest.mock('./read-only-network-store');
@@ -27,15 +30,6 @@ describe('PersistanceManager', () => {
     manager = new PersistanceManager({ localStore: new ExtensionStore() });
   });
 
-  describe('constructor', () => {
-    it('initializes with the expected default properties', () => {
-      expect(manager.dataPersistenceFailing).toBe(false);
-      expect(manager.mostRecentRetrievedState).toBeNull();
-      expect(manager.isExtensionInitialized).toBe(false);
-      expect(manager.localStore).toBeDefined();
-    });
-  });
-
   describe('metadata setter/getter', () => {
     it('sets and retrieves metadata correctly', () => {
       manager.metadata = { version: 42 };
@@ -44,13 +38,6 @@ describe('PersistanceManager', () => {
   });
 
   describe('set', () => {
-    let mockStoreSet: jest.Mock;
-
-    beforeEach(() => {
-      // By default, we create a manager with ExtensionStore mocked
-      mockStoreSet = manager.localStore.set as jest.Mock;
-    });
-
     it('throws if state is missing', async () => {
       await expect(
         manager.set(undefined as unknown as IntermediaryStateType),
@@ -73,11 +60,9 @@ describe('PersistanceManager', () => {
         data: { appState: { test: true } },
         meta: { version: 10 },
       });
-      expect(manager.dataPersistenceFailing).toBe(false);
-      expect(manager.isExtensionInitialized).toBe(true);
     });
 
-    it('sets dataPersistenceFailing to true and logs error if store.set throws', async () => {
+    it('logs error and captures exception if store.set throws', async () => {
       manager.metadata = { version: 10 };
 
       const error = new Error('store.set error');
@@ -89,33 +74,42 @@ describe('PersistanceManager', () => {
         'error setting state in local store:',
         error,
       );
-      expect(manager.dataPersistenceFailing).toBe(true);
-      expect(manager.isExtensionInitialized).toBe(true);
     });
 
-    it('resets dataPersistenceFailing to false if a second call to set succeeds', async () => {
+    it('captures exception only once if store.set is called and throws multiple times', async () => {
       manager.metadata = { version: 10 };
 
-      // First call fails
+      const error = new Error('store.set error');
+      mockStoreSet.mockRejectedValue(error);
+
+      await manager.set({ appState: { broken: true } });
+      await manager.set({ appState: { broken: true } });
+
+      expect(captureException).toHaveBeenCalledTimes(1);
+    });
+
+    it('captures exception twice if store.set fails, then succeeds and then fails again', async () => {
+      manager.metadata = { version: 17 };
+
       const error = new Error('store.set error');
       mockStoreSet.mockRejectedValueOnce(error);
 
       await manager.set({ appState: { broken: true } });
-      expect(manager.dataPersistenceFailing).toBe(true);
 
-      // Next call succeeds
-      await manager.set({ appState: { works: true } });
-      expect(manager.dataPersistenceFailing).toBe(false);
+      mockStoreSet.mockReturnValueOnce({
+        data: { appState: { broken: true } },
+      });
+      await manager.set({ appState: { broken: true } });
+
+      mockStoreSet.mockRejectedValueOnce(error);
+
+      await manager.set({ appState: { broken: true } });
+
+      expect(captureException).toHaveBeenCalledTimes(2);
     });
   });
 
   describe('get', () => {
-    let mockStoreGet: jest.Mock;
-
-    beforeEach(() => {
-      mockStoreGet = manager.localStore.get as jest.Mock;
-    });
-
     it('returns undefined and clears mostRecentRetrievedState if store returns empty', async () => {
       mockStoreGet.mockReturnValueOnce({});
       const result = await manager.get();
@@ -130,10 +124,9 @@ describe('PersistanceManager', () => {
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
 
-    it('updates mostRecentRetrievedState if manager is not initialized yet', async () => {
+    it('updates mostRecentRetrievedState if #isExtensionInitialized has not been set via set call', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: { config: { foo: 'bar' } } });
 
-      expect(manager.isExtensionInitialized).toBe(false);
       await manager.get();
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: { config: { foo: 'bar' } },
@@ -144,11 +137,9 @@ describe('PersistanceManager', () => {
       mockStoreGet.mockResolvedValueOnce({ data: { config: { foo: 'bar' } } });
       // First call to get -> sets isExtensionInitialized = false -> sets mostRecentRetrievedState
       await manager.get();
-      expect(manager.isExtensionInitialized).toBe(false);
       // The act of calling set will set isExtensionInitialized to true
       manager.metadata = { version: 10 };
       await manager.set({ appState: { test: true } });
-      expect(manager.isExtensionInitialized).toBe(true);
 
       // Now call get() again; it should not change mostRecentRetrievedState
       mockStoreGet.mockResolvedValueOnce({
@@ -163,9 +154,9 @@ describe('PersistanceManager', () => {
 
   describe('cleanUpMostRecentRetrievedState', () => {
     it('sets mostRecentRetrievedState to null if previously set', async () => {
-      manager.mostRecentRetrievedState = {
-        data: { config: { foo: 'bar' } },
-      };
+      mockStoreGet.mockResolvedValueOnce({ data: { config: { foo: 'bar' } } });
+
+      await manager.get();
       manager.cleanUpMostRecentRetrievedState();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
