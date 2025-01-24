@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
+import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
@@ -20,17 +21,13 @@ import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 import { ConnectPage } from './connect-page/connect-page';
-import {
-  getRequestedAccountsViaPermissionsRequest,
-  getRequestedChainsViaPermissionsRequest,
-} from './connect-page/utils';
+import { getRequestedSessionScopes } from './connect-page/utils';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
-  const requestedAccounts = getRequestedAccountsViaPermissionsRequest(
-    permissionsRequest?.permissions,
-  );
+  const requestedSessionsScopes = getRequestedSessionScopes(permissionsRequest);
+  const requestedAccounts = getEthAccounts(requestedSessionsScopes);
 
   if (requestedAccounts) {
     return new Set(
@@ -46,9 +43,8 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
 }
 
 function getRequestedChainIds(permissionsRequest) {
-  return getRequestedChainsViaPermissionsRequest(
-    permissionsRequest?.permissions,
-  );
+  const requestedSessionsScopes = getRequestedSessionScopes(permissionsRequest);
+  return getPermittedEthChainIds(requestedSessionsScopes);
 }
 
 export default class PermissionConnect extends Component {

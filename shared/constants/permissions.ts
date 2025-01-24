@@ -1,17 +1,10 @@
-import {
-  Caip25CaveatType,
-  Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
-
 export const CaveatTypes = Object.freeze({
   restrictReturnedAccounts: 'restrictReturnedAccounts' as const,
   restrictNetworkSwitching: 'restrictNetworkSwitching' as const,
-  caip25: Caip25CaveatType,
 });
 
 export const EndowmentTypes = Object.freeze({
   permittedChains: 'endowment:permitted-chains',
-  caip25: Caip25EndowmentPermissionName,
 });
 
 export const RestrictedEthMethods = Object.freeze({

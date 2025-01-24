@@ -3,6 +3,7 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { Caip25EndowmentPermissionName } from '@metamask/multichain';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -34,7 +35,6 @@ import {
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
 } from '../../helpers/constants/routes';
-import { EndowmentTypes } from '../../../shared/constants/permissions';
 import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -56,7 +56,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   const isRequestingAccounts = Boolean(
-    permissionsRequest?.permissions?.[EndowmentTypes.caip25],
+    permissionsRequest?.permissions?.[Caip25EndowmentPermissionName],
   );
 
   const { metadata = {} } = permissionsRequest || {};

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
@@ -34,8 +35,7 @@ import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import {
-  getRequestedAccountsViaPermissionsRequest,
-  getRequestedChainsViaPermissionsRequest,
+  getRequestedSessionScopes,
   parseCaip25PermissionsResponse,
   PermissionsRequest,
 } from './utils';
@@ -62,12 +62,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
 
-  const requestedAccounts = getRequestedAccountsViaPermissionsRequest(
+  const requestedSessionsScopes = getRequestedSessionScopes(
     request.permissions,
   );
-  const requestedChainIds = getRequestedChainsViaPermissionsRequest(
-    request.permissions,
-  );
+  const requestedAccounts = getEthAccounts(requestedSessionsScopes);
+  const requestedChainIds = getPermittedEthChainIds(requestedSessionsScopes);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(
