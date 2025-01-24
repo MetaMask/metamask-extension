@@ -6536,11 +6536,6 @@ __metadata:
     "@metamask/remote-feature-flag-controller": ^1.5.0
   checksum: 10/7882a57f04552b47ad8755076d95d6256db4cc76918aa9775f6b0dac7b574479f218e7d7eac2b10facbb2468c43b38554bdce578a561ff6e442ec9f481b56b9a
   languageName: node
-  linkType: hard
-
-"@metamask/user-operation-controller@npm:^24.0.1":
-  version: 24.0.1
-  resolution: "@metamask/user-operation-controller@npm:24.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.5.0"
