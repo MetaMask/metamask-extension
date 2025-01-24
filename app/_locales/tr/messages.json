@@ -736,9 +736,6 @@
     "message": "MR",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin aktivitesi desteklenmiyor"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -4306,12 +4303,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Paranızı koruyun"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "İmza talepleri iyileştirildi"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "İmza taleplerini geliştirilmiş bir biçimde görmek için bunu açın."
   },
   "refreshList": {
     "message": "Listeyi yenile"

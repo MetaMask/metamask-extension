@@ -49,7 +49,6 @@ const getMetaMaskStateWithUnapprovedIncreaseAllowanceTransaction = (opts?: {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
       showConfirmationAdvancedDetails: opts?.showAdvanceDetails ?? false,
     },
     pendingApprovals: {
