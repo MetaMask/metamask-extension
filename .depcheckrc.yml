@@ -40,6 +40,8 @@ ignores:
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
+  - 'tar' # used by foundryup.ts
+  - 'minipass' # used by foundryup.ts
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
@@ -82,9 +84,6 @@ ignores:
   - '@testing-library/dom'
   - 'mini-css-extract-plugin'
   - 'webpack-cli'
-  # foundryup
-  - 'tar'
-  - 'minipass'
 
 # files depcheck should not parse
 ignorePatterns:
