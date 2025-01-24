@@ -45,7 +45,7 @@ export class PersistanceManager {
    * used as a way of deduplicating error reports sent to sentry as it is
    * likely that multiple writes will fail concurrently.
    */
-  #dataPersistenceFailing: boolean;
+  #dataPersistenceFailing: boolean = false;
 
   /**
    * mostRecentRetrievedState is a property that holds the most recent state
@@ -53,7 +53,7 @@ export class PersistanceManager {
    * operations it is beneficial to have a near real-time snapshot of the state
    * for sending data to sentry as well as other developer tooling.
    */
-  #mostRecentRetrievedState: MetaMaskStorageStructure | null;
+  #mostRecentRetrievedState: MetaMaskStorageStructure | null = null;
 
   /**
    * metadata is a property that holds the current metadata object. This object
@@ -62,7 +62,7 @@ export class PersistanceManager {
    */
   metadata?: { version: number };
 
-  #isExtensionInitialized: boolean;
+  #isExtensionInitialized: boolean = false;
 
   #localStore: ExtensionStore | ReadOnlyNetworkStore;
 
@@ -71,10 +71,6 @@ export class PersistanceManager {
   }: {
     localStore: ExtensionStore | ReadOnlyNetworkStore;
   }) {
-    this.#dataPersistenceFailing = false;
-    this.#mostRecentRetrievedState = null;
-    this.#isExtensionInitialized = false;
-
     this.#localStore = localStore;
   }
 
