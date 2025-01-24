@@ -105,7 +105,7 @@ describe('ReadOnlyNetworkStore', () => {
       expect(result).toBe(null);
     });
 
-    it('returns stored state if #state has data', async () => {
+    it('returns null if state is null', async () => {
       setMockFixtureServerReply(MOCK_STATE);
 
       const store = setupReadOnlyNetworkStore();
