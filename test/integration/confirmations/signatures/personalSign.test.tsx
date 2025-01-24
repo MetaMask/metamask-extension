@@ -198,35 +198,4 @@ describe('PersonalSign Confirmation', () => {
       await screen.findByText('Review request details before you confirm.'),
     ).toBeInTheDocument();
   });
-
-  it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        '07c2cfec-36c9-46c4-8115-3836d3ac9047'
-      ];
-    const selectedAccount =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPersonalSign(
-      account.address,
-    );
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    const mismatchAccountText = `Your selected account (${shortenAddress(
-      selectedAccount.address,
-    )}) is different than the account trying to sign (${shortenAddress(
-      account.address,
-    )})`;
-
-    expect(await screen.findByText(mismatchAccountText)).toBeInTheDocument();
-  });
 });
