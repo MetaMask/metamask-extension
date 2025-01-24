@@ -60,9 +60,6 @@ describe('ReadOnlyNetworkStore', () => {
       await new Promise(process.nextTick);
       expect(scope.pendingMocks().length).toBe(0);
     });
-  });
-
-  describe('initialization (#init)', () => {
     it('loads state from the network if fetch is successful and response is ok', async () => {
       setMockFixtureServerReply(MOCK_STATE);
       const store = setupReadOnlyNetworkStore();
