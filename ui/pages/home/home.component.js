@@ -306,9 +306,9 @@ export default class Home extends PureComponent {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
       history.push(PREPARE_SWAP_ROUTE);
-    } else if (pendingApprovals.length) {
+    } else if (pendingApprovals.length || hasApprovalFlows) {
       navigateToConfirmation(
-        pendingApprovals[0].id,
+        pendingApprovals?.[0]?.id,
         pendingApprovals,
         hasApprovalFlows,
         history,
