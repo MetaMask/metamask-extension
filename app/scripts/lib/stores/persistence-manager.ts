@@ -91,12 +91,6 @@ export class PersistanceManager {
         this.#dataPersistenceFailing = false;
       }
     } catch (err) {
-      if (this.metadata.version === 17) {
-        console.log(
-          'this.#dataPersistenceFailing',
-          this.#dataPersistenceFailing,
-        );
-      }
       if (!this.#dataPersistenceFailing) {
         this.#dataPersistenceFailing = true;
         captureException(err);
