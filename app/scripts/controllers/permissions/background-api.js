@@ -101,7 +101,7 @@ export function getPermissionBackgroundApiMethods({
 
   const requestAccountsAndChainPermissions = async (origin, id) => {
     const {
-      response: { permissions },
+      approvedSessionScopes: { permissions },
     } = await approvalController.addAndShowApprovalRequest({
       id,
       origin,

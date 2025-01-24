@@ -165,7 +165,7 @@ class PermissionPageContainer extends Component {
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      response: parseCaip25PermissionsResponse(
+      approvedSessionScopes: parseCaip25PermissionsResponse(
         approvedAccounts,
         approvedChainIds,
       ),

@@ -210,6 +210,7 @@ import {
   EndowmentPermissions,
   ExcludedSnapPermissions,
   ExcludedSnapEndowments,
+  CaveatTypes,
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
@@ -5575,10 +5576,14 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const requestedChains =
-      permissions[PermissionNames.permittedChains]?.caveats?.[0]?.value ?? [];
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
 
     const requestedAccounts =
-      permissions[PermissionNames.eth_accounts]?.caveats?.[0]?.value ?? [];
+      permissions[PermissionNames.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -5602,7 +5607,7 @@ export default class MetamaskController extends EventEmitter {
 
     const id = nanoid();
 
-    const { response } =
+    const { approvedSessionScopes } =
       await this.approvalController.addAndShowApprovalRequest({
         id,
         origin,
@@ -5625,7 +5630,7 @@ export default class MetamaskController extends EventEmitter {
         type: MethodNames.RequestPermissions,
       });
 
-    return response.permissions;
+    return approvedSessionScopes.permissions;
   }
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)

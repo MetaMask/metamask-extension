@@ -123,7 +123,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = () => {
     const _request = {
       ...request,
-      response: parseCaip25PermissionsResponse(
+      approvedSessionScopes: parseCaip25PermissionsResponse(
         selectedAccountAddresses,
         selectedChainIds,
       ),
