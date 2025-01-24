@@ -177,8 +177,16 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { permissionsRequest, lastConnectedInfo } = this.props;
+    const { permissionsRequest, lastConnectedInfo, targetSubjectMetadata } =
+      this.props;
     const { redirecting, origin } = this.state;
+
+    if (
+      targetSubjectMetadata?.origin &&
+      prevProps.targetSubjectMetadata?.origin !== targetSubjectMetadata?.origin
+    ) {
+      this.setState({ targetSubjectMetadata });
+    }
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
       const accountsLastApprovedTime =
