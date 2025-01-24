@@ -6,6 +6,7 @@ import {
   BRIDGE_CLIENT_ID,
   ETH_USDT_ADDRESS,
   METABRIDGE_ETHEREUM_ADDRESS,
+  MULTICHAIN_API_CHAIN_ID_MAP,
   REFRESH_INTERVAL_MS,
 } from '../../constants/bridge';
 import { MINUTE } from '../../constants/time';
@@ -32,6 +33,7 @@ import {
   TxData,
   BridgeFeatureFlagsKey,
   BridgeFeatureFlags,
+  ChainId,
 } from '../../types/bridge';
 import {
   FEATURE_FLAG_VALIDATORS,
@@ -45,6 +47,10 @@ import {
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
+
+export const formatApiChainId = (chainId: string) => {
+  return MULTICHAIN_API_CHAIN_ID_MAP[chainId] || add0x(decimalToHex(chainId));
+};
 
 export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
   const url = `${BRIDGE_API_BASE_URL}/getAllFeatureFlags`;
@@ -65,12 +71,16 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
     return {
       [BridgeFeatureFlagsKey.EXTENSION_CONFIG]: {
         ...rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG],
-        chains: Object.entries(
-          rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG].chains,
-        ).reduce(
+        chains: Object.entries({
+          ...rawFeatureFlags[BridgeFlag.EXTENSION_CONFIG].chains,
+          [ChainId.SOLANA]: {
+            isActiveSrc: true,
+            isActiveDest: true,
+          },
+        }).reduce(
           (acc, [chainId, value]) => ({
             ...acc,
-            [add0x(decimalToHex(chainId))]: value,
+            [formatApiChainId(chainId)]: value,
           }),
           {},
         ),

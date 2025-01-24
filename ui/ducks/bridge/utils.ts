@@ -11,6 +11,7 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import type { TxData } from '../../../shared/types/bridge';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
+import { MultichainProviderConfig } from '../../../shared/constants/multichain/networks';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
@@ -159,7 +160,13 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 };
 
 export const isNetworkAdded = (
-  v: NetworkConfiguration | AddNetworkFields | undefined,
+  v:
+    | NetworkConfiguration
+    | AddNetworkFields
+    | MultichainProviderConfig
+    | undefined,
 ): v is NetworkConfiguration =>
   v !== undefined &&
-  'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+  (('defaultRpcEndpointIndex' in v &&
+    'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex]) ||
+    'id' in v);
