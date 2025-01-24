@@ -100,6 +100,14 @@ export function getPermissionBackgroundApiMethods({
   };
 
   const requestAccountsAndChainPermissions = async (origin, id) => {
+    /**
+     * Note that we are purposely requesting an approval from the ApprovalController
+     * and then manually forming the permission that is then granted via the
+     * PermissionController rather than calling the PermissionController.requestPermissions()
+     * directly because the CAIP-25 permission is missing the factory method implementation.
+     * After the factory method is added, we can move to requesting "endowment:caip25"
+     * directly from the PermissionController instead.
+     */
     const {
       approvedSessionScopes: { permissions },
     } = await approvalController.addAndShowApprovalRequest({
