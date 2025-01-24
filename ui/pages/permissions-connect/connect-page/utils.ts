@@ -22,7 +22,7 @@ export function getRequestedSessionScopes(
   permissions?: PermissionsRequest,
 ): Pick<Caip25CaveatValue, 'requiredScopes' | 'optionalScopes'> {
   return (
-    permissions?.[Caip25EndowmentPermissionName].caveats?.find(
+    permissions?.[Caip25EndowmentPermissionName]?.caveats?.find(
       (caveat) => caveat.type === Caip25CaveatType,
     )?.value ?? {
       optionalScopes: {},
