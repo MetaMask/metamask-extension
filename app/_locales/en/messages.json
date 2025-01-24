@@ -113,10 +113,6 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 may access and spend this asset",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "Access your wallet with your Secret Recovery Phrase"
   },
@@ -503,10 +499,6 @@
   "allNetworks": {
     "message": "All networks"
   },
-  "allOfYour": {
-    "message": "All of your $1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "All Permissions"
   },
@@ -516,10 +508,6 @@
   "allTimeLow": {
     "message": "All time low"
   },
-  "allYourNFTsOf": {
-    "message": "All of your NFTs from $1",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "allow": {
     "message": "Allow"
   },
@@ -528,10 +516,6 @@
   },
   "allowNotifications": {
     "message": "Allow notifications"
-  },
-  "allowSpendToken": {
-    "message": "Give permission to access your $1?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
@@ -580,14 +564,6 @@
   "approve": {
     "message": "Approve spend limit"
   },
-  "approveAllTokensTitle": {
-    "message": "Allow access to and transfer of all your $1?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "Allow access to and transfer all of your NFTs from $1?",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "Approve"
   },
@@ -599,22 +575,8 @@
     "message": "Approve $1 spending cap",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "This allows a third party to access and transfer the following NFTs without further notice until you revoke its access."
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "This allows a third party to access and transfer all of your NFTs from $1 without further notice until you revoke its access.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "Allow access to and transfer of your $1?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "Approved"
-  },
-  "approvedAsset": {
-    "message": "Approved asset"
   },
   "approvedOn": {
     "message": "Approved on $1",
@@ -1715,9 +1677,6 @@
     "message": "Delete $1 network?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Deposit"
-  },
   "depositCrypto": {
     "message": "Deposit crypto from another account with a wallet address or QR code."
   },
@@ -1912,10 +1871,6 @@
   },
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
-  },
-  "editGasSubTextAmountLabel": {
-    "message": "Max amount:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
     "message": "Max fee:"
@@ -2191,9 +2146,6 @@
   "fast": {
     "message": "Fast"
   },
-  "feeAssociatedRequest": {
-    "message": "A fee is associated with this request."
-  },
   "feeDetails": {
     "message": "Fee details"
   },
@@ -2255,12 +2207,6 @@
   },
   "function": {
     "message": "Function: $1"
-  },
-  "functionApprove": {
-    "message": "Function: Approve"
-  },
-  "functionSetApprovalForAll": {
-    "message": "Function: SetApprovalForAll"
   },
   "functionType": {
     "message": "Function type"
@@ -2369,9 +2315,6 @@
   "grantExactAccess": {
     "message": "Grant exact access"
   },
-  "grantedToWithColon": {
-    "message": "Granted to:"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -2412,9 +2355,6 @@
   },
   "hideAccount": {
     "message": "Hide account"
-  },
-  "hideFullTransactionDetails": {
-    "message": "Hide full transaction details"
   },
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
@@ -2661,10 +2601,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or deposit from another account.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or $4 from another account.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. Deposit $1 from another account.",
@@ -2935,9 +2871,6 @@
   },
   "loading": {
     "message": "Loading..."
-  },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "Please complete the transaction on the hardware wallet."
   },
   "loadingScreenSnapMessage": {
     "message": "Please complete the transaction on the Snap."
@@ -3416,10 +3349,6 @@
   "next": {
     "message": "Next"
   },
-  "nextNonceWarning": {
-    "message": "Nonce is higher than suggested nonce of $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
   },
@@ -3515,9 +3444,6 @@
   },
   "nonceFieldDesc": {
     "message": "Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously."
-  },
-  "nonceFieldHeading": {
-    "message": "Custom nonce"
   },
   "none": {
     "message": "None"
@@ -4022,9 +3948,6 @@
   },
   "permissionFrom": {
     "message": "Permission from"
-  },
-  "permissionRequest": {
-    "message": "Permission request"
   },
   "permissionRequested": {
     "message": "Requested now"
@@ -4768,31 +4691,11 @@
   "reviewPermissions": {
     "message": "Review permissions"
   },
-  "revokeAllTokensTitle": {
-    "message": "Revoke permission to access and transfer all of your $1?",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "Revoke permission to access and transfer all of your NFTs from $1?",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "This revokes the permission for a third party to access and transfer all of your $1 without further notice.",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "This revokes the permission for a third party to access and transfer all of your NFTs from $1 without further notice.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "Revoke permission"
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
-  },
-  "revokeSpendingCap": {
-    "message": "Revoke spending cap for your $1",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
@@ -5545,9 +5448,6 @@
     "message": "Only enter a number that you're comfortable with $1 accessing now or in the future. You can always increase the token limit later.",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "Spending cap request for your $1"
-  },
   "spendingCapTooltipDesc": {
     "message": "This is the amount of tokens the spender will be able to access on your behalf."
   },
@@ -6233,9 +6133,6 @@
     "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "this collection"
-  },
   "threeMonthsAbbreviation": {
     "message": "3M",
     "description": "Shortened form of '3 months'"
@@ -6353,29 +6250,8 @@
   "transactionDataFunction": {
     "message": "Function"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Site suggested"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Edit to use MetaMask's recommended gas fee based on the latest block."
-  },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Learn more about gas fees"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Gas fees are set by the network and fluctuate based on network traffic and transaction complexity."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Amount + gas fee"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Layer 2 gas fee"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Amount + fees"
@@ -6397,9 +6273,6 @@
   },
   "transactionFailedBannerMessage": {
     "message": "This transaction would have cost you extra fees, so we stopped it. Your money is still in your wallet."
-  },
-  "transactionFee": {
-    "message": "Transaction fee"
   },
   "transactionFlowNetwork": {
     "message": "Network"
@@ -6481,9 +6354,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
-  },
-  "trustSiteApprovePermission": {
-    "message": "By granting permission, you are allowing the following $1 to access your funds"
   },
   "tryAgain": {
     "message": "Try again"
@@ -6676,12 +6546,6 @@
   },
   "viewContact": {
     "message": "View contact"
-  },
-  "viewDetails": {
-    "message": "View details"
-  },
-  "viewFullTransactionDetails": {
-    "message": "View full transaction details"
   },
   "viewMore": {
     "message": "View more"
