@@ -13,7 +13,6 @@
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
     "showPermittedNetworkToastOpen": false,
-    "gasIsLoading": false,
     "isLoading": false,
     "importTokensModalOpen": false,
     "modal": {
