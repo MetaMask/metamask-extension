@@ -91,6 +91,7 @@ import {
   SnapInterfaceController,
   SnapInsightsController,
   OffscreenExecutionService,
+  MultichainRouter,
 } from '@metamask/snaps-controllers';
 import {
   createSnapsMethodMiddleware,
@@ -1353,8 +1354,10 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
           ),
-        // TODO: Fix this
-        isNonEvmScopeSupported: () => false,
+        isNonEvmScopeSupported: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:isSupportedScope',
+        ),
       }),
       permissionSpecifications: {
         ...getPermissionSpecifications(),
@@ -1637,6 +1640,25 @@ export default class MetamaskController extends EventEmitter {
     this.snapInsightsController = new SnapInsightsController({
       state: initState.SnapInsightsController,
       messenger: snapInsightsControllerMessenger,
+    });
+
+    const multichainRouterMessenger = this.controllerMessenger.getRestricted({
+      name: 'MultichainRouter',
+      allowedActions: [
+        `${this.snapController.name}:getAll`,
+        `${this.snapController.name}:handleRequest`,
+        `${this.permissionController.name}:getPermissions`,
+        `AccountsController:listMultichainAccounts`,
+      ],
+      allowedEvents: [],
+    });
+
+    this.multichainRouter = new MultichainRouter({
+      messenger: multichainRouterMessenger,
+      // Binding the call to provide the selector only giving the controller the option to pass the operation
+      withSnapKeyring: this.keyringController.withKeyring.bind(this.keyringController, {
+        type: 'snap',
+      }),
     });
 
     // Notification Controllers
@@ -6902,9 +6924,14 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             origin,
           ),
-        // TODO: Fix these
-        getNonEvmSupportedMethods: () => [],
-        isNonEvmScopeSupported: () => false,
+        getNonEvmSupportedMethods: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:getSupportedMethods',
+        ),
+        isNonEvmScopeSupported: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'MultichainRouter:isSupportedScope',
+        ),
       }),
     );
 
