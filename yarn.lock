@@ -5302,19 +5302,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-block-tracker@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/eth-block-tracker@npm:10.0.0"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^4.0.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.1.0"
-    json-rpc-random-id: "npm:^1.0.1"
-    pify: "npm:^5.0.0"
-  checksum: 10/c035482544830d2b2d07db9a6b2002f387c2df2d25c0eb82a381a11de9efbf35f7b6e35fc868cc46424d1a13a75dde4c8146dbbc9d48155a0d882625b20cfca0
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-block-tracker@npm:^11.0.3, @metamask/eth-block-tracker@npm:^11.0.4":
   version: 11.0.4
   resolution: "@metamask/eth-block-tracker@npm:11.0.4"
@@ -5385,7 +5372,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^4.0.0, @metamask/eth-json-rpc-provider@npm:^4.1.5, @metamask/eth-json-rpc-provider@npm:^4.1.6, @metamask/eth-json-rpc-provider@npm:^4.1.7":
+"@metamask/eth-json-rpc-provider@npm:^4.1.5, @metamask/eth-json-rpc-provider@npm:^4.1.6, @metamask/eth-json-rpc-provider@npm:^4.1.7":
   version: 4.1.7
   resolution: "@metamask/eth-json-rpc-provider@npm:4.1.7"
   dependencies:
@@ -5488,20 +5475,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-token-tracker@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/eth-token-tracker@npm:9.0.0"
+"@metamask/eth-token-tracker@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "@metamask/eth-token-tracker@npm:10.0.2"
   dependencies:
-    "@metamask/eth-block-tracker": "npm:^10.0.0"
-    "@metamask/ethjs-contract": "npm:^0.4.1"
-    "@metamask/ethjs-query": "npm:^0.7.1"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.2"
+    "@metamask/eth-block-tracker": "npm:^11.0.3"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     bn.js: "npm:^5.2.1"
     deep-equal: "npm:^2.2.0"
     human-standard-token-abi: "npm:^2.0.0"
   peerDependencies:
     "@babel/runtime": ^7.21.0
-  checksum: 10/5cf3afefe435b708e2f0e624e5920b24d8b2271c8406580623096049b2ebc314895cafefa51714e757c84064ae02cea015f9fbcf455804893a4b36bb3ff19289
+  checksum: 10/b43de24564d111172b304f32ecb02a36347b4f9cde158ba48424663427a0119ce12084652cff063cce202b678526b7e51363d76f20e80b481edc239aab0dbe3b
   languageName: node
   linkType: hard
 
@@ -6183,7 +6171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^18.3.0, @metamask/providers@npm:^18.3.1":
+"@metamask/providers@npm:^18.3.1":
   version: 18.3.1
   resolution: "@metamask/providers@npm:18.3.1"
   dependencies:
@@ -6201,6 +6189,27 @@ __metadata:
   peerDependencies:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/0e21ba9cce926a49dedbfe30fc964cd2349ee6bf9156f525fb894dcbc147a3ae480384884131a6b1a0a508989b547d8c8d2aeb3d10e11f67a8ee5230c45631a8
+  languageName: node
+  linkType: hard
+
+"@metamask/providers@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@metamask/providers@npm:19.0.0"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
+    "@metamask/object-multiplex": "npm:^2.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/safe-event-emitter": "npm:^3.1.1"
+    "@metamask/utils": "npm:^11.0.1"
+    detect-browser: "npm:^5.2.0"
+    extension-port-stream: "npm:^4.1.0"
+    fast-deep-equal: "npm:^3.1.3"
+    is-stream: "npm:^2.0.0"
+    readable-stream: "npm:^3.6.2"
+  peerDependencies:
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/e45b2e90aa45db689bed582e85181d6964daff3c4b651ffc8503edcec2206a1b76677c0ae6fc0b29cef37a1b33775545e73bd1cf62802a4fc5e2841973cdafb6
   languageName: node
   linkType: hard
 
@@ -6636,7 +6645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^8.1.0, @metamask/utils@npm:^8.2.0, @metamask/utils@npm:^8.3.0":
+"@metamask/utils@npm:^8.2.0, @metamask/utils@npm:^8.3.0":
   version: 8.5.0
   resolution: "@metamask/utils@npm:8.5.0"
   dependencies:
@@ -26890,7 +26899,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^8.0.2"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^8.1.1"
-    "@metamask/eth-token-tracker": "npm:^9.0.0"
+    "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^6.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
@@ -26924,7 +26933,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^15.0.1"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
     "@metamask/profile-sync-controller": "npm:^4.1.1"
-    "@metamask/providers": "npm:^18.3.0"
+    "@metamask/providers": "npm:^19.0.0"
     "@metamask/queued-request-controller": "npm:^7.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^1.3.0"
@@ -27232,7 +27241,6 @@ __metadata:
     vinyl-sourcemaps-apply: "npm:^0.2.1"
     wait-on: "npm:^7.0.1"
     watchify: "npm:^4.0.0"
-    web3-stream-provider: "npm:^5.0.0"
     webextension-polyfill: "npm:^0.8.0"
     webpack: "npm:^5.96.1"
     webpack-cli: "npm:^5.1.4"
@@ -37719,16 +37727,6 @@ __metadata:
     "@zxing/text-encoding":
       optional: true
   checksum: 10/243518cfa8388ac05eeb4041bd330d38c599476ff9a93239b386d1ba2af130089a2fcefb0cf65b385f989105ff460ae69dca7e42236f4d98dc776b04e558cdb5
-  languageName: node
-  linkType: hard
-
-"web3-stream-provider@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "web3-stream-provider@npm:5.0.0"
-  dependencies:
-    readable-stream: "npm:^3.6.2"
-    uuid: "npm:^9.0.0"
-  checksum: 10/33f9fc359b381dbe20818027018de281cc0be452cb86ebf09eae80c0bfac18e4149498033f44ee7bfaf8d9017335621d9c9db42186c0f60872a0f76df9f50657
   languageName: node
   linkType: hard
 

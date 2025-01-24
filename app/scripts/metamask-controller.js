@@ -6474,8 +6474,6 @@ export default class MetamaskController extends EventEmitter {
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
-        isRedesignedConfirmationsDeveloperEnabled:
-          this.isConfirmationRedesignDeveloperEnabled.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
@@ -7405,11 +7403,6 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  isConfirmationRedesignDeveloperEnabled() {
-    return this.preferencesController.state.preferences
-      .isRedesignedConfirmationsDeveloperEnabled;
-  }
-
   /**
    * The chain list is fetched live at runtime, falling back to a cache.
    * This preseeds the cache at startup with a static list provided at build.
@@ -7611,8 +7604,6 @@ export default class MetamaskController extends EventEmitter {
           this.provider,
         );
       },
-      getIsRedesignedConfirmationsDeveloperEnabled:
-        this.isConfirmationRedesignDeveloperEnabled.bind(this),
       getIsConfirmationAdvancedDetailsOpen: () => {
         return this.preferencesController.state.preferences
           .showConfirmationAdvancedDetails;
