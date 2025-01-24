@@ -83,12 +83,13 @@ describe('ExtensionStore', () => {
       expect(result).toBe(null);
     });
 
-    it('should call the browser storage.local.get method', async () => {
-      const getMock = jest.fn();
+    it('should return state returned by the browser storage.local.get method', async () => {
+      const getMock = jest.fn().mockResolvedValue(MOCK_STATE);
       const localStore = setup({ localMock: { get: getMock } });
 
-      await localStore.get();
+      const result = await localStore.get();
 
+      expect(result).toBe(MOCK_STATE);
       expect(getMock).toHaveBeenCalledWith(null);
     });
   });
