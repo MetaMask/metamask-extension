@@ -1413,7 +1413,9 @@ describe('MetaMaskController', () => {
         ).rejects.toThrow(new Error('approval rejected'));
       });
 
-      it('returns the CAIP-25 approval with eth accounts, chainIds, and isMultichainOrigin: false if origin is not snapId', async () => {
+      it('requests CAIP-25 approval with eth accounts, chainIds, and isMultichainOrigin: false if origin is not snapId', async () => {
+        const origin = 'test.com';
+
         jest
           .spyOn(
             metamaskController.approvalController,
@@ -1448,38 +1450,67 @@ describe('MetaMaskController', () => {
             },
           });
 
-        const result = await metamaskController.requestCaip25Approval(
-          'test.com',
-          {},
-        );
-
-        expect(result).toStrictEqual({
-          [Caip25EndowmentPermissionName]: {
+        await metamaskController.requestCaip25Approval('test.com', {
+          [RestrictedEthMethods.eth_accounts]: {
             caveats: [
               {
-                type: Caip25CaveatType,
-                value: {
-                  requiredScopes: {},
-                  optionalScopes: {
-                    'wallet:eip155': {
-                      accounts: ['wallet:eip155:0xdeadbeef'],
-                    },
-                    'eip155:1': {
-                      accounts: ['eip155:1:0xdeadbeef'],
-                    },
-                    'eip155:5': {
-                      accounts: ['eip155:5:0xdeadbeef'],
-                    },
-                  },
-                  isMultichainOrigin: false,
-                },
+                type: 'restrictReturnedAccounts',
+                value: ['0xdeadbeef'],
+              },
+            ],
+          },
+          [EndowmentTypes.permittedChains]: {
+            caveats: [
+              {
+                type: 'restrictNetworkSwitching',
+                value: ['0x1', '0x5'],
               },
             ],
           },
         });
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin,
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin,
+              },
+              permissions: {
+                [Caip25EndowmentPermissionName]: {
+                  caveats: [
+                    {
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: ['wallet:eip155:0xdeadbeef'],
+                          },
+                          'eip155:1': {
+                            accounts: ['eip155:1:0xdeadbeef'],
+                          },
+                          'eip155:5': {
+                            accounts: ['eip155:5:0xdeadbeef'],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
       });
 
-      it('returns the CAIP-25 approval with approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
+      it('requests CAIP-25 approval with approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
         const origin = 'npm:snap';
         jest
           .spyOn(
@@ -1517,7 +1548,7 @@ describe('MetaMaskController', () => {
             },
           });
 
-        const result = await metamaskController.requestCaip25Approval(origin, {
+        await metamaskController.requestCaip25Approval(origin, {
           [RestrictedEthMethods.eth_accounts]: {
             caveats: [
               {
@@ -1530,7 +1561,7 @@ describe('MetaMaskController', () => {
             caveats: [
               {
                 type: 'restrictNetworkSwitching',
-                value: ['0x1, 0x5'],
+                value: ['0x1', '0x5'],
               },
             ],
           },
@@ -1569,25 +1600,45 @@ describe('MetaMaskController', () => {
             type: 'wallet_requestPermissions',
           }),
         );
+      });
 
-        expect(result).toStrictEqual({
-          [Caip25EndowmentPermissionName]: {
-            caveats: [
-              {
-                type: Caip25CaveatType,
-                value: {
-                  requiredScopes: {},
-                  optionalScopes: {
-                    'wallet:eip155': {
-                      accounts: ['wallet:eip155:0xdeadbeef'],
+      it('should return sessions scopes returned from calling ApprovalController.addAndShowApprovalRequest', async () => {
+        const expectedApprovedSessionScopes = {
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'wallet:eip155': {
+                        accounts: ['wallet:eip155:0xdeadbeef'],
+                      },
                     },
+                    isMultichainOrigin: false,
                   },
-                  isMultichainOrigin: false,
                 },
-              },
-            ],
+              ],
+            },
           },
-        });
+        };
+
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue({
+            approvedSessionScopes: expectedApprovedSessionScopes,
+          });
+
+        const result = await metamaskController.requestCaip25Approval(
+          'test.com',
+          {},
+        );
+
+        expect(result).toStrictEqual(expectedApprovedSessionScopes.permissions);
       });
     });
 
