@@ -16,17 +16,15 @@ const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}
  * A read-only network-based storage wrapper
  */
 export default class ReadOnlyNetworkStore extends BaseStore {
-  #initialized: boolean;
+  #initialized: boolean = false;
 
   #initializing?: Promise<void>;
 
-  #state: IntermediaryStateType | null;
+  #state: IntermediaryStateType | null = null;
 
   constructor() {
     super();
-    this.#initialized = false;
     this.#initializing = this.#init();
-    this.#state = null;
   }
 
   /**
