@@ -109,11 +109,9 @@ export type Preferences = {
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
-  redesignedConfirmationsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
   privacyMode: boolean;
-  isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
   tokenSortConfig: {
     key: string;
@@ -221,9 +219,7 @@ export const getDefaultPreferencesControllerState =
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,
       petnamesEnabled: true,
-      redesignedConfirmationsEnabled: true,
       featureNotificationsEnabled: false,
-      isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
       privacyMode: false,

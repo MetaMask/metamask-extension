@@ -129,9 +129,7 @@ describe('Permit Single Signature Tests', () => {
 
   it('displays correct details in message section', async () => {
     await renderSingleBatchSignature();
-    act(async () => {
-      fireEvent.click(await screen.findByTestId('sectionCollapseButton'));
-    });
+    fireEvent.click(await screen.findByTestId('sectionCollapseButton'));
 
     const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',
