@@ -123,6 +123,9 @@ export default class PermissionConnect extends Component {
       this.props.permissionsRequest,
     ),
     permissionsApproved: null,
+    origin: this.props.origin,
+    targetSubjectMetadata: this.props.targetSubjectMetadata || {},
+    snapsInstallPrivacyWarningShown: this.props.snapsInstallPrivacyWarningShown,
   };
 
   componentDidMount() {
@@ -145,7 +148,6 @@ export default class PermissionConnect extends Component {
       history.replace(DEFAULT_ROUTE);
       return;
     }
-
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       switch (requestType) {
         case 'wallet_installSnap':
@@ -167,8 +169,17 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { permissionsRequest, lastConnectedInfo, origin } = this.props;
-    const { redirecting } = this.state;
+    const { permissionsRequest, lastConnectedInfo, targetSubjectMetadata } =
+      this.props;
+    const { redirecting, origin } = this.state;
+
+    // We cache the last known good targetSubjectMetadata since it may be null when the approval is cleared
+    if (
+      targetSubjectMetadata?.origin &&
+      prevProps.targetSubjectMetadata?.origin !== targetSubjectMetadata?.origin
+    ) {
+      this.setState({ targetSubjectMetadata });
+    }
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
       const accountsLastApprovedTime =
@@ -254,7 +265,7 @@ export default class PermissionConnect extends Component {
   }
 
   renderTopBar(permissionsRequestId) {
-    const { targetSubjectMetadata } = this.props;
+    const { targetSubjectMetadata } = this.state;
     const handleCancelFromHeader = () => {
       this.cancelPermissionsRequest(permissionsRequestId);
     };
@@ -311,12 +322,14 @@ export default class PermissionConnect extends Component {
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
-      snapsInstallPrivacyWarningShown,
-      origin,
       history,
     } = this.props;
-    const { selectedAccountAddresses, permissionsApproved, redirecting } =
-      this.state;
+    const {
+      selectedAccountAddresses,
+      permissionsApproved,
+      redirecting,
+      snapsInstallPrivacyWarningShown,
+    } = this.state;
 
     const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
 
@@ -358,8 +371,8 @@ export default class PermissionConnect extends Component {
                     rejectPermissionsRequest={(requestId) =>
                       this.cancelPermissionsRequest(requestId)
                     }
-                    activeTabOrigin={origin}
-                    request={permissionsRequest || {}}
+                    activeTabOrigin={this.state.origin}
+                    request={permissionsRequest}
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
                   />
