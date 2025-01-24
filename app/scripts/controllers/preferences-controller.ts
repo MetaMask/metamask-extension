@@ -112,7 +112,6 @@ export type Preferences = {
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
   privacyMode: boolean;
-  isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
   tokenSortConfig: {
     key: string;
@@ -221,7 +220,6 @@ export const getDefaultPreferencesControllerState =
       hideZeroBalanceTokens: false,
       petnamesEnabled: true,
       featureNotificationsEnabled: false,
-      isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
       privacyMode: false,

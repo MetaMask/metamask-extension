@@ -10,7 +10,6 @@ export const FIXTURES_PREFERENCES = {
     featureNotificationsEnabled: true,
     showTokenAutodetectModal: false,
     showNftAutodetectModal: false,
-    isRedesignedConfirmationsDeveloperEnabled: false,
     showConfirmationAdvancedDetails: false,
     privacyMode: false,
   },
