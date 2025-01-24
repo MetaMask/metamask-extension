@@ -283,3 +283,5 @@ export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
+
+export const SAMPLE_ROUTE = '/sample';
