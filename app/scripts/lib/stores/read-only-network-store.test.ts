@@ -118,7 +118,8 @@ describe('ReadOnlyNetworkStore', () => {
     it('throws if not passed a state parameter', async () => {
       const store = setupReadOnlyNetworkStore();
       await expect(
-        store.set(undefined as unknown as MetaMaskStorageStructure),
+        // @ts-expect-error Intentionally passing incorrect type
+        store.set(undefined),
       ).rejects.toThrow('MetaMask - updated state is missing');
     });
 
