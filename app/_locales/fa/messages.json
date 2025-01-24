@@ -381,9 +381,6 @@
   "loading": {
     "message": "در حال بارکردن…"
   },
-  "loadingTokens": {
-    "message": "در حال بارگیری رمزیاب ها..."
-  },
   "localhost": {
     "message": "Localhost 8545 "
   },
@@ -445,9 +442,6 @@
   },
   "noConversionRateAvailable": {
     "message": "هیچ نرخ تغییر موجود نمیباشد"
-  },
-  "noTransactions": {
-    "message": "شما هیچ معامله ندارید"
   },
   "noWebcamFound": {
     "message": "وب کم کمپیوتر تان پیدا نشد. لطفًا دوباره کوشش کنید."

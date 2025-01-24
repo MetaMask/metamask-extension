@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
-  getCurrentChainId,
   getCurrentNetwork,
-  getPreferences,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
   getAllChainsToPoll,
+  getTokenNetworkFilter,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';
@@ -29,10 +32,11 @@ import {
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
+  FEATURED_NETWORK_CHAIN_IDS,
 } from '../../../../../../shared/constants/network';
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
+import InfoTooltip from '../../../../ui/info-tooltip';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -45,8 +49,11 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
   const currentNetwork = useSelector(getCurrentNetwork);
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const [chainsToShow, setChainsToShow] = useState<string[]>([]);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -83,26 +90,21 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
     handleClose();
   };
 
-  useEffect(() => {
-    const testnetChains: string[] = TEST_CHAINS;
-    const mainnetChainIds = Object.keys(allNetworks || {}).filter(
-      (chain) => !testnetChains.includes(chain),
-    );
-    setChainsToShow(mainnetChainIds);
-  }, []);
-
   const allOpts: Record<string, boolean> = {};
   Object.keys(allNetworks || {}).forEach((chain) => {
     allOpts[chain] = true;
   });
 
+  const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
+    (chain) => allOpts[chain],
+  ).map((chain) => {
+    return allNetworks[chain].name;
+  });
+
   return (
     <>
       <SelectableListItem
-        isSelected={
-          Object.keys(tokenNetworkFilter || {}).length ===
-          Object.keys(allNetworks || {}).length
-        }
+        isSelected={!isTokenNetworkFilterEqualCurrentNetwork}
         onClick={() => handleFilter(allOpts)}
         testId="network-filter-all"
       >
@@ -117,7 +119,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
             >
-              {t('allNetworks')}
+              {t('popularNetworks')}
             </Text>
             <Text
               variant={TextVariant.bodySmMedium}
@@ -135,17 +137,20 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
             </Text>
           </Box>
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            {chainsToShow
-              .slice(0, 5) // only show a max of 5 icons overlapping
-              .map((chain, index) => {
+            <InfoTooltip
+              position="bottom"
+              contentText={allAddedPopularNetworks.join(', ')}
+            />
+            {FEATURED_NETWORK_CHAIN_IDS.filter((chain) => allOpts[chain]).map(
+              (chain, index) => {
                 const networkImageUrl =
                   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                     chain as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                   ];
                 return (
                   <AvatarNetwork
-                    key={chainId}
-                    name="All"
+                    key={networkImageUrl}
+                    name={networkImageUrl}
                     src={networkImageUrl ?? undefined}
                     size={AvatarNetworkSize.Sm}
                     // overlap the icons
@@ -155,14 +160,15 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
                     }}
                   />
                 );
-              })}
+              },
+            )}
           </Box>
         </Box>
       </SelectableListItem>
       <SelectableListItem
         isSelected={
-          tokenNetworkFilter[chainId] &&
-          Object.keys(tokenNetworkFilter || {}).length === 1
+          Object.keys(tokenNetworkFilter).length === 1 &&
+          tokenNetworkFilter[chainId]
         }
         onClick={() => handleFilter({ [chainId]: true })}
         testId="network-filter-current"
@@ -197,7 +203,7 @@ const NetworkFilter = ({ handleClose }: SortControlProps) => {
           </Box>
           <AvatarNetwork
             size={AvatarNetworkSize.Sm}
-            name="Current"
+            name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />
         </Box>

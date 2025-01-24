@@ -9,15 +9,15 @@ import {
   setNewTokensImported,
 } from '../../../store/actions';
 import {
-  getAllDetectedTokensForSelectedAddress,
   getCurrentChainId,
-  getDetectedTokensInCurrentNetwork,
-  getPreferences,
-} from '../../../selectors';
-import {
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
+import {
+  getAllDetectedTokensForSelectedAddress,
+  getDetectedTokensInCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {
@@ -63,27 +63,30 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   );
   const currentChainId = useSelector(getCurrentChainId);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const { tokenNetworkFilter } = useSelector(getPreferences);
-  const allOpts = {};
-  Object.keys(allNetworks || {}).forEach((chainId) => {
-    allOpts[chainId] = true;
-  });
 
-  const allNetworksFilterShown =
-    Object.keys(tokenNetworkFilter || {}).length !==
-    Object.keys(allOpts || {}).length;
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
 
   const totalDetectedTokens = useMemo(() => {
-    return process.env.PORTFOLIO_VIEW && !allNetworksFilterShown
+    return process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
       ? Object.values(detectedTokensMultichain).flat().length
       : detectedTokens.length;
-  }, [detectedTokens, detectedTokensMultichain, allNetworksFilterShown]);
+  }, [
+    detectedTokens,
+    detectedTokensMultichain,
+    isTokenNetworkFilterEqualCurrentNetwork,
+  ]);
 
   const [tokensListDetected, setTokensListDetected] = useState({});
 
   useEffect(() => {
     const newTokensList = () => {
-      if (process.env.PORTFOLIO_VIEW && !allNetworksFilterShown) {
+      if (
+        process.env.PORTFOLIO_VIEW &&
+        !isTokenNetworkFilterEqualCurrentNetwork
+      ) {
         return Object.entries(detectedTokensMultichain).reduce(
           (acc, [chainId, tokens]) => {
             if (Array.isArray(tokens)) {
@@ -112,7 +115,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
     setTokensListDetected(newTokensList());
   }, [
-    allNetworksFilterShown,
+    isTokenNetworkFilterEqualCurrentNetwork,
     detectedTokensMultichain,
     detectedTokens,
     currentChainId,
@@ -141,7 +144,10 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       });
     });
 
-    if (process.env.PORTFOLIO_VIEW && !allNetworksFilterShown) {
+    if (
+      process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
+    ) {
       const tokensByChainId = selectedTokens.reduce((acc, token) => {
         const { chainId } = token;
 
@@ -197,7 +203,10 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       },
     });
 
-    if (process.env.PORTFOLIO_VIEW && !allNetworksFilterShown) {
+    if (
+      process.env.PORTFOLIO_VIEW &&
+      !isTokenNetworkFilterEqualCurrentNetwork
+    ) {
       // group deselected tokens by chainId
       const groupedByChainId = deSelectedTokens.reduce((acc, token) => {
         const { chainId } = token;
@@ -210,14 +219,16 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
       const promises = Object.entries(groupedByChainId).map(
         async ([chainId, tokens]) => {
-          const chainConfig = allNetworks[chainId];
-          const { defaultRpcEndpointIndex } = chainConfig;
-          const { networkClientId: networkInstanceId } =
-            chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
+          const { defaultRpcEndpointIndex, rpcEndpoints } =
+            allNetworks[chainId];
+          const networkInstanceId =
+            rpcEndpoints[defaultRpcEndpointIndex].networkClientId;
+
+          const tokensToIgnore = tokens.map((token) => token.address);
 
           await dispatch(
             ignoreTokens({
-              tokensToIgnore: tokens,
+              tokensToIgnore,
               dontShowLoadingIndicator: true,
               networkClientId: networkInstanceId,
             }),

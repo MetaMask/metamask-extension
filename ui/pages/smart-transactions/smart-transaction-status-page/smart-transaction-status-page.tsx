@@ -26,7 +26,8 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId, getFullTxData } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getFullTxData } from '../../../selectors';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';

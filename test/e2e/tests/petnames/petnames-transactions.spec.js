@@ -5,14 +5,13 @@ const {
   unlockWallet,
   defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
-  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   expectName,
   focusTestDapp,
-  rejectSignatureOrTransactionRequest,
   saveName,
+  rejectRedesignedSignatureOrTransactionRequest,
 } = require('./petnames-helpers');
 
 async function createDappSendTransaction(driver) {
@@ -51,8 +50,6 @@ describe('Petnames - Transactions', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
-
         await openDapp(driver);
         await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
@@ -65,7 +62,7 @@ describe('Petnames - Transactions', function () {
           CUSTOM_NAME_MOCK,
           undefined,
         );
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
@@ -73,7 +70,7 @@ describe('Petnames - Transactions', function () {
 
         // Test proposed name.
         await saveName(driver, CUSTOM_NAME_MOCK, undefined, PROPOSED_NAME_MOCK);
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
@@ -98,7 +95,6 @@ describe('Petnames - Transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
@@ -110,13 +106,13 @@ describe('Petnames - Transactions', function () {
           CUSTOM_NAME_MOCK,
           undefined,
         );
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
         await saveName(driver, CUSTOM_NAME_MOCK, undefined, PROPOSED_NAME_MOCK);
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, PROPOSED_NAME_MOCK, true);
       },

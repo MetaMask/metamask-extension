@@ -784,8 +784,15 @@
     "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
+    "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,
-    "tokenNetworkFilter": {}
+    "privacyMode": false,
+    "tokenNetworkFilter": {},
+    "tokenSortConfig": {
+      "key": "token-sort-key",
+      "order": "dsc",
+      "sortCallback": "stringNumeric"
+    }
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
@@ -801,6 +808,7 @@
   "showProductTour": false,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
+  "slides": [],
   "smartTransactionsState": {
     "fees": {},
     "liveness": true,
@@ -1165,7 +1173,7 @@
         "smartTransactions": {
           "expectedDeadline": 45,
           "maxDeadline": 150,
-          "returnTxHashAsap": false
+          "extensionReturnTxHashAsap": false
         }
       },
       "linea": {
@@ -1227,6 +1235,14 @@
   "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1692109813199,
   "theme": "os",
+  "tokenBalances": {
+    "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {
+      "0x1": {
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "0xbdbd",
+        "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e": "0x501b4176a64d6"
+      }
+    }
+  },
   "tokenList": {
     "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
       "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
@@ -2048,19 +2064,9 @@
   "useNftDetection": false,
   "useNonceField": false,
   "usePhishDetect": true,
-  "useRequestQueue": false,
   "useSafeChainsListValidation": true,
   "useTokenDetection": false,
   "useTransactionSimulations": true,
-  "usedNetworks": {
-    "0xaa36a7": {
-      "rpcUrl": "https://sepolia.infura.io/v3/dummy_key",
-      "chainId": "0xaa36a7",
-      "nickname": "Sepolia Test Network",
-      "ticker": "ETH",
-      "blockExplorerUrl": "https://sepolia.etherscan.io"
-    }
-  },
   "userOperations": {},
   "versionFileETag": "W/\"598946a37f16c5b882a0bebbadf4509f\"",
   "versionInfo": [],

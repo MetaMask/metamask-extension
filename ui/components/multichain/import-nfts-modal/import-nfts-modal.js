@@ -22,8 +22,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getIsMainnet,
   getSelectedInternalAccount,
   getOpenSeaEnabled,

@@ -1,9 +1,8 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import {
   getAllTokens,
-  getCurrentChainId,
-  getCurrentCurrency,
   getMetaMaskCachedBalances,
   getTokenExchangeRates,
   getConfirmationExchangeRates,
@@ -18,6 +17,7 @@ import {
 import {
   getConversionRate,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';

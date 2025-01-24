@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
@@ -8,9 +7,6 @@ import {
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -36,19 +32,18 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getUseBlockie } from '../../../../../selectors';
 import { useConfirmContext } from '../../../context/confirm';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import Identicon from '../../../../../components/ui/identicon';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {
   const trackEvent = useContext(MetaMetricsContext);
 
-  const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
   const { currentConfirmation } = useConfirmContext();
@@ -136,15 +131,7 @@ const HeaderInfo = () => {
                 flexDirection={FlexDirection.Column}
                 alignItems={AlignItems.center}
               >
-                <AvatarAccount
-                  variant={
-                    useBlockie
-                      ? AvatarAccountVariant.Blockies
-                      : AvatarAccountVariant.Jazzicon
-                  }
-                  address={fromAddress}
-                  size={AvatarAccountSize.Lg}
-                />
+                <Identicon address={fromAddress} diameter={40} />
                 <Text
                   fontWeight={FontWeight.Bold}
                   variant={TextVariant.bodyMd}

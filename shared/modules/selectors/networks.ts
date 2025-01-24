@@ -1,33 +1,32 @@
 import {
   RpcEndpointType,
   type NetworkConfiguration,
-  type NetworkState as _NetworkState,
+  type NetworkState as InternalNetworkState,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { NetworkStatus } from '../../constants/network';
 import { createDeepEqualSelector } from './util';
 
-export type NetworkState = { metamask: _NetworkState };
+export type NetworkState = {
+  metamask: InternalNetworkState;
+};
 
 export type NetworkConfigurationsState = {
   metamask: {
-    networkConfigurations: Record<
-      string,
-      MetaMaskExtensionNetworkConfiguration
-    >;
+    networkConfigurations: Record<string, NetworkConfiguration>;
   };
 };
 
 export type SelectedNetworkClientIdState = {
-  metamask: {
-    selectedNetworkClientId: string;
-  };
+  metamask: Pick<InternalNetworkState, 'selectedNetworkClientId'>;
 };
 
-export type MetaMaskExtensionNetworkConfiguration = NetworkConfiguration;
-
 export type NetworkConfigurationsByChainIdState = {
-  metamask: Pick<_NetworkState, 'networkConfigurationsByChainId'>;
+  metamask: Pick<InternalNetworkState, 'networkConfigurationsByChainId'>;
+};
+
+export type NetworksMetadataState = {
+  metamask: Pick<InternalNetworkState, 'networksMetadata'>;
 };
 
 export type ProviderConfigState = NetworkConfigurationsByChainIdState &
@@ -49,6 +48,7 @@ export function getSelectedNetworkClientId(
  * Get the provider configuration for the current selected network.
  *
  * @param state - Redux state object.
+ * @throws `new Error('Provider configuration not found')` If the provider configuration is not found.
  */
 export const getProviderConfig = createSelector(
   (state: ProviderConfigState) => getNetworkConfigurationsByChainId(state),
@@ -81,13 +81,13 @@ export const getProviderConfig = createSelector(
         }
       }
     }
-    return undefined; // should not be reachable
+    throw new Error('Provider configuration not found');
   },
 );
 
 export function getNetworkConfigurations(
   state: NetworkConfigurationsState,
-): Record<string, MetaMaskExtensionNetworkConfiguration> {
+): Record<string, NetworkConfiguration> {
   return state.metamask.networkConfigurations;
 }
 
@@ -106,9 +106,16 @@ export function isNetworkLoading(state: NetworkState) {
   );
 }
 
-export function getInfuraBlocked(state: NetworkState) {
+export function getInfuraBlocked(
+  state: SelectedNetworkClientIdState & NetworksMetadataState,
+) {
   return (
     state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
       .status === NetworkStatus.Blocked
   );
+}
+
+export function getCurrentChainId(state: ProviderConfigState) {
+  const { chainId } = getProviderConfig(state);
+  return chainId;
 }

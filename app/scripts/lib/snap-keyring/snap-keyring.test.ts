@@ -1,5 +1,6 @@
 import { ControllerMessenger } from '@metamask/base-controller';
-import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -39,6 +40,7 @@ const mockAccount = {
   id: '3afa663e-0600-4d93-868a-61c2e553013b',
   address,
   methods: [],
+  scopes: ['eip155'],
   options: {},
 };
 const mockInternalAccount = {

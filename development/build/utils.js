@@ -130,7 +130,7 @@ function getEnvironment({ buildTarget }) {
     /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)
   ) {
     return ENVIRONMENT.RELEASE_CANDIDATE;
-  } else if (process.env.CIRCLE_BRANCH === 'develop') {
+  } else if (process.env.CIRCLE_BRANCH === 'main') {
     return ENVIRONMENT.STAGING;
   } else if (process.env.CIRCLE_PULL_REQUEST) {
     return ENVIRONMENT.PULL_REQUEST;

@@ -5,10 +5,10 @@ import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getTokenList,
   getPreferences,
-  getCurrentCurrency,
   getCurrencyRates,
 } from '../../../../selectors';
 import {

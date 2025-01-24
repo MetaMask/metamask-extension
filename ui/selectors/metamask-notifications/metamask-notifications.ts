@@ -105,6 +105,42 @@ export const getFeatureAnnouncementsReadCount = createSelector(
 );
 
 /**
+ * Selector to get the count of unread snap notifications.
+ *
+ * @param {AppState} state - The current state of the Redux store.
+ * @returns {number} The count of unread snap notifications.
+ */
+export const getSnapNotificationsUnreadCount = createSelector(
+  [getMetamaskNotifications],
+  (notifications: Notification[]) => {
+    return notifications
+      ? notifications.filter(
+          (notification) =>
+            !notification.isRead && notification.type === TRIGGER_TYPES.SNAP,
+        ).length
+      : 0;
+  },
+);
+
+/**
+ * Selector to get the count of read snap notifications.
+ *
+ * @param {AppState} state - The current state of the Redux store.
+ * @returns {number} The count of read snap notifications.
+ */
+export const getSnapNotificationsReadCount = createSelector(
+  [getMetamaskNotifications],
+  (notifications: Notification[]) => {
+    return notifications
+      ? notifications.filter(
+          (notification) =>
+            notification.isRead && notification.type === TRIGGER_TYPES.SNAP,
+        ).length
+      : 0;
+  },
+);
+
+/**
  * Selector to get the count of unread non-feature announcement notifications.
  *
  * @param {AppState} state - The current state of the Redux store.
@@ -117,7 +153,8 @@ export const getOnChainMetamaskNotificationsUnreadCount = createSelector(
       ? notifications.filter(
           (notification) =>
             !notification.isRead &&
-            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+            notification.type !== TRIGGER_TYPES.SNAP,
         ).length
       : 0;
   },
@@ -136,7 +173,8 @@ export const getOnChainMetamaskNotificationsReadCount = createSelector(
       ? notifications.filter(
           (notification) =>
             notification.isRead &&
-            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
+            notification.type !== TRIGGER_TYPES.SNAP,
         ).length
       : 0;
   },

@@ -1,5 +1,5 @@
 import LoginPage from '../pages/login-page';
-import HomePage from '../pages/homepage';
+import HomePage from '../pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';

@@ -5,13 +5,15 @@ import { Box } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
+  getNativeCurrency,
   getCurrentCurrency,
-  getShouldShowFiat,
-} from '../../../selectors';
+} from '../../../ducks/metamask/metamask';
+import {
+  getProviderConfig,
+  getCurrentChainId,
+} from '../../../../shared/modules/selectors/networks';
+import { getShouldShowFiat } from '../../../selectors';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';

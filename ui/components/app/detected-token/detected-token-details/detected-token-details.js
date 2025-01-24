@@ -43,6 +43,7 @@ const DetectedTokenDetails = ({
             src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
             name={currentNetwork?.nickname || ''}
             backgroundColor={testNetworkBackgroundColor}
+            borderWidth={2}
           />
         }
         marginRight={2}

@@ -124,7 +124,7 @@ describe('ConfirmTitle', () => {
     );
 
     expect(
-      getByText(tEn('confirmTitleApproveTransaction') as string),
+      getByText(tEn('confirmTitleApproveTransactionNFT') as string),
     ).toBeInTheDocument();
     expect(
       getByText(tEn('confirmTitleDescApproveTransaction') as string),

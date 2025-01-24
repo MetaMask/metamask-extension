@@ -6,6 +6,7 @@ import {
   buildQuote,
   reviewQuote,
   checkNotification,
+  closeSmartTransactionsMigrationNotification,
 } from './shared';
 
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {
@@ -19,7 +20,7 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
-describe('Swaps - notifications @no-mmi', function () {
+describe('Swaps - notifications', function () {
   async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
@@ -80,6 +81,7 @@ describe('Swaps - notifications @no-mmi', function () {
           amount: 2,
           swapTo: 'INUINU',
         });
+        await closeSmartTransactionsMigrationNotification(driver);
         await checkNotification(driver, {
           title: 'Potentially inauthentic token',
           text: 'INUINU is only verified on 1 source. Consider verifying it on Etherscan before proceeding.',

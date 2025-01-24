@@ -24,11 +24,12 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
   setEditedNetwork,
-  grantPermittedChain,
   showPermittedNetworkToast,
   updateCustomNonce,
   setNextNonce,
+  addPermittedChain,
   setTokenNetworkFilter,
+  detectNfts,
 } from '../../../store/actions';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -36,14 +37,15 @@ import {
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
+  getNetworkConfigurationsByChainId,
   getCurrentChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
   getShowNetworkBanner,
   getOriginOfCurrentTab,
-  getUseRequestQueue,
   getEditedNetwork,
   getOrderedNetworksList,
   getIsAddingNewNetwork,
@@ -117,7 +119,6 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
-  const useRequestQueue = useSelector(getUseRequestQueue);
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
@@ -287,17 +288,18 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           dispatch(toggleNetworkMenu());
           dispatch(updateCustomNonce(''));
           dispatch(setNextNonce(''));
+          dispatch(detectNfts());
 
           // as a user, I don't want my network selection to force update my filter when I have "All Networks" toggled on
           // however, if I am already filtered on "Current Network", we'll want to filter by the selected network when the network changes
-          if (Object.keys(tokenNetworkFilter).length <= 1) {
+          if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
             dispatch(setTokenNetworkFilter({ [network.chainId]: true }));
           } else if (process.env.PORTFOLIO_VIEW) {
             dispatch(setTokenNetworkFilter(allOpts));
           }
 
           if (permittedAccountAddresses.length > 0) {
-            grantPermittedChain(selectedTabOrigin, network.chainId);
+            dispatch(addPermittedChain(selectedTabOrigin, network.chainId));
             if (!permittedChainIds.includes(network.chainId)) {
               dispatch(showPermittedNetworkToast());
             }
@@ -305,11 +307,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           // If presently on a dapp, communicate a change to
           // the dapp via silent switchEthereumChain that the
           // network has changed due to user action
-          if (
-            useRequestQueue &&
-            selectedTabOrigin &&
-            domains[selectedTabOrigin]
-          ) {
+          if (selectedTabOrigin && domains[selectedTabOrigin]) {
             setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
           }
 

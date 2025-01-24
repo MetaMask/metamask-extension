@@ -13,7 +13,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../../selectors/metamask-notifications/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../../../selectors/identity/profile-syncing';
 import { useCreateNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 

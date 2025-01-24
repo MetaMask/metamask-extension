@@ -8,7 +8,6 @@ const {
   withFixtures,
   unlockWallet,
   generateGanacheOptions,
-  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -22,21 +21,26 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+
         await createInternalTransaction(driver);
 
         await driver.findElement({
-          css: '.currency-display-component__text',
-          text: '1',
+          css: 'h2',
+          text: '1 ETH',
         });
 
         await driver.findElement({
-          css: '.currency-display-component__text',
-          text: '1.000042',
+          css: '[data-testid="first-gas-field"]',
+          text: '0 ETH',
+        });
+
+        await driver.findElement({
+          css: '[data-testid="native-currency"]',
+          text: '$0.07',
         });
 
         await driver.clickElement(
-          '.confirm-page-container-header__back-button',
+          '[data-testid="wallet-initiated-header-back-button"]',
         );
 
         const inputAmount = await driver.findElement('input[placeholder="0"]');
@@ -48,7 +52,7 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
-        await driver.clickElement({ text: 'Edit', tag: 'button' });
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
 
         const [gasLimitInput, gasPriceInput] = await driver.findElements(
           'input[type="number"]',
@@ -58,13 +62,14 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '0.0008',
+        await driver.findElement({
+          css: '[data-testid="first-gas-field"]',
+          text: '0.0002 ETH',
         });
-        await driver.waitForSelector({
-          css: '.currency-display-component__suffix',
-          text: 'ETH',
+
+        await driver.findElement({
+          css: '[data-testid="native-currency"]',
+          text: '$0.29',
         });
 
         // confirms the transaction
@@ -98,22 +103,26 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
 
         await createInternalTransaction(driver);
 
         await driver.findElement({
-          css: '.currency-display-component__text',
-          text: '1',
+          css: 'h2',
+          text: '1 ETH',
         });
 
         await driver.findElement({
-          css: '.currency-display-component__text',
-          text: '1.00043983',
+          css: '[data-testid="first-gas-field"]',
+          text: '0.0004 ETH',
+        });
+
+        await driver.findElement({
+          css: '[data-testid="native-currency"]',
+          text: '$0.75',
         });
 
         await driver.clickElement(
-          '.confirm-page-container-header__back-button',
+          '[data-testid="wallet-initiated-header-back-button"]',
         );
 
         const inputAmount = await driver.findElement('input[placeholder="0"]');
@@ -147,13 +156,14 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '0.0008',
+        await driver.findElement({
+          css: '[data-testid="first-gas-field"]',
+          text: '0.0002 ETH',
         });
-        await driver.waitForSelector({
-          css: '.currency-display-component__suffix',
-          text: 'ETH',
+
+        await driver.findElement({
+          css: '[data-testid="native-currency"]',
+          text: '$0.29',
         });
 
         // confirms the transaction

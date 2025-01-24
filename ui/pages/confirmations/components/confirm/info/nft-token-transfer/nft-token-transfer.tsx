@@ -1,6 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SimulationDetails } from '../../../simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
@@ -19,16 +18,12 @@ const NFTTokenTransferInfo = () => {
     <>
       <NFTSendHeading />
       <TransactionFlowSection />
-      {
-        <ConfirmInfoSection noPadding>
-          <SimulationDetails
-            transaction={transactionMeta}
-            isTransactionsRedesign
-            enableMetrics
-            metricsOnly={isWalletInitiated}
-          />
-        </ConfirmInfoSection>
-      }
+      <SimulationDetails
+        transaction={transactionMeta}
+        isTransactionsRedesign
+        enableMetrics
+        metricsOnly={isWalletInitiated}
+      />
       <TokenDetailsSection />
       <GasFeesSection />
       <AdvancedDetails />
