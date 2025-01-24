@@ -94,7 +94,7 @@ jobs:
 
   all-jobs-completed:
     name: All jobs completed
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     needs:
       - lint-workflows
       - test-lint-shellcheck
@@ -119,7 +119,7 @@ jobs:
   all-jobs-pass:
     name: All jobs pass
     if: ${{ always() }}
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     needs:
       - all-jobs-completed
     steps:

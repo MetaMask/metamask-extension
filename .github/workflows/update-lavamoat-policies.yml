@@ -8,7 +8,7 @@ jobs:
   is-fork-pull-request:
     name: Determine whether this issue comment was on a pull request from a fork
     if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-policies') }}
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
     steps:
@@ -22,7 +22,7 @@ jobs:
 
   react-to-comment:
     name: React to the comment
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     needs: is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
@@ -44,7 +44,7 @@ jobs:
 
   prepare:
     name: Prepare dependencies
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     needs: is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
@@ -66,7 +66,7 @@ jobs:
 
   update-lavamoat-build-policy:
     name: Update LavaMoat build policy
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     needs:
       - prepare
     steps:
@@ -94,7 +94,7 @@ jobs:
         # and with the build type list in `builds.yml`
         build-type: [main, beta, flask]
     name: Update LavaMoat ${{ matrix.build-type }} application policy
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     needs:
       - prepare
       - update-lavamoat-build-policy
@@ -126,7 +126,7 @@ jobs:
 
   commit-updated-policies:
     name: Commit the updated LavaMoat policies
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     needs:
       - prepare
       - is-fork-pull-request
@@ -228,7 +228,7 @@ jobs:
 
   check-status:
     name: Check whether the policy update succeeded
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     needs:
       - commit-updated-policies
     outputs:
@@ -241,7 +241,7 @@ jobs:
   failure-comment:
     name: Comment about the policy update failure
     if: ${{ always() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     needs:
       - is-fork-pull-request
       - check-status

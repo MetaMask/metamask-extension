@@ -12,7 +12,7 @@ on:
 
 jobs:
   check-pr-labels:
-    runs-on: ubuntu-latest
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-med
     permissions:
       pull-requests: read
 
