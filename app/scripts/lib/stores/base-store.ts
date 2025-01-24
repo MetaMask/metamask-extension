@@ -30,14 +30,6 @@ export type MetaMaskStorageStructure = {
 };
 
 /**
- * When loading state from storage, if the state is not available, then the
- * extension storage api, at least in the case of chrome, returns an empty
- * object. This type represents that empty object to be used in error handling
- * and state initialization.
- */
-type EmptyState = Omit<MetaMaskStorageStructure, 'data' | 'meta'>;
-
-/**
  * The BaseStore class is an abstract class designed to be extended by other
  * classes that implement the abstract methods `set` and `get`. This class
  * provides the foundation for different storage implementations, enabling
