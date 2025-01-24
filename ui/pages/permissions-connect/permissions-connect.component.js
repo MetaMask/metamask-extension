@@ -181,6 +181,7 @@ export default class PermissionConnect extends Component {
       this.props;
     const { redirecting, origin } = this.state;
 
+    // We cache the last known good targetSubjectMetadata since it may be null when the approval is cleared
     if (
       targetSubjectMetadata?.origin &&
       prevProps.targetSubjectMetadata?.origin !== targetSubjectMetadata?.origin
