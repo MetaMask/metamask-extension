@@ -19,6 +19,7 @@ export const dropdown: UIComponentFactory<DropdownElement> = ({
     props: {
       id: element.props.name,
       name: element.props.name,
+      disabled: element.props.disabled,
       form,
       options,
     },
