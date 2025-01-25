@@ -763,7 +763,6 @@
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
       "level>classic-level": false,
       "jest-preview": false,
-      "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false,
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
     }
   },
