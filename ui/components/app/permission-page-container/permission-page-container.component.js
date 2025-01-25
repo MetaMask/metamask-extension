@@ -168,7 +168,7 @@ export default class PermissionPageContainer extends Component {
       ),
     };
 
-    if (Object.keys(request.response.permissions).length > 0) {
+    if (Object.keys(request.permissions).length > 0) {
       approvePermissionsRequest(request);
     } else {
       rejectPermissionsRequest(request.metadata.id);
