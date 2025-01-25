@@ -55,6 +55,15 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
+  // FIX: `wallet_switchEthereumChain` goes to `ConnectPage` instead of `PermissionPageContainer`
+  // Some stuff is rendered on `main` that is NOT rendered on this branch. Also, on main, `isRequestingAccounts` evaluates to false,
+  // so on `ui/pages/permissions-connect/permissions-connect.component.js`, l151 we go to `history.replace(confirmPermissionPath)`;
+  // we should find a solution for specifically triggering `wallet_switchEthereumChain` to also go in here (check `state` here perhaps ?)
+  // await window.ethereum.request({
+  //     jsonrpc: '2.0',
+  //     method: 'wallet_switchEthereumChain',
+  //     params: [{ chainId: '0x1' }],
+  //   })
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions?.[Caip25EndowmentPermissionName],
   );
