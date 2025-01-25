@@ -72,7 +72,7 @@ const NetworkChangeToastLegacy = ({
     };
   }, [confirmation?.id]);
 
-  if (!toastVisible) {
+  if (!toastVisible || !network) {
     return null;
   }
 

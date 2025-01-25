@@ -51,6 +51,18 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
+  const transactionBatch = useMemo(() => {
+    return pendingApproval?.type === 'TransactionBatch'
+      ? {
+          ...pendingApproval.requestData,
+          id: pendingApproval.id,
+          origin: pendingApproval.origin,
+          type: pendingApproval.type,
+          chanId: '0x1',
+        }
+      : undefined;
+  }, [pendingApproval?.id]);
+
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({
     approvalType: pendingApproval?.type as ApprovalType,
     isRedesignedSignaturesUserSettingEnabled,
@@ -62,8 +74,12 @@ const useCurrentConfirmation = () => {
     isRedesignedConfirmationsDeveloperEnabled,
   });
 
+  const useRedesignedForTransactionBatch = Boolean(transactionBatch);
+
   const shouldUseRedesign =
-    useRedesignedForSignatures || useRedesignedForTransaction;
+    useRedesignedForSignatures ||
+    useRedesignedForTransaction ||
+    useRedesignedForTransactionBatch;
 
   return useMemo(() => {
     if (!shouldUseRedesign) {
@@ -71,10 +87,15 @@ const useCurrentConfirmation = () => {
     }
 
     const currentConfirmation =
-      transactionMetadata ?? signatureMessage ?? undefined;
+      transactionMetadata ?? signatureMessage ?? transactionBatch ?? undefined;
 
     return { currentConfirmation };
-  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
+  }, [
+    transactionMetadata,
+    signatureMessage,
+    transactionBatch,
+    shouldUseRedesign,
+  ]);
 };
 
 export default useCurrentConfirmation;

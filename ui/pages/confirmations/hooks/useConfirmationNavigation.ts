@@ -107,7 +107,10 @@ export function navigateToConfirmation(
     return;
   }
 
-  if (type === ApprovalType.Transaction) {
+  if (
+    type === ApprovalType.Transaction ||
+    type === ('TransactionBatch' as ApprovalType)
+  ) {
     history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
     return;
   }

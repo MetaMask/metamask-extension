@@ -2511,6 +2511,7 @@ export default class MetamaskController extends EventEmitter {
           (meta) =>
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
+      addTransactionBatch: this.addTransactionBatch.bind(this),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -5702,12 +5703,21 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  async addTransactionBatch(request, { waitForSubmit = false } = {}) {
+  async addTransactionBatch(
+    request,
+    { waitForSubmit = false, waitForConfirm = false } = {},
+  ) {
     const result = await this.txController.addTransactionBatch(request);
 
     if (waitForSubmit) {
       await result.waitForSubmit();
     }
+
+    if (waitForConfirm) {
+      await result.waitForConfirm();
+    }
+
+    return result;
   }
 
   //=============================================================================

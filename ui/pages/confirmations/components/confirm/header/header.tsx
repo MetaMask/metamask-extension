@@ -32,6 +32,7 @@ const CONFIRMATIONS_WITH_NEW_HEADER = [
   TransactionType.tokenMethodTransferFrom,
   TransactionType.tokenMethodSafeTransferFrom,
   TransactionType.simpleSend,
+  'TransactionBatch',
 ];
 
 const Header = () => {

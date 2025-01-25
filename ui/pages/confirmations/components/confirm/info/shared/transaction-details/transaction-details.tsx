@@ -47,14 +47,13 @@ export const OriginRow = () => {
   );
 };
 
-export const RecipientRow = () => {
+export const RecipientRow = ({ override }: { override?: string }) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  if (
-    !currentConfirmation?.txParams?.to ||
-    !isValidAddress(currentConfirmation?.txParams?.to ?? '')
-  ) {
+  const to = override ?? currentConfirmation?.txParams?.to;
+
+  if (!to || !isValidAddress(to ?? '')) {
     return null;
   }
 
@@ -66,10 +65,7 @@ export const RecipientRow = () => {
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      <ConfirmInfoRowAddress
-        address={currentConfirmation.txParams.to}
-        chainId={chainId}
-      />
+      <ConfirmInfoRowAddress address={to} chainId={chainId} />
     </ConfirmInfoRow>
   );
 };
