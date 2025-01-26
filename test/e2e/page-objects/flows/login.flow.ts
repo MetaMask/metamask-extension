@@ -40,9 +40,7 @@ export const loginWithBalanceValidation = async (
 
   // Verify the expected balance on the homepage
   if (localNode) {
-    await homePage.check_localBlockchainBalanceIsDisplayed(
-      localNode,
-    );
+    await homePage.check_localBlockchainBalanceIsDisplayed(localNode);
   } else {
     await homePage.check_expectedBalanceIsDisplayed();
   }

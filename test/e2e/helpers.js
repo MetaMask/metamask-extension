@@ -45,7 +45,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {Ganache | undefined} ganacheServer - The Ganache server.
+ * @property {string} localNodeServer - The local node server chosen ('ganache', 'anvil'...).
  * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
@@ -62,9 +62,9 @@ async function withFixtures(options, testSuite) {
   const {
     dapp,
     fixtures,
+    localNode = 'ganache',
     ganacheOptions,
     anvilOptions,
-    localNetwork = 'ganache',
     smartContract,
     driverOptions,
     dappOptions,
@@ -84,26 +84,8 @@ async function withFixtures(options, testSuite) {
     manifestFlags,
   } = options;
 
-  // Validate localNetwork value
-  const allowedNetworks = ['ganache', 'anvil', 'bitcoin', 'solana'];
-  if (!allowedNetworks.includes(localNetwork)) {
-    throw new Error(`Invalid localNetwork value: '${localNetwork}'. Allowed values are: ${allowedNetworks.join(', ')}`);
-  }
-
-  // Check for unsupported networks
-  if (localNetwork === 'solana' || localNetwork === 'bitcoin') {
-    return 'Not yet supported, coming soon';
-  }
-
   const fixtureServer = new FixtureServer();
-  let ganacheServer;
-  let anvilServer;
 
-  if (localNetwork === 'anvil') {
-    anvilServer = new Anvil();
-  } else if (!disableGanache) {
-    ganacheServer = new Ganache();
-  }
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
@@ -119,39 +101,54 @@ async function withFixtures(options, testSuite) {
   let webDriver;
   let driver;
   let failed = false;
-  try {
-    if (ganacheServer) {
-      await ganacheServer.start(ganacheOptions);
-    }
 
-    if (anvilServer) {
-      await anvilServer.start(anvilOptions || {});
+  let ganacheServer;
+  let anvilServer;
+
+  try {
+    switch (localNode) {
+      case 'ganache':
+        if (!disableGanache) {
+          ganacheServer = new Ganache();
+          await ganacheServer.start(ganacheOptions);
+        }
+        break;
+
+      case 'anvil':
+        anvilServer = new Anvil();
+        await anvilServer.start(anvilOptions);
+        break;
+
+      default:
+        throw new Error(
+          `Unsupported localNode: '${localNode}'. Cannot start the server.`,
+        );
     }
 
     let contractRegistry;
+    let seeder;
 
     if (smartContract) {
-      if (ganacheServer) {
-        const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
-        const contracts =
-          smartContract instanceof Array ? smartContract : [smartContract];
-        await Promise.all(
-          contracts.map((contract) =>
-            ganacheSeeder.deploySmartContract(contract),
-          ),
-        );
-        contractRegistry = ganacheSeeder.getContractRegistry();
-      } else if (anvilServer) {
-        const anvilSeeder = new AnvilSeeder(anvilServer.getProvider());
-        const contracts =
-          smartContract instanceof Array ? smartContract : [smartContract];
-        await Promise.all(
-          contracts.map((contract) =>
-            anvilSeeder.deploySmartContract(contract),
-          ),
-        );
-        contractRegistry = anvilSeeder.getContractRegistry();
+      switch (localNode) {
+        case 'ganache':
+          seeder = new GanacheSeeder(ganacheServer.getProvider());
+          break;
+
+        case 'anvil':
+          seeder = new AnvilSeeder(anvilServer.getProvider());
+          break;
+
+        default:
+          throw new Error(
+            `Unsupported localNode: '${localNode}'. Cannot deploy smart contracts.`,
+          );
       }
+      const contracts =
+        smartContract instanceof Array ? smartContract : [smartContract];
+      await Promise.all(
+        contracts.map((contract) => seeder.deploySmartContract(contract)),
+      );
+      contractRegistry = seeder.getContractRegistry();
     }
 
     await fixtureServer.start();
@@ -344,7 +341,6 @@ async function withFixtures(options, testSuite) {
       if (ganacheServer) {
         await ganacheServer.quit();
       }
-
       if (anvilServer) {
         await anvilServer.quit();
       }
@@ -637,11 +633,7 @@ const TEST_SEED_PHRASE_TWO =
  * @param {Ganache | Anvil} [localNode] - The local server instance (optional).
  * @param {string} [address] - The address to check the balance for (optional).
  */
-const locateAccountBalanceDOM = async (
-  driver,
-  localNode,
-  address = null,
-) => {
+const locateAccountBalanceDOM = async (driver, localNode, address = null) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
   if (localNode) {
     const balance = await localNode.getBalance(address);
@@ -864,9 +856,9 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
+async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
   try {
-    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+    const ganacheSeeder = new GanacheSeeder(localNodeServer.getProvider());
 
     await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
