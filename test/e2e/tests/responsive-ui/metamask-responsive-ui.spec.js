@@ -90,7 +90,7 @@ describe('MetaMask Responsive UI', function () {
         driverOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver, localNodeServer }) => {
         await driver.navigate();
 
         // Import Secret Recovery Phrase
@@ -113,7 +113,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver, localNodeServer);
       },
     );
   });
@@ -124,11 +124,11 @@ describe('MetaMask Responsive UI', function () {
       {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction

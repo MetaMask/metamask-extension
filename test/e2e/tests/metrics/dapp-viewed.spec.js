@@ -120,10 +120,10 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint: mockedEndpoints, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -155,10 +155,10 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint: mockedEndpoints, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
         // open dapp in a new page
@@ -193,10 +193,10 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint: mockedEndpoints, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
         // refresh dapp
@@ -235,10 +235,10 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint: mockedEndpoints, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
         // open dapp in a new page
@@ -276,10 +276,10 @@ describe('Dapp viewed Event', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint: mockedEndpoints, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
 

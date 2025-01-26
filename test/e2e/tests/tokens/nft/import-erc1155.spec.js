@@ -4,7 +4,7 @@ const {
   unlockWallet,
   defaultGanacheOptions,
 } = require('../../../helpers');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../../localNode/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 
 describe('Import ERC1155 NFT', function () {
@@ -17,7 +17,7 @@ describe('Import ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -64,7 +64,7 @@ describe('Import ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

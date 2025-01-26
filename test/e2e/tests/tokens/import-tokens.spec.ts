@@ -62,7 +62,7 @@ describe('Import flow', function () {
             ],
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockPriceFetch,
       },

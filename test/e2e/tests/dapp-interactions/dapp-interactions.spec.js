@@ -16,7 +16,7 @@ describe('Dapp interactions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({
+        localNodeOptions: generateGanacheOptions({
           concurrent: [{ port: 8546, chainId: 1338 }],
         }),
         title: this.test.fullTitle(),
@@ -47,7 +47,7 @@ describe('Dapp interactions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },

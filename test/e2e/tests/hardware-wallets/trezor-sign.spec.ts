@@ -16,7 +16,7 @@ describe('Trezor Hardware Signatures', function (this: Suite) {
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         dapp: true,
       },

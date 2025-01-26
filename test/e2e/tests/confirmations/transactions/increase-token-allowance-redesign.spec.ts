@@ -6,8 +6,8 @@ import {
   withFixtures,
 } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import ContractAddressRegistry from '../../../localNode/contract-address-registry';
+import { SMART_CONTRACTS } from '../../../localNode/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
@@ -79,7 +79,7 @@ function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
-    ganacheOptions: defaultGanacheOptions,
+    localNodeOptions: defaultGanacheOptions,
     smartContract: SMART_CONTRACTS.HST,
     testSpecificMock: mocks,
     title: mochaContext.test?.fullTitle(),
@@ -92,7 +92,7 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
-    ganacheOptions: defaultGanacheOptionsForType2Transactions,
+    localNodeOptions: defaultGanacheOptionsForType2Transactions,
     smartContract: SMART_CONTRACTS.HST,
     testSpecificMock: mocks,
     title: mochaContext.test?.fullTitle(),

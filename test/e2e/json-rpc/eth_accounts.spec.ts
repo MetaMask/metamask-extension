@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
+import { Ganache } from '../localNode/ganache';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
@@ -16,17 +16,17 @@ describe('eth_accounts', function () {
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDappWithTwoAccounts()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         // eth_accounts
         await driver.openNewPage(`http://127.0.0.1:8080`);

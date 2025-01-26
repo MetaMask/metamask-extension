@@ -1,7 +1,7 @@
 import { withFixtures, defaultGanacheOptions, WINDOW_TITLES } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
-import { Ganache } from '../seeder/ganache';
+import { Ganache } from '../localNode/ganache';
 import {
   buildQuote,
   reviewQuote,
@@ -32,18 +32,18 @@ describe('Snap Account - Swap', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapsTransactionQuote,
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
         await installSnapSimpleKeyring(driver);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

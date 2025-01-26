@@ -28,7 +28,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
+          localNodeOptions: defaultGanacheOptions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -54,7 +54,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),

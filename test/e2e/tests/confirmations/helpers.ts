@@ -6,7 +6,7 @@ import {
   withFixtures,
 } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../localNode/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 
@@ -41,7 +41,7 @@ export function withTransactionEnvelopeTypeFixtures(
           participateInMetaMetrics: true,
         })
         .build(),
-      ganacheOptions:
+      localNodeOptions:
         transactionEnvelopeType === TransactionEnvelopeType.legacy
           ? defaultGanacheOptions
           : defaultGanacheOptionsForType2Transactions,

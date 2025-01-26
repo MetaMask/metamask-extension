@@ -5,7 +5,7 @@ import {
   withFixtures,
   WINDOW_TITLES,
 } from '../../../helpers';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../../localNode/smart-contracts';
 import {
   TestSuiteArguments,
   openDAppWithContract,
@@ -15,7 +15,7 @@ import { Driver } from '../../../webdriver/driver';
 describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
     const nftSmartContract = SMART_CONTRACTS.NFTS;
-    const ganacheOptions = {
+    const localNodeOptions = {
       accounts: [
         {
           secretKey: PRIVATE_KEY,
@@ -29,7 +29,7 @@ describe('Alert for insufficient funds', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        localNodeOptions,
         smartContract: nftSmartContract,
         title: this.test?.fullTitle(),
       },

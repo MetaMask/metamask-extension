@@ -23,7 +23,7 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -48,7 +48,7 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -74,7 +74,7 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -100,7 +100,7 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -126,7 +126,7 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -152,7 +152,7 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -178,7 +178,7 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

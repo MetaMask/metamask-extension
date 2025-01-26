@@ -24,13 +24,13 @@ describe('Request Queueing chainId proxy sync', function () {
 
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },

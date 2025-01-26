@@ -37,7 +37,7 @@ describe('Localization', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         testSpecificMock: mockPhpConversion,
         title: this.test.fullTitle(),
       },

@@ -8,7 +8,7 @@ describe('Multi injected provider interactions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {

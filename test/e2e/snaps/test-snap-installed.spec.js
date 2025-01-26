@@ -17,7 +17,7 @@ describe('Test Snap Installed', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

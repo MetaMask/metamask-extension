@@ -4,7 +4,7 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../localNode/smart-contracts';
 import AddTokenConfirmation from '../../page-objects/pages/confirmations/redesign/add-token-confirmations';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -20,15 +20,15 @@ describe('Add token using wallet_watchAsset', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer, contractRegistry }) => {
+      async ({ driver, localNodeServer, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.check_pageIsLoaded();
@@ -67,15 +67,15 @@ describe('Add token using wallet_watchAsset', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer, contractRegistry }) => {
+      async ({ driver, localNodeServer, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.check_pageIsLoaded();

@@ -14,11 +14,11 @@ describe('Permissions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        const addresses = await ganacheServer.getAccounts();
+      async ({ driver, localNodeServer }) => {
+        const addresses = await localNodeServer.getAccounts();
         const publicAddress = addresses[0];
         await unlockWallet(driver);
 

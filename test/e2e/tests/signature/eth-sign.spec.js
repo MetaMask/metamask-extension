@@ -15,7 +15,7 @@ describe('Eth sign', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -23,13 +23,13 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -113,13 +113,13 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
           .withPermissionControllerConnectedToTwoTestDapps()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },

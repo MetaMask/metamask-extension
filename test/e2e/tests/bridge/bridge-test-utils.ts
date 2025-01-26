@@ -8,7 +8,7 @@ import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } from '../../../../shared/constants/bridge';
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../localNode/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
@@ -157,7 +157,7 @@ export const getBridgeFixtures = (
     testSpecificMock: mockServer(featureFlags),
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
-    ganacheOptions: generateGanacheOptions({
+    localNodeOptions: generateGanacheOptions({
       hardfork: 'london',
       chain: { chainId: CHAIN_IDS.MAINNET },
     }),

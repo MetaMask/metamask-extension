@@ -30,7 +30,7 @@ describe('Content-Security-Policy', function (this: Suite) {
           ],
         },
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

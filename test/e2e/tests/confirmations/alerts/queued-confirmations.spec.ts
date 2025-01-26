@@ -3,14 +3,14 @@ import { strict as assert } from 'assert';
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getEventPayloads } from '../../../helpers';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../../localNode/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import {
   createDepositTransaction,
   openDAppWithContract,
   TestSuiteArguments,
 } from '../transactions/shared';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import ContractAddressRegistry from '../../../localNode/contract-address-registry';
 
 const FixtureBuilder = require('../../../fixture-builder');
 const {
@@ -40,18 +40,18 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
               {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
             ],
           },
@@ -85,18 +85,18 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
               {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
             ],
           },
@@ -137,18 +137,18 @@ describe('Queued Confirmations', function () {
             .withSelectedNetworkControllerPerDomain()
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
               {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
             ],
           },
@@ -192,18 +192,18 @@ describe('Queued Confirmations', function () {
             })
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
               {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
             ],
           },
@@ -277,18 +277,18 @@ describe('Queued Confirmations', function () {
             })
             .build(),
           dappOptions: { numberOfDapps: 2 },
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptions,
             concurrent: [
               {
                 port: PORT,
                 chainId: CHAIN_ID,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
               {
                 port: PORT_ONE,
                 chainId: CHAIN_ID_ONE,
-                ganacheOptions2: defaultGanacheOptions,
+                localNodeOptions2: defaultGanacheOptions,
               },
             ],
           },

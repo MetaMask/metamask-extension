@@ -2,7 +2,7 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
+import { Ganache } from '../../../localNode/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApprovedWithDecoding,
@@ -34,10 +34,10 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await (localNodeServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
         await initializePages(driver);
 

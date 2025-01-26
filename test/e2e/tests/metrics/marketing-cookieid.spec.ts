@@ -60,7 +60,7 @@ describe('Marketing cookieId', function (this: Suite) {
             dataCollectionForMarketing: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -103,7 +103,7 @@ describe('Marketing cookieId', function (this: Suite) {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -141,7 +141,7 @@ describe('Marketing cookieId', function (this: Suite) {
         dapp: true,
         dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder().withMetaMetricsController().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -183,7 +183,7 @@ describe('Marketing cookieId', function (this: Suite) {
             dataCollectionForMarketing: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

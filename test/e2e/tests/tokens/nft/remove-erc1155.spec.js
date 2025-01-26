@@ -4,7 +4,7 @@ const {
   withFixtures,
   unlockWallet,
 } = require('../../../helpers');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../../localNode/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 
 async function mockIPFSRequest(mockServer) {
@@ -25,7 +25,7 @@ describe('Remove ERC1155 NFT', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         testSpecificMock: mockIPFSRequest,

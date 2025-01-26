@@ -18,13 +18,13 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },

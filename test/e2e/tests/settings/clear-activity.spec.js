@@ -19,7 +19,7 @@ describe('Clear account activity', function () {
         fixtures: new FixtureBuilder()
           .withTransactionControllerCompletedAndIncomingTransaction()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

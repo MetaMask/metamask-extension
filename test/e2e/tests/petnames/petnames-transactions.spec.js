@@ -44,7 +44,7 @@ describe('Petnames - Transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -90,7 +90,7 @@ describe('Petnames - Transactions', function () {
           })
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

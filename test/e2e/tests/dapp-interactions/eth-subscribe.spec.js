@@ -15,7 +15,7 @@ describe('eth_subscribe', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },

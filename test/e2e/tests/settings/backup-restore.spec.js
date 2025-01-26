@@ -49,7 +49,7 @@ describe('Backup and Restore', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

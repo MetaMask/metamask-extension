@@ -7,7 +7,7 @@ const {
   withFixtures,
   switchToNotificationWindow,
 } = require('../../helpers');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../localNode/smart-contracts');
 const { DAPP_URL } = require('../../constants');
 
 describe('Request Queue SwitchChain -> WatchAsset', function () {
@@ -22,13 +22,13 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -36,11 +36,11 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         title: this.test.fullTitle(),
       },
 
-      async ({ driver, contractRegistry, ganacheServer }) => {
+      async ({ driver, contractRegistry, localNodeServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await logInWithBalanceValidation(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, localNodeServer);
 
         await openDapp(driver, contractAddress, DAPP_URL);
 

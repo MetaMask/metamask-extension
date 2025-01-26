@@ -20,7 +20,7 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions({
+        localNodeOptions: generateGanacheOptions({
           concurrent: [{ port, chainId }],
         }),
         title: this.test.fullTitle(),
@@ -95,7 +95,7 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -152,7 +152,7 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -211,7 +211,7 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -247,7 +247,7 @@ describe('Custom RPC history', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController(networkState)
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -298,7 +298,7 @@ describe('Custom RPC history', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController(networkState)
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

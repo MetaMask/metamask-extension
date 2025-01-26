@@ -74,16 +74,16 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
+      async ({ driver, localNodeServer }) => {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localBlockchainBalanceIsDisplayed(localNodeServer);
 
         await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -156,7 +156,7 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
@@ -256,13 +256,13 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
 
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await loginWithBalanceValidation(driver, localNodeServer);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -342,7 +342,7 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },

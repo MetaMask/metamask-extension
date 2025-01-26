@@ -1,13 +1,13 @@
 import { Suite } from 'mocha';
 import {
-  multipleGanacheOptions,
+  multiplelocalNodeOptions,
   PRIVATE_KEY_TWO,
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import { Ganache } from '../../seeder/ganache';
+import { Ganache } from '../../localNode/ganache';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import FixtureBuilder from '../../fixture-builder';
@@ -23,17 +23,17 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: multipleGanacheOptions,
+        localNodeOptions: multiplelocalNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
@@ -70,17 +70,17 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: multipleGanacheOptions,
+        localNodeOptions: multiplelocalNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
@@ -118,18 +118,18 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: multipleGanacheOptions,
+        localNodeOptions: multiplelocalNodeOptions,
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);

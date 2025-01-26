@@ -47,7 +47,7 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
       },
@@ -91,7 +91,7 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
       },

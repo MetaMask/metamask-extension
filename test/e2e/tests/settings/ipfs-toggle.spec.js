@@ -6,7 +6,7 @@ const {
   withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../localNode/smart-contracts');
 
 describe('Settings', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;

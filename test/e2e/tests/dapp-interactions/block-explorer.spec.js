@@ -5,7 +5,7 @@ const {
   withFixtures,
   unlockWallet,
 } = require('../../helpers');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../localNode/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Block Explorer', function () {
@@ -23,7 +23,7 @@ describe('Block Explorer', function () {
             }),
           )
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -68,7 +68,7 @@ describe('Block Explorer', function () {
           })
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract: SMART_CONTRACTS.HST,
         title: this.test.fullTitle(),
       },
@@ -123,7 +123,7 @@ describe('Block Explorer', function () {
           })
           .withTransactionControllerCompletedTransaction()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -10,7 +10,7 @@ const FixtureBuilder = require('../../fixture-builder');
 describe('Chain Interactions', function () {
   const port = 8546;
   const chainId = 1338;
-  const ganacheOptions = generateGanacheOptions({
+  const localNodeOptions = generateGanacheOptions({
     concurrent: [{ port, chainId }],
   });
 
@@ -19,7 +19,7 @@ describe('Chain Interactions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

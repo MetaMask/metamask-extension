@@ -12,7 +12,7 @@ describe('Test Snap Multi Install', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
       },

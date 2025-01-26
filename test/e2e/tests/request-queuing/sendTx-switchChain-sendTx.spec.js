@@ -23,13 +23,13 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {
           .withPermissionControllerConnectedToTestDapp()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },

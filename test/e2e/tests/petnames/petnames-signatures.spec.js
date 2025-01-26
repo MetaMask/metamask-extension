@@ -91,7 +91,7 @@ describe('Petnames - Signatures', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -124,7 +124,7 @@ describe('Petnames - Signatures', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -160,7 +160,7 @@ describe('Petnames - Signatures', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -2,7 +2,7 @@
 import { Mockttp } from 'mockttp';
 import { openDapp, unlockWallet } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import ContractAddressRegistry from '../../../localNode/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
 import {
@@ -41,7 +41,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
+          localNodeOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -61,7 +61,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -84,17 +84,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
               account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
+          localNodeOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
         },
         async ({
           driver,
           contractRegistry,
-          ganacheServer,
+          localNodeServer,
         }: TestSuiteArguments) => {
           // Seed the Trezor account with balance
-          await ganacheServer?.setAccountBalance(
+          await localNodeServer?.setAccountBalance(
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x100000000000000000000',
           );
@@ -129,7 +129,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             })
             .withNetworkControllerOnOptimism()
             .build(),
-          ganacheOptions: {
+          localNodeOptions: {
             ...defaultGanacheOptionsForType2Transactions,
             network_id: hexToNumber(CHAIN_IDS.OPTIMISM),
             chainId: hexToNumber(CHAIN_IDS.OPTIMISM),
@@ -166,7 +166,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -190,7 +190,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
               useNonceField: true,
             })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -215,7 +215,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -243,7 +243,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
               useNonceField: true,
             })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -267,7 +267,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },

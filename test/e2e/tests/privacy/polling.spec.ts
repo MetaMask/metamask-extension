@@ -266,7 +266,7 @@ describe('Account Tracker API polling', function () {
           .withNetworkControllerOnMainnet()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
@@ -358,7 +358,7 @@ describe('Token Detection', function () {
             .withNetworkControllerOnMainnet()
             .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
+          localNodeOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: mockAccountApiForPortfolioView,
         },

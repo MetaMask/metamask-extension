@@ -1,6 +1,6 @@
 import { defaultGanacheOptions, withFixtures } from '../../../helpers';
 import { ACCOUNT_TYPE } from '../../../constants';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../../localNode/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
@@ -18,14 +18,14 @@ describe('Import NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer, contractRegistry }) => {
+      async ({ driver, localNodeServer, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
@@ -44,14 +44,14 @@ describe('Import NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer, contractRegistry }) => {
+      async ({ driver, localNodeServer, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         // Import a NFT and check that it is displayed in the NFT tab on homepage
         const homepage = new Homepage(driver);
@@ -78,7 +78,7 @@ describe('Import NFT', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homepage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homepage.check_localBlockchainBalanceIsDisplayed(localNodeServer);
         await nftList.check_nftImageIsDisplayed();
       },
     );
@@ -91,14 +91,14 @@ describe('Import NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer, contractRegistry }) => {
+      async ({ driver, localNodeServer, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         await new Homepage(driver).goToNftTab();
         await new NftListPage(driver).importNft(

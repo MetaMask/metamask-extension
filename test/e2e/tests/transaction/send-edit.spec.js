@@ -16,7 +16,7 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -98,7 +98,7 @@ describe('Editing Confirm Transaction', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

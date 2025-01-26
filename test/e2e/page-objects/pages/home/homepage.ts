@@ -1,5 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
-import { Ganache } from '../../../seeder/ganache';
+import { Ganache } from '../../../localNode/ganache';
 import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
 

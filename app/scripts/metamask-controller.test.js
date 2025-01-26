@@ -62,7 +62,7 @@ import MetaMaskController, {
 } from './metamask-controller';
 import { PermissionNames } from './controllers/permissions';
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+const { Ganache } = require('../../test/e2e/localNode/ganache');
 
 const ganacheServer = new Ganache();
 

@@ -269,7 +269,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
       },

@@ -7,14 +7,14 @@ const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
-const { Ganache } = require('./seeder/ganache');
+const { Ganache } = require('./localNode/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const GanacheSeeder = require('./seeder/ganache-seeder');
+const GanacheSeeder = require('./localNode/ganache-seeder');
 const { Bundler } = require('./bundler');
-const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('./localNode/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
   ERC_4337_ACCOUNT,
@@ -43,8 +43,8 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {Ganache | undefined} ganacheServer - The Ganache server.
- * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
+ * @property {Ganache | undefined} localNodeServer - The Ganache server.
+ * @property {Ganache | undefined} secondaryLocalNodeServer - The secondary Ganache server.
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
  * @property {mockttp.Mockttp} mockServer - The mock server.
@@ -60,7 +60,7 @@ async function withFixtures(options, testSuite) {
   const {
     dapp,
     fixtures,
-    ganacheOptions,
+    localNodeOptions,
     smartContract,
     driverOptions,
     dappOptions,
@@ -81,14 +81,14 @@ async function withFixtures(options, testSuite) {
   } = options;
 
   const fixtureServer = new FixtureServer();
-  let ganacheServer;
+  let localNodeServer;
   if (!disableGanache) {
-    ganacheServer = new Ganache();
+    localNodeServer = new Ganache();
   }
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  const secondaryGanacheServer = [];
+  const secondaryLocalNodeServer = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -102,12 +102,12 @@ async function withFixtures(options, testSuite) {
   let failed = false;
   try {
     if (!disableGanache) {
-      await ganacheServer.start(ganacheOptions);
+      await localNodeServer.start(localNodeOptions);
     }
     let contractRegistry;
 
     if (smartContract && !disableGanache) {
-      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+      const ganacheSeeder = new GanacheSeeder(localNodeServer.getProvider());
       const contracts =
         smartContract instanceof Array ? smartContract : [smartContract];
       await Promise.all(
@@ -121,23 +121,23 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (ganacheOptions?.concurrent) {
-      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
-        const { port, chainId, ganacheOptions2 } = ganacheSettings;
+    if (localNodeOptions?.concurrent) {
+      localNodeOptions.concurrent.forEach(async (ganacheSettings) => {
+        const { port, chainId, localNodeOptions2 } = ganacheSettings;
         const server = new Ganache();
-        secondaryGanacheServer.push(server);
+        secondaryLocalNodeServer.push(server);
         await server.start({
           blockTime: 2,
           chain: { chainId },
           port,
           vmErrorsOnRPCResponse: false,
-          ...ganacheOptions2,
+          ...localNodeOptions2,
         });
       });
     }
 
     if (!disableGanache && useBundler) {
-      await initBundler(bundlerServer, ganacheServer, usePaymaster);
+      await initBundler(bundlerServer, localNodeServer, usePaymaster);
     }
 
     await phishingPageServer.start();
@@ -174,7 +174,7 @@ async function withFixtures(options, testSuite) {
       mockServer,
       testSpecificMock,
       {
-        chainId: ganacheOptions?.chainId || 1337,
+        chainId: localNodeOptions?.chainId || 1337,
         ethConversionInUsd,
       },
     );
@@ -220,8 +220,8 @@ async function withFixtures(options, testSuite) {
     await testSuite({
       driver: driverProxy ?? driver,
       contractRegistry,
-      ganacheServer,
-      secondaryGanacheServer,
+      localNodeServer,
+      secondaryLocalNodeServer,
       mockedEndpoint,
       bundlerServer,
       mockServer,
@@ -304,12 +304,12 @@ async function withFixtures(options, testSuite) {
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
-      if (ganacheServer) {
-        await ganacheServer.quit();
+      if (localNodeServer) {
+        await localNodeServer.quit();
       }
 
-      if (ganacheOptions?.concurrent) {
-        secondaryGanacheServer.forEach(async (server) => {
+      if (localNodeOptions?.concurrent) {
+        secondaryLocalNodeServer.forEach(async (server) => {
           await server.quit();
         });
       }
@@ -473,7 +473,7 @@ const defaultGanacheOptionsForType2Transactions = {
   hardfork: 'london',
 };
 
-const multipleGanacheOptions = {
+const multiplelocalNodeOptions = {
   accounts: [
     {
       secretKey: PRIVATE_KEY,
@@ -486,8 +486,8 @@ const multipleGanacheOptions = {
   ],
 };
 
-const multipleGanacheOptionsForType2Transactions = {
-  ...multipleGanacheOptions,
+const multiplelocalNodeOptionsForType2Transactions = {
+  ...multiplelocalNodeOptions,
   // EVM version that supports type 2 transactions (EIP1559)
   hardfork: 'london',
 };
@@ -593,17 +593,17 @@ const TEST_SEED_PHRASE_TWO =
  * or after a transaction is made.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {Ganache} [localNodeServer] - The Ganache server instance (optional).
  * @param {string} [address] - The address to check the balance for (optional).
  */
 const locateAccountBalanceDOM = async (
   driver,
-  ganacheServer,
+  localNodeServer,
   address = null,
 ) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (ganacheServer) {
-    const balance = await ganacheServer.getBalance(address);
+  if (localNodeServer) {
+    const balance = await localNodeServer.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -678,10 +678,10 @@ async function createWebSocketConnection(driver, hostname) {
   }
 }
 
-const logInWithBalanceValidation = async (driver, ganacheServer) => {
+const logInWithBalanceValidation = async (driver, localNodeServer) => {
   await unlockWallet(driver);
   // Wait for balance to load
-  await locateAccountBalanceDOM(driver, ganacheServer);
+  await locateAccountBalanceDOM(driver, localNodeServer);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
@@ -823,9 +823,9 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
+async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
   try {
-    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+    const ganacheSeeder = new GanacheSeeder(localNodeServer.getProvider());
 
     await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
@@ -886,10 +886,10 @@ module.exports = {
   createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
-  multipleGanacheOptions,
+  multiplelocalNodeOptions,
   defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
-  multipleGanacheOptionsForType2Transactions,
+  multiplelocalNodeOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   unlockWallet,

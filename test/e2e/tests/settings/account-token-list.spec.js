@@ -42,11 +42,11 @@ describe('Settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
 
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
@@ -76,7 +76,7 @@ describe('Settings', function () {
           .withShowFiatTestnetEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockInfuraResponses,
       },
@@ -126,7 +126,7 @@ describe('Settings', function () {
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withConversionRateDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockInfuraResponses,
       },

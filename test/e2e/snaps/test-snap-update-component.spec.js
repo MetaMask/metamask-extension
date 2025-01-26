@@ -4,7 +4,7 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap update via snaps component', function () {
   it('can install an old and then update via the snaps component', async function () {
-    const ganacheOptions = {
+    const localNodeOptions = {
       accounts: [
         {
           secretKey:
@@ -16,7 +16,7 @@ describe('Test Snap update via snaps component', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

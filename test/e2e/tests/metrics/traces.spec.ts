@@ -47,7 +47,7 @@ describe('Traces', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryCustomTrace,
         manifestFlags: {
@@ -69,7 +69,7 @@ describe('Traces', function () {
             participateInMetaMetrics: false,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryCustomTrace,
         manifestFlags: {
@@ -91,7 +91,7 @@ describe('Traces', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryAutomatedTrace,
         manifestFlags: {
@@ -113,7 +113,7 @@ describe('Traces', function () {
             participateInMetaMetrics: false,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentryAutomatedTrace,
         manifestFlags: {

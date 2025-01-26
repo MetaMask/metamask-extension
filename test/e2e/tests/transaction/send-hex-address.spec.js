@@ -4,7 +4,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
 } = require('../../helpers');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../localNode/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
@@ -17,11 +17,11 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
@@ -63,11 +63,11 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
@@ -114,12 +114,12 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
 
         // Send TST
         await driver.clickElement(
@@ -177,12 +177,12 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
 
         // Send TST
         await driver.clickElement(

@@ -65,7 +65,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockServerCalls,
       },

@@ -32,17 +32,17 @@ describe('Settings: Show native token as main balance', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer: unknown;
+        localNodeServer: unknown;
       }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, localNodeServer);
 
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
@@ -64,7 +64,7 @@ describe('Settings: Show native token as main balance', function () {
           .withConversionRateEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -108,7 +108,7 @@ describe('Settings: Show native token as main balance', function () {
           .withConversionRateEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

@@ -3,7 +3,7 @@ import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
+import { Ganache } from '../localNode/ganache';
 
 describe('eth_estimateGas', function () {
   it('executes a estimate gas json rpc call', async function () {
@@ -13,17 +13,17 @@ describe('eth_estimateGas', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         // eth_estimateGas
         await driver.openNewPage(`http://127.0.0.1:8080`);

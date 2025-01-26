@@ -110,7 +110,7 @@ describe('Swaps - notifications', function () {
     );
   });
   it('tests a notification for not enough balance', async function () {
-    const lowBalanceGanacheOptions = {
+    const lowBalancelocalNodeOptions = {
       accounts: [
         {
           secretKey:
@@ -123,7 +123,7 @@ describe('Swaps - notifications', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        ganacheOptions: lowBalanceGanacheOptions,
+        localNodeOptions: lowBalancelocalNodeOptions,
         testSpecificMock: mockSwapsTransactionQuote,
         title: this.test?.fullTitle(),
       },

@@ -31,12 +31,12 @@ describe('Unlock wallet', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, mockedEndpoint, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
         const events = await getEventPayloads(driver, mockedEndpoint);
         const sortedEvents = sortEventsByTime(events);
         await assert.equal(sortedEvents.length, 3);

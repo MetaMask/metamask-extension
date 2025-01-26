@@ -38,7 +38,7 @@ describe('Setting - About MetaMask :', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

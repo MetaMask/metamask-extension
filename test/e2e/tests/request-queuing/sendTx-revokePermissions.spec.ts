@@ -1,7 +1,7 @@
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { Ganache } from '../../seeder/ganache';
+import { Ganache } from '../../localNode/ganache';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
@@ -23,19 +23,19 @@ describe('Request Queuing', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
         },
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         // Open test dapp
         const testDapp = new TestDapp(driver);

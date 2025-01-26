@@ -18,7 +18,7 @@ describe('PPOM Settings', function () {
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -57,7 +57,7 @@ describe('PPOM Settings', function () {
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -15,7 +15,7 @@ describe('Terms of use', function () {
             termsOfUseLastAgreed: firstOfJan,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

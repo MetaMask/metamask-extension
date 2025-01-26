@@ -3,13 +3,14 @@ import { defaultGanacheOptions, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
+import { Ganache } from '../localNode/ganache';
 
 describe('eth_newBlockFilter', function () {
-  const ganacheOptions: typeof defaultGanacheOptions & { blockTime: number } = {
-    blockTime: 0.1,
-    ...defaultGanacheOptions,
-  };
+  const localNodeOptions: typeof defaultGanacheOptions & { blockTime: number } =
+    {
+      blockTime: 0.1,
+      ...defaultGanacheOptions,
+    };
   it('executes a new block filter call', async function () {
     await withFixtures(
       {
@@ -17,17 +18,17 @@ describe('eth_newBlockFilter', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         // eth_newBlockFilter
         await driver.openNewPage(`http://127.0.0.1:8080`);

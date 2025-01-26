@@ -19,20 +19,20 @@ describe('Request Queueing', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
         title: this.test?.fullTitle(),
       },
 
-      async ({ driver, ganacheServer }) => {
+      async ({ driver, localNodeServer }) => {
         await loginWithoutBalanceValidation(driver);
 
         // Connect to dapp
@@ -80,7 +80,7 @@ describe('Request Queueing', function () {
         );
 
         // Mine a block deterministically
-        await ganacheServer.mineBlock();
+        await localNodeServer.mineBlock();
 
         // Wait a couple of seconds for the logs to populate into the messages window variable
         await driver.delay(5000);

@@ -5,7 +5,7 @@ const {
   unlockWallet,
   getEventPayloads,
 } = require('../../../helpers');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../../localNode/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 const {
   MetaMetricsEventName,
@@ -42,7 +42,7 @@ describe('Remove NFT', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,

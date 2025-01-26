@@ -3,9 +3,9 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { Ganache } from '../../seeder/ganache';
+import { Ganache } from '../../localNode/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../localNode/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -33,19 +33,19 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract: SMART_CONTRACTS.HST,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
         // Step 1: Log in and set up page objects
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
 
         const homepage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);

@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { Ganache } from '../../seeder/ganache';
+import { Ganache } from '../../localNode/ganache';
 import FixtureBuilder from '../../fixture-builder';
 import { logInWithBalanceValidation, withFixtures } from '../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
@@ -19,13 +19,13 @@ describe('Trezor Hardware', function (this: Suite) {
       },
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
         // Seed the Trezor account with balance
-        await ganacheServer?.setAccountBalance(
+        await localNodeServer?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         );

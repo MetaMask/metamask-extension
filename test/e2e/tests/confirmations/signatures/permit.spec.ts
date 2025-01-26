@@ -3,7 +3,7 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
+import { Ganache } from '../../../localNode/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockPermitDecoding,
@@ -37,10 +37,10 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await (localNodeServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
         await initializePages(driver);
 

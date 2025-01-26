@@ -1,15 +1,15 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import { Ganache } from '../../seeder/ganache';
-import ContractAddressRegistry from '../../seeder/contract-address-registry';
+import { Ganache } from '../../localNode/ganache';
+import ContractAddressRegistry from '../../localNode/contract-address-registry';
 import {
-  multipleGanacheOptionsForType2Transactions,
+  multiplelocalNodeOptionsForType2Transactions,
   PRIVATE_KEY_TWO,
   withFixtures,
   WINDOW_TITLES,
 } from '../../helpers';
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../localNode/smart-contracts';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -27,20 +27,20 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
           .build(),
-        ganacheOptions: multipleGanacheOptionsForType2Transactions,
+        localNodeOptions: multiplelocalNodeOptionsForType2Transactions,
         smartContract,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
         contractRegistry,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
         contractRegistry: ContractAddressRegistry;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 

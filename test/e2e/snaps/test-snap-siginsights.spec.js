@@ -17,7 +17,7 @@ describe('Test Snap Signature Insights', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
@@ -262,7 +262,7 @@ describe('Test Snap Signature Insights', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
       },

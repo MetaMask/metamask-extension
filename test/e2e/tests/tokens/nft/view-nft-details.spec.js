@@ -4,7 +4,7 @@ const {
   withFixtures,
   unlockWallet,
 } = require('../../../helpers');
-const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
+const { SMART_CONTRACTS } = require('../../../localNode/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
 
 describe('View NFT details', function () {
@@ -15,7 +15,7 @@ describe('View NFT details', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

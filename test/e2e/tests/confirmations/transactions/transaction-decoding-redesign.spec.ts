@@ -8,9 +8,9 @@ import {
 } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
-import { Ganache } from '../../../seeder/ganache';
+import { Ganache } from '../../../localNode/ganache';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import ContractAddressRegistry from '../../../localNode/contract-address-registry';
 import { TestSuiteArguments } from './shared';
 
 const { defaultGanacheOptions, withFixtures } = require('../../../helpers');
@@ -28,7 +28,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
+          localNodeOptions: defaultGanacheOptions,
           testSpecificMock: mocked4BytesResponse,
           smartContract,
           title: this.test?.fullTitle(),
@@ -63,7 +63,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         testSpecificMock: mockedSourcifyResponse,
         smartContract,
         title: this.test?.fullTitle(),
@@ -96,7 +96,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -129,12 +129,12 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+      async ({ driver, localNodeServer }: TestSuiteArguments) => {
+        const addresses = await (localNodeServer as Ganache).getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);

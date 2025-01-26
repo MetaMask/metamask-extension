@@ -53,7 +53,7 @@ try {
 `;
 
 describe('lockdown', function (this: Mocha.Suite) {
-  const ganacheOptions = {
+  const localNodeOptions = {
     accounts: [
       {
         secretKey:
@@ -67,7 +67,7 @@ describe('lockdown', function (this: Mocha.Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -85,7 +85,7 @@ describe('lockdown', function (this: Mocha.Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        localNodeOptions,
         ignoredConsoleErrors: ['Error: Could not establish connection.'],
         title: this.test?.fullTitle(),
       },

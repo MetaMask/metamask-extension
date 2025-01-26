@@ -30,11 +30,11 @@ describe('Address Book', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
         await openActionMenuAndStartSendFlow(driver);
 
         await driver.clickElement({ css: 'button', text: 'Contacts' });
@@ -74,7 +74,7 @@ describe('Address Book', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -125,7 +125,7 @@ describe('Address Book', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -179,7 +179,7 @@ describe('Address Book', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

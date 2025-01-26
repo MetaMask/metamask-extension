@@ -25,7 +25,7 @@ describe('Navigate transactions', function () {
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },
@@ -65,7 +65,7 @@ describe('Navigate transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerTxSimulationsDisabled()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -99,7 +99,7 @@ describe('Navigate transactions', function () {
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },
@@ -124,7 +124,7 @@ describe('Navigate transactions', function () {
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },
@@ -149,11 +149,11 @@ describe('Navigate transactions', function () {
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver, localNodeServer }) => {
         await unlockWallet(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
@@ -164,7 +164,7 @@ describe('Navigate transactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver, localNodeServer);
       },
     );
   });

@@ -196,13 +196,13 @@ describe('Request-queue UI changes', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -258,20 +258,20 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerTripleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             // Ganache for network 1
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
             // Ganache for network 3
             {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -382,13 +382,13 @@ describe('Request-queue UI changes', function () {
           })
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -450,7 +450,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         driverOptions: { constrainWindowSize: true },
       },
@@ -495,13 +495,13 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -547,13 +547,13 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -616,13 +616,13 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -632,7 +632,7 @@ describe('Request-queue UI changes', function () {
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
+      async ({ driver, localNodeServer, secondaryLocalNodeServer }) => {
         await unlockWallet(driver);
 
         // Open the first dapp
@@ -651,8 +651,8 @@ describe('Request-queue UI changes', function () {
         });
 
         // Kill ganache servers
-        await ganacheServer.quit();
-        await secondaryGanacheServer[0].quit();
+        await localNodeServer.quit();
+        await secondaryLocalNodeServer[0].quit();
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickPersonalSign(driver, DAPP_URL);
@@ -682,13 +682,13 @@ describe('Request-queue UI changes', function () {
           .withNetworkControllerDoubleGanache()
 
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -698,7 +698,7 @@ describe('Request-queue UI changes', function () {
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer, secondaryGanacheServer }) => {
+      async ({ driver, localNodeServer, secondaryLocalNodeServer }) => {
         await unlockWallet(driver);
 
         // Open the first dapp
@@ -717,8 +717,8 @@ describe('Request-queue UI changes', function () {
         });
 
         // Kill ganache servers
-        await ganacheServer.quit();
-        await secondaryGanacheServer[0].quit();
+        await localNodeServer.quit();
+        await secondaryLocalNodeServer[0].quit();
 
         // Go back to first dapp, try an action, ensure network connection failure doesn't block UI
         await selectDappClickSend(driver, DAPP_URL);

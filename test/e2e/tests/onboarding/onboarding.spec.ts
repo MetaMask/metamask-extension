@@ -24,7 +24,7 @@ import {
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
 describe('MetaMask onboarding', function () {
-  const ganacheOptions2 = {
+  const localNodeOptions2 = {
     accounts: [
       {
         secretKey:
@@ -161,12 +161,12 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: {
-          concurrent: [{ port, chainId, ganacheOptions2 }],
+        localNodeOptions: {
+          concurrent: [{ port, chainId, localNodeOptions2 }],
         },
         title: this.test?.fullTitle(),
       },
-      async ({ driver, secondaryGanacheServer }) => {
+      async ({ driver, secondaryLocalNodeServer }) => {
         await importSRPOnboardingFlow({
           driver,
           seedPhrase: TEST_SEED_PHRASE,
@@ -197,9 +197,12 @@ describe('MetaMask onboarding', function () {
         await homePage.check_addNetworkMessageIsDisplayed(networkName);
 
         // Check the correct balance for the custom network is displayed
-        if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
+        if (
+          secondaryLocalNodeServer &&
+          Array.isArray(secondaryLocalNodeServer)
+        ) {
           await homePage.check_localBlockchainBalanceIsDisplayed(
-            secondaryGanacheServer[0],
+            secondaryLocalNodeServer[0],
           );
         } else {
           throw new Error('Custom network Ganache server not available');

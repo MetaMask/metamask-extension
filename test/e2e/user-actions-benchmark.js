@@ -16,7 +16,7 @@ const {
 } = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
-const ganacheOptions = {
+const localNodeOptions = {
   accounts: [
     {
       secretKey:
@@ -32,7 +32,7 @@ async function loadNewAccount() {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      ganacheOptions,
+      localNodeOptions,
       disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
@@ -64,11 +64,11 @@ async function confirmTx() {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      ganacheOptions,
+      localNodeOptions,
       disableServerMochaToBackground: true,
     },
-    async ({ driver, ganacheServer }) => {
-      await logInWithBalanceValidation(driver, ganacheServer);
+    async ({ driver, localNodeServer }) => {
+      await logInWithBalanceValidation(driver, localNodeServer);
 
       await openActionMenuAndStartSendFlow(driver);
 

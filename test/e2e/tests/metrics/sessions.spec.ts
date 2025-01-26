@@ -34,7 +34,7 @@ describe('Sessions', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {
@@ -56,7 +56,7 @@ describe('Sessions', function () {
             participateInMetaMetrics: false,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {

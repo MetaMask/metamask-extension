@@ -21,15 +21,15 @@ describe('Add account', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver, localNodeServer }) => {
         await completeImportSRPOnboardingFlow({ driver });
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localBlockchainBalanceIsDisplayed(localNodeServer);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -49,7 +49,7 @@ describe('Add account', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localBlockchainBalanceIsDisplayed(localNodeServer);
 
         await sendRedesignedTransactionToAccount({
           driver,
@@ -71,7 +71,7 @@ describe('Add account', function () {
 
         // Check wallet balance for both accounts
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localBlockchainBalanceIsDisplayed(localNodeServer);
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         await accountListPage.check_accountDisplayedInAccountList(

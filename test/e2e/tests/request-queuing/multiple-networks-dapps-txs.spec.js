@@ -22,13 +22,13 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },

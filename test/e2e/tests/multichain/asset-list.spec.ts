@@ -2,12 +2,12 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures, defaultGanacheOptions } from '../../helpers';
-import { Ganache } from '../../seeder/ganache';
+import { Ganache } from '../../localNode/ganache';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { SMART_CONTRACTS } from '../../localNode/smart-contracts';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 
@@ -23,7 +23,7 @@ function buildFixtures(title: string, chainId: number = 1337) {
       .withNetworkControllerOnPolygon()
       .withTokensControllerERC20({ chainId })
       .build(),
-    ganacheOptions: defaultGanacheOptions,
+    localNodeOptions: defaultGanacheOptions,
     smartContract: SMART_CONTRACTS.HST,
     title,
   };
@@ -39,12 +39,12 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -69,12 +69,12 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -101,12 +101,12 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string, 137),
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -136,12 +136,12 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string, 137),
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
@@ -165,12 +165,12 @@ describe('Multichain Asset List', function (this: Suite) {
       buildFixtures(this.test?.fullTitle() as string),
       async ({
         driver,
-        ganacheServer,
+        localNodeServer,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodeServer?: Ganache;
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodeServer);
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const selectNetworkDialog = new SelectNetwork(driver);

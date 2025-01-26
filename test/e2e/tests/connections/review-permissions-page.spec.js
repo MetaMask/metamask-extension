@@ -15,10 +15,10 @@ describe('Review Permissions page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
         await connectToDapp(driver);
 
         // It should render connected status for button if dapp is connected
@@ -65,10 +65,10 @@ describe('Review Permissions page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver, localNodeServer }) => {
+        await logInWithBalanceValidation(driver, localNodeServer);
         await connectToDapp(driver);
 
         // It should render connected status for button if dapp is connected

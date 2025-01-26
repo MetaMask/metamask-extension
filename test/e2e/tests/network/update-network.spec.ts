@@ -57,7 +57,7 @@ describe('Update Network:', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
 
@@ -194,7 +194,7 @@ describe('Update Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
@@ -310,7 +310,7 @@ describe('Update Network:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        localNodeOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },

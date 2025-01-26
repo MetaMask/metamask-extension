@@ -21,18 +21,18 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
             {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },
@@ -173,18 +173,18 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
             {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
+              localNodeOptions2: defaultGanacheOptions,
             },
           ],
         },

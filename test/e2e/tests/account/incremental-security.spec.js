@@ -5,7 +5,7 @@ const FixtureBuilder = require('../../fixture-builder');
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 describe('Incremental Security', function () {
-  const ganacheOptions = {
+  const localNodeOptions = {
     accounts: [
       {
         secretKey:
@@ -25,7 +25,7 @@ describe('Incremental Security', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
+        localNodeOptions,
         title: this.test.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
       },
