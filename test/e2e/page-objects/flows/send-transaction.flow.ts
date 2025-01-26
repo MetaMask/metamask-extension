@@ -45,7 +45,7 @@ export const sendTransactionToAddress = async ({
   // confirm transaction when user lands on confirm transaction screen
   const confirmTxPage = new ConfirmTxPage(driver);
   await confirmTxPage.check_pageIsLoaded(gasFee, totalFee);
-  await confirmTxPage.confirmTx();
+  await confirmTxPage.clickConfirmButton();
 };
 
 /**
@@ -160,7 +160,7 @@ export const sendTransactionToAccount = async ({
   // confirm transaction when user lands on confirm transaction screen
   const confirmTxPage = new ConfirmTxPage(driver);
   await confirmTxPage.check_pageIsLoaded(gasFee, totalFee);
-  await confirmTxPage.confirmTx();
+  await confirmTxPage.clickConfirmButton();
 };
 
 /**

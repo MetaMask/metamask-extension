@@ -128,10 +128,6 @@ import { DecodedTransactionDataResponse } from '../../shared/types/transaction-d
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-} from '../../shared/constants/permissions';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -3168,16 +3164,8 @@ export function setPetnamesEnabled(value: boolean) {
   return setPreference('petnamesEnabled', value);
 }
 
-export function setRedesignedConfirmationsEnabled(value: boolean) {
-  return setPreference('redesignedConfirmationsEnabled', value);
-}
-
 export function setPrivacyMode(value: boolean) {
   return setPreference('privacyMode', value, false);
-}
-
-export function setRedesignedTransactionsEnabled(value: boolean) {
-  return setPreference('redesignedTransactionsEnabled', value);
 }
 
 export function setFeatureNotificationsEnabled(value: boolean) {
@@ -3186,10 +3174,6 @@ export function setFeatureNotificationsEnabled(value: boolean) {
 
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
-}
-
-export function setRedesignedConfirmationsDeveloperEnabled(value: boolean) {
-  return setPreference('isRedesignedConfirmationsDeveloperEnabled', value);
 }
 
 export function setTokenSortConfig(value: SortCriteria) {
@@ -3987,19 +3971,6 @@ export function setInitialGasEstimate(
 }
 
 // Permissions
-
-export function requestAccountsPermissionWithId(
-  origin: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const id = await submitRequestToBackground(
-      'requestAccountsPermissionWithId',
-      [origin],
-    );
-    await forceUpdateMetamaskState(dispatch);
-    return id;
-  };
-}
 
 export function requestAccountsAndChainPermissionsWithId(
   origin: string,
@@ -5086,6 +5057,9 @@ export function setSmartTransactionsRefreshInterval(
   refreshInterval: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
+    if (refreshInterval === undefined || refreshInterval === null) {
+      return;
+    }
     try {
       await submitRequestToBackground('setStatusRefreshInterval', [
         refreshInterval,
@@ -5972,48 +5946,6 @@ export async function getNextAvailableAccountName(
     'getNextAvailableAccountName',
     [keyring],
   );
-}
-
-export async function grantPermittedChain(
-  selectedTabOrigin: string,
-  chainId?: string,
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissionsIncremental', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: [chainId],
-            },
-          ],
-        },
-      },
-    },
-  ]);
-}
-
-export async function grantPermittedChains(
-  selectedTabOrigin: string,
-  chainIds: string[],
-): Promise<string> {
-  return await submitRequestToBackground<void>('grantPermissions', [
-    {
-      subject: { origin: selectedTabOrigin },
-      approvedPermissions: {
-        [EndowmentTypes.permittedChains]: {
-          caveats: [
-            {
-              type: CaveatTypes.restrictNetworkSwitching,
-              value: chainIds,
-            },
-          ],
-        },
-      },
-    },
-  ]);
 }
 
 export async function decodeTransactionData({

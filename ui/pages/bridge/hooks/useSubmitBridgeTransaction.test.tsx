@@ -465,7 +465,10 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockHistory.push).toHaveBeenCalledWith('/');
+      expect(mockHistory.push).toHaveBeenCalledWith({
+        pathname: '/',
+        state: { stayOnHomePage: true },
+      });
     });
   });
 });

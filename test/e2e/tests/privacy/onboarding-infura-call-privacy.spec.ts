@@ -79,7 +79,7 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   ];
 }
 
-describe('MetaMask onboarding @no-mmi', function () {
+describe('MetaMask onboarding', function () {
   it("doesn't make any network requests to infura before create new wallet onboarding is completed", async function () {
     await withFixtures(
       {

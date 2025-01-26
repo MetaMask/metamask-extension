@@ -24,7 +24,7 @@ import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
 import { accountsSyncMockResponse } from './mockData';
 
-describe('Account syncing - Opt-out Profile Sync @no-mmi', function () {
+describe('Account syncing - Opt-out Profile Sync', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
