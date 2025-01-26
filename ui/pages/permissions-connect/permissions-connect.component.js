@@ -25,8 +25,8 @@ import { getRequestedSessionScopes } from './connect-page/utils';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
-function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
-  const requestedSessionsScopes = getRequestedSessionScopes(permissionsRequest);
+function getDefaultSelectedAccounts(currentAddress, permissions) {
+  const requestedSessionsScopes = getRequestedSessionScopes(permissions);
   const requestedAccounts = getEthAccounts(requestedSessionsScopes);
 
   if (requestedAccounts.length) {
@@ -42,8 +42,8 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
-function getRequestedChainIds(permissionsRequest) {
-  const requestedSessionsScopes = getRequestedSessionScopes(permissionsRequest);
+function getRequestedChainIds(permissions) {
+  const requestedSessionsScopes = getRequestedSessionScopes(permissions);
   return getPermittedEthChainIds(requestedSessionsScopes);
 }
 
@@ -120,7 +120,7 @@ export default class PermissionConnect extends Component {
     redirecting: false,
     selectedAccountAddresses: getDefaultSelectedAccounts(
       this.props.currentAddress,
-      this.props.permissionsRequest,
+      this.props.permissionsRequest?.permissions,
     ),
     permissionsApproved: null,
     origin: this.props.origin,
@@ -395,7 +395,9 @@ export default class PermissionConnect extends Component {
                   selectedAccounts={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
-                  requestedChainIds={getRequestedChainIds(permissionsRequest)}
+                  requestedChainIds={getRequestedChainIds(
+                    permissionsRequest?.permissions,
+                  )}
                   targetSubjectMetadata={targetSubjectMetadata}
                   history={history}
                   connectPath={connectPath}
