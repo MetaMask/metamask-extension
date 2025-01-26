@@ -68,6 +68,7 @@ import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getInternalAccounts,
+  InternalAccountWithBalance,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -119,7 +120,10 @@ import {
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
-import { BackgroundStateProxy } from '../../shared/types/metamask';
+import {
+  BackgroundStateProxy,
+  FlattenedBackgroundStateProxy,
+} from '../../shared/types/background';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
@@ -1603,6 +1607,8 @@ export function unlockSucceeded(message?: string) {
   };
 }
 
+// TODO: Create duplicate method `updateBackgroundState` and populate with unflattened versions of operations found here as controllers are migrated from `metamask` to `background` slice.
+// TODO: Eventually remove and replace with `updateBackgroundState`.
 export function updateMetamaskState(
   patches: Patch[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1615,15 +1621,15 @@ export function updateMetamaskState(
       return currentState;
     }
 
-    const newState = applyPatches<BackgroundStateProxy>(currentState, patches);
-    const {
-      PreferencesController: { currentLocale },
-    } = currentState;
+    const newState = applyPatches<FlattenedBackgroundStateProxy>(
+      currentState,
+      patches,
+      true,
+    );
+    const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;
-    const {
-      PreferencesController: { currentLocale: newLocale },
-    } = newState;
+    const { currentLocale: newLocale } = newState;
     const newProviderConfig = getProviderConfig({ metamask: newState });
     const newInternalAccount = getSelectedInternalAccount({
       metamask: newState,
@@ -1639,15 +1645,13 @@ export function updateMetamaskState(
     }
 
     const newAddressBook =
-      newState.AddressBookController.addressBook?.[
-        newProviderConfig?.chainId
-      ] ?? {};
+      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
     const oldAddressBook =
-      currentState.AddressBookController.addressBook?.[
-        providerConfig?.chainId
-      ] ?? {};
-    const newAccounts = getMetaMaskAccounts({ metamask: newState });
-    const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
+      currentState.addressBook?.[providerConfig?.chainId] ?? {};
+    const newAccounts: { [address: string]: InternalAccountWithBalance } =
+      getMetaMaskAccounts({ metamask: newState });
+    const oldAccounts: { [address: string]: InternalAccountWithBalance } =
+      getMetaMaskAccounts({ metamask: currentState });
     const newSelectedAccount = newAccounts[newSelectedAddress];
     const oldSelectedAccount = newAccounts[selectedAddress];
     // dispatch an ACCOUNT_CHANGED for any account whose balance or other
@@ -1679,10 +1683,7 @@ export function updateMetamaskState(
 
     // track when gasFeeEstimates change
     if (
-      isEqual(
-        currentState.GasFeeController.gasFeeEstimates,
-        newState.GasFeeController.gasFeeEstimates,
-      ) === false
+      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
     ) {
       dispatch({
         type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
@@ -2250,11 +2251,6 @@ export async function getNFTContractInfo(
     chainId,
   ]);
 }
-
-// When we upgrade to TypeScript 4.5 this is part of the language. It will get
-// the underlying type of a Promise generic type. So Awaited<Promise<void>> is
-// void.
-type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
 export async function getTokenStandardAndDetails(
   address: string,
@@ -6085,29 +6081,37 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
  * freezing the resulting state and requiring further fixes
  * to remove direct state mutations.
  *
- * @param oldState - The current state.
- * @param patches - The patches to apply.
+ * @param options
+ * @param options.oldState - The current state.
+ * @param options.patches - The patches to apply.
+ * @param options.isFlattened - 'false' if the input state object is keyed by controller name.
+ * 'true' if it has been flattened so that controller state properties are at the top level.
  * Only supports 'replace' operations with at most 2 path elements.
  * Properties that are nested at deeper levels cannot be updated in isolation.
  * @returns The new state.
  */
-function applyPatches<State extends Record<string, unknown>>(
-  oldState: State,
-  patches: Patch[],
-): State {
+function applyPatches<State extends Record<string, unknown>>({
+  oldState,
+  patches,
+  isFlattened = false,
+}: {
+  oldState: State;
+  patches: Patch[];
+  isFlattened: boolean;
+}): State {
   const newState = { ...oldState };
 
   for (const patch of patches) {
     const { op, path, value } = patch;
 
     if (op === 'replace') {
-      if (path.length === 2) {
+      if (!isFlattened && path.length === 2) {
         const [controllerKey, key] = path;
         if (!(controllerKey in newState)) {
           newState[controllerKey] = {};
         }
         newState[controllerKey][key] = value;
-      } else if (path.length === 1) {
+      } else if (isFlattened || path.length === 1) {
         newState[path[0]] = value;
       }
     } else {
