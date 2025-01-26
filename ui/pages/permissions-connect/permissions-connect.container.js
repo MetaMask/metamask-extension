@@ -59,31 +59,21 @@ const mapStateToProps = (state, ownProps) => {
   // Some stuff is rendered on `main` that is NOT rendered on this branch. Also, on main, `isRequestingAccounts` evaluates to false,
   // so on `ui/pages/permissions-connect/permissions-connect.component.js`, l151 we go to `history.replace(confirmPermissionPath)`;
   // we should find a solution for specifically triggering `wallet_switchEthereumChain` to also go in here (check `state` here perhaps ?)
-  // Problem 1: We need to differentiate in this component, a legacy `wallet_switchEthereumChain` from any other regular caip25 request
-  // Problem 2: `permission.js` file, `PERMISSION_DESCRIPTIONS` object, needs to differentiate legacey wallet_switchEthereumChain from a regular caip25 request
-  // [Caip25EndowmentPermissionName]: ({ t }) => ({
-  //   label: t('permission_ethereumAccounts'), <----
-  //   leftIcon: IconName.Eye,
-  //   weight: PermissionWeight.eth_accounts,
-  // }),
-  // // "eth_accounts" entry is needed for the Snaps Permissions Grant UI
-  // [RestrictedMethods.eth_accounts]: ({ t }) => ({
-  //   label: t('permission_ethereumAccounts'), <-----
-  //   leftIcon: IconName.Eye,
-  //   weight: PermissionWeight.eth_accounts,
-  // }),
-  // [PermissionNames.permittedChains]: ({ t }) => ({
-  //   label: t('permission_walletSwitchEthereumChain'), <-----
-  //   leftIcon: IconName.Wifi,
-  //   weight: PermissionWeight.permittedChains,
-  // }),
+  // Problem 1: We need to differentiate in this component, a legacy `wallet_switchEthereumChain` from any other regular caip25 request []
+  // Problem 2: `permission.js` file, `PERMISSION_DESCRIPTIONS` object, needs to differentiate legacey wallet_switchEthereumChain from a regular caip25 request [X]
   // await window.ethereum.request({
   //     jsonrpc: '2.0',
   //     method: 'wallet_switchEthereumChain',
   //     params: [{ chainId: '0x1' }],
   //   })
+
+  const lastActivity = state.metamask.permissionActivityLog.at(-1); // This does not seem to consistently be correct...
+  const isLegacySwitchChainRequest =
+    lastActivity?.method === 'wallet_switchEthereumChain';
+
   const isRequestingAccounts = Boolean(
-    permissionsRequest?.permissions?.[Caip25EndowmentPermissionName],
+    permissionsRequest?.permissions?.[Caip25EndowmentPermissionName] &&
+      !isLegacySwitchChainRequest,
   );
 
   const { metadata = {} } = permissionsRequest || {};
