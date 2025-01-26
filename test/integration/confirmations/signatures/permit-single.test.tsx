@@ -101,7 +101,7 @@ describe('Permit Single Signature Tests', () => {
       "You're giving the spender permission to spend this many tokens from your account.",
       'Spending cap',
       '0xA0b86...6eB48',
-      '1,461,501,637,3...',
+      'Unlimited',
     ];
 
     expect(simulationSection).toBeInTheDocument();
@@ -129,9 +129,7 @@ describe('Permit Single Signature Tests', () => {
 
   it('displays correct details in message section', async () => {
     await renderSingleBatchSignature();
-    act(async () => {
-      fireEvent.click(await screen.findByTestId('sectionCollapseButton'));
-    });
+    fireEvent.click(await screen.findByTestId('sectionCollapseButton'));
 
     const messageDetailsSection = await screen.findByTestId(
       'confirmation_message-section',
