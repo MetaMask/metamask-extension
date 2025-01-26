@@ -3,7 +3,8 @@ import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import rootReducer from '../ducks';
 import { AppSliceState } from '../ducks/app/app';
-import { MetaMaskSliceState } from '../ducks/metamask/metamask';
+import { BackgroundSliceState } from '../ducks/background/background';
+import { FlattenedBackgroundStateProxy } from '../../shared/types/background';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file
@@ -45,7 +46,8 @@ type ReduxState = {
   activeTab: {
     origin: string;
   };
-  metamask: MetaMaskSliceState['metamask'];
+  metamask: FlattenedBackgroundStateProxy;
+  background: BackgroundSliceState['background'];
   appState: AppSliceState['appState'];
 } & Omit<RootReducerReturnType, 'activeTab' | 'metamask' | 'appState'>;
 
