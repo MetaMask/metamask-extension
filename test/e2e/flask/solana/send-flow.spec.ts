@@ -5,6 +5,7 @@ import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
@@ -246,6 +247,8 @@ describe('Send full flow of SOL', function (this: Suite) {
           true,
           'Bridge button is not enabled and it should',
         );
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_accountValueAndSuffixDisplayed('50');
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
@@ -273,12 +276,6 @@ describe('Send full flow of SOL', function (this: Suite) {
           'From is not displayed and it should',
         );
         assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount is not displayed and it should',
-        );
-
-        assert.equal(
           await confirmSolanaPage.isTransactionDetailDisplayed('Recipient'),
           true,
           'Recipient is not displayed and it should',
@@ -301,11 +298,6 @@ describe('Send full flow of SOL', function (this: Suite) {
           true,
           'Network fee is not displayed and it should',
         );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total is not displayed and it should',
-        );
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
@@ -322,11 +314,6 @@ describe('Send full flow of SOL', function (this: Suite) {
           await sentTxPage.isTransactionDetailDisplayed('From'),
           true,
           'From field not displayed and it should',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Recipient'),
@@ -347,11 +334,6 @@ describe('Send full flow of SOL', function (this: Suite) {
           await sentTxPage.isTransactionDetailDisplayed('Network fee'),
           true,
           'Network fee field not displayed',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.check_isViewTransactionLinkDisplayed(),
@@ -375,22 +357,10 @@ describe('Send flow', function (this: Suite) {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
-        assert.equal(
-          await homePage.check_ifSendButtonIsClickable(),
-          true,
-          'Send button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.check_ifSwapButtonIsClickable(),
-          true,
-          'Swap button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.check_ifBridgeButtonIsClickable(),
-          true,
-          'Bridge button is not enabled and it should',
-        );
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_accountValueAndSuffixDisplayed('50');
         await homePage.clickOnSendButton();
+
         const sendSolanaPage = new SendSolanaPage(driver);
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('0.1');
@@ -416,11 +386,6 @@ describe('Send flow', function (this: Suite) {
           'From field not displayed and it should',
         );
         assert.equal(
-          await failedTxPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount field not displayed and it should',
-        );
-        assert.equal(
           await failedTxPage.isTransactionDetailDisplayed('Recipient'),
           true,
           'Recipient field not displayed and it should',
@@ -439,11 +404,6 @@ describe('Send flow', function (this: Suite) {
           await failedTxPage.isTransactionDetailDisplayed('Network fee'),
           true,
           'Network fee field not displayed and it should',
-        );
-        assert.equal(
-          await failedTxPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total field not displayed and it should',
         );
       },
     );

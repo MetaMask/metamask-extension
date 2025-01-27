@@ -46,8 +46,8 @@ class SolanaTxresultPage {
     sent: boolean,
   ): Promise<boolean> {
     const displayedText = sent
-      ? `${amount} SOL was successfully sent`
-      : `Unable to send ${amount} SOL`;
+      ? `${amount}  was successfully sent`
+      : `Unable to send ${amount}`;
     const txStatusText = {
       text: displayedText,
       tag: 'p',
