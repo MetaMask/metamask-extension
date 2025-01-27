@@ -84,7 +84,7 @@ jobs:
     uses: ./.github/workflows/build-storybook.yml
     permissions:
       contents: read
-      # id-token permission is required for uploading to S3
+      # id-token permission is required for uploading to s3
       id-token: write
 
   build-beta:
@@ -92,7 +92,7 @@ jobs:
     uses: ./.github/workflows/build-beta.yml
     permissions:
       contents: read
-      # id-token permission is required for uploading to S3
+      # id-token permission is required for uploading to s3
       id-token: write
 
   publish-prerelease:
