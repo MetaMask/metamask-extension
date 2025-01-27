@@ -93,8 +93,34 @@ async function requestPermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
-  // TODO: we could put a check here to see if chain is included in available chains, if not, ERROR
-  // TODO: dig deeper in the old release, permissionsController.validateRequestedPermissions(), and replicate implementation for `endowment:permitted-chains`
+  // TODO:
+  // In the past, working build/ release
+  // - Call to PermissionsController.validatePermissions is made BEFORE payload goes to UI
+  // - Which calls this.validateRequestedPermissions
+  // - Which then calls this.validatePermission(this.getPermissionSpecification(targetName) for ‘eth_accounts’ and ‘endowment:permitted-chains’
+  // - This will in turn call this.validateCaveat(caveat, origin, target) , which throws for ‘endowment:permitted-chains’
+  //     - "endowment:permitted-chains error: Received unrecognized chainId: "0xa86a". Please try adding the network first via wallet_addEthereumChain."
+
+  // Now, in the current build/ release of `main`,
+  // -  the call goes through `app/scripts/lib/rpc-method-middleware/handlers/wallet-requestPermissions.ts`
+  // - `requestPermissionsImplementation` from this file is called
+  // - This will call MetamaskController.requestCaip25Approval()
+  // - Which will call approvalController.addAndShowApprovalRequest (sends call to UI) (Meaning PermissionsController.validatePermissions will later be called AFTER
+  //   payload goes through UI)
+  //     - Only after approvalController.addAndShowApprovalRequest is the caveatValue formed and ready to be sent to PermissionsController
+  //     - Even in `refactor: connection flow to use caip25 format` branch (where we form the caveatValue before making call to ApprovalController),
+  //     if I call PermissionsController.validatePermissions with the newly formed request permissions, BEFORE making the call to ApprovalController, we are getting a
+  //     different error
+  //        - "endowment:caip25 error: Received scopeString value(s) for caveat of type "authorizedScopes" that are not supported by the wallet."
+
+  // So I believe the fix should be done in the Core repo, AFTER `refactor: connection flow to use caip25 format` branch is merged
+  // - Having the refactor merged in, makes our life easier because after refactor, we form caveatValue BEFORE calling ApprovalController,
+  //   therefore we can send this caveatValue to PermissionsController before calling ApprovalController
+  // - ApprovalController should be made to properly support caveat type “authorizedScopes”, and do a similar check to what was done for “endowment:permitted-chains
+  //   to decide a chainId was unrecognized
+  // - Hard to do it before we call MetamaskController.requestCaip25Approval(), because ApprovalController doesn’t seem to have support for
+  //   “endowment:permitted-chains” or “eth_accounts” anymore
+
   const [requestedPermissions] = params;
   const caip25EquivalentPermissions: Partial<
     Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
