@@ -25,7 +25,7 @@ const selectors = {
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
 
-describe('Settings - general tab @no-mmi', function (this: Suite) {
+describe('Settings - general tab', function (this: Suite) {
   it('validate the change language functionality', async function () {
     await withFixtures(
       {
