@@ -8,8 +8,8 @@ async function verifyE2ePageObjectsUsage() {
 
     if (process.env.GITHUB_ACTIONS) {
         // Running in Github Actions
-        const branch = process.env.GITHUB_REF_NAME || '';
-        const headCommitHash = process.env.GITHUB_SHA || '';
+        const branch = process.env.BRANCH || '';
+        const headCommitHash = process.env.HEAD_COMMIT_HASH || '';
         const artifactName = 'changed-files.txt';
         const artifactPath = 'changed-files';
         const jobName = 'get-changed-files-with-git-diff'; // Specify the job name
@@ -21,6 +21,10 @@ async function verifyE2ePageObjectsUsage() {
         while (attempts < maxAttempts) {
             try {
                 console.log(`Downloading artifact: Attempt ${attempts + 1}/${maxAttempts}`);
+
+                // Wait needed to artifacts to be uploaded
+                await sleep(180000);
+
                 const outputDir = `${artifactPath}/changed-files.txt`;
                 downloadCircleCiArtifact(branch, headCommitHash, artifactName, outputDir, jobName); // Pass the job name
 

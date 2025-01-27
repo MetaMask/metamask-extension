@@ -17,18 +17,22 @@ export function downloadCircleCiArtifact(branch: string, headCommitHash: string,
     const pipelineId = execSync(
         `curl --silent "https://circleci.com/api/v2/project/gh/${OWNER}/${REPOSITORY}/pipeline?branch=${branch}" | jq --arg head_commit_hash "${headCommitHash}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id'`
     ).toString().trim();
+    console.log('Pipeline ID', pipelineId);
 
     // Get the workflow ID for the pipeline
     const workflowId = execSync(
         `curl --silent "https://circleci.com/api/v2/pipeline/${pipelineId}/workflow" | jq -r '.items[0].id'`
     ).toString().trim();
+    console.log('Workflow ID', workflowId);
 
     // Get the job details for the specific job that produces artifacts
     const jobDetails = execSync(
         `curl --silent "https://circleci.com/api/v2/workflow/${workflowId}/job" | jq --arg job_name "${jobName}" -r '.items[] | select(.name == $job_name)'`
     ).toString();
+    console.log('job Details', jobDetails);
 
     const jobId = JSON.parse(jobDetails).id;
+    console.log('job ID', jobId);
 
     // Get the artifact URL
     const artifactList = execSync(
