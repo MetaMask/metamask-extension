@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -9,11 +9,7 @@ import {
   Text,
   BannerAlertSeverity,
 } from '../../../../components/component-library';
-import {
-  setAlertEnabledness,
-  fetchSmartTransactionsLiveness,
-  setSwapsFeatureFlags,
-} from '../../../../store/actions';
+import { setAlertEnabledness } from '../../../../store/actions';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
 import { FontWeight } from '../../../../helpers/constants/design-system';
@@ -27,7 +23,6 @@ import {
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../../shared/modules/selectors';
-import { fetchSwapsFeatureFlags } from '../../../swaps/swaps.util';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -38,7 +33,6 @@ type SmartTransactionsBannerAlertProps = {
 export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlertProps> =
   React.memo(({ marginType = 'default' }) => {
     const t = useI18nContext();
-    const dispatch = useDispatch();
 
     let currentConfirmation;
     try {
@@ -72,26 +66,6 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
     const smartTransactionsPreferenceEnabled = useSelector(
       getSmartTransactionsPreferenceEnabled,
     );
-
-    useEffect(() => {
-      if (!alertEnabled || !smartTransactionsOptIn) {
-        return;
-      }
-
-      Promise.all([
-        fetchSwapsFeatureFlags(),
-        fetchSmartTransactionsLiveness()(),
-      ])
-        .then(([swapsFeatureFlags]) => {
-          dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
-        })
-        .catch((error) => {
-          console.error(
-            'Error updating smart transaction feature flags',
-            error,
-          );
-        });
-    }, [alertEnabled, smartTransactionsOptIn, dispatch]);
 
     const dismissAlert = useCallback(() => {
       setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
