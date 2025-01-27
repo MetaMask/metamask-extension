@@ -48,7 +48,7 @@ export type SrcChainStatus = {
   chainId: ChainId;
   txHash?: string; // might be undefined if this is a smart transaction (STX)
   amount?: string;
-  token?: Asset;
+  token?: Record<string, never> | Asset;
 };
 
 export type DestChainStatus = {
