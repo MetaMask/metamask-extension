@@ -4892,10 +4892,16 @@ export default class MetamaskController extends EventEmitter {
    */
   async getHardwareTypeForMetric(address) {
     // The `getKeyringForAccount` is now deprecated, so we just use `withKeyring` instead to access our keyring.
+
+    // We don't return keyring directly, but only the needeed type and bridge properties.
+    // Please check https://github.com/MetaMask/core/blob/v289.0.0/packages/keyring-controller/src/KeyringController.ts#L1452-L1462
     const { type: keyringType, bridge: keyringBridge } =
       await this.keyringController.withKeyring(
         { address },
-        (keyring) => keyring,
+        ({ type, bridge }) => ({
+          type,
+          bridge,
+        }),
       );
 
     // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
