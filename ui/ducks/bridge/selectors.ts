@@ -61,7 +61,8 @@ import {
 import type { BridgeState } from './bridge';
 
 type BridgeAppState = {
-  metamask: { bridgeState: BridgeControllerState } & NetworkState & {
+  metamask: BridgeControllerState &
+    NetworkState & {
       useExternalServices: boolean;
       currencyRates: {
         [currency: string]: {

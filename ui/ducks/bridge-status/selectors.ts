@@ -12,9 +12,7 @@ import {
 } from '../../../shared/modules/selectors/networks';
 
 export type BridgeStatusAppState = ProviderConfigState & {
-  metamask: {
-    bridgeStatusState: BridgeStatusControllerState;
-  };
+  metamask: BridgeStatusControllerState;
 };
 
 export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
