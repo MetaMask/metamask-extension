@@ -43,11 +43,13 @@ import {
 } from '../../../../shared/constants/app-state';
 import { detectNfts } from '../../../store/actions';
 import { AccountOverviewCommonProps } from './common';
+import { DefiList } from '../../app/assets/defi-list/defi-list';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
   showTokensLinks?: boolean;
   showNfts: boolean;
+  showDefi: boolean;
   showActivity: boolean;
 };
 
@@ -60,6 +62,7 @@ export const AccountOverviewTabs = ({
   showTokens,
   showTokensLinks,
   showNfts,
+  showDefi,
   showActivity,
 }: AccountOverviewTabsProps) => {
   const history = useHistory();
@@ -162,6 +165,19 @@ export const AccountOverviewTabs = ({
                 ></NeedHelpButtonLink>
                 ///: END:ONLY_INCLUDE_IF
               }
+            </Box>
+          </Tab>
+        )}
+
+        {showDefi && (
+          <Tab
+            name="DeFi"
+            tabKey="defi"
+            data-testid="account-overview__defi-tab"
+            {...tabProps}
+          >
+            <Box marginTop={2}>
+              <DefiList />
             </Box>
           </Tab>
         )}
