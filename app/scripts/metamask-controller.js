@@ -373,6 +373,9 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
   UPDATE_BADGE: 'updateBadge',
+  DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE: 'DecryptMessageManager:updateBadge',
+  ENCRYPTION_PUBLIC_KEY_MANAGER_UPDATE_BADGE:
+    'EncryptionPublicKeyManager:updateBadge',
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
   APP_STATE_UNLOCK_CHANGE: 'AppStateController:unlockChange',
@@ -1930,6 +1933,13 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
           `${this.keyringController.name}:decryptMessage`,
         ],
+        allowedEvents: [
+          'DecryptMessageManager:stateChange',
+          'DecryptMessageManager:unapprovedMessage',
+        ],
+      }),
+      managerMessenger: this.controllerMessenger.getRestricted({
+        name: 'DecryptMessageManager',
       }),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1944,6 +1954,13 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
         ],
+        allowedEvents: [
+          'EncryptionPublicKeyManager:stateChange',
+          'EncryptionPublicKeyManager:unapprovedMessage',
+        ],
+      }),
+      managerMessenger: this.controllerMessenger.getRestricted({
+        name: 'EncryptionPublicKeyManager',
       }),
       getEncryptionPublicKey:
         this.keyringController.getEncryptionPublicKey.bind(
