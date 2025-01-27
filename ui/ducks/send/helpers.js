@@ -1,5 +1,4 @@
 import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
-import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { getErrorMessage } from '../../../shared/modules/error';
@@ -90,12 +89,12 @@ export async function estimateGasLimitForSend({
     paramsForGasEstimate.to = sendToken.address;
   } else {
     if (!data) {
-      // eth.getCode will return the compiled smart contract code at the
+      // eth_getCode will return the compiled smart contract code at the
       // address. If this returns 0x, 0x0 or a nullish value then the address
       // is an externally owned account (NOT a contract account). For these
       // types of transactions the gasLimit will always be 21,000 or 0x5208
       const { isContractAddress } = to
-        ? await readAddressAsContract(global.eth, to)
+        ? await readAddressAsContract(global.ethereumProvider, to)
         : {};
       if (!isContractAddress && !isNonStandardEthChain) {
         return GAS_LIMITS.SIMPLE;
@@ -403,19 +402,6 @@ export function getRoundedGasPrice(gasPriceEstimate) {
     .toString();
   const gasPriceAsNumber = Number(gasPriceInDecGwei);
   return getGasPriceInHexWei(gasPriceAsNumber);
-}
-
-export async function getERC20Balance(token, accountAddress) {
-  const contract = global.eth.contract(abi).at(token.address);
-  const usersToken = (await contract.balanceOf(accountAddress)) ?? null;
-  if (!usersToken) {
-    return '0x0';
-  }
-  const amount = calcTokenAmount(
-    usersToken.balance.toString(),
-    token.decimals,
-  ).toString(16);
-  return addHexPrefix(amount);
 }
 
 /**

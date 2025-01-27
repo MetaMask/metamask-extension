@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Atividades com Bitcoin não são suportadas"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -1045,8 +1042,8 @@
   "confirmTitleTransaction": {
     "message": "Solicitação de transação"
   },
-  "confirmationAlertModalDetails": {
-    "message": "Para proteger seus ativos e informações de login, é recomendável que você recuse a solicitação."
+  "confirmationAlertDetails": {
+    "message": "Para proteger seus ativos, é recomendável que você recuse a solicitação."
   },
   "confirmationAlertModalTitle": {
     "message": "Esta solicitação é suspeita"
@@ -4309,18 +4306,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Proteja seus fundos"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Solicitações de assinatura aprimoradas"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Ative para ver as solicitações de assinatura em um formato aprimorado."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Solicitações de transação aprimoradas"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Ative esta opção para ver as solicitações de transação em formato aprimorado."
   },
   "refreshList": {
     "message": "Atualizar lista"

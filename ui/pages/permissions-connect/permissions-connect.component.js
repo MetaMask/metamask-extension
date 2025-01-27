@@ -50,6 +50,11 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
+function getRequestedChainIds(permissionsRequest) {
+  return permissionsRequest?.permissions?.[PermissionNames.permittedChains]
+    ?.caveats[0]?.value;
+}
+
 export default class PermissionConnect extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
@@ -151,14 +156,6 @@ export default class PermissionConnect extends Component {
       history.replace(DEFAULT_ROUTE);
       return;
     }
-    // if this is an incremental permission request for permitted chains, skip the account selection
-    if (
-      permissionsRequest?.diff?.permissionDiffMap?.[
-        PermissionNames.permittedChains
-      ]
-    ) {
-      history.replace(confirmPermissionPath);
-    }
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       switch (requestType) {
         case 'wallet_installSnap':
@@ -180,8 +177,17 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { permissionsRequest, lastConnectedInfo } = this.props;
+    const { permissionsRequest, lastConnectedInfo, targetSubjectMetadata } =
+      this.props;
     const { redirecting, origin } = this.state;
+
+    // We cache the last known good targetSubjectMetadata since it may be null when the approval is cleared
+    if (
+      targetSubjectMetadata?.origin &&
+      prevProps.targetSubjectMetadata?.origin !== targetSubjectMetadata?.origin
+    ) {
+      this.setState({ targetSubjectMetadata });
+    }
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
       const accountsLastApprovedTime =
@@ -324,6 +330,7 @@ export default class PermissionConnect extends Component {
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
+      history,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -396,8 +403,9 @@ export default class PermissionConnect extends Component {
                   selectedAccounts={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
+                  requestedChainIds={getRequestedChainIds(permissionsRequest)}
                   targetSubjectMetadata={targetSubjectMetadata}
-                  history={this.props.history}
+                  history={history}
                   connectPath={connectPath}
                   snapsInstallPrivacyWarningShown={
                     snapsInstallPrivacyWarningShown

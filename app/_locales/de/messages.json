@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin-Aktivität wird nicht unterstützt"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -1044,9 +1041,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Transaktionsanfrage"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "Um Ihre Assets und Anmeldedaten zu schützen, empfehlen wir die Ablehnung der Anfrage."
   },
   "confirmationAlertModalTitle": {
     "message": "Diese Anfrage scheint verdächtig"
@@ -4309,18 +4303,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Schützen Sie Ihre Gelder."
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Verbesserte Unterschriftsanfrage"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Schalten Sie dies ein, um sich Unterschriftsanfragen in einem erweiterten Format anzeigen zu lassen."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Verbesserte Transaktionsanfragen"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Schalten Sie dies ein, um sich Transaktionsanfragen in einem erweiterten Format anzeigen zu lassen."
   },
   "refreshList": {
     "message": "Liste aktualisieren"

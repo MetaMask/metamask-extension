@@ -736,9 +736,6 @@
     "message": "十亿",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "比特币活动不受支持"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "比特币"
   },
@@ -1044,9 +1041,6 @@
   },
   "confirmTitleTransaction": {
     "message": "交易请求"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "为了保护您的资产和登录信息，我们建议您拒绝该请求。"
   },
   "confirmationAlertModalTitle": {
     "message": "此请求可疑"
@@ -4309,18 +4303,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "保护您的资金"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "批准的签名请求"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "开启此选项以查看增强格式的签名请求。"
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "经过改进的交易请求"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "开启此选项以查看增强格式的交易请求。"
   },
   "refreshList": {
     "message": "刷新列表"

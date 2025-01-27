@@ -759,9 +759,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin activity is not supported"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -1183,8 +1180,8 @@
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
-  "confirmationAlertModalDetails": {
-    "message": "To protect your assets and login information, we suggest you reject the request."
+  "confirmationAlertDetails": {
+    "message": "To protect your assets, we suggest you reject the request."
   },
   "confirmationAlertModalTitle": {
     "message": "This request is suspicious"
@@ -3498,6 +3495,9 @@
   "noThanks": {
     "message": "No thanks"
   },
+  "noTransactions": {
+    "message": "You have no transactions"
+  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
@@ -4544,18 +4544,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Improved signature requests"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Turn this on to see signature requests in an enhanced format."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Improved transaction requests"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Turn this on to see transactions requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"

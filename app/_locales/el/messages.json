@@ -736,9 +736,6 @@
     "message": "Δ",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Δεν υποστηρίζεται η δραστηριότητα στα Bitcoins"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -1044,9 +1041,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Αίτημα συναλλαγής"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία και τις πληροφορίες σύνδεσης, σας προτείνουμε να απορρίψετε το αίτημα."
   },
   "confirmationAlertModalTitle": {
     "message": "Αυτό το αίτημα είναι ύποπτο"
@@ -4309,18 +4303,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Προστατέψτε τα κεφάλαιά σας"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Αιτήματα βελτιωμένων υπογραφών"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Ενεργοποιήστε το για να δείτε αιτήματα υπογραφών σε βελτιωμένη μορφή."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Βελτιωμένα αιτήματα συναλλαγών"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Ενεργοποιήστε το για να δείτε τα αιτήματα συναλλαγών σε βελτιωμένη μορφή."
   },
   "refreshList": {
     "message": "Ανανέωση λίστας"

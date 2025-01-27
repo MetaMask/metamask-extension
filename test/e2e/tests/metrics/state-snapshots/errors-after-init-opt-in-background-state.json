@@ -69,10 +69,6 @@
           "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
         }
       },
-      "srcTokens": {},
-      "srcTopAssets": {},
-      "destTokens": {},
-      "destTopAssets": {},
       "quoteRequest": {
         "srcTokenAddress": "0x0000000000000000000000000000000000000000",
         "slippage": 0.5
@@ -82,7 +78,7 @@
     }
   },
   "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
-  "CronjobController": { "jobs": "object" },
+  "CronjobController": { "jobs": "object", "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
     "currencyRates": {
@@ -234,12 +230,9 @@
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
-      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
-      "redesignedConfirmationsEnabled": true,
-      "redesignedTransactionsEnabled": "boolean",
       "smartTransactionsMigrationApplied": "boolean"
     },
     "ipfsGateway": "string",
@@ -258,7 +251,7 @@
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
-    "remoteFeatureFlags": { "feature1": true, "feature2": false },
+    "remoteFeatureFlags": {},
     "cacheTimestamp": "number"
   },
   "SelectedNetworkController": { "domains": "object" },
@@ -347,6 +340,7 @@
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
-    "isAccountSyncingReadyToBeDispatched": "boolean"
+    "isAccountSyncingReadyToBeDispatched": "boolean",
+    "isAccountSyncingInProgress": "boolean"
   }
 }

@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin गतिविधि सपोर्ट नहीं करती है"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -1044,9 +1041,6 @@
   },
   "confirmTitleTransaction": {
     "message": "ट्रांसेक्शन अनुरोध"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "आपकी एसेट्स और लॉगिन जानकारी की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
   },
   "confirmationAlertModalTitle": {
     "message": "यह अनुरोध संदिग्ध है"
@@ -4309,18 +4303,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "अपने धन को सुरक्षित रखें"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "बेहतर सिग्नेचर अनुरोध"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "उन्नत फॉर्मेट में सिग्नेचर अनुरोध देखने के लिए इसे चालू करें।"
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "बेहतर ट्रांसेक्शन के अनुरोध"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "उन्नत फॉर्मेट में ट्रांसेक्शन के अनुरोध देखने के लिए इसे चालू करें।"
   },
   "refreshList": {
     "message": "लिस्ट रिफ्रेश करें"

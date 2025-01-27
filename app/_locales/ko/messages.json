@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "비트코인 활동이 지원되지 않습니다."
-  },
   "bitcoinSupportSectionTitle": {
     "message": "비트코인"
   },
@@ -1044,9 +1041,6 @@
   },
   "confirmTitleTransaction": {
     "message": "트랜젝션 요청"
-  },
-  "confirmationAlertModalDetails": {
-    "message": "자산과 로그인 정보 보호를 위해 요청을 거부하는 것이 좋습니다."
   },
   "confirmationAlertModalTitle": {
     "message": "의심스러운 요청입니다"
@@ -4309,18 +4303,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "자신의 자금을 지키세요"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "개선된 서명 요청"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "이 기능을 켜면 개선된 형식의 서명 요청을 확인할 수 있습니다."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "개선된 트랜잭션 요청"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "이 기능을 켜면 개선된 형식의 트랜잭션 요청을 확인할 수 있습니다."
   },
   "refreshList": {
     "message": "새로 고침 목록"
