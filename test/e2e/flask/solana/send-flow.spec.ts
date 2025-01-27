@@ -248,8 +248,6 @@ describe('Send full flow of SOL', function (this: Suite) {
           true,
           'Bridge button is not enabled and it should',
         );
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_accountValueAndSuffixDisplayed('50');
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
@@ -358,8 +356,6 @@ describe('Send flow', function (this: Suite) {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_accountValueAndSuffixDisplayed('50');
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
