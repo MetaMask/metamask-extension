@@ -41,10 +41,10 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.check_pageIsLoaded();
         await bitcoinReviewTxPage.clickSendButton();
 
-        // Check that we are on the activity list page and the warning message is displayed
+        // Check that we are on the activity list page and have no transactions message
         await homePage.check_pageIsLoaded();
         await new ActivityListPage(driver).check_warningMessage(
-          'Bitcoin activity is not supported',
+          'You have no transactions',
         );
         const transaction = await getTransactionRequest(mockServer);
         assert(transaction !== undefined);
@@ -88,10 +88,10 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.check_pageIsLoaded();
         await bitcoinReviewTxPage.clickSendButton();
 
-        // Check that we are on the activity list page and the warning message is displayed
+        // Check that we are on the activity list page and have no transactions message
         await homePage.check_pageIsLoaded();
         await new ActivityListPage(driver).check_warningMessage(
-          'Bitcoin activity is not supported',
+          'You have no transactions',
         );
         const transaction = await getTransactionRequest(mockServer);
         assert(transaction !== undefined);

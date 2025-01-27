@@ -8,6 +8,7 @@ import {
   DEFAULT_BTC_FEES_RATE,
   DEFAULT_BTC_TRANSACTION_ID,
   DEFAULT_BTC_CONVERSION_RATE,
+  DEFAULT_BTC_BLOCK_NUMBER,
   SATS_IN_1_BTC,
 } from '../../constants';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
@@ -16,6 +17,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
+const SIMPLEHASH_URL = 'https://api.simplehash.com';
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
 
 export function btcToSats(btc: number): number {
@@ -112,7 +114,7 @@ export async function mockGetUTXO(mockServer: Mockttp) {
               txid: DEFAULT_BTC_TRANSACTION_ID,
               vout: 0,
               value: btcToSats(DEFAULT_BTC_BALANCE).toString(),
-              height: 101100110,
+              height: DEFAULT_BTC_BLOCK_NUMBER,
               confirmations: 6,
             },
           ],
@@ -177,6 +179,36 @@ export async function mockRampsDynamicFeatureFlag(
     }));
 }
 
+export async function mockBtcSatProtectionService(
+  mockServer: Mockttp,
+  address: string = DEFAULT_BTC_ACCOUNT,
+) {
+  // NOTE: This endpoint is also used to compute the total balance if Sat Protection is enabled, so we have
+  // to compute the set of UTXOS here too.
+  const utxos = [
+    {
+      output: `${DEFAULT_BTC_TRANSACTION_ID}:0`,
+      value: btcToSats(DEFAULT_BTC_BALANCE),
+      block_number: DEFAULT_BTC_BLOCK_NUMBER,
+    },
+  ];
+
+  return await mockServer
+    .forGet(`${SIMPLEHASH_URL}/api/v0/custom/wallet_assets_by_utxo/${address}`)
+    .withQuery({
+      without_inscriptions_runes_raresats: '1',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          count: utxos.length,
+          utxos,
+        },
+      };
+    });
+}
+
 export async function withBtcAccountSnap(
   {
     title,
@@ -204,6 +236,8 @@ export async function withBtcAccountSnap(
         await mockBtcFeeCallQuote(mockServer),
         await mockGetUTXO(mockServer),
         await mockSendTransaction(mockServer),
+        // Sat Protection
+        await mockBtcSatProtectionService(mockServer),
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {

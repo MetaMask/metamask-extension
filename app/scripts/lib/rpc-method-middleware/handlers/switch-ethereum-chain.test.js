@@ -164,7 +164,6 @@ describe('switchEthereumChainHandler', () => {
       end,
       '0xdeadbeef',
       'mainnet',
-      null,
       {
         setActiveNetwork: mocks.setActiveNetwork,
         getCaveat: mocks.getCaveat,
