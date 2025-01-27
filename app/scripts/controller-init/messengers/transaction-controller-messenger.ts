@@ -87,6 +87,10 @@ export function getTransactionControllerInitMessenger(
       'SmartTransactionsController:smartTransaction',
     ],
     allowedActions: [
+      'ApprovalController:addRequest',
+      'ApprovalController:endFlow',
+      'ApprovalController:startFlow',
+      'ApprovalController:updateRequestState',
       'NetworkController:getEIP1559Compatibility',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
