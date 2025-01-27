@@ -1,13 +1,7 @@
 /**
- * This type is a temporary type that is used to represent the state tree of
- * MetaMask. This type is used in the BaseStore class and its extending classes
- * and should ultimately be replaced by the fully typed State Tree once that is
- * available for consumption. We should likely optimize the state tree by
- * storing the individual controllers in their own keys in the state tree. This
- * would allow for partial updates at the controller state level, without
- * modifying the entire data key.
+ * This type is used to represent the state tree of MetaMask.
  */
-export type IntermediaryStateType = Record<string, unknown>;
+export type MetaMaskStateType = Record<string, unknown>;
 
 /**
  * This type represents the 'meta' key on the state object. This key is used to
@@ -25,7 +19,7 @@ export type MetaData = { version: number };
  * with a single key 'version' that is the current version of the state tree.
  */
 export type MetaMaskStorageStructure = {
-  data?: IntermediaryStateType;
+  data?: MetaMaskStateType;
   meta?: MetaData;
 };
 
@@ -48,7 +42,7 @@ export type MetaMaskStorageStructure = {
  * error handling to ensure the state is persisted correctly.
  */
 export abstract class BaseStore {
-  abstract set(state: IntermediaryStateType): Promise<void>;
+  abstract set(state: MetaMaskStateType): Promise<void>;
 
   abstract get(): Promise<MetaMaskStorageStructure | null>;
 }

@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import {
-  type IntermediaryStateType,
+  type MetaMaskStateType,
   MetaMaskStorageStructure,
   BaseStore,
 } from './base-store';
@@ -45,7 +45,7 @@ export default class ExtensionStore extends BaseStore {
    * migration
    */
   async set(obj: {
-    data: IntermediaryStateType;
+    data: MetaMaskStateType;
     meta: { version: number };
   }): Promise<void> {
     if (!this.isSupported) {

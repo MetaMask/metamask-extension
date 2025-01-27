@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
-  type IntermediaryStateType,
+  type MetaMaskStateType,
   BaseStore,
   MetaMaskStorageStructure,
 } from './base-store';
@@ -20,7 +20,7 @@ export default class ReadOnlyNetworkStore extends BaseStore {
 
   #initializing?: Promise<void>;
 
-  #state: IntermediaryStateType | null = null;
+  #state: MetaMaskStateType | null = null;
 
   constructor() {
     super();

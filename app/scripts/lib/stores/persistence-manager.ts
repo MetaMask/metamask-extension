@@ -2,7 +2,7 @@ import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
 import {
-  type IntermediaryStateType,
+  type MetaMaskStateType,
   MetaMaskStorageStructure,
 } from './base-store';
 import ExtensionStore from './extension-store';
@@ -74,7 +74,7 @@ export class PersistanceManager {
     this.#localStore = localStore;
   }
 
-  async set(state: IntermediaryStateType) {
+  async set(state: MetaMaskStateType) {
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }

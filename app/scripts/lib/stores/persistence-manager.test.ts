@@ -4,7 +4,7 @@ import log from 'loglevel';
 
 import { PersistanceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
-import { IntermediaryStateType } from './base-store';
+import { MetaMaskStateType } from './base-store';
 
 const mockStoreSet = jest.fn();
 const mockStoreGet = jest.fn();
@@ -40,7 +40,7 @@ describe('PersistanceManager', () => {
   describe('set', () => {
     it('throws if state is missing', async () => {
       await expect(
-        manager.set(undefined as unknown as IntermediaryStateType),
+        manager.set(undefined as unknown as MetaMaskStateType),
       ).rejects.toThrow('MetaMask - updated state is missing');
     });
 
