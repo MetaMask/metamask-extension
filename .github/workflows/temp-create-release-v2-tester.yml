@@ -6,8 +6,6 @@ on:
 
 jobs:
   create-release-pr:
-    # Uncomment and use `needs` if generate-build-version is uncommented
-    # needs: generate-build-version
     uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@platform-shared-workflows
     with:
       platform: extension
