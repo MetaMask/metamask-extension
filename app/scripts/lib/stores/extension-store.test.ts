@@ -25,9 +25,7 @@ const setup = (
 };
 describe('ExtensionStore', () => {
   beforeEach(() => {
-    global.sentry = {
-      captureException: jest.fn(),
-    };
+    jest.replaceProperty(global.sentry, 'captureException', jest.fn());
   });
 
   afterEach(() => {
