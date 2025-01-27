@@ -11,6 +11,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
       - name: Set environment variables
         id: get-circleci-job-details
         run: |
