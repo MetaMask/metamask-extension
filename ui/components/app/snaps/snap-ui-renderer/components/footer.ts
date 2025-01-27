@@ -35,6 +35,7 @@ const getDefaultButtons = (
   footer: FooterElement,
   t: (value: string) => string,
   onCancel?: () => void,
+  disabled?: boolean,
 ) => {
   const children = getJsxChildren(footer);
 
@@ -47,6 +48,7 @@ const getDefaultButtons = (
         onCancel,
         variant: ButtonVariant.Secondary,
         isSnapAction: false,
+        disabled,
       },
       children: t('cancel'),
     };
@@ -59,9 +61,12 @@ export const footer: UIComponentFactory<FooterElement> = ({
   element,
   t,
   onCancel,
+  requireScroll = false,
+  isScrolledToBottom = false,
   ...params
 }) => {
-  const defaultButtons = getDefaultButtons(element, t, onCancel);
+  const disabled = requireScroll && !isScrolledToBottom;
+  const defaultButtons = getDefaultButtons(element, t, onCancel, disabled);
 
   const providedChildren = getJsxChildren(element);
   const footerChildren: UIComponent[] = (
@@ -81,6 +86,7 @@ export const footer: UIComponentFactory<FooterElement> = ({
             ? ButtonVariant.Secondary
             : ButtonVariant.Primary,
         isSnapAction: true,
+        disabled,
       },
       children: buttonMapped.children,
     };
