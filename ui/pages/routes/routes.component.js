@@ -222,6 +222,7 @@ export default class Routes extends Component {
       setTheme(theme);
     }
 
+    /*
     // Automatically switch the network if the user
     // no longer has unapproved transactions and they
     // should be on a different network for the
@@ -237,6 +238,7 @@ export default class Routes extends Component {
         activeTabOrigin,
       );
     }
+      */
 
     // Terminate the popup when another popup is opened
     // if the user is using RPC queueing
