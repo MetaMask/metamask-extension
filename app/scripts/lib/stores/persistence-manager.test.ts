@@ -124,7 +124,7 @@ describe('PersistanceManager', () => {
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
 
-    it('updates mostRecentRetrievedState if #isExtensionInitialized has not been set via set call', async () => {
+    it('updates mostRecentRetrievedState if extension has not been initialized', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: { config: { foo: 'bar' } } });
 
       await manager.get();
