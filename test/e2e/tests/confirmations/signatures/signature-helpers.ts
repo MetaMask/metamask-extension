@@ -91,7 +91,7 @@ function getSignatureEventProperty(
   signatureType: string,
   primaryType: string,
   uiCustomizations: string[],
-  securityAlertReason: string = BlockaidReason.checkingChain,
+  securityAlertReason: string = BlockaidReason.inProgress,
   securityAlertResponse: string = BlockaidResultType.Loading,
   decodingChangeTypes?: string[],
   decodingResponse?: string,
