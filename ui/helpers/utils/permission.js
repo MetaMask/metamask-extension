@@ -523,6 +523,12 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Search,
     weight: PermissionWeight.endowment_nameLookup,
   }),
+  [EndowmentPermissions['endowment:assets']]: ({ t }) => ({
+    label: t('permission_assets'),
+    description: t('permission_assetsDescription'),
+    leftIcon: IconName.Search,
+    weight: PermissionWeight.endowment_assets,
+  }),
   [EndowmentPermissions['endowment:signature-insight']]: ({
     t,
     permissionValue,
