@@ -9,6 +9,9 @@ import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
  * The supported trace names.
  */
 export enum TraceName {
+  /**
+   * `AccountList` component renders (FCP).
+   */
   AccountList = 'Account List',
   AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
@@ -29,6 +32,10 @@ export enum TraceName {
   Signature = 'Signature',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+}
+
+export enum TraceOperation {
+  ComponentLoad = 'custom.ui.component_load',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
@@ -94,6 +101,11 @@ export type TraceRequest = {
    * Custom tags to associate with the trace.
    */
   tags?: Record<string, number | string | boolean>;
+
+  /**
+   * Custom operation name to associate with the trace.
+   */
+  op?: TraceOperation | typeof OP_DEFAULT;
 };
 
 /**
@@ -115,6 +127,10 @@ export type EndTraceRequest = {
    * Override the end time of the trace.
    */
   timestamp?: number;
+  /**
+   * Custom tags to associate with the trace.
+   */
+  tags?: Record<string, number | string | boolean>;
 };
 
 export function trace<T>(request: TraceRequest, fn: TraceCallback<T>): T;
@@ -159,6 +175,13 @@ export function endTrace(request: EndTraceRequest) {
     return;
   }
 
+  if ('tags' in request) {
+    pendingTrace.request.tags = Object.assign(
+      pendingTrace.request.tags ?? {},
+      request.tags,
+    );
+  }
+
   pendingTrace.end(timestamp);
 
   tracesByKey.delete(key);
@@ -167,6 +190,17 @@ export function endTrace(request: EndTraceRequest) {
   const endTime = timestamp ?? getPerformanceTimestamp();
 
   logTrace(pendingRequest, startTime, endTime);
+}
+
+/**
+ * End multiple pending traces.
+ *
+ * @param requests - The data necessary to identify and end the pending traces.
+ */
+export function endTraces(...requests: EndTraceRequest[]) {
+  for (const request of requests) {
+    endTrace(request);
+  }
 }
 
 function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
@@ -228,6 +262,17 @@ function startTrace(request: TraceRequest): TraceContext {
   );
 }
 
+/**
+ * Start multiple traces.
+ *
+ * @param requests - The data necessary to identify and start the pending traces.
+ */
+export function startTraces(...requests: EndTraceRequest[]) {
+  for (const request of requests) {
+    startTrace(request);
+  }
+}
+
 function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
@@ -238,7 +283,7 @@ function startSpan<T>(
   const spanOptions: StartSpanOptions = {
     attributes,
     name,
-    op: OP_DEFAULT,
+    op: request.op ?? OP_DEFAULT,
     parentSpan,
     startTime,
   };
