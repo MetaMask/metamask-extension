@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { execSync } from 'child_process';
-import { filterE2eChangedFiles } from '../../../test/e2e/changedFilesUtil';
+import { filterE2eChangedFiles } from '../../test/e2e/changedFilesUtil';
 import { downloadCircleCiArtifact, readFileContent, sleep } from '../scripts/utils/utils';
 
 async function verifyE2ePageObjectsUsage() {
@@ -52,8 +52,8 @@ async function verifyE2ePageObjectsUsage() {
         console.log('e2e changed files', e2eFiles);
     } else {
         // Running locally
-        console.log('Running locally, performing git diff...');
-        const diffOutput = execSync('git diff --name-only HEAD').toString().trim();
+        console.log('Running locally, performing git diff against main branch...');
+        const diffOutput = execSync('git diff --name-only main...HEAD').toString().trim();
         const changedFiles = diffOutput.split('\n').filter(file => file.trim() !== '');
         console.log('Changed files:', changedFiles);
 
