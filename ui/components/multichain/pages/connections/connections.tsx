@@ -18,7 +18,6 @@ import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
-  getInternalAccounts,
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
@@ -43,7 +42,6 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import {
   AccountListItem,
   AccountListItemMenuTypes,
@@ -109,11 +107,6 @@ export const Connections = () => {
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
   const selectedAccount = useSelector(getSelectedAccount);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts = mergeAccounts(
-    connectedAccounts,
-    internalAccounts,
-  ) as AccountType[];
 
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
@@ -168,14 +161,14 @@ export const Connections = () => {
     }
   };
 
-  // In the mergeAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
-  const latestSelected = mergedAccounts.findIndex(
+  // In the connectedAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
+  const latestSelected = connectedAccounts.findIndex(
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_account: any, index: any) => {
       return (
         index ===
-        mergedAccounts.reduce(
+        connectedAccounts.reduce(
           (
             indexOfAccountWIthHighestLastSelected: number,
             currentAccountToCompare: AccountType,
@@ -185,7 +178,7 @@ export const Connections = () => {
           ) => {
             const currentLastSelected =
               currentAccountToCompare.metadata.lastSelected ?? 0;
-            const accountAtIndexLastSelected = mergedAccounts[
+            const accountAtIndexLastSelected = connectedAccounts[
               indexOfAccountWIthHighestLastSelected
             ].metadata.lastSelected
               ? i
@@ -251,11 +244,11 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content padding={0}>
-        {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
+        {permittedAccounts.length > 0 && connectedAccounts.length > 0 ? (
           <Box>
             {/* TODO: Replace `any` with type */}
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {mergedAccounts.map((account: AccountType, index: any) => {
+            {connectedAccounts.map((account: AccountType, index: any) => {
               const connectedSites: ConnectedSites = {};
               const connectedSite = connectedSites[account.address]?.find(
                 ({ origin }) => origin === activeTabOrigin,
@@ -271,7 +264,7 @@ export const Connections = () => {
                 <AccountListItem
                   account={mergedAccountsProps}
                   key={account.address}
-                  accountsCount={mergedAccounts.length}
+                  accountsCount={connectedAccounts.length}
                   selected={isSelectedAccount}
                   connectedAvatar={connectedSite?.iconUrl}
                   menuType={AccountListItemMenuTypes.Connection}
@@ -362,7 +355,7 @@ export const Connections = () => {
               />
             </ToastContainer>
           ) : null}
-          {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
+          {permittedAccounts.length > 0 && connectedAccounts.length > 0 ? (
             <Box
               display={Display.Flex}
               gap={2}

@@ -7,9 +7,7 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
+} from '../../../shared/types/bridge';
 import * as util from '../../helpers/utils/util';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
 import bridgeReducer from './bridge';

@@ -10,12 +10,17 @@
     "url": "https://metamask.github.io/test-dapp/"
   },
   "appState": {
+    "isAccountMenuOpen": false,
+    "confirmationExchangeRates": {},
+    "nextNonce": 71,
+    "welcomeScreenSeen": false,
+    "pendingTokens": {},
+    "customTokenAmount": "10",
     "networkDropdownOpen": false,
     "importNftsModal": {
       "open": false
     },
     "showPermittedNetworkToastOpen": false,
-    "gasIsLoading": false,
     "isLoading": false,
     "modal": {
       "open": false,
@@ -27,8 +32,7 @@
         "name": null
       }
     },
-    "warning": null,
-    "customTokenAmount": "10"
+    "warning": null
   },
   "confirmAlerts": {
     "alerts": [],
@@ -370,6 +374,39 @@
             "version": "5.1.2"
           }
         ]
+      },
+      "local:snap-id": {
+        "id": "local:snap-id",
+        "origin": "local:snap-id",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {},
+        "manifest": {
+          "description": "mock snap description",
+          "proposedName": "mock snap name",
+          "repository": {
+            "type": "git",
+            "url": "https://127.0.0.1"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-dialog",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
       }
     },
     "preferences": {
@@ -386,11 +423,9 @@
         "key": "tokenFiatAmount",
         "order": "dsc",
         "sortCallback": "stringNumeric"
-      },
-      "tokenNetworkFilter": {}
+      }
     },
     "ensResolutionsByAddress": {},
-    "isAccountMenuOpen": false,
     "isUnlocked": true,
     "alertEnabledness": {
       "unconnectedAccount": true
@@ -541,7 +576,7 @@
             },
             "snap": {
               "enabled": true,
-              "id": "snap-id",
+              "id": "local:snap-id",
               "name": "snap-name"
             }
           },
@@ -1891,6 +1926,7 @@
     "watchEthereumAccountEnabled": false,
     "bitcoinSupportEnabled": false,
     "bitcoinTestnetSupportEnabled": false,
+    "solanaSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",

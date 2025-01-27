@@ -3174,10 +3174,6 @@ export function setPrivacyMode(value: boolean) {
   return setPreference('privacyMode', value, false);
 }
 
-export function setRedesignedTransactionsEnabled(value: boolean) {
-  return setPreference('redesignedTransactionsEnabled', value);
-}
-
 export function setFeatureNotificationsEnabled(value: boolean) {
   return setPreference('featureNotificationsEnabled', value);
 }
@@ -5084,6 +5080,9 @@ export function setSmartTransactionsRefreshInterval(
   refreshInterval: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
+    if (refreshInterval === undefined || refreshInterval === null) {
+      return;
+    }
     try {
       await submitRequestToBackground('setStatusRefreshInterval', [
         refreshInterval,
@@ -5247,14 +5246,6 @@ export async function getSnapAccountsById(snapId: string): Promise<string[]> {
   return addresses;
 }
 ///: END:ONLY_INCLUDE_IF
-
-export function setUseRequestQueue(val: boolean): void {
-  try {
-    submitRequestToBackground('setUseRequestQueue', [val]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-}
 
 export function setUseExternalNameSources(val: boolean): void {
   try {

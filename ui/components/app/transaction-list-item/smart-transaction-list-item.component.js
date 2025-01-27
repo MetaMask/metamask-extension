@@ -125,6 +125,7 @@ export default function SmartTransactionListItem({
               date={date}
               status={displayedStatusKey}
               statusOnly
+              shouldShowTooltip={false}
             />
           )}
         />

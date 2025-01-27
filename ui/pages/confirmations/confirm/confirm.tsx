@@ -16,6 +16,7 @@ import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
 import { LedgerInfo } from '../components/confirm/ledger-info';
 import { NetworkChangeToast } from '../components/confirm/network-change-toast';
+import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
@@ -53,6 +54,7 @@ const Confirm = () => (
           <Page className="confirm_wrapper">
             <ConfirmNav />
             <Header />
+            <SmartTransactionsBannerAlert marginType="noTop" />
             <ScrollToBottom>
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

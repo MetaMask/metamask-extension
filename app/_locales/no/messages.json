@@ -369,9 +369,6 @@
   "loading": {
     "message": "Laster inn ..."
   },
-  "loadingTokens": {
-    "message": "Laster tokener ..."
-  },
   "localhost": {
     "message": "Lokalvert 8545"
   },
@@ -433,9 +430,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Ingen konverteringsrate tilgjengelig "
-  },
-  "noTransactions": {
-    "message": "Du har ingen transaksjoner"
   },
   "noWebcamFound": {
     "message": "Datamaskinens webkamera ble ikke funnet. Vennligst prøv igjen."

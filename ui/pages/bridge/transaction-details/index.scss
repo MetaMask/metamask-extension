@@ -1,4 +1,8 @@
 .bridge-transaction-details {
+  &__content {
+    overflow-y: hidden;
+  }
+
   &__icon-loading {
     animation: loading-dot 1.2s linear infinite;
   }

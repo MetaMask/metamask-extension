@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import classnames from 'classnames';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   BorderColor,
@@ -51,7 +52,9 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
 
   return (
     <Box
-      className="snap-ui-renderer__checkbox"
+      className={classnames('snap-ui-renderer__checkbox', {
+        'snap-ui-renderer__field': label !== undefined,
+      })}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >

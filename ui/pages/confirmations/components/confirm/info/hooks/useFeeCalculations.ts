@@ -14,10 +14,8 @@ import {
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
-import {
-  getCurrentCurrency,
-  selectConversionRateByChainId,
-} from '../../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
+import { selectConversionRateByChainId } from '../../../../../../selectors';
 import { getMultichainNetwork } from '../../../../../../selectors/multichain';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';

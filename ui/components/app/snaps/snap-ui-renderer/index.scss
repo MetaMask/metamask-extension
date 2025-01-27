@@ -5,19 +5,11 @@
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
-  &__content {
-    margin-bottom: 0 !important;
-  }
-
   &__container {
     & > *:first-child {
       gap: 16px;
-      padding: 16px;
+      margin: 16px;
     }
-  }
-
-  &__error {
-    margin-top: 0 !important;
   }
 
   &__spinner {
@@ -86,6 +78,14 @@
 
     @include design-system.screen-lg-min {
       max-width: $width-screen-lg-min;
+    }
+  }
+
+  &__form {
+    .snap-ui-renderer__panel {
+      .snap-ui-renderer__field {
+        flex: 1 1 50%; // Ensure that adjacent form elements take up to 50% width
+      }
     }
   }
 }

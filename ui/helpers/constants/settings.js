@@ -485,14 +485,6 @@ const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
     icon: 'fas fa-flask',
   },
-  // experimental settingsRefs[3]
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('redesignedTransactionsEnabledToggle'),
-    descriptionMessage: (t) => t('redesignedTransactionsToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#redesigned-transactions`,
-    icon: 'fas fa-flask',
-  },
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   // since this route is only included with keyring-snaps feature flag, this needs to be the last settingsRef for the experimental tab
   // experimental settingsRefs[4]

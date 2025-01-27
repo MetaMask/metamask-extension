@@ -7,103 +7,160 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import TransactionStatusLabel from '.';
 
-describe('TransactionStatusLabel Component', () => {
-  const createMockStore = configureMockStore([thunk]);
-  const mockState = {
-    metamask: {
-      custodyStatusMaps: {},
-      internalAccounts: {
-        accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            metadata: {
-              name: 'Test Account',
-              keyring: {
-                type: 'HD Key Tree',
-              },
-            },
-            options: {},
-            methods: ETH_EOA_METHODS,
-            type: EthAccountType.Eoa,
-          },
+const TEST_ACCOUNT_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+const TEST_ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+const createBasicAccount = (type = 'HD Key Tree') => ({
+  address: TEST_ACCOUNT_ADDRESS,
+  id: TEST_ACCOUNT_ID,
+  metadata: {
+    name: 'Test Account',
+    keyring: {
+      type,
+    },
+  },
+  options: {},
+  methods: ETH_EOA_METHODS,
+  type: EthAccountType.Eoa,
+});
+
+const createCustodyAccount = () => ({
+  ...createBasicAccount('Custody - JSONRPC'),
+  metadata: {
+    name: 'Account 1',
+    keyring: {
+      type: 'Custody - JSONRPC',
+    },
+  },
+});
+
+const createMockStateWithAccount = (account) => ({
+  metamask: {
+    custodyStatusMaps: {},
+    internalAccounts: {
+      accounts: {
+        [TEST_ACCOUNT_ID]: account,
+      },
+      selectedAccount: TEST_ACCOUNT_ID,
+    },
+  },
+});
+
+const createCustodyMockState = (account) => ({
+  metamask: {
+    custodyStatusMaps: {
+      saturn: {
+        approved: {
+          shortText: 'Short Text Test',
+          longText: 'Long Text Test',
         },
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
     },
-  };
+    internalAccounts: {
+      accounts: {
+        [TEST_ACCOUNT_ID]: account,
+      },
+      selectedAccount: TEST_ACCOUNT_ID,
+    },
+    keyrings: [
+      {
+        type: 'Custody - JSONRPC',
+        accounts: [TEST_ACCOUNT_ADDRESS],
+      },
+    ],
+  },
+});
 
-  let store = createMockStore(mockState);
-  it('should render CONFIRMED properly', () => {
-    const confirmedProps = {
-      status: 'confirmed',
-      date: 'June 1',
-    };
-
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...confirmedProps} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('should render PENDING properly', () => {
-    const props = {
+const statusTestCases = [
+  {
+    name: 'CONFIRMED',
+    props: { status: 'confirmed', date: 'June 1' },
+  },
+  {
+    name: 'PENDING',
+    props: {
       date: 'June 1',
       status: TransactionStatus.submitted,
       isEarliestNonce: true,
-    };
-
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('should render QUEUED properly', () => {
-    const props = {
+    },
+  },
+  {
+    name: 'QUEUED',
+    props: {
       status: TransactionStatus.submitted,
       isEarliestNonce: false,
-    };
-
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('should render UNAPPROVED properly', () => {
-    const props = {
+    },
+  },
+  {
+    name: 'UNAPPROVED',
+    props: {
       status: TransactionStatus.unapproved,
-    };
-
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('should render SIGNING if status is approved', () => {
-    const props = {
+    },
+  },
+  {
+    name: 'SIGNING',
+    props: {
       status: TransactionStatus.approved,
-    };
+    },
+  },
+];
 
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
+const errorTestCases = [
+  {
+    name: 'error message',
+    props: {
+      status: 'approved',
+      custodyStatus: 'approved',
+      error: { message: 'An error occurred' },
+    },
+    expectedText: 'Error',
+  },
+  {
+    name: 'error with aborted custody status',
+    props: {
+      status: 'approved',
+      custodyStatus: 'aborted',
+      error: { message: 'An error occurred' },
+      custodyStatusDisplayText: 'Test',
+      shouldShowTooltip: true,
+    },
+    expectedText: 'Test',
+  },
+];
 
-    expect(container).toMatchSnapshot();
+describe('TransactionStatusLabel Component', () => {
+  const createMockStore = configureMockStore([thunk]);
+  let store;
+
+  beforeEach(() => {
+    const basicAccount = createBasicAccount();
+    const mockState = createMockStateWithAccount(basicAccount);
+    store = createMockStore(mockState);
   });
 
-  it('should render statusText properly when is custodyStatusDisplayText is defined', () => {
+  statusTestCases.forEach(({ name, props }) => {
+    it(`renders ${name} properly and tooltip`, () => {
+      const { container, queryByTestId } = renderWithProvider(
+        <TransactionStatusLabel {...props} />,
+        store,
+      );
+      expect(container).toMatchSnapshot();
+      expect(queryByTestId('transaction-status-label')).not.toBeInTheDocument();
+    });
+  });
+
+  it('renders pure text for status when shouldShowTooltip is specified as false', () => {
+    const { queryByTestId } = renderWithProvider(
+      <TransactionStatusLabel
+        {...statusTestCases[0].props}
+        shouldShowTooltip={false}
+      />,
+      store,
+    );
+    expect(queryByTestId('transaction-status-label')).toBeInTheDocument();
+  });
+
+  it('renders statusText properly when is custodyStatusDisplayText is defined', () => {
     const props = {
       custodyStatusDisplayText: 'test',
     };
@@ -116,51 +173,15 @@ describe('TransactionStatusLabel Component', () => {
     expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
   });
 
-  it('should display the correct status text and tooltip', () => {
-    const mockShortText = 'Short Text Test';
-    const mockLongText = 'Long Text Test';
+  it('displays correct text and tooltip', () => {
     const props = {
       status: 'approved',
       custodyStatus: 'approved',
       custodyStatusDisplayText: 'Test',
     };
-    const customMockStore = {
-      metamask: {
-        custodyStatusMaps: {
-          saturn: {
-            approved: {
-              shortText: mockShortText,
-              longText: mockLongText,
-            },
-          },
-        },
-        internalAccounts: {
-          accounts: {
-            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'Custody - JSONRPC',
-                },
-              },
-              options: {},
-              methods: ETH_EOA_METHODS,
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        },
-        keyrings: [
-          {
-            type: 'Custody - JSONRPC',
-            accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-          },
-        ],
-      },
-    };
 
+    const custodyAccount = createCustodyAccount();
+    const customMockStore = createCustodyMockState(custodyAccount);
     store = createMockStore(customMockStore);
 
     const { getByText } = renderWithProvider(
@@ -170,114 +191,19 @@ describe('TransactionStatusLabel Component', () => {
 
     expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
   });
-  it('should display the error message when there is an error', () => {
-    const mockShortText = 'Short Text Test';
-    const mockLongText = 'Long Text Test';
-    const props = {
-      status: 'approved',
-      custodyStatus: 'approved',
-      error: { message: 'An error occurred' },
-    };
-    const customMockStore = {
-      metamask: {
-        custodyStatusMaps: {
-          saturn: {
-            approved: {
-              shortText: mockShortText,
-              longText: mockLongText,
-            },
-          },
-        },
-        internalAccounts: {
-          accounts: {
-            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'Custody - JSONRPC',
-                },
-              },
-              options: {},
-              methods: ETH_EOA_METHODS,
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        },
-        keyrings: [
-          {
-            type: 'Custody - JSONRPC',
-            accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-          },
-        ],
-      },
-    };
 
-    store = createMockStore(customMockStore);
+  errorTestCases.forEach(({ name, props, expectedText }) => {
+    it(`displays correctly the ${name}`, () => {
+      const custodyAccount = createCustodyAccount();
+      const customMockStore = createCustodyMockState(custodyAccount);
+      store = createMockStore(customMockStore);
 
-    const { getByText } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
+      const { getByText } = renderWithProvider(
+        <TransactionStatusLabel {...props} />,
+        store,
+      );
 
-    expect(getByText('Error')).toBeVisible();
-  });
-
-  it('should display correctly the error message when there is an error and custodyStatus is aborted', () => {
-    const mockShortText = 'Short Text Test';
-    const mockLongText = 'Long Text Test';
-    const props = {
-      status: 'approved',
-      custodyStatus: 'aborted',
-      error: { message: 'An error occurred' },
-      custodyStatusDisplayText: 'Test',
-    };
-    const customMockStore = {
-      metamask: {
-        custodyStatusMaps: {
-          saturn: {
-            approved: {
-              shortText: mockShortText,
-              longText: mockLongText,
-            },
-          },
-        },
-        internalAccounts: {
-          accounts: {
-            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'Custody - JSONRPC',
-                },
-              },
-              options: {},
-              methods: ETH_EOA_METHODS,
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        },
-        keyrings: [
-          {
-            type: 'Custody - JSONRPC',
-            accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-          },
-        ],
-      },
-    };
-
-    store = createMockStore(customMockStore);
-
-    const { getByText } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
+      expect(getByText(expectedText)).toBeVisible();
+    });
   });
 });

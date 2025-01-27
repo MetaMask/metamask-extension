@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import classnames from 'classnames';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   AlignItems,
@@ -75,7 +76,9 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
 
   return (
     <Box
-      className="snap-ui-renderer__radio"
+      className={classnames('snap-ui-renderer__radio', {
+        'snap-ui-renderer__field': label !== undefined,
+      })}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >

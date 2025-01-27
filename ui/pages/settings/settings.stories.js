@@ -62,6 +62,7 @@ const Settings = ({ history }) => {
         pathnameI18nKey={pathnameI18nKey}
         backRoute={SETTINGS_ROUTE}
         remoteFeatureFlags={{}}
+        settingsPageSnaps={[]}
       />
     </div>
   );

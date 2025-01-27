@@ -87,6 +87,8 @@ describe('useDecodedSignatureMetrics', () => {
       properties: {
         decoding_change_types: [],
         decoding_response: 'NO_CHANGE',
+        decoding_description: null,
+        decoding_latency: 0,
       },
     });
   });
@@ -115,6 +117,8 @@ describe('useDecodedSignatureMetrics', () => {
       properties: {
         decoding_change_types: ['APPROVE'],
         decoding_response: 'CHANGE',
+        decoding_description: null,
+        decoding_latency: 0,
       },
     });
   });
@@ -149,6 +153,8 @@ describe('useDecodedSignatureMetrics', () => {
       properties: {
         decoding_change_types: [],
         decoding_response: 'SOME_ERROR',
+        decoding_description: 'some message',
+        decoding_latency: 0,
       },
     });
   });

@@ -57,7 +57,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
             </div>
           </header>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--sm:padding-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-top-3 mm-box--padding-bottom-1 mm-box--padding-inline-4 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"

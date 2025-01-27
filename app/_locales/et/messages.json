@@ -381,9 +381,6 @@
   "loading": {
     "message": "Laadimine..."
   },
-  "loadingTokens": {
-    "message": "Lubade laadimine..."
-  },
   "lock": {
     "message": "Logi välja"
   },
@@ -439,9 +436,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Ühtegi vahetuskurssi pole saadaval"
-  },
-  "noTransactions": {
-    "message": "Teil ei ole tehinguid"
   },
   "noWebcamFound": {
     "message": "Teie arvuti veebikaamerat ei leitud. Proovige uuesti."

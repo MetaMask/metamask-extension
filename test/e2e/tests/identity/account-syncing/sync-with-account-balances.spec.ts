@@ -6,8 +6,10 @@ import {
   IDENTITY_TEAM_PASSWORD,
   IDENTITY_TEAM_SEED_PHRASE,
 } from '../constants';
+import { ACCOUNT_TYPE } from '../../../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
@@ -108,7 +110,9 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
           }
 
           // Create new account and prepare for additional accounts
-          await accountListPage.addNewAccount();
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+          });
           accountsToMock = [...INITIAL_ACCOUNTS, ...ADDITIONAL_ACCOUNTS];
         },
       );
@@ -158,11 +162,13 @@ describe('Account syncing - User already has balances on multple accounts @no-mm
 
           // Rename Account 6 to verify update to user storage
           await accountListPage.switchToAccount('Account 6');
+          await header.check_accountLabel('Account 6');
           await header.openAccountMenu();
+          await accountListPage.check_pageIsLoaded();
           await accountListPage.openAccountDetailsModal('Account 6');
-          await accountListPage.changeLabelFromAccountDetailsModal(
-            'My Renamed Account 6',
-          );
+          const accountDetailsModal = new AccountDetailsModal(driver);
+          await accountDetailsModal.check_pageIsLoaded();
+          await accountDetailsModal.changeAccountLabel('My Renamed Account 6');
         },
       );
 

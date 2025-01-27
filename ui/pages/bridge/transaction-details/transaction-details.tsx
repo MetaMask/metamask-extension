@@ -39,6 +39,8 @@ import {
   AlignItems,
   Display,
   FlexDirection,
+  FlexWrap,
+  JustifyContent,
   TextColor,
   TextTransform,
 } from '../../../helpers/constants/design-system';
@@ -57,6 +59,10 @@ import { formatAmount } from '../../confirmations/components/simulation-details/
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
+import {
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+  AllowedBridgeChainIds,
+} from '../../../../shared/constants/bridge';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
@@ -207,8 +213,14 @@ const CrossChainSwapTxDetails = () => {
       ]
     : undefined;
 
-  const srcNetworkName = srcNetwork?.name;
-  const destNetworkName = destNetwork?.name;
+  const srcNetworkName =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      srcNetwork?.chainId as AllowedBridgeChainIds
+    ];
+  const destNetworkName =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      destNetwork?.chainId as AllowedBridgeChainIds
+    ];
 
   const data = srcChainTxMeta
     ? getTransactionBreakdownData({
@@ -254,205 +266,207 @@ const CrossChainSwapTxDetails = () => {
   );
 
   return (
-    <div className="bridge">
-      <div className="bridge__container">
-        <Header
-          className="bridge__header"
-          startAccessory={
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('back')}
-              onClick={() => history.goBack()}
-            />
-          }
+    <div className="bridge__container">
+      <Header
+        className="bridge__header"
+        startAccessory={
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('back')}
+            onClick={() => history.goBack()}
+          />
+        }
+      >
+        {t('bridge')} details
+      </Header>
+      <Content className="bridge-transaction-details__content">
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
         >
-          {t('bridge')} details
-        </Header>
-        <Content className="bridge__content">
+          {/* Delayed banner */}
+          {isDelayed && (
+            <BannerAlert
+              title={t('bridgeTxDetailsDelayedTitle')}
+              severity={BannerAlertSeverity.Warning}
+            >
+              <Text display={Display.Flex} alignItems={AlignItems.center}>
+                {t('bridgeTxDetailsDelayedDescription')}&nbsp;
+                <ButtonLink
+                  externalLink
+                  href={SUPPORT_REQUEST_LINK}
+                  onClick={() => {
+                    trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Home,
+                        event: MetaMetricsEventName.SupportLinkClicked,
+                        properties: {
+                          url: SUPPORT_REQUEST_LINK,
+                          location: 'Bridge Tx Details',
+                        },
+                      },
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                >
+                  {t('bridgeTxDetailsDelayedDescriptionSupport')}
+                </ButtonLink>
+                .
+              </Text>
+            </BannerAlert>
+          )}
+
+          {/* Bridge step list */}
+          {status !== StatusTypes.COMPLETE &&
+            (bridgeHistoryItem || srcChainTxMeta) && (
+              <BridgeStepList
+                bridgeHistoryItem={bridgeHistoryItem}
+                srcChainTxMeta={srcChainTxMeta}
+                networkConfigurationsByChainId={networkConfigurationsByChainId}
+              />
+            )}
+
+          {/* Links to block explorers */}
+          <BridgeExplorerLinks
+            srcChainId={srcNetwork?.chainId}
+            destChainId={destNetwork?.chainId}
+            srcBlockExplorerUrl={srcBlockExplorerUrl}
+            destBlockExplorerUrl={destBlockExplorerUrl}
+          />
+
+          <Divider />
+
+          {/* Bridge tx details */}
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            gap={4}
+            gap={2}
           >
-            {/* Delayed banner */}
-            {isDelayed && (
-              <BannerAlert
-                title={t('bridgeTxDetailsDelayedTitle')}
-                severity={BannerAlertSeverity.Warning}
-              >
-                <Text display={Display.Flex} alignItems={AlignItems.center}>
-                  {t('bridgeTxDetailsDelayedDescription')}&nbsp;
-                  <ButtonLink
-                    externalLink
-                    href={SUPPORT_REQUEST_LINK}
-                    onClick={() => {
-                      trackEvent(
-                        {
-                          category: MetaMetricsEventCategory.Home,
-                          event: MetaMetricsEventName.SupportLinkClicked,
-                          properties: {
-                            url: SUPPORT_REQUEST_LINK,
-                            location: 'Bridge Tx Details',
-                          },
-                        },
-                        {
-                          contextPropsIntoEventProperties: [
-                            MetaMetricsContextProp.PageTitle,
-                          ],
-                        },
-                      );
-                    }}
-                  >
-                    {t('bridgeTxDetailsDelayedDescriptionSupport')}
-                  </ButtonLink>
-                  .
+            <TransactionDetailRow
+              title={t('bridgeTxDetailsStatus')}
+              value={
+                <Text
+                  textTransform={TextTransform.Capitalize}
+                  color={status ? StatusToColorMap[status] : undefined}
+                >
+                  {status?.toLowerCase()}
                 </Text>
-              </BannerAlert>
-            )}
+              }
+            />
+            <TransactionDetailRow
+              title={t('bridgeTxDetailsBridging')}
+              value={
+                <Box
+                  display={Display.Flex}
+                  gap={1}
+                  alignItems={AlignItems.center}
+                  flexWrap={FlexWrap.Wrap}
+                  justifyContent={JustifyContent.flexEnd}
+                >
+                  {srcNetworkIconName}
+                  <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
+                  {destNetworkIconName}
+                </Box>
+              }
+            />
+            <TransactionDetailRow
+              title={t('bridgeTxDetailsTimestamp')}
+              value={t('bridgeTxDetailsTimestampValue', [
+                formatDate(srcChainTxMeta?.time, 'MMM d, yyyy'),
+                formatDate(srcChainTxMeta?.time, 'hh:mm a'),
+              ])}
+            />
+          </Box>
 
-            {/* Bridge step list */}
-            {status !== StatusTypes.COMPLETE &&
-              (bridgeHistoryItem || srcChainTxMeta) && (
-                <BridgeStepList
-                  bridgeHistoryItem={bridgeHistoryItem}
-                  srcChainTxMeta={srcChainTxMeta}
-                  networkConfigurationsByChainId={
-                    networkConfigurationsByChainId
-                  }
+          <Divider />
+
+          {/* Bridge tx details 2 */}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+          >
+            <TransactionDetailRow
+              title={t('bridgeTxDetailsYouSent')}
+              value={
+                <Box
+                  display={Display.Flex}
+                  gap={1}
+                  alignItems={AlignItems.center}
+                  flexWrap={FlexWrap.Wrap}
+                  justifyContent={JustifyContent.flexEnd}
+                >
+                  {t('bridgeTxDetailsTokenAmountOnChain', [
+                    bridgeAmountSent,
+                    bridgeHistoryItem?.quote.srcAsset.symbol,
+                  ])}
+                  {srcNetworkIconName}
+                </Box>
+              }
+            />
+            <TransactionDetailRow
+              title={t('bridgeTxDetailsYouReceived')}
+              value={
+                <Box
+                  display={Display.Flex}
+                  gap={1}
+                  alignItems={AlignItems.center}
+                  flexWrap={FlexWrap.Wrap}
+                  justifyContent={JustifyContent.flexEnd}
+                >
+                  {t('bridgeTxDetailsTokenAmountOnChain', [
+                    bridgeAmountReceived,
+                    bridgeHistoryItem?.quote.destAsset.symbol,
+                  ])}
+                  {destNetworkIconName}
+                </Box>
+              }
+            />
+            <TransactionDetailRow
+              title={t('bridgeTxDetailsTotalGasFee')}
+              value={
+                <UserPreferencedCurrencyDisplay
+                  currency={data?.nativeCurrency}
+                  denomination={EtherDenomination.ETH}
+                  numberOfDecimals={6}
+                  value={data?.hexGasTotal}
+                  type={PRIMARY}
                 />
-              )}
+              }
+            />
+          </Box>
 
-            {/* Links to block explorers */}
-            <BridgeExplorerLinks
-              srcChainId={srcNetwork?.chainId}
-              destChainId={destNetwork?.chainId}
-              srcBlockExplorerUrl={srcBlockExplorerUrl}
-              destBlockExplorerUrl={destBlockExplorerUrl}
+          <Divider />
+
+          {/* Generic tx details */}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+          >
+            <TransactionDetailRow
+              title={t('bridgeTxDetailsNonce')}
+              value={
+                srcChainTxMeta?.txParams.nonce
+                  ? hexToDecimal(srcChainTxMeta?.txParams.nonce)
+                  : undefined
+              }
             />
 
-            <Divider />
-
-            {/* Bridge tx details */}
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={2}
-            >
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsStatus')}
-                value={
-                  <Text
-                    textTransform={TextTransform.Capitalize}
-                    color={status ? StatusToColorMap[status] : undefined}
-                  >
-                    {status?.toLowerCase()}
-                  </Text>
-                }
-              />
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsBridging')}
-                value={
-                  <Box
-                    display={Display.Flex}
-                    gap={1}
-                    alignItems={AlignItems.center}
-                  >
-                    {srcNetworkIconName}
-                    <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
-                    {destNetworkIconName}
-                  </Box>
-                }
-              />
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsTimestamp')}
-                value={t('bridgeTxDetailsTimestampValue', [
-                  formatDate(srcChainTxMeta?.time, 'MMM d, yyyy'),
-                  formatDate(srcChainTxMeta?.time, 'hh:mm a'),
-                ])}
-              />
-            </Box>
-
-            <Divider />
-
-            {/* Bridge tx details 2 */}
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={2}
-            >
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsYouSent')}
-                value={
-                  <Box
-                    display={Display.Flex}
-                    gap={1}
-                    alignItems={AlignItems.center}
-                  >
-                    {t('bridgeTxDetailsTokenAmountOnChain', [
-                      bridgeAmountSent,
-                      bridgeHistoryItem?.quote.srcAsset.symbol,
-                    ])}
-                    {srcNetworkIconName}
-                  </Box>
-                }
-              />
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsYouReceived')}
-                value={
-                  <Box
-                    display={Display.Flex}
-                    gap={1}
-                    alignItems={AlignItems.center}
-                  >
-                    {t('bridgeTxDetailsTokenAmountOnChain', [
-                      bridgeAmountReceived,
-                      bridgeHistoryItem?.quote.destAsset.symbol,
-                    ])}
-                    {destNetworkIconName}
-                  </Box>
-                }
-              />
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsTotalGasFee')}
-                value={
-                  <UserPreferencedCurrencyDisplay
-                    currency={data?.nativeCurrency}
-                    denomination={EtherDenomination.ETH}
-                    numberOfDecimals={6}
-                    value={data?.hexGasTotal}
-                    type={PRIMARY}
-                  />
-                }
-              />
-            </Box>
-
-            <Divider />
-
-            {/* Generic tx details */}
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={2}
-            >
-              <TransactionDetailRow
-                title={t('bridgeTxDetailsNonce')}
-                value={
-                  srcChainTxMeta?.txParams.nonce
-                    ? hexToDecimal(srcChainTxMeta?.txParams.nonce)
-                    : undefined
-                }
-              />
-
-              <TransactionActivityLog
-                transactionGroup={transactionGroup}
-                className="transaction-list-item-details__transaction-activity-log"
-                isEarliestNonce={isEarliestNonce}
-              />
-            </Box>
+            <TransactionActivityLog
+              transactionGroup={transactionGroup}
+              className="transaction-list-item-details__transaction-activity-log"
+              isEarliestNonce={isEarliestNonce}
+            />
           </Box>
-        </Content>
-      </div>
+        </Box>
+      </Content>
     </div>
   );
 };

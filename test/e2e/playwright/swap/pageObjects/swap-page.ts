@@ -63,7 +63,12 @@ export class SwapPage {
     );
   }
 
-  async enterQuote(options: { from?: string; to: string; qty: string }) {
+  async enterQuote(options: {
+    from?: string;
+    to: string;
+    qty: string;
+    checkBalance: boolean;
+  }) {
     // Enter source token
     const native = await this.page.$(`text=/${options.from}/`);
     if (!native && options.from) {
@@ -75,7 +80,7 @@ export class SwapPage {
       .locator('[class*="balance"]')
       .first()
       .textContent();
-    if (balanceString) {
+    if (balanceString && options.checkBalance) {
       if (parseFloat(balanceString.split(' ')[1]) <= parseFloat(options.qty)) {
         await this.goBack();
         // not enough balance so cancel out
@@ -84,6 +89,8 @@ export class SwapPage {
     }
 
     // Enter Swap Quantity
+    await this.page.waitForTimeout(1000);
+    await this.tokenQty.waitFor({ state: 'visible' });
     await this.tokenQty.fill(options.qty);
     this.swapQty = options.qty;
 

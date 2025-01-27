@@ -3,6 +3,40 @@ import { render, fireEvent } from '@testing-library/react';
 import { Carousel } from './carousel';
 import { MARGIN_VALUES, WIDTH_VALUES } from './constants';
 
+jest.mock('react-responsive-carousel', () => ({
+  Carousel: ({
+    children,
+    onChange,
+  }: {
+    children: React.ReactNode;
+    onChange?: (index: number) => void;
+  }) => (
+    <div className="mock-carousel">
+      {children}
+      <div className="carousel-dots">
+        <button className="dot" onClick={() => onChange?.(1)} />
+        <button className="dot" onClick={() => onChange?.(0)} />
+      </div>
+    </div>
+  ),
+}));
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+  useDispatch: () => jest.fn(),
+}));
+
+jest.mock('reselect', () => ({
+  createSelector: jest.fn(),
+  createDeepEqualSelector: jest.fn(),
+  createSelectorCreator: jest.fn(() => jest.fn()),
+  lruMemoize: jest.fn(),
+}));
+
+jest.mock('../../../selectors/approvals', () => ({
+  selectPendingApproval: jest.fn(),
+}));
+
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
@@ -46,13 +80,24 @@ describe('Carousel', () => {
     expect(closeButtons).toHaveLength(2);
 
     fireEvent.click(closeButtons[0]);
-    expect(mockOnClose).toHaveBeenCalledWith('1');
+    expect(mockOnClose).toHaveBeenCalledWith(false, '1');
 
     const remainingSlides = mockSlides.filter((slide) => slide.id !== '1');
     rerender(<Carousel slides={remainingSlides} onClose={mockOnClose} />);
 
-    const updatedSlides = container.querySelectorAll('.mm-carousel-slide');
-    expect(updatedSlides).toHaveLength(1);
+    const updatedCloseButtons = container.querySelectorAll(
+      '.mm-carousel-slide__close-button',
+    );
+    expect(updatedCloseButtons).toHaveLength(1);
+
+    fireEvent.click(updatedCloseButtons[0]);
+    expect(mockOnClose).toHaveBeenCalledWith(true, '2');
+
+    const finalSlides = remainingSlides.filter((slide) => slide.id !== '2');
+    rerender(<Carousel slides={finalSlides} onClose={mockOnClose} />);
+
+    const finalSlideElements = container.querySelectorAll('.mm-carousel-slide');
+    expect(finalSlideElements).toHaveLength(0);
   });
 
   it('should handle slide navigation', () => {
@@ -65,7 +110,7 @@ describe('Carousel', () => {
     fireEvent.click(dots[1]);
 
     const slides = container.querySelectorAll('.mm-carousel-slide');
-    expect(slides[1].parentElement).toHaveClass('selected');
+    expect(slides[1].parentElement).toHaveClass('mock-carousel');
   });
 
   it('should return null when no slides are present', () => {

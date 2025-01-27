@@ -196,6 +196,7 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
   const testDapp = new TestDapp(driver);
 
   await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
   await testDapp.clickERC721MintButton();
 

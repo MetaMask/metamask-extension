@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -54,7 +54,7 @@ const transactionGroup = {
   hasCancelled: false,
 };
 
-const render = async (overrideProps) => {
+const render = (overrideProps) => {
   const rpcPrefs = {
     blockExplorerUrl: 'https://customblockexplorer.com/',
   };
@@ -71,7 +71,7 @@ const render = async (overrideProps) => {
     senderAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tryReverseResolveAddress: jest.fn(),
     transactionGroup,
-    transactionStatus: () => <div></div>,
+    transactionStatus: () => <div />,
     blockExplorerLinkText,
     rpcPrefs,
     ...overrideProps,
@@ -79,59 +79,57 @@ const render = async (overrideProps) => {
 
   const mockStore = configureMockStore([thunk])(mockState);
 
-  let result;
-
-  await act(
-    async () =>
-      (result = renderWithProvider(
-        <TransactionListItemDetails {...props} />,
-        mockStore,
-      )),
+  const result = renderWithProvider(
+    <TransactionListItemDetails {...props} />,
+    mockStore,
   );
 
   return result;
 };
 
 describe('TransactionListItemDetails Component', () => {
-  it('should render title with title prop', async () => {
-    const { queryByText } = await render();
-
-    await waitFor(() => {
+  describe('matches snapshot', () => {
+    it('for non-error details', async () => {
+      const { queryByText, queryByTestId } = render();
       expect(queryByText('Test Transaction Details')).toBeInTheDocument();
+      expect(
+        queryByTestId('transaction-list-item-details-banner-error-message'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('for error details', async () => {
+      const { queryByText, queryByTestId } = render({ showErrorBanner: true });
+      expect(queryByText('Test Transaction Details')).toBeInTheDocument();
+      expect(
+        queryByTestId('transaction-list-item-details-banner-error-message'),
+      ).toBeInTheDocument();
     });
   });
 
-  describe('Retry button', () => {
-    it('should render retry button with showRetry prop', async () => {
-      const { queryByTestId } = await render({ showRetry: true });
-
+  describe('Action buttons', () => {
+    it('renders retry button with showRetry prop', async () => {
+      const { queryByTestId } = render({ showRetry: true });
       expect(queryByTestId('rety-button')).toBeInTheDocument();
     });
-  });
 
-  describe('Cancel button', () => {
-    it('should render cancel button with showCancel prop', async () => {
-      const { queryByTestId } = await render({ showCancel: true });
-
+    it('renders cancel button with showCancel prop', async () => {
+      const { queryByTestId } = render({ showCancel: true });
       expect(queryByTestId('cancel-button')).toBeInTheDocument();
     });
-  });
 
-  describe('Speedup button', () => {
-    it('should render speedup button with showSpeedUp prop', async () => {
-      const { queryByTestId } = await render({ showSpeedUp: true });
-
+    it('renders speedup button with showSpeedUp prop', async () => {
+      const { queryByTestId } = render({ showSpeedUp: true });
       expect(queryByTestId('speedup-button')).toBeInTheDocument();
     });
   });
 
   describe('Institutional', () => {
-    it('should render correctly if custodyTransactionDeepLink has a url', async () => {
+    it('renders correctly if custodyTransactionDeepLink has a url', async () => {
       mockGetCustodianTransactionDeepLink = jest
         .fn()
         .mockReturnValue({ url: 'https://url.com' });
 
-      await render({ showCancel: true });
+      render({ showCancel: true });
 
       await waitFor(() => {
         const custodianViewButton = document.querySelector(
@@ -143,7 +141,7 @@ describe('TransactionListItemDetails Component', () => {
       });
     });
 
-    it('should render correctly if transactionNote is provided', async () => {
+    it('renders correctly if transactionNote is provided', async () => {
       const newTransaction = {
         ...transaction,
         metadata: {
@@ -159,13 +157,11 @@ describe('TransactionListItemDetails Component', () => {
         initialTransaction: newTransaction,
       };
 
-      const { queryByText } = await render({
+      const { queryByText } = render({
         transactionGroup: newTransactionGroup,
       });
 
-      await waitFor(() => {
-        expect(queryByText('some note')).toBeInTheDocument();
-      });
+      expect(queryByText('some note')).toBeInTheDocument();
     });
   });
 });

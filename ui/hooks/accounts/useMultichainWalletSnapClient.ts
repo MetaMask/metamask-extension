@@ -1,4 +1,4 @@
-import { KeyringClient, Sender } from '@metamask/keyring-api';
+import { KeyringClient, Sender } from '@metamask/keyring-snap-client';
 import { HandlerType } from '@metamask/snaps-utils';
 import { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
 import { SnapId } from '@metamask/snaps-sdk';
