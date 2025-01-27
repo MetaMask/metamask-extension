@@ -220,14 +220,35 @@ describe('Selectors', () => {
     );
 
     jestIt(
-      'returns false if feature flag is enabled, not a HW and is BSC network',
+      'returns true if feature flag is enabled, not a HW and is BSC network with a default RPC URL',
       () => {
         const state = createSwapsMockStore();
         const newState = {
           ...state,
           metamask: {
             ...state.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.BSC }),
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.BSC,
+              rpcUrl: 'https://bsc-dataseed.binance.org/',
+            }),
+          },
+        };
+        expect(getSmartTransactionsEnabled(newState)).toBe(true);
+      },
+    );
+
+    jestIt(
+      'returns false if feature flag is enabled, not a HW and is BSC network with a non-default RPC URL',
+      () => {
+        const state = createSwapsMockStore();
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.BSC,
+              rpcUrl: 'https://bsc-dataseed1.defibit.io/',
+            }),
           },
         };
         expect(getSmartTransactionsEnabled(newState)).toBe(false);
