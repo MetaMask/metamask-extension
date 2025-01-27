@@ -5,6 +5,13 @@ const storybook = require('./storybook');
 
 module.exports = { getHighlights };
 
+/**
+ * Generate highlights of all the story files that have changed dependencies.
+ *
+ * @param {{ hostUrl: string }} hostUrl - static host url
+ * @returns {Promise<string | null>} The highlights.
+ */
+
 async function getHighlights({ hostUrl }) {
   const defaultBranch = github.context.payload.repository.default_branch;
 
@@ -28,6 +35,13 @@ async function getHighlights({ hostUrl }) {
 
   return announcement;
 }
+
+/**
+ * Get the list of changed files between HEAD and the target branch.
+ *
+ * @param {{ target: string }} target - The target branch to compare against.
+ * @returns {Promise<string[]>} The list of changed files.
+ */
 
 async function getChangedFiles({ target }) {
   const { stdout } = await exec(`git diff --name-only ${target}...HEAD`);

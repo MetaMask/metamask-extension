@@ -63,13 +63,6 @@ async function start() {
     HOST_URL,
   } = process.env;
 
-  console.log('PR_NUMBER', PR_NUMBER);
-  console.log('HEAD_COMMIT_HASH', HEAD_COMMIT_HASH);
-  console.log('MERGE_BASE_COMMIT_HASH', MERGE_BASE_COMMIT_HASH);
-  console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
-  console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
-  console.log('HOST_URL', HOST_URL);
-
   if (!PR_NUMBER) {
     console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
     return;
@@ -77,7 +70,6 @@ async function start() {
 
   const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
-  // build the github comment content
 
   // links to extension builds
   const buildMap = {

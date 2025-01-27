@@ -11,10 +11,17 @@ module.exports = {
   getHighlightAnnouncement,
 };
 
+/**
+ * Generate an announcement of all story files that have changed dependencies.
+ *
+ * @param {{ changedFiles: string[]; hostUrl: string }} arguments - The list of changed files and the static host url.
+ * @returns {Promise<string | null>} The announcement.
+ */
+
 async function getHighlightAnnouncement({ changedFiles, hostUrl }) {
   const highlights = await getHighlights({ changedFiles });
   if (!highlights.length) {
-    return '';
+    return null;
   }
 
   const storiesResponse = await fetch(
@@ -40,12 +47,19 @@ async function getHighlightAnnouncement({ changedFiles, hostUrl }) {
   return announcement;
 }
 
+/**
+ * Get all story files that have changed dependencies.
+ *
+ * @param {{ changedFiles: string[]; }} changedFiles - The list of changed files.
+ * @returns {Promise<string[]>} The list of story files that have changed dependencies.
+ */
+
 async function getHighlights({ changedFiles }) {
   const highlights = [];
   const storyFiles = await getAllStories();
   // check each story file for dep graph overlap with changed files
   for (const storyFile of storyFiles) {
-    const list = await getLocalDependencyList(storyFile);
+    const list = getLocalDependencyList(storyFile);
     if (list.some((entry) => changedFiles.includes(entry))) {
       highlights.push(storyFile);
     }
@@ -53,13 +67,26 @@ async function getHighlights({ changedFiles }) {
   return highlights;
 }
 
+/**
+ * Get all story files.
+ *
+ * @returns {Promise<string[]>} The list of story files.
+ */
+
 async function getAllStories() {
   const { stdout } = await exec('find ui -name "*.stories.js"');
   const matches = stdout.split('\n').slice(0, -1);
   return matches;
 }
 
-async function getLocalDependencyList(filename) {
+/**
+ * Get the local dependency list for a file.
+ *
+ * @param {string} filename - filename to get the local dependency list for.
+ * @returns {string[]} The list of local dependencies.
+ */
+
+function getLocalDependencyList(filename) {
   const list = dependencyTree
     .toList({
       filename,
@@ -74,15 +101,24 @@ async function getLocalDependencyList(filename) {
   return list;
 }
 
+/**
+ * Get the url for a story file.
+ *
+ * @param {{ importPath: string }[]} stories - list of stories.
+ * @param {string} filename - filename to get the story id.
+ * @param {string} hostUrl - static host url.
+ * @returns {string} The url of the story file.
+ */
+
 function urlForStoryFile(stories, filename, hostUrl) {
   const storyId = getStoryId(stories, filename);
   return `${hostUrl}/storybook-build/index.html?path=/story/${storyId}`;
 }
 
 /**
- * Get the ID for a story file.
+ * Get the ID for a story.
  *
- * @param {Array} stories - list of stories.
+ * @param {{ importPath: string }[]} stories - list of stories.
  * @param {string} filename - filename to get the story id.
  * @returns {string} The id of the story.
  */
