@@ -421,7 +421,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     sourceTokenValue,
   } = renderableDataForUsedQuote;
 
-  let { feeInFiat, feeInEth, rawEthFee, feeInUsd } =
+  let { feeInFiat, feeInEth, rawEthFee, feeInUsd, rawNetworkFees } =
     getRenderableNetworkFeesForQuote({
       tradeGas: usedGasLimit,
       approveGas,
@@ -472,14 +472,15 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       smartTransactionFees?.tradeTxFees.maxFeeEstimate +
       (smartTransactionFees?.approvalTxFees?.maxFeeEstimate || 0);
 
-    ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
-      chainId,
-      currentCurrency,
-      conversionRate,
-      USDConversionRate,
-      nativeCurrencySymbol,
-      feeInWeiDec: stxEstimatedFeeInWeiDec,
-    }));
+    ({ feeInFiat, feeInEth, rawEthFee, feeInUsd, rawNetworkFees } =
+      getFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        USDConversionRate,
+        nativeCurrencySymbol,
+        feeInWeiDec: stxEstimatedFeeInWeiDec,
+      }));
     additionalTrackingParams.stx_fee_in_usd = Number(feeInUsd);
     additionalTrackingParams.stx_fee_in_eth = Number(rawEthFee);
     additionalTrackingParams.estimated_gas =
