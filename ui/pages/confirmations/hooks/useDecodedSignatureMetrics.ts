@@ -9,6 +9,7 @@ import { useSignatureEventFragment } from './useSignatureEventFragment';
 enum DecodingResponseType {
   Change = 'CHANGE',
   NoChange = 'NO_CHANGE',
+  InProgress = 'decoding_in_progress',
 }
 
 export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
@@ -32,7 +33,17 @@ export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
       : DecodingResponseType.NoChange);
 
   useEffect(() => {
-    if (decodingLoading || !supportedByDecodingAPI) {
+    if (!supportedByDecodingAPI) {
+      return;
+    }
+
+    if (decodingLoading) {
+      updateSignatureEventFragment({
+        properties: {
+          decoding_response: DecodingResponseType.InProgress,
+        },
+      });
+
       return;
     }
 
@@ -41,9 +52,7 @@ export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
         decoding_change_types: decodingChangeTypes,
         decoding_description: decodingData?.error?.message ?? null,
         decoding_latency: loadingTime ?? null,
-        decoding_response: decodingLoading
-          ? 'decoding_in_progress'
-          : decodingResponse,
+        decoding_response: decodingResponse,
       },
     });
   }, [
