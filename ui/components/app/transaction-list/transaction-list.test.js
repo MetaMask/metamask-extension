@@ -28,7 +28,7 @@ const btcState = {
     ...mockState.metamask,
     nonEvmTransactions: {
       [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
-        data: [
+        transactions: [
           {
             timestamp: 1733736433,
             chain: MultichainNetworks.BITCOIN,

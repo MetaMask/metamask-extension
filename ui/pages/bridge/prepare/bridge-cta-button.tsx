@@ -161,7 +161,7 @@ export const BridgeCTAButton = ({
       variant={TextVariant.bodyMd}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
-      onClick={() => {
+      onClick={async () => {
         if (activeQuote && isTxSubmittable && !isSubmitting) {
           try {
             // We don't need to worry about setting to false if the tx submission succeeds
@@ -179,7 +179,7 @@ export const BridgeCTAButton = ({
                   ...tradeProperties,
                 },
               });
-            submitBridgeTransaction(activeQuote);
+            await submitBridgeTransaction(activeQuote);
           } finally {
             setIsSubmitting(false);
           }

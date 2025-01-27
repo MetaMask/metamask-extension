@@ -109,7 +109,6 @@
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
         "tokenNetworkFilter": {},
@@ -125,7 +124,6 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": true,
       "isMultiAccountBalancesEnabled": "boolean",
       "showIncomingTransactions": "object"
     },
@@ -151,11 +149,7 @@
               "0xe708": "object"
             }
           }
-        },
-        "destTokens": {},
-        "destTopAssets": {},
-        "srcTokens": {},
-        "srcTopAssets": {}
+        }
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

@@ -138,10 +138,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               },
             },
           },
-          destTokens: {},
-          destTopAssets: [],
-          srcTokens: {},
-          srcTopAssets: [],
         },
       },
       CurrencyController: {
@@ -225,7 +221,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
@@ -244,7 +239,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: true,
         isMultiAccountBalancesEnabled: true,
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,

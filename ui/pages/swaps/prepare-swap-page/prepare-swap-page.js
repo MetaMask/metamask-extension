@@ -144,6 +144,7 @@ import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useBridging from '../../../hooks/bridge/useBridging';
+import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -792,6 +793,24 @@ export default function PrepareSwapPage({
       'prepare-swap-page__receive-amount',
     );
   }
+
+  const toTokenBalance =
+    usedQuote?.destinationAmount &&
+    calcTokenAmount(
+      usedQuote?.destinationAmount || '0',
+      selectedToToken.decimals || 18,
+    );
+
+  const swapToTokenFiatValue = useTokenFiatAmount(
+    selectedToToken.address,
+    toTokenBalance || 0,
+    selectedToToken.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+  );
+
   if (fromTokenInputValue) {
     fromTokenAmountClassName = getClassNameForCharLength(
       fromTokenInputValue,
@@ -822,6 +841,9 @@ export default function PrepareSwapPage({
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken isOpen {...importTokenProps} />
         )}
+        <Box>
+          <SmartTransactionsBannerAlert marginType="onlyTop" />
+        </Box>
         <Modal
           onClose={onSwapToClose}
           isOpen={isSwapToOpen}
@@ -1042,6 +1064,20 @@ export default function PrepareSwapPage({
             <div className="prepare-swap-page__balance-message">
               {selectedToToken?.string && yourTokenToBalance}
             </div>
+            {receiveToAmountFormatted && swapToTokenFiatValue && (
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.flexEnd}
+                alignItems={AlignItems.flexEnd}
+              >
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {swapToTokenFiatValue}
+                </Text>
+              </Box>
+            )}
           </Box>
           <Box
             display={DISPLAY.FLEX}
@@ -1069,7 +1105,7 @@ export default function PrepareSwapPage({
             marginTop={2}
             fontWeight={FontWeight.Normal}
             onClick={() => {
-              openBridgeExperience('Swaps', fromToken);
+              openBridgeExperience('Swaps', selectedFromToken);
             }}
             target="_blank"
             data-testid="prepare-swap-page-cross-chain-swaps-link"

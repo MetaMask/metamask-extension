@@ -122,6 +122,7 @@ export default function ReviewSpendingCap({
         >
           <ButtonLink
             size={Size.auto}
+            data-testid="edit-spending-cap-btn"
             onClick={(e) => {
               e.preventDefault();
               onEdit();

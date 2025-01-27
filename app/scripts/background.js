@@ -677,13 +677,9 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const permissions = controller.controllerMessenger.call(
-    'PermissionController:getPermissions',
-    origin,
-  );
   const numberOfConnectedAccounts =
-    permissions?.eth_accounts?.caveats[0]?.value.length;
-  if (!numberOfConnectedAccounts) {
+    controller.getPermittedAccounts(origin).length;
+  if (numberOfConnectedAccounts === 0) {
     return;
   }
 
@@ -1153,10 +1149,8 @@ export function setupController(
         controller.appStateController.waitingForUnlock.length +
         controller.approvalController.getTotalApprovalCount();
 
-      if (controller.preferencesController.getUseRequestQueue()) {
-        pendingApprovalCount +=
-          controller.queuedRequestController.state.queuedRequestCount;
-      }
+      pendingApprovalCount +=
+        controller.queuedRequestController.state.queuedRequestCount;
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
