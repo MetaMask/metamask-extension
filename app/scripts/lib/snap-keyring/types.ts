@@ -16,6 +16,7 @@ import type {
   ShowSuccess,
   StartFlow,
 } from '@metamask/approval-controller';
+import { GetSnap, HandleSnapRequest } from '@metamask/snaps-controllers';
 
 export type SnapKeyringBuilderAllowActions =
   | StartFlow
@@ -31,10 +32,12 @@ export type SnapKeyringBuilderAllowActions =
   | GetSubjectMetadata
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerSetAccountNameAction;
+  | AccountsControllerSetAccountNameAction
+  | HandleSnapRequest
+  | GetSnap;
 
 export type SnapKeyringBuilderMessenger = RestrictedControllerMessenger<
-  'SnapKeyringBuilder',
+  'SnapKeyring',
   SnapKeyringBuilderAllowActions,
   never,
   SnapKeyringBuilderAllowActions['type'],
