@@ -67,7 +67,7 @@ describe('MetametricsToggle', () => {
         />
       </Provider>,
     );
-    fireEvent.click(getByTestId('toggleButton'));
+    fireEvent.click(getByTestId('participate-in-meta-metrics-toggle-button'));
     expect(enableMetametricsMock).toHaveBeenCalled();
   });
 
@@ -82,7 +82,7 @@ describe('MetametricsToggle', () => {
         />
       </Provider>,
     );
-    fireEvent.click(getByTestId('toggleButton'));
+    fireEvent.click(getByTestId('participate-in-meta-metrics-toggle-button'));
     expect(disableMetametricsMock).toHaveBeenCalled();
   });
 });

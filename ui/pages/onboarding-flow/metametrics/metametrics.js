@@ -101,7 +101,6 @@ export default function OnboardingMetametrics() {
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
-    await dispatch(setDataCollectionForMarketing(false));
     history.push(nextRoute);
   };
 
@@ -196,6 +195,7 @@ export default function OnboardingMetametrics() {
       </ul>
       <Checkbox
         id="metametrics-opt-in"
+        data-testid="metametrics-data-collection-checkbox"
         isChecked={dataCollectionForMarketing}
         onClick={() =>
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))

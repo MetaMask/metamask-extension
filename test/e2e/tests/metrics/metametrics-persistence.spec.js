@@ -49,7 +49,7 @@ describe('MetaMetrics ID persistence', function () {
 
         // toggle off
         await driver.clickElement(
-          '[data-testid="participateInMetaMetrics"] .toggle-button',
+          '[data-testid="participate-in-meta-metrics-toggle-button"]',
         );
 
         // wait for state to update
@@ -65,7 +65,7 @@ describe('MetaMetrics ID persistence', function () {
 
         // toggle back on
         await driver.clickElement(
-          '[data-testid="participateInMetaMetrics"] .toggle-button',
+          '[data-testid="participate-in-meta-metrics-toggle-button"]',
         );
 
         // wait for state to update
