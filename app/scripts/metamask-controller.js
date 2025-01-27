@@ -4941,6 +4941,7 @@ export default class MetamaskController extends EventEmitter {
     );
     switch (keyringType) {
       case KeyringType.trezor:
+      case KeyringType.oneKey:
       case KeyringType.lattice:
       case KeyringType.qr:
       case KeyringType.ledger:
@@ -4966,6 +4967,7 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.withKeyring({ address }, async (keyring) => {
       switch (keyring.type) {
         case KeyringType.trezor:
+        case KeyringType.oneKey:
           return keyring.getModel();
         case KeyringType.qr:
           return keyring.getName();
