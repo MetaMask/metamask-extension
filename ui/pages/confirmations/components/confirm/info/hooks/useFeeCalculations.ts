@@ -16,7 +16,7 @@ import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
 import { selectConversionRateByChainId } from '../../../../../../selectors';
-import { getMultichainNetwork } from '../../../../../../selectors/getMultichainNetwork';
+import { getMultichainNetwork } from '../../../../../../selectors/multichain-network';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';

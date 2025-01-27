@@ -6,7 +6,7 @@ import {
   getMultichainCurrentCurrency,
   getMultichainConversionRate,
 } from '../selectors/multichain';
-import { getMultichainNetwork } from '../selectors/getMultichainNetwork';
+import { getMultichainNetwork } from '../selectors/multichain-network';
 import { getMultichainBalances } from '../selectors/multichain-core';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../shared/constants/multichain/assets';

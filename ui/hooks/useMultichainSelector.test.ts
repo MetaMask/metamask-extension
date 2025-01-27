@@ -3,7 +3,7 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { getSelectedNetworkClientId } from '../../shared/modules/selectors/networks';
 import { MultichainState } from '../selectors/multichain.types';
-import { getMultichainIsEvm } from '../selectors/getMultichainIsEvm';
+import { getMultichainIsEvm } from '../selectors/multichain-isevm';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { mockNetworkState } from '../../test/stub/networks';
 import { useMultichainSelector } from './useMultichainSelector';

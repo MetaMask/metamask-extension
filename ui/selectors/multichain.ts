@@ -27,10 +27,10 @@ import {
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from './selectors';
-import { getMultichainSelectedAccountCachedBalance } from './getMultichainSelectedAccountCachedBalance';
-import { getMultichainIsEvm } from './getMultichainIsEvm';
+import { getMultichainSelectedAccountCachedBalance } from './multichain-selected-account-cached-balance';
+import { getMultichainIsEvm } from './multichain-isevm';
 import type { MultichainState } from './multichain.types';
-import { getMultichainProviderConfig } from './getMultichainProviderConfig';
+import { getMultichainProviderConfig } from './multichain-provider-config';
 
 export const MultichainNetworkPropType = PropTypes.shape({
   nickname: PropTypes.string.isRequired,

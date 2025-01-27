@@ -51,7 +51,7 @@ import {
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
 import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../../../selectors/getMultichainNetwork';
+import { getMultichainNetwork } from '../../../../../selectors/multichain-network';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;

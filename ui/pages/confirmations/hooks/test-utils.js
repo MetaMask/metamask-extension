@@ -26,7 +26,7 @@ import {
   getMultichainNativeCurrency,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import { getMultichainIsEvm } from '../../../selectors/getMultichainIsEvm';
+import { getMultichainIsEvm } from '../../../selectors/multichain-isevm';
 
 // Why this number?
 // 20 gwei * 21000 gasLimit = 420,000 gwei

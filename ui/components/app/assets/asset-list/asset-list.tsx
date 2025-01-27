@@ -19,8 +19,8 @@ import {
   getMultichainSelectedAccountCachedBalanceIsZero,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors/multichain';
-import { getMultichainIsEvm } from '../../../../selectors/getMultichainIsEvm';
-import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/getMultichainSelectedAccountCachedBalance';
+import { getMultichainIsEvm } from '../../../../selectors/multichain-isevm';
+import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain-selected-account-cached-balance';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {

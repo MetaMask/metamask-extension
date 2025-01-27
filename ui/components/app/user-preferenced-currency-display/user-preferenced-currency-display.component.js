@@ -7,7 +7,7 @@ import CurrencyDisplay from '../../ui/currency-display';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
-import { getMultichainCurrentNetwork } from '../../../selectors/getMultichainCurrentNetwork';
+import { getMultichainCurrentNetwork } from '../../../selectors/multichain-currentnetwork';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getSelectedEvmInternalAccount } from '../../../selectors';
 

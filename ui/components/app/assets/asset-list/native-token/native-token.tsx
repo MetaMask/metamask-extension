@@ -5,9 +5,9 @@ import {
   getMultichainCurrencyImage,
   getMultichainIsMainnet,
 } from '../../../../../selectors/multichain';
-import { getMultichainCurrentNetwork } from '../../../../../selectors/getMultichainCurrentNetwork';
-import { getMultichainIsEvm } from '../../../../../selectors/getMultichainIsEvm';
-import { getMultichainSelectedAccountCachedBalance } from '../../../../../selectors/getMultichainSelectedAccountCachedBalance';
+import { getMultichainCurrentNetwork } from '../../../../../selectors/multichain-currentnetwork';
+import { getMultichainIsEvm } from '../../../../../selectors/multichain-isevm';
+import { getMultichainSelectedAccountCachedBalance } from '../../../../../selectors/multichain-selected-account-cached-balance';
 import { getPreferences } from '../../../../../selectors';
 import { TokenListItem } from '../../../../multichain';
 import { AssetListProps } from '../asset-list';

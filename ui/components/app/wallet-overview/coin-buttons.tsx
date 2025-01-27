@@ -97,7 +97,7 @@ import {
 import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
 ///: END:ONLY_INCLUDE_IF
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
-import { getMultichainIsEvm } from '../../../selectors/getMultichainIsEvm';
+import { getMultichainIsEvm } from '../../../selectors/multichain-isevm';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 

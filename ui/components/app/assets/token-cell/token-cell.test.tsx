@@ -12,7 +12,7 @@ import {
   getCurrencyRates,
 } from '../../../../selectors';
 import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
-import { getMultichainIsEvm } from '../../../../selectors/getMultichainIsEvm';
+import { getMultichainIsEvm } from '../../../../selectors/multichain-isevm';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';

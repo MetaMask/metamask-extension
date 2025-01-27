@@ -10,7 +10,7 @@ import {
 } from '../../../../selectors';
 import NicknamePopover from '../../../ui/nickname-popover';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover/update-nickname-popover';
-import { getMultichainNetwork } from '../../../../selectors/getMultichainNetwork';
+import { getMultichainNetwork } from '../../../../selectors/multichain-network';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 const SHOW_NICKNAME_POPOVER = 'SHOW_NICKNAME_POPOVER';

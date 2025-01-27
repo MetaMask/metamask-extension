@@ -53,7 +53,7 @@ import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-men
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/getMultichainNetwork';
+import { getMultichainNetwork } from '../../../selectors/multichain-network';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 
 const PAGE_INCREMENT = 10;

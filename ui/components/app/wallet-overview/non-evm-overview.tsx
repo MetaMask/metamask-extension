@@ -10,8 +10,8 @@ import {
 import {
   ///: END:ONLY_INCLUDE_IF
   getMultichainProviderConfig,
-} from '../../../selectors/getMultichainProviderConfig';
-import { getMultichainSelectedAccountCachedBalance } from '../../../selectors/getMultichainSelectedAccountCachedBalance';
+} from '../../../selectors/multichain-provider-config';
+import { getMultichainSelectedAccountCachedBalance } from '../../../selectors/multichain-selected-account-cached-balance';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';

@@ -30,7 +30,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
-import { getMultichainNetwork } from '../../../selectors/getMultichainNetwork';
+import { getMultichainNetwork } from '../../../selectors/multichain-network';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';

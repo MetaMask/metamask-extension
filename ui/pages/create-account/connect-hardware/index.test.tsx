@@ -35,7 +35,10 @@ jest.mock('../../../selectors', () => ({
   },
 }));
 
-jest.mock('../../../selectors/getMetaMaskAccountsConnected', () => ({
+jest.mock('../../../selectors/getMetaMaskAccounts', () => ({
+  getMetaMaskAccounts: () => {
+    return {};
+  },
   getMetaMaskAccountsConnected: () => {
     return {};
   },

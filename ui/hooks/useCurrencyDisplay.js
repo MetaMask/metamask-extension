@@ -6,7 +6,7 @@ import {
   getMultichainNativeCurrency,
   getMultichainConversionRate,
 } from '../selectors/multichain';
-import { getMultichainIsEvm } from '../selectors/getMultichainIsEvm';
+import { getMultichainIsEvm } from '../selectors/multichain-isevm';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
 import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';

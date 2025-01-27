@@ -5,8 +5,8 @@ import {
   getMultichainCurrencyImage,
   getMultichainShouldShowFiat,
 } from '../../../../../selectors/multichain';
-import { getMultichainCurrentNetwork } from '../../../../../selectors/getMultichainCurrentNetwork';
-import { getMultichainSelectedAccountCachedBalance } from '../../../../../selectors/getMultichainSelectedAccountCachedBalance';
+import { getMultichainCurrentNetwork } from '../../../../../selectors/multichain-currentnetwork';
+import { getMultichainSelectedAccountCachedBalance } from '../../../../../selectors/multichain-selected-account-cached-balance';
 import {
   getPreferences,
   getSelectedInternalAccount,

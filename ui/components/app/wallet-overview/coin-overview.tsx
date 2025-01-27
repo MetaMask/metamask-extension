@@ -63,7 +63,7 @@ import Spinner from '../../ui/spinner';
 
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
-import { getMultichainIsEvm } from '../../../selectors/getMultichainIsEvm';
+import { getMultichainIsEvm } from '../../../selectors/multichain-isevm';
 import {
   setAggregatedBalancePopoverShown,
   setPrivacyMode,

@@ -30,7 +30,7 @@ import {
   getPreferences,
   selectConversionRateByChainId,
 } from '../../../../../../../selectors';
-import { getMultichainNetwork } from '../../../../../../../selectors/getMultichainNetwork';
+import { getMultichainNetwork } from '../../../../../../../selectors/multichain-network';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';

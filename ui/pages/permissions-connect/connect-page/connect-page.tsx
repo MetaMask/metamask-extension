@@ -37,7 +37,7 @@ import {
   EndowmentTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
-import { getMultichainNetwork } from '../../../selectors/getMultichainNetwork';
+import { getMultichainNetwork } from '../../../selectors/multichain-network';
 
 export type ConnectPageRequest = {
   id: string;

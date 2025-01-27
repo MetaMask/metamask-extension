@@ -11,7 +11,7 @@ import {
   isChainIdMainnet,
   getImageForChainId,
 } from '../../../../selectors/multichain';
-import { getMultichainIsEvm } from '../../../../selectors/getMultichainIsEvm';
+import { getMultichainIsEvm } from '../../../../selectors/multichain-isevm';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { getIntlLocale } from '../../../../ducks/locale/locale';

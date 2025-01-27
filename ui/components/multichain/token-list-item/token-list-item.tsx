@@ -45,7 +45,7 @@ import {
   getMarketData,
   getCurrencyRates,
 } from '../../../selectors';
-import { getMultichainIsEvm } from '../../../selectors/getMultichainIsEvm';
+import { getMultichainIsEvm } from '../../../selectors/multichain-isevm';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';

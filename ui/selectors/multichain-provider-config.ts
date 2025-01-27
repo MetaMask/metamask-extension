@@ -1,6 +1,6 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import type { MultichainState } from './multichain.types';
-import { getMultichainNetwork } from './getMultichainNetwork';
+import { getMultichainNetwork } from './multichain-network';
 
 /**
  * Retrieves the provider configuration for a multichain network.

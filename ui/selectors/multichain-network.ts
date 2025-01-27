@@ -8,7 +8,7 @@ import {
 } from '../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainNetworkProviders } from './multichain-core';
-import { getMultichainIsEvm } from './getMultichainIsEvm';
+import { getMultichainIsEvm } from './multichain-isevm';
 import type {
   MultichainState,
   ProviderConfigWithImageUrlAndExplorerUrl,
