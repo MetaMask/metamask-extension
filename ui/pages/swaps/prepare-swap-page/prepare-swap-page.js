@@ -29,6 +29,7 @@ import {
   TextVariant,
   BLOCK_SIZES,
   FontWeight,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   fetchQuotesAndSetQuoteState,
@@ -95,6 +96,7 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   QUOTES_EXPIRED_ERROR,
   MAX_ALLOWED_SLIPPAGE,
+  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../../shared/constants/swaps';
 import {
   CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
@@ -132,6 +134,7 @@ import {
   Text,
   TextField,
   TextFieldSize,
+  BannerAlertSeverity,
 } from '../../../components/component-library';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
@@ -178,6 +181,8 @@ export default function PrepareSwapPage({
   const [quoteCount, updateQuoteCount] = useState(0);
   const [prefetchingQuotes, setPrefetchingQuotes] = useState(false);
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
+  const [isLowReturnBannerOpen, setIsLowReturnBannerOpen] = useState(true);
+  const [isEstimatedReturnLow, setIsEstimatedReturnLow] = useState(false);
 
   const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
@@ -358,6 +363,8 @@ export default function PrepareSwapPage({
       ) {
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
       }
+      // Resets the banner visibility when the estimated return is low
+      setIsLowReturnBannerOpen(true);
     };
 
     // The below logic simulates a sequential loading of the aggregator quotes, even though we are fetching them all with a single call.
@@ -395,6 +402,11 @@ export default function PrepareSwapPage({
     numberOfAggregators,
     prefetchingQuotes,
   ]);
+
+  useEffect(() => {
+    // Reopens the low return banner if a new quote is selected
+    setIsLowReturnBannerOpen(true);
+  }, [usedQuote]);
 
   const onFromSelect = (token) => {
     if (
@@ -1133,6 +1145,18 @@ export default function PrepareSwapPage({
             </BannerAlert>
           </Box>
         )}
+        {isEstimatedReturnLow && isLowReturnBannerOpen && (
+          <BannerAlert
+            marginTop={3}
+            title={t('lowEstimatedReturnTooltipTitle')}
+            severity={BannerAlertSeverity.Warning}
+            description={t('lowEstimatedReturnTooltipMessage', [
+              SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
+            ])}
+            textAlign={TextAlign.Left}
+            onClose={() => setIsLowReturnBannerOpen(false)}
+          />
+        )}
         {swapsErrorKey && (
           <Box display={DISPLAY.FLEX} marginTop={2}>
             <SwapsBannerAlert
@@ -1161,7 +1185,10 @@ export default function PrepareSwapPage({
           />
         )}
         {showReviewQuote && (
-          <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
+          <ReviewQuote
+            setReceiveToAmount={setReceiveToAmount}
+            setIsEstimatedReturnLow={setIsEstimatedReturnLow}
+          />
         )}
       </div>
       {!areQuotesPresent && (

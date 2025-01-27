@@ -97,6 +97,7 @@ import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,
   MAX_ALLOWED_SLIPPAGE,
+  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../../shared/constants/swaps';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
@@ -148,6 +149,7 @@ import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { useAsyncResult } from '../../../hooks/useAsyncResult';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
@@ -181,7 +183,10 @@ ViewAllQuotesLink.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default function ReviewQuote({ setReceiveToAmount }) {
+export default function ReviewQuote({
+  setReceiveToAmount,
+  setIsEstimatedReturnLow,
+}) {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -1123,6 +1128,49 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     currentCurrency,
   ]);
 
+  const sourceTokenAmount = calcTokenAmount(
+    usedQuote?.sourceAmount,
+    usedQuote?.sourceTokenInfo?.decimals,
+  );
+  const sourceTokenFiatAmount = useTokenFiatAmount(
+    usedQuote?.sourceTokenInfo?.address,
+    sourceTokenAmount || 0,
+    usedQuote?.sourceTokenInfo?.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+    null,
+    false,
+  );
+  const destinationTokenAmount = calcTokenAmount(
+    usedQuote?.destinationAmount,
+    usedQuote?.destinationTokenInfo?.decimals,
+  );
+  const destinationTokenFiatAmount = useTokenFiatAmount(
+    usedQuote?.destinationTokenInfo?.address,
+    destinationTokenAmount || 0,
+    usedQuote?.destinationTokenInfo?.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+    null,
+    false,
+  );
+  const adjustedReturnValue = new BigNumber(destinationTokenFiatAmount).minus(
+    new BigNumber(rawNetworkFees),
+  );
+  const isEstimatedReturnLow =
+    sourceTokenFiatAmount && adjustedReturnValue
+      ? adjustedReturnValue.lt(
+          new BigNumber(sourceTokenFiatAmount).times(
+            1 - SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+          ),
+        )
+      : false;
+  setIsEstimatedReturnLow(isEstimatedReturnLow);
+
   return (
     <div className="review-quote">
       <div className="review-quote__content">
@@ -1490,4 +1538,5 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
 ReviewQuote.propTypes = {
   setReceiveToAmount: PropTypes.func.isRequired,
+  setIsEstimatedReturnLow: PropTypes.func.isRequired,
 };
