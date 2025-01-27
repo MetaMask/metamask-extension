@@ -759,9 +759,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin activity is not supported"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -3498,6 +3495,9 @@
   "noThanks": {
     "message": "No thanks"
   },
+  "noTransactions": {
+    "message": "You have no transactions"
+  },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
@@ -4060,6 +4060,14 @@
     "message": "Allow the website or snap to interact with $1.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
+  "permission_assets": {
+    "message": "Display account assets in MetaMask.",
+    "description": "The description for the `endowment:name-assets` permission."
+  },
+  "permission_assetsDescription": {
+    "message": "Allow $1 to provide asset information to the MetaMask client. The assets can be onchain or offchain.",
+    "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
+  },
   "permission_cronjob": {
     "message": "Schedule and execute periodic actions.",
     "description": "The description for the `snap_cronjob` permission"
@@ -4544,12 +4552,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Improved signature requests"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Turn this on to see signature requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"

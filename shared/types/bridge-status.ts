@@ -63,7 +63,7 @@ export type SrcChainStatus = {
    * The atomic amount of the token sent minus fees on the source chain
    */
   amount?: string;
-  token?: Asset;
+  token?: Record<string, never> | Asset;
 };
 
 export type DestChainStatus = {
