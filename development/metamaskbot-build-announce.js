@@ -63,13 +63,6 @@ async function start() {
     HOST_URL,
   } = process.env;
 
-  console.log('PR_NUMBER', PR_NUMBER);
-  console.log('HEAD_COMMIT_HASH', HEAD_COMMIT_HASH);
-  console.log('MERGE_BASE_COMMIT_HASH', MERGE_BASE_COMMIT_HASH);
-  console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
-  console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
-  console.log('HOST_URL', HOST_URL);
-
   if (!PR_NUMBER) {
     console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
     return;
@@ -77,7 +70,6 @@ async function start() {
 
   const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
-  // build the github comment content
 
   // links to extension builds
   const buildMap = {
@@ -158,7 +150,7 @@ async function start() {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
+  const storybookUrl = `${HOST_URL}/storybook-build/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
   const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
@@ -366,7 +358,7 @@ async function start() {
   }
 
   try {
-    const highlights = await getHighlights({ artifactBase: BUILD_LINK_BASE });
+    const highlights = await getHighlights({ hostUrl: HOST_URL });
     if (highlights) {
       const highlightsBody = `### highlights:\n${highlights}\n`;
       commentBody += highlightsBody;

@@ -46,6 +46,10 @@ jobs:
     name: Test deps depcheck
     uses: ./.github/workflows/test-deps-depcheck.yml
 
+  test-storybook:
+    name: Test storybook
+    uses: ./.github/workflows/test-storybook.yml
+
   validate-lavamoat-allow-scripts:
     name: Validate lavamoat allow scripts
     uses: ./.github/workflows/validate-lavamoat-allow-scripts.yml
@@ -75,11 +79,20 @@ jobs:
       - wait-for-circleci-workflow-status
     uses: ./.github/workflows/runway.yml
 
+  build-storybook:
+    name: Build storybook
+    uses: ./.github/workflows/build-storybook.yml
+    permissions:
+      contents: read
+      # id-token permission is required for uploading to s3
+      id-token: write
+
   build-beta:
     name: Build beta
     uses: ./.github/workflows/build-beta.yml
     permissions:
       contents: read
+      # id-token permission is required for uploading to s3
       id-token: write
 
   publish-prerelease:
@@ -87,6 +100,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     needs:
       - wait-for-circleci-workflow-status
+      - build-storybook
       - build-beta
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
@@ -103,11 +117,13 @@ jobs:
       - test-lint-lockfile
       - test-yarn-dedupe
       - test-deps-depcheck
+      - test-storybook
       - validate-lavamoat-allow-scripts
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
       - run-tests
       - wait-for-circleci-workflow-status
+      - build-storybook
       - build-beta
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
