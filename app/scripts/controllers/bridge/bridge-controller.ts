@@ -1,4 +1,4 @@
-import { add0x, Hex } from '@metamask/utils';
+import { add0x, CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import { StateMetadata } from '@metamask/base-controller';
@@ -12,6 +12,10 @@ import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
 } from '../../../../shared/modules/bridge-utils/bridge.util';
+import {
+  formatChainIdFromApi,
+  isMultichainRequest,
+} from '../../../../shared/modules/bridge-utils/multichain';
 import {
   decimalToHex,
   sumHexes,
@@ -109,6 +113,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   }
 
   _executePoll = async (pollingInput: BridgePollingInput) => {
+    console.log('====_executePoll', pollingInput);
     await this.#fetchBridgeQuotes(pollingInput);
   };
 
@@ -141,21 +146,28 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     if (isValidQuoteRequest(updatedQuoteRequest)) {
       this.#quotesFirstFetched = Date.now();
-      const walletAddress = this.#getSelectedAccount().address;
-      const srcChainIdInHex = add0x(
-        decimalToHex(updatedQuoteRequest.srcChainId),
+      const walletAddress =
+        paramsToUpdate.walletAddress ?? this.#getSelectedAccount().address;
+      const normalizedSrcChainId = formatChainIdFromApi(
+        updatedQuoteRequest.srcChainId.toString(),
       );
 
-      const insufficientBal =
-        paramsToUpdate.insufficientBal ||
-        !(await this.#hasSufficientBalance(updatedQuoteRequest));
+      const insufficientBal = isMultichainRequest(updatedQuoteRequest)
+        ? true
+        : paramsToUpdate.insufficientBal ||
+          !(await this.#hasSufficientBalance(updatedQuoteRequest));
 
-      const networkClientId = this.#getSelectedNetworkClientId(srcChainIdInHex);
+      // TODO fix lint error when network controller is updated
+      const networkClientId =
+        this.#getSelectedNetworkClientId(normalizedSrcChainId);
+
       this.startPolling({
         networkClientId,
         updatedQuoteRequest: {
           ...updatedQuoteRequest,
           walletAddress,
+          // TODO set this conditionally based on srcChainId + destChainId
+          destWalletAddress: walletAddress,
           insufficientBal,
         },
       });
@@ -209,9 +221,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
   }: BridgePollingInput) => {
     this.#abortController?.abort('New quote request');
     this.#abortController = new AbortController();
-    if (updatedQuoteRequest.srcChainId === updatedQuoteRequest.destChainId) {
-      return;
-    }
+
     const { bridgeState } = this.state;
     this.update((_state) => {
       _state.bridgeState = {
@@ -332,7 +342,11 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     );
   }
 
-  #getSelectedNetworkClientId(chainId: Hex) {
+  // TODO implement for solana/multichain
+  #getSelectedNetworkClientId(chainId: Hex | CaipChainId) {
+    if (isCaipChainId(chainId)) {
+      return chainId;
+    }
     return this.messagingSystem.call(
       'NetworkController:findNetworkClientIdByChainId',
       chainId,

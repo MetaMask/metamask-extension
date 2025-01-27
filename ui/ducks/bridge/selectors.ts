@@ -23,10 +23,7 @@ import {
 import type { BridgeControllerState } from '../../../shared/types/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
-import {
-  getProviderConfig,
-  getNetworkConfigurationsByChainId,
-} from '../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
 import {
   type L1GasFees,
@@ -53,6 +50,15 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
+import {
+  getMultichainIsSolana,
+  getMultichainProviderConfig,
+} from '../../selectors/multichain';
+import {
+  MULTICHAIN_PROVIDER_CONFIGS,
+  MultichainNetworks,
+  MultichainProviderConfig,
+} from '../../../shared/constants/multichain/networks';
 import {
   exchangeRatesFromNativeAndCurrencyRates,
   exchangeRateFromMarketData,
@@ -102,14 +108,21 @@ export const getFromChains = createDeepEqualSelector(
 
 export const getFromChain = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
-  getProviderConfig,
+  getMultichainProviderConfig,
   (
     networkConfigurationsByChainId,
     providerConfig,
-  ): NetworkConfiguration | undefined =>
-    providerConfig?.chainId
-      ? networkConfigurationsByChainId[providerConfig.chainId]
-      : undefined,
+  ): NetworkConfiguration | MultichainProviderConfig | undefined => {
+    const allNetworksByChainId = {
+      ...MULTICHAIN_PROVIDER_CONFIGS,
+      ...networkConfigurationsByChainId,
+    };
+    return providerConfig?.chainId
+      ? allNetworksByChainId[
+          providerConfig.chainId as keyof typeof allNetworksByChainId
+        ]
+      : undefined;
+  },
 );
 
 export const getToChains = createDeepEqualSelector(
@@ -118,8 +131,15 @@ export const getToChains = createDeepEqualSelector(
   (
     allBridgeableNetworks,
     bridgeFeatureFlags,
-  ): (AddNetworkFields | NetworkConfiguration)[] =>
-    uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
+  ): (AddNetworkFields | MultichainProviderConfig | NetworkConfiguration)[] =>
+    uniqBy(
+      [
+        ...allBridgeableNetworks,
+        ...FEATURED_RPCS,
+        ...Object.values(MULTICHAIN_PROVIDER_CONFIGS),
+      ],
+      'chainId',
+    ).filter(
       ({ chainId }) =>
         bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
           chainId
@@ -130,10 +150,25 @@ export const getToChains = createDeepEqualSelector(
 export const getToChain = createDeepEqualSelector(
   getToChains,
   (state: BridgeAppState) => state.bridge.toChainId,
-  (toChains, toChainId): NetworkConfiguration | AddNetworkFields | undefined =>
-    toChains.find(({ chainId }) => chainId === toChainId),
+  getMultichainIsSolana,
+  getFromChain,
+  (
+    toChains,
+    toChainId,
+    isSolana,
+    fromChain,
+  ):
+    | NetworkConfiguration
+    | MultichainProviderConfig
+    | AddNetworkFields
+    | undefined =>
+    // Set src chain as dest if Solana bc only swaps are supported
+    isSolana
+      ? fromChain
+      : toChains.find(({ chainId }) => chainId === toChainId),
 );
 
+// TODO replace with multichain selectors
 export const getFromToken = createSelector(
   (state: BridgeAppState) => state.bridge.fromToken,
   getFromChain,
@@ -160,9 +195,30 @@ export const getFromToken = createSelector(
   },
 );
 
-export const getToToken = (state: BridgeAppState): BridgeToken => {
+export const _getToToken = (state: BridgeAppState): BridgeToken => {
   return state.bridge.toToken;
 };
+
+export const getToToken = createSelector(
+  _getToToken,
+  getMultichainIsSolana,
+  (toToken, isSolana) => {
+    if (isSolana) {
+      // Hardcode USDC for Solana
+      return {
+        address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        decimals: 6,
+        name: 'USDC',
+        symbol: 'USDC',
+        image:
+          'https://assets.coingecko.com/coins/images/1082/large/solana-sol-logo.png?1605778738',
+        type: AssetType.token,
+        chainId: MultichainNetworks.SOLANA,
+      };
+    }
+    return toToken;
+  },
+);
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;

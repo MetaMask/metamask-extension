@@ -350,7 +350,6 @@
     "@metamask/snaps-rpc-methods": "^11.9.1",
     "@metamask/snaps-sdk": "^6.15.0",
     "@metamask/snaps-utils": "^8.8.0",
-    "@metamask/solana-wallet-snap": "^1.1.0",
     "@metamask/transaction-controller": "^43.0.0",
     "@metamask/user-operation-controller": "^22.0.0",
     "@metamask/utils": "^10.0.1",
@@ -764,7 +763,6 @@
       "resolve-url-loader>es6-iterator>d>es5-ext>esniff>es5-ext": false,
       "level>classic-level": false,
       "jest-preview": false,
-      "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false,
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
     }
   },

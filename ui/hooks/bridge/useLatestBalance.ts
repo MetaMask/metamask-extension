@@ -1,11 +1,16 @@
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from '../../selectors';
 import { calcLatestSrcBalance } from '../../../shared/modules/bridge-utils/balance';
 import { useAsyncResult } from '../useAsyncResult';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { useMultichainSelector } from '../useMultichainSelector';
+import {
+  getMultichainCurrentChainId,
+  getMultichainIsSolana,
+} from '../../selectors/multichain';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -20,15 +25,20 @@ const useLatestBalance = (
     decimals: number;
     symbol: string;
   } | null,
-  chainId?: Hex,
+  chainId?: Hex | CaipChainId,
 ) => {
+  const isSolana = useMultichainSelector(getMultichainIsSolana);
+
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const currentChainId = useSelector(getCurrentChainId);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
 
   const { value: latestBalance } = useAsyncResult<
     Numeric | undefined
   >(async () => {
     if (token?.address && chainId && currentChainId === chainId) {
+      if (isSolana) {
+        return undefined; // TODO query latest balance
+      }
       return await calcLatestSrcBalance(
         global.ethereumProvider,
         selectedAddress,
@@ -38,6 +48,7 @@ const useLatestBalance = (
     }
     return undefined;
   }, [
+    isSolana,
     chainId,
     currentChainId,
     token,
@@ -46,9 +57,9 @@ const useLatestBalance = (
   ]);
 
   if (token && !token.decimals) {
-    throw new Error(
-      `Failed to calculate latest balance - ${token.symbol} token is missing "decimals" value`,
-    );
+    // throw new Error(
+    //     `Failed to calculate latest balance - ${token.symbol} token is missing "decimals" value`,
+    //   );
   }
 
   const tokenDecimals = token?.decimals ? Number(token.decimals) : 1;

@@ -1,6 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-import { MultichainNetworks } from './multichain/networks';
-///: END:ONLY_INCLUDE_IF
+import { MultichainNetworks } from '@metamask/assets-controllers';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
 // TODO read from feature flags
@@ -14,19 +12,17 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-  MultichainNetworks.SOLANA,
-  ///: END:ONLY_INCLUDE_IF
+  MultichainNetworks.Solana,
 ];
 
 export type AllowedBridgeChainIds = (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number];
 
 export const BRIDGE_DEV_API_BASE_URL = 'https://bridge.dev-api.cx.metamask.io';
 export const BRIDGE_PROD_API_BASE_URL = 'https://bridge.api.cx.metamask.io';
-export const BRIDGE_API_BASE_URL = process.env.BRIDGE_USE_DEV_APIS
+export const BRIDGE_API_BASE_URL_ = process.env.BRIDGE_USE_DEV_APIS
   ? BRIDGE_DEV_API_BASE_URL
   : BRIDGE_PROD_API_BASE_URL;
-
+export const BRIDGE_API_BASE_URL = 'http://localhost:4000';
 export const BRIDGE_CLIENT_ID = 'extension';
 
 export const ETH_USDT_ADDRESS = '0xdac17f958d2ee523a2206206994597c13d831ec7';
@@ -51,13 +47,11 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [CHAIN_IDS.OPTIMISM]: NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
   [CHAIN_IDS.ZKSYNC_ERA]: 'ZkSync Era',
   [CHAIN_IDS.BASE]: 'Base',
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-  [MultichainNetworks.SOLANA]: 'Solana',
-  [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
-  [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
-  [MultichainNetworks.BITCOIN]: 'Bitcoin',
-  [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
-  ///: END:ONLY_INCLUDE_IF
+  [MultichainNetworks.Solana]: 'Solana',
+  [MultichainNetworks.SolanaTestnet]: 'Solana Testnet',
+  [MultichainNetworks.SolanaDevnet]: 'Solana Devnet',
+  [MultichainNetworks.Bitcoin]: 'Bitcoin',
+  [MultichainNetworks.BitcoinTestnet]: 'Bitcoin Testnet',
 };
 export const BRIDGE_MM_FEE_RATE = 0.875;
 export const REFRESH_INTERVAL_MS = 30 * 1000;
