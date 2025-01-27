@@ -120,7 +120,7 @@ describe.skip('Send full flow of USD', function (this: Suite) {
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         await sendSolanaPage.clickOnContinue();
         assert.equal(
-          await confirmSolanaPage.checkAmountDisplayed('0.1', 'USD'),
+          await confirmSolanaPage.checkAmountDisplayed('0.1'),
           true,
           'Check amount displayed is wrong',
         );
