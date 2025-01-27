@@ -2,6 +2,7 @@ import { createModuleLogger, createProjectLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
+import { fetchWithSentryInstrumentation } from '../../../shared/lib/trace';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { getManifestFlags } from './manifestFlags';
@@ -65,6 +66,7 @@ export default function setupSentry() {
     });
   integrateLogging();
   setSentryClient();
+  Object.assign(window, { fetch: fetchWithSentryInstrumentation });
 
   return {
     ...Sentry,
@@ -86,12 +88,6 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration({
-        shouldCreateSpanForRequest: (url) => {
-          // Do not create spans for outgoing requests to a 'sentry.io' domain.
-          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
-        },
-      }),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
