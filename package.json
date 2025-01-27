@@ -385,7 +385,6 @@
     "eth-chainlist": "~0.0.498",
     "eth-ens-namehash": "^2.0.8",
     "eth-lattice-keyring": "^0.12.4",
-    "eth-method-registry": "^4.0.0",
     "ethereumjs-util": "^7.0.10",
     "extension-port-stream": "^3.0.0",
     "fast-json-patch": "^3.1.1",

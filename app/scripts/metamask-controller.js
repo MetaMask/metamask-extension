@@ -6987,7 +6987,6 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.addKnownMethodData.bind(
             this.preferencesController,
           ),
-          this.provider,
         );
       },
       getIsConfirmationAdvancedDetailsOpen: () => {

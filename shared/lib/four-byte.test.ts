@@ -1,4 +1,3 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
 import nock from 'nock';
 
 import {
@@ -69,9 +68,6 @@ describe('Four Byte', () => {
 
   describe('getMethodDataAsync', () => {
     it('returns a valid signature for setApprovalForAll when use4ByteResolution privacy setting is ON', async () => {
-      const provider = new JsonRpcProvider({
-        url: 'https://mainnet.infura.io/v3/341eacb578dd44a1a049cbc5f6fd4035',
-      });
       nock('https://www.4byte.directory:443', { encodedQueryParams: true })
         .get('/api/v1/signatures/')
         .query({ hex_signature: '0xa22cb465' })
@@ -96,10 +92,8 @@ describe('Four Byte', () => {
             },
           ],
         });
-      expect(
-        await getMethodDataAsync('0xa22cb465', true, provider),
-      ).toStrictEqual({
-        name: 'Set Approval For All',
+      expect(await getMethodDataAsync('0xa22cb465', true)).toStrictEqual({
+        name: 'setApprovalForAll',
         params: [{ type: 'address' }, { type: 'bool' }],
       });
     });
