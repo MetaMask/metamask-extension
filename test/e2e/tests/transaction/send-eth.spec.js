@@ -13,7 +13,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Send ETH', function () {
-  describe('from inside MetaMask', function () {
+  describe('from inside MetaMask TEST', function () {
     it('finds the transaction in the transactions list using default gas', async function () {
       await withFixtures(
         {

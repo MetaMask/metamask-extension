@@ -11,7 +11,7 @@ const CHANGED_FILES_PATH = path.join(
 /**
  * Reads the list of changed files from the git diff file.
  *
- * @returns {<string[]>} An array of changed file paths.
+ * @returns {string[]} An array of changed file paths.
  */
 function readChangedFiles() {
   try {
@@ -29,10 +29,10 @@ function readChangedFiles() {
 /**
  * Filters the list of changed files to include only E2E test files within the 'test/e2e/' directory.
  *
- * @returns {<string[]>} An array of filtered E2E test file paths.
+ * @param {string[]} changedFiles - An array of changed file paths to filter.
+ * @returns {string[]} An array of filtered E2E test file paths.
  */
-function filterE2eChangedFiles() {
-  const changedFiles = readChangedFiles();
+function filterE2eChangedFiles(changedFiles) {
   const e2eChangedFiles = changedFiles
     .filter(
       (file) =>

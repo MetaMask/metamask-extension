@@ -1,0 +1,16 @@
+name: Validate E2E Page Object usage on modified files
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  run-e2e-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run E2E Page Object Validation
+        run: |
+          yarn validate-e2e-page-object-usage

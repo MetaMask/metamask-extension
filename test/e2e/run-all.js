@@ -6,7 +6,10 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
-const { filterE2eChangedFiles } = require('./changedFilesUtil');
+const {
+  filterE2eChangedFiles,
+  readChangedFiles,
+} = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = [];
@@ -64,7 +67,8 @@ function applyQualityGate(fullTestList, changedOrNewTests) {
 
 // For running E2Es in parallel in CI
 function runningOnCircleCI(testPaths) {
-  const changedOrNewTests = filterE2eChangedFiles();
+  const changedFiles = readChangedFiles();
+  const changedOrNewTests = filterE2eChangedFiles(changedFiles);
   console.log('Changed or new test list:', changedOrNewTests);
 
   const fullTestList = applyQualityGate(

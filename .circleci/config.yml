@@ -379,6 +379,14 @@ jobs:
           root: .
           paths:
             - changed-files
+      - run:
+          name: Save changed files as artifact
+          command: |
+            mkdir -p changed-files
+            cp changed-files/changed-files.txt changed-files/
+      - store_artifacts:
+          path: changed-files
+          destination: changed-files
 
   validate-locales-only:
     executor: node-browsers-small
