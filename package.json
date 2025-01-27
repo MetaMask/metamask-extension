@@ -259,7 +259,19 @@
     "tslib@npm:^2.3.0": "~2.6.0",
     "tslib@npm:^2.3.1": "~2.6.0",
     "tslib@npm:^2.4.0": "~2.6.0",
-    "tslib@npm:^2.6.2": "~2.6.0"
+    "tslib@npm:^2.6.2": "~2.6.0",
+    "@metamask/accounts-controller@npm:21.0.2": "npm:@metamask-previews/accounts-controller@21.0.2-preview-37da015",
+    "@metamask/accounts-controller@npm:^21.0.2": "npm:@metamask-previews/accounts-controller@21.0.2-preview-37da015",
+    "@metamask/keyring-api@npm:14.0.0": "npm:@metamask-previews/keyring-api@14.0.0-0b22ddc",
+    "@metamask/keyring-api@npm:^14.0.0": "npm:@metamask-previews/keyring-api@14.0.0-0b22ddc",
+    "@metamask/keyring-utils@npm:1.2.0": "npm:@metamask-previews/keyring-utils@1.2.0-0b22ddc",
+    "@metamask/keyring-utils@npm:^1.2.0": "npm:@metamask-previews/keyring-utils@1.2.0-0b22ddc",
+    "@metamask/keyring-snap-client@npm:3.0.0": "npm:@metamask-previews/keyring-snap-client@3.0.0-0b22ddc",
+    "@metamask/keyring-snap-client@npm:^3.0.0": "npm:@metamask-previews/keyring-snap-client@3.0.0-0b22ddc",
+    "@metamask/keyring-internal-snap-client@npm:3.0.0": "npm:@metamask-previews/keyring-internal-snap-client@3.0.0-0b22ddc",
+    "@metamask/keyring-internal-snap-client@npm:^3.0.0": "npm:@metamask-previews/keyring-internal-snap-client@3.0.0-0b22ddc",
+    "@metamask/eth-snap-keyring@npm:8.1.1": "npm:@metamask-previews/eth-snap-keyring@8.1.1-0b22ddc",
+    "@metamask/eth-snap-keyring@npm:^8.1.1": "npm:@metamask-previews/eth-snap-keyring@8.1.1-0b22ddc"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
