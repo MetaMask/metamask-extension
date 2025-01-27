@@ -112,7 +112,6 @@ export async function showAccountNameSuggestionDialog(
  */
 export const snapKeyringBuilder = (
   controllerMessenger: SnapKeyringBuilderMessenger,
-  getSnapController: () => SnapController,
   persistKeyringHelper: () => Promise<void>,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -131,7 +130,7 @@ export const snapKeyringBuilder = (
   const builder = (() => {
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return new SnapKeyring(getSnapController() as any, {
+    return new SnapKeyring(controllerMessenger, {
       addressExists: async (address) => {
         const addresses = await controllerMessenger.call(
           'KeyringController:getAccounts',
