@@ -180,6 +180,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - test: [POM] Migrate Send tx Revoke Permissions spec ([#29273](https://github.com/MetaMask/metamask-extension/pull/29273))
 - fix: increase gas limit validation threshold ([#29264](https://github.com/MetaMask/metamask-extension/pull/29264))
 - test: [POM] Privacy Mode spec ([#29263](https://github.com/MetaMask/metamask-extension/pull/29263))
+
 ## [12.10.2]
 ### Fixed
 - Updated permissions header to be consistent (#29880) ([#29880](https://github.com/MetaMask/metamask-extension/pull/29880))
