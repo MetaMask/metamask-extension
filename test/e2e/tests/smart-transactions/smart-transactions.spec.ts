@@ -79,10 +79,12 @@ describe('Smart Transactions', function () {
           amount: 2,
           swapTo: 'DAI',
         });
+
         await reviewQuote(driver, {
           amount: 2,
           swapFrom: 'ETH',
           swapTo: 'DAI',
+          skipCounter: true,
         });
 
         await driver.clickElement({ text: 'Swap', tag: 'button' });
