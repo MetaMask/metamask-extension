@@ -5,7 +5,6 @@ import SendSolanaPage from '../../page-objects/pages/send/solana-send-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import AccountListPage from '../../page-objects/pages/account-list-page';
 import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';

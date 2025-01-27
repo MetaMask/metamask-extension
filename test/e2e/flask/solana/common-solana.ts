@@ -404,9 +404,6 @@ export async function withSolanaAccountSnap(
     fixtures =
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
-  /* if (importAccount) {
-    fixtures = fixtures.withSolanaAccountImportedAccount();
-  } */
   await withFixtures(
     {
       fixtures: fixtures.build(),
