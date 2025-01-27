@@ -135,6 +135,12 @@ class SendSolanaPage {
       return false;
     }
   }
+
+  async check_pageIsLoaded() {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(this.toAddressInput, { timeout: 2000 });
+    await this.driver.delay(1000); // Added because of https://consensyssoftware.atlassian.net/browse/SOL-116
+  }
 }
 
 export default SendSolanaPage;

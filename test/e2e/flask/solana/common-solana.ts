@@ -281,37 +281,33 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
 }
 
 export async function mockSolanaRatesCall(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(SOLANA_PRICE_REGEX)
-    .withQuery({ vsCurrency: 'usd' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          result: {
-            id: 'wrapped-solana',
-            price: 210.57,
-            marketCap: 0,
-            allTimeHigh: 263.68,
-            allTimeLow: 8.11,
-            totalVolume: 3141761864,
-            high1d: 218.26,
-            low1d: 200.85,
-            circulatingSupply: 0,
-            dilutedMarketCap: 124394527657,
-            marketCapPercentChange1d: 0,
-            priceChange1d: -7.68288033909846,
-            pricePercentChange1h: 0.5794201955743261,
-            pricePercentChange1d: -3.520101943578202,
-            pricePercentChange7d: -8.192700158252544,
-            pricePercentChange14d: -12.477367449577399,
-            pricePercentChange30d: -14.588630064677465,
-            pricePercentChange200d: 28.111509321033513,
-            pricePercentChange1y: 181.48381055890258,
-          },
-        },
-      };
-    });
+  return await mockServer.forGet(SOLANA_PRICE_REGEX).thenCallback(() => {
+    const priceResponse = {
+      id: 'wrapped-solana',
+      price: 210.57,
+      marketCap: 0,
+      allTimeHigh: 263.68,
+      allTimeLow: 8.11,
+      totalVolume: 3141761864,
+      high1d: 218.26,
+      low1d: 200.85,
+      circulatingSupply: 0,
+      dilutedMarketCap: 124394527657,
+      marketCapPercentChange1d: 0,
+      priceChange1d: -7.68288033909846,
+      pricePercentChange1h: 0.5794201955743261,
+      pricePercentChange1d: -3.520101943578202,
+      pricePercentChange7d: -8.192700158252544,
+      pricePercentChange14d: -12.477367449577399,
+      pricePercentChange30d: -14.588630064677465,
+      pricePercentChange200d: 28.111509321033513,
+      pricePercentChange1y: 181.48381055890258,
+    };
+    return {
+      statusCode: 200,
+      json: priceResponse,
+    };
+  });
 }
 
 export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
@@ -421,7 +417,7 @@ export async function withSolanaAccountSnap(
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
-            // await mockSolanaRatesCall(mockServer),
+            await mockSolanaRatesCall(mockServer),
             await mockGetTransaction(mockServer),
             await simulateSolanaTransaction(mockServer),
             await mockGetTokenAccountsByOwner(mockServer),
