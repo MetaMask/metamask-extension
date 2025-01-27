@@ -1,8 +1,8 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 
-const OWNER = 'MetaMask';
-const REPOSITORY = 'metamask-extension';
+const owner = process.env.BRANCH;
+const repository = process.env.REPOSITORY;
 
 /**
  * Downloads an artifact from CircleCI.
@@ -14,8 +14,10 @@ const REPOSITORY = 'metamask-extension';
  */
 export function downloadCircleCiArtifact(branch: string, headCommitHash: string, artifactName: string, outputFilePath: string, jobName: string): void {
     // Get the pipeline ID for the current branch
+    console.log('Branch', branch);
+    console.log('Commit', headCommitHash);
     const pipelineId = execSync(
-        `curl --silent "https://circleci.com/api/v2/project/gh/${OWNER}/${REPOSITORY}/pipeline?branch=${branch}" | jq --arg head_commit_hash "${headCommitHash}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id'`
+        `curl --silent "https://circleci.com/api/v2/project/gh/${owner}/${repository}/pipeline?branch=${branch}" | jq --arg head_commit_hash "${headCommitHash}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id'`
     ).toString().trim();
     console.log('Pipeline ID', pipelineId);
 
@@ -59,7 +61,7 @@ export function downloadCircleCiArtifact(branch: string, headCommitHash: string,
  * @param filePath - The path to the downloaded artifact.
  * @returns The content of the artifact file.
  */
-export function readArtifact(filePath: string): string {
+export function readFileContent(filePath: string): string {
     if (!fs.existsSync(filePath)) {
         throw new Error(`File not found: ${filePath}`);
     }

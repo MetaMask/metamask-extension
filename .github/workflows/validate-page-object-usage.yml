@@ -5,14 +5,23 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  run-e2e-validation:
+  run-e2e-pom-validation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Get CircleCI job details
+        id: get-circleci-job-details
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          # For a `pull_request` event, the branch is `github.head_ref``.
+          # For a `push` event, the branch is `github.ref_name`.
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+          # For a `push` event, the head commit hash is `github.sha`.
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Run E2E Page Object Validation
         run: |

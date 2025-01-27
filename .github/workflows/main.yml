@@ -68,9 +68,10 @@ jobs:
 
   validate-page-object-usage:
     name: Verify E2E Page Object Usage on modified files
+    if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
     needs:
       - wait-for-circleci-workflow-status
-    uses: ./.github/workflows/validate-page-object-usage.yml
+    uses: ./.github/scripts/validate-page-object-usage.yml
 
   runway:
     name: Runway
