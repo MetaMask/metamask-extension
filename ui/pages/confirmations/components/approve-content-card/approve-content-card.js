@@ -83,7 +83,11 @@ export default function ApproveContentCard({
           )}
           {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
             <Box width={BlockSize.OneSixth}>
-              <Button type="link" onClick={() => onEditClick()}>
+              <Button
+                type="link"
+                data-testid="edit-gas-fee-btn"
+                onClick={() => onEditClick()}
+              >
                 <Text
                   variant={TextVariant.bodySm}
                   color={TextColor.primaryDefault}

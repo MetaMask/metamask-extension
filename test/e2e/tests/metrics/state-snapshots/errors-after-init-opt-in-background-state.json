@@ -69,8 +69,6 @@
           "chains": { "0x1": "object", "0xa4b1": "object", "0xe708": "object" }
         }
       },
-      "destTokens": {},
-      "destTopAssets": {},
       "quoteRequest": {
         "srcTokenAddress": "0x0000000000000000000000000000000000000000",
         "slippage": 0.5
@@ -232,11 +230,9 @@
       "showNativeTokenAsMainBalance": true,
       "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
-      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
-      "redesignedConfirmationsEnabled": true,
       "smartTransactionsMigrationApplied": "boolean"
     },
     "ipfsGateway": "string",

@@ -127,7 +127,9 @@ export function handlePPOMError(
   const errorData = getErrorData(error);
   const description = getErrorMessage(error);
 
-  sentry?.captureException(error);
+  if (source === SecurityAlertSource.Local) {
+    sentry?.captureException(error);
+  }
   console.error(logMessage, errorData);
 
   return {
