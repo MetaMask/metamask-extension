@@ -7,7 +7,7 @@ type LogoOneKeyType = {
   ariaLabel: string;
 };
 
-const LogoOnekey = ({
+const LogoOneKey = ({
   width = '100%',
   color = 'var(--color-text-default)',
   className,
@@ -37,4 +37,4 @@ const LogoOnekey = ({
   );
 };
 
-export default LogoOnekey;
+export default LogoOneKey;

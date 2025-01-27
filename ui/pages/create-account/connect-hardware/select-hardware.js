@@ -605,8 +605,8 @@ export default class SelectHardware extends Component {
       {
         asset: 'plug-in-wallet',
         dimensions: { width: '225px', height: '75px' },
-        title: this.context.t('step1OnekeyWallet'),
-        message: this.context.t('step1OnekeyWalletMsg', [
+        title: this.context.t('step1OneKeyWallet'),
+        message: this.context.t('step1OneKeyWalletMsg', [
           <a
             className="hw-connect__msg-link"
             href={ZENDESK_URLS.HARDWARE_CONNECTION}

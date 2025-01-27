@@ -4868,20 +4868,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Get hardware type that will be sent for metrics logging
+   * Get hardware type that will be sent for metrics logging.
    *
-   * @param {string} address
+   * @param {string} address - Address to retrieve the keyring from
    * @returns {HardwareKeyringType} Keyring hardware type
    */
   async getHardwareTypeForMetric(address) {
-    const keyringTypeAndBridge = await this.keyringController.withKeyring(
-      { address },
-      ({ type, bridge }) => ({
-        type,
-        bridge,
-      }),
-    );
-    const { type: keyringType, bridge: keyringBridge } = keyringTypeAndBridge;
+    // The `getKeyringForAccount` is now deprecated, so we just use `withKeyring` instead to access our keyring.
+    const { type: keyringType, bridge: keyringBridge } =
+      await this.keyringController.withKeyring(
+        { address },
+        (keyring) => keyring,
+      );
+
     // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
     return keyringBridge?.minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION
       ? HardwareKeyringType.oneKey
