@@ -47,6 +47,7 @@ const createMockedHandler = () => {
       ],
     },
   });
+  const findNetworkClientIdByChainId = jest.fn().mockResolvedValue({});
   const response: PendingJsonRpcResponse<Json> = {
     jsonrpc: '2.0' as const,
     id: 0,
@@ -62,6 +63,7 @@ const createMockedHandler = () => {
         requestPermissionsForOrigin,
         requestCaip25ApprovalForOrigin,
         grantPermissionsForOrigin,
+        findNetworkClientIdByChainId,
       },
     );
 
