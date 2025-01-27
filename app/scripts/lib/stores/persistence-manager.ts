@@ -1,10 +1,7 @@
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
-import {
-  type MetaMaskStateType,
-  MetaMaskStorageStructure,
-} from './base-store';
+import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
 import ExtensionStore from './extension-store';
 import ReadOnlyNetworkStore from './read-only-network-store';
 
@@ -60,7 +57,7 @@ export class PersistanceManager {
    * includes a single key which is 'version' and contains the current version
    * number of the state tree.
    */
-  metadata?: { version: number };
+  #metadata?: { version: number };
 
   #isExtensionInitialized: boolean = false;
 
@@ -74,15 +71,19 @@ export class PersistanceManager {
     this.#localStore = localStore;
   }
 
+  setMetadata(metadata: { version: number }) {
+    this.#metadata = metadata;
+  }
+
   async set(state: MetaMaskStateType) {
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }
-    if (!this.metadata) {
+    if (!this.#metadata) {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
     try {
-      await this.#localStore.set({ data: state, meta: this.metadata });
+      await this.#localStore.set({ data: state, meta: this.#metadata });
       if (this.#dataPersistenceFailing) {
         this.#dataPersistenceFailing = false;
       }

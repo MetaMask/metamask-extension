@@ -30,13 +30,6 @@ describe('PersistanceManager', () => {
     manager = new PersistanceManager({ localStore: new ExtensionStore() });
   });
 
-  describe('metadata setter/getter', () => {
-    it('sets and retrieves metadata correctly', () => {
-      manager.metadata = { version: 42 };
-      expect(manager.metadata).toStrictEqual({ version: 42 });
-    });
-  });
-
   describe('set', () => {
     it('throws if state is missing', async () => {
       await expect(
@@ -51,7 +44,7 @@ describe('PersistanceManager', () => {
     });
 
     it('calls localStore.set with the correct arguments once metadata is set', async () => {
-      manager.metadata = { version: 10 };
+      manager.setMetadata({ version: 10 });
 
       await manager.set({ appState: { test: true } });
 
@@ -63,7 +56,7 @@ describe('PersistanceManager', () => {
     });
 
     it('logs error and captures exception if store.set throws', async () => {
-      manager.metadata = { version: 10 };
+      manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
       mockStoreSet.mockRejectedValueOnce(error);
@@ -77,7 +70,7 @@ describe('PersistanceManager', () => {
     });
 
     it('captures exception only once if store.set is called and throws multiple times', async () => {
-      manager.metadata = { version: 10 };
+      manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
       mockStoreSet.mockRejectedValue(error);
@@ -89,7 +82,7 @@ describe('PersistanceManager', () => {
     });
 
     it('captures exception twice if store.set fails, then succeeds and then fails again', async () => {
-      manager.metadata = { version: 17 };
+      manager.setMetadata({ version: 17 });
 
       const error = new Error('store.set error');
       mockStoreSet.mockRejectedValueOnce(error);
@@ -138,7 +131,7 @@ describe('PersistanceManager', () => {
       // First call to get -> sets isExtensionInitialized = false -> sets mostRecentRetrievedState
       await manager.get();
       // The act of calling set will set isExtensionInitialized to true
-      manager.metadata = { version: 10 };
+      manager.setMetadata({ version: 10 });
       await manager.set({ appState: { test: true } });
 
       // Now call get() again; it should not change mostRecentRetrievedState
