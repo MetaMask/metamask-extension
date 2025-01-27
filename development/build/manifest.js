@@ -18,6 +18,23 @@ const { getEnvironment, getBuildName } = require('./utils');
 
 module.exports = createManifestTasks;
 
+async function loadManifestFlags() {
+  try {
+    return JSON.parse(
+      await fs.readFile(
+        path.join(__dirname, '../../.manifest-flags.json'),
+        'utf8',
+      ),
+    );
+  } catch (error) {
+    return { remoteFeatureFlags: {} };
+  }
+}
+
+const manifestFlags = loadManifestFlags();
+
+module.exports = createManifestTasks;
+
 function createManifestTasks({
   browserPlatforms,
   browserVersionMap,
@@ -47,8 +64,10 @@ function createManifestTasks({
           browserVersionMap[platform],
           await getBuildModifications(buildType, platform),
           customArrayMerge,
+          {
+            _flags: manifestFlags,
+          },
         );
-
         modifyNameAndDescForNonProd(result);
 
         const dir = path.join('.', 'dist', platform);

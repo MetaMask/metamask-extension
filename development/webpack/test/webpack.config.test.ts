@@ -163,6 +163,9 @@ ${Object.entries(env)
         manifest_version: 3,
         name: 'name',
         version: '1.2.3',
+        _flags: {
+          remoteFeatureFlags: {},
+        },
         content_scripts: [
           {
             js: ['scripts/contentscript.js', 'scripts/inpage.js'],
@@ -231,7 +234,7 @@ ${Object.entries(env)
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
     assert(manifestPlugin.options.zipOptions, 'Zip options should be present');
-    assert.strictEqual(manifestPlugin.options.transform, undefined);
+    assert.deepStrictEqual(manifestPlugin.options.transform, undefined);
 
     const progressPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ProgressPlugin',

@@ -13,6 +13,45 @@ exports[`Develop options tab should match snapshot 1`] = `
     <p
       class="mm-box mm-text settings-page__security-tab-sub-header mm-text--body-md mm-box--padding-top-6 mm-box--color-text-alternative"
     >
+      Current States
+    </p>
+    <div
+      class="settings-page__content-padded"
+    >
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      >
+        <div
+          class="settings-page__content-item"
+        >
+          <span>
+            Remote feature flags
+          </span>
+          <div
+            class="settings-page__content-description"
+          >
+            The remote feature flags here by 
+            <b>
+              getRemoteFeatureFlags()
+            </b>
+             is retrieved from one of the following sources:
+            <br />
+            1) manifest-flags.json file 2) RemoteFeatureFlagsController
+            <br />
+            Modify the manifest-flags.json file will change the state locally.
+          </div>
+        </div>
+        <div
+          class="settings-page__content-description"
+          data-testid="developer-options-remote-feature-flags"
+        >
+          {"feature1":"value1"}
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text settings-page__security-tab-sub-header mm-text--body-md mm-box--padding-top-6 mm-box--color-text-alternative"
+    >
       Reset States
     </p>
     <div

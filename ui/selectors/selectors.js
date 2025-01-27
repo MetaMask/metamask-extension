@@ -2970,10 +2970,6 @@ export function getMetaMetricsDataDeletionStatus(state) {
   return state.metamask.metaMetricsDataDeletionStatus;
 }
 
-export function getRemoteFeatureFlags(state) {
-  return state.metamask.remoteFeatureFlags;
-}
-
 /**
  * To get all installed snaps with proper metadata
  *
