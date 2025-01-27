@@ -630,6 +630,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                 ? Severity.Warning
                                 : Severity.Info
                             }
+                            data-testid="custom-token-warning"
                           >
                             <Text variant={TextVariant.bodyMd}>
                               {t(
