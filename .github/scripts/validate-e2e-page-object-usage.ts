@@ -38,7 +38,7 @@ async function verifyE2ePageObjectsUsage() {
             attempts++;
             if (attempts < maxAttempts) {
                 console.log(`Retrying in 60 seconds... (${attempts}/${maxAttempts})`);
-                await sleep(60000); // Wait for 60 seconds before retrying
+                await sleep(60);
             }
         }
 

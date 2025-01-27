@@ -17,8 +17,21 @@ export async function downloadCircleCiArtifact(branch: string, headCommitHash: s
     console.log('Commit', headCommitHash);
 
     // Get the pipeline ID for the current branch
-    const pipelineResponse = await fetch(`https://circleci.com/api/v2/project/gh/${owner}/${repository}/pipeline?branch=${branch}`);
+    const pipelineResponse = await fetch(
+        `https://circleci.com/api/v2/project/gh/${owner}/${repository}/pipeline?branch=${branch}`
+    );
+
+    if (!pipelineResponse.ok) {
+        throw new Error(`Failed to fetch pipeline: ${pipelineResponse.statusText}`);
+    }
+
     const pipelineData = await pipelineResponse.json();
+    console.log('Pipeline data:', JSON.stringify(pipelineData, null, 2));
+
+    if (!pipelineData.items || pipelineData.items.length === 0) {
+        throw new Error('No pipeline items found');
+    }
+
     const pipelineId = pipelineData.items.find((item: any) => item.vcs.revision === headCommitHash)?.id;
     console.log('Pipeline ID', pipelineId);
 
