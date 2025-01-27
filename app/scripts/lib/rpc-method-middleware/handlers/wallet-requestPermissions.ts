@@ -94,7 +94,7 @@ async function requestPermissionsImplementation(
   }
 
   // TODO: we could put a check here to see if chain is included in available chains, if not, ERROR
-
+  // TODO: dig deeper in the old release, permissionsController.validateRequestedPermissions(), and replicate implementation for `endowment:permitted-chains`
   const [requestedPermissions] = params;
   const caip25EquivalentPermissions: Partial<
     Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
@@ -102,6 +102,7 @@ async function requestPermissionsImplementation(
     RestrictedMethods.eth_accounts,
     PermissionNames.permittedChains,
   ]);
+
   delete requestedPermissions[RestrictedMethods.eth_accounts];
   delete requestedPermissions[PermissionNames.permittedChains];
 
