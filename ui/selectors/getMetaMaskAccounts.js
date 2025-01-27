@@ -1,14 +1,11 @@
 import { createSelector } from 'reselect';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { SubjectType } from '@metamask/permission-controller';
-import { memoize } from 'lodash';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountBalances,
   getMetaMaskKeyrings,
-  getSubjectMetadata,
 } from './accounts-core';
 import { getInternalAccounts, getSelectedInternalAccount } from './accounts';
 import {
@@ -128,26 +125,27 @@ export const getInternalAccountsSortedByKeyring = createSelector(
     return internalAccounts;
   },
 );
-
 /**
- * @param {string} svgString - The raw SVG string to make embeddable.
- * @returns {string} The embeddable SVG string.
+ *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
+ */
+/**
+ * Get ordered (by keyrings) accounts with InternalAccount and balance
+ *
+ * @returns {InternalAccountWithBalance} An array of internal accounts with balance
  */
 
-export const getEmbeddableSvg = memoize(
-  (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
+export const getMetaMaskAccountsOrdered = createSelector(
+  getInternalAccountsSortedByKeyring,
+  getMetaMaskAccounts,
+  (internalAccounts, accounts) => {
+    return internalAccounts.map((internalAccount) => ({
+      ...internalAccount,
+      ...accounts[internalAccount.address],
+    }));
+  },
 );
-
-export function getTargetSubjectMetadata(state, origin) {
-  const metadata = getSubjectMetadata(state)[origin];
-
-  if (metadata?.subjectType === SubjectType.Snap) {
-    const { svgIcon, ...remainingMetadata } = metadata;
-    return {
-      ...remainingMetadata,
-      iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
-    };
-  }
-
-  return metadata;
-}
+export const getMetaMaskAccountsConnected = createSelector(
+  getMetaMaskAccountsOrdered,
+  (connectedAccounts) =>
+    connectedAccounts.map(({ address }) => address.toLowerCase()),
+);

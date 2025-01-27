@@ -6,9 +6,12 @@ import { CaveatTypes } from '../../shared/constants/permissions';
 import { PermissionNames } from '../../app/scripts/controllers/permissions';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getApprovalRequestsByType } from './approvals';
-import { getTargetSubjectMetadata } from './getMetaMaskAccounts';
-import { getSubjectMetadata, getOriginOfCurrentTab } from './accounts-core';
-import { getMetaMaskAccountsOrdered } from './getMetaMaskAccountsOrdered';
+import {
+  getTargetSubjectMetadata,
+  getSubjectMetadata,
+  getOriginOfCurrentTab,
+} from './accounts-core';
+import { getMetaMaskAccountsOrdered } from './getMetaMaskAccounts';
 import { getSelectedInternalAccount } from './accounts';
 
 // selectors

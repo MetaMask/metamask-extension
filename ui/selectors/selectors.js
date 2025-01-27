@@ -111,16 +111,16 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
-  getTargetSubjectMetadata,
   getMetaMaskAccounts,
   getSelectedAccount,
   getMetaMaskCachedBalances,
+  getMetaMaskAccountsOrdered,
 } from './getMetaMaskAccounts';
 import {
+  getTargetSubjectMetadata,
   getMetaMaskAccountBalances,
   getOriginOfCurrentTab,
 } from './accounts-core';
-import { getMetaMaskAccountsOrdered } from './getMetaMaskAccountsOrdered';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,

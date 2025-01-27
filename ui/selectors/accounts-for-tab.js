@@ -3,7 +3,7 @@ import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getInternalAccount, getOriginOfCurrentTab } from './accounts-core';
 import { getSelectedInternalAccount } from './accounts';
 import { getPermittedAccounts } from './permissions';
-import { getMetaMaskAccountsOrdered } from './getMetaMaskAccountsOrdered';
+import { getMetaMaskAccountsOrdered } from './getMetaMaskAccounts';
 
 export function getAccountToConnectToActiveTab(state) {
   const selectedInternalAccount = getSelectedInternalAccount(state);

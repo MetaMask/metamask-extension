@@ -16,7 +16,7 @@ import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-m
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import * as selectors from './selectors';
 import * as getMetaMaskAccounts from './getMetaMaskAccounts';
-import * as getMetaMaskAccountsConnected from './getMetaMaskAccountsConnected';
+import * as getMetaMaskAccountsConnected from './getUpdatedAndSortedAccounts';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../shared/modules/selectors/networks'),

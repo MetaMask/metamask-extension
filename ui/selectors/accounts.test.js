@@ -1,10 +1,9 @@
 import mockState from '../../test/data/mock-state.json';
-import * as getMetaMaskAccounts from './getMetaMaskAccounts';
 import * as accountsCore from './accounts-core';
 
 describe('#getMetaMaskAccounts', () => {
   it('#getTargetSubjectMetadata', () => {
-    const targetSubjectsMetadata = getMetaMaskAccounts.getTargetSubjectMetadata(
+    const targetSubjectsMetadata = accountsCore.getTargetSubjectMetadata(
       mockState,
       'npm:@metamask/test-snap-bip44',
     );

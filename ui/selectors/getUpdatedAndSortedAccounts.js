@@ -1,14 +1,7 @@
-import { createSelector } from 'reselect';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { getMetaMaskAccountsOrdered } from './getMetaMaskAccountsOrdered';
+import { getMetaMaskAccountsOrdered } from './getMetaMaskAccounts';
 import { getPinnedAccountsList, getHiddenAccountsList } from './accounts-core';
 import { getOrderedConnectedAccountsForActiveTab } from './accounts-for-tab';
-
-export const getMetaMaskAccountsConnected = createSelector(
-  getMetaMaskAccountsOrdered,
-  (connectedAccounts) =>
-    connectedAccounts.map(({ address }) => address.toLowerCase()),
-);
 
 export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
