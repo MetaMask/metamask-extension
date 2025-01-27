@@ -8,8 +8,8 @@ export const skeleton: UIComponentFactory<SkeletonElement> = ({ element }) => {
   return {
     element: 'SnapUISkeleton',
     props: {
-      width: element.props.width || DEFAULT_SKELETON_WIDTH,
-      height: element.props.height || DEFAULT_SKELETON_HEIGHT,
+      width: element.props.width ?? DEFAULT_SKELETON_WIDTH,
+      height: element.props.height ?? DEFAULT_SKELETON_HEIGHT,
       borderRadius: element.props.borderRadius,
     },
   };
