@@ -55,8 +55,6 @@ export enum BlockaidReason {
   errored = 'Error',
   notApplicable = 'NotApplicable',
   inProgress = 'validation_in_progress',
-  checkingChain = 'CheckingChain',
-  chainNotSupported = 'ChainNotSupported',
 }
 
 export enum BlockaidResultType {
@@ -101,17 +99,6 @@ export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
   result_type: BlockaidResultType.Loading,
   reason: BlockaidReason.inProgress,
 };
-
-export const SECURITY_ALERT_RESPONSE_CHECKING_CHAIN: SecurityAlertResponse = {
-  result_type: BlockaidResultType.Loading,
-  reason: BlockaidReason.checkingChain,
-};
-
-export const SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED: SecurityAlertResponse =
-  {
-    result_type: BlockaidResultType.Benign,
-    reason: BlockaidReason.chainNotSupported,
-  };
 
 export enum SecurityAlertSource {
   /** Validation performed remotely using the Security Alerts API. */

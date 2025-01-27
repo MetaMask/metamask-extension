@@ -142,9 +142,7 @@ describe('PPOMMiddleware', () => {
       () => undefined,
     );
 
-    expect(req.securityAlertResponse?.reason).toBe(
-      BlockaidReason.checkingChain,
-    );
+    expect(req.securityAlertResponse?.reason).toBe(BlockaidReason.inProgress);
     expect(req.securityAlertResponse?.result_type).toBe(
       BlockaidResultType.Loading,
     );

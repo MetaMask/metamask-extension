@@ -15,7 +15,6 @@ import {
   BlockaidReason,
   BlockaidResultType,
   LOADING_SECURITY_ALERT_RESPONSE,
-  SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { AppStateController } from '../../controllers/app-state-controller';
@@ -303,23 +302,6 @@ describe('PPOM Utils', () => {
         });
       },
     );
-
-    it('updates response indicating chain is not supported', async () => {
-      const ppomController = {} as PPOMController;
-      const CHAIN_ID_UNSUPPORTED_MOCK = '0x2';
-
-      await validateRequestWithPPOM({
-        ...validateRequestWithPPOMOptionsBase,
-        ppomController,
-        chainId: CHAIN_ID_UNSUPPORTED_MOCK,
-      });
-
-      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
-        validateRequestWithPPOMOptionsBase.request.method,
-        SECURITY_ALERT_ID_MOCK,
-        SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
-      );
-    });
   });
 
   describe('generateSecurityAlertId', () => {
