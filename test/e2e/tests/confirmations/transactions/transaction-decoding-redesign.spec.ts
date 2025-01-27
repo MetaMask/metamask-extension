@@ -20,18 +20,13 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign Contract Interaction Transaction Decoding', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  describe('Create a mint nft transaction @no-mmi', function () {
+  describe('Create a mint nft transaction', function () {
     it(`decodes 4 bytes transaction data`, async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
           ganacheOptions: defaultGanacheOptions,
           testSpecificMock: mocked4BytesResponse,
@@ -67,11 +62,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockedSourcifyResponse,
@@ -105,11 +95,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
@@ -143,11 +128,6 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockInfura,
