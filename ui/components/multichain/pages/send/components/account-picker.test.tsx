@@ -115,29 +115,25 @@ describe('SendPageAccountPicker', () => {
       });
       const { queryByText, queryAllByTestId, getByTestId } = render({
         metamask: {
-          AccountsController: {
-            internalAccounts: {
-              accounts: {
-                [mockAccount.id]: mockAccount,
-                [mockBtcAccount.id]: mockBtcAccount,
-              },
-              selectedAccount: mockAccount.id,
+          internalAccounts: {
+            accounts: {
+              [mockAccount.id]: mockAccount,
+              [mockBtcAccount.id]: mockBtcAccount,
             },
+            selectedAccount: mockAccount.id,
           },
-          KeyringController: {
-            keyrings: [
-              {
-                type: 'HD Key Tree',
-                accounts: [mockAccount.address],
-              },
-              {
-                type: 'Snap Keyring',
-                accounts: [mockBtcAccount.address],
-              },
-            ],
-          },
-        },
-      } as MetaMaskReduxState);
+          keyrings: [
+            {
+              type: 'HD Key Tree',
+              accounts: [mockAccount.address],
+            },
+            {
+              type: 'Snap Keyring',
+              accounts: [mockBtcAccount.address],
+            },
+          ],
+        } as MetaMaskReduxState['metamask'],
+      });
 
       expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
 

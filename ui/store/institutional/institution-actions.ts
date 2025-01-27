@@ -7,6 +7,7 @@ import {
   showModal,
 } from '../actions';
 import {
+  CombinedBackgroundAndReduxState,
   MetaMaskReduxState,
   TemporaryMessageDataType,
   MessagesIndexedById,
@@ -55,14 +56,13 @@ export function showCustodyConfirmLink({
 }
 
 export function updateCustodyState(
-  dispatch: ThunkDispatch<MetaMaskReduxState, unknown, AnyAction>,
+  dispatch: ThunkDispatch<CombinedBackgroundAndReduxState, unknown, AnyAction>,
   newState: MetaMaskReduxState['metamask'],
-  state: MetaMaskReduxState,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state: CombinedBackgroundAndReduxState & any,
 ) {
-  if (
-    !newState.TxController.transactions ||
-    !state.metamask.TxController.transactions
-  ) {
+  if (!newState.transactions || !state.metamask.transactions) {
     return;
   }
 
@@ -86,7 +86,7 @@ export function updateCustodyState(
   const txStateSaysDeepLinkShouldClose = Boolean(
     differentTxs.find((tx: TransactionMeta) => {
       const custodyAccountDetails =
-        state.metamask.CustodyController.custodyAccountDetails[
+        state.metamask.custodyAccountDetails[
           toChecksumHexAddress(tx.txParams.from)
         ];
       const custody = custodyAccountDetails?.custodyType
@@ -99,9 +99,8 @@ export function updateCustodyState(
       return (
         tx.custodyId === state.appState.modal.modalState.props?.custodyId &&
         tx.custodyStatus &&
-        (state.metamask.CustodyController.custodyStatusMaps[custody][
-          tx.custodyStatus
-        ]?.mmStatus !== 'approved' ||
+        (state.metamask.custodyStatusMaps[custody][tx.custodyStatus]
+          ?.mmStatus !== 'approved' ||
           tx.custodyStatus === CustodyStatus.CREATED)
       );
     }),

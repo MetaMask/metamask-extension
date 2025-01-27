@@ -4,14 +4,14 @@ import {
   SolAccountType,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountsControllerState } from '@metamask/accounts-controller';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
 } from '../../shared/lib/multichain';
-import type { BackgroundStateProxy } from '../../shared/types/background';
 
-type AccountsState = {
-  metamask: Pick<BackgroundStateProxy, 'AccountsController'>;
+export type AccountsState = {
+  metamask: AccountsControllerState;
 };
 
 function isBtcAccount(account: InternalAccount) {
@@ -27,15 +27,12 @@ function isSolanaAccount(account: InternalAccount) {
 }
 
 export function getInternalAccounts(state: AccountsState) {
-  return Object.values(
-    state.metamask.AccountsController.internalAccounts.accounts,
-  );
+  return Object.values(state.metamask.internalAccounts.accounts);
 }
 
 export function getSelectedInternalAccount(state: AccountsState) {
-  const accountId =
-    state.metamask.AccountsController.internalAccounts.selectedAccount;
-  return state.metamask.AccountsController.internalAccounts.accounts[accountId];
+  const accountId = state.metamask.internalAccounts.selectedAccount;
+  return state.metamask.internalAccounts.accounts[accountId];
 }
 
 export function isSelectedInternalAccountEth(state: AccountsState) {
