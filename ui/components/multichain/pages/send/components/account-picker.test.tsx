@@ -9,7 +9,7 @@ import {
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   createMockInternalAccount,
 } from '../../../../../../test/jest/mocks';
-import { CombinedBackgroundAndReduxState } from '../../../../../store/store';
+import { MetaMaskReduxState } from '../../../../../store/store';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -17,7 +17,7 @@ import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multicha
 import { SendPageAccountPicker } from '.';
 
 const render = (
-  state: Partial<CombinedBackgroundAndReduxState> = {},
+  state: Partial<MetaMaskReduxState> = {},
   props = {},
   sendStage = SEND_STAGES.ADD_RECIPIENT,
 ) => {
@@ -132,8 +132,8 @@ describe('SendPageAccountPicker', () => {
               accounts: [mockBtcAccount.address],
             },
           ],
-        },
-      } as CombinedBackgroundAndReduxState);
+        } as MetaMaskReduxState['metamask'],
+      });
 
       expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
 
