@@ -16,8 +16,8 @@ export const SnapUISkeleton: FunctionComponent<SnapUISkeletonProps> = ({
 }) => {
   return (
     <Skeleton
-      width={width || '100%'}
-      height={height || 22}
+      width={width}
+      height={height}
       borderRadius={
         borderRadius
           ? mapSnapBorderRadiusToExtensionBorderRadius(borderRadius)

@@ -34,7 +34,7 @@ import { SnapDelineator } from '../snaps/snap-delineator';
 import { SnapUIAddress } from '../snaps/snap-ui-address';
 import { SnapUIAvatar } from '../snaps/snap-ui-avatar';
 import { SnapUIBanner } from '../snaps/snap-ui-banner';
-import { SnapUISkeleton } from '../snaps/snaps-ui-skeleton';
+import { SnapUISkeleton } from '../snaps/snap-ui-skeleton';
 import { SnapUIButton } from '../snaps/snap-ui-button';
 import { SnapUICard } from '../snaps/snap-ui-card';
 import { SnapUICheckbox } from '../snaps/snap-ui-checkbox';
