@@ -526,7 +526,7 @@ export const getValidationErrors = createDeepEqualSelector(
         fromTokenInputValue
           ? activeQuote.adjustedReturn.valueInCurrency.lt(
               new BigNumber(
-                BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+                1 - BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
               ).times(activeQuote.sentAmount.valueInCurrency),
             )
           : false,
