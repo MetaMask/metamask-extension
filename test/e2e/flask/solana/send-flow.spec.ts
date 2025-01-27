@@ -27,7 +27,7 @@ describe('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled and it shouldn`t',
         );
-        await driver.delay(3000); // Added because of https://github.com/MetaMask/snaps/issues/3019
+        await driver.delay(5000); // Added because of https://github.com/MetaMask/snaps/issues/3019
         await sendSolanaPage.setToAddress('2433asd');
         assert.equal(
           await sendSolanaPage.check_validationErrorAppears(
