@@ -32,9 +32,6 @@ describe('ExtensionStore', () => {
 
   afterEach(() => {
     jest.resetModules();
-    jest.clearAllMocks();
-    browser.storage.local =
-      undefined as unknown as browser.Storage.LocalStorageArea;
   });
   describe('constructor', () => {
     it('sets isSupported property to false when browser does not support local storage', () => {
