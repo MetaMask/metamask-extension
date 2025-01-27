@@ -128,7 +128,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  *
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
-describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
+describe('Simple Send Security Alert - Blockaid', function () {
   it('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
