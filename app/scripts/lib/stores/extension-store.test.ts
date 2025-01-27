@@ -37,27 +37,27 @@ describe('ExtensionStore', () => {
       undefined as unknown as browser.Storage.LocalStorageArea;
   });
   describe('constructor', () => {
-    it('should set isSupported property to false when browser does not support local storage', () => {
+    it('sets isSupported property to false when browser does not support local storage', () => {
       const localStore = setup({ localMock: false });
 
       expect(localStore.isSupported).toBe(false);
     });
 
-    it('should set isSupported property to true when browser supports local storage', () => {
+    it('sets isSupported property to true when browser supports local storage', () => {
       const localStore = setup();
       expect(localStore.isSupported).toBe(true);
     });
   });
 
   describe('set', () => {
-    it('should throw an error if called in a browser that does not support local storage', async () => {
+    it('throws an error if called in a browser that does not support local storage', async () => {
       const localStore = setup({ localMock: false });
       await expect(() => localStore.set(MOCK_STATE)).rejects.toThrow(
         'Metamask- cannot persist state to local store as this browser does not support this action',
       );
     });
 
-    it('should not throw if passed a valid argument and metadata has been set', async () => {
+    it('throws an error if passed a valid argument and metadata has been set', async () => {
       const setMock = jest.fn();
 
       const localStore = setup({ localMock: { set: setMock } });
@@ -66,7 +66,7 @@ describe('ExtensionStore', () => {
       }).not.toThrow();
     });
 
-    it('should call the browser storage.local.set method', async () => {
+    it('calls the browser storage.local.set method', async () => {
       const setMock = jest.fn();
       const localStore = setup({ localMock: { set: setMock } });
 
@@ -77,13 +77,13 @@ describe('ExtensionStore', () => {
   });
 
   describe('get', () => {
-    it('should return null if called in a browser that does not support local storage', async () => {
+    it('returns null if called in a browser that does not support local storage', async () => {
       const localStore = setup({ localMock: false });
       const result = await localStore.get();
       expect(result).toBe(null);
     });
 
-    it('should return state returned by the browser storage.local.get method', async () => {
+    it('returns state returned by the browser storage.local.get method', async () => {
       const getMock = jest.fn().mockResolvedValue(MOCK_STATE);
       const localStore = setup({ localMock: { get: getMock } });
 
