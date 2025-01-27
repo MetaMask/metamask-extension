@@ -171,12 +171,11 @@ export const mapSnapBorderRadiusToExtensionBorderRadius = (
 ): BorderRadius => {
   switch (snapBorderRadius) {
     case 'none':
+    default:
       return BorderRadius.none;
     case 'medium':
       return BorderRadius.MD;
     case 'full':
       return BorderRadius.full;
-    default:
-      return BorderRadius.none;
   }
 };
