@@ -165,12 +165,12 @@ export function validateAddEthereumChainParams(params) {
  * @param {string} chainId - The chainId being switched to.
  * @param {string} networkClientId - The network client being switched to.
  * @param {object} hooks - The hooks object.
- * @param {boolean} hooks.isAddFlow - The boolean determining if this call originates from wallet_addEthereumChain.
+ * @param {boolean} [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
  * @param {Function} hooks.requestPermittedChainsPermissionForOrigin - The callback to request a new permittedChains-equivalent CAIP-25 permission.
  * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
- * @returns a null response on success or an error if user rejects an approval when isAddFlow is false or on unexpected errors.
+ * @returns a null response on success or an error if user rejects an approval when autoApprove is false or on unexpected errors.
  */
 export async function switchChain(
   response,
@@ -178,7 +178,7 @@ export async function switchChain(
   chainId,
   networkClientId,
   {
-    isAddFlow,
+    autoApprove,
     setActiveNetwork,
     getCaveat,
     requestPermittedChainsPermissionForOrigin,
@@ -197,13 +197,13 @@ export async function switchChain(
       if (!ethChainIds.includes(chainId)) {
         await requestPermittedChainsPermissionIncrementalForOrigin({
           chainId,
-          autoApprove: isAddFlow,
+          autoApprove,
         });
       }
     } else {
       await requestPermittedChainsPermissionForOrigin({
         chainId,
-        autoApprove: isAddFlow,
+        autoApprove,
       });
     }
 
