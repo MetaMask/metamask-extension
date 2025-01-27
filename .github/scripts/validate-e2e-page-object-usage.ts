@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { execSync } from 'child_process';
 import { filterE2eChangedFiles } from '../../../test/e2e/changedFilesUtil';
-import { downloadCircleCiArtifact, readFileContent, sleep } from './utils';
+import { downloadCircleCiArtifact, readFileContent, sleep } from '../scripts/utils/utils';
 
 async function verifyE2ePageObjectsUsage() {
     let e2eFiles: string[];
@@ -23,7 +23,7 @@ async function verifyE2ePageObjectsUsage() {
                 console.log(`Downloading artifact: Attempt ${attempts + 1}/${maxAttempts}`);
 
                 const outputDir = `${artifactPath}/changed-files.txt`;
-                downloadCircleCiArtifact(branch, headCommitHash, artifactName, outputDir, jobName); // Pass the job name
+                await downloadCircleCiArtifact(branch, headCommitHash, artifactName, outputDir, jobName); // Pass the job name
 
                 changedFilesContent = readFileContent(outputDir);
 

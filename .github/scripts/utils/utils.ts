@@ -12,35 +12,47 @@ const repository = process.env.REPOSITORY;
  * @param outputFilePath - The path to save the downloaded artifact.
  * @param jobName - The name of the job that produced the artifact.
  */
-export function downloadCircleCiArtifact(branch: string, headCommitHash: string, artifactName: string, outputFilePath: string, jobName: string): void {
-    // Get the pipeline ID for the current branch
+export async function downloadCircleCiArtifact(branch: string, headCommitHash: string, artifactName: string, outputFilePath: string, jobName: string): Promise<void> {
     console.log('Branch', branch);
     console.log('Commit', headCommitHash);
-    const pipelineId = execSync(
-        `curl --silent "https://circleci.com/api/v2/project/gh/${owner}/${repository}/pipeline?branch=${branch}" | jq --arg head_commit_hash "${headCommitHash}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first | .id'`
-    ).toString().trim();
+
+    // Get the pipeline ID for the current branch
+    const pipelineResponse = await fetch(`https://circleci.com/api/v2/project/gh/${owner}/${repository}/pipeline?branch=${branch}`);
+    const pipelineData = await pipelineResponse.json();
+    const pipelineId = pipelineData.items.find((item: any) => item.vcs.revision === headCommitHash)?.id;
     console.log('Pipeline ID', pipelineId);
 
+    if (!pipelineId) {
+        throw new Error('Pipeline ID not found');
+    }
+
     // Get the workflow ID for the pipeline
-    const workflowId = execSync(
-        `curl --silent "https://circleci.com/api/v2/pipeline/${pipelineId}/workflow" | jq -r '.items[0].id'`
-    ).toString().trim();
+    const workflowResponse = await fetch(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`);
+    const workflowData = await workflowResponse.json();
+    const workflowId = workflowData.items[0]?.id;
     console.log('Workflow ID', workflowId);
 
-    // Get the job details for the specific job that produces artifacts
-    const jobDetails = execSync(
-        `curl --silent "https://circleci.com/api/v2/workflow/${workflowId}/job" | jq --arg job_name "${jobName}" -r '.items[] | select(.name == $job_name)'`
-    ).toString();
-    console.log('job Details', jobDetails);
+    if (!workflowId) {
+        throw new Error('Workflow ID not found');
+    }
 
-    const jobId = JSON.parse(jobDetails).id;
-    console.log('job ID', jobId);
+    // Get the job details for the specific job that produces artifacts
+    const jobResponse = await fetch(`https://circleci.com/api/v2/workflow/${workflowId}/job`);
+    const jobData = await jobResponse.json();
+    const jobDetails = jobData.items.find((item: any) => item.name === jobName);
+    console.log('Job Details', jobDetails);
+
+    if (!jobDetails) {
+        throw new Error('Job details not found');
+    }
+
+    const jobId = jobDetails.id;
+    console.log('Job ID', jobId);
 
     // Get the artifact URL
-    const artifactList = execSync(
-        `curl --silent "https://circleci.com/api/v2/project/gh/${OWNER}/${REPOSITORY}/${jobId}/artifacts"`
-    ).toString();
-    const artifact = JSON.parse(artifactList).items.find((item: any) => item.path.includes(artifactName));
+    const artifactResponse = await fetch(`https://circleci.com/api/v2/project/gh/${owner}/${repository}/${jobId}/artifacts`);
+    const artifactData = await artifactResponse.json();
+    const artifact = artifactData.items.find((item: any) => item.path.includes(artifactName));
 
     if (!artifact) {
         throw new Error(`Artifact ${artifactName} not found`);
@@ -49,7 +61,9 @@ export function downloadCircleCiArtifact(branch: string, headCommitHash: string,
     const artifactUrl = artifact.url;
 
     // Download the artifact
-    execSync(`curl --silent --location "${artifactUrl}" --output "${outputFilePath}"`);
+    const artifactDownloadResponse = await fetch(artifactUrl);
+    const artifactBuffer = await artifactDownloadResponse.buffer();
+    fs.writeFileSync(outputFilePath, artifactBuffer);
 
     if (!fs.existsSync(outputFilePath)) {
         throw new Error(`Failed to download artifact to ${outputFilePath}`);
