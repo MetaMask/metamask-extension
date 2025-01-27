@@ -1158,11 +1158,12 @@ export default function ReviewQuote({
     null,
     false,
   );
-  const adjustedReturnValue = destinationTokenFiatAmount && rawNetworkFees
-    ? new BigNumber(destinationTokenFiatAmount).minus(
-        new BigNumber(rawNetworkFees)
-      )
-    : null;
+  const adjustedReturnValue =
+    destinationTokenFiatAmount && rawNetworkFees
+      ? new BigNumber(destinationTokenFiatAmount).minus(
+          new BigNumber(rawNetworkFees),
+        )
+      : null;
   const isEstimatedReturnLow =
     sourceTokenFiatAmount && adjustedReturnValue
       ? adjustedReturnValue.lt(
