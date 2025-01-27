@@ -169,12 +169,14 @@ export const mapToExtensionCompatibleColor = (color: string) => {
 export const mapSnapBorderRadiusToExtensionBorderRadius = (
   snapBorderRadius: string | undefined,
 ): BorderRadius => {
-  const backgroundColorMapping: { [key: string]: BorderRadius } = {
-    none: BorderRadius.none,
-    medium: BorderRadius.MD,
-    full: BorderRadius.full,
-  };
-  return snapBorderRadius
-    ? backgroundColorMapping[snapBorderRadius]
-    : BorderRadius.none;
+  switch (snapBorderRadius) {
+    case 'none':
+      return BorderRadius.none;
+    case 'medium':
+      return BorderRadius.MD;
+    case 'full':
+      return BorderRadius.full;
+    default:
+      return BorderRadius.none;
+  }
 };
