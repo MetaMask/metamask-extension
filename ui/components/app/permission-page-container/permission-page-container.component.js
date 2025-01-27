@@ -4,26 +4,30 @@ import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
+import {
+  Caip25EndowmentPermissionName,
+  getPermittedEthChainIds,
+} from '@metamask/multichain';
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
-import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
+
 import {
   BackgroundColor,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-// eslint-disable-next-line import/no-restricted-paths
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import {
+  getRequestedSessionScopes,
+  getCaip25PermissionsResponse,
+} from '../../../pages/permissions-connect/connect-page/utils';
+import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
@@ -47,6 +51,7 @@ export default class PermissionPageContainer extends Component {
     }),
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
+    defaultAccountAddress: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -141,25 +146,26 @@ export default class PermissionPageContainer extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       selectedAccounts,
+      defaultAccountAddress,
     } = this.props;
 
-    const approvedAccounts = selectedAccounts.map(
-      (selectedAccount) => selectedAccount.address,
-    );
+    const approvedAccounts =
+      selectedAccounts.length > 0
+        ? selectedAccounts.map((selectedAccount) => selectedAccount.address)
+        : [defaultAccountAddress];
 
-    const permittedChainsPermission =
-      _request.permissions?.[PermissionNames.permittedChains];
-    const approvedChainIds = permittedChainsPermission?.caveats?.find(
-      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-    )?.value;
+    const requestedSessionsScopes = getRequestedSessionScopes(
+      _request.permission,
+    );
+    const approvedChainIds = getPermittedEthChainIds(requestedSessionsScopes);
 
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      ...(_request.permissions?.eth_accounts && { approvedAccounts }),
-      ...(_request.permissions?.[PermissionNames.permittedChains] && {
+      approvedSessionScopes: getCaip25PermissionsResponse(
+        approvedAccounts,
         approvedChainIds,
-      }),
+      ),
     };
 
     if (Object.keys(request.permissions).length > 0) {
@@ -171,7 +177,7 @@ export default class PermissionPageContainer extends Component {
 
   onLeftFooterClick = () => {
     const requestedPermissions = this.getRequestedPermissions();
-    if (requestedPermissions[PermissionNames.permittedChains] === undefined) {
+    if (requestedPermissions[Caip25EndowmentPermissionName] === undefined) {
       this.goBack();
     } else {
       this.onCancel();
@@ -201,7 +207,7 @@ export default class PermissionPageContainer extends Component {
     };
 
     const footerLeftActionText = requestedPermissions[
-      PermissionNames.permittedChains
+      Caip25EndowmentPermissionName
     ]
       ? this.context.t('cancel')
       : this.context.t('back');

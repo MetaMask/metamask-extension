@@ -3,6 +3,7 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { Caip25EndowmentPermissionName } from '@metamask/multichain';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -13,6 +14,7 @@ import {
   getSnapsInstallPrivacyWarningShown,
   getRequestType,
   getTargetSubjectMetadata,
+  getLatestPendingPermissionFromOrigin,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
@@ -54,13 +56,21 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
-  const isRequestingAccounts = Boolean(
-    permissionsRequest?.permissions?.eth_accounts,
-  );
-
   const { metadata = {} } = permissionsRequest || {};
   const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
+
+  const lastPendingPermission = getLatestPendingPermissionFromOrigin(
+    state,
+    origin,
+  );
+  const isLegacySwitchEthChainRequest =
+    lastPendingPermission?.method === 'wallet_switchEthereumChain';
+
+  const isRequestingAccounts = Boolean(
+    permissionsRequest?.permissions?.[Caip25EndowmentPermissionName] &&
+      !isLegacySwitchEthChainRequest,
+  );
 
   const targetSubjectMetadata = getTargetSubjectMetadata(state, origin) ?? {
     name: getURLHostName(origin) || origin,
