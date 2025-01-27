@@ -152,6 +152,7 @@ export async function fetchBridgeQuotes(
     insufficientBal: request.insufficientBal ? 'true' : 'false',
     resetApproval: request.resetApproval ? 'true' : 'false',
     aggIds: isMultichainRequest(request) ? 'lifi' : 'lifi,squid,socket',
+    destWalletAddress: request.destWalletAddress,
   });
   const url = `${BRIDGE_API_BASE_URL}/getQuote?${queryParams}`;
   const quotes = await fetchWithCache({

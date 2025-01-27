@@ -143,7 +143,7 @@ export default function configureStore(preloadedState: any) {
         immutableCheck: false,
       }).concat((store: any) => (next: any) => (action: any) => {
         console.groupCollapsed(action.type);
-        console.log('=====bridgeState', store.getState().metamask.bridgeState);
+        console.log('=====', store.getState().metamask);
         const result = next(action);
         console.log('=====bridge', store.getState().bridge);
         console.groupEnd(action.type);

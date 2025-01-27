@@ -8,16 +8,21 @@ import {
   addTransaction,
   updateTransaction,
   addTransactionAndWaitForPublish,
+  bridgeMultichainTransaction,
 } from '../../../store/actions';
 import {
   getHexMaxGasLimit,
   getTxGasEstimates,
 } from '../../../ducks/bridge/utils';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import {
+  checkNetworkAndAccountSupports1559,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import type { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -88,5 +93,30 @@ export default function useHandleTx() {
     return txMeta;
   };
 
-  return { handleTx };
+  const selectedAccount = useMultichainSelector(getSelectedInternalAccount);
+
+  const handleSolanaTx = async ({
+    txType,
+    trade,
+    fieldsToAddToTxMeta,
+  }: {
+    txType: TransactionType.bridge;
+    trade: string;
+    fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
+  }) => {
+    const res = await bridgeMultichainTransaction(
+      selectedAccount.metadata.snap.id,
+      {
+        account: selectedAccount.id,
+        scope: selectedAccount.options.scope,
+        base64EncodedTransactionMessage: trade,
+      },
+    );
+    console.log('=======res', res);
+    // await dispatch(setDefaultHomeActiveTabName('activity'));
+    await forceUpdateMetamaskState(dispatch);
+
+    return {};
+  };
+  return { handleTx, handleSolanaTx };
 }

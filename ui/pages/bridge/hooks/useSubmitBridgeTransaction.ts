@@ -15,7 +15,12 @@ import {
 } from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
-import { getSelectedAddress, isHardwareWallet } from '../../../selectors';
+import {
+  getSelectedAddress,
+  getMemoizedUnapprovedTemplatedConfirmations,
+  getSelectedInternalAccount,
+  isHardwareWallet,
+} from '../../../selectors';
 import { getQuoteRequest } from '../../../ducks/bridge/selectors';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
@@ -31,6 +36,8 @@ import {
   MetricsBackgroundState,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
+import { getMultichainIsSolana } from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import useAddToken from './useAddToken';
 import useHandleApprovalTx, {
   APPROVAL_TX_ERROR,
@@ -84,9 +91,41 @@ export default function useSubmitBridgeTransaction() {
   const selectedAddress = useSelector(getSelectedAddress);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
+  const isSolana = useSelector(getMultichainIsSolana);
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
+  const selectedAccount = useMultichainSelector(getSelectedInternalAccount);
+  // Navigate to confirmation page on submit
+  // We don't need this since only one approval is required
+  /*
+  useEffect(() => {
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => {
+        return (
+          approval.type === 'snap_dialog' &&
+          selectedAccount.metadata.snap &&
+          selectedAccount.metadata.snap.id === approval.origin &&
+          isMultichainWalletSnap(selectedAccount.metadata.snap.id)
+        );
+      },
+    );
+
+    if (templatedSnapApproval) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+    }
+  }, [unapprovedTemplatedConfirmations, history, selectedAccount]);
+  */
+
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
+    if (isSolana) {
+      console.log('=======submitting this trade', quoteResponse.trade);
+      await handleBridgeTx({ quoteResponse, approvalTxId: undefined });
+      // TODO fetch the tx status afterwards and mabe show the tx in the activity tab
+      return;
+    }
     if (hardwareWalletUsed) {
       history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }

@@ -128,7 +128,7 @@ export type Quote = {
 export type QuoteResponse = {
   quote: Quote;
   approval: TxData | null;
-  trade: TxData;
+  trade: TxData | string;
   estimatedProcessingTimeInSeconds: number;
 };
 
