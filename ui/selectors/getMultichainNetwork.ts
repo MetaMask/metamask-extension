@@ -7,7 +7,7 @@ import {
   getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from './accounts';
-import { getMultichainNetworkProviders } from './getMultichainNetworkProviders';
+import { getMultichainNetworkProviders } from './multichain-core';
 import { getMultichainIsEvm } from './getMultichainIsEvm';
 import type {
   MultichainState,

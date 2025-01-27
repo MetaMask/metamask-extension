@@ -3,7 +3,7 @@ import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { getSelectedInternalAccount } from './accounts';
 import { getSelectedAccountCachedBalance } from './selectors';
-import { getMultichainBalances } from './getMultichainBalances';
+import { getMultichainBalances } from './multichain-core';
 import type { MultichainState } from './multichain.types';
 import { getMultichainCurrentNetwork } from './getMultichainCurrentNetwork';
 import { getMultichainIsEvm } from './getMultichainIsEvm';

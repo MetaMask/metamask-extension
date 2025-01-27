@@ -42,7 +42,7 @@ import { getMultichainProviderConfig } from './getMultichainProviderConfig';
 import { MultichainState } from './multichain.types';
 import { getMultichainIsEvm } from './getMultichainIsEvm';
 import { getMultichainSelectedAccountCachedBalance } from './getMultichainSelectedAccountCachedBalance';
-import { getMultichainNetworkProviders } from './getMultichainNetworkProviders';
+import { getMultichainNetworkProviders } from './multichain-core';
 import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
 type TestState = MultichainState &

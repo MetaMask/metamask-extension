@@ -11,8 +11,10 @@ import {
   getSubjectMetadata,
 } from './accounts-core';
 import { getInternalAccounts, getSelectedInternalAccount } from './accounts';
-import { getMultichainBalances } from './getMultichainBalances';
-import { getMultichainNetworkProviders } from './getMultichainNetworkProviders';
+import {
+  getMultichainBalances,
+  getMultichainNetworkProviders,
+} from './multichain-core';
 
 /**
  * Get MetaMask accounts, including account name and balance.
