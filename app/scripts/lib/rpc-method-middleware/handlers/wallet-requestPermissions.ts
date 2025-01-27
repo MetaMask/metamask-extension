@@ -16,11 +16,17 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/multichain';
-import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  Hex,
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';
+import { NetworkClientId } from '@metamask/network-controller';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -35,6 +41,7 @@ export const requestPermissionsHandler = {
     requestPermissionsForOrigin: true,
     requestCaip25ApprovalForOrigin: true,
     grantPermissionsForOrigin: true,
+    findNetworkClientIdByChainId: true,
   },
 };
 
@@ -48,6 +55,34 @@ type GrantedPermissions = Awaited<
 >[0];
 
 /**
+ * Validates the networks associated with a caveat. Ensures that
+ * the networks value is an array of valid chain IDs.
+ *
+ * @param chainIdsForCaveat - The list of chain IDs to validate.
+ * @param findNetworkClientIdByChainId - Function to find network client ID by chain ID.
+ * @throws {Error} If the chainIdsForCaveat is not a non-empty array of valid chain IDs.
+ */
+function validateCaveatNetworks(
+  chainIdsForCaveat: Hex[],
+  findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId,
+) {
+  if (chainIdsForCaveat.length === 0) {
+    return;
+  }
+
+  chainIdsForCaveat.forEach((chainId) => {
+    try {
+      findNetworkClientIdByChainId(chainId);
+    } catch (e) {
+      console.error(e);
+      throw new Error(
+        `${PermissionNames.permittedChains} error: Received unrecognized chainId: "${chainId}". Please try adding the network first via wallet_addEthereumChain.`,
+      );
+    }
+  });
+}
+
+/**
  * Request Permissions implementation to be used in JsonRpcEngine middleware.
  *
  * @param req - The JsonRpcEngine request
@@ -59,6 +94,7 @@ type GrantedPermissions = Awaited<
  * @param options.requestCaip25ApprovalForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
  * @param options.grantPermissionsForOrigin - A hook that grants permission for the approved permissions for the origin.
  * @param options.requestPermissionsForOrigin - A hook that requests permissions for the origin.
+ * @param options.findNetworkClientIdByChainId - A hook that finds network client id for specific chain.
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
@@ -71,6 +107,7 @@ async function requestPermissionsImplementation(
     requestPermissionsForOrigin,
     requestCaip25ApprovalForOrigin,
     grantPermissionsForOrigin,
+    findNetworkClientIdByChainId,
   }: {
     getAccounts: () => string[];
     requestPermissionsForOrigin: (
@@ -85,6 +122,7 @@ async function requestPermissionsImplementation(
         Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
       >;
     };
+    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
   },
 ) {
   const { params } = req;
@@ -94,12 +132,30 @@ async function requestPermissionsImplementation(
   }
 
   const [requestedPermissions] = params;
+
+  /**
+   * Before migrating CAIP-25 permission validation into factory {@link https://github.com/MetaMask/MetaMask-planning/issues/4017}
+   * We should have validation of caveat networks done at this level, otherwise, downstream, a call is made to `ApprovalController.addAndShowApprovalRequest`
+   * Which could potentially throw an unhandled exception that manifests in the UI (if a chain that is not setup in wallet is requested)
+   * issue: {@link https://github.com/MetaMask/MetaMask-planning/issues/4014}
+   */
+  const requestedChainIds =
+    requestedPermissions[PermissionNames.permittedChains]?.caveats?.find(
+      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+    )?.value ?? [];
+
+  validateCaveatNetworks(
+    requestedChainIds as Hex[],
+    findNetworkClientIdByChainId,
+  );
+
   const caip25EquivalentPermissions: Partial<
     Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
   > = pick(requestedPermissions, [
     RestrictedMethods.eth_accounts,
     PermissionNames.permittedChains,
   ]);
+
   delete requestedPermissions[RestrictedMethods.eth_accounts];
   delete requestedPermissions[PermissionNames.permittedChains];
 
