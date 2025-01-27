@@ -3050,10 +3050,7 @@ export default class MetamaskController extends EventEmitter {
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
             const networkClientId =
               this.networkController.findNetworkClientIdByChainId(chains[0]);
-            this.selectedNetworkController.setNetworkClientIdForDomain(
-              origin,
-              networkClientId,
-            );
+            this.setNetworkClientIdForDomain(origin, networkClientId)
             this.networkController.setActiveNetwork(networkClientId);
           }
         }
@@ -3594,12 +3591,7 @@ export default class MetamaskController extends EventEmitter {
       setActiveNetworkConfigurationId: (networkConfigurationId) => {
         this.networkController.setActiveNetwork(networkConfigurationId);
       },
-      setNetworkClientIdForDomain: (origin, networkClientId) => {
-        return this.selectedNetworkController.setNetworkClientIdForDomain(
-          origin,
-          networkClientId,
-        );
-      },
+      setNetworkClientIdForDomain: this.setNetworkClientIdForDomain.bind(this),
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
       addNetwork: this.networkController.addNetwork.bind(
@@ -5515,6 +5507,16 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  async setNetworkClientIdForDomain(origin, networkClientId) {
+    if(!this.networkController.state.networksMetadata[networkClientId]) {
+      await this.networkController.lookupNetwork(networkClientId)
+    }
+    const status = this.networkController.state.networksMetadata[networkClientId]?.status
+    if(status === NetworkStatus.Available) {
+      this.selectedNetworkController.setNetworkClientIdForDomain(origin, networkClientId)
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
@@ -6361,7 +6363,7 @@ export default class MetamaskController extends EventEmitter {
               Caip25EndowmentPermissionName,
             )
           ) {
-            this.selectedNetworkController.setNetworkClientIdForDomain(
+            this.setNetworkClientIdForDomain(
               origin,
               networkClientId,
             );
