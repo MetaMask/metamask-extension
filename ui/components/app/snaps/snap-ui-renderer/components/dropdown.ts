@@ -12,6 +12,7 @@ export const dropdown: UIComponentFactory<DropdownElement> = ({
   const options = children.map((child) => ({
     value: child.props.value,
     name: child.props.children,
+    disabled: child.props.disabled,
   }));
 
   return {
