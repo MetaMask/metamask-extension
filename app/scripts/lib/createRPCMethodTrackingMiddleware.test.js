@@ -113,7 +113,6 @@ const createHandler = (opts) =>
     globalRateLimitMaxAmount: 0,
     appStateController,
     metaMetricsController,
-    isRedesignedConfirmationsDeveloperEnabled: () => false,
     ...opts,
   });
 
@@ -213,20 +212,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to true', () => {
-    const originalEnableConfirmationRedesign =
-      process.env.ENABLE_CONFIRMATION_REDESIGN;
-
     beforeEach(() => {
       metaMetricsController.setParticipateInMetaMetrics(true);
-    });
-
-    beforeAll(() => {
-      process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
-    });
-
-    afterAll(() => {
-      process.env.ENABLE_CONFIRMATION_REDESIGN =
-        originalEnableConfirmationRedesign;
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
