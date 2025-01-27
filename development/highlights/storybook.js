@@ -1,36 +1,42 @@
 const path = require('path');
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
-const fs = require('fs');
 const dependencyTree = require('dependency-tree');
-
-const stories = fs.readFileSync(
-  path.join(__dirname, '..', '..', 'storybook-build', 'stories.json'),
-  'utf8',
-);
 
 const cwd = process.cwd();
 const resolutionCache = {};
-// 1. load stories
-// 2. load list per story
-// 3. filter against files
+
 module.exports = {
   getHighlights,
   getHighlightAnnouncement,
 };
 
-async function getHighlightAnnouncement({ changedFiles, artifactBase }) {
+async function getHighlightAnnouncement({ changedFiles, hostUrl }) {
   const highlights = await getHighlights({ changedFiles });
   if (!highlights.length) {
-    return null;
+    return '';
   }
+
+  const storiesResponse = await fetch(
+    `${hostUrl}/storybook-build/stories.json`,
+  );
+  if (!storiesResponse.ok) {
+    throw new Error(`Failed to fetch ${hostUrl}/storybook-build/stories.json`);
+  }
+  const storiesBody = await storiesResponse.json();
+  const stories = Object.values(storiesBody.stories);
+
   const highlightsBody = highlights
-    .map((entry) => `\n- [${entry}](${urlForStoryFile(entry, artifactBase)})`)
+    .map(
+      (entry) => `\n- [${entry}](${urlForStoryFile(stories, entry, hostUrl)})`,
+    )
     .join('');
+
   const announcement = `<details>
     <summary>storybook</summary>
     ${highlightsBody}
   </details>\n\n`;
+
   return announcement;
 }
 
@@ -57,7 +63,6 @@ async function getLocalDependencyList(filename) {
   const list = dependencyTree
     .toList({
       filename,
-      // not sure what this does but its mandatory
       directory: cwd,
       webpackConfig: `.storybook/main.js`,
       // skip all dependencies
@@ -69,25 +74,25 @@ async function getLocalDependencyList(filename) {
   return list;
 }
 
-function urlForStoryFile(filename, artifactBase) {
-  const storyId = getStoryId(filename);
-  return `${artifactBase}/storybook/index.html?path=/story/${storyId}`;
+function urlForStoryFile(stories, filename, hostUrl) {
+  const storyId = getStoryId(stories, filename);
+  return `${hostUrl}/storybook-build/index.html?path=/story/${storyId}`;
 }
 
 /**
  * Get the ID for a story file.
  *
- * @param {fileName} string - The fileName to get the story id.
- * @returns The id of the story.
+ * @param {Array} stories - list of stories.
+ * @param {string} filename - filename to get the story id.
+ * @returns {string} The id of the story.
  */
 
-function getStoryId(fileName) {
-  const storiesArray = Object.values(stories.stories);
-  const foundStory = storiesArray.find((story) => {
-    return story.importPath.includes(fileName);
+function getStoryId(stories, filename) {
+  const foundStory = stories.find((story) => {
+    return story.importPath.includes(filename);
   });
   if (!foundStory) {
-    throw new Error(`story for ${fileName} not found`);
+    throw new Error(`story for ${filename} not found`);
   }
   return foundStory.id;
 }

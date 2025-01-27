@@ -1,27 +1,32 @@
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
+const github = require('@actions/github');
 const storybook = require('./storybook');
 
 module.exports = { getHighlights };
 
-async function getHighlights({ artifactBase }) {
-  let highlights = '';
-  // here we assume the PR base branch ("target") is `main` in lieu of doing
-  // a query against the github api which requires an access token
-  // see https://discuss.circleci.com/t/how-to-retrieve-a-pull-requests-base-branch-name-github/36911
-  const changedFiles = await getChangedFiles({ target: 'origin/main' });
-  console.log(`detected changed files vs main:`);
+async function getHighlights({ hostUrl }) {
+  const defaultBranch = github.context.payload.repository.default_branch;
+
+  if (!defaultBranch) {
+    throw new Error('Could not find default_branch in the event payload.');
+  }
+
+  const changedFiles = await getChangedFiles({
+    target: `origin/${defaultBranch}`,
+  });
+
+  console.log(`detected changed files vs ${defaultBranch}:`);
   for (const filename of changedFiles) {
     console.log(`  ${filename}`);
   }
+
   const announcement = await storybook.getHighlightAnnouncement({
     changedFiles,
-    artifactBase,
+    hostUrl,
   });
-  if (announcement) {
-    highlights += announcement;
-  }
-  return highlights;
+
+  return announcement;
 }
 
 async function getChangedFiles({ target }) {

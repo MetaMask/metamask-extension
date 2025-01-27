@@ -158,7 +158,7 @@ async function start() {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
+  const storybookUrl = `${HOST_URL}/storybook-build/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
   const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
@@ -366,7 +366,7 @@ async function start() {
   }
 
   try {
-    const highlights = await getHighlights({ artifactBase: BUILD_LINK_BASE });
+    const highlights = await getHighlights({ hostUrl: HOST_URL });
     if (highlights) {
       const highlightsBody = `### highlights:\n${highlights}\n`;
       commentBody += highlightsBody;
