@@ -62,6 +62,7 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  SAMPLE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -93,6 +94,7 @@ import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
+import { SamplePage } from '../../components/app/sample/sample-page';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -405,6 +407,7 @@ export default class Routes extends Component {
             component={ReviewPermissions}
             exact
           />
+          <Authenticated path={SAMPLE_ROUTE} component={SamplePage} />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
