@@ -203,70 +203,77 @@ export type ResetOnRestartStoresComposedState = {
   BridgeStatusController: { bridgeStatus: BridgeStatusState };
   EnsController: EnsControllerState;
   ApprovalController: ApprovalControllerState;
+};
+
+export type PersistedControllers = {
+  PPOMController: PPOMController;
+};
+
+export type ControllerPersistedState = {
   PPOMController: PPOMState;
 };
 
-export type StoreControllers = ResetOnRestartStores & {
-  AccountsController: AccountsController;
-  AppStateController: AppStateController;
-  AppMetadataController: AppMetadataController;
-  MultichainBalancesController: BalancesController;
-  TransactionController: TransactionController;
-  KeyringController: KeyringController;
-  PreferencesController: PreferencesController;
-  MetaMetricsController: MetaMetricsController;
-  MetaMetricsDataDeletionController: MetaMetricsDataDeletionController;
-  AddressBookController: AddressBookController;
-  CurrencyController: CurrencyRateController;
-  NetworkController: NetworkController;
-  AlertController: AlertController;
-  OnboardingController: OnboardingController;
-  PermissionController: PermissionController<
-    PermissionSpecificationConstraint,
-    CaveatConstraint
-  >;
-  PermissionLogController: PermissionLogController;
-  SubjectMetadataController: SubjectMetadataController;
-  AnnouncementController: AnnouncementController;
-  NetworkOrderController: NetworkOrderController;
-  AccountOrderController: AccountOrderController;
-  GasFeeController: GasFeeController;
-  TokenListController: TokenListController;
-  TokensController: TokensController;
-  TokenBalancesController: TokenBalancesController;
-  SmartTransactionsController: SmartTransactionsController;
-  NftController: NftController;
-  PhishingController: PhishingController;
-  SelectedNetworkController: SelectedNetworkController;
-  LoggingController: LoggingController;
-  MultichainRatesController: RatesController;
-  SnapController: SnapController;
-  CronjobController: CronjobController;
-  SnapsRegistry: JsonSnapsRegistry;
-  SnapInterfaceController: SnapInterfaceController;
-  SnapInsightsController: SnapInsightsController;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CustodyController: CustodyController;
-  InstitutionalFeaturesController: InstitutionalFeaturesController;
-  MmiConfigurationController: MmiConfigurationController;
-  ///: END:ONLY_INCLUDE_IF
-  NameController: NameController;
-  UserOperationController: UserOperationController;
-  // Notification Controllers
-  AuthenticationController: AuthenticationController.Controller;
-  UserStorageController: UserStorageController.Controller;
-  NotificationServicesController: NotificationServicesController.Controller;
-  NotificationServicesPushController: NotificationServicesPushController.Controller;
-  RemoteFeatureFlagController: RemoteFeatureFlagController;
-};
+export type StoreControllers = ResetOnRestartStores &
+  PersistedControllers & {
+    AccountsController: AccountsController;
+    AppStateController: AppStateController;
+    AppMetadataController: AppMetadataController;
+    MultichainBalancesController: BalancesController;
+    TransactionController: TransactionController;
+    KeyringController: KeyringController;
+    PreferencesController: PreferencesController;
+    MetaMetricsController: MetaMetricsController;
+    MetaMetricsDataDeletionController: MetaMetricsDataDeletionController;
+    AddressBookController: AddressBookController;
+    CurrencyController: CurrencyRateController;
+    NetworkController: NetworkController;
+    AlertController: AlertController;
+    OnboardingController: OnboardingController;
+    PermissionController: PermissionController<
+      PermissionSpecificationConstraint,
+      CaveatConstraint
+    >;
+    PermissionLogController: PermissionLogController;
+    SubjectMetadataController: SubjectMetadataController;
+    AnnouncementController: AnnouncementController;
+    NetworkOrderController: NetworkOrderController;
+    AccountOrderController: AccountOrderController;
+    GasFeeController: GasFeeController;
+    TokenListController: TokenListController;
+    TokensController: TokensController;
+    TokenBalancesController: TokenBalancesController;
+    SmartTransactionsController: SmartTransactionsController;
+    NftController: NftController;
+    PhishingController: PhishingController;
+    SelectedNetworkController: SelectedNetworkController;
+    LoggingController: LoggingController;
+    MultichainRatesController: RatesController;
+    SnapController: SnapController;
+    CronjobController: CronjobController;
+    SnapsRegistry: JsonSnapsRegistry;
+    SnapInterfaceController: SnapInterfaceController;
+    SnapInsightsController: SnapInsightsController;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    CustodyController: CustodyController;
+    InstitutionalFeaturesController: InstitutionalFeaturesController;
+    MmiConfigurationController: MmiConfigurationController;
+    ///: END:ONLY_INCLUDE_IF
+    NameController: NameController;
+    UserOperationController: UserOperationController;
+    // Notification Controllers
+    AuthenticationController: AuthenticationController.Controller;
+    UserStorageController: UserStorageController.Controller;
+    NotificationServicesController: NotificationServicesController.Controller;
+    NotificationServicesPushController: NotificationServicesPushController.Controller;
+    RemoteFeatureFlagController: RemoteFeatureFlagController;
+  };
 
-export type StoreControllersComposedState =
-  ResetOnRestartStoresComposedState & {
+export type StoreControllersComposedState = ResetOnRestartStoresComposedState &
+  ControllerPersistedState & {
     AccountsController: AccountsControllerState;
     AppStateController: AppStateControllerState;
     AppMetadataController: AppMetadataControllerState;
     MultichainBalancesController: BalancesControllerState;
-    TransactionController: TransactionControllerState;
     KeyringController: KeyringControllerState;
     PreferencesController: PreferencesControllerState;
     MetaMetricsController: MetaMetricsControllerState;
@@ -312,21 +319,26 @@ export type StoreControllersComposedState =
     RemoteFeatureFlagController: RemoteFeatureFlagControllerState;
   };
 
-export type MemStoreControllers = Omit<
-  StoreControllers,
-  'PhishingController' | 'TransactionController'
-> & {
-  TxController: TransactionController;
-  QueuedRequestController: QueuedRequestController;
+export type MemControllers = {
+  TransactionController: TransactionController;
 };
+
+export type ControllerMemState = {
+  TransactionController: TransactionControllerState;
+};
+
+export type MemStoreControllers = Omit<StoreControllers, 'PhishingController'> &
+  MemControllers & {
+    QueuedRequestController: QueuedRequestController;
+  };
 
 export type MemStoreControllersComposedState = Omit<
   StoreControllersComposedState,
-  'PhishingController' | 'TransactionController'
-> & {
-  TxController: TransactionControllerState;
-  QueuedRequestController: QueuedRequestControllerState;
-};
+  'PhishingController'
+> &
+  ControllerMemState & {
+    QueuedRequestController: QueuedRequestControllerState;
+  };
 
 export type BackgroundStateProxy = {
   isInitialized: boolean;
