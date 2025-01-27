@@ -707,9 +707,6 @@
   "transactionErrored": {
     "message": "ವಹಿವಾಟಿನಲ್ಲಿ ದೋಷ ಕಂಡುಬಂದಿದೆ."
   },
-  "transactionFee": {
-    "message": "ವಹಿವಾಟು ಶುಲ್ಕ"
-  },
   "transactionResubmitted": {
     "message": "$2 ನಲ್ಲಿ $1 ಗೆ ಏರಿದ ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟನ್ನು ಮರುಸಲ್ಲಿಸಲಾಗಿದೆ"
   },
