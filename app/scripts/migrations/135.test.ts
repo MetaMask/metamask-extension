@@ -18,7 +18,7 @@ describe('migration #135', () => {
     expect(newStorage.meta).toStrictEqual({ version: 135 });
   });
 
-  it('should set stx opt-in to true and migration flag when stx opt-in status is null', async () => {
+  it('should set stx opt-in to true and mark as migration-enabled when opt-in status is null', async () => {
     const oldStorage: VersionedData = {
       meta: { version: prevVersion },
       data: {
@@ -41,7 +41,7 @@ describe('migration #135', () => {
     ).toBe(true);
   });
 
-  it('should set stx opt-in to true and migration flag when stx opt-in status is undefined', async () => {
+  it('should set stx opt-in to true and mark as migration-enabled when opt-in status is undefined', async () => {
     const oldStorage: VersionedData = {
       meta: { version: prevVersion },
       data: {
@@ -60,7 +60,7 @@ describe('migration #135', () => {
     ).toBe(true);
   });
 
-  it('should set stx opt-in to true and migration flag when stx opt-in is false and no existing mainnet smart transactions', async () => {
+  it('should set stx opt-in to true and mark as migration-enabled when opt-in is false and no existing mainnet transactions', async () => {
     const oldStorage: VersionedData = {
       meta: { version: prevVersion },
       data: {
@@ -91,7 +91,7 @@ describe('migration #135', () => {
     ).toBe(true);
   });
 
-  it('should not change stx opt-in when stx opt-in is false but has existing smart transactions, but should set migration flag', async () => {
+  it('should preserve disabled stx state when user has transaction history', async () => {
     const oldStorage: VersionedData = {
       meta: { version: prevVersion },
       data: {
@@ -118,10 +118,10 @@ describe('migration #135', () => {
     expect(
       newStorage.data.PreferencesController?.preferences
         ?.smartTransactionsMigrationApplied,
-    ).toBe(true);
+    ).toBeUndefined();
   });
 
-  it('should not change stx opt-in when stx opt-in is already true, but should set migration flag', async () => {
+  it('should preserve existing stx enabled state', async () => {
     const oldStorage: VersionedData = {
       meta: { version: prevVersion },
       data: {
@@ -141,7 +141,7 @@ describe('migration #135', () => {
     expect(
       newStorage.data.PreferencesController?.preferences
         ?.smartTransactionsMigrationApplied,
-    ).toBe(true);
+    ).toBeUndefined();
   });
 
   it('should initialize preferences object if it does not exist', async () => {
@@ -161,7 +161,7 @@ describe('migration #135', () => {
     expect(
       newStorage.data.PreferencesController?.preferences
         ?.smartTransactionsMigrationApplied,
-    ).toBe(true);
+    ).toBeUndefined();
   });
 
   it('should capture exception if PreferencesController state is invalid', async () => {
