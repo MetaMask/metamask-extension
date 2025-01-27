@@ -6303,6 +6303,10 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
         requestPermittedChainsPermissionForOrigin: (options) =>
           this.requestPermittedChainsPermission({
             ...options,

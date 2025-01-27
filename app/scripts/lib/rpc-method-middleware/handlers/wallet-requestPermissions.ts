@@ -16,11 +16,17 @@ import {
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
 } from '@metamask/multichain';
-import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  Hex,
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';
+import { NetworkClientId } from '@metamask/network-controller';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -35,6 +41,7 @@ export const requestPermissionsHandler = {
     requestPermissionsForOrigin: true,
     requestCaip25ApprovalForOrigin: true,
     grantPermissionsForOrigin: true,
+    findNetworkClientIdByChainId: true,
   },
 };
 
@@ -48,6 +55,34 @@ type GrantedPermissions = Awaited<
 >[0];
 
 /**
+ * Validates the networks associated with a caveat. Ensures that
+ * the networks value is an array of valid chain IDs.
+ *
+ * @param chainIdsForCaveat - The list of chain IDs to validate.
+ * @param findNetworkClientIdByChainId - Function to find network client ID by chain ID.
+ * @throws {Error} If the chainIdsForCaveat is not a non-empty array of valid chain IDs.
+ */
+function validateCaveatNetworks(
+  chainIdsForCaveat: Hex[],
+  findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId,
+) {
+  if (chainIdsForCaveat.length === 0) {
+    return;
+  }
+
+  chainIdsForCaveat.forEach((chainId) => {
+    try {
+      findNetworkClientIdByChainId(chainId);
+    } catch (e) {
+      console.error(e);
+      throw new Error(
+        `${PermissionNames.permittedChains} error: Received unrecognized chainId: "${chainId}". Please try adding the network first via wallet_addEthereumChain.`,
+      );
+    }
+  });
+}
+
+/**
  * Request Permissions implementation to be used in JsonRpcEngine middleware.
  *
  * @param req - The JsonRpcEngine request
@@ -59,6 +94,7 @@ type GrantedPermissions = Awaited<
  * @param options.requestCaip25ApprovalForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
  * @param options.grantPermissionsForOrigin - A hook that grants permission for the approved permissions for the origin.
  * @param options.requestPermissionsForOrigin - A hook that requests permissions for the origin.
+ * @param options.findNetworkClientIdByChainId - A hook that finds network client id for specific chain.
  * @returns A promise that resolves to nothing
  */
 async function requestPermissionsImplementation(
@@ -71,6 +107,7 @@ async function requestPermissionsImplementation(
     requestPermissionsForOrigin,
     requestCaip25ApprovalForOrigin,
     grantPermissionsForOrigin,
+    findNetworkClientIdByChainId,
   }: {
     getAccounts: () => string[];
     requestPermissionsForOrigin: (
@@ -85,6 +122,7 @@ async function requestPermissionsImplementation(
         Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
       >;
     };
+    findNetworkClientIdByChainId: (chainId: Hex) => NetworkClientId;
   },
 ) {
   const { params } = req;
@@ -93,35 +131,24 @@ async function requestPermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
-  // TODO:
-  // In the past, working build/ release
-  // - Call to PermissionsController.validatePermissions is made BEFORE payload goes to UI
-  // - Which calls this.validateRequestedPermissions
-  // - Which then calls this.validatePermission(this.getPermissionSpecification(targetName) for ‘eth_accounts’ and ‘endowment:permitted-chains’
-  // - This will in turn call this.validateCaveat(caveat, origin, target) , which throws for ‘endowment:permitted-chains’
-  //     - "endowment:permitted-chains error: Received unrecognized chainId: "0xa86a". Please try adding the network first via wallet_addEthereumChain."
-
-  // Now, in the current build/ release of `main`,
-  // -  the call goes through `app/scripts/lib/rpc-method-middleware/handlers/wallet-requestPermissions.ts`
-  // - `requestPermissionsImplementation` from this file is called
-  // - This will call MetamaskController.requestCaip25Approval()
-  // - Which will call approvalController.addAndShowApprovalRequest (sends call to UI) (Meaning PermissionsController.validatePermissions will later be called AFTER
-  //   payload goes through UI)
-  //     - Only after approvalController.addAndShowApprovalRequest is the caveatValue formed and ready to be sent to PermissionsController
-  //     - Even in `refactor: connection flow to use caip25 format` branch (where we form the caveatValue before making call to ApprovalController),
-  //     if I call PermissionsController.validatePermissions with the newly formed request permissions, BEFORE making the call to ApprovalController, we are getting a
-  //     different error
-  //        - "endowment:caip25 error: Received scopeString value(s) for caveat of type "authorizedScopes" that are not supported by the wallet."
-
-  // So I believe the fix should be done in the Core repo, AFTER `refactor: connection flow to use caip25 format` branch is merged
-  // - Having the refactor merged in, makes our life easier because after refactor, we form caveatValue BEFORE calling ApprovalController,
-  //   therefore we can send this caveatValue to PermissionsController before calling ApprovalController
-  // - ApprovalController should be made to properly support caveat type “authorizedScopes”, and do a similar check to what was done for “endowment:permitted-chains
-  //   to decide a chainId was unrecognized
-  // - Hard to do it before we call MetamaskController.requestCaip25Approval(), because ApprovalController doesn’t seem to have support for
-  //   “endowment:permitted-chains” or “eth_accounts” anymore
-
   const [requestedPermissions] = params;
+
+  /**
+   * Before migrating CAIP-25 permission validation into factory {@link https://github.com/MetaMask/MetaMask-planning/issues/4017}
+   * We should have validation of caveat networks done at this level, otherwise, downstream, a call is made to `ApprovalController.addAndShowApprovalRequest`
+   * Which could potentially throw an unhandled exception that manifests in the UI (if a chain that is not setup in wallet is requested)
+   * issue: {@link https://github.com/MetaMask/MetaMask-planning/issues/4014}
+   */
+  const requestedChainIds =
+    requestedPermissions[PermissionNames.permittedChains]?.caveats?.find(
+      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+    )?.value ?? [];
+
+  validateCaveatNetworks(
+    requestedChainIds as Hex[],
+    findNetworkClientIdByChainId,
+  );
+
   const caip25EquivalentPermissions: Partial<
     Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
   > = pick(requestedPermissions, [
