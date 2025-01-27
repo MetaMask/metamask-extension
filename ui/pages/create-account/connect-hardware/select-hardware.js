@@ -67,10 +67,11 @@ export default class SelectHardware extends Component {
   };
 
   connect = async () => {
-    if (this.state.selectedDevice) {
+    const { selectedDevice } = this.state;
+    if (selectedDevice) {
       if (
-        (this.state.selectedDevice === HardwareDeviceNames.trezor ||
-          this.state.selectedDevice === HardwareDeviceNames.oneKey) &&
+        (selectedDevice === HardwareDeviceNames.trezor ||
+          selectedDevice === HardwareDeviceNames.oneKey) &&
         isUSBSupported
       ) {
         this.setState({
@@ -93,7 +94,7 @@ export default class SelectHardware extends Component {
         }
       }
 
-      this.props.connectToHardwareWallet(this.state.selectedDevice);
+      this.props.connectToHardwareWallet(selectedDevice);
     }
     return null;
   };
@@ -332,7 +333,7 @@ export default class SelectHardware extends Component {
       case HardwareDeviceNames.trezor:
         return this.renderTrezorTutorialSteps();
       case HardwareDeviceNames.oneKey:
-        return this.renderOnekeyTutorialSteps();
+        return this.renderOneKeyTutorialSteps();
       case HardwareDeviceNames.lattice:
         return this.renderLatticeTutorialSteps();
       case HardwareDeviceNames.qr:
@@ -600,7 +601,7 @@ export default class SelectHardware extends Component {
     );
   }
 
-  renderOnekeyTutorialSteps() {
+  renderOneKeyTutorialSteps() {
     const steps = [
       {
         asset: 'plug-in-wallet',
