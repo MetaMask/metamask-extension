@@ -93,6 +93,8 @@ async function requestPermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
+  // TODO: we could put a check here to see if chain is included in available chains, if not, ERROR
+
   const [requestedPermissions] = params;
   const caip25EquivalentPermissions: Partial<
     Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
