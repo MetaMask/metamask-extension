@@ -12,14 +12,16 @@ const setup = (
   options: { localMock?: { get?: unknown; set?: unknown } | false } = {},
 ) => {
   if (typeof options.localMock === 'undefined') {
-    browser.storage.local =
-      jest.fn() as unknown as browser.Storage.LocalStorageArea;
+    // @ts-expect-error Mock used just to spy on calls, doesn't implement API
+    jest.replaceProperty(browser.storage, 'local', jest.fn());
   } else if (options.localMock === false) {
-    browser.storage.local =
-      undefined as unknown as browser.Storage.LocalStorageArea;
+    const storageApi: Partial<typeof browser.storage> = { ...browser.storage};
+    delete storageApi.local;
+    // @ts-expect-error Intentionally incomplete to test behavior when API is missing
+    jest.replaceProperty(browser, 'storage', storageApi);
   } else {
-    browser.storage.local =
-      options.localMock as unknown as browser.Storage.LocalStorageArea;
+    // @ts-expect-error Incomplete mock, it just has the properties we call
+    jest.replaceProperty(browser.storage, 'local', options.localMock);
   }
   return new ExtensionStore();
 };
