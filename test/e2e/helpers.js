@@ -7,11 +7,13 @@ const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
+const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
+const AnvilSeeder = require('./seeder/anvil-seeder');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
@@ -43,7 +45,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
  * @typedef {object} Fixtures
  * @property {import('./webdriver/driver').Driver} driver - The driver number.
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
- * @property {Ganache | undefined} ganacheServer - The Ganache server.
+ * @property {string} localNodeServer - The local node server chosen ('ganache', 'anvil'...).
  * @property {Ganache | undefined} secondaryGanacheServer - The secondary Ganache server.
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
  * @property {Bundler} bundlerServer - The bundler server.
@@ -60,7 +62,9 @@ async function withFixtures(options, testSuite) {
   const {
     dapp,
     fixtures,
+    localNode = 'ganache',
     ganacheOptions,
+    anvilOptions,
     smartContract,
     driverOptions,
     dappOptions,
@@ -81,10 +85,7 @@ async function withFixtures(options, testSuite) {
   } = options;
 
   const fixtureServer = new FixtureServer();
-  let ganacheServer;
-  if (!disableGanache) {
-    ganacheServer = new Ganache();
-  }
+
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
@@ -100,22 +101,54 @@ async function withFixtures(options, testSuite) {
   let webDriver;
   let driver;
   let failed = false;
-  try {
-    if (!disableGanache) {
-      await ganacheServer.start(ganacheOptions);
-    }
-    let contractRegistry;
 
-    if (smartContract && !disableGanache) {
-      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+  let ganacheServer;
+  let anvilServer;
+
+  try {
+    switch (localNode) {
+      case 'ganache':
+        if (!disableGanache) {
+          ganacheServer = new Ganache();
+          await ganacheServer.start(ganacheOptions);
+        }
+        break;
+
+      case 'anvil':
+        anvilServer = new Anvil();
+        await anvilServer.start(anvilOptions);
+        break;
+
+      default:
+        throw new Error(
+          `Unsupported localNode: '${localNode}'. Cannot start the server.`,
+        );
+    }
+
+    let contractRegistry;
+    let seeder;
+
+    if (smartContract) {
+      switch (localNode) {
+        case 'ganache':
+          seeder = new GanacheSeeder(ganacheServer.getProvider());
+          break;
+
+        case 'anvil':
+          seeder = new AnvilSeeder(anvilServer.getProvider());
+          break;
+
+        default:
+          throw new Error(
+            `Unsupported localNode: '${localNode}'. Cannot deploy smart contracts.`,
+          );
+      }
       const contracts =
         smartContract instanceof Array ? smartContract : [smartContract];
       await Promise.all(
-        contracts.map((contract) =>
-          ganacheSeeder.deploySmartContract(contract),
-        ),
+        contracts.map((contract) => seeder.deploySmartContract(contract)),
       );
-      contractRegistry = ganacheSeeder.getContractRegistry();
+      contractRegistry = seeder.getContractRegistry();
     }
 
     await fixtureServer.start();
@@ -218,13 +251,14 @@ async function withFixtures(options, testSuite) {
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
-      driver: driverProxy ?? driver,
-      contractRegistry,
-      ganacheServer,
-      secondaryGanacheServer,
-      mockedEndpoint,
       bundlerServer,
+      contractRegistry,
+      driver: driverProxy ?? driver,
+      ganacheServer,
+      anvilServer,
+      mockedEndpoint,
       mockServer,
+      secondaryGanacheServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -306,6 +340,9 @@ async function withFixtures(options, testSuite) {
       await fixtureServer.stop();
       if (ganacheServer) {
         await ganacheServer.quit();
+      }
+      if (anvilServer) {
+        await anvilServer.quit();
       }
 
       if (ganacheOptions?.concurrent) {
@@ -593,17 +630,13 @@ const TEST_SEED_PHRASE_TWO =
  * or after a transaction is made.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {Ganache} [ganacheServer] - The Ganache server instance (optional).
+ * @param {Ganache | Anvil} [localNode] - The local server instance (optional).
  * @param {string} [address] - The address to check the balance for (optional).
  */
-const locateAccountBalanceDOM = async (
-  driver,
-  ganacheServer,
-  address = null,
-) => {
+const locateAccountBalanceDOM = async (driver, localNode, address = null) => {
   const balanceSelector = '[data-testid="eth-overview__primary-currency"]';
-  if (ganacheServer) {
-    const balance = await ganacheServer.getBalance(address);
+  if (localNode) {
+    const balance = await localNode.getBalance(address);
     await driver.waitForSelector({
       css: balanceSelector,
       text: `${balance} ETH`,
@@ -678,10 +711,10 @@ async function createWebSocketConnection(driver, hostname) {
   }
 }
 
-const logInWithBalanceValidation = async (driver, ganacheServer) => {
+const logInWithBalanceValidation = async (driver, localNode) => {
   await unlockWallet(driver);
   // Wait for balance to load
-  await locateAccountBalanceDOM(driver, ganacheServer);
+  await locateAccountBalanceDOM(driver, localNode);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
@@ -823,9 +856,9 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
+async function initBundler(bundlerServer, localNodeServer, usePaymaster) {
   try {
-    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+    const ganacheSeeder = new GanacheSeeder(localNodeServer.getProvider());
 
     await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
