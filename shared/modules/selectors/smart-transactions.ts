@@ -13,7 +13,7 @@ import {
 import { isProduction } from '../environment';
 import { getCurrentChainId, NetworkState } from './networks';
 
-type SmartTransactionsMetaMaskState = {
+export type SmartTransactionsMetaMaskState = {
   metamask: {
     preferences: {
       smartTransactionsOptInStatus?: boolean;

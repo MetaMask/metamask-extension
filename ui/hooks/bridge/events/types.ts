@@ -42,6 +42,6 @@ export type TradeData = {
 export type TxStatusData = {
   allowance_reset_transaction?: StatusTypes;
   approval_transaction?: StatusTypes;
-  source_transaction: StatusTypes;
+  source_transaction?: StatusTypes;
   destination_transaction?: StatusTypes;
 };

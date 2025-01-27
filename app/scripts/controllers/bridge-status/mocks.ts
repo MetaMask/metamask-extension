@@ -5,6 +5,7 @@ import {
   StatusTypes,
   ActionTypes,
   StartPollingForBridgeTxStatusArgsSerialized,
+  BridgeHistoryItem,
 } from '../../../../shared/types/bridge-status';
 
 export const MockStatusResponse = {
@@ -236,7 +237,14 @@ export const getMockStartPollingForBridgeTxStatusArgs = ({
     },
     approval: null,
     estimatedProcessingTimeInSeconds: 15,
-    sentAmount: { amount: '1.234', valueInCurrency: null },
+    sentAmount: { amount: '1.234', valueInCurrency: null, usd: null },
+    toTokenAmount: { amount: '1.234', valueInCurrency: null, usd: null },
+    totalNetworkFee: { amount: '1.234', valueInCurrency: null, usd: null },
+    totalMaxNetworkFee: { amount: '1.234', valueInCurrency: null, usd: null },
+    gasFee: { amount: '1.234', valueInCurrency: null, usd: null },
+    adjustedReturn: { valueInCurrency: null, usd: null },
+    swapRate: '1.234',
+    cost: { valueInCurrency: null, usd: null },
   },
   startTime: 1729964825189,
   slippagePercentage: 0,
@@ -250,7 +258,7 @@ export const MockTxHistory = {
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
-  } = {}) => ({
+  } = {}): Record<string, BridgeHistoryItem> => ({
     [txMetaId]: {
       txMetaId,
       quote: getMockQuote({ srcChainId, destChainId }),
@@ -261,6 +269,10 @@ export const MockTxHistory = {
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
       initialDestAssetBalance: undefined,
       pricingData: { amountSent: '1.234' },
+      status: MockStatusResponse.getPending({
+        srcChainId,
+      }),
+      hasApprovalTx: false,
     },
   }),
   getInit: ({
@@ -268,7 +280,7 @@ export const MockTxHistory = {
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
-  } = {}) => ({
+  } = {}): Record<string, BridgeHistoryItem> => ({
     [txMetaId]: {
       txMetaId,
       quote: getMockQuote({ srcChainId, destChainId }),
@@ -279,6 +291,10 @@ export const MockTxHistory = {
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
       initialDestAssetBalance: undefined,
       pricingData: { amountSent: '1.234' },
+      status: MockStatusResponse.getPending({
+        srcChainId,
+      }),
+      hasApprovalTx: false,
     },
   }),
   getPending: ({
@@ -287,7 +303,7 @@ export const MockTxHistory = {
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
-  } = {}) => ({
+  } = {}): Record<string, BridgeHistoryItem> => ({
     [txMetaId]: {
       txMetaId,
       quote: getMockQuote({ srcChainId, destChainId }),
@@ -302,6 +318,7 @@ export const MockTxHistory = {
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
       initialDestAssetBalance: undefined,
       pricingData: { amountSent: '1.234' },
+      hasApprovalTx: false,
     },
   }),
   getComplete: ({
@@ -310,18 +327,25 @@ export const MockTxHistory = {
     account = '0xaccount1',
     srcChainId = 42161,
     destChainId = 10,
-  } = {}) => ({
+  } = {}): Record<string, BridgeHistoryItem> => ({
     [txMetaId]: {
       txMetaId,
       quote: getMockQuote({ srcChainId, destChainId }),
       startTime: 1729964825189,
+      completionTime: 1736277625746,
       estimatedProcessingTimeInSeconds: 15,
       slippagePercentage: 0,
       account,
       status: MockStatusResponse.getComplete({ srcTxHash }),
       targetContractAddress: '0x23981fC34e69eeDFE2BD9a0a9fCb0719Fe09DbFC',
       initialDestAssetBalance: undefined,
-      pricingData: { amountSent: '1.234' },
+      pricingData: {
+        amountSent: '1.234',
+        amountSentInUsd: undefined,
+        quotedGasInUsd: undefined,
+        quotedReturnInUsd: undefined,
+      },
+      hasApprovalTx: false,
     },
   }),
 };

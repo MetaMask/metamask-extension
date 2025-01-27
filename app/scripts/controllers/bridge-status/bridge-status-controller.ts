@@ -173,6 +173,9 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
       slippagePercentage,
       pricingData: {
         amountSent: quoteResponse.sentAmount.amount,
+        amountSentInUsd: quoteResponse.sentAmount.usd ?? undefined,
+        quotedGasInUsd: quoteResponse.gasFee.usd ?? undefined,
+        quotedReturnInUsd: quoteResponse.toTokenAmount.usd ?? undefined,
       },
       initialDestAssetBalance,
       targetContractAddress,
@@ -186,6 +189,7 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
           txHash: statusRequest.srcTxHash,
         },
       },
+      hasApprovalTx: Boolean(quoteResponse.approval),
     };
     this.update((_state) => {
       _state.bridgeStatusState = {
@@ -235,30 +239,51 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
         srcTxHash,
       );
       const status = await fetchBridgeTxStatus(statusRequest);
+      const newBridgeHistoryItem = {
+        ...historyItem,
+        status,
+        completionTime:
+          status.status === StatusTypes.COMPLETE ||
+          status.status === StatusTypes.FAILED
+            ? Date.now()
+            : undefined, // TODO make this more accurate by looking up dest txHash block time
+      };
 
       // No need to purge these on network change or account change, TransactionController does not purge either.
       // TODO In theory we can skip checking status if it's not the current account/network
       // we need to keep track of the account that this is associated with as well so that we don't show it in Activity list for other accounts
       // First stab at this will not stop polling when you are on a different account
       this.update((_state) => {
-        const bridgeHistoryItem =
-          _state.bridgeStatusState.txHistory[bridgeTxMetaId];
-
         _state.bridgeStatusState = {
           ...bridgeStatusState,
           txHistory: {
             ...bridgeStatusState.txHistory,
-            [bridgeTxMetaId]: {
-              ...bridgeHistoryItem,
-              status,
-            },
+            [bridgeTxMetaId]: newBridgeHistoryItem,
           },
         };
       });
 
       const pollingToken = this.#pollingTokensByTxMetaId[bridgeTxMetaId];
-      if (status.status === StatusTypes.COMPLETE && pollingToken) {
+
+      if (
+        (status.status === StatusTypes.COMPLETE ||
+          status.status === StatusTypes.FAILED) &&
+        pollingToken
+      ) {
         this.stopPollingByPollingToken(pollingToken);
+
+        if (status.status === StatusTypes.COMPLETE) {
+          this.messagingSystem.publish(
+            `${BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionComplete`,
+            { bridgeHistoryItem: newBridgeHistoryItem },
+          );
+        }
+        if (status.status === StatusTypes.FAILED) {
+          this.messagingSystem.publish(
+            `${BRIDGE_STATUS_CONTROLLER_NAME}:bridgeTransactionFailed`,
+            { bridgeHistoryItem: newBridgeHistoryItem },
+          );
+        }
       }
     } catch (e) {
       console.log('Failed to fetch bridge tx status', e);
