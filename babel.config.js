@@ -5,7 +5,7 @@ module.exports = function (api) {
       strictMode: true,
     },
     targets: {
-      browsers: ['chrome >= 89', 'firefox >= 89'],
+      browsers: ['chrome >= 109', 'firefox >= 102'],
     },
     plugins: [
       // `browserify` is old and busted, and doesn't support `??=` (and other
