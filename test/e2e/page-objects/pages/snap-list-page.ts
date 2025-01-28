@@ -33,7 +33,7 @@ class SnapListPage {
   // this selector needs to be combined with snap name to be unique.
   private readonly snapListItem = '.snap-list-item';
 
-  private readonly defaultSnap = {
+  private readonly homePageSnap = {
     text: 'Home Page Example Snap',
     tag: 'p',
   };
@@ -88,13 +88,13 @@ class SnapListPage {
 
   async clickDefaultSnap(): Promise<void> {
     console.log('Clicking default snap');
-    await this.driver.waitForSelector(this.defaultSnap);
-    await this.driver.clickElement(this.defaultSnap);
+    await this.driver.waitForSelector(this.homePageSnap);
+    await this.driver.clickElement(this.homePageSnap);
   }
 
   async check_title(): Promise<void> {
     console.log('Checking title of snap list page');
-    await this.driver.waitForSelector(this.title);
+    await this.driver.waitForSelector(this.homePageTitle);
   }
 }
 
