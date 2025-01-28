@@ -98,9 +98,9 @@ export async function downloadCircleCiArtifact(branch: string, headCommitHash: s
 }
 
 /**
- * Reads the content of an artifact file.
- * @param filePath - The path to the downloaded artifact.
- * @returns The content of the artifact file.
+ * Reads the content of a file.
+ * @param filePath - The path to the file.
+ * @returns The content of the file.
  */
 export function readFileContent(filePath: string): string {
     if (!fs.existsSync(filePath)) {

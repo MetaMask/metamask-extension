@@ -12,18 +12,22 @@ async function verifyE2ePageObjectsUsage() {
         const headCommitHash = process.env.HEAD_COMMIT_HASH || '';
         const artifactName = 'changed-files.txt';
         const artifactPath = 'changed-files';
-        const jobName = 'get-changed-files-with-git-diff'; // Specify the job name
+        const jobName = 'get-changed-files-with-git-diff';
 
         let attempts = 0;
         const maxAttempts = 3;
         let changedFilesContent = '';
+
+        // Small buffer to ensure the job id is accessible in circle ci
+        // once we have that job migrated into github actions, we can just add a dependency rule
         await sleep(300);
+
         while (attempts < maxAttempts) {
             try {
                 console.log(`Downloading artifact: Attempt ${attempts + 1}/${maxAttempts}`);
 
                 const outputDir = `${artifactPath}/changed-files.txt`;
-                await downloadCircleCiArtifact(branch, headCommitHash, artifactName, outputDir, jobName); // Pass the job name
+                await downloadCircleCiArtifact(branch, headCommitHash, artifactName, outputDir, jobName);
 
                 changedFilesContent = readFileContent(outputDir);
 
@@ -37,8 +41,8 @@ async function verifyE2ePageObjectsUsage() {
 
             attempts++;
             if (attempts < maxAttempts) {
-                console.log(`Retrying in 60 seconds... (${attempts}/${maxAttempts})`);
-                await sleep(60);
+                console.log(`Retrying in 10 seconds... (${attempts}/${maxAttempts})`);
+                await sleep(10);
             }
         }
 
@@ -47,7 +51,6 @@ async function verifyE2ePageObjectsUsage() {
             process.exit(1);
         }
 
-        // Use the filterE2eChangedFiles function to filter E2E files
         e2eFiles = filterE2eChangedFiles(changedFilesContent.split('\n').filter(file => file.trim() !== ''));
         console.log('e2e changed files', e2eFiles);
     } else {
