@@ -59,6 +59,7 @@ const initialState = {
       conversionRate: null,
     },
   },
+  throttledOrigins: {},
 };
 
 /**

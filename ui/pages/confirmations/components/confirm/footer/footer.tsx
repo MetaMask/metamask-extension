@@ -36,6 +36,8 @@ import { MetaMetricsEventLocation } from '../../../../../../shared/constants/met
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
   location,
@@ -163,6 +165,8 @@ const Footer = () => {
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext();
   const { from } = getConfirmationSender(currentConfirmation);
+  const { shouldThrottleOrigin } = useOriginThrottling();
+  const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const noteToTraderMessage = useSelector(getNoteToTraderMessage);
@@ -250,16 +254,27 @@ const Footer = () => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  const onFooterCancel = useCallback(() => {
-    onCancel({ location: MetaMetricsEventLocation.Confirmation });
-  }, [currentConfirmation, onCancel]);
+  const handleFooterCancel = useCallback(
+    (forceCancel = false) => {
+      if (shouldThrottleOrigin && !forceCancel) {
+        setShowOriginThrottleModal(true);
+        return;
+      }
+      onCancel({ location: MetaMetricsEventLocation.Confirmation });
+    },
+    [currentConfirmation, onCancel],
+  );
 
   return (
     <PageFooter className="confirm-footer_page-footer">
+      <OriginThrottleModal
+        isOpen={showOriginThrottleModal}
+        onConfirmationCancel={handleFooterCancel}
+      />
       <Button
         block
         data-testid="confirm-footer-cancel-button"
-        onClick={onFooterCancel}
+        onClick={() => handleFooterCancel(false)}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}
       >
