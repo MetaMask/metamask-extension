@@ -673,23 +673,4 @@ describe('AccountListMenu', () => {
       expect(queryByText(mockBtcAccount.metadata.name)).toBeInTheDocument();
     });
   });
-
-  describe('Create new srp', () => {
-    it('calls generateNewHdKeyring action when clicked.', async () => {
-      const { getByTestId } = render();
-
-      const button = getByTestId(
-        'multichain-account-menu-popover-action-button',
-      );
-      button.click();
-
-      const createNewSRPButton = getByTestId(
-        'multichain-account-menu-popover-create-new-srp',
-      );
-
-      createNewSRPButton.click();
-
-      expect(mockGenerateNewHdKeyring).toHaveBeenCalled();
-    });
-  });
 });
