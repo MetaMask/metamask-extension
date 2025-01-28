@@ -46,8 +46,8 @@ class SolanaTxresultPage {
     sent: boolean,
   ): Promise<boolean> {
     const displayedText = sent
-      ? `${amount} SOL was successfully sent`
-      : `Unable to send ${amount} SOL`;
+      ? `${amount}  was successfully sent`
+      : `Unable to send ${amount}`;
     const txStatusText = {
       text: displayedText,
       tag: 'p',
@@ -55,7 +55,7 @@ class SolanaTxresultPage {
     try {
       await this.driver.waitForSelector(
         txStatusText,
-        { timeout: 5000 }, // even the tx is being mock, there is an spinner that sometimes is slow to disappear
+        { timeout: 10000 }, // even the tx is being mock, there is an spinner that sometimes is slow to disappear
       );
       return true;
     } catch (err) {

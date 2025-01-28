@@ -19,13 +19,10 @@ class ConfirmSolanaTxPage {
     this.driver = driver;
   }
 
-  async checkAmountDisplayed(
-    amount: string,
-    currency: string = 'SOL',
-  ): Promise<boolean> {
+  async checkAmountDisplayed(amount: string): Promise<boolean> {
     try {
       await this.driver.waitForSelector({
-        text: `Sending ${amount} ${currency}`,
+        text: `${amount}`,
         tag: 'h2',
       });
       return true;
@@ -54,8 +51,14 @@ class ConfirmSolanaTxPage {
    * Clicks the send button on the Solana transaction confirmation page
    */
   async clickOnSend(): Promise<void> {
-    const sendButton = await this.driver.findElement(this.sendButton);
-    await sendButton.click();
+    await this.driver.clickElement(this.sendButton);
+    await this.driver.waitForSelector(
+      {
+        text: 'Close',
+        tag: 'span',
+      },
+      { timeout: 10000 },
+    );
   }
 
   async isSendButtonEnabled(): Promise<boolean> {
@@ -71,12 +74,12 @@ class ConfirmSolanaTxPage {
 
   async isInsufficientBalanceDisplayed(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(
+      await this.driver.waitForSelector(
         {
           text: 'Insufficient balance',
           tag: 'p',
         },
-        1000,
+        { timeout: 1500 },
       );
     } catch (e) {
       console.log('Insufficient balance message not displayed', e);
