@@ -4,7 +4,7 @@ import fs from 'fs';
 import madge from '@lgbot/madge';
 import fg from 'fast-glob';
 
-const TARGET_FILE = 'circular-deps.jsonc';
+const TARGET_FILE = 'development/circular-deps.jsonc';
 
 const FILE_HEADER = `// This is a machine-generated file that tracks circular dependencies in the codebase.
 // To understand changes in this file:
