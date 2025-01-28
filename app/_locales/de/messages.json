@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin-Aktivität wird nicht unterstützt"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -4303,12 +4300,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Schützen Sie Ihre Gelder."
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Verbesserte Unterschriftsanfrage"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Schalten Sie dies ein, um sich Unterschriftsanfragen in einem erweiterten Format anzeigen zu lassen."
   },
   "refreshList": {
     "message": "Liste aktualisieren"

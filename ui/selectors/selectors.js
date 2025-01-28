@@ -1042,11 +1042,9 @@ export function getRequestingNetworkInfo(state, chainIds) {
   // Ensure chainIds is flattened if it contains nested arrays
   const flattenedChainIds = processedChainIds.flat();
 
-  // Filter the non-test networks to include only those with chainId in flattenedChainIds
+  // Filter the networks to include only those with chainId in flattenedChainIds
   return Object.values(getNetworkConfigurationsByChainId(state)).filter(
-    (network) =>
-      !TEST_CHAINS.includes(network.chainId) &&
-      flattenedChainIds.includes(network.chainId),
+    (network) => flattenedChainIds.includes(network.chainId),
   );
 }
 
@@ -1239,11 +1237,6 @@ export function getTokenNetworkFilter(state) {
 
 export function getUseTransactionSimulations(state) {
   return Boolean(state.metamask.useTransactionSimulations);
-}
-
-export function getRedesignedConfirmationsEnabled(state) {
-  const { redesignedConfirmationsEnabled } = getPreferences(state);
-  return redesignedConfirmationsEnabled;
 }
 
 export function getFeatureNotificationsEnabled(state) {
@@ -1673,12 +1666,12 @@ export function getSwapsDefaultToken(state, overrideChainId = null) {
 export function getIsSwapsChain(state, overrideChainId) {
   const currentChainId = getCurrentChainId(state);
   const chainId = overrideChainId ?? currentChainId;
-  const isNotDevelopment =
-    process.env.METAMASK_ENVIRONMENT !== 'development' &&
-    process.env.METAMASK_ENVIRONMENT !== 'testing';
-  return isNotDevelopment
-    ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
-    : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
+  const isDevelopment =
+    process.env.METAMASK_ENVIRONMENT === 'development' ||
+    process.env.METAMASK_ENVIRONMENT === 'testing';
+  return isDevelopment
+    ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
+    : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
 export function getIsBridgeChain(state, overrideChainId) {

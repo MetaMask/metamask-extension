@@ -736,9 +736,6 @@
     "message": "十亿",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "比特币活动不受支持"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "比特币"
   },
@@ -4303,12 +4300,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "保护您的资金"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "批准的签名请求"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "开启此选项以查看增强格式的签名请求。"
   },
   "refreshList": {
     "message": "刷新列表"

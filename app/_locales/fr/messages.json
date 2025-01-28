@@ -736,9 +736,6 @@
     "message": "Mrd",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "L’activité Bitcoin n’est pas prise en charge"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -4303,12 +4300,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protégez vos fonds"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Demandes de signature améliorées"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Activez cette option pour afficher les demandes de signature dans un format amélioré."
   },
   "refreshList": {
     "message": "Rafraîchir la liste"

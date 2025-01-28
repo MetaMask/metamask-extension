@@ -1,150 +1,305 @@
-import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { omit } from 'lodash';
 import { migrate, version } from './140';
 
 const oldVersion = 139;
 
-const mockInternalAccount = createMockInternalAccount();
-const mockInternalAccount2 = createMockInternalAccount({
-  address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-});
+const dataWithAllControllerProperties = {
+  AppStateController: {},
+  NetworkController: {},
+  PreferencesController: {},
+};
 
 describe(`migration #${version}`, () => {
-  it('updates the version number', async () => {
-    const oldData = {
+  it('updates the version metadata', async () => {
+    const oldStorage = {
       meta: { version: oldVersion },
       data: {},
     };
-    const newData = await migrate(oldData);
-    expect(newData.meta.version).toBe(version);
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('leaves state unchanged when KeyringController is missing', async () => {
-    const oldData = {
+  it('does nothing if state has no AppStateController property, even if it has other relevant properties', async () => {
+    const data = omit(dataWithAllControllerProperties, 'AppStateController');
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(data);
+  });
+
+  it('deletes AppStateController.collectiblesDropdownState from state', async () => {
+    const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        foo: 'bar',
+        AppStateController: {
+          collectiblesDropdownState: 'test',
+        },
       },
     };
-    // @ts-expect-error testing error
-    const newData = await migrate(oldData);
-    expect(newData.data).toEqual(oldData.data);
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      AppStateController: {},
+    });
   });
 
-  it('adds keyringsMetadata when KeyringController exists with empty metadata', async () => {
-    const oldData = {
+  it('deletes AppStateController.serviceWorkerLastActiveTime from state', async () => {
+    const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        KeyringController: {
-          keyrings: [{ type: 'HD Key Tree' }, { type: 'Simple Key Pair' }],
-          keyringsMetadata: [],
+        AppStateController: {
+          serviceWorkerLastActiveTime: 5,
         },
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [mockInternalAccount.id]: mockInternalAccount,
-              [mockInternalAccount2.id]: mockInternalAccount2,
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      AppStateController: {},
+    });
+  });
+
+  it('deletes AppStateController.showPortfolioTooltip from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        AppStateController: {
+          showPortfolioTooltip: true,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      AppStateController: {},
+    });
+  });
+
+  it('does nothing if state has no NetworkController property, even if it has other relevant properties', async () => {
+    const data = omit(dataWithAllControllerProperties, 'NetworkController');
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(data);
+  });
+
+  it('deletes NetworkController.networkConfigurations from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurations: {
+            'AAAA-AAAA-AAAA-AAAA': {
+              doesnt: 'matter',
             },
-            selectedAccount: mockInternalAccount.id,
           },
         },
       },
     };
-    // @ts-expect-error testing error
-    const newData = await migrate(oldData);
-    expect(newData.data.KeyringController?.keyringsMetadata).toHaveLength(2);
-    expect(newData.data.KeyringController?.keyringsMetadata[0]).toHaveProperty(
-      'id',
-    );
-    expect(newData.data.KeyringController?.keyringsMetadata[0]).toHaveProperty(
-      'name',
-      '',
-    );
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      NetworkController: {},
+    });
   });
 
-  it('adds keyringsMetadata when KeyringController exists with undefined metadata', async () => {
-    const oldData = {
+  it('deletes NetworkController.providerConfig from state', async () => {
+    const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        KeyringController: {
-          keyrings: [{ type: 'HD Key Tree' }],
-        },
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [mockInternalAccount.id]: mockInternalAccount,
-            },
-            selectedAccount: mockInternalAccount.id,
+        NetworkController: {
+          providerConfig: {
+            doesnt: 'matter',
           },
         },
       },
     };
-    // @ts-expect-error testing when keyringsMetadata is undefined
-    const newData = await migrate(oldData);
-    expect(newData.data.KeyringController?.keyrings).toBeDefined();
-    expect(newData.data.KeyringController?.keyringsMetadata).toHaveLength(1);
-    expect(newData.data.KeyringController?.keyringsMetadata[0]).toHaveProperty(
-      'id',
-    );
-    expect(newData.data.KeyringController?.keyringsMetadata[0]).toHaveProperty(
-      'name',
-      '',
-    );
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      NetworkController: {},
+    });
   });
 
-  it('preserves existing keyringsMetadata', async () => {
-    const existingMetadata = [{ id: '123', name: 'Existing' }];
-    const oldData = {
+  it('does nothing if state has no PreferencesController property, even if it has other relevant properties', async () => {
+    const data = omit(dataWithAllControllerProperties, 'PreferencesController');
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(data);
+  });
+
+  it('deletes PreferencesController.customNetworkListEnabled from state', async () => {
+    const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        KeyringController: {
-          isUnlocked: true,
-          keyrings: [{ type: 'HD Key Tree', accounts: [] }],
-          keyringsMetadata: existingMetadata,
+        PreferencesController: {
+          customNetworkListEnabled: true,
         },
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [mockInternalAccount.id]: mockInternalAccount,
-            },
-            selectedAccount: mockInternalAccount.id,
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+    });
+  });
+
+  it('deletes PreferencesController.disabledRpcMethodPreferences from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PreferencesController: {
+          disabledRpcMethodPreferences: {
+            doesnt: 'matter',
           },
         },
       },
     };
-    const newData = await migrate(oldData);
-    expect(newData.data.KeyringController?.keyringsMetadata).toEqual(
-      existingMetadata,
-    );
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+    });
   });
 
-  it('handles missing AccountsController', async () => {
-    const oldData = {
+  it('deletes PreferencesController.eip1559V2Enabled from state', async () => {
+    const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        KeyringController: {
-          keyrings: [{ type: 'HD Key Tree' }],
-          keyringsMetadata: [],
+        PreferencesController: {
+          eip1559V2Enabled: true,
         },
       },
     };
-    // @ts-expect-error testing missing accounts controller state
-    const newData = await migrate(oldData);
-    expect(newData.data.KeyringController?.keyringsMetadata).toHaveLength(0);
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+    });
   });
 
-  it('handles invalid AccountsController structure', async () => {
-    const oldData = {
+  it('deletes PreferencesController.hasDismissedOpenSeaToBlockaidBanner from state', async () => {
+    const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        KeyringController: {
-          keyrings: [{ type: 'HD Key Tree' }],
-          keyringsMetadata: [],
+        PreferencesController: {
+          hasDismissedOpenSeaToBlockaidBanner: true,
         },
-        AccountsController: {}, // Missing internalAccounts
       },
     };
-    // @ts-expect-error testing invalid accounts controller state
-    const newData = await migrate(oldData);
-    expect(newData.data.KeyringController?.keyringsMetadata).toHaveLength(0);
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+    });
+  });
+
+  it('deletes PreferencesController.hasMigratedFromOpenSeaToBlockaid from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PreferencesController: {
+          hasMigratedFromOpenSeaToBlockaid: true,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+    });
+  });
+
+  it('deletes PreferencesController.improvedTokenAllowanceEnabled from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PreferencesController: {
+          improvedTokenAllowanceEnabled: true,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+    });
+  });
+
+  it('deletes PreferencesController.infuraBlocked from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PreferencesController: {
+          infuraBlocked: true,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+    });
+  });
+
+  it('deletes PreferencesController.useCollectibleDetection from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PreferencesController: {
+          useCollectibleDetection: true,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+    });
+  });
+
+  it('deletes PreferencesController.useStaticTokenList from state', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        PreferencesController: {
+          useStaticTokenList: true,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {},
+    });
   });
 });

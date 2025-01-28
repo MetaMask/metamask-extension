@@ -44,18 +44,6 @@
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
-    "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionConfig": {
-            "support": "boolean",
-            "chains": { "0x1": "object", "0xa": "object", "0xe708": "object" }
-          }
-        },
-        "destTokens": {},
-        "destTopAssets": {}
-      }
-    },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -121,12 +109,11 @@
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
         "petnamesEnabled": true,
-        "showMultiRpcModal": "boolean",
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
-        "shouldShowAggregatedBalancePopover": "boolean",
-        "tokenNetworkFilter": {}
+        "tokenNetworkFilter": {},
+        "showMultiRpcModal": "boolean",
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -149,6 +136,20 @@
         "liveness": true,
         "livenessByChainId": "object",
         "smartTransactions": "object"
+      }
+    },
+    "BridgeController": {
+      "bridgeState": {
+        "bridgeFeatureFlags": {
+          "extensionConfig": {
+            "support": "boolean",
+            "chains": {
+              "0x1": "object",
+              "0xa": "object",
+              "0xe708": "object"
+            }
+          }
+        }
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },
