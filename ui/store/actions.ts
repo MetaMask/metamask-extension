@@ -67,10 +67,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
-  getInternalAccounts,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  getMetaMaskKeyrings,
-  ///: END:ONLY_INCLUDE_IF
 } from '../selectors';
 import {
   getSelectedNetworkClientId,

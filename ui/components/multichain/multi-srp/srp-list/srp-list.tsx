@@ -1,12 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  KeyringObject,
-  KeyringMetadata,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
-import { EthKeyring, InternalAccount } from '@metamask/keyring-internal-api';
-import { Json } from '@metamask/utils';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import Card from '../../../ui/card';
 import {
   Box,
