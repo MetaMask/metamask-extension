@@ -29,11 +29,11 @@ function readChangedFiles() {
 /**
  * Filters the list of changed files to include only E2E test files within the 'test/e2e/' directory.
  *
- * @param {string[]} changedFiles - An array of changed file paths to filter.
+ * @param {string[]} changedFilesPaths - An array of changed file paths to filter.
  * @returns {string[]} An array of filtered E2E test file paths.
  */
-function filterE2eChangedFiles(changedFiles) {
-  const e2eChangedFiles = changedFiles
+function filterE2eChangedFiles(changedFilesPaths) {
+  const e2eChangedFiles = changedFilesPaths
     .filter(
       (file) =>
         file.startsWith('test/e2e/') &&

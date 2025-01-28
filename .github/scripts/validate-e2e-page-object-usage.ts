@@ -73,8 +73,7 @@ async function verifyE2ePageObjectsUsage() {
     for (const file of e2eFiles) {
         const content = fs.readFileSync(file, 'utf8');
         // Check for the presence of page object imports
-        const usesPageObjectModel = content.includes("from './page-objects/") ||
-                                    content.includes("import") && content.includes("from '../../page-objects/");
+        const usesPageObjectModel = content.includes('./page-objects/');
 
         if (!usesPageObjectModel) {
             console.error(`\x1b[31mFailure: You need to use Page Object Model in ${file}\x1b[0m`);
