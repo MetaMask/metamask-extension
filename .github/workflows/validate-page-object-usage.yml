@@ -13,16 +13,11 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
 
-      - name: Set environment variables
-        id: get-circleci-job-details
-        run: |
-          {
-            echo "OWNER=${{ github.repository_owner }}";
-            echo "REPOSITORY=${{ github.event.repository.name }}";
-            echo "BRANCH=${{ github.head_ref || github.ref_name }}";
-            echo "HEAD_COMMIT_HASH=${{ github.event.pull_request.head.sha || github.sha }}";
-          } >> $GITHUB_ENV
-
       - name: Run E2E Page Object Validation
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           yarn validate-e2e-page-object-usage
