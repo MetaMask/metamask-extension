@@ -5264,6 +5264,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-hd-keyring@npm:@metamask-previews/eth-hd-keyring@9.0.1-2939d28":
+  version: 9.0.1-2939d28
+  resolution: "@metamask-previews/eth-hd-keyring@npm:9.0.1-2939d28"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/eth-sig-util": "npm:^8.1.2"
+    "@metamask/key-tree": "npm:^10.0.2"
+    "@metamask/scure-bip39": "npm:^2.1.1"
+    "@metamask/utils": "npm:^11.0.1"
+    ethereum-cryptography: "npm:^2.1.2"
+  checksum: 10/ae189ee0a49511e93a31206c9dfb5758c85cce19c14c3edd339fd7e45343e2140054973314fdfacc759b32228333f5a83757c1b128c26ba01136c8dff29acb04
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-hd-keyring@npm:^7.0.4":
   version: 7.0.4
   resolution: "@metamask/eth-hd-keyring@npm:7.0.4"
@@ -5636,18 +5650,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "@metamask/keyring-api@npm:13.0.0"
-  dependencies:
-    "@metamask/keyring-utils": "npm:^1.0.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.0.1"
-    bech32: "npm:^2.0.0"
-  checksum: 10/f7e8982112a2813790354267af8f79cbf241d7ca9d733fe5e8de1a13993203b154ac6d358a92bd4340cbd4d25f4bac48681d17a25e3dc6f2336c95c00c371686
-  languageName: node
-  linkType: hard
-
 "@metamask/keyring-api@npm:^14.0.0":
   version: 14.0.0
   resolution: "@metamask/keyring-api@npm:14.0.0"
@@ -5660,26 +5662,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@19.0.3-preview-83c8a21":
-  version: 19.0.3-preview-83c8a21
-  resolution: "@metamask-previews/keyring-controller@npm:19.0.3-preview-83c8a21"
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@19.0.4-preview-5b9e9f05":
+  version: 19.0.4-preview-5b9e9f05
+  resolution: "@metamask-previews/keyring-controller@npm:19.0.4-preview-5b9e9f05"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
     "@metamask/base-controller": "npm:^7.1.1"
     "@metamask/browser-passworder": "npm:^4.3.0"
-    "@metamask/eth-hd-keyring": "npm:^7.0.4"
+    "@metamask/eth-hd-keyring": "npm:@metamask-previews/eth-hd-keyring@9.0.1-2939d28"
     "@metamask/eth-sig-util": "npm:^8.0.0"
     "@metamask/eth-simple-keyring": "npm:^6.0.5"
-    "@metamask/keyring-api": "npm:^13.0.0"
-    "@metamask/keyring-internal-api": "npm:^2.0.0"
+    "@metamask/keyring-api": "npm:^14.0.0"
+    "@metamask/keyring-internal-api": "npm:^2.0.1"
     "@metamask/message-manager": "npm:^12.0.0"
     "@metamask/utils": "npm:^11.0.1"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-    ulid: "npm:^2.3.0"
-  checksum: 10/051a6cd8af7a65ed0432fe90e8e38b02294f5b67502387116bfa20434ef341c3e2890de1087aae85f11290b9bd3a17e770352cd876eee646d01a5ef9fadf3fae
+  checksum: 10/27b3ed66d44ef8aaa32630ee93ce943916f12eaed2ba107cf0fe444d03619b9dc0d4b435c5e4d6e4b6203e3a1e1ba8239bf4b5090a9916706c0e78c8b0c8a806
   languageName: node
   linkType: hard
 
@@ -5705,7 +5706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^2.0.0, @metamask/keyring-internal-api@npm:^2.0.1":
+"@metamask/keyring-internal-api@npm:^2.0.1":
   version: 2.0.1
   resolution: "@metamask/keyring-internal-api@npm:2.0.1"
   dependencies:
@@ -5750,7 +5751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-utils@npm:^1.0.0, @metamask/keyring-utils@npm:^1.2.0":
+"@metamask/keyring-utils@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/keyring-utils@npm:1.2.0"
   dependencies:
@@ -26732,7 +26733,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^14.0.0"
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.0.3-preview-83c8a21"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.0.4-preview-5b9e9f05"
     "@metamask/keyring-internal-api": "npm:^2.0.1"
     "@metamask/keyring-snap-client": "npm:^3.0.0"
     "@metamask/logging-controller": "npm:^6.0.0"
