@@ -54,42 +54,6 @@ exports[`AssetPage should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button coin-overview__button"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/stake.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Stake
-          </p>
-        </button>
-        <button
-          class="icon-button coin-overview__button"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/diagram.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Portfolio
-          </p>
-        </button>
-        <button
           class="icon-button coin-overview__button icon-button--disabled"
           data-testid="token-overview-button-swap"
           disabled=""
@@ -401,44 +365,6 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Buy & Sell
-          </p>
-        </button>
-        <button
-          class="icon-button eth-overview__button"
-          data-testid="token-overview-mmi-stake"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/stake.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Stake
-          </p>
-        </button>
-        <button
-          class="icon-button eth-overview__button"
-          data-testid="token-overview-mmi-portfolio"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/diagram.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Portfolio
           </p>
         </button>
         <button
@@ -920,44 +846,6 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Buy & Sell
-          </p>
-        </button>
-        <button
-          class="icon-button eth-overview__button"
-          data-testid="token-overview-mmi-stake"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/stake.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Stake
-          </p>
-        </button>
-        <button
-          class="icon-button eth-overview__button"
-          data-testid="token-overview-mmi-portfolio"
-        >
-          <div
-            class="icon-button__circle"
-            data-theme="light"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/diagram.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-          >
-            Portfolio
           </p>
         </button>
         <button

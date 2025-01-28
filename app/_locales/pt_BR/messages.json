@@ -1365,9 +1365,6 @@
   "optional": {
     "message": "Opcional"
   },
-  "or": {
-    "message": "ou"
-  },
   "origin": {
     "message": "Origem"
   },

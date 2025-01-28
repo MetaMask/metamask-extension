@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { waitFor } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -19,14 +18,6 @@ jest.mock('../../../store/actions.ts', () => ({
     .mockResolvedValue({ chainId: '0x5' }),
 }));
 
-let mockGetCustodianTransactionDeepLink = jest.fn();
-
-jest.mock('../../../store/institutional/institution-background', () => ({
-  mmiActionsFactory: () => ({
-    getCustodianTransactionDeepLink: () => mockGetCustodianTransactionDeepLink,
-  }),
-}));
-
 const transaction = {
   history: [],
   id: 1,
@@ -42,7 +33,6 @@ const transaction = {
   metadata: {
     note: 'some note',
   },
-  custodyId: '1',
 };
 
 const transactionGroup = {
@@ -120,48 +110,6 @@ describe('TransactionListItemDetails Component', () => {
     it('renders speedup button with showSpeedUp prop', async () => {
       const { queryByTestId } = render({ showSpeedUp: true });
       expect(queryByTestId('speedup-button')).toBeInTheDocument();
-    });
-  });
-
-  describe('Institutional', () => {
-    it('renders correctly if custodyTransactionDeepLink has a url', async () => {
-      mockGetCustodianTransactionDeepLink = jest
-        .fn()
-        .mockReturnValue({ url: 'https://url.com' });
-
-      render({ showCancel: true });
-
-      await waitFor(() => {
-        const custodianViewButton = document.querySelector(
-          '[data-original-title="View in custodian app"]',
-        );
-
-        // Assert that the custodian view button is rendered
-        expect(custodianViewButton).toBeInTheDocument();
-      });
-    });
-
-    it('renders correctly if transactionNote is provided', async () => {
-      const newTransaction = {
-        ...transaction,
-        metadata: {
-          note: 'some note',
-        },
-        custodyId: '1',
-      };
-
-      const newTransactionGroup = {
-        ...transactionGroup,
-        transactions: [newTransaction],
-        primaryTransaction: newTransaction,
-        initialTransaction: newTransaction,
-      };
-
-      const { queryByText } = render({
-        transactionGroup: newTransactionGroup,
-      });
-
-      expect(queryByText('some note')).toBeInTheDocument();
     });
   });
 });

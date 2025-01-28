@@ -17,7 +17,7 @@ export const AccountOverviewNonEvm = ({
       {...props}
     >
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <NonEvmOverview />
         ///: END:ONLY_INCLUDE_IF
       }
