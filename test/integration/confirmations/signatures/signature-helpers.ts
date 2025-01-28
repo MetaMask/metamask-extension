@@ -79,7 +79,6 @@ export const getMetaMaskStateWithUnapprovedPermitSign = (
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
     },
     unapprovedTypedMessages: {
       [pendingPermitId]: unapprovedTypedMessage,
