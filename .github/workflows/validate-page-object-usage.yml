@@ -1,0 +1,27 @@
+name: Validate E2E Page Object usage on modified files
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  run-e2e-pom-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - name: Set environment variables
+        id: get-circleci-job-details
+        run: |
+          echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "REPOSITORY=${{ github.event.repository.name }}" >> $GITHUB_ENV
+          echo "BRANCH=${{ github.head_ref || github.ref_name }}" >> $GITHUB_ENV
+          echo "HEAD_COMMIT_HASH=${{ github.event.pull_request.head.sha || github.sha }}" >> $GITHUB_ENV
+
+      - name: Run E2E Page Object Validation
+        run: |
+          yarn validate-e2e-page-object-usage
