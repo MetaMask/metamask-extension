@@ -5468,70 +5468,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-contract@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "@metamask/ethjs-contract@npm:0.4.1"
-  dependencies:
-    "@metamask/ethjs-filter": "npm:^0.3.0"
-    "@metamask/ethjs-util": "npm:^0.3.0"
-    ethjs-abi: "npm:^0.2.0"
-    js-sha3: "npm:^0.9.2"
-    promise-to-callback: "npm:^1.0.0"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/2187f62336c2afd46b51bda87b96e1537dd7dfe0f621defc3cb5ccb68add482004674f3c11ced95c65b7ecbe845592541f1b268c97b0b42c939d8d5677523097
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs-filter@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/ethjs-filter@npm:0.3.0"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/1b7565045e638f60d39ae8d8ca020b6e3ac2e4e91f220f343e499b09a7adeb9e4273249e3c3f7366acc2e44bc0b7fe3dd3ac84c66e9a0853352bfb0e116c1d87
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs-format@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/ethjs-format@npm:0.3.0"
-  dependencies:
-    "@metamask/ethjs-util": "npm:^0.3.0"
-    "@metamask/number-to-bn": "npm:^1.7.1"
-    bn.js: "npm:^5.2.1"
-    ethjs-schema: "npm:0.2.1"
-    is-hex-prefixed: "npm:1.0.0"
-    strip-hex-prefix: "npm:1.0.0"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/4ae73716e0dd76f7b780ede79b3989d241ee8654b7aa9ec23678529a1916f77ab101552f7aabe56c8e26506a33f34181f40624a68a317e7cd3ae45fb0da2fa73
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs-query@npm:^0.7.1":
-  version: 0.7.1
-  resolution: "@metamask/ethjs-query@npm:0.7.1"
-  dependencies:
-    "@metamask/ethjs-format": "npm:^0.3.0"
-    "@metamask/ethjs-rpc": "npm:^0.4.0"
-    promise-to-callback: "npm:^1.0.0"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/a9d54677cf062267f7e781996edfadfc2a5a2f3589266b7f20386e8109b7cecdfdc47c6aba4bb68d0c4cb387cfdb463d6316d506c06138531ca1e81ab201e5dc
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs-rpc@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/ethjs-rpc@npm:0.4.0"
-  dependencies:
-    promise-to-callback: "npm:^1.0.0"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/e126535ff7599ef584b0084dae846294d505b69141a143543d7580cdce4b297646e796fbd0cecc5a824dce8b5e3b179bb177ceff06fd50ad584e7fce00ab081f
-  languageName: node
-  linkType: hard
-
 "@metamask/ethjs-unit@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/ethjs-unit@npm:0.3.0"
@@ -5541,18 +5477,6 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 10/a027d69d66b7eb45666c3bffbedd76dc25dbdd11b177a6b0a7c6735a06d1f123cd4c4c2e301149f6068450a49d41c24c6f93d665552757408fafefbd8720346e
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs-util@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/ethjs-util@npm:0.3.0"
-  dependencies:
-    is-hex-prefixed: "npm:1.0.0"
-    strip-hex-prefix: "npm:1.0.0"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/aaecae091dd16362f048cbba27629d67d10530c704facf80f430db546c8ea32fa627cd9560bd3eca1e6ce651d2b7a7df9fdc3677e0ae2814954e3c950cee70da
   languageName: node
   linkType: hard
 
@@ -6482,9 +6406,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^43.0.0":
-  version: 43.0.0
-  resolution: "@metamask/transaction-controller@npm:43.0.0"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@43.0.0-preview-009eef6b":
+  version: 43.0.0-preview-009eef6b
+  resolution: "@metamask-previews/transaction-controller@npm:43.0.0-preview-009eef6b"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6501,7 +6425,6 @@ __metadata:
     "@metamask/utils": "npm:^11.0.1"
     async-mutex: "npm:^0.5.0"
     bn.js: "npm:^5.2.1"
-    eth-method-registry: "npm:^4.0.0"
     fast-json-patch: "npm:^3.1.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
@@ -6512,7 +6435,7 @@ __metadata:
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/26fc77f43144522208393a08654af72334179efb43df68dd9921ac0ac3b82c4e2cb014b68322f3d1f69a90ebbcf28055398e8cd11719c2ce224a620a56de3f14
+  checksum: 10/f5af47656e9c508582b254105377dcbf0733b2aa6e13c192155d9b2723f8b8a70d151ecfd8e1e2bcbe5943ad5f86a3430080fc01073d3d2018455d2ded77a235
   languageName: node
   linkType: hard
 
@@ -18871,18 +18794,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-method-registry@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "eth-method-registry@npm:4.0.0"
-  dependencies:
-    "@metamask/ethjs-contract": "npm:^0.4.1"
-    "@metamask/ethjs-query": "npm:^0.7.1"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/959e833327960f40fab8693997e071def75103a694e931ab11313e642b6958d4f2878000d91ddfd6ba3c158bdc3f381c63eae0dd26738790e2aca5004ceb0387
-  languageName: node
-  linkType: hard
-
 "eth-phishing-detect@npm:^1.2.0":
   version: 1.2.0
   resolution: "eth-phishing-detect@npm:1.2.0"
@@ -19069,24 +18980,6 @@ __metadata:
     tslib: "npm:2.4.0"
     ws: "npm:8.17.1"
   checksum: 10/e611c2e2c5340982dfd1f004895f55abda11748a7edec9e6315226dec42d58aa61b827dd389ec904db5f9a244c475ae795e528da579251fdf62e914bde12809e
-  languageName: node
-  linkType: hard
-
-"ethjs-abi@npm:^0.2.0":
-  version: 0.2.1
-  resolution: "ethjs-abi@npm:0.2.1"
-  dependencies:
-    bn.js: "npm:4.11.6"
-    js-sha3: "npm:0.5.5"
-    number-to-bn: "npm:1.7.0"
-  checksum: 10/733b2b95ae102f0813ad70848d42424b4b6204598892bee0e0fb435aafc7d356e479e489ee2d6b81fb2bd6e5ae6a9cdc0479bc35244b2efbe1a00a8da6735fbb
-  languageName: node
-  linkType: hard
-
-"ethjs-schema@npm:0.2.1":
-  version: 0.2.1
-  resolution: "ethjs-schema@npm:0.2.1"
-  checksum: 10/9e2806518e208650a035aa2bc1e508a57c31ff629b46b63de4c7101e760f5e6987e6f8b70522eb44cf4a97d2c4c6348d1adaeea56915e75e4deadd1e176d5aa9
   languageName: node
   linkType: hard
 
@@ -28588,16 +28481,6 @@ __metadata:
   version: 1.0.1
   resolution: "number-is-nan@npm:1.0.1"
   checksum: 10/13656bc9aa771b96cef209ffca31c31a03b507ca6862ba7c3f638a283560620d723d52e626d57892c7fff475f4c36ac07f0600f14544692ff595abff214b9ffb
-  languageName: node
-  linkType: hard
-
-"number-to-bn@npm:1.7.0":
-  version: 1.7.0
-  resolution: "number-to-bn@npm:1.7.0"
-  dependencies:
-    bn.js: "npm:4.11.6"
-    strip-hex-prefix: "npm:1.0.0"
-  checksum: 10/702e8f00b6b90abd23f711056005179c3bd5ce3b063c47d468250f63ab3b9b4b82e27bff3b4642a9e71e06c717d5ed359873501746df0a64c3db1fa6d704e704
   languageName: node
   linkType: hard
 
