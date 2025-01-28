@@ -4127,17 +4127,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@json-schema-tools/traverse@npm:^1.10.4":
+"@json-schema-tools/traverse@npm:^1.10.4, @json-schema-tools/traverse@npm:^1.7.5, @json-schema-tools/traverse@npm:^1.7.8":
   version: 1.10.4
   resolution: "@json-schema-tools/traverse@npm:1.10.4"
   checksum: 10/0027bc90df01c5eeee0833e722b7320b53be8b5ce3f4e0e4a6e45713a38e6f88f21aba31e3dd973093ef75cd21a40c07fe8f112da8f49a7919b1c0e44c904d20
-  languageName: node
-  linkType: hard
-
-"@json-schema-tools/traverse@npm:^1.7.5, @json-schema-tools/traverse@npm:^1.7.8":
-  version: 1.10.3
-  resolution: "@json-schema-tools/traverse@npm:1.10.3"
-  checksum: 10/690623740d223ea373d8e561dad5c70bf86461bcedc5fc45da01c87bcdf3284bbdbad3006d4a423f8d82e4b2d4580e45f92c0b272f006024fb597d7f01876215
   languageName: node
   linkType: hard
 
@@ -5712,19 +5705,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/keyring-internal-api@npm:2.0.0"
-  dependencies:
-    "@metamask/keyring-api": "npm:^13.0.0"
-    "@metamask/keyring-utils": "npm:^1.0.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.0.1"
-  checksum: 10/778a2172bc7e5607c78effc0e3bb9dfaec1e12b8cfd82912248a4d72b0f64c48a1f74598396a06ecedbc2594b60ec384e105c2a194883aff5b43352f4301ed27
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-internal-api@npm:^2.0.1":
+"@metamask/keyring-internal-api@npm:^2.0.0, @metamask/keyring-internal-api@npm:^2.0.1":
   version: 2.0.1
   resolution: "@metamask/keyring-internal-api@npm:2.0.1"
   dependencies:
@@ -5769,17 +5750,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-utils@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/keyring-utils@npm:1.0.0"
-  dependencies:
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^9.3.0"
-  checksum: 10/f74f7343a7154b029e0fa4c25735c589eba4dc25a9e323d43b7c733ce5dbb23ce603a4f02aac455163993649ceeaf714b8b843985ba7a9cb00b926b3b8dc6b51
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-utils@npm:^1.2.0":
+"@metamask/keyring-utils@npm:^1.0.0, @metamask/keyring-utils@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/keyring-utils@npm:1.2.0"
   dependencies:
@@ -6653,7 +6624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^9.0.0, @metamask/utils@npm:^9.1.0, @metamask/utils@npm:^9.2.1, @metamask/utils@npm:^9.3.0":
+"@metamask/utils@npm:^9.0.0, @metamask/utils@npm:^9.1.0, @metamask/utils@npm:^9.2.1":
   version: 9.3.0
   resolution: "@metamask/utils@npm:9.3.0"
   dependencies:
