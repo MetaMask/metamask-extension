@@ -93,13 +93,8 @@ class SnapListPage {
   }
 
   async check_title(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.title);
-    } catch (e) {
-      console.log('Timeout while waiting for title to be loaded', e);
-      throw e;
-    }
-    console.log('Title is loaded');
+    console.log('Checking title of snap list page');
+    await this.driver.waitForSelector(this.title);
   }
 }
 
