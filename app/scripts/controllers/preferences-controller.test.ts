@@ -141,12 +141,6 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
-          keyringsMetadata: [
-            {
-              id: 'ULID01234567890ABCDEFGHIJKLMN',
-              name: '',
-            },
-          ],
         },
         [],
       );
@@ -190,12 +184,6 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: 'ULID01234567890ABCDEFGHIJKLMN',
-              name: '',
             },
           ],
         },
@@ -249,12 +237,6 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
-          keyringsMetadata: [
-            {
-              id: 'ULID01234567890ABCDEFGHIJKLMN',
-              name: '',
-            },
-          ],
         },
         [],
       );
@@ -288,12 +270,6 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: 'ULID01234567890ABCDEFGHIJKLMN',
-              name: '',
             },
           ],
         },
@@ -537,12 +513,6 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: 'ULID01234567890ABCDEFGHIJKLMN',
-              name: '',
             },
           ],
         },

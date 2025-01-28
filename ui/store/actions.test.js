@@ -49,12 +49,6 @@ const defaultState = {
         ],
       },
     ],
-    keyringsMetadata: [
-      {
-        id: 'ULID01234567890ABCDEFGHIJKLMN',
-        name: '',
-      },
-    ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {

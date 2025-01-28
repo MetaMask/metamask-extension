@@ -151,12 +151,6 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    keyringsMetadata: [
-      {
-        id: 'ULID01234567890ABCDEFGHIJKLMN',
-        name: '',
-      },
-    ],
     ...mockNetworkState({
       chainId: CHAIN_IDS.GOERLI,
       ticker: 'ETH',

@@ -23,11 +23,11 @@ import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap, pick } from 'lodash';
 import {
   KeyringController,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   KeyringTypes,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  displayForKeyring,
   ///: END:ONLY_INCLUDE_IF
   keyringBuilderFactory,
-  displayForKeyring,
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';

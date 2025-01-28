@@ -18,11 +18,6 @@ jest.mock('../../app/scripts/snaps/preinstalled-snaps', () => ({
   default: [],
 }));
 
-jest.mock('ulid', () => ({
-  ulid: () => 'ULID01234567890ABCDEFGHIJKLMN',
-  monotonicFactory: () => () => 'ULID01234567890ABCDEFGHIJKLMN',
-}));
-
 const UNRESOLVED = Symbol('timedOut');
 
 // Store this in case it gets stubbed later
