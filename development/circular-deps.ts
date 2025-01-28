@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 import fs from 'fs';
-import madge from '@lgbot/madge';
+import madge from 'madge';
 import fg from 'fast-glob';
 
 const TARGET_FILE = 'development/circular-deps.jsonc';
