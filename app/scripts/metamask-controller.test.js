@@ -40,7 +40,10 @@ import {
 } from '@metamask/multichain';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
-import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
+import {
+  HardwareDeviceNames,
+  HardwareKeyringType,
+} from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
@@ -2343,84 +2346,38 @@ describe('MetaMaskController', () => {
         );
       });
 
-      describe('getDeviceNameForMetric', () => {
-        const hdPath = "m/44'/60'/0'/0/0";
+      describe('getHardwareTypeForMetric', () => {
+        it.each(['ledger', 'lattice', 'trezor', 'qr'])(
+          'should return the correct type for %s',
+          async (type) => {
+            jest
+              .spyOn(metamaskController.keyringController, 'withKeyring')
+              .mockImplementation((_, fn) => fn({ type }));
 
-        it('should return the correct device name for Ledger', async () => {
-          const deviceName = 'ledger';
-
-          const result = await metamaskController.getDeviceNameForMetric(
-            deviceName,
-            hdPath,
-          );
-
-          expect(result).toBe('ledger');
-        });
-
-        it('should return the correct device name for Lattice', async () => {
-          const deviceName = 'lattice';
-
-          const result = await metamaskController.getDeviceNameForMetric(
-            deviceName,
-            hdPath,
-          );
-
-          expect(result).toBe('lattice');
-        });
-
-        it('should return the correct device name for Trezor', async () => {
-          const deviceName = 'trezor';
-          jest
-            .spyOn(metamaskController.keyringController, 'withKeyring')
-            .mockImplementation((_, operation) =>
-              operation({
-                getModel: jest.fn().mockReturnValue('T'),
-                bridge: {
-                  minorVersion: 1,
-                  model: 'T',
-                },
-              }),
+            const result = await metamaskController.getHardwareTypeForMetric(
+              '0x123',
             );
 
-          const result = await metamaskController.getDeviceNameForMetric(
-            deviceName,
-            hdPath,
-          );
+            expect(result).toBe(HardwareKeyringType[type]);
+          },
+        );
 
-          expect(result).toBe('trezor');
-        });
-
-        it('should return undefined for unknown device name', async () => {
-          const deviceName = 'unknown';
-
-          const result = await metamaskController.getDeviceNameForMetric(
-            deviceName,
-            hdPath,
-          );
-
-          expect(result).toBe(deviceName);
-        });
-
-        it('should handle special case for OneKeyDevice via Trezor', async () => {
-          const deviceName = 'trezor';
+        it('should handle special case for oneKey', async () => {
           jest
             .spyOn(metamaskController.keyringController, 'withKeyring')
-            .mockImplementation((_, operation) =>
-              operation({
-                getModel: jest.fn().mockReturnValue('T'),
-                bridge: {
-                  model: 'T',
-                  minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION,
-                },
-              }),
-            );
+            .mockImplementation((_, fn) => {
+              const keyring = {
+                type: 'trezor',
+                bridge: { minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION },
+              };
+              return fn(keyring);
+            });
 
-          const result = await metamaskController.getDeviceNameForMetric(
-            deviceName,
-            hdPath,
+          const result = await metamaskController.getHardwareTypeForMetric(
+            '0x123',
           );
 
-          expect(result).toBe('OneKey via Trezor');
+          expect(result).toBe('OneKey Hardware');
         });
       });
 
