@@ -163,6 +163,11 @@
       "packages": {
         "immer": true
       }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true
+      }
     }
   }
 }
