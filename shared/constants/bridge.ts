@@ -1,3 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+import { MultichainNetworks } from './multichain/networks';
+///: END:ONLY_INCLUDE_IF
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
 // TODO read from feature flags
@@ -11,6 +14,9 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  MultichainNetworks.SOLANA,
+  ///: END:ONLY_INCLUDE_IF
 ];
 
 export type AllowedBridgeChainIds = (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number];
@@ -45,6 +51,13 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [CHAIN_IDS.OPTIMISM]: NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
   [CHAIN_IDS.ZKSYNC_ERA]: 'ZkSync Era',
   [CHAIN_IDS.BASE]: 'Base',
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  [MultichainNetworks.SOLANA]: 'Solana',
+  [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
+  [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
+  [MultichainNetworks.BITCOIN]: 'Bitcoin',
+  [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
+  ///: END:ONLY_INCLUDE_IF
 };
 export const BRIDGE_MM_FEE_RATE = 0.875;
 export const REFRESH_INTERVAL_MS = 30 * 1000;
