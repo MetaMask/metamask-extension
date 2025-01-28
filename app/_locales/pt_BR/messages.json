@@ -288,13 +288,13 @@
     "message": "Cancelado"
   },
   "chainId": {
-    "message": "ID da cadeia"
+    "message": "ID da chain"
   },
   "chainIdDefinition": {
-    "message": "O ID da cadeia usado para assinar transações para essa rede."
+    "message": "O ID da chain utilizado para assinar transações para essa rede."
   },
   "chainIdExistsErrorMsg": {
-    "message": "Esse ID da cadeia é usado pela rede $1."
+    "message": "Esse ID da chain já é usado pela rede $1."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Você precisa usar a MetaMask no Google Chrome para se conectar com a sua carteira de hardware."
@@ -730,7 +730,7 @@
     "message": "Falhou"
   },
   "failedToFetchChainId": {
-    "message": "Não foi possível obter o ID da cadeia. O URL da RPC está correto?"
+    "message": "Não foi possível obter o ID da chain. A URL do RPC está correto?"
   },
   "failureMessage": {
     "message": "Ocorreu algum erro e não conseguimos concluir a ação"
@@ -967,17 +967,17 @@
     "message": "O endereço do destinatário é inválido"
   },
   "invalidChainIdTooBig": {
-    "message": "ID de cadeia inválido. O ID de cadeia é muito grande."
+    "message": "ID da chain inválido. O ID da chain é muito grande."
   },
   "invalidCustomNetworkAlertContent1": {
-    "message": "O ID de cadeia da rede personalizada “$1” precisa ser digitado novamente.",
+    "message": "O ID da chain da rede personalizada “$1” precisa ser digitado novamente.",
     "description": "$1 is the name/identifier of the network."
   },
   "invalidCustomNetworkAlertContent2": {
-    "message": "Para proteger você contra provedores de rede mal-intencionados ou defeituosos, os IDs de cadeia agora são obrigatórios para todas as redes personalizadas."
+    "message": "Para proteger você contra provedores de rede mal-intencionados ou defeituosos, os IDs das chains agora são obrigatórios para todas as redes personalizadas."
   },
   "invalidCustomNetworkAlertContent3": {
-    "message": "Acesse Configurações > Rede e informe o ID de cadeia. Encontre os IDs de cadeia das redes mais populares em $1.",
+    "message": "Acesse Configurações > Rede e informe o ID da chain. Encontre os IDs das chains das redes mais populares em $1.",
     "description": "$1 is a link to https://chainid.network"
   },
   "invalidCustomNetworkAlertTitle": {
