@@ -51,9 +51,7 @@ class ConfirmSolanaTxPage {
    * Clicks the send button on the Solana transaction confirmation page
    */
   async clickOnSend(): Promise<void> {
-    const sendButton = await this.driver.findElement(this.sendButton);
-
-    await sendButton.click();
+    await this.driver.clickElement(this.sendButton);
     await this.driver.waitForSelector(
       {
         text: 'Close',

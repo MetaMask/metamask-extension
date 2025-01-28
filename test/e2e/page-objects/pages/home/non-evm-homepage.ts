@@ -11,9 +11,7 @@ class NonEvmHomepage extends HomePage {
 
   async check_pageIsLoaded(): Promise<void> {
     await super.check_pageIsLoaded();
-    if (this.driver.browser === 'firefox') {
-      await this.driver.delay(2000);
-    }
+    await this.driver.delayFirefox(2000);
   }
 
   protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
