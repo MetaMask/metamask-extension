@@ -169,9 +169,12 @@ export default function OnboardingWelcome() {
             </Text>
             <div className="onboarding-welcome__image">
               <img
-                src="/images/onboarding-welcome-say-hello.svg"
-                width="169"
-                height="237"
+                src="/images/onboarding-welcome-say-hello.png"
+                width="200"
+                height="275"
+                style={{
+                  objectFit: 'contain',
+                }}
                 alt="onboarding-welcome-say-hello"
               />
             </div>
@@ -190,10 +193,13 @@ export default function OnboardingWelcome() {
             </Text>
             <div className="onboarding-welcome__image">
               <img
-                src="/images/onboarding-welcome-decentralised-apps.svg"
-                width="327"
-                height="256"
+                src="/images/onboarding-welcome-decentralised-apps.png"
+                width="200"
+                height="275"
                 alt="onboarding-welcome-decentralised-apps"
+                style={{
+                  objectFit: 'contain',
+                }}
               />
             </div>
           </div>
