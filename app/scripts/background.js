@@ -49,7 +49,7 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
 import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
-import { PersistanceManager } from './lib/stores/persistence-manager';
+import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
@@ -96,9 +96,9 @@ const migrator = new Migrator({
 });
 
 const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
-const persistanceManager = new PersistanceManager({ localStore });
+const persistenceManager = new PersistenceManager({ localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
-  persistanceManager.mostRecentRetrievedState;
+  persistenceManager.mostRecentRetrievedState;
 
 const { sentry } = global;
 let firstTimeState = { ...rawFirstTimeState };
@@ -126,7 +126,7 @@ const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState =
-    persistanceManager.get.bind(persistanceManager);
+    persistenceManager.get.bind(persistenceManager);
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -618,7 +618,7 @@ export async function loadStateFromPersistence() {
   // read from disk
   // first from preferred, async API:
   const preMigrationVersionedData =
-    (await persistanceManager.get()) ||
+    (await persistenceManager.get()) ||
     migrator.generateInitialState(firstTimeState);
 
   // report migration errors to sentry
@@ -653,7 +653,7 @@ export async function loadStateFromPersistence() {
   localStore.setMetadata(versionedData.meta);
 
   // write to disk
-  persistanceManager.set(versionedData.data);
+  persistenceManager.set(versionedData.data);
 
   // return just the data
   return versionedData;
@@ -815,7 +815,7 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    persistanceManager,
+    persistenceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
@@ -839,7 +839,7 @@ export function setupController(
     storeAsStream(controller.store),
     debounce(1000),
     createStreamSink(async (state) => {
-      await persistanceManager.set(state);
+      await persistenceManager.set(state);
       statePersistenceEvents.emit('state-persisted', state);
     }),
     (error) => {
@@ -1298,7 +1298,7 @@ const addAppInstalledEvent = () => {
 
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const storeAlreadyExisted = Boolean(await persistanceManager.get());
+  const storeAlreadyExisted = Boolean(await persistenceManager.get());
   // If the store doesn't exist, then this is the first time running this script,
   // and is therefore an install
   if (process.env.IN_TEST) {
@@ -1354,7 +1354,7 @@ async function initBackground() {
         window.document?.documentElement?.classList.add('controller-loaded');
       }
     }
-    persistanceManager.cleanUpMostRecentRetrievedState();
+    persistenceManager.cleanUpMostRecentRetrievedState();
   } catch (error) {
     log.error(error);
   }

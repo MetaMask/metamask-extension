@@ -6,7 +6,7 @@ import ExtensionStore from './extension-store';
 import ReadOnlyNetworkStore from './read-only-network-store';
 
 /**
- * The PersistanceManager class serves as a high-level manager for handling
+ * The PersistenceManager class serves as a high-level manager for handling
  * storage-related operations using a local storage system. It provides methods to read
  * and write state, manage metadata, and handle errors or corruption in the
  * underlying storage system.
@@ -30,12 +30,12 @@ import ReadOnlyNetworkStore from './read-only-network-store';
  *
  *
  * Usage:
- * The `PersistanceManager` is instantiated with a `localStore`, which is an
+ * The `PersistenceManager` is instantiated with a `localStore`, which is an
  * implementation of the `BaseStore` class (either `ExtensionStore` or
  * `ReadOnlyNetworkStore`). It provides methods for setting and retrieving
  * state, managing metadata, and handling cleanup tasks.
  */
-export class PersistanceManager {
+export class PersistenceManager {
   /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
    * system attempts to write state and the write operation fails. This is only

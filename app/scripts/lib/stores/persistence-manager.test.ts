@@ -2,7 +2,7 @@
 import { captureException } from '@sentry/browser';
 import log from 'loglevel';
 
-import { PersistanceManager } from './persistence-manager';
+import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
 
@@ -24,12 +24,12 @@ jest.mock('loglevel', () => ({
   error: jest.fn(),
 }));
 
-describe('PersistanceManager', () => {
-  let manager: PersistanceManager;
+describe('PersistenceManager', () => {
+  let manager: PersistenceManager;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    manager = new PersistanceManager({ localStore: new ExtensionStore() });
+    manager = new PersistenceManager({ localStore: new ExtensionStore() });
   });
 
   describe('set', () => {
