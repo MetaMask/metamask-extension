@@ -13,7 +13,7 @@ jobs:
       - name: Setup environment
         uses: metamask/github-tools/.github/actions/setup-environment@main
 
-      - name: Run E2E Page Object Validation
+      - name: Run E2E Page Object Usage Validation
         env:
           OWNER: ${{ github.repository_owner }}
           REPOSITORY: ${{ github.event.repository.name }}
