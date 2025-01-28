@@ -203,7 +203,7 @@ exports[`SendPage render and initialization should render correctly even when a 
               class="box tabs box--flex-direction-row"
             >
               <ul
-                class="box tabs__list box--display-flex box--gap-1 box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
+                class="box tabs__list box--display-flex box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
               >
                 <li
                   class="box tab tab--active box--flex-direction-row"
