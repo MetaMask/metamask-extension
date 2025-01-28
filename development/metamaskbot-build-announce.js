@@ -8,7 +8,6 @@ const path = require('path');
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
 const VERSION = require('../package.json').version;
-const { getHighlights } = require('./highlights');
 
 start().catch(console.error);
 
@@ -355,16 +354,6 @@ async function start() {
     commentBody += sizeDiffBody;
   } catch (error) {
     console.error(`Error constructing bundle size diffs results: '${error}'`);
-  }
-
-  try {
-    const highlights = await getHighlights({ hostUrl: HOST_URL });
-    if (highlights) {
-      const highlightsBody = `### highlights:\n${highlights}\n`;
-      commentBody += highlightsBody;
-    }
-  } catch (error) {
-    console.error(`Error constructing highlight results: '${error}'`);
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
