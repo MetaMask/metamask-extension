@@ -11,6 +11,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  Checkbox,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -20,7 +21,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import Checkbox from '../../../components/ui/check-box';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
@@ -97,7 +97,7 @@ export default function SkipSRPBackup({ handleClose }) {
               className="skip-srp-backup-popover__checkbox"
               onClick={() => setChecked(!checked)}
               checked={checked}
-              dataTestId="skip-srp-backup-popover-checkbox"
+              data-testid="skip-srp-backup-popover-checkbox"
             />
             <Text className="skip-srp-backup-popover__details">
               {t('skipAccountSecurityDetails')}
