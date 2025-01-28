@@ -4227,8 +4227,8 @@ export default class MetamaskController extends EventEmitter {
       removePollingTokenFromAppState:
         appStateController.removePollingToken.bind(appStateController),
 
-      resetOriginThrottlingState:
-        appStateController.resetOriginThrottlingState.bind(appStateController),
+      updateThrottledOriginState:
+        appStateController.updateThrottledOriginState.bind(appStateController),
 
       // Backup
       backupUserData: backup.backupUserData.bind(backup),

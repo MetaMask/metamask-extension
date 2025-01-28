@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetOriginThrottlingState } from '../../../store/actions';
+import { updateThrottledOriginState } from '../../../store/actions';
 import { useOriginThrottling } from './useOriginThrottling';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
@@ -12,7 +12,7 @@ jest.mock('react-redux', () => ({
 jest.mock('./useCurrentConfirmation', () => jest.fn());
 
 jest.mock('../../../store/actions', () => ({
-  resetOriginThrottlingState: jest.fn(),
+  updateThrottledOriginState: jest.fn(),
 }));
 
 describe('useOriginThrottling', () => {
@@ -45,7 +45,7 @@ describe('useOriginThrottling', () => {
     expect(result.current.shouldThrottleOrigin).toBe(true);
   });
 
-  it('should call resetOriginThrottlingState when resetOrigin is called', async () => {
+  it('should call updateThrottledOriginState when resetOrigin is called', async () => {
     const { result } = renderHook(() => useOriginThrottling());
 
     await act(async () => {
@@ -53,7 +53,10 @@ describe('useOriginThrottling', () => {
     });
 
     expect(mockDispatch).toHaveBeenCalledWith(
-      resetOriginThrottlingState(mockOrigin),
+      updateThrottledOriginState(mockOrigin, {
+        rejections: 0,
+        lastRejection: 0,
+      }),
     );
   });
 });

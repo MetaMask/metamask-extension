@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import type { ThrottledOrigin } from '../../../../shared/types/origin-throttling';
-import { resetOriginThrottlingState } from '../../../store/actions';
+import { updateThrottledOriginState } from '../../../store/actions';
 
 import { throttledOriginsSelector } from '../../../selectors';
 import useCurrentConfirmation from './useCurrentConfirmation';
@@ -34,7 +34,12 @@ export function useOriginThrottling() {
   const shouldThrottleOrigin = willNextRejectionReachThreshold(originState);
 
   const resetOrigin = useCallback(async () => {
-    await dispatch(resetOriginThrottlingState(origin));
+    await dispatch(
+      updateThrottledOriginState(origin, {
+        rejections: 0,
+        lastRejection: 0,
+      }),
+    );
   }, [dispatch, origin]);
 
   return {

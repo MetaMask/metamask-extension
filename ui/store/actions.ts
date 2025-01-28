@@ -4158,10 +4158,14 @@ export function rejectAllMessages(
   };
 }
 
-export async function resetOriginThrottlingState(
+export async function updateThrottledOriginState(
   origin: string,
+  throttledOriginState: ThrottledOrigin,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  await submitRequestToBackground('resetOriginThrottlingState', [origin]);
+  await submitRequestToBackground('updateThrottledOriginState', [
+    origin,
+    throttledOriginState,
+  ]);
 }
 
 export function setFirstTimeFlowType(
