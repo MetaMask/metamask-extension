@@ -10,11 +10,17 @@ const FILE_HEADER = `// This is a machine-generated file that tracks circular de
 // To understand changes in this file:
 // - Each array represents a cycle of imports where the last file imports the first
 // - The cycles are sorted alphabetically for consistent diffs
-// - To update this file, run: yarn circular-deps:fix
+// - To update this file, run: yarn circular-deps:update
 // - To prevent new circular dependencies, ensure your changes don't add new cycles
 // - For more information contact the Extension Platform team.
 
 `;
+
+/**
+ * Message displayed when circular dependency checks fail and need resolution.
+ */
+const RESOLUTION_STEPS =
+  'To resolve this issue, run `yarn circular-deps:update` locally and commit the changes.';
 
 /**
  * Patterns for files and directories to ignore when checking for circular dependencies:
@@ -113,7 +119,7 @@ async function getMadgeCircularDeps(): Promise<CircularDeps> {
   }
 }
 
-async function fix(): Promise<void> {
+async function update(): Promise<void> {
   try {
     console.log('Generating circular dependencies...');
     const circularDeps = await getMadgeCircularDeps();
@@ -123,7 +129,7 @@ async function fix(): Promise<void> {
     );
     console.log(`Wrote circular dependencies to ${TARGET_FILE}`);
   } catch (error) {
-    console.error('Error while fixing circular dependencies:', error);
+    console.error('Error while updating circular dependencies:', error);
     process.exit(1);
   }
 }
@@ -142,14 +148,11 @@ function stripJsonComments(jsonc: string): string {
 }
 
 async function check(): Promise<void> {
-  const resolutionSteps =
-    'To resolve this issue, run `yarn circular-deps:fix` locally and commit the changes.';
-
   try {
     // Check if target file exists
     if (!fs.existsSync(TARGET_FILE)) {
       console.error(`Error: ${TARGET_FILE} does not exist.`);
-      console.log(resolutionSteps);
+      console.log(RESOLUTION_STEPS);
       process.exit(1);
     }
 
@@ -168,7 +171,7 @@ async function check(): Promise<void> {
       console.error(
         `Error: Codebase circular dependencies are out of sync in ${TARGET_FILE}`,
       );
-      console.log(resolutionSteps);
+      console.log(RESOLUTION_STEPS);
       process.exit(1);
     }
 
@@ -183,13 +186,13 @@ async function check(): Promise<void> {
 async function main(): Promise<void> {
   const command = process.argv[2];
 
-  if (command !== 'check' && command !== 'fix') {
-    console.error('Usage: circular-deps.ts [check|fix]');
+  if (command !== 'check' && command !== 'update') {
+    console.error('Usage: circular-deps.ts [check|update]');
     process.exit(1);
   }
 
-  if (command === 'fix') {
-    await fix();
+  if (command === 'update') {
+    await update();
   } else {
     await check();
   }
