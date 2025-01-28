@@ -14,7 +14,12 @@ class StartOnboardingPage {
     tag: 'h2',
   };
 
+  private readonly termsModal = '[data-testid="terms-of-use-modal-body"]';
+
   private readonly termsCheckbox = '[data-testid="onboarding-terms-checkbox"]';
+
+  private readonly termsConfirmButton =
+    '[data-testid="onboarding-terms-accept"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -22,10 +27,7 @@ class StartOnboardingPage {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.startMessage,
-        this.termsCheckbox,
-      ]);
+      await this.driver.waitForMultipleSelectors([this.startMessage]);
     } catch (e) {
       console.log(
         'Timeout while waiting for start onboarding page to be loaded',
@@ -37,15 +39,32 @@ class StartOnboardingPage {
   }
 
   async checkTermsCheckbox(): Promise<void> {
+    await this.driver.waitForSelector(this.termsModal);
+
+    await this.driver.executeScript(`
+      const modalBody = document.querySelector('[data-testid="terms-of-use-modal-body"]');
+      if (modalBody) {
+        modalBody.scrollTo({ top: modalBody.scrollHeight, behavior: 'instant' });
+      }
+    `);
+
+    await this.driver.findClickableElement(this.termsCheckbox);
     await this.driver.clickElement(this.termsCheckbox);
+
+    await this.driver.findClickableElement(this.termsConfirmButton);
+    await this.driver.clickElement(this.termsConfirmButton);
   }
 
   async clickCreateWalletButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.createWalletButton);
+    await this.driver.findClickableElement(this.createWalletButton);
+    await this.driver.clickElement(this.createWalletButton);
+    await this.checkTermsCheckbox();
   }
 
   async clickImportWalletButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
+    await this.driver.findClickableElement(this.importWalletButton);
+    await this.driver.clickElement(this.importWalletButton);
+    await this.checkTermsCheckbox();
   }
 }
 

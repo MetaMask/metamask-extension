@@ -385,10 +385,6 @@
     "message": "Это значение отражает стоимость всех токенов, которыми вы владеете в данной сети. Если вы предпочитаете видеть это значение в ETH или других валютах, перейдите к $1.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "Я соглашаюсь с $1 MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },

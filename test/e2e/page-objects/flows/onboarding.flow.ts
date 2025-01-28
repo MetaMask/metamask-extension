@@ -35,7 +35,6 @@ export const createNewWalletOnboardingFlow = async ({
   }
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
-  await startOnboardingPage.checkTermsCheckbox();
   await startOnboardingPage.clickCreateWalletButton();
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -80,7 +79,6 @@ export const importSRPOnboardingFlow = async ({
 
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
-  await startOnboardingPage.checkTermsCheckbox();
   await startOnboardingPage.clickImportWalletButton();
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);

@@ -385,9 +385,8 @@
     "message": "This reflects the value of all tokens you own on a given network. If you prefer seeing this value in ETH or other currencies, go to $1.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "I agree to MetaMask's $1",
-    "description": "$1 is the `terms` link"
+  "agree": {
+    "message": "Agree"
   },
   "airgapVault": {
     "message": "AirGap Vault"

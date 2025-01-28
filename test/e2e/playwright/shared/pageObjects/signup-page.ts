@@ -49,6 +49,8 @@ export class SignUpPage {
 
   readonly skipSrpBackupBtn: Locator;
 
+  readonly termsModalBody: Locator;
+
   readonly popOverBtn: Locator;
 
   constructor(page: Page) {
@@ -79,13 +81,22 @@ export class SignUpPage {
     this.nextBtn = page.getByTestId('pin-extension-next');
     this.agreeBtn = page.locator('button:has-text("I agree")');
     this.enableBtn = page.locator('button:has-text("Enable")');
+    this.termsModalBody = page.getByTestId('terms-of-use-modal-body');
     this.popOverBtn = page.getByTestId('popover-close');
   }
 
-  async importWallet() {
+  private async handleTermsModal() {
+    await this.termsModalBody.waitFor({ state: 'visible' });
+    for (let i = 0; i < 1000; i++) {
+      await this.termsModalBody.press('ArrowDown');
+    }
     await this.agreeTandCCheck.click();
+    await this.page.getByTestId('onboarding-terms-accept').click();
+  }
+
+  async importWallet() {
     await this.importWalletBtn.click();
-    await this.agreeBtn.click();
+    await this.handleTermsModal();
 
     const seeds = SEED_PHRASE?.trim().split(/\s+/u);
     for (const [index, element] of (seeds as string[]).entries()) {
@@ -104,8 +115,8 @@ export class SignUpPage {
   }
 
   async createWallet() {
-    await this.agreeTandCCheck.click();
     await this.createWalletBtn.click();
+    await this.handleTermsModal();
     await this.metametricsBtn.click();
     await this.passwordTxt.fill(ACCOUNT_PASSWORD as string);
     await this.passwordConfirmTxt.fill(ACCOUNT_PASSWORD as string);
