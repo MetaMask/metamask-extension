@@ -20,7 +20,7 @@ async function verifyE2ePageObjectsUsage() {
 
         // Small buffer to ensure the job id is accessible in circle ci
         // once we have that job migrated into github actions, we can just add a dependency rule
-        await sleep(300);
+        await sleep(120);
 
         while (attempts < maxAttempts) {
             try {
