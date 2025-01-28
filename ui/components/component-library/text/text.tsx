@@ -43,7 +43,6 @@ export const Text: TextComponent = React.forwardRef(
       ellipsis,
       className = '',
       children,
-      isBrandEvolution = true,
       ...props
     }: TextProps<C>,
     ref?: PolymorphicRef<C>,
@@ -62,7 +61,6 @@ export const Text: TextComponent = React.forwardRef(
         [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
         [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),
         [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
-        [`mm-text--${variant}-brand-evo`]: Boolean(isBrandEvolution),
       },
     );
 

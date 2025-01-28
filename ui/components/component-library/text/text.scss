@@ -18,16 +18,6 @@ $brand-evolution-font-families: (
 // screen size, type, size
 
 @mixin textVariables($type, $size) {
-  font-family: var(--typography-l-#{$type}-#{$size}-font-family);
-  font-weight: var(--typography-l-#{$type}-#{$size}-font-weight);
-  font-size: var(--typography-l-#{$type}-#{$size}-font-size);
-  line-height: var(--typography-l-#{$type}-#{$size}-line-height);
-  letter-spacing: var(--typography-l-#{$type}-#{$size}-letter-spacing);
-}
-
-
-// Brand evolution font mixin
-@mixin brand-evolution-font($type) {
   $font-family: map-get($brand-evolution-font-families, $type);
 
   font-family: $font-family, var(--font-family-sans);
@@ -35,7 +25,12 @@ $brand-evolution-font-families: (
   @if $type == 'display' or $type == 'heading' {
     font-weight: var(--font-weight-normal);
   }
+
+  font-size: var(--typography-l-#{$type}-#{$size}-font-size);
+  line-height: var(--typography-l-#{$type}-#{$size}-line-height);
+  letter-spacing: var(--typography-l-#{$type}-#{$size}-letter-spacing);
 }
+
 
 .mm-text {
   // Set default styles
@@ -54,10 +49,6 @@ $brand-evolution-font-families: (
       @each $size in $size-options {
         &-#{$size} {
           @include textVariables($type, $size);
-          // Apply brand evolution font if the brand evolution modifier class is present
-          &-brand-evo {
-            @include brand-evolution-font($type);
-          }
         }
       }
     }
