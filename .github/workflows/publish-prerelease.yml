@@ -22,9 +22,10 @@ jobs:
       - name: Get merge base commit hash
         id: get-merge-base
         env:
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          merge_base="$(git merge-base "origin/${BASE_REF}" HEAD)"
+          merge_base="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}")"
           echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
           echo "Merge base is '${merge_base}'"
 

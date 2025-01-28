@@ -774,6 +774,16 @@ class Driver {
   }
 
   /**
+   * Move the mouse to the given element to test hover behaviour.
+   *
+   * @param element - Previously located element
+   * @returns {Promise<void>} promise resolving after mouse move completed
+   */
+  async hoverElement(element) {
+    await this.driver.actions().move({ origin: element, x: 1, y: 1 }).perform();
+  }
+
+  /**
    * Scrolls the page until the given web element is in view.
    *
    * @param {string | object} element - Element locator

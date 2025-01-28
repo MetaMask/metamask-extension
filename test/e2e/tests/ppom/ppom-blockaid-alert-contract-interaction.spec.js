@@ -182,7 +182,7 @@ async function mockInfura(mockServer) {
     }));
 }
 
-describe('PPOM Blockaid Alert - Malicious Contract interaction @no-mmi', function () {
+describe('PPOM Blockaid Alert - Malicious Contract interaction', function () {
   it('should show banner alert', async function () {
     await withFixtures(
       {
@@ -194,9 +194,6 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction @no-mmi', functio
           })
           .withPreferencesController({
             securityAlertsEnabled: true,
-            preferences: {
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
           })
           .build(),
         defaultGanacheOptions,
