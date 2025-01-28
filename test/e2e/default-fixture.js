@@ -19,17 +19,19 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
     data: {
       AuthenticationController: {
         isSignedIn: true,
+        sessionData: {},
       },
       UserStorageController: {
+        hasAccountSyncingSyncedAtLeastOnce: true,
         isProfileSyncingEnabled: true,
       },
       NotificationServicesController: {
-        subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
-        isNotificationServicesEnabled: false,
         isMetamaskNotificationsFeatureSeen: false,
+        isNotificationServicesEnabled: false,
         metamaskNotificationsList: [],
         metamaskNotificationsReadList: [],
+        subscriptionAccountsSeen: [],
       },
       AccountsController: {
         internalAccounts: {
@@ -94,28 +96,36 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         ],
       },
       AccountOrderController: {
-        pinnedAccountList: [],
         hiddenAccountList: [],
+        pinnedAccountList: [],
       },
       AppStateController: {
         browserEnvironment: {},
-        nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
-        termsOfUseLastAgreed:
-          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         defaultHomeActiveTabName: null,
-        fullScreenGasPollTokens: [],
-        notificationGasPollTokens: [],
-        popupGasPollTokens: [],
-        qrHardware: {},
+        hadAdvancedGasFeesSetPriorToMigration92_3: false,
+        lastViewedUserSurvey: '',
+        newPrivacyPolicyToastClickedOrClosed: true,
+        newPrivacyPolicyToastShownDate: Date.now(),
+        nftsDetectionNoticeDismissed: true,
+        onboardingDate: Date.now(),
+        outdatedBrowserWarningLastShown: false,
         recoveryPhraseReminderHasBeenShown: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
+        showAccountBanner: false,
+        showBetaHeader: false,
+        showNetworkBanner: false,
+        showPermissionsTour: false,
         showTestnetMessageInDropdown: true,
-        trezorModel: null,
-        newPrivacyPolicyToastClickedOrClosed: true,
-        newPrivacyPolicyToastShownDate: Date.now(),
+        slides: [],
         snapsInstallPrivacyWarningShown: true,
+        surveyLinkLastClickedOrClosed: '',
+        switchedNetworkNeverShowMessage: false,
+        termsOfUseLastAgreed:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
+        timeoutMinutes: '',
+        trezorModel: null,
       },
       BridgeController: {
         bridgeState: {
@@ -141,7 +151,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         },
       },
       CurrencyController: {
-        currentCurrency: 'usd',
         currencyRates: {
           ETH: {
             conversionDate: 1665507600.0,
@@ -149,24 +158,30 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             usdConversionRate: 1700.0,
           },
         },
+        currentCurrency: 'usd',
       },
       GasFeeController: {
         estimatedGasFeeTimeBounds: {},
         gasEstimateType: 'none',
         gasFeeEstimates: {},
+        gasFeeEstimatesByChainId: {},
+        nonRPCGasFeeApisDisabled: false,
       },
       KeyringController: {
         vault:
           '{"data":"WHaP1FrrtV4zUonudIppDifsLHF39g6oPkVksAIdWAHBRzax1uy1asfAJprR7u72t4/HuYz5yPIFQrnNnv+hwQu9GRuty88VKMnvMy+sq8MNtoXI+C54bZpWa8r4iUQfa0Mj/cfJbpFpzOdF1ZYXahTfTcU5WsrHwvJew842CiJR4B2jmCHHXfm/DxLK3WazsVQwXJGx/U71UelGoOOrT8NI28EKrAwgPn+7Xmv0j92gmhau30N7Bo2fr6Zv","iv":"LfD8/tY1EjXzxuemSmDVdA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
       },
       MetaMetricsController: {
+        dataCollectionForMarketing: false,
         eventsBeforeMetricsOptIn: [],
         fragments: {},
-        metaMetricsId: null,
-        participateInMetaMetrics: false,
-        dataCollectionForMarketing: false,
-        traits: {},
         latestNonAnonymousEventTimestamp: 0,
+        marketingCampaignCookieId: null,
+        metaMetricsId: '',
+        participateInMetaMetrics: false,
+        previousUserTraits: {},
+        segmentApiCalls: {},
+        traits: {},
       },
       MetaMetricsDataDeletionController: {
         metaMetricsDataDeletionId: null,
@@ -186,18 +201,19 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       OnboardingController: {
         completedOnboarding: true,
         firstTimeFlowType: FirstTimeFlowType.import,
-        onboardingTabs: {},
         seedPhraseBackedUp: true,
       },
       PermissionController: {
         subjects: {},
       },
       PreferencesController: {
-        advancedGasFee: null,
+        addSnapAccountEnabled: false,
+        advancedGasFee: {},
+        bitcoinSupportEnabled: false,
+        bitcoinTestnetSupportEnabled: false,
         currentLocale: 'en',
-        useExternalServices: true,
         dismissSeedBackUpReminder: true,
-        overrideContentSecurityPolicyHeader: true,
+        enableMV3TimestampSave: true,
         featureFlags: {},
         forgottenPassword: false,
         identities: {
@@ -207,11 +223,15 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             name: 'Account 1',
           },
         },
+        incomingTransactionsPreferences: {},
         ipfsGateway: 'dweb.link',
+        isIpfsGatewayEnabled: true,
+        isMultiAccountBalancesEnabled: true,
         knownMethodData: {},
         ledgerTransportType: 'webhid',
         lostIdentities: {},
         openSeaEnabled: false,
+        overrideContentSecurityPolicyHeader: true,
         preferences: {
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
@@ -230,16 +250,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           shouldShowAggregatedBalancePopover: true,
           tokenNetworkFilter: {},
         },
+        securityAlertsEnabled: true,
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        theme: 'light',
-        useBlockie: false,
-        useNftDetection: false,
-        useNonceField: false,
-        usePhishDetect: true,
-        useTokenDetection: false,
-        useCurrencyRateCheck: true,
-        useMultiAccountBalanceChecker: true,
-        isMultiAccountBalancesEnabled: true,
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
@@ -262,6 +274,24 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
+        snapRegistryList: {},
+        snapsAddSnapAccountModalDismissed: true,
+        theme: 'light',
+        use4ByteResolution: true,
+        useAddressBarEnsResolution: true,
+        useBlockie: false,
+        useCurrencyRateCheck: true,
+        useExternalNameSources: true,
+        useExternalServices: true,
+        useMultiAccountBalanceChecker: true,
+        useNftDetection: false,
+        useNonceField: false,
+        usePhishDetect: true,
+        useRequestQueue: true,
+        useSafeChainsListValidation: true,
+        useTokenDetection: false,
+        useTransactionSimulations: false,
+        watchEthereumAccountEnabled: false,
       },
       QueuedRequestController: {
         queuedRequestCount: 0,
@@ -269,17 +299,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       SelectedNetworkController: {
         domains: {},
       },
-      SmartTransactionsController: {
-        smartTransactionsState: {
-          fees: {},
-          feesByChainId: {},
-          liveness: true,
-          livenessByChainId: {},
-          smartTransactions: {
-            [CHAIN_IDS.MAINNET]: [],
-          },
-        },
-      },
+      SmartTransactionsController: {},
       SubjectMetadataController: {
         subjectMetadata: {
           'https://metamask.github.io': {
@@ -300,7 +320,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         tokens: [],
       },
       TransactionController: {
-        transactions: {},
+        lastFetchedBlockNumbers: {},
+        methodData: {},
+        submitHistory: [],
+        transactions: [],
       },
       config: {},
       firstTimeInfo: {
