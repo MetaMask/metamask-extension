@@ -2170,7 +2170,7 @@ describe('MetaMaskController', () => {
           async (type) => {
             jest
               .spyOn(metamaskController.keyringController, 'withKeyring')
-              .mockResolvedValue({ type });
+              .mockImplementation((_, fn) => fn({ type }));
 
             const result = await metamaskController.getHardwareTypeForMetric(
               '0x123',
@@ -2183,9 +2183,12 @@ describe('MetaMaskController', () => {
         it('should handle special case for oneKey', async () => {
           jest
             .spyOn(metamaskController.keyringController, 'withKeyring')
-            .mockResolvedValue({
-              type: 'trezor',
-              bridge: { minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION },
+            .mockImplementation((_, fn) => {
+              const keyring = {
+                type: 'trezor',
+                bridge: { minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION },
+              };
+              return fn(keyring);
             });
 
           const result = await metamaskController.getHardwareTypeForMetric(
