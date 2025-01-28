@@ -2244,6 +2244,8 @@ describe('MetaMaskController', () => {
 
       describe('forgetDevice', () => {
         it('should throw if it receives an unknown device name', async () => {
+          // mock keyringController.update
+          jest.spyOn(metamaskController.keyringController, 'update');
           const result = metamaskController.forgetDevice(
             'Some random device name',
           );
@@ -2435,7 +2437,9 @@ describe('MetaMaskController', () => {
       it('errors when an primary keyring is does not exist', async () => {
         const addNewAccount = metamaskController.addNewAccount();
 
-        await expect(addNewAccount).rejects.toThrow('No HD keyring found');
+        await expect(addNewAccount).rejects.toThrow(
+          'KeyringController - Keyring not found.',
+        );
       });
     });
 
@@ -4033,6 +4037,51 @@ describe('MetaMaskController', () => {
           distribution: 'main',
           environment: 'rc',
         });
+      });
+    });
+
+    describe('generateNewMnemonicAndAddToVault', () => {
+      it('generates a new hd keyring instance', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+
+        const previousKeyrings =
+          metamaskController.keyringController.state.keyrings;
+
+        await metamaskController.addNewMnemonicToVault(TEST_SEED_ALT);
+
+        const currentKeyrings =
+          metamaskController.keyringController.state.keyrings;
+
+        expect(
+          currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
+        ).toHaveLength(2);
+        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
+      });
+    });
+
+    describe('addNewMnemonicToVault', () => {
+      it('generates a new hd keyring instance with a mnemonic', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+
+        const previousKeyrings =
+          metamaskController.keyringController.state.keyrings;
+
+        await metamaskController.addNewMnemonicToVault(TEST_SEED_ALT);
+
+        const currentKeyrings =
+          metamaskController.keyringController.state.keyrings;
+
+        expect(
+          currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
+        ).toHaveLength(2);
+        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
+        // expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
     });
   });
