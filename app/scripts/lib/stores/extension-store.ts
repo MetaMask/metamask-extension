@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import {
   type MetaMaskStateType,
-  MetaMaskStorageStructure,
+  type MetaMaskStorageStructure,
   BaseStore,
 } from './base-store';
 
