@@ -7,7 +7,8 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-const SOLANA_URL_REGEX = /^https:\/\/solana-mainnet\.infura\.io/u;
+const SOLANA_URL_REGEX =
+  /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
 // const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';
 const SOLANA_PRICE_REGEX =
   /^https:\/\/price-api\.metamask-institutional\.io\/v2\/chains\/solana:/u;
@@ -429,6 +430,10 @@ export async function withSolanaAccountSnap(
         }
         return mockList;
       },
+      ignoredConsoleErrors: [
+        'SES_UNHANDLED_REJECTION: 0, never, undefined, index, Array(1)',
+        'SES_UNHANDLED_REJECTION: 1, never, undefined, index, Array(1)',
+      ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithBalanceValidation(driver);
