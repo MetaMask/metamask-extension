@@ -2439,8 +2439,10 @@ export default class MetamaskController extends EventEmitter {
           const selectedAddress =
             this.accountsController.getSelectedAccount().address;
           return selectedAddress ? [selectedAddress] : [];
+        } else if (this.isUnlocked()) {
+          return this.getPermittedAccounts(innerOrigin);
         }
-        return this.getPermittedAccounts(innerOrigin);
+        return []; // changing this is a breaking change
       },
       // tx signing
       processTransaction: (transactionParams, dappRequest) =>
@@ -5383,10 +5385,12 @@ export default class MetamaskController extends EventEmitter {
    * return permissioned accounts to the dapp when the wallet is locked.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {object} [options] - The options object
+   * @param {boolean} [options.ignoreLock] - If accounts should be returned even if the wallet is locked.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  getPermittedAccounts(origin) {
+  getPermittedAccounts(origin, { ignoreLock } = {}) {
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(
@@ -5403,7 +5407,7 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    if (!caveat) {
+    if (!this.isUnlocked() && !ignoreLock) {
       return [];
     }
 
