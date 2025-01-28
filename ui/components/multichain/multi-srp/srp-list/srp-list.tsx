@@ -45,10 +45,7 @@ export const SRPList = ({
   onActionComplete: (id: string) => void;
   hideShowAccounts?: boolean;
 }) => {
-  const keyrings: (EthKeyring<Json> & {
-    accounts: string[];
-    metadata: KeyringMetadata;
-  })[] = useSelector(getMetaMaskKeyrings);
+  const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
   const accounts: InternalAccount[] = useSelector(getInternalAccounts);
   const accountBalances: Record<string, string> = useSelector(
     getMetaMaskCachedBalances,
@@ -92,12 +89,9 @@ export const SRPList = ({
       {hdKeyrings.map((keyring, index) => (
         <Card
           key={`srp-${index + 1}`}
-          data-testid={`hd-keyring-${keyring.metadata.id}`}
+          data-testid={`hd-keyring-${keyring?.fingerprint}`}
           onClick={() =>
-            onActionComplete(
-              (keyring as KeyringObject & { metadata: KeyringMetadata })
-                .metadata.id,
-            )
+            onActionComplete((keyring as KeyringObject)?.fingerprint || '')
           }
           className="select-srp__container"
           marginBottom={3}

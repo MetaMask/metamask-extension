@@ -391,7 +391,7 @@ export async function getSeedPhrase(password: string, keyringId: string) {
 
 export function requestRevealSeedWords(
   password: string,
-  keyringId: number,
+  keyringId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -514,25 +514,13 @@ export function addNewAccount(
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
-  return async (dispatch, getState) => {
-    let oldAccounts = getInternalAccounts(getState()).filter(
-      (internalAccount) =>
-        internalAccount.metadata.keyring.type === KeyringTypes.hd,
-    );
-    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-    const keyrings = getMetaMaskKeyrings(getState());
-    const selectedKeyring = keyrings.find(
-      (keyring) => keyring.metadata.id === keyringId,
-    );
-    oldAccounts = selectedKeyring?.accounts || keyrings[0]?.accounts;
-    ///: END:ONLY_INCLUDE_IF
-
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        Object.keys(oldAccounts).length,
+        1,
         ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         keyringId,
         ///: END:ONLY_INCLUDE_IF

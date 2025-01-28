@@ -5752,13 +5752,13 @@ __metadata:
   linkType: hard
 
 "@metamask/keyring-utils@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@metamask/keyring-utils@npm:1.2.0"
+  version: 1.3.0
+  resolution: "@metamask/keyring-utils@npm:1.3.0"
   dependencies:
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.0.1"
     bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/685e70290717ec178c8c1caa4c2c7c21b8542a3665fd72e208722863063a07ba0d7d7293474c034733bf74572cb9e29fb9a2ab420ec64cd95aa6c2a78d2bb0d4
+  checksum: 10/b2789e9870e5c83653de7631b641fef1f7718d5cedb16e88ea04ab77cca29d077325be2d67b53b01e3eaddcb09c7d03ead15dd0f52dfef72cab6b19f27e76dc0
   languageName: node
   linkType: hard
 

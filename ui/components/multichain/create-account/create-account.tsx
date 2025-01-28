@@ -10,11 +10,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-import {
-  KeyringMetadata,
-  KeyringObject,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 ///: END:ONLY_INCLUDE_IF
 
 import {
@@ -123,12 +119,10 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       const keyrings = useSelector(getMetaMaskKeyrings);
       const selectedKeyring = keyrings.find(
-        (keyring: KeyringObject & { metadata: KeyringMetadata }) =>
-          keyring.metadata.id === selectedKeyringId,
+        (keyring: KeyringObject) => keyring?.fingerprint === selectedKeyringId,
       );
       const hdKeyrings = keyrings.filter(
-        (keyring: KeyringObject & { metadata: KeyringMetadata }) =>
-          keyring.type === KeyringTypes.hd,
+        (keyring: KeyringObject) => keyring.type === KeyringTypes.hd,
       );
       const selectedKeyringIndex = hdKeyrings.indexOf(selectedKeyring);
       ///: END:ONLY_INCLUDE_IF(multi-srp)

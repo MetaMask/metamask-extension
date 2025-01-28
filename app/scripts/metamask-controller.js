@@ -27,6 +27,7 @@ import {
   KeyringTypes,
   ///: END:ONLY_INCLUDE_IF
   keyringBuilderFactory,
+  displayForKeyring,
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
@@ -4558,10 +4559,7 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
-      const keyringId =
-        this.keyringController.state.keyringsMetadata[
-          this.keyringController.state.keyrings.length - 1
-        ].id;
+      const { fingerprint: keyringId } = await displayForKeyring(newKeyring);
       await this._addAccountsWithBalance(keyringId);
 
       return newAccountAddress;
@@ -4643,7 +4641,17 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
-      const accounts = await this.keyringController.getAccounts(keyringId);
+
+      const keyringSelector = keyringId
+        ? { fingerprint: keyringId }
+        : { type: KeyringTypes.hd };
+
+      const accounts = await this.keyringController.withKeyring(
+        keyringSelector,
+        async (keyring) => {
+          return await keyring.getAccounts();
+        },
+      );
       let address = accounts[accounts.length - 1];
 
       for (let count = accounts.length; ; count++) {
@@ -4674,7 +4682,12 @@ export default class MetamaskController extends EventEmitter {
         }
 
         // This account has assets, so check the next one
-        address = await this.keyringController.addNewAccount(count, keyringId);
+        address = await this.keyringController.withKeyring(
+          keyringSelector,
+          async (keyring) => {
+            await keyring.addAccounts(1);
+          },
+        );
       }
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -5118,12 +5131,15 @@ export default class MetamaskController extends EventEmitter {
    */
   async addNewAccount(accountCount, _keyringId) {
     const oldAccounts = await this.keyringController.getAccounts();
+    const keyringSelector = _keyringId
+      ? { fingerprint: _keyringId }
+      : { type: KeyringTypes.hd };
 
-    const addedAccountAddress = await this.keyringController.addNewAccount(
-      accountCount,
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-      _keyringId,
-      ///: END:ONLY_INCLUDE_IF
+    const addedAccountAddress = await this.keyringController.withKeyring(
+      keyringSelector,
+      async (keyring) => {
+        await keyring.addAccounts(accountCount);
+      },
     );
 
     if (!oldAccounts.includes(addedAccountAddress)) {
