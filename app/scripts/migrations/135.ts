@@ -38,7 +38,6 @@ function transformState(state: VersionedData['data']) {
   }
 
   const { PreferencesController } = state;
-
   const currentOptInStatus =
     PreferencesController.preferences?.smartTransactionsOptInStatus;
 
@@ -51,6 +50,11 @@ function transformState(state: VersionedData['data']) {
       ...state.PreferencesController.preferences,
       smartTransactionsOptInStatus: true,
       smartTransactionsMigrationApplied: true,
+    };
+  } else {
+    state.PreferencesController.preferences = {
+      ...state.PreferencesController.preferences,
+      smartTransactionsMigrationApplied: false, // Always set it, but false for existing users
     };
   }
 

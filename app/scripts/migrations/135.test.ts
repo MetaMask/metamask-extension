@@ -118,7 +118,7 @@ describe('migration #135', () => {
     expect(
       newStorage.data.PreferencesController?.preferences
         ?.smartTransactionsMigrationApplied,
-    ).toBeUndefined();
+    ).toBe(false);
   });
 
   it('should preserve existing stx enabled state', async () => {
@@ -141,7 +141,7 @@ describe('migration #135', () => {
     expect(
       newStorage.data.PreferencesController?.preferences
         ?.smartTransactionsMigrationApplied,
-    ).toBeUndefined();
+    ).toBe(false);
   });
 
   it('should initialize preferences object if it does not exist', async () => {
@@ -161,7 +161,7 @@ describe('migration #135', () => {
     expect(
       newStorage.data.PreferencesController?.preferences
         ?.smartTransactionsMigrationApplied,
-    ).toBeUndefined();
+    ).toBe(false);
   });
 
   it('should capture exception if PreferencesController state is invalid', async () => {
