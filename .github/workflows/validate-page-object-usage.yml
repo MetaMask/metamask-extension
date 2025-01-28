@@ -15,11 +15,12 @@ jobs:
 
       - name: Set environment variables
         id: get-circleci-job-details
-        run: |
-          echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
-          echo "REPOSITORY=${{ github.event.repository.name }}" >> $GITHUB_ENV
-          echo "BRANCH=${{ github.head_ref || github.ref_name }}" >> $GITHUB_ENV
-          echo "HEAD_COMMIT_HASH=${{ github.event.pull_request.head.sha || github.sha }}" >> $GITHUB_ENV
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: echo "Environment variables set."
 
       - name: Run E2E Page Object Validation
         run: |
