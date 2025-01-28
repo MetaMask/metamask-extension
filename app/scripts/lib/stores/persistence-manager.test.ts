@@ -6,6 +6,8 @@ import { PersistanceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
 
+const MOCK_DATA = { config: { foo: 'bar' } };
+
 const mockStoreSet = jest.fn();
 const mockStoreGet = jest.fn();
 
@@ -118,19 +120,15 @@ describe('PersistanceManager', () => {
     });
 
     it('updates mostRecentRetrievedState if extension has not been initialized', async () => {
-      mockStoreGet.mockResolvedValueOnce({ data: { config: { foo: 'bar' } } });
+      mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
 
       const result = await manager.get();
-      expect(result).toStrictEqual({
-        data: { config: { foo: 'bar' } },
-      });
-      expect(manager.mostRecentRetrievedState).toStrictEqual({
-        data: { config: { foo: 'bar' } },
-      });
+      expect(result).toStrictEqual(MOCK_DATA);
+      expect(manager.mostRecentRetrievedState).toStrictEqual(MOCK_DATA);
     });
 
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
-      mockStoreGet.mockResolvedValueOnce({ data: { config: { foo: 'bar' } } });
+      mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
       // First call to get -> sets isExtensionInitialized = false -> sets mostRecentRetrievedState
       await manager.get();
       // The act of calling set will set isExtensionInitialized to true
@@ -142,15 +140,13 @@ describe('PersistanceManager', () => {
         data: { config: { newData: true } },
       });
       await manager.get();
-      expect(manager.mostRecentRetrievedState).toStrictEqual({
-        data: { config: { foo: 'bar' } },
-      });
+      expect(manager.mostRecentRetrievedState).toStrictEqual(MOCK_DATA);
     });
   });
 
   describe('cleanUpMostRecentRetrievedState', () => {
     it('sets mostRecentRetrievedState to null if previously set', async () => {
-      mockStoreGet.mockResolvedValueOnce({ data: { config: { foo: 'bar' } } });
+      mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
 
       await manager.get();
       manager.cleanUpMostRecentRetrievedState();
