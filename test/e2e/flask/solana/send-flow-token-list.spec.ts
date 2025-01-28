@@ -7,70 +7,9 @@ import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-p
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
-describe.skip('Send flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   // skipped due tohttps://github.com/MetaMask/snaps/issues/3019
-  it('with some field validation', async function () {
-    this.timeout(120000);
-    await withSolanaAccountSnap(
-      {
-        title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        // importAccount: true,
-      },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.clickOnSendButton();
-        const sendSolanaPage = new SendSolanaPage(driver);
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled and it shouldn`t',
-        );
-        await driver.delay(7000); // Added because of https://github.com/MetaMask/snaps/issues/3019
-        await sendSolanaPage.setToAddress('2433asd');
-        assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
-            'Invalid Solana address',
-          ),
-          true,
-          'Invalid Solana address should appear and it does not',
-        );
-        await sendSolanaPage.setToAddress(commonSolanaAddress);
-        await sendSolanaPage.setAmount('0.1');
-        assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
-            'Insufficient balance',
-          ),
-          true,
-          'Insufficient balance text is not displayed',
-        );
-        await sendSolanaPage.setAmount('0');
-        assert.equal(
-          await sendSolanaPage.check_validationErrorAppears(
-            'Amount must be greater than 0',
-          ),
-          true,
-          'Amount must be greater than 0 text is not displayed',
-        );
-        await sendSolanaPage.clearToAddress();
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled and it shouldn`t',
-        );
-        assert.equal(
-          await sendSolanaPage.isAmountInputDisplayed(),
-          false,
-          'Amount input should appear and it does not',
-        );
-      },
-    );
-  });
-});
-describe.skip('Send full flow of USD', function (this: Suite) {
-  it('with a positive balance account', async function () {
-    // skipped due tohttps://consensyssoftware.atlassian.net/browse/SOL-100
+  it('user with more than 1 token in the token list', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
@@ -82,21 +21,6 @@ describe.skip('Send full flow of USD', function (this: Suite) {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
         await homePage.check_pageIsLoaded();
-        assert.equal(
-          await homePage.check_ifSendButtonIsClickable(),
-          true,
-          'Send button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.check_ifSwapButtonIsClickable(),
-          true,
-          'Swap button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.check_ifBridgeButtonIsClickable(),
-          true,
-          'Bridge button is not enabled and it should',
-        );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         assert.equal(
@@ -110,6 +34,7 @@ describe.skip('Send full flow of USD', function (this: Suite) {
           false,
           'Continue button is enabled when no address',
         );
+        await driver.delay(10000000);
         await sendSolanaPage.clickOnSwapCurrencyButton();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),

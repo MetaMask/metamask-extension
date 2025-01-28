@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -19,6 +20,8 @@ export enum SendFlowPlaceHolders {
   RECIPIENT = 'Enter receiving address',
   LOADING = 'Preparing transaction',
 }
+export const commonSolanaAddress =
+  'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 
 export const SOL_BALANCE = 50000000000;
 
@@ -340,6 +343,62 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
                           decimals: 6,
                           uiAmount: 8.21e-4,
                           uiAmountString: '0.000821',
+                        },
+                      },
+                      type: 'account',
+                    },
+                    program: 'spl-token',
+                    space: 165,
+                  },
+                  executable: false,
+                  lamports: 2039280,
+                  owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+                  rentEpoch: 318,
+                },
+                pubkey: 'Exo9AH6fNchE43GaJB85FT7ToYiuKnKzYDyW5mFeTXRR',
+              },
+              {
+                account: {
+                  data: {
+                    parsed: {
+                      info: {
+                        isNative: false,
+                        mint: 'BQcdHdAQW1hczDbBi9hiegXAR7A98Q9jx3X3iBBBDiq4',
+                        owner: 'J27ma1MPBRvmPJxLqBqQGNECMXDm9L6abFa4duKiPosa',
+                        state: 'initialized',
+                        tokenAmount: {
+                          amount: '2500000',
+                          decimals: 1,
+                          uiAmount: 2.5,
+                          uiAmountString: '2.5',
+                        },
+                      },
+                      type: 'account',
+                    },
+                    program: 'spl-token',
+                    space: 165,
+                  },
+                  executable: false,
+                  lamports: 2039280,
+                  owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+                  rentEpoch: 318,
+                },
+                pubkey: 'Exo9AH6fNchE43GaJB85FT7ToYiuKnKzYDyW5mFeTXRR',
+              },
+              {
+                account: {
+                  data: {
+                    parsed: {
+                      info: {
+                        isNative: false,
+                        mint: 'HqB7uswoVg4suaQiDP3wjxob1G5WdZ144zhdStwMCq7e',
+                        owner: 'J27ma1MPBRvmPJxLqBqQGNECMXDm9L6abFa4duKiPosa',
+                        state: 'initialized',
+                        tokenAmount: {
+                          amount: '250000000',
+                          decimals: 6,
+                          uiAmount: 250,
+                          uiAmountString: '250',
                         },
                       },
                       type: 'account',
