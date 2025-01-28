@@ -3050,11 +3050,11 @@ export default class MetamaskController extends EventEmitter {
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
             const networkClientId =
               this.networkController.findNetworkClientIdByChainId(chains[0]);
+            this.networkController.setActiveNetwork(networkClientId);
             this.selectedNetworkController.setNetworkClientIdForDomain(
               origin,
               networkClientId,
             );
-            this.networkController.setActiveNetwork(networkClientId);
           }
         }
       },
