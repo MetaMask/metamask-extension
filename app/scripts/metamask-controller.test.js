@@ -1430,17 +1430,7 @@ describe('MetaMaskController', () => {
                       type: Caip25CaveatType,
                       value: {
                         requiredScopes: {},
-                        optionalScopes: {
-                          'wallet:eip155': {
-                            accounts: ['wallet:eip155:0xdeadbeef'],
-                          },
-                          'eip155:1': {
-                            accounts: ['eip155:1:0xdeadbeef'],
-                          },
-                          'eip155:5': {
-                            accounts: ['eip155:5:0xdeadbeef'],
-                          },
-                        },
+                        optionalScopes: {},
                         isMultichainOrigin: false,
                       },
                     },
@@ -1526,11 +1516,7 @@ describe('MetaMaskController', () => {
                       type: Caip25CaveatType,
                       value: {
                         requiredScopes: {},
-                        optionalScopes: {
-                          'wallet:eip155': {
-                            accounts: ['wallet:eip155:0xdeadbeef'],
-                          },
-                        },
+                        optionalScopes: {},
                         isMultichainOrigin: false,
                       },
                     },
