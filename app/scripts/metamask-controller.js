@@ -216,6 +216,7 @@ import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smar
 
 import {
   HardwareDeviceNames,
+  HardwareKeyringType,
   LedgerTransportTypes,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -260,7 +261,6 @@ import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
   getIsSmartTransaction,
   getFeatureFlagsByChainId,
-  getHardwareWalletType,
 } from '../../shared/modules/selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { createCaipStream } from '../../shared/modules/caip-stream';
@@ -398,6 +398,11 @@ import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { rejectAllApprovals } from './lib/approval/utils';
+import {
+  handleBridgeTransactionComplete,
+  handleBridgeTransactionFailed,
+  handleTransactionFailedTypeBridge,
+} from './lib/bridge-status/metrics';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -407,6 +412,9 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
   UPDATE_BADGE: 'updateBadge',
+  DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE: 'DecryptMessageManager:updateBadge',
+  ENCRYPTION_PUBLIC_KEY_MANAGER_UPDATE_BADGE:
+    'EncryptionPublicKeyManager:updateBadge',
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
   APP_STATE_UNLOCK_CHANGE: 'AppStateController:unlockChange',
@@ -1963,6 +1971,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
+      getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
       snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
         name: 'SnapAndHardwareMessenger',
         allowedActions: [
@@ -1972,6 +1981,8 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     };
+
+    this._addBridgeStatusControllerListeners();
 
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
@@ -1983,6 +1994,13 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
           `${this.keyringController.name}:decryptMessage`,
         ],
+        allowedEvents: [
+          'DecryptMessageManager:stateChange',
+          'DecryptMessageManager:unapprovedMessage',
+        ],
+      }),
+      managerMessenger: this.controllerMessenger.getRestricted({
+        name: 'DecryptMessageManager',
       }),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1997,6 +2015,13 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
         ],
+        allowedEvents: [
+          'EncryptionPublicKeyManager:stateChange',
+          'EncryptionPublicKeyManager:unapprovedMessage',
+        ],
+      }),
+      managerMessenger: this.controllerMessenger.getRestricted({
+        name: 'EncryptionPublicKeyManager',
       }),
       getEncryptionPublicKey:
         this.keyringController.getEncryptionPublicKey.bind(
@@ -2026,7 +2051,6 @@ export default class MetamaskController extends EventEmitter {
       trace,
       decodingApiUrl: process.env.DECODING_API_URL,
       isDecodeSignatureRequestEnabled: () =>
-        this.preferencesController.state.useExternalServices === true &&
         this.preferencesController.state.useTransactionSimulations,
     });
 
@@ -2216,8 +2240,8 @@ export default class MetamaskController extends EventEmitter {
       getMetaMetricsProps: async () => {
         const selectedAddress =
           this.accountsController.getSelectedAccount().address;
-        const accountHardwareType = await getHardwareWalletType(
-          this._getMetaMaskState(),
+        const accountHardwareType = await this.getHardwareTypeForMetric(
+          selectedAddress,
         );
         const accountType = await this.getAccountType(selectedAddress);
         const deviceModel = await this.getDeviceModel(selectedAddress);
@@ -3718,7 +3742,6 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
-      getDeviceNameForMetric: this.getDeviceNameForMetric.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
@@ -4974,7 +4997,7 @@ export default class MetamaskController extends EventEmitter {
 
   async attemptLedgerTransportCreation() {
     return await this.#withKeyringForDevice(
-      HardwareDeviceNames.ledger,
+      { name: HardwareDeviceNames.ledger },
       async (keyring) => keyring.attemptMakeApp(),
     );
   }
@@ -5039,28 +5062,20 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Get hardware device name for metric logging.
+   * Get hardware type that will be sent for metrics logging.
    *
-   * @param deviceName - HardwareDeviceNames
-   * @param hdPath - string
-   * @returns {Promise<string>}
+   * @param {string} address - Address to retrieve the keyring from
+   * @returns {HardwareKeyringType} Keyring hardware type
    */
-  async getDeviceNameForMetric(deviceName, hdPath) {
-    if (deviceName !== HardwareDeviceNames.trezor) {
-      return deviceName;
-    }
-
-    return await this.#withKeyringForDevice(
-      { name: deviceName, hdPath },
-      (keyring) => {
-        const { minorVersion } = keyring.bridge;
+  async getHardwareTypeForMetric(address) {
+    // The `getKeyringForAccount` is now deprecated, so we just use `withKeyring` instead to access our keyring.
+    return await this.keyringController.withKeyring(
+      { address },
+      ({ type: keyringType, bridge: keyringBridge }) =>
         // Specific case for OneKey devices, see `ONE_KEY_VIA_TREZOR_MINOR_VERSION` for further details.
-        if (minorVersion && minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION) {
-          return HardwareDeviceNames.oneKeyViaTrezor;
-        }
-
-        return deviceName;
-      },
+        keyringBridge?.minorVersion === ONE_KEY_VIA_TREZOR_MINOR_VERSION
+          ? HardwareKeyringType.oneKey
+          : HardwareKeyringType[keyringType],
     );
   }
 
@@ -5095,6 +5110,7 @@ export default class MetamaskController extends EventEmitter {
     );
     switch (keyringType) {
       case KeyringType.trezor:
+      case KeyringType.oneKey:
       case KeyringType.lattice:
       case KeyringType.qr:
       case KeyringType.ledger:
@@ -5120,6 +5136,7 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.withKeyring({ address }, async (keyring) => {
       switch (keyring.type) {
         case KeyringType.trezor:
+        case KeyringType.oneKey:
           return keyring.getModel();
         case KeyringType.qr:
           return keyring.getName();
@@ -6365,6 +6382,7 @@ export default class MetamaskController extends EventEmitter {
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
+        getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
@@ -7361,6 +7379,47 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  /**
+   * A method for setting BridgeStatusController event listeners
+   */
+  _addBridgeStatusControllerListeners() {
+    this.controllerMessenger.subscribe(
+      'BridgeStatusController:bridgeTransactionComplete',
+      (payload) =>
+        handleBridgeTransactionComplete(payload, {
+          backgroundState: this.getState(),
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        }),
+    );
+
+    this.controllerMessenger.subscribe(
+      'BridgeStatusController:bridgeTransactionFailed',
+      (payload) =>
+        handleBridgeTransactionFailed(payload, {
+          backgroundState: this.getState(),
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        }),
+    );
+    // Putting these TransactionController listeners here to keep it colocated with the other bridge events
+    this.controllerMessenger.subscribe(
+      'TransactionController:transactionFailed',
+      (payload) => {
+        if (payload.transactionMeta.type === TransactionType.bridge) {
+          handleTransactionFailedTypeBridge(payload, {
+            backgroundState: this.getState(),
+            trackEvent: this.metaMetricsController.trackEvent.bind(
+              this.metaMetricsController,
+            ),
+          });
+        }
+      },
+    );
+  }
+
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Metametrics Actions
@@ -7386,6 +7445,7 @@ export default class MetamaskController extends EventEmitter {
       // Other dependencies
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
+      getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
       getEIP1559GasFeeEstimates:
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
       getSelectedAddress: () =>
@@ -8090,6 +8150,7 @@ export default class MetamaskController extends EventEmitter {
     let keyringType = null;
     switch (options.name) {
       case HardwareDeviceNames.trezor:
+      case HardwareDeviceNames.oneKey:
         keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
         break;
       case HardwareDeviceNames.ledger:
@@ -8118,7 +8179,10 @@ export default class MetamaskController extends EventEmitter {
           keyring.appName = 'MetaMask';
         }
 
-        if (options.name === HardwareDeviceNames.trezor) {
+        if (
+          options.name === HardwareDeviceNames.trezor ||
+          options.name === HardwareDeviceNames.oneKey
+        ) {
           const model = keyring.getModel();
           this.appStateController.setTrezorModel(model);
         }
