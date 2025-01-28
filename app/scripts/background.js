@@ -17,6 +17,8 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import contractMap from '@metamask/contract-metadata';
+import { toChecksumAddress } from 'ethereumjs-util';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -1366,3 +1368,17 @@ async function initBackground() {
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground();
 }
+
+function imageElFor(address) {
+  const metadata = contractMap[toChecksumAddress(address)];
+  if (metadata?.logo) {
+    const fileName = metadata.logo;
+    const path = `${__dirname}/images/contract/${fileName}`;
+    const img = document.createElement('img');
+    img.src = path;
+    img.style.width = '100%';
+    return img;
+  }
+}
+
+imageElFor("0x06012c8cf97BEaD5deAe237070F9587f8E7A266d");

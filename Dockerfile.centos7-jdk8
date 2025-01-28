@@ -1,0 +1,19 @@
+# Use CentOS 7 as the base image
+FROM centos:centos7
+
+# Add JDK 8 and unzip RPM
+ADD jdk-8u301-linux-x64.tar.gz /usr/local/
+ADD unzip-6.0-21.el7.x86_64.rpm /tmp
+
+# Install git and clean up
+RUN yum -y install git \
+    && yum clean all
+
+# Install unzip RPM and clean up
+RUN rpm -ivh /tmp/unzip-6.0-21.el7.x86_64.rpm \
+    && rm /tmp/unzip-6.0-21.el7.x86_64.rpm
+
+# Set environment variables for Java
+ENV JAVA_HOME /usr/local/jdk1.8.0_301
+ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+ENV PATH $PATH:$JAVA_HOME/bin
