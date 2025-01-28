@@ -27,7 +27,7 @@ const mockTransaction = {
   ],
   to: [
     {
-      address: 'bc1p3t7744qewy262ym5afgeuqlwswtpfe22y7c4lwv0a7972p2k73msee7rr3',
+      address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       asset: {
         fungible: true,
         type: 'native',
