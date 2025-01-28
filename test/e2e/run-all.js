@@ -67,8 +67,8 @@ function applyQualityGate(fullTestList, changedOrNewTests) {
 
 // For running E2Es in parallel in CI
 function runningOnCircleCI(testPaths) {
-  const changedFiles = readChangedFiles();
-  const changedOrNewTests = filterE2eChangedFiles(changedFiles);
+  const changedFilesPaths = readChangedFiles();
+  const changedOrNewTests = filterE2eChangedFiles(changedFilesPaths);
   console.log('Changed or new test list:', changedOrNewTests);
 
   const fullTestList = applyQualityGate(
