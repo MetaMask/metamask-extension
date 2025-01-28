@@ -51,7 +51,6 @@ export default class PermissionPageContainer extends Component {
     }),
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
-    defaultAccountAddress: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -146,13 +145,11 @@ export default class PermissionPageContainer extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       selectedAccounts,
-      defaultAccountAddress,
     } = this.props;
 
-    const approvedAccounts =
-      selectedAccounts.length > 0
-        ? selectedAccounts.map((selectedAccount) => selectedAccount.address)
-        : [defaultAccountAddress];
+    const approvedAccounts = selectedAccounts.map(
+      (selectedAccount) => selectedAccount.address,
+    );
 
     const requestedSessionsScopes = getRequestedSessionScopes(
       _request.permission,

@@ -1,9 +1,5 @@
 import { connect } from 'react-redux';
-import {
-  getInternalAccounts,
-  getPermissions,
-  getSelectedInternalAccount,
-} from '../../../selectors';
+import { getInternalAccounts, getPermissions } from '../../../selectors';
 import PermissionPageContainer from './permission-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -12,7 +8,6 @@ const mapStateToProps = (state, ownProps) => {
     state,
     ownProps.request.metadata?.origin,
   );
-  const defaultAccountAddress = getSelectedInternalAccount(state).address;
 
   const allInternalAccounts = getInternalAccounts(state);
   const allInternalAccountsSelected =
@@ -22,7 +17,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     allInternalAccountsSelected,
     currentPermissions,
-    defaultAccountAddress,
   };
 };
 
