@@ -321,3 +321,8 @@ env:
   # system that they are intentionally unset.
   ###
   - ETHERSCAN_KEY: null # Used by `gridplus-sdk/dist/util.js`
+
+  ###
+  # Use smart transactions to publish transaction batches
+  ###
+  - PUBLISH_BATCH_HOOK: false

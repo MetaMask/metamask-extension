@@ -385,6 +385,7 @@ import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { rejectAllApprovals } from './lib/approval/utils';
+import { smartTransactionPublishBatchHook } from './lib/transaction/smart-transaction-batch';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -2023,6 +2024,16 @@ export default class MetamaskController extends EventEmitter {
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
         publish: this._publishSmartTransactionHook.bind(this),
+        publishBatch: process.env.PUBLISH_BATCH_HOOK
+          ? (signedTxs) =>
+              smartTransactionPublishBatchHook(
+                {
+                  messenger: this.controllerMessenger,
+                  smartTransactionsController: this.smartTransactionsController,
+                },
+                signedTxs,
+              )
+          : undefined,
       },
       sign: (...args) => this.keyringController.signTransaction(...args),
       state: initState.TransactionController,
