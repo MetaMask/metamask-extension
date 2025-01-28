@@ -797,6 +797,7 @@ export default class MetamaskController extends EventEmitter {
       });
 
     this.multichainAssetsController = new MultichainAssetsController({
+      state: initState.MultichainAssetsController,
       messenger: multichainAssetsControllerMessenger,
     });
 
@@ -2389,6 +2390,16 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    this.controllerMessenger.subscribe(
+      'notify:accountAssetListUpdated',
+      ({ assetsChanged }) => {
+        console.log(
+          '🚀 ~ #stateChange ~ AccountsController:stateChange:',
+          assetsChanged,
+        );
+      },
+    );
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -2503,6 +2514,7 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
+      MultichainAssetsController: this.multichainAssetsController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainTransactionsController: this.multichainTransactionsController,
       ///: END:ONLY_INCLUDE_IF

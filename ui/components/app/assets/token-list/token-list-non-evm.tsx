@@ -147,6 +147,10 @@ TokenListProps) {
   console.log('=============3');
 
   const selectedAccountTokensMetadata = useSelector(getAllNonEvmMetadata);
+  console.log(
+    '🚀 ~ selectedAccountTokensMetadata:',
+    selectedAccountTokensMetadata,
+  );
 
   const isOnCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
