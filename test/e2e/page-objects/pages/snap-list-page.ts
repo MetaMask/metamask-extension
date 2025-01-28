@@ -38,7 +38,7 @@ class SnapListPage {
     tag: 'p',
   };
 
-  private readonly title = {
+  private readonly homePageTitle = {
     text: 'Welcome to my Snap home page!',
     tag: 'p',
   };
