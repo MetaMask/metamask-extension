@@ -184,30 +184,29 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
         class="request-signature__origin"
       >
         <div
-          class="site-origin"
-          title="https://happydapp.website/governance?futarchy=true"
+          class="mm-box mm-tag-url mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
         >
           <div
-            class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
           >
-            <div
-              class="chip__left-icon"
-            >
-              <div
-                class=""
-                style="height: 24px; width: 24px;"
-              >
-                <span
-                  class="icon-with-fallback__fallback"
-                />
-              </div>
-            </div>
             <span
-              class="mm-box mm-text chip__label mm-text--body-sm mm-box--color-text-alternative"
-            >
-              https://happydapp.website/governance?futarchy=true
-            </span>
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/global.svg');"
+            />
           </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+          >
+            https://happydapp.website/governance?futarchy=true
+          </p>
+          <a
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--margin-right-2 mm-box--margin-left-2 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://happydapp.website/governance?futarchy=true"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Click
+          </a>
         </div>
       </div>
       <h3
