@@ -570,7 +570,7 @@ describe('TransactionAlerts', () => {
 });
 
 describe('Smart Transactions Migration Alert', () => {
-  it('shows when alert is enabled, opted in, and migration applied', () => {
+  it('shows when stx was enabled by migration', () => {
     const { getByTestId } = render({
       componentProps: {
         txData: {
@@ -585,14 +585,34 @@ describe('Smart Transactions Migration Alert', () => {
           networkConfigurationsByChainId: {
             [CHAIN_ID_MOCK]: {
               chainId: CHAIN_ID_MOCK,
+              rpcEndpoints: [
+                {
+                  rpcUrl: 'https://mainnet.infura.io/v3/',
+                  networkClientId: '1',
+                  blockExplorerUrl: 'https://etherscan.io',
+                },
+              ],
+              defaultBlockExplorerUrlIndex: 0,
             },
           },
+          selectedNetworkClientId: '1',
           alertEnabledness: {
             [AlertTypes.smartTransactionsMigration]: true,
           },
           preferences: {
             smartTransactionsOptInStatus: true,
             smartTransactionsMigrationApplied: true,
+          },
+          featureFlags: {
+            smartTransactionsEnabled: true,
+          },
+          swapsState: {
+            swapsFeatureFlags: {
+              smartTransactions: {
+                extensionActive: true,
+                mobileActive: false,
+              },
+            },
           },
         },
       },
