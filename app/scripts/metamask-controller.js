@@ -364,6 +364,11 @@ import { sanitizeUIState } from './lib/state-utils';
 import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import { rejectAllApprovals } from './lib/approval/utils';
+import {
+  handleBridgeTransactionComplete,
+  handleBridgeTransactionFailed,
+  handleTransactionFailedTypeBridge,
+} from './lib/bridge-status/metrics';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -1923,6 +1928,8 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     };
+
+    this._addBridgeStatusControllerListeners();
 
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
@@ -6925,6 +6932,47 @@ export default class MetamaskController extends EventEmitter {
       error.name = 'TestError';
       throw error;
     });
+  }
+
+  /**
+   * A method for setting BridgeStatusController event listeners
+   */
+  _addBridgeStatusControllerListeners() {
+    this.controllerMessenger.subscribe(
+      'BridgeStatusController:bridgeTransactionComplete',
+      (payload) =>
+        handleBridgeTransactionComplete(payload, {
+          backgroundState: this.getState(),
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        }),
+    );
+
+    this.controllerMessenger.subscribe(
+      'BridgeStatusController:bridgeTransactionFailed',
+      (payload) =>
+        handleBridgeTransactionFailed(payload, {
+          backgroundState: this.getState(),
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+        }),
+    );
+    // Putting these TransactionController listeners here to keep it colocated with the other bridge events
+    this.controllerMessenger.subscribe(
+      'TransactionController:transactionFailed',
+      (payload) => {
+        if (payload.transactionMeta.type === TransactionType.bridge) {
+          handleTransactionFailedTypeBridge(payload, {
+            backgroundState: this.getState(),
+            trackEvent: this.metaMetricsController.trackEvent.bind(
+              this.metaMetricsController,
+            ),
+          });
+        }
+      },
+    );
   }
 
   getTransactionMetricsRequest() {
