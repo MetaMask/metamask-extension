@@ -1,4 +1,7 @@
 import {
+  CHAIN_IDS,
+  SimulationData,
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -16,18 +19,20 @@ export const CONTRACT_INTERACTION_SENDER_ADDRESS =
 
 export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
 
-export const CHAIN_ID = '0xaa36a7';
+export const CHAIN_ID = CHAIN_IDS.GOERLI;
 
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
+  simulationData,
 }: {
   address?: Hex;
   txData?: Hex;
   chainId?: string;
-} = {}): Confirmation =>
-  ({
+  simulationData?: SimulationData;
+} = {}): Confirmation => {
+  const confirmation: Confirmation = {
     actionId: String(400855682),
     chainId,
     dappSuggestedGasFees: {
@@ -156,8 +161,17 @@ export const genUnapprovedContractInteractionConfirmation = ({
       to: '0x88aa6343307ec9a652ccddda3646e62b2f1a5125',
       value: '0x3782dace9d900000',
     },
+    gasLimitNoBuffer: '0xab77',
     type: TransactionType.contractInteraction,
     userEditedGasLimit: false,
     userFeeLevel: 'medium',
     verifiedOnBlockchain: false,
-  } as SignatureRequestType);
+  } as SignatureRequestType;
+
+  // Overwrite simulation data if provided
+  if (simulationData) {
+    (confirmation as TransactionMeta).simulationData = simulationData;
+  }
+
+  return confirmation;
+};

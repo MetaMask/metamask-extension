@@ -1,10 +1,3 @@
-
-@keyframes shift {
-  to {
-    background-position: 100% 0;
-  }
-}
-
 .smart-transaction-status-page {
   text-align: center;
 
@@ -20,60 +13,11 @@
     }
   }
 
-  &__loading-bar-container {
-    @media screen and (min-width: 768px) {
-      max-width: 260px;
-    }
-
-    width: 100%;
-    height: 3px;
-    background: var(--color-background-alternative);
-    display: flex;
-    margin-top: 16px;
-  }
-
-  &__loading-bar {
-    height: 3px;
-    background: var(--color-primary-default);
-    transition: width 0.5s linear;
-  }
-
   &__footer {
     grid-area: footer;
   }
 
   &__countdown {
     width: 25px;
-  }
-
-  // Slightly overwrite the default SimulationDetails layout to look better on the Smart Transaction status page.
-  .simulation-details-layout {
-    margin-left: 0;
-    margin-right: 0;
-    width: 100%;
-    text-align: left;
-  }
-
-  &__background-animation {
-    position: relative;
-    left: -88px;
-    background-repeat: repeat;
-    background-position: 0 0;
-
-    &--top {
-      width: 1634px;
-      height: 54px;
-      background-size: 817px 54px;
-      background-image: url('/images/transaction-background-top.svg');
-      animation: shift 19s linear infinite;
-    }
-
-    &--bottom {
-      width: 1600px;
-      height: 62px;
-      background-size: 800px 62px;
-      background-image: url('/images/transaction-background-bottom.svg');
-      animation: shift 22s linear infinite;
-    }
   }
 }

@@ -87,11 +87,10 @@ function ConfirmDetails({
     <>
       <Box alignItems={AlignItems.center} textAlign={TextAlign.Center}>
         <Text variant={TextVariant.bodyMd}>
-          {t('confirmationAlertModalDetails')}
+          {t('confirmationAlertDetails')}
         </Text>
         <ButtonLink
-          paddingTop={5}
-          paddingBottom={5}
+          marginTop={4}
           size={ButtonLinkSize.Inherit}
           textProps={{
             variant: TextVariant.bodyMd,
@@ -103,11 +102,7 @@ function ConfirmDetails({
           rel="noopener noreferrer"
           data-testid="confirm-alert-modal-review-all-alerts"
         >
-          <Icon
-            name={IconName.SecuritySearch}
-            size={IconSize.Inherit}
-            marginLeft={1}
-          />
+          <Icon name={IconName.SecuritySearch} size={IconSize.Inherit} />
           {t('alertModalReviewAllAlerts')}
         </ButtonLink>
       </Box>

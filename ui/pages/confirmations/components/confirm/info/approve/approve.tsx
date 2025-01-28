@@ -3,11 +3,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
+import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { ApproveDetails } from './approve-details/approve-details';
 import { ApproveStaticSimulation } from './approve-static-simulation/approve-static-simulation';
@@ -19,13 +18,8 @@ import { RevokeStaticSimulation } from './revoke-static-simulation/revoke-static
 import { SpendingCap } from './spending-cap/spending-cap';
 
 const ApproveInfo = () => {
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
-
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { isNFT } = useIsNFT(transactionMeta);
 
@@ -36,11 +30,12 @@ const ApproveInfo = () => {
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
+    transactionMeta.chainId,
   );
 
-  const { spendingCap } = useApproveTokenSimulation(
+  const { spendingCap, pending } = useApproveTokenSimulation(
     transactionMeta,
-    decimals || '0',
+    decimals,
   );
 
   const showRevokeVariant =
@@ -49,6 +44,10 @@ const ApproveInfo = () => {
 
   if (!transactionMeta?.txParams) {
     return null;
+  }
+
+  if (pending || (!isNFT && !decimals)) {
+    return <ConfirmLoader />;
   }
 
   return (
@@ -65,7 +64,7 @@ const ApproveInfo = () => {
         />
       )}
       <GasFeesSection />
-      {showAdvancedDetails && <AdvancedDetails />}
+      <AdvancedDetails />
       <EditSpendingCapModal
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}

@@ -1,20 +1,33 @@
 import React from 'react';
 
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 
 import configureStore from '../../../../store/store';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmHexData from './confirm-hexdata';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
+const CHAIN_ID_MOCK = CHAIN_IDS.GOERLI;
+
+const STATE_MOCK = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
+  },
+};
+
 describe('ConfirmHexData', () => {
-  const store = configureStore(mockState);
+  const store = configureStore(STATE_MOCK);
 
   it('should render function type', async () => {
     const { findByText } = renderWithProvider(
       <ConfirmHexData
         txData={{
+          chainId: CHAIN_ID_MOCK,
           txParams: {
             to: '0x8eeee1781fd885ff5ddef7789486676961873d12',
             data: '0x608060405234801',
@@ -34,6 +47,7 @@ describe('ConfirmHexData', () => {
       const { container } = renderWithProvider(
         <ConfirmHexData
           txData={{
+            chainId: CHAIN_ID_MOCK,
             txParams: {
               data,
             },
@@ -51,6 +65,7 @@ describe('ConfirmHexData', () => {
     const { container } = renderWithProvider(
       <ConfirmHexData
         txData={{
+          chainId: CHAIN_ID_MOCK,
           txParams: {
             data: '0x608060405234801',
           },
@@ -67,6 +82,7 @@ describe('ConfirmHexData', () => {
     const { getByText } = renderWithProvider(
       <ConfirmHexData
         txData={{
+          chainId: CHAIN_ID_MOCK,
           txParams: {},
           origin: 'https://metamask.github.io',
           type: 'transfer',

@@ -36,11 +36,10 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "smartTransactionsOptInStatus": false
+      "smartTransactionsOptInStatus": true
     },
     "theme": "light",
     "useBlockie": false,
-    "useRequestQueue": true,
     "useNftDetection": false,
     "useNonceField": false,
     "usePhishDetect": true,

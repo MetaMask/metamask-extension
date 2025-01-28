@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import classnames from 'classnames';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   Display,
@@ -46,7 +47,9 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
 
   return (
     <Box
-      className="snap-ui-renderer__dropdown"
+      className={classnames('snap-ui-renderer__dropdown', {
+        'snap-ui-renderer__field': label !== undefined,
+      })}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >

@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
+import { isSnapId } from '@metamask/snaps-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
@@ -40,11 +41,18 @@ function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
     return new Set(
       requestedAccounts
         .map((address) => address.toLowerCase())
+        // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
         .filter(isEthAddress),
     );
   }
 
+  // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
+}
+
+function getRequestedChainIds(permissionsRequest) {
+  return permissionsRequest?.permissions?.[PermissionNames.permittedChains]
+    ?.caveats[0]?.value;
 }
 
 export default class PermissionConnect extends Component {
@@ -148,14 +156,6 @@ export default class PermissionConnect extends Component {
       history.replace(DEFAULT_ROUTE);
       return;
     }
-    // if this is an incremental permission request for permitted chains, skip the account selection
-    if (
-      permissionsRequest?.diff?.permissionDiffMap?.[
-        PermissionNames.permittedChains
-      ]
-    ) {
-      history.replace(confirmPermissionPath);
-    }
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       switch (requestType) {
         case 'wallet_installSnap':
@@ -177,8 +177,17 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { permissionsRequest, lastConnectedInfo } = this.props;
+    const { permissionsRequest, lastConnectedInfo, targetSubjectMetadata } =
+      this.props;
     const { redirecting, origin } = this.state;
+
+    // We cache the last known good targetSubjectMetadata since it may be null when the approval is cleared
+    if (
+      targetSubjectMetadata?.origin &&
+      prevProps.targetSubjectMetadata?.origin !== targetSubjectMetadata?.origin
+    ) {
+      this.setState({ targetSubjectMetadata });
+    }
 
     if (!permissionsRequest && prevProps.permissionsRequest && !redirecting) {
       const accountsLastApprovedTime =
@@ -284,6 +293,7 @@ export default class PermissionConnect extends Component {
           />
         ) : (
           <PermissionConnectHeader
+            requestId={permissionsRequestId}
             origin={targetSubjectMetadata.origin}
             iconUrl={targetSubjectMetadata.iconUrl}
           />
@@ -320,6 +330,7 @@ export default class PermissionConnect extends Component {
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
+      history,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -327,6 +338,8 @@ export default class PermissionConnect extends Component {
       redirecting,
       snapsInstallPrivacyWarningShown,
     } = this.state;
+
+    const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
 
     return (
       <div className="permissions-connect">
@@ -339,17 +352,7 @@ export default class PermissionConnect extends Component {
               path={connectPath}
               exact
               render={() =>
-                process.env.CHAIN_PERMISSIONS ? (
-                  <ConnectPage
-                    rejectPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    activeTabOrigin={this.state.origin}
-                    request={permissionsRequest}
-                    permissionsRequestId={permissionsRequestId}
-                    approveConnection={this.approveConnection}
-                  />
-                ) : (
+                isRequestingSnap ? (
                   <ChooseAccount
                     accounts={accounts}
                     nativeCurrency={nativeCurrency}
@@ -371,6 +374,16 @@ export default class PermissionConnect extends Component {
                     selectedAccountAddresses={selectedAccountAddresses}
                     targetSubjectMetadata={targetSubjectMetadata}
                   />
+                ) : (
+                  <ConnectPage
+                    rejectPermissionsRequest={(requestId) =>
+                      this.cancelPermissionsRequest(requestId)
+                    }
+                    activeTabOrigin={this.state.origin}
+                    request={permissionsRequest}
+                    permissionsRequestId={permissionsRequestId}
+                    approveConnection={this.approveConnection}
+                  />
                 )
               }
             />
@@ -390,8 +403,9 @@ export default class PermissionConnect extends Component {
                   selectedAccounts={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
+                  requestedChainIds={getRequestedChainIds(permissionsRequest)}
                   targetSubjectMetadata={targetSubjectMetadata}
-                  history={this.props.history}
+                  history={history}
                   connectPath={connectPath}
                   snapsInstallPrivacyWarningShown={
                     snapsInstallPrivacyWarningShown
@@ -440,7 +454,7 @@ export default class PermissionConnect extends Component {
                   rejectSnapInstall={(requestId) => {
                     rejectPendingApproval(
                       requestId,
-                      serializeError(ethErrors.provider.userRejectedRequest()),
+                      serializeError(providerErrors.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: true });
                   }}
@@ -466,7 +480,7 @@ export default class PermissionConnect extends Component {
                   rejectSnapUpdate={(requestId) => {
                     rejectPendingApproval(
                       requestId,
-                      serializeError(ethErrors.provider.userRejectedRequest()),
+                      serializeError(providerErrors.userRejectedRequest()),
                     );
                     this.setState({ permissionsApproved: false });
                   }}

@@ -133,20 +133,6 @@ const NFTS = [
   },
 ];
 
-const NFTS_CONTRACTS = [
-  {
-    address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
-    name: 'PUNKS',
-    symbol: 'PNKS',
-    schemaName: 'ERC1155',
-  },
-  {
-    address: '0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414',
-    name: 'Munks',
-    symbol: 'MNKS',
-  },
-];
-
 const nftsDropdownState = {
   '0x495f947276749ce646f68ac8c248420045cb7b5e': true,
   '0xdc7382eb0bc9c352a4cba23c909bda01e0206414': true,
@@ -248,10 +234,6 @@ describe('NFT Items', () => {
     jest.clearAllMocks();
   });
 
-  function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
   describe('NFTs Detection Notice', () => {
     it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has nfts', () => {
       render({
@@ -316,27 +298,6 @@ describe('NFT Items', () => {
     });
   });
 
-  describe('Collections', () => {
-    it('should render the name of the collections and number of NFTs in each collection if current account/chainId combination has NFTs', () => {
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        nftContracts: NFTS_CONTRACTS,
-      });
-      expect(screen.queryByText('PUNKS (5)')).toBeInTheDocument();
-      expect(screen.queryByText('Munks (3)')).toBeInTheDocument();
-    });
-    it('should not render collections if current account/chainId combination has NFTs', () => {
-      render({
-        selectedAddress: ACCOUNT_2,
-        nfts: NFTS,
-        nftContracts: NFTS_CONTRACTS,
-      });
-      expect(screen.queryByText('PUNKS (5)')).not.toBeInTheDocument();
-      expect(screen.queryByText('Munks (3)')).not.toBeInTheDocument();
-    });
-  });
-
   describe('NFTs options', () => {
     it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
       render({
@@ -372,26 +333,6 @@ describe('NFT Items', () => {
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
-    });
-  });
-
-  describe('NFT Tab Ramps Card', () => {
-    it('shows the ramp card when user balance is zero', async () => {
-      const { queryByText } = render({
-        selectedAddress: ACCOUNT_1,
-        balance: '0x0',
-      });
-      // wait for spinner to be removed
-      await delay(3000);
-      expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
-    });
-
-    it('does not show the ramp card when the account has a balance', () => {
-      const { queryByText } = render({
-        selectedAddress: ACCOUNT_1,
-        balance: ETH_BALANCE,
-      });
-      expect(queryByText('Get ETH to buy NFTs')).not.toBeInTheDocument();
     });
   });
 });

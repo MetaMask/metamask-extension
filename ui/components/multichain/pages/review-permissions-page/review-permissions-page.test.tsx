@@ -2,7 +2,7 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
-import { ReviewPermissions } from '.';
+import { ReviewPermissions } from './review-permissions-page';
 
 const render = (state = {}) => {
   const store = configureStore({

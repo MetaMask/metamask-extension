@@ -1,7 +1,6 @@
 const {
   defaultGanacheOptions,
   withFixtures,
-  switchToNotificationWindow,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../helpers');
@@ -28,23 +27,37 @@ describe('Test Snap RPC', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the bip32 test and connect
+        // find and scroll to the bip32 test snap
         const snapButton1 = await driver.findElement('#connectbip32');
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectbip32');
         await driver.clickElement('#connectbip32');
 
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -60,10 +73,9 @@ describe('Test Snap RPC', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // deal with OK button
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -71,31 +83,45 @@ describe('Test Snap RPC', function () {
         // switch back to test-snaps window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
+        // scroll to json-rpc snap
         const snapButton2 = await driver.findElement('#connectjson-rpc');
         await driver.scrollToElement(snapButton2);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectjson-rpc');
         await driver.clickElement('#connectjson-rpc');
 
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask dialog
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
 
+        // switch to test snaps window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
@@ -104,10 +130,15 @@ describe('Test Snap RPC', function () {
           text: 'Reconnect to JSON-RPC Snap',
         });
 
-        // click send inputs on test snap page
+        // scroll to send rpc
         const snapButton3 = await driver.findElement('#sendRpc');
         await driver.scrollToElement(snapButton3);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click send
+        await driver.waitForSelector('#sendRpc');
         await driver.clickElement('#sendRpc');
 
         // check result with waitForSelector

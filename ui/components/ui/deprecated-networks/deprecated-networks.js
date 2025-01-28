@@ -7,10 +7,8 @@ import {
   Severity,
 } from '../../../helpers/constants/design-system';
 
-import {
-  getCurrentNetwork,
-  getNetworkConfigurationsByChainId,
-} from '../../../selectors';
+import { getCurrentNetwork } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { BannerAlert, Box } from '../../component-library';
 import {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
@@ -20,19 +20,13 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC721 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  describe('Submit an Approve transaction @no-mmi', function () {
+  describe('Submit an Approve transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
           ganacheOptions: defaultGanacheOptions,
           smartContract,
@@ -59,12 +53,6 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
@@ -119,8 +107,6 @@ async function createMintTransaction(driver: Driver) {
 }
 
 export async function confirmMintTransaction(driver: Driver) {
-  await driver.waitUntilXWindowHandles(3);
-
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
@@ -129,6 +115,12 @@ export async function confirmMintTransaction(driver: Driver) {
   });
 
   await scrollAndConfirmAndAssertConfirm(driver);
+
+  // Verify Mint Transaction is Confirmed before proceeding
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
+  await driver.waitForSelector('.transaction-status-label--confirmed');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 }
 
 async function createApproveTransaction(driver: Driver) {
@@ -137,13 +129,11 @@ async function createApproveTransaction(driver: Driver) {
 }
 
 async function assertApproveDetails(driver: Driver) {
-  await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
     css: 'h2',
-    text: 'Allowance request',
+    text: 'Withdrawal request',
   });
 
   await driver.waitForSelector({
@@ -191,8 +181,6 @@ async function assertApproveDetails(driver: Driver) {
 
 async function confirmApproveTransaction(driver: Driver) {
   await scrollAndConfirmAndAssertConfirm(driver);
-
-  await driver.delay(veryLargeDelayMs);
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 

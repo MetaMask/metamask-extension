@@ -68,6 +68,10 @@ const t = (key) => {
       return 'Dismiss Secret Recovery Phrase backup reminder';
     case 'dismissReminderDescriptionField':
       return 'Turn this on to dismiss the Secret Recovery Phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds';
+    case 'overrideContentSecurityPolicyHeader':
+      return 'Override Content-Security-Policy header';
+    case 'overrideContentSecurityPolicyHeaderDescription':
+      return "This option is a workaround for a known issue in Firefox, where a dapp's Content-Security-Policy header may prevent the extension from loading properly. Disabling this option is not recommended unless required for specific web page compatibility.";
     case 'Contacts':
       return 'Contacts';
     case 'securityAndPrivacy':
@@ -86,10 +90,6 @@ const t = (key) => {
       return 'Participate in MetaMetrics to help us make MetaMask better';
     case 'alerts':
       return 'Alerts';
-    case 'alertSettingsUnconnectedAccount':
-      return 'Browsing a website with an unconnected account selected';
-    case 'alertSettingsWeb3ShimUsage':
-      return 'When a website tries to use the removed window.web3 API';
     case 'networks':
       return 'Networks';
     case 'mainnet':
@@ -151,9 +151,12 @@ describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
       const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 4;
+      const NUM_OF_HIDDEN_SETTINGS = 1;
 
       expect(getSettingsRoutes()).toHaveLength(
-        SETTINGS_CONSTANTS.length - NUM_OF_ENV_FEATURE_FLAG_SETTINGS,
+        SETTINGS_CONSTANTS.length -
+          NUM_OF_ENV_FEATURE_FLAG_SETTINGS -
+          NUM_OF_HIDDEN_SETTINGS,
       );
     });
   });
@@ -174,11 +177,7 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(20);
-    });
-
-    it('returns "Alerts" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('alerts'))).toStrictEqual(2);
+      ).toStrictEqual(21);
     });
 
     it('returns "Network" section count', () => {
@@ -187,7 +186,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        5,
+        3,
       );
     });
 

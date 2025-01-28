@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { isSnapId } from '@metamask/snaps-utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import {
   ConfirmInfoRow,
@@ -14,6 +15,7 @@ import {
 import { useConfirmContext } from '../../../../context/confirm';
 import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 
 const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
@@ -23,6 +25,11 @@ const TypedSignV1Info: React.FC = () => {
     return null;
   }
 
+  const toolTipMessage = isSnapId(currentConfirmation.msgParams?.origin)
+    ? t('requestFromInfoSnap')
+    : t('requestFromInfo');
+  const chainId = currentConfirmation.chainId as string;
+
   return (
     <>
       <ConfirmInfoSection>
@@ -30,17 +37,24 @@ const TypedSignV1Info: React.FC = () => {
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
-          tooltip={t('requestFromInfo')}
+          tooltip={toolTipMessage}
         >
           <ConfirmInfoRowUrl
             url={currentConfirmation.msgParams?.origin ?? ''}
           />
         </ConfirmInfoAlertRow>
+        <SigningInWithRow />
       </ConfirmInfoSection>
       <ConfirmInfoSection>
-        <ConfirmInfoRow label={t('message')}>
+        <ConfirmInfoRow
+          label={t('message')}
+          collapsed={false}
+          copyEnabled
+          copyText={JSON.stringify(currentConfirmation.msgParams?.data ?? {})}
+        >
           <ConfirmInfoRowTypedSignDataV1
             data={currentConfirmation.msgParams?.data as TypedSignDataV1Type}
+            chainId={chainId}
           />
         </ConfirmInfoRow>
       </ConfirmInfoSection>

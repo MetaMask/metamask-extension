@@ -37,7 +37,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getUseExternalServices } from '../../../selectors';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   hideBasicFunctionalityModal,
   onboardingToggleBasicFunctionalityOff,

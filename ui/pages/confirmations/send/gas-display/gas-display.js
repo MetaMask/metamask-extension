@@ -27,14 +27,11 @@ import {
   getIsTestnet,
   getUseCurrencyRateCheck,
   getUnapprovedTransactions,
+  selectNetworkConfigurationByChainId,
 } from '../../../../selectors';
 
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../../ducks/send';
-import {
-  getNativeCurrency,
-  getProviderConfig,
-} from '../../../../ducks/metamask/metamask';
 import { showModal } from '../../../../store/actions';
 import {
   addHexes,
@@ -52,25 +49,26 @@ import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const { estimateUsed } = useGasFeeContext();
+  const { estimateUsed, transaction } = useGasFeeContext();
+  const { chainId } = transaction;
   const trackEvent = useContext(MetaMetricsContext);
-
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const providerConfig = useSelector(getProviderConfig);
+  const { name: networkNickname, nativeCurrency } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
   const isTestnet = useSelector(getIsTestnet);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets } = useSelector(getPreferences);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const { chainId } = providerConfig;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
     draftTransaction?.amount?.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
-  const currentNetworkName = networkName || providerConfig.nickname;
+  const currentNetworkName = networkName || networkNickname;
 
   const transactionData = {
     txParams: {

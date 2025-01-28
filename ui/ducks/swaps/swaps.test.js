@@ -924,24 +924,5 @@ describe('Ducks - Swaps', () => {
         expect(newState.customGas.limit).toBe(null);
       });
     });
-
-    describe('getSwapRedesignEnabled', () => {
-      it('returns true if feature flags are not returned from backend yet', () => {
-        const state = createSwapsMockStore();
-        delete state.metamask.swapsState.swapsFeatureFlags.swapRedesign;
-        expect(swaps.getSwapRedesignEnabled(state)).toBe(true);
-      });
-
-      it('returns false if the extension feature flag for swaps redesign is false', () => {
-        const state = createSwapsMockStore();
-        state.metamask.swapsState.swapsFeatureFlags.swapRedesign.extensionActive = false;
-        expect(swaps.getSwapRedesignEnabled(state)).toBe(false);
-      });
-
-      it('returns true if the extension feature flag for swaps redesign is true', () => {
-        const state = createSwapsMockStore();
-        expect(swaps.getSwapRedesignEnabled(state)).toBe(true);
-      });
-    });
   });
 });

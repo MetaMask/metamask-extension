@@ -21,7 +21,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../../ui/tooltip';
-import { AvatarGroup } from '../../multichain';
+import { AvatarGroup } from '../../multichain/avatar-group';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatDate } from '../../../helpers/utils/util';
@@ -49,7 +49,7 @@ export const PermissionCellStatus = ({
 
   const renderAccountsGroup = () => (
     <>
-      {process.env.CHAIN_PERMISSIONS ? (
+      {networks.length > 0 ? (
         <Box
           as="span"
           className="permission-cell__status__accounts-group-box"

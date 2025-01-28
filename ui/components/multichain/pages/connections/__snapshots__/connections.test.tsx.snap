@@ -171,7 +171,7 @@ exports[`Connections Content should render correctly 1`] = `
                         style="bottom: -1px; right: 2px;"
                       >
                         <div
-                          class="mm-box multichain-badge-status__badge mm-box--background-color-success-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                          class="mm-box multichain-badge-status__badge mm-box--background-color-success-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                         />
                       </div>
                     </div>
@@ -297,6 +297,7 @@ exports[`Connections Content should render correctly 1`] = `
                     >
                       <span
                         class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                        data-testid="account-value-and-suffix"
                       >
                         966.988
                       </span>
@@ -340,6 +341,7 @@ exports[`Connections Content should render correctly 1`] = `
                     >
                       <span
                         class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                        data-testid="account-value-and-suffix"
                       >
                         966.988
                       </span>

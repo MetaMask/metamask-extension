@@ -32,7 +32,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                   class="mm-avatar-account__jazzicon"
                 >
                   <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
                   >
                     <svg
                       height="32"
@@ -41,25 +41,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                       y="0"
                     >
                       <rect
-                        fill="#F29602"
+                        fill="#F2C602"
                         height="32"
-                        transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
+                        transform="translate(5.020620447504322 0.8103948904236289) rotate(161.5 16 16)"
                         width="32"
                         x="0"
                         y="0"
                       />
                       <rect
-                        fill="#FA6C00"
+                        fill="#F5ED00"
                         height="32"
-                        transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
+                        transform="translate(-9.408121353992403 -10.305042584072448) rotate(246.0 16 16)"
                         width="32"
                         x="0"
                         y="0"
                       />
                       <rect
-                        fill="#236CE1"
+                        fill="#FB183A"
                         height="32"
-                        transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
+                        transform="translate(9.192555269879563 26.914160820887155) rotate(215.5 16 16)"
                         width="32"
                         x="0"
                         y="0"
@@ -75,7 +75,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                   class="mm-avatar-account__jazzicon"
                 >
                   <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
                   >
                     <svg
                       height="32"
@@ -84,25 +84,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                       y="0"
                     >
                       <rect
-                        fill="#F29602"
+                        fill="#F2C602"
                         height="32"
-                        transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
+                        transform="translate(5.020620447504322 0.8103948904236289) rotate(161.5 16 16)"
                         width="32"
                         x="0"
                         y="0"
                       />
                       <rect
-                        fill="#FA6C00"
+                        fill="#F5ED00"
                         height="32"
-                        transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
+                        transform="translate(-9.408121353992403 -10.305042584072448) rotate(246.0 16 16)"
                         width="32"
                         x="0"
                         y="0"
                       />
                       <rect
-                        fill="#236CE1"
+                        fill="#FB183A"
                         height="32"
-                        transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
+                        transform="translate(9.192555269879563 26.914160820887155) rotate(215.5 16 16)"
                         width="32"
                         x="0"
                         y="0"
@@ -116,7 +116,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 style="bottom: -1px; right: 2px;"
               >
                 <div
-                  class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                  class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                 />
               </div>
             </div>
@@ -134,7 +134,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-avatar-account__jazzicon"
         >
           <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
           >
             <svg
               height="32"
@@ -143,25 +143,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               y="0"
             >
               <rect
-                fill="#F29602"
+                fill="#F2C602"
                 height="32"
-                transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
+                transform="translate(5.020620447504322 0.8103948904236289) rotate(161.5 16 16)"
                 width="32"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#FA6C00"
+                fill="#F5ED00"
                 height="32"
-                transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
+                transform="translate(-9.408121353992403 -10.305042584072448) rotate(246.0 16 16)"
                 width="32"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#236CE1"
+                fill="#FB183A"
                 height="32"
-                transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
+                transform="translate(9.192555269879563 26.914160820887155) rotate(215.5 16 16)"
                 width="32"
                 x="0"
                 y="0"
@@ -177,7 +177,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-avatar-account__jazzicon"
         >
           <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 162, 242);"
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
           >
             <svg
               height="32"
@@ -186,25 +186,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               y="0"
             >
               <rect
-                fill="#F29602"
+                fill="#F2C602"
                 height="32"
-                transform="translate(0.001112151990700775 -0.0005016734084641463) rotate(358.8 16 16)"
+                transform="translate(5.020620447504322 0.8103948904236289) rotate(161.5 16 16)"
                 width="32"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#FA6C00"
+                fill="#F5ED00"
                 height="32"
-                transform="translate(7.965719514969553 10.506673824525246) rotate(69.5 16 16)"
+                transform="translate(-9.408121353992403 -10.305042584072448) rotate(246.0 16 16)"
                 width="32"
                 x="0"
                 y="0"
               />
               <rect
-                fill="#236CE1"
+                fill="#FB183A"
                 height="32"
-                transform="translate(-19.066706584002095 16.199592375372838) rotate(260.2 16 16)"
+                transform="translate(9.192555269879563 26.914160820887155) rotate(215.5 16 16)"
                 width="32"
                 x="0"
                 y="0"
@@ -242,6 +242,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                data-testid="account-value-and-suffix"
               >
                 $100,000.00
               </span>
@@ -268,25 +269,36 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           </p>
         </div>
         <div
-          class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
-          data-testid="avatar-group"
+          class="mm-box multichain-account-list-item__avatar-currency mm-box--display-flex mm-box--gap-1 mm-box--justify-content-center mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+          >
+            <img
+              alt="BTC logo"
+              class="mm-avatar-token__token-image"
+              src="./images/bitcoin-logo.svg"
+            />
+          </div>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
           >
             <div
-              class="mm-box mm-box--rounded-full"
-              style="margin-left: 0px;"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              data-testid="second-currency-display"
+              title="1 BTC"
             >
-              <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+              <span
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                data-testid="account-value-and-suffix"
               >
-                <img
-                  alt="undefined logo"
-                  class="mm-avatar-token__token-image"
-                  src="./images/bitcoin-logo.svg"
-                />
-              </div>
+                1
+              </span>
+              <span
+                class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+              >
+                BTC
+              </span>
             </div>
           </div>
         </div>
@@ -412,7 +424,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 style="bottom: -1px; right: 2px;"
               >
                 <div
-                  class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                  class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                 />
               </div>
             </div>
@@ -538,6 +550,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                data-testid="account-value-and-suffix"
               >
                 0.006
               </span>
@@ -581,6 +594,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                data-testid="account-value-and-suffix"
               >
                 0.006
               </span>

@@ -63,6 +63,8 @@ function wrapElementWithAPI(element, driver) {
         return await driver.wait(until.stalenessOf(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
+      case 'disabled':
+        return await driver.wait(until.elementIsDisabled(element), timeout);
       default:
         throw new Error(`Provided state: '${state}' is not supported`);
     }
@@ -182,8 +184,8 @@ class Driver {
    *
    * To target an element based on its attribute using a CSS selector,
    * use square brackets ([]) to specify the attribute name and its value.
-   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute data-testid and its value on the overview screen</caption>
-   *        await driver.findElement('[data-testid="eth-overview-buy"]');
+   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute testId and its value on the overview screen</caption>
+   *        await driver.findElement({testId: 'eth-overview-buy'});
    *
    * To locate an element by XPath locator strategy
    * @example <caption>Example to locate 'Confirm' button on the send transaction page</caption>
@@ -202,6 +204,11 @@ class Driver {
       // xpath locator.
       return By.xpath(locator.xpath);
     } else if (locator.text) {
+      // If a testId prop was provided along with text, convert that to a css prop and continue
+      if (locator.testId) {
+        locator.css = `[data-testid="${locator.testId}"]`;
+      }
+
       // Providing a text prop, and optionally a tag or css prop, will use
       // xpath to look for an element with the tag that has matching text.
       if (locator.css) {
@@ -230,7 +237,12 @@ class Driver {
       const quoted = quoteXPathText(locator.text);
       // The tag prop is optional and further refines which elements match
       return By.xpath(`//${locator.tag ?? '*'}[contains(text(), ${quoted})]`);
+    } else if (locator.testId) {
+      // Providing a testId prop will use css to look for an element with the
+      // data-testid attribute that matches the testId provided.
+      return By.css(`[data-testid="${locator.testId}"]`);
     }
+
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
     );
@@ -272,6 +284,12 @@ class Driver {
 
   async delay(time) {
     await new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  async delayFirefox(time) {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      await new Promise((resolve) => setTimeout(resolve, time));
+    }
   }
 
   /**
@@ -317,8 +335,12 @@ class Driver {
    * Waits for an element that matches the given locator to reach the specified state within the timeout period.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds)
+   * @param {object} [options] - parameter object
+   * @param {number} [options.timeout] - specifies the maximum amount of time (in milliseconds)
    * to wait for the condition to be met and desired state of the element to wait for.
+   * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
+   * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+   * @param {string} [options.state] - specifies the state of the element to wait for.
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
    * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
@@ -333,7 +355,7 @@ class Driver {
     // bucket that can include the state attribute to wait for elements that
     // match the selector to be removed from the DOM.
     let element;
-    if (!['visible', 'detached'].includes(state)) {
+    if (!['visible', 'detached', 'enabled'].includes(state)) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
@@ -346,7 +368,13 @@ class Driver {
         until.stalenessOf(await this.findElement(rawLocator)),
         timeout,
       );
+    } else if (state === 'enabled') {
+      element = await this.driver.wait(
+        until.elementIsEnabled(await this.findElement(rawLocator)),
+        timeout,
+      );
     }
+
     return wrapElementWithAPI(element, this);
   }
 
@@ -477,13 +505,14 @@ class Driver {
    * and returns a reference to the first matching element.
    *
    * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found element.
    */
-  async findElement(rawLocator) {
+  async findElement(rawLocator, timeout = this.timeout) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.driver.wait(
       until.elementLocated(locator),
-      this.timeout,
+      timeout,
     );
     return wrapElementWithAPI(element, this);
   }
@@ -518,13 +547,14 @@ class Driver {
    * Finds a clickable element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
-  async findClickableElement(rawLocator) {
-    const element = await this.findElement(rawLocator);
+  async findClickableElement(rawLocator, timeout = this.timeout) {
+    const element = await this.findElement(rawLocator, timeout);
     await Promise.all([
-      this.driver.wait(until.elementIsVisible(element), this.timeout),
-      this.driver.wait(until.elementIsEnabled(element), this.timeout),
+      this.driver.wait(until.elementIsVisible(element), timeout),
+      this.driver.wait(until.elementIsEnabled(element), timeout),
     ]);
     return wrapElementWithAPI(element, this);
   }
@@ -579,16 +609,64 @@ class Driver {
         await element.click();
         return;
       } catch (error) {
-        if (
-          error.name === 'StaleElementReferenceError' &&
-          attempt < retries - 1
-        ) {
+        const retryableErrors = [
+          'StaleElementReferenceError',
+          'ElementClickInterceptedError',
+          'ElementNotInteractableError',
+        ];
+
+        if (retryableErrors.includes(error.name) && attempt < retries - 1) {
+          console.warn(
+            `Retrying click (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
+            }`,
+          );
           await this.delay(1000);
         } else {
           throw error;
         }
       }
     }
+  }
+
+  /**
+   * Checks if an element is moving by comparing its position at two different times.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
+   */
+  async isElementMoving(rawLocator) {
+    const element = await this.findElement(rawLocator);
+    const initialPosition = await element.getRect();
+
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
+
+    const newPosition = await element.getRect();
+
+    return (
+      initialPosition.x !== newPosition.x || initialPosition.y !== newPosition.y
+    );
+  }
+
+  /**
+   * Waits until an element stops moving within a specified timeout period.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @param {number} timeout - The maximum time to wait for the element to stop moving.
+   * @returns {Promise<void>} Promise that resolves when the element stops moving.
+   * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
+   */
+  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      if (!(await this.isElementMoving(rawLocator))) {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Check every 500ms
+    }
+
+    throw new Error('Element did not stop moving within the timeout period');
   }
 
   /** @param {string} title - The title of the window or tab the screenshot is being taken in */
@@ -629,12 +707,15 @@ class Driver {
   async clickElementSafe(rawLocator, timeout = 1000) {
     try {
       const locator = this.buildLocator(rawLocator);
-
       const elements = await this.driver.wait(
         until.elementsLocated(locator),
         timeout,
       );
 
+      await Promise.all([
+        this.driver.wait(until.elementIsVisible(elements[0]), timeout),
+        this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
+      ]);
       await elements[0].click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
@@ -693,6 +774,16 @@ class Driver {
   }
 
   /**
+   * Move the mouse to the given element to test hover behaviour.
+   *
+   * @param element - Previously located element
+   * @returns {Promise<void>} promise resolving after mouse move completed
+   */
+  async hoverElement(element) {
+    await this.driver.actions().move({ origin: element, x: 1, y: 1 }).perform();
+  }
+
+  /**
    * Scrolls the page until the given web element is in view.
    *
    * @param {string | object} element - Element locator
@@ -703,6 +794,29 @@ class Driver {
       'arguments[0].scrollIntoView(true)',
       element,
     );
+  }
+
+  /**
+   * Waits for a condition to be met within a given timeout period.
+   *
+   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {object} options - Options for the wait.
+   * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
+   * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
+   * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
+   * @throws {Error} Throws an error if the condition is not met within the timeout period.
+   */
+  async waitUntil(condition, options) {
+    const { timeout, interval } = options;
+    const endTime = Date.now() + timeout;
+
+    while (Date.now() < endTime) {
+      if (await condition()) {
+        return true;
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+    throw new Error('Condition not met within timeout');
   }
 
   /**
@@ -743,15 +857,13 @@ class Driver {
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
   async pasteIntoField(rawLocator, contentToPaste) {
-    // Throw if double-quote is present in content to paste
-    // so that we don't have to worry about escaping double-quotes
-    if (contentToPaste.includes('"')) {
-      throw new Error('Cannot paste content with double-quote');
-    }
     // Click to focus the field
     await this.clickElement(rawLocator);
     await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste}")`,
+      `navigator.clipboard.writeText("${contentToPaste.replace(
+        /"/gu,
+        '\\"',
+      )}")`,
     );
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
@@ -1249,7 +1361,23 @@ class Driver {
 
   #getErrorFromEvent(event) {
     // Extract the values from the array
-    const values = event.args.map((a) => a.value);
+    const values = event.args.map((a) => {
+      // Handle snaps error type
+      if (a && a.preview && Array.isArray(a.preview.properties)) {
+        return a.preview.properties
+          .filter((prop) => prop.value !== 'Object')
+          .map((prop) => prop.value)
+          .join(', ');
+      } else if (a.description) {
+        // Handle RPC error type
+        return a.description;
+      } else if (a.value) {
+        // Handle generic error types
+        return a.value;
+      }
+      // Fallback for other error structures
+      return JSON.stringify(a, null, 2);
+    });
 
     if (values[0]?.includes('%s')) {
       // The values are in the "printf" form of [message, ...substitutions]
@@ -1311,7 +1439,10 @@ function collectMetrics() {
       });
     });
 
-  return results;
+  return {
+    ...results,
+    ...window.stateHooks.getCustomTraces(),
+  };
 }
 
 module.exports = { Driver, PAGES };

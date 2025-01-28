@@ -29,6 +29,10 @@ import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -40,23 +44,26 @@ export default class AdvancedTab extends PureComponent {
     setUseNonceField: PropTypes.func,
     useNonceField: PropTypes.bool,
     setHexDataFeatureFlag: PropTypes.func,
-    displayWarning: PropTypes.func,
+    displayErrorInSettings: PropTypes.func,
+    hideErrorInSettings: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
-    warning: PropTypes.string,
+    errorInSettings: PropTypes.string,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
-    smartTransactionsOptInStatus: PropTypes.bool,
+    smartTransactionsEnabled: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    setSmartTransactionsOptInStatus: PropTypes.func.isRequired,
+    setSmartTransactionsEnabled: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     showExtensionInFullSizeView: PropTypes.bool,
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
+    overrideContentSecurityPolicyHeader: PropTypes.bool,
+    setOverrideContentSecurityPolicyHeader: PropTypes.func.isRequired,
   };
 
   state = {
@@ -80,7 +87,9 @@ export default class AdvancedTab extends PureComponent {
 
   componentDidMount() {
     const { t } = this.context;
+    const { hideErrorInSettings } = this.props;
     handleSettingsRefs(t, t('advanced'), this.settingsRefs);
+    hideErrorInSettings();
   }
 
   async getTextFromFile(file) {
@@ -112,7 +121,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderStateLogs() {
     const { t } = this.context;
-    const { displayWarning } = this.props;
+    const { displayErrorInSettings } = this.props;
 
     return (
       <Box
@@ -133,16 +142,21 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
+              data-testid="advanced-setting-state-logs-button"
               onClick={() => {
-                window.logStateString((err, result) => {
+                window.logStateString(async (err, result) => {
                   if (err) {
-                    displayWarning(t('stateLogError'));
+                    displayErrorInSettings(t('stateLogError'));
                   } else {
-                    exportAsFile(
-                      `${t('stateLogFileName')}.json`,
-                      result,
-                      ExportableContentType.JSON,
-                    );
+                    try {
+                      await exportAsFile(
+                        `${t('stateLogFileName')}.json`,
+                        result,
+                        ExportableContentType.JSON,
+                      );
+                    } catch (error) {
+                      displayErrorInSettings(error.message);
+                    }
                   }
                 });
               }}
@@ -199,7 +213,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderToggleStxOptIn() {
     const { t } = this.context;
-    const { smartTransactionsOptInStatus, setSmartTransactionsOptInStatus } =
+    const { smartTransactionsEnabled, setSmartTransactionsEnabled } =
       this.props;
 
     const learMoreLink = (
@@ -237,10 +251,10 @@ export default class AdvancedTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={smartTransactionsOptInStatus}
+            value={smartTransactionsEnabled}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              setSmartTransactionsOptInStatus(newValue);
+              setSmartTransactionsEnabled(newValue);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
@@ -575,12 +589,50 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderOverrideContentSecurityPolicyHeader() {
+    const { t } = this.context;
+    const {
+      overrideContentSecurityPolicyHeader,
+      setOverrideContentSecurityPolicyHeader,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[11]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-override-content-security-policy-header"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('overrideContentSecurityPolicyHeader')}</span>
+          <div className="settings-page__content-description">
+            {t('overrideContentSecurityPolicyHeaderDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={overrideContentSecurityPolicyHeader}
+            onToggle={(value) => setOverrideContentSecurityPolicyHeader(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
-    const { warning } = this.props;
+    const { errorInSettings } = this.props;
     // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
     return (
       <div className="settings-page__body">
-        {warning ? <div className="settings-tab__error">{warning}</div> : null}
+        {errorInSettings ? (
+          <div className="settings-tab__error">{errorInSettings}</div>
+        ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
         {this.renderToggleStxOptIn()}
@@ -592,6 +644,9 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}
+        {getPlatform() === PLATFORM_FIREFOX
+          ? this.renderOverrideContentSecurityPolicyHeader()
+          : null}
       </div>
     );
   }

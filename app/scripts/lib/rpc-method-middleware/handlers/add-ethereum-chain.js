@@ -1,7 +1,7 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import * as URI from 'uri-js';
+import { ApprovalType } from '@metamask/controller-utils';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { cloneDeep } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -18,13 +18,10 @@ const addEthereumChain = {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
     requestUserApproval: true,
-    startApprovalFlow: true,
-    endApprovalFlow: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
-    requestPermittedChainsPermission: true,
-    getChainPermissionsFeatureFlag: true,
-    grantPermittedChainsPermissionIncremental: true,
+    requestPermittedChainsPermissionForOrigin: true,
+    requestPermittedChainsPermissionIncrementalForOrigin: true,
   },
 };
 
@@ -41,18 +38,15 @@ async function addEthereumChainHandler(
     getNetworkConfigurationByChainId,
     setActiveNetwork,
     requestUserApproval,
-    startApprovalFlow,
-    endApprovalFlow,
     getCurrentChainIdForDomain,
     getCaveat,
-    requestPermittedChainsPermission,
-    getChainPermissionsFeatureFlag,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionForOrigin,
+    requestPermittedChainsPermissionIncrementalForOrigin,
   },
 ) {
   let validParams;
   try {
-    validParams = validateAddEthereumChainParams(req.params[0], end);
+    validParams = validateAddEthereumChainParams(req.params[0]);
   } catch (error) {
     return end(error);
   }
@@ -67,9 +61,6 @@ async function addEthereumChainHandler(
   const { origin } = req;
 
   const currentChainIdForDomain = getCurrentChainIdForDomain(origin);
-  const currentNetworkConfiguration = getNetworkConfigurationByChainId(
-    currentChainIdForDomain,
-  );
   const existingNetwork = getNetworkConfigurationByChainId(chainId);
 
   if (
@@ -78,13 +69,12 @@ async function addEthereumChainHandler(
     existingNetwork.nativeCurrency !== ticker
   ) {
     return end(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\n${ticker}`,
       }),
     );
   }
 
-  let approvalFlowId;
   let updatedNetwork = existingNetwork;
 
   let rpcIndex = existingNetwork?.rpcEndpoints.findIndex(({ url }) =>
@@ -104,8 +94,6 @@ async function addEthereumChainHandler(
     (firstValidBlockExplorerUrl &&
       blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex)
   ) {
-    ({ id: approvalFlowId } = await startApprovalFlow());
-
     try {
       await requestUserApproval({
         origin,
@@ -188,7 +176,6 @@ async function addEthereumChainHandler(
         });
       }
     } catch (error) {
-      endApprovalFlow({ id: approvalFlowId });
       return end(error);
     }
   }
@@ -198,32 +185,13 @@ async function addEthereumChainHandler(
     const { networkClientId } =
       updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
-    const requestData = {
-      toNetworkConfiguration: updatedNetwork,
-      fromNetworkConfiguration: currentNetworkConfiguration,
-    };
-
-    return switchChain(
-      res,
-      end,
-      origin,
-      chainId,
-      requestData,
-      networkClientId,
-      approvalFlowId,
-      {
-        isAddFlow: true,
-        getChainPermissionsFeatureFlag,
-        setActiveNetwork,
-        requestUserApproval,
-        getCaveat,
-        requestPermittedChainsPermission,
-        endApprovalFlow,
-        grantPermittedChainsPermissionIncremental,
-      },
-    );
-  } else if (approvalFlowId) {
-    endApprovalFlow({ id: approvalFlowId });
+    return switchChain(res, end, chainId, networkClientId, {
+      isAddFlow: true,
+      setActiveNetwork,
+      getCaveat,
+      requestPermittedChainsPermissionForOrigin,
+      requestPermittedChainsPermissionIncrementalForOrigin,
+    });
   }
 
   res.result = null;

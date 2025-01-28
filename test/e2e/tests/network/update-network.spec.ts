@@ -23,7 +23,7 @@ const selectors = {
   deleteButton: { text: 'Delete', tag: 'button' },
   cancelButton: { text: 'Cancel', tag: 'button' },
   saveButton: { text: 'Save', tag: 'button' },
-  updatedNetworkDropDown: { tag: 'span', text: 'Update Network' },
+  updatedNetworkDropDown: { tag: 'p', text: 'Update Network' },
   errorMessageInvalidUrl: {
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
@@ -240,7 +240,13 @@ describe('Update Network:', function (this: Suite) {
 
         //  Re-open the network menu
         await driver.delay(regularDelayMs);
+        // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#27870)
+        // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
         await driver.clickElementSafe({ text: 'Got it', tag: 'h6' });
+        await driver.assertElementNotPresent({
+          tag: 'h6',
+          text: 'Got it',
+        });
         await driver.clickElement('[data-testid="network-display"]');
 
         // Go back to edit the network
@@ -360,6 +366,13 @@ describe('Update Network:', function (this: Suite) {
 
         //  Re-open the network menu
         await driver.delay(regularDelayMs);
+        // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#27870)
+        // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
+        await driver.clickElementSafe({ text: 'Got it', tag: 'h6' });
+        await driver.assertElementNotPresent({
+          tag: 'h6',
+          text: 'Got it',
+        });
         await driver.clickElement('[data-testid="network-display"]');
 
         // Go back to edit the network

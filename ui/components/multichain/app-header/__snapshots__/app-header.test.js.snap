@@ -11,20 +11,20 @@ exports[`App Header locked state matches snapshot: locked 1`] = `
       <div>
         <button
           aria-label="Network Menu Chain 5"
-          class="mm-box mm-picker-network multichain-app-header__contents__network-picker mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+          class="mm-box mm-picker-network multichain-app-header__contents__network-picker mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
           data-testid="network-display"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             role="img"
           >
             C
           </div>
-          <span
+          <p
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Chain 5
-          </span>
+          </p>
           <span
             class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
             style="mask-image: url('./images/icons/arrow-down.svg');"
@@ -436,21 +436,21 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
       <div>
         <button
           aria-label="Network Menu Chain 5"
-          class="mm-box mm-picker-network multichain-app-header__contents__network-picker mm-box--margin-2 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-none mm-box--sm:display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+          class="mm-box mm-picker-network multichain-app-header__contents__network-picker mm-box--margin-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-none mm-box--sm:display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
           data-testid="network-display"
           disabled=""
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             role="img"
           >
             C
           </div>
-          <span
+          <p
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Chain 5
-          </span>
+          </p>
           <span
             class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
             style="mask-image: url('./images/icons/arrow-down.svg');"
@@ -609,18 +609,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
             <div
               class="mm-box"
               style="position: relative;"
-            >
-              <div
-                class="mm-box notification-list-item__unread-dot__wrapper mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--display-block mm-box--background-color-error-default mm-box--rounded-lg mm-box--border-style-none"
-                style="position: absolute; cursor: pointer; top: -5px; left: 10px; z-index: 1;"
-              >
-                <p
-                  class="mm-box mm-text notifications-tag-counter__unread-dot mm-text--body-xs mm-text--text-align-center mm-box--color-error-inverse"
-                >
-                  1
-                </p>
-              </div>
-            </div>
+            />
             <button
               aria-label="Account options"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"

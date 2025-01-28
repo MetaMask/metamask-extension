@@ -8,6 +8,9 @@ export const getDataCollectionForMarketing = (state) =>
 export const getParticipateInMetaMetrics = (state) =>
   Boolean(state.metamask.participateInMetaMetrics);
 
+export const getLatestMetricsEventTimestamp = (state) =>
+  state.metamask.latestNonAnonymousEventTimestamp;
+
 export const selectFragmentBySuccessEvent = createSelector(
   selectFragments,
   (_, fragmentOptions) => fragmentOptions,

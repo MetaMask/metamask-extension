@@ -21,6 +21,7 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../selectors', () => ({
   getCurrentChainId: () => '0x1',
+  getSelectedAddress: () => '0xselectedAddress',
   getRpcPrefsForCurrentProvider: () => {
     return {};
   },
@@ -28,6 +29,10 @@ jest.mock('../../../selectors', () => ({
   getMetaMaskAccounts: () => {
     return {};
   },
+}));
+
+jest.mock('../../../ducks/bridge/selectors', () => ({
+  getAllBridgeableNetworks: () => [],
 }));
 
 const MOCK_RECENT_PAGE = '/home';
@@ -79,6 +84,7 @@ const mockState = {
     defaultHdPaths: {
       [HardwareDeviceNames.lattice]: "m/44'/60'/0'/0",
       [HardwareDeviceNames.ledger]: "m/44'/60'/0'/0",
+      [HardwareDeviceNames.oneKey]: "m/44'/60'/0'/0",
       [HardwareDeviceNames.trezor]: "m/44'/60'/0'/0",
     },
     mostRecentOverviewPage: '',

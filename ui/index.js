@@ -19,6 +19,7 @@ import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
+import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -28,8 +29,6 @@ import {
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
-  getUseRequestQueue,
-  getCurrentChainId,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -39,6 +38,7 @@ import {
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
+import { getStartupTraceTags } from './helpers/utils/tags';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -182,8 +182,14 @@ export async function setupInitialStore(
 async function startApp(metamaskState, backgroundConnection, opts) {
   const { traceContext } = opts;
 
+  const tags = getStartupTraceTags({ metamask: metamaskState });
+
   const store = await trace(
-    { name: TraceName.SetupStore, parentContext: traceContext },
+    {
+      name: TraceName.SetupStore,
+      parentContext: traceContext,
+      tags,
+    },
     () =>
       setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
   );
@@ -236,10 +242,7 @@ async function runInitialActions(store) {
 
   // Register this window as the current popup
   // and set in background state
-  if (
-    getUseRequestQueue(state) &&
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-  ) {
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const thisPopupId = Date.now();
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
@@ -290,9 +293,6 @@ function setupStateHooks(store) {
     // for more info)
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
-    state.completeTxList = await actions.getTransactions({
-      filterToCurrentNetwork: false,
-    });
     return state;
   };
   window.stateHooks.getSentryAppState = function () {

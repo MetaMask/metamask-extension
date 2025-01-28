@@ -178,12 +178,13 @@ export default class ConfirmTransactionBase extends Component {
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
-    smartTransactionsOptInStatus: PropTypes.bool,
+    smartTransactionsPreferenceEnabled: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
     selectedNetworkClientId: PropTypes.string,
     isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
     chainId: PropTypes.string,
+    setSmartTransactionsRefreshInterval: PropTypes.func,
   };
 
   state = {
@@ -215,6 +216,9 @@ export default class ConfirmTransactionBase extends Component {
       useMaxValue,
       hasPriorityApprovalRequest,
       mostRecentOverviewPage,
+      txData,
+      getNextNonce,
+      fromAddress,
     } = this.props;
 
     const {
@@ -225,12 +229,17 @@ export default class ConfirmTransactionBase extends Component {
       isEthGasPriceFetched: prevIsEthGasPriceFetched,
       hexMaximumTransactionFee: prevHexMaximumTransactionFee,
       hasPriorityApprovalRequest: prevHasPriorityApprovalRequest,
+      txData: prevTxData,
     } = prevProps;
 
     const statusUpdated = transactionStatus !== prevTxStatus;
     const txDroppedOrConfirmed =
       transactionStatus === TransactionStatus.dropped ||
       transactionStatus === TransactionStatus.confirmed;
+
+    if (txData.id !== prevTxData.id) {
+      getNextNonce(fromAddress);
+    }
 
     if (
       nextNonce !== prevNextNonce ||
@@ -274,7 +283,8 @@ export default class ConfirmTransactionBase extends Component {
 
     if (
       hexMaximumTransactionFee !== prevHexMaximumTransactionFee &&
-      useMaxValue
+      useMaxValue &&
+      transactionStatus === TransactionStatus.unapproved
     ) {
       this.updateValueToMax();
     }
@@ -406,6 +416,7 @@ export default class ConfirmTransactionBase extends Component {
       tokenSymbol,
       isUsingPaymaster,
       isSigningOrSubmitting,
+      fromAddress,
     } = this.props;
 
     const { t } = this.context;
@@ -440,7 +451,7 @@ export default class ConfirmTransactionBase extends Component {
 
       updateCustomNonce(inputValue);
 
-      getNextNonce();
+      getNextNonce(fromAddress);
     };
 
     const renderTotalMaxAmount = ({
@@ -536,11 +547,7 @@ export default class ConfirmTransactionBase extends Component {
     const { simulationData } = txData;
 
     const simulationDetails = (
-      <SimulationDetails
-        simulationData={simulationData}
-        transactionId={txData.id}
-        enableMetrics
-      />
+      <SimulationDetails transaction={txData} enableMetrics />
     );
 
     const showTotals = Boolean(simulationData?.error);
@@ -1009,23 +1016,16 @@ export default class ConfirmTransactionBase extends Component {
     this._isMounted = true;
     const {
       toAddress,
-      txData: { origin, chainId: txChainId } = {},
+      fromAddress,
+      txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
-      smartTransactionsOptInStatus,
+      smartTransactionsPreferenceEnabled,
       currentChainSupportsSmartTransactions,
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
-      chainId,
+      setSmartTransactionsRefreshInterval,
     } = this.props;
-
-    // If the user somehow finds themselves seeing a confirmation
-    // on a network which is not presently selected, throw
-    if (txChainId === undefined || txChainId !== chainId) {
-      throw new Error(
-        `Currently selected chainId (${chainId}) does not match chainId (${txChainId}) on which the transaction was proposed.`,
-      );
-    }
 
     const { trackEvent } = this.context;
     trackEvent({
@@ -1038,7 +1038,7 @@ export default class ConfirmTransactionBase extends Component {
       },
     });
 
-    getNextNonce();
+    getNextNonce(fromAddress);
     if (toAddress) {
       tryReverseResolveAddress(toAddress);
     }
@@ -1064,13 +1064,21 @@ export default class ConfirmTransactionBase extends Component {
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
 
-    if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
+    if (
+      smartTransactionsPreferenceEnabled &&
+      currentChainSupportsSmartTransactions
+    ) {
       // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
       // Long-term, we want to have a new proxy service specifically for feature flags.
       Promise.all([
         fetchSwapsFeatureFlags(),
         fetchSmartTransactionsLiveness(),
-      ]).then(([swapsFeatureFlags]) => setSwapsFeatureFlags(swapsFeatureFlags));
+      ]).then(([swapsFeatureFlags]) => {
+        setSwapsFeatureFlags(swapsFeatureFlags);
+        setSmartTransactionsRefreshInterval(
+          swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
+        );
+      });
     }
   }
 

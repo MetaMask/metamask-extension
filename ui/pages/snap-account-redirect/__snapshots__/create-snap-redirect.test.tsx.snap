@@ -15,6 +15,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
       >
         <div
           class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+          style="overflow: hidden;"
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
@@ -24,6 +25,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
           </div>
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--margin-left-2 mm-box--color-text-default"
+            title="@metamask/snap-simple-keyring"
           >
             @metamask/snap-simple-keyring
           </p>
@@ -107,7 +109,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                     class="mm-box mm-text mm-text--body-md mm-box--padding-2 mm-box--color-primary-default"
                     data-testid="snap-account-redirect-url-display-box"
                   >
-                    https://metamask.github.io/snap-simple-keyring/1.1.2/
+                    https://metamask.github.io/snap-simple-keyring/1.1.6/
                   </p>
                   <button
                     aria-label=""

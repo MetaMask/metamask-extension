@@ -7,8 +7,6 @@ on:
 
 jobs:
   add-team-label:
-    uses: metamask/github-tools/.github/workflows/add-team-label.yml@058012b49ff2fbd9649c566ba43b29497f93b21d
-    permissions:
-      pull-requests: write
+    uses: metamask/github-tools/.github/workflows/add-team-label.yml@18af6e4b56a18230d1792480e249ebc50b324927
     secrets:
-      PERSONAL_ACCESS_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}
+      TEAM_LABEL_TOKEN: ${{ secrets.TEAM_LABEL_TOKEN }}

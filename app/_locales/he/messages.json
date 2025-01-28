@@ -381,9 +381,6 @@
   "loading": {
     "message": "טוען..."
   },
-  "loadingTokens": {
-    "message": "טוען טוקנים..."
-  },
   "lock": {
     "message": "התנתקות"
   },
@@ -442,9 +439,6 @@
   },
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"
-  },
-  "noTransactions": {
-    "message": "אין לך עסקאות"
   },
   "noWebcamFound": {
     "message": "מצלמת הרשת של מחשבך לא נמצאה. נא לנסות שוב."

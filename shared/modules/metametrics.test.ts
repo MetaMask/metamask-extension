@@ -29,6 +29,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     updateEventFragment: jest.fn(),
     getAccountType: jest.fn(),
     getDeviceModel: jest.fn(),
+    getHardwareTypeForMetric: jest.fn(),
     getEIP1559GasFeeEstimates: jest.fn(),
     getSelectedAddress: jest.fn(),
     getParticipateInMetrics: jest.fn(),
@@ -41,9 +42,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     trackEvent: jest.fn(),
     getIsSmartTransaction: jest.fn(),
     getSmartTransactionByMinedTxHash: jest.fn(),
-    getRedesignedTransactionsEnabled: jest.fn(),
     getMethodData: jest.fn(),
-    getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
@@ -92,7 +91,6 @@ describe('getSmartTransactionMetricsProperties', () => {
             cancellationReason: 'not_cancelled',
             deadlineRatio: 0.6400288486480713,
             minedHash: txHash,
-            duplicated: true,
             timedOut: true,
             proxied: true,
             minedTx: 'success',
@@ -112,7 +110,6 @@ describe('getSmartTransactionMetricsProperties', () => {
     expect(result).toStrictEqual({
       gas_included: true,
       is_smart_transaction: true,
-      smart_transaction_duplicated: true,
       smart_transaction_proxied: true,
       smart_transaction_timed_out: true,
     });

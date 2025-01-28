@@ -149,9 +149,6 @@
   "loading": {
     "message": "Bezig met laden..."
   },
-  "loadingTokens": {
-    "message": "Tokens laden ..."
-  },
   "lock": {
     "message": "Uitloggen"
   },
@@ -185,9 +182,6 @@
   },
   "next": {
     "message": "volgende"
-  },
-  "noTransactions": {
-    "message": "Geen transacties"
   },
   "pastePrivateKey": {
     "message": "Plak hier uw privésleutelstring:",

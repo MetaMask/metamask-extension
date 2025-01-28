@@ -10,6 +10,7 @@ const FixtureBuilder = require('../fixture-builder');
 describe('eth_sendTransaction', function () {
   const expectedHash =
     '0x855951a65dcf5949dc54beb032adfb604c52a0a548a0f616799d6873a9521470';
+
   it('confirms a new transaction', async function () {
     await withFixtures(
       {
@@ -55,6 +56,7 @@ describe('eth_sendTransaction', function () {
       },
     );
   });
+
   it('rejects a new transaction', async function () {
     await withFixtures(
       {
@@ -91,7 +93,7 @@ describe('eth_sendTransaction', function () {
         // reject transaction in mm popup
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
         await driver.switchToWindowWithTitle('E2E Test Dapp');
         const result = await driver
           .executeScript(`return window.transactionHash;`)

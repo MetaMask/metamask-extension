@@ -8,6 +8,7 @@ exports[`AssetBalanceText matches snapshot 1`] = `
   >
     <span
       class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-textColor"
+      data-testid="account-value-and-suffix"
     >
       prefix-fiat value
     </span>

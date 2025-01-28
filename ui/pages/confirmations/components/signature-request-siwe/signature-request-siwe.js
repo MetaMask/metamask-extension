@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { BannerAlert, Text } from '../../../../components/component-library';
 import Popover from '../../../../components/ui/popover';
 import Checkbox from '../../../../components/ui/check-box';
@@ -102,7 +102,7 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
       await dispatch(
         rejectPendingApproval(
           id,
-          serializeError(ethErrors.provider.userRejectedRequest()),
+          serializeError(providerErrors.userRejectedRequest()),
         ),
       );
     } catch (e) {

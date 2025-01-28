@@ -38,7 +38,7 @@ describe('Sessions', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {
-          sentry: { doNotForceSentryForThisTest: true },
+          sentry: { forceEnable: false },
         },
       },
       async ({ driver, mockedEndpoint }) => {
@@ -48,7 +48,7 @@ describe('Sessions', function () {
     );
   });
 
-  it('does not send session in UI if metrics disabled @no-mmi', async function () {
+  it('does not send session in UI if metrics disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -60,7 +60,7 @@ describe('Sessions', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {
-          sentry: { doNotForceSentryForThisTest: true },
+          sentry: { forceEnable: false },
         },
       },
       async ({ driver, mockedEndpoint }) => {

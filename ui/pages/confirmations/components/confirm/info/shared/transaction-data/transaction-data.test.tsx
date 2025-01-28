@@ -31,6 +31,7 @@ async function renderTransactionData(transactionData: string) {
     type: TransactionType.contractInteraction,
     status: TransactionStatus.unapproved,
     txParams: {
+      to: '0x1234',
       data: transactionData,
     },
   } as Confirmation);

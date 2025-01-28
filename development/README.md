@@ -65,7 +65,7 @@ or `https://api.segment.io/v1/batch` respectively.
 
 2. To display Sentry logs, include `DEBUG=metamask:sentry:*` in `.metamaskrc`.
 
-3. To display more verbose logs if not in a developer build, include `METAMASK_DEBUG=true` in `.metamaskrc`.
+3. To display more verbose logs if not in a developer build, include `METAMASK_DEBUG=1` in `.metamaskrc`.
 
 4. Ensure metrics are enabled during onboarding or via `Settings > Security & privacy > Participate in MetaMetrics`.
 

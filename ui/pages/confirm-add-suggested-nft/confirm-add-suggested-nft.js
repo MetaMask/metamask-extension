@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 import { PageContainerFooter } from '../../components/ui/page-container';
@@ -27,8 +27,8 @@ import {
   Box,
   Text,
 } from '../../components/component-library';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getSuggestedNfts,
   getIpfsGateway,
@@ -60,6 +60,7 @@ import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurren
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { Nav } from '../confirmations/components/confirm/nav';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
@@ -96,6 +97,7 @@ const ConfirmAddSuggestedNFT = () => {
   });
 
   const originMetadata = useOriginMetadata(suggestedNfts[0]?.origin) || {};
+  const approvalId = suggestedNfts[0]?.id;
 
   const handleAddNftsClick = useCallback(async () => {
     await Promise.all(
@@ -125,7 +127,7 @@ const ConfirmAddSuggestedNFT = () => {
         return dispatch(
           rejectPendingApproval(
             id,
-            serializeError(ethErrors.provider.userRejectedRequest()),
+            serializeError(providerErrors.userRejectedRequest()),
           ),
         );
       }),
@@ -187,6 +189,7 @@ const ConfirmAddSuggestedNFT = () => {
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >
+      <Nav confirmationId={approvalId} />
       <Box paddingBottom={2} className="confirm-add-suggested-nft__header">
         <NetworkAccountBalanceHeader
           accountName={accountName}
@@ -421,7 +424,7 @@ const ConfirmAddSuggestedNFT = () => {
                           rejectPendingApproval(
                             id,
                             serializeError(
-                              ethErrors.provider.userRejectedRequest(),
+                              providerErrors.userRejectedRequest(),
                             ),
                           ),
                         );

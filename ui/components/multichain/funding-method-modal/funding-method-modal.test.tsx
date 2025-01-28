@@ -57,7 +57,7 @@ describe('FundingMethodModal', () => {
     expect(queryByTestId('funding-method-modal')).toBeNull();
   });
 
-  it('should call openBuyCryptoInPdapp when the Buy Crypto item is clicked', () => {
+  it('should call openBuyCryptoInPdapp when the Token Marketplace item is clicked', () => {
     const { getByText } = renderWithProvider(
       <FundingMethodModal
         isOpen={true}
@@ -68,7 +68,7 @@ describe('FundingMethodModal', () => {
       store,
     );
 
-    fireEvent.click(getByText('Buy crypto'));
+    fireEvent.click(getByText('Token marketplace'));
     expect(openBuyCryptoInPdapp).toHaveBeenCalled();
   });
 

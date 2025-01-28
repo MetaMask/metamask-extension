@@ -22,7 +22,7 @@ const isAllowedTransactionTypes = (transactionType) =>
   transactionType === TransactionType.tokenMethodTransfer;
 
 // A hook was needed to return JSX here as the way Tabs work JSX has to be included in
-// https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js#L129
+// https://github.com/MetaMask/metamask-extension/blob/main/ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js#L129
 // Thus it is not possible to use React Component here
 const useTransactionInsights = ({ txData }) => {
   const dispatch = useDispatch();

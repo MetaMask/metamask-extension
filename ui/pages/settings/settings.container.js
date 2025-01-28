@@ -1,7 +1,13 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAddressBookEntryOrAccountName } from '../../selectors';
+import {
+  getAddressBookEntryOrAccountName,
+  getRemoteFeatureFlags,
+  getSettingsPageSnapsIds,
+  getSnapsMetadata,
+  getUseExternalServices,
+} from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -15,7 +21,6 @@ import {
 import {
   ABOUT_US_ROUTE,
   ADVANCED_ROUTE,
-  ALERTS_ROUTE,
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
@@ -29,9 +34,12 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
+  SNAP_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
+import { getSnapName } from '../../helpers/utils/util';
+import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -39,7 +47,6 @@ const ROUTES_TO_I18N_KEYS = {
   [ADD_NETWORK_ROUTE]: 'networks',
   [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',
-  [ALERTS_ROUTE]: 'alerts',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
@@ -59,7 +66,10 @@ const mapStateToProps = (state, ownProps) => {
   const {
     metamask: { currencyRates },
   } = state;
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
 
+  const settingsPageSnapsIds = getSettingsPageSnapsIds(state);
+  const snapsMetadata = getSnapsMetadata(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
 
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
@@ -73,6 +83,7 @@ const mapStateToProps = (state, ownProps) => {
   const isAddPopularCustomNetwork = Boolean(
     pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
   );
+  const isSnapSettingsRoute = Boolean(pathname.match(SNAP_SETTINGS_ROUTE));
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
@@ -98,6 +109,17 @@ const mapStateToProps = (state, ownProps) => {
       ? pathNameTail
       : '',
   );
+  const useExternalServices = getUseExternalServices(state);
+
+  const snapNameGetter = getSnapName(snapsMetadata);
+
+  const settingsPageSnaps = settingsPageSnapsIds.map((snapId) => ({
+    id: snapId,
+    name: snapNameGetter(snapId),
+  }));
+
+  const snapSettingsTitle =
+    isSnapSettingsRoute && snapNameGetter(decodeSnapIdFromPathname(pathname));
 
   return {
     addNewNetwork,
@@ -111,6 +133,10 @@ const mapStateToProps = (state, ownProps) => {
     isPopup,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
+    remoteFeatureFlags,
+    settingsPageSnaps,
+    snapSettingsTitle,
+    useExternalServices,
   };
 };
 

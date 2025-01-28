@@ -28,7 +28,6 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
-  setOnboardingDate,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -46,6 +45,7 @@ import ExperimentalArea from '../../components/app/flask/experimental-area';
 import OnboardingSuccessful from '../institutional/onboarding-successful/onboarding-successful';
 import { RemindSRP } from '../institutional/remind-srp/remind-srp';
 ///: END:ONLY_INCLUDE_IF
+import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -72,8 +72,8 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
 
   useEffect(() => {
-    dispatch(setOnboardingDate());
-  }, [dispatch]);
+    setOnboardingDate();
+  }, []);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
@@ -239,4 +239,8 @@ export default function OnboardingFlow() {
       )}
     </div>
   );
+}
+
+function setOnboardingDate() {
+  submitRequestToBackgroundAndCatch('setOnboardingDate');
 }
