@@ -455,22 +455,6 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-/**
- * Get latest pending permission activity from origin.
- *
- * @param {Record<string, unknown>} state - The MetaMask state.
- * @param {string} origin - The origin/subject to get latest pending permission from.
- * @returns {Record<string, unknown>} The latest pending permission activity from origin.
- */
-export function getLatestPendingPermissionFromOrigin(state, origin) {
-  const pendingPermissionsFromOrigin =
-    state.metamask.permissionActivityLog.filter(
-      (log) => log.origin === origin && log.responseTime === null,
-    );
-
-  return pendingPermissionsFromOrigin.at(-1);
-}
-
 export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(

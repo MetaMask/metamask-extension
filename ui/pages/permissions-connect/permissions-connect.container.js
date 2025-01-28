@@ -14,7 +14,6 @@ import {
   getSnapsInstallPrivacyWarningShown,
   getRequestType,
   getTargetSubjectMetadata,
-  getLatestPendingPermissionFromOrigin,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
@@ -56,20 +55,14 @@ const mapStateToProps = (state, ownProps) => {
     (req) => req.metadata.id === permissionsRequestId,
   );
 
-  const { metadata = {} } = permissionsRequest || {};
+  const { metadata = {}, isLegacySwitchEthereumChain } =
+    permissionsRequest || {};
   const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
 
-  const lastPendingPermission = getLatestPendingPermissionFromOrigin(
-    state,
-    origin,
-  );
-  const isLegacySwitchEthChainRequest =
-    lastPendingPermission?.method === 'wallet_switchEthereumChain';
-
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions?.[Caip25EndowmentPermissionName] &&
-      !isLegacySwitchEthChainRequest,
+      !isLegacySwitchEthereumChain,
   );
 
   const targetSubjectMetadata = getTargetSubjectMetadata(state, origin) ?? {

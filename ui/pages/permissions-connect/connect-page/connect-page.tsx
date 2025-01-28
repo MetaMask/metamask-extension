@@ -4,6 +4,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
+import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
@@ -124,7 +125,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     const _request = {
       ...request,
       approvedSessionScopes: getCaip25PermissionsResponse(
-        selectedAccountAddresses,
+        selectedAccountAddresses as Hex[],
         selectedChainIds,
       ),
     };

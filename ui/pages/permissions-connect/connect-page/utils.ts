@@ -39,8 +39,8 @@ export function getRequestedSessionScopes(
  * @returns The granted permissions with the target name of the {@link Caip25EndowmentPermissionName}.
  */
 export function getCaip25PermissionsResponse(
-  addresses: string[],
-  hexChainIds: string[],
+  addresses: Hex[],
+  hexChainIds: Hex[],
 ): {
   permissions: {
     [Caip25EndowmentPermissionName]: {
@@ -60,12 +60,12 @@ export function getCaip25PermissionsResponse(
 
   const caveatValueWithChains = setPermittedEthChainIds(
     caveatValue,
-    hexChainIds as Hex[],
+    hexChainIds,
   );
 
   const caveatValueWithAccounts = setEthAccounts(
     caveatValueWithChains,
-    addresses as Hex[],
+    addresses,
   );
 
   return {

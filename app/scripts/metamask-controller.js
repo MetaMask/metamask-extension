@@ -5346,6 +5346,7 @@ export default class MetamaskController extends EventEmitter {
             ],
           },
         },
+        isLegacySwitchEthereumChain: true,
       },
       type: MethodNames.RequestPermissions,
     });
