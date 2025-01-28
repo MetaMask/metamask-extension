@@ -43,7 +43,7 @@ export const Text: TextComponent = React.forwardRef(
       ellipsis,
       className = '',
       children,
-      isBrandEvolution, // Enables Brand Evolution Typography do not use unless you are working on the brand evolution
+      isBrandEvolution = true,
       ...props
     }: TextProps<C>,
     ref?: PolymorphicRef<C>,

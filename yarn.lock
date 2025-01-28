@@ -5156,7 +5156,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^4.0.0, @metamask/design-tokens@npm:^4.2.0":
+"@metamask/design-tokens@npm:@metamask-previews/design-tokens@4.2.0-preview.bf69b6b":
+  version: 4.2.0-preview.bf69b6b
+  resolution: "@metamask-previews/design-tokens@npm:4.2.0-preview.bf69b6b"
+  checksum: 10/f7ca45a699c0a17576409333a7c621a614de9162e1126dd842fba17fd1864265752345d5a792e4a6b3b14f933c957d0fc6b58d67deeea43b5a61b3c443afde68
+  languageName: node
+  linkType: hard
+
+"@metamask/design-tokens@npm:^4.0.0":
   version: 4.2.0
   resolution: "@metamask/design-tokens@npm:4.2.0"
   checksum: 10/aa92b20f8860a59b2b272e7a8a704d7e426a94030081c69c42b87ea81985c5d6585122def5906ce5a5751cb99f070efed77fabecc751ae0a7d84738f0e0ae522
@@ -26687,7 +26694,7 @@ __metadata:
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.4.0"
-    "@metamask/design-tokens": "npm:^4.2.0"
+    "@metamask/design-tokens": "npm:@metamask-previews/design-tokens@4.2.0-preview.bf69b6b"
     "@metamask/ens-controller": "npm:^15.0.0"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/eslint-config": "npm:^9.0.0"
