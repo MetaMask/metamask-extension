@@ -86,13 +86,13 @@ class SnapListPage {
     await this.driver.waitForSelector(this.noSnapInstalledMessage);
   }
 
-  async clickDefaultSnap(): Promise<void> {
+  async clickHomePageSnap(): Promise<void> {
     console.log('Clicking default snap');
     await this.driver.waitForSelector(this.homePageSnap);
     await this.driver.clickElement(this.homePageSnap);
   }
 
-  async check_title(): Promise<void> {
+  async check_homePageTitle(): Promise<void> {
     console.log('Checking title of snap list page');
     await this.driver.waitForSelector(this.homePageTitle);
   }
