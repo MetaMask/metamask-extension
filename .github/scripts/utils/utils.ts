@@ -62,11 +62,11 @@ export async function downloadCircleCiArtifact(branch: string, headCommitHash: s
         throw new Error('Job details not found');
     }
 
-    const jobId = jobDetails.id;
-    console.log('Job ID', jobId);
+    const jobNumber = jobDetails.job_number;
+    console.log('Job ID', jobNumber);
 
     // Get the artifact URL
-    const artifactResponse = await fetch(`https://circleci.com/api/v2/project/gh/${owner}/${repository}/${jobId}/artifacts`);
+    const artifactResponse = await fetch(`https://circleci.com/api/v2/project/gh/${owner}/${repository}/${jobNumber}/artifacts`);
     const artifactData = await artifactResponse.json();
     const artifact = artifactData.items.find((item: any) => item.path.includes(artifactName));
 
@@ -78,7 +78,8 @@ export async function downloadCircleCiArtifact(branch: string, headCommitHash: s
 
     // Download the artifact
     const artifactDownloadResponse = await fetch(artifactUrl);
-    const artifactBuffer = await artifactDownloadResponse.buffer();
+    const artifactArrayBuffer = await artifactDownloadResponse.arrayBuffer();
+    const artifactBuffer = Buffer.from(artifactArrayBuffer);
     fs.writeFileSync(outputFilePath, artifactBuffer);
 
     if (!fs.existsSync(outputFilePath)) {
