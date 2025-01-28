@@ -19,11 +19,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
  */
 
 export const TextFieldSearch = ({
-  className,
+  className = '',
   showClearButton = true, // only works with a controlled input
   clearButtonOnClick,
   clearButtonProps,
-  endAccessory,
+  endAccessory = null,
   inputProps,
   value,
   onChange,
@@ -108,11 +108,16 @@ TextFieldSearch.propTypes = {
   /**
    * Component to appear on the right side of the input
    */
-  endAccessory: PropTypes.node,
+  endAccessory: PropTypes.oneOfType([PropTypes.node, PropTypes.any]),
   /**
    * Attributes applied to the `input` element.
    */
   inputProps: PropTypes.object,
+};
+
+TextFieldSearch.defaultProps = {
+  className: '',
+  endAccessory: null,
 };
 
 TextFieldSearch.displayName = 'TextFieldSearch';
