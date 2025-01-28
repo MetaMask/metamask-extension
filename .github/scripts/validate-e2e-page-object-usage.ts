@@ -17,7 +17,7 @@ async function verifyE2ePageObjectsUsage() {
         let attempts = 0;
         const maxAttempts = 3;
         let changedFilesContent = '';
-
+        await sleep(300);
         while (attempts < maxAttempts) {
             try {
                 console.log(`Downloading artifact: Attempt ${attempts + 1}/${maxAttempts}`);
