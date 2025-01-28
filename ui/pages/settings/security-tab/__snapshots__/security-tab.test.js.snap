@@ -28,7 +28,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -156,7 +156,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -249,7 +249,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -328,7 +328,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -405,7 +405,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -508,7 +508,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -608,7 +608,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -691,7 +691,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -770,7 +770,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -897,7 +897,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -968,7 +968,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1082,7 +1082,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1172,7 +1172,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1238,7 +1238,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1305,7 +1305,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1371,7 +1371,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1452,7 +1452,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1522,7 +1522,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
