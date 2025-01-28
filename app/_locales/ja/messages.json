@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "ビットコインアクティビティはサポートされていません"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "ビットコイン"
   },
@@ -2352,9 +2349,6 @@
   "import": {
     "message": "インポート",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "アカウントをインポート"
   },
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"
@@ -4306,18 +4300,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "資産を守りましょう"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "改善された署名要求"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "この機能をオンにすると、強化された形式で署名要求が表示されます。"
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "改善されたトランザクション要求"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "トランザクション要求を強化された形式で表示するには、この機能をオンにします。"
   },
   "refreshList": {
     "message": "リストを更新"

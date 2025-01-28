@@ -138,10 +138,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               },
             },
           },
-          destTokens: {},
-          destTopAssets: [],
-          srcTokens: {},
-          srcTopAssets: [],
         },
       },
       CurrencyController: {
@@ -162,6 +158,12 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       KeyringController: {
         vault:
           '{"data":"WHaP1FrrtV4zUonudIppDifsLHF39g6oPkVksAIdWAHBRzax1uy1asfAJprR7u72t4/HuYz5yPIFQrnNnv+hwQu9GRuty88VKMnvMy+sq8MNtoXI+C54bZpWa8r4iUQfa0Mj/cfJbpFpzOdF1ZYXahTfTcU5WsrHwvJew842CiJR4B2jmCHHXfm/DxLK3WazsVQwXJGx/U71UelGoOOrT8NI28EKrAwgPn+7Xmv0j92gmhau30N7Bo2fr6Zv","iv":"LfD8/tY1EjXzxuemSmDVdA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
+        keyringsMetadata: [
+          {
+            id: '01JJ5ZKK405Q2PD20DR51KN5QE',
+            name: '',
+          },
+        ],
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
@@ -225,7 +227,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',

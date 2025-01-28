@@ -581,9 +581,6 @@
     "message": "Mag-import",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Mag-import ng Account"
-  },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
   },

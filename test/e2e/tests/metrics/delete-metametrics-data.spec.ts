@@ -83,7 +83,7 @@ const mockSegment = async (mockServer: Mockttp) => {
  * 2. Deletion while Metrics is Opted out.
  * 3. Deletion when user never opted for metrics.
  */
-describe('Delete MetaMetrics Data @no-mmi', function (this: Suite) {
+describe('Delete MetaMetrics Data', function (this: Suite) {
   it('while user has opted in for metrics tracking', async function () {
     await withFixtures(
       {

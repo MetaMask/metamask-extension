@@ -55,6 +55,8 @@ export const ImportSRP = ({
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
       await dispatch(actions.addNewMnemonicToVault(joinedSrp));
+      // Clear the secret recovery phrase after importing
+      setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
     }
   }
 
@@ -184,7 +186,7 @@ export const ImportSRP = ({
                 }}
                 value={secretRecoveryPhrase[index]}
                 autoComplete={false}
-                onPaste={(event) => {
+                onPaste={(event: React.ClipboardEvent) => {
                   const newSrp = event.clipboardData.getData('text');
 
                   if (newSrp.trim().match(/\s/u)) {

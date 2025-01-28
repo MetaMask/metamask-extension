@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin-Aktivität wird nicht unterstützt"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -2352,9 +2349,6 @@
   "import": {
     "message": "Importieren",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Konto importieren"
   },
   "importAccountError": {
     "message": "Fehler beim Importieren des Kontos."
@@ -4306,18 +4300,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Schützen Sie Ihre Gelder."
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Verbesserte Unterschriftsanfrage"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Schalten Sie dies ein, um sich Unterschriftsanfragen in einem erweiterten Format anzeigen zu lassen."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Verbesserte Transaktionsanfragen"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Schalten Sie dies ein, um sich Transaktionsanfragen in einem erweiterten Format anzeigen zu lassen."
   },
   "refreshList": {
     "message": "Liste aktualisieren"

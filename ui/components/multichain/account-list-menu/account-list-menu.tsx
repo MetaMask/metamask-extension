@@ -76,10 +76,7 @@ import {
   getMetaMaskKeyrings,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import {
-  generateNewHdKeyring,
-  setSelectedAccount,
-} from '../../../store/actions';
+import { setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -580,21 +577,6 @@ export const AccountListMenu = ({
             }
             {
               ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-              <Box marginTop={4}>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Import}
-                  onClick={async () => {
-                    await dispatch(generateNewHdKeyring());
-                    onClose();
-                  }}
-                  data-testid="multichain-account-menu-popover-create-new-srp"
-                >
-                  {t('createNewSRP')}
-                </ButtonLink>
-              </Box>
-            }
-            {
               <Box marginTop={4}>
                 <ButtonLink
                   size={ButtonLinkSize.Sm}

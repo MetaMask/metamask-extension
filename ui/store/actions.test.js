@@ -18,10 +18,6 @@ import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametric
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-} from '../../shared/constants/permissions';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -2682,72 +2678,58 @@ describe('Actions', () => {
     });
   });
 
-  describe('grantPermittedChain', () => {
+  describe('setSmartTransactionsRefreshInterval', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls grantPermissionsIncremental in the background', async () => {
+    it('calls setStatusRefreshInterval in the background with provided interval', async () => {
       const store = mockStore();
+      const refreshInterval = 1000;
 
-      background.grantPermissionsIncremental.callsFake((_, cb) => cb());
+      background = {
+        setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
+      };
       setBackgroundConnection(background);
 
-      await actions.grantPermittedChain('test.com', '0x1');
+      await store.dispatch(
+        actions.setSmartTransactionsRefreshInterval(refreshInterval),
+      );
+
       expect(
-        background.grantPermissionsIncremental.calledWith(
-          {
-            subject: { origin: 'test.com' },
-            approvedPermissions: {
-              [EndowmentTypes.permittedChains]: {
-                caveats: [
-                  {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1'],
-                  },
-                ],
-              },
-            },
-          },
+        background.setStatusRefreshInterval.calledWith(
+          refreshInterval,
           sinon.match.func,
         ),
       ).toBe(true);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-  });
-
-  describe('grantPermittedChains', () => {
-    afterEach(() => {
-      sinon.restore();
     });
 
-    it('calls grantPermissions in the background', async () => {
+    it('does not call background if refresh interval is undefined', async () => {
       const store = mockStore();
 
-      background.grantPermissions.callsFake((_, cb) => cb());
+      background = {
+        setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
+      };
       setBackgroundConnection(background);
 
-      await actions.grantPermittedChains('test.com', ['0x1', '0x2']);
-      expect(
-        background.grantPermissions.calledWith(
-          {
-            subject: { origin: 'test.com' },
-            approvedPermissions: {
-              [EndowmentTypes.permittedChains]: {
-                caveats: [
-                  {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1', '0x2'],
-                  },
-                ],
-              },
-            },
-          },
-          sinon.match.func,
-        ),
-      ).toBe(true);
+      await store.dispatch(
+        actions.setSmartTransactionsRefreshInterval(undefined),
+      );
 
-      expect(store.getActions()).toStrictEqual([]);
+      expect(background.setStatusRefreshInterval.called).toBe(false);
+    });
+
+    it('does not call background if refresh interval is null', async () => {
+      const store = mockStore();
+
+      background = {
+        setStatusRefreshInterval: sinon.stub().callsFake((_, cb) => cb()),
+      };
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.setSmartTransactionsRefreshInterval(null));
+
+      expect(background.setStatusRefreshInterval.called).toBe(false);
     });
   });
 

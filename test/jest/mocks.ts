@@ -4,6 +4,11 @@ import {
   BtcMethod,
   BtcAccountType,
   isEvmAccountType,
+  EthScopes,
+  BtcScopes,
+  SolAccountType,
+  SolScopes,
+  SolMethod,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -17,6 +22,7 @@ import {
 } from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
 import mockState from '../data/mock-state.json';
+import { isBtcMainnetAddress } from '../../shared/lib/multichain';
 
 export type MockState = typeof mockState;
 
@@ -205,10 +211,12 @@ export function createMockInternalAccount({
   };
   options?: Record<string, Json>;
 } = {}) {
+  let scopes;
   let methods;
 
   switch (type) {
     case EthAccountType.Eoa:
+      scopes = [EthScopes.Namespace];
       methods = [
         EthMethod.PersonalSign,
         EthMethod.SignTransaction,
@@ -218,14 +226,26 @@ export function createMockInternalAccount({
       ];
       break;
     case EthAccountType.Erc4337:
+      // NOTE: This is not really valid here, cause a SC account might not be deployed on
+      // every EVM chains, but for testing purposes we enable everything.
+      scopes = [EthScopes.Namespace];
       methods = [
         EthMethod.PatchUserOperation,
         EthMethod.PrepareUserOperation,
         EthMethod.SignUserOperation,
       ];
       break;
-    case BtcAccountType.P2wpkh:
+    case BtcAccountType.P2wpkh: {
+      // If no address is given, we fallback to testnet
+      const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
+
+      scopes = [isMainnet ? BtcScopes.Mainnet : BtcScopes.Testnet];
       methods = [BtcMethod.SendBitcoin];
+      break;
+    }
+    case SolAccountType.DataAccount:
+      scopes = [SolScopes.Mainnet, SolScopes.Testnet, SolScopes.Devnet];
+      methods = [SolMethod.SendAndConfirmTransaction];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);
@@ -244,6 +264,7 @@ export function createMockInternalAccount({
       lastSelected,
     },
     options: options ?? {},
+    scopes,
     methods,
     type,
   };

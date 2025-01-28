@@ -33,7 +33,12 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.center}
     >
-      <Box display={Display.Flex} gap={4} alignItems={AlignItems.center}>
+      <Box
+        display={Display.Flex}
+        gap={4}
+        alignItems={AlignItems.center}
+        style={{ overflow: 'hidden' }}
+      >
         {image && (
           <SnapUIImage
             width="32px"

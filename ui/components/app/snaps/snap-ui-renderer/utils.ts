@@ -5,6 +5,10 @@ import { sha256 } from '@noble/hashes/sha256';
 import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
 import { ChangeEvent as ReactChangeEvent } from 'react';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../helpers/constants/design-system';
 import { COMPONENT_MAPPING } from './components';
 import { UIComponent } from './components/types';
 
@@ -20,6 +24,7 @@ export type MapToTemplateParams = {
     placeholder?: string;
   };
   t?: (key: string) => string;
+  contentBackgroundColor?: string | undefined;
 };
 
 /**
@@ -139,4 +144,38 @@ export const FIELD_ELEMENT_TYPES = [
  */
 export const getPrimaryChildElementIndex = (children: JSXElement[]) => {
   return children.findIndex((c) => FIELD_ELEMENT_TYPES.includes(c.type));
+};
+
+/**
+ * Map Snap custom color to extension compatible color.
+ *
+ * @param color - Snap custom color.
+ * @returns String, representing color from design system.
+ */
+export const mapToExtensionCompatibleColor = (color: string) => {
+  const backgroundColorMapping: { [key: string]: string | undefined } = {
+    default: BackgroundColor.backgroundAlternative, // For Snaps, the default background color is the Alternative
+    alternative: BackgroundColor.backgroundDefault,
+  };
+  return color ? backgroundColorMapping[color] : undefined;
+};
+
+/**
+ * Map Snap custom size for border radius to extension compatible size.
+ *
+ * @param snapBorderRadius - Snap custom color.
+ * @returns String, representing border radius size from design system.
+ */
+export const mapSnapBorderRadiusToExtensionBorderRadius = (
+  snapBorderRadius: string | undefined,
+): BorderRadius => {
+  switch (snapBorderRadius) {
+    case 'none':
+    default:
+      return BorderRadius.none;
+    case 'medium':
+      return BorderRadius.MD;
+    case 'full':
+      return BorderRadius.full;
+  }
 };

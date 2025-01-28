@@ -62,8 +62,8 @@ describe('Multiple ERC20 Watch Asset', function () {
         // Check all three tokens have been added to the token list.
         const tokenList = new AssetListPage(driver);
         await tokenList.check_tokenItemNumber(4); // 3 tokens plus ETH
-        await tokenList.check_tokenIsDisplayed('Ethereum');
-        await tokenList.check_tokenIsDisplayed('TST');
+        await tokenList.check_tokenExistsInList('Ethereum');
+        await tokenList.check_tokenExistsInList('TST');
       },
     );
   });

@@ -32,6 +32,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
 import {
   addNetwork,
   setEditedNetwork,
+  setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
   updateNetwork,
@@ -66,6 +67,7 @@ import {
   DropdownEditor,
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
+import { getTokenNetworkFilter } from '../../../../selectors';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -112,6 +114,8 @@ export const NetworksForm = ({
   const [suggestedName, setSuggestedName] = useState<string>();
   const [suggestedTicker, setSuggestedTicker] = useState<string>();
   const [fetchedChainId, setFetchedChainId] = useState<string>();
+
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
 
   const templateInfuraRpc = (endpoint: string) =>
     endpoint.endsWith('{infuraProjectId}')
@@ -267,6 +271,13 @@ export const NetworksForm = ({
                 : undefined,
           };
           await dispatch(updateNetwork(networkPayload, options));
+          if (Object.keys(tokenNetworkFilter).length === 1) {
+            await dispatch(
+              setTokenNetworkFilter({
+                [existingNetwork.chainId]: true,
+              }),
+            );
+          }
         } else {
           await dispatch(addNetwork(networkPayload));
         }

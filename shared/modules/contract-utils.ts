@@ -1,6 +1,6 @@
-import pify from 'pify';
 import type { Provider } from '@metamask/network-controller';
 import { addHexPrefix, padToEven } from 'ethereumjs-util';
+import type { JsonRpcParams } from '@metamask/utils';
 
 export type Contract = {
   contractCode: string | null;
@@ -13,7 +13,7 @@ export const readAddressAsContract = async (
 ): Promise<Contract> => {
   let contractCode: string | null = null;
   try {
-    const { result } = await pify(provider.sendAsync.bind(provider))({
+    const result = await provider.request<JsonRpcParams, string>({
       method: 'eth_getCode',
       params: [address, 'latest'],
     });

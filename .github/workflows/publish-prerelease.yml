@@ -22,9 +22,10 @@ jobs:
       - name: Get merge base commit hash
         id: get-merge-base
         env:
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          merge_base="$(git merge-base "origin/${BASE_REF}" HEAD)"
+          merge_base="$(git merge-base "${BASE_SHA}" "${HEAD_SHA}")"
           echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
           echo "Merge base is '${merge_base}'"
 
@@ -72,4 +73,5 @@ jobs:
           MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
           CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
           CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
+          HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
         run: ./development/metamaskbot-build-announce.js

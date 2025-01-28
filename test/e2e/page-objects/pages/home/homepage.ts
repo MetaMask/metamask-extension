@@ -107,6 +107,11 @@ class HomePage {
     await this.driver.clickElement(this.nftTab);
   }
 
+  async goToTokensTab(): Promise<void> {
+    console.log(`Go to tokens tab on homepage`);
+    await this.driver.clickElement(this.tokensTab);
+  }
+
   async openPortfolioPage(): Promise<void> {
     console.log(`Open portfolio page on homepage`);
     await this.driver.clickElement(this.portfolioLink);

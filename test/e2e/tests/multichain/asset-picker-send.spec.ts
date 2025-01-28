@@ -11,7 +11,7 @@ import {
 import { Driver } from '../../webdriver/driver';
 import { RECIPIENT_ADDRESS_MOCK } from '../simulation-details/types';
 
-describe('AssetPickerSendFlow @no-mmi', function () {
+describe('AssetPickerSendFlow', function () {
   const chainId = CHAIN_IDS.MAINNET;
 
   const fixtures = {

@@ -22,12 +22,10 @@ import {
   getFromChain,
   getFromChains,
   getFromToken,
-  getFromTokens,
   getIsBridgeTx,
   getToChain,
   getToChains,
   getToToken,
-  getToTokens,
   getValidationErrors,
 } from './selectors';
 
@@ -461,77 +459,6 @@ describe('Bridge selectors', () => {
       const result = getFromAmount(state as never);
 
       expect(result).toStrictEqual('');
-    });
-  });
-
-  describe('getToTokens', () => {
-    it('returns dest tokens from controller state when toChainId is defined', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: '0x1' },
-        bridgeStateOverrides: {
-          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-        },
-      });
-      const result = getToTokens(state as never);
-
-      expect(result).toStrictEqual({
-        isLoading: false,
-        toTokens: {
-          '0x00': { address: '0x00', symbol: 'TEST' },
-        },
-        toTopAssets: [],
-      });
-    });
-
-    it('returns dest top assets from controller state when toChainId is defined', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: '0x1' },
-        bridgeStateOverrides: {
-          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          destTopAssets: [{ address: '0x00', symbol: 'TEST' }],
-        },
-      });
-      const result = getToTokens(state as never);
-
-      expect(result.toTopAssets).toStrictEqual([
-        { address: '0x00', symbol: 'TEST' },
-      ]);
-    });
-  });
-
-  describe('getFromTokens', () => {
-    it('returns src tokens from controller state', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: '0x1' },
-        bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x01', symbol: 'SYMB' }],
-        },
-      });
-      const result = getFromTokens(state as never);
-
-      expect(result).toStrictEqual({
-        fromTokens: {
-          '0x00': { address: '0x00', symbol: 'TEST' },
-        },
-        fromTopAssets: [{ address: '0x01', symbol: 'SYMB' }],
-        isLoading: false,
-      });
-    });
-
-    it('returns src top assets from controller state', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: '0x1' },
-        bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
-        },
-      });
-      const result = getFromTokens(state as never);
-
-      expect(result.fromTopAssets).toStrictEqual([
-        { address: '0x00', symbol: 'TEST' },
-      ]);
     });
   });
 

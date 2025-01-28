@@ -23,7 +23,7 @@ describe('Account-watcher snap', function (this: Suite) {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
-            .withPreferencesControllerAndFeatureFlag({
+            .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
@@ -47,7 +47,7 @@ describe('Account-watcher snap', function (this: Suite) {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
-            .withPreferencesControllerAndFeatureFlag({
+            .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
@@ -113,7 +113,7 @@ describe('Account-watcher snap', function (this: Suite) {
         await withFixtures(
           {
             fixtures: new FixtureBuilder()
-              .withPreferencesControllerAndFeatureFlag({
+              .withPreferencesController({
                 watchEthereumAccountEnabled: true,
               })
               .withNetworkControllerOnMainnet()
@@ -146,7 +146,7 @@ describe('Account-watcher snap', function (this: Suite) {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
-            .withPreferencesControllerAndFeatureFlag({
+            .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
@@ -176,7 +176,7 @@ describe('Account-watcher snap', function (this: Suite) {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
-            .withPreferencesControllerAndFeatureFlag({
+            .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()
@@ -205,7 +205,7 @@ describe('Account-watcher snap', function (this: Suite) {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
-            .withPreferencesControllerAndFeatureFlag({
+            .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
             .withNetworkControllerOnMainnet()

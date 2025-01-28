@@ -12,7 +12,7 @@ import {
 
 const RECIPIENT_ADDRESS = '0xc427D562164062a23a5cFf596A4a3208e72Acd28';
 
-describe('Swap-Send ETH @no-mmi', function () {
+describe('Swap-Send ETH', function () {
   describe('to non-contract address with data that matches swap data signature', function (this: Suite) {
     it('submits a transaction successfully', async function () {
       await withFixtures(

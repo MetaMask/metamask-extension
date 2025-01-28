@@ -49,7 +49,7 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('Token detection event @no-mmi', function () {
+describe('Token detection event', function () {
   it('is sent when onboarding user', async function () {
     await withFixtures(
       {

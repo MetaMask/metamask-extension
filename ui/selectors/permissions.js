@@ -1,9 +1,12 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { CaveatTypes } from '../../shared/constants/permissions';
-// eslint-disable-next-line import/no-restricted-paths
-import { PermissionNames } from '../../app/scripts/controllers/permissions';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getEthAccounts,
+  getPermittedEthChainIds,
+} from '@metamask/multichain';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getApprovalRequestsByType } from './approvals';
 import {
@@ -58,13 +61,13 @@ export function getPermissionSubjects(state) {
  */
 export function getPermittedAccounts(state, origin) {
   return getAccountsFromPermission(
-    getAccountsPermissionFromSubject(subjectSelector(state, origin)),
+    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
 
 export function getPermittedChains(state, origin) {
   return getChainsFromPermission(
-    getChainsPermissionFromSubject(subjectSelector(state, origin)),
+    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
 
@@ -274,53 +277,33 @@ export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
 );
 
 // selector helpers
-
-function getAccountsFromSubject(subject) {
-  return getAccountsFromPermission(getAccountsPermissionFromSubject(subject));
+function getCaip25PermissionFromSubject(subject = {}) {
+  return subject.permissions?.[Caip25EndowmentPermissionName] || {};
 }
 
-function getAccountsPermissionFromSubject(subject = {}) {
-  return subject.permissions?.eth_accounts || {};
+function getAccountsFromSubject(subject) {
+  return getAccountsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
 function getChainsFromSubject(subject) {
-  return getChainsFromPermission(getChainsPermissionFromSubject(subject));
+  return getChainsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getChainsPermissionFromSubject(subject = {}) {
-  return subject.permissions?.[PermissionNames.permittedChains] || {};
-}
-
-function getAccountsFromPermission(accountsPermission) {
-  const accountsCaveat = getAccountsCaveatFromPermission(accountsPermission);
-  return accountsCaveat && Array.isArray(accountsCaveat.value)
-    ? accountsCaveat.value
-    : [];
-}
-
-function getChainsFromPermission(chainsPermission) {
-  const chainsCaveat = getChainsCaveatFromPermission(chainsPermission);
-  return chainsCaveat && Array.isArray(chainsCaveat.value)
-    ? chainsCaveat.value
-    : [];
-}
-
-function getChainsCaveatFromPermission(chainsPermission = {}) {
+function getCaveatFromPermission(caip25Permission = {}) {
   return (
-    Array.isArray(chainsPermission.caveats) &&
-    chainsPermission.caveats.find(
-      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-    )
+    Array.isArray(caip25Permission.caveats) &&
+    caip25Permission.caveats.find((caveat) => caveat.type === Caip25CaveatType)
   );
 }
 
-function getAccountsCaveatFromPermission(accountsPermission = {}) {
-  return (
-    Array.isArray(accountsPermission.caveats) &&
-    accountsPermission.caveats.find(
-      (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-    )
-  );
+function getAccountsFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
+}
+
+function getChainsFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
 }
 
 function subjectSelector(state, origin) {

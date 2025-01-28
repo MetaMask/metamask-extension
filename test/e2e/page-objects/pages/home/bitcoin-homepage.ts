@@ -28,6 +28,10 @@ class BitcoinHomepage extends HomePage {
     console.log('Bitcoin homepage is loaded');
   }
 
+  async startSendFlow(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
+  }
+
   /**
    * Checks if the bridge button is enabled on bitcoin account homepage.
    *

@@ -736,9 +736,6 @@
     "message": "mm",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "La actividad de Bitcoin no es compatible"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -2352,9 +2349,6 @@
   "import": {
     "message": "Importar",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importar cuenta"
   },
   "importAccountError": {
     "message": "Error al importar la cuenta."
@@ -4306,18 +4300,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Proteja sus fondos."
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Solicitudes de firma mejoradas"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Active esta opción para ver las solicitudes de firma en un formato mejorado."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Solicitudes de transacción mejoradas"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Active esta opción para ver las solicitudes de transacciones en un formato mejorado."
   },
   "refreshList": {
     "message": "Actualizar lista"

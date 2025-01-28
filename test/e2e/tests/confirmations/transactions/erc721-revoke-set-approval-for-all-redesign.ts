@@ -13,7 +13,7 @@ import { TestSuiteArguments } from './shared';
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC721 Revoke setApprovalForAll', function () {
-  describe('Submit an revoke transaction @no-mmi', function () {
+  describe('Submit an revoke transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),

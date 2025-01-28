@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin गतिविधि सपोर्ट नहीं करती है"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -2352,9 +2349,6 @@
   "import": {
     "message": "इम्पोर्ट करें",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "अकाउंट इम्पोर्ट करें"
   },
   "importAccountError": {
     "message": "अकाउंट इम्पोर्ट करने में गड़बड़ी।"
@@ -4306,18 +4300,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "अपने धन को सुरक्षित रखें"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "बेहतर सिग्नेचर अनुरोध"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "उन्नत फॉर्मेट में सिग्नेचर अनुरोध देखने के लिए इसे चालू करें।"
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "बेहतर ट्रांसेक्शन के अनुरोध"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "उन्नत फॉर्मेट में ट्रांसेक्शन के अनुरोध देखने के लिए इसे चालू करें।"
   },
   "refreshList": {
     "message": "लिस्ट रिफ्रेश करें"

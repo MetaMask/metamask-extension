@@ -63,7 +63,7 @@ export const waitForTransactionToComplete = async (
   await driver.waitForSelector('[data-testid="account-overview__asset-tab"]');
 };
 
-describe('smart transactions @no-mmi', function () {
+describe('smart transactions', function () {
   it.skip('Completes a Swap', async function () {
     await withFixturesForSmartTransactions(
       {

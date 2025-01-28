@@ -75,6 +75,7 @@ describe('ConfirmGasDisplay', () => {
         txParams: {
           gas: '0x5208',
         },
+        gasLimitNoBuffer: '0x5208',
         userFeeLevel: 'medium',
       },
     });

@@ -160,4 +160,5 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 export const isNetworkAdded = (
   v: NetworkConfiguration | AddNetworkFields | undefined,
 ): v is NetworkConfiguration =>
-  !v || 'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+  v !== undefined &&
+  'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];

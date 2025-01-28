@@ -9,7 +9,7 @@ import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Lattice hardware wallet @no-mmi', function (this: Suite) {
+describe('Lattice hardware wallet', function (this: Suite) {
   it('lattice page rendering validation', async function () {
     await withFixtures(
       {

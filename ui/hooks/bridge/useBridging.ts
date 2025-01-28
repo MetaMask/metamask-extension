@@ -90,7 +90,7 @@ const useBridging = () => {
           },
         });
         history.push(
-          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address.toLowerCase()}`,
+          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?token=${token.address?.toLowerCase()}`,
         );
       } else {
         const portfolioUrl = getPortfolioUrl(

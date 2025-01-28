@@ -184,6 +184,7 @@ export default class ConfirmTransactionBase extends Component {
     isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
     chainId: PropTypes.string,
+    setSmartTransactionsRefreshInterval: PropTypes.func,
   };
 
   state = {
@@ -1023,6 +1024,7 @@ export default class ConfirmTransactionBase extends Component {
       currentChainSupportsSmartTransactions,
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
+      setSmartTransactionsRefreshInterval,
     } = this.props;
 
     const { trackEvent } = this.context;
@@ -1071,7 +1073,12 @@ export default class ConfirmTransactionBase extends Component {
       Promise.all([
         fetchSwapsFeatureFlags(),
         fetchSmartTransactionsLiveness(),
-      ]).then(([swapsFeatureFlags]) => setSwapsFeatureFlags(swapsFeatureFlags));
+      ]).then(([swapsFeatureFlags]) => {
+        setSwapsFeatureFlags(swapsFeatureFlags);
+        setSmartTransactionsRefreshInterval(
+          swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
+        );
+      });
     }
   }
 

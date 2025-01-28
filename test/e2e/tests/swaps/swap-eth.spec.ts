@@ -11,7 +11,7 @@ import {
 } from './shared';
 
 // TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
-describe('Swap Eth for another Token @no-mmi', function () {
+describe('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     await withFixtures(
       {

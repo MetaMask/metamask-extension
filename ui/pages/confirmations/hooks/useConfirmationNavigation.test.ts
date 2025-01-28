@@ -116,6 +116,19 @@ describe('useConfirmationNavigation', () => {
       );
     });
 
+    it('does not navigate to template route if approval flow and pending approval', () => {
+      const result = renderHook(ApprovalType.Transaction, undefined, [
+        {} as never,
+      ]);
+
+      result.navigateToId(APPROVAL_ID_MOCK);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
+      );
+    });
+
     it('navigates to connect route', () => {
       const result = renderHook(ApprovalType.WalletRequestPermissions);
 

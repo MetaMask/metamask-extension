@@ -736,9 +736,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Ang aktibidad ng Bitcoin ay hindi suportado"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -2352,9 +2349,6 @@
   "import": {
     "message": "Mag-import",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Mag-import ng Account"
   },
   "importAccountError": {
     "message": "Error sa pag-import ng account."
@@ -4306,18 +4300,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protektahan ang iyong pondo"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Pinahusay na hiling sa pirma"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "I-on ito upang makita ang mga hiling sa pirma sa isang pinahusay na format."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Pinahusay na mga hiling sa transaksyon"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "I-on ito upang makita ang mga hiling sa transaksyon sa isang pinahusay na format."
   },
   "refreshList": {
     "message": "I-refresh ang listahan"

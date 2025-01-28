@@ -736,9 +736,6 @@
     "message": "Tỷ",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinActivityNotSupported": {
-    "message": "Hoạt động Bitcoin không được hỗ trợ"
-  },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
   },
@@ -2352,9 +2349,6 @@
   "import": {
     "message": "Nhập",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Nhập tài khoản"
   },
   "importAccountError": {
     "message": "Lỗi khi nhập tài khoản."
@@ -4306,18 +4300,6 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Bảo vệ tiền của bạn"
-  },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "Yêu cầu chữ ký được cải thiện"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "Bật tính năng này để xem các yêu cầu chữ ký ở định dạng nâng cao."
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "Yêu cầu giao dịch được cải thiện"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "Bật tính năng này để xem các yêu cầu giao dịch ở định dạng nâng cao."
   },
   "refreshList": {
     "message": "Làm mới danh sách"
