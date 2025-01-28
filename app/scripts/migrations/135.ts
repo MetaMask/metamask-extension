@@ -52,12 +52,6 @@ function transformState(state: VersionedData['data']) {
       smartTransactionsOptInStatus: true,
       smartTransactionsMigrationApplied: true,
     };
-    // // Removing this block, as we want to set migration flag only when user has opted in
-    // } else {
-    //   state.PreferencesController.preferences = {
-    //     ...state.PreferencesController.preferences,
-    //     smartTransactionsMigrationApplied: true,
-    //   };
   }
 
   return state;
