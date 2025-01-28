@@ -22,6 +22,8 @@ class ActivityListPage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  private readonly tooltip = '.tippy-tooltip-content';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -164,6 +166,35 @@ class ActivityListPage {
       tag: 'div',
       text: warningText,
     });
+  }
+
+  async check_noFailedTransactions(): Promise<void> {
+    try {
+      await this.driver.findElement(this.failedTransactions, 1);
+    } catch (error) {
+      return;
+    }
+
+    const failedTxs = await this.driver.findElements(this.failedTransactions);
+
+    if (!failedTxs.length) {
+      return;
+    }
+
+    const errorMessages = [];
+
+    for (const failedTx of failedTxs) {
+      await this.driver.hoverElement(failedTx);
+
+      const tooltip = await this.driver.findElement(this.tooltip);
+      const errorMessage = await tooltip.getText();
+
+      errorMessages.push(errorMessage);
+    }
+
+    throw new Error(
+      `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
+    );
   }
 }
 
