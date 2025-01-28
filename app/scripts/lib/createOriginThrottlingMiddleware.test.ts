@@ -8,19 +8,18 @@ import createOriginThrottlingMiddleware, {
 
 describe('createOriginThrottlingMiddleware', () => {
   let middleware: ReturnType<typeof createOriginThrottlingMiddleware>;
-  const mockIsOriginBlockedForConfirmations = jest.fn();
-  const mockOnRequestRejectedByUser = jest.fn();
-  const mockOnRequestAccepted = jest.fn();
+  const mockGetThrottledOriginState = jest.fn();
+  const mockUpdateThrottledOriginState = jest.fn();
 
   beforeEach(() => {
+    jest.resetAllMocks();
     middleware = createOriginThrottlingMiddleware({
-      isOriginBlockedForConfirmations: mockIsOriginBlockedForConfirmations,
-      onRequestRejectedByUser: mockOnRequestRejectedByUser,
-      onRequestAccepted: mockOnRequestAccepted,
+      getThrottledOriginState: mockGetThrottledOriginState,
+      updateThrottledOriginState: mockUpdateThrottledOriginState,
     });
   });
 
-  it('should call next if the method is not blockable', async () => {
+  it('calls next if the method is not blockable', async () => {
     const req = {
       method: 'nonBlockableMethod',
       origin: 'testOrigin',
@@ -34,7 +33,7 @@ describe('createOriginThrottlingMiddleware', () => {
     expect(end).not.toHaveBeenCalled();
   });
 
-  it('should end with SPAM_FILTER_ACTIVATED_ERROR if the origin is blocked', async () => {
+  it('ends with SPAM_FILTER_ACTIVATED_ERROR if the origin is blocked', async () => {
     const req = {
       method: 'transaction',
       origin: 'testOrigin',
@@ -42,7 +41,10 @@ describe('createOriginThrottlingMiddleware', () => {
     const next = jest.fn();
     const end = jest.fn();
 
-    mockIsOriginBlockedForConfirmations.mockReturnValueOnce(true);
+    mockGetThrottledOriginState.mockReturnValueOnce({
+      rejections: 3,
+      lastRejection: Date.now(),
+    });
 
     await middleware(
       req,
@@ -55,7 +57,7 @@ describe('createOriginThrottlingMiddleware', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it('should onRequestAccepted be called if response has no error', async () => {
+  it('resets throttling state if response has no error', async () => {
     const req = {
       method: 'transaction',
       origin: 'testOrigin',
@@ -71,16 +73,21 @@ describe('createOriginThrottlingMiddleware', () => {
       jsonrpc: '2.0',
     } as unknown as JsonRpcResponse<Json>;
 
-    mockIsOriginBlockedForConfirmations.mockReturnValueOnce(false);
+    mockGetThrottledOriginState.mockReturnValue({
+      rejections: 1,
+      lastRejection: Date.now(),
+    });
 
     await middleware(req, responseWithoutError, next, end);
 
-    expect(mockOnRequestAccepted).toHaveBeenCalled();
-    expect(mockOnRequestAccepted).toHaveBeenCalledWith('testOrigin');
+    expect(mockUpdateThrottledOriginState).toHaveBeenCalledWith('testOrigin', {
+      rejections: 0,
+      lastRejection: 0,
+    });
     expect(nextCallback).toHaveBeenCalled();
   });
 
-  it('should onRequestRejectedByUser be called if response has userRejected error', async () => {
+  it('updates throttling state if response has userRejected error', async () => {
     const req = {
       method: 'transaction',
       origin: 'testOrigin',
@@ -98,12 +105,17 @@ describe('createOriginThrottlingMiddleware', () => {
       jsonrpc: '2.0',
     } as unknown as JsonRpcResponse<Json>;
 
-    mockIsOriginBlockedForConfirmations.mockReturnValueOnce(false);
+    mockGetThrottledOriginState.mockReturnValueOnce({
+      rejections: 0,
+      lastRejection: 0,
+    });
 
     await middleware(req, responseWithUserRejectedError, next, end);
 
-    expect(mockOnRequestRejectedByUser).toHaveBeenCalled();
-    expect(mockOnRequestRejectedByUser).toHaveBeenCalledWith('testOrigin');
+    expect(mockUpdateThrottledOriginState).toHaveBeenCalledWith('testOrigin', {
+      rejections: 1,
+      lastRejection: expect.any(Number),
+    });
     expect(nextCallback).toHaveBeenCalled();
   });
 });

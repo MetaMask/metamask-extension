@@ -5991,17 +5991,14 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createOriginThrottlingMiddleware({
-        isOriginBlockedForConfirmations:
-          this.appStateController.isOriginBlockedForConfirmations.bind(
+        getThrottledOriginState:
+          this.appStateController.getThrottledOriginState.bind(
             this.appStateController,
           ),
-        onRequestRejectedByUser:
-          this.appStateController.onRequestRejectedByUser.bind(
+        updateThrottledOriginState:
+          this.appStateController.updateThrottledOriginState.bind(
             this.appStateController,
           ),
-        onRequestAccepted: this.appStateController.onRequestAccepted.bind(
-          this.appStateController,
-        ),
       }),
     );
 

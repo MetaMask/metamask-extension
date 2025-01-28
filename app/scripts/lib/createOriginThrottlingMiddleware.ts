@@ -1,4 +1,5 @@
 import { providerErrors, errorCodes } from '@metamask/rpc-errors';
+import { ApprovalType } from '@metamask/controller-utils';
 import type {
   Json,
   JsonRpcError,
@@ -9,7 +10,25 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import { BLOCKABLE_METHODS } from '../../../shared/constants/origin-throttling';
+import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import type { ThrottledOrigin } from '../../../shared/types/origin-throttling';
+
+export const NUMBER_OF_REJECTIONS_THRESHOLD = 3;
+export const REJECTION_THRESHOLD_IN_MS = 30000;
+export const BLOCKING_THRESHOLD_IN_MS = 60000;
+
+export const BLOCKABLE_METHODS: Set<string> = new Set([
+  ApprovalType.Transaction,
+  MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+  MESSAGE_TYPE.PERSONAL_SIGN,
+  MESSAGE_TYPE.WATCH_ASSET,
+  MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+  MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+]);
 
 export type ExtendedJSONRPCRequest = JsonRpcRequest & { origin: string };
 
@@ -18,18 +37,33 @@ export const SPAM_FILTER_ACTIVATED_ERROR = providerErrors.unauthorized(
 );
 
 type createOriginThrottlingMiddlewareOptions = {
-  isOriginBlockedForConfirmations: (origin: string) => boolean;
-  onRequestRejectedByUser: (origin: string) => void;
-  onRequestAccepted: (origin: string) => boolean;
+  getThrottledOriginState: (origin: string) => ThrottledOrigin | undefined;
+  updateThrottledOriginState: (
+    origin: string,
+    throttledOriginState: ThrottledOrigin,
+  ) => void;
 };
 
 const isUserRejectedError = (error: JsonRpcError) =>
   error.code === errorCodes.provider.userRejectedRequest;
 
+const isOriginBlockedForConfirmations = (
+  throttledOriginState: ThrottledOrigin | undefined,
+) => {
+  if (!throttledOriginState) {
+    return false;
+  }
+  const currentTime = Date.now();
+  const { rejections, lastRejection } = throttledOriginState;
+  const isWithinOneMinute =
+    currentTime - lastRejection <= BLOCKING_THRESHOLD_IN_MS;
+
+  return rejections >= NUMBER_OF_REJECTIONS_THRESHOLD && isWithinOneMinute;
+};
+
 export default function createOriginThrottlingMiddleware({
-  isOriginBlockedForConfirmations,
-  onRequestRejectedByUser,
-  onRequestAccepted,
+  getThrottledOriginState,
+  updateThrottledOriginState,
 }: createOriginThrottlingMiddlewareOptions) {
   return function originThrottlingMiddleware(
     req: ExtendedJSONRPCRequest,
@@ -45,7 +79,8 @@ export default function createOriginThrottlingMiddleware({
       return;
     }
 
-    const isDappBlocked = isOriginBlockedForConfirmations(origin);
+    const currentOriginState = getThrottledOriginState(origin);
+    const isDappBlocked = isOriginBlockedForConfirmations(currentOriginState);
 
     if (isDappBlocked) {
       end(SPAM_FILTER_ACTIVATED_ERROR);
@@ -53,15 +88,35 @@ export default function createOriginThrottlingMiddleware({
     }
 
     next((callback: () => void) => {
-      if (!isBlockableRPCMethod) {
-        callback();
-        return;
-      }
-
       if ('error' in res && res.error && isUserRejectedError(res.error)) {
-        onRequestRejectedByUser(origin);
+        // User rejected the request
+        const throttledOriginState = getThrottledOriginState(origin) || {
+          rejections: 0,
+          lastRejection: 0,
+        };
+
+        const currentTime = Date.now();
+        const isUnderThreshold =
+          currentTime - throttledOriginState.lastRejection <
+          REJECTION_THRESHOLD_IN_MS;
+        const newRejections = isUnderThreshold
+          ? throttledOriginState.rejections + 1
+          : 1;
+
+        updateThrottledOriginState(origin, {
+          rejections: newRejections,
+          lastRejection: currentTime,
+        });
       } else {
-        onRequestAccepted(origin);
+        // User accepted the request
+        const throttledOriginState = getThrottledOriginState(origin);
+        const hasOriginThrottled = Boolean(throttledOriginState);
+        if (hasOriginThrottled) {
+          updateThrottledOriginState(origin, {
+            rejections: 0,
+            lastRejection: 0,
+          });
+        }
       }
 
       callback();

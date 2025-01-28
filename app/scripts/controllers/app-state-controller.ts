@@ -32,12 +32,10 @@ import {
   AccountOverviewTabKey,
   CarouselSlide,
 } from '../../../shared/constants/app-state';
-import {
-  BLOCKING_THRESHOLD_IN_MS,
-  NUMBER_OF_REJECTIONS_THRESHOLD,
-  REJECTION_THRESHOLD_IN_MS,
-} from '../../../shared/constants/origin-throttling';
-import type { ThrottledOrigins } from '../../../shared/types/origin-throttling';
+import type {
+  ThrottledOrigins,
+  ThrottledOrigin,
+} from '../../../shared/types/origin-throttling';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -1088,47 +1086,16 @@ export class AppStateController extends BaseController<
     this.#approvalRequestId = null;
   }
 
-  onRequestAccepted(origin: string) {
-    const hasOriginThrottled = Boolean(this.state.throttledOrigins[origin]);
-    if (hasOriginThrottled) {
-      this.resetOriginThrottlingState(origin);
-    }
+  getThrottledOriginState(origin: string): ThrottledOrigin {
+    return this.state.throttledOrigins[origin];
   }
 
-  onRequestRejectedByUser(origin: string): void {
-    const currentState = this.state.throttledOrigins[origin] || {
-      rejections: 0,
-      lastRejection: 0,
-    };
-    const currentTime = Date.now();
-    const isUnderThreshold =
-      currentTime - currentState.lastRejection < REJECTION_THRESHOLD_IN_MS;
-    const newRejections = isUnderThreshold ? currentState.rejections + 1 : 1;
-
+  updateThrottledOriginState(
+    origin: string,
+    throttledOriginState: ThrottledOrigin,
+  ): void {
     this.update((state) => {
-      state.throttledOrigins[origin] = {
-        rejections: newRejections,
-        lastRejection: currentTime,
-      };
+      state.throttledOrigins[origin] = throttledOriginState;
     });
-  }
-
-  resetOriginThrottlingState(origin: string): void {
-    this.update((state) => {
-      delete state.throttledOrigins[origin];
-    });
-  }
-
-  isOriginBlockedForConfirmations(origin: string): boolean {
-    const originState = this.state.throttledOrigins[origin];
-    if (!originState) {
-      return false;
-    }
-    const currentTime = Date.now();
-    const { rejections, lastRejection } = originState;
-    const isWithinOneMinute =
-      currentTime - lastRejection <= BLOCKING_THRESHOLD_IN_MS;
-
-    return rejections >= NUMBER_OF_REJECTIONS_THRESHOLD && isWithinOneMinute;
   }
 }

@@ -556,105 +556,30 @@ describe('AppStateController', () => {
   });
 
   describe('throttledOrigins', () => {
-    describe('resetOriginThrottlingState', () => {
-      it('should reset the throttling state for a given origin', async () => {
-        await withController(
-          {
-            state: {
-              throttledOrigins: {
-                'example.com': { rejections: 3, lastRejection: Date.now() },
-              },
-            },
-          },
-          ({ controller }) => {
-            controller.resetOriginThrottlingState('example.com');
-            expect(
-              controller.state.throttledOrigins['example.com'],
-            ).toBeUndefined();
-          },
-        );
-      });
-    });
-
-    describe('isOriginBlockedForConfirmations', () => {
-      it('should return false if the origin is not throttled', async () => {
+    describe('updateThrottledOriginState', () => {
+      it('should update the throttledOriginState for a given origin', async () => {
         await withController(({ controller }) => {
+          controller.updateThrottledOriginState('example.com', {
+            rejections: 1,
+            lastRejection: Date.now(),
+          });
           expect(
-            controller.isOriginBlockedForConfirmations('example.com'),
-          ).toBe(false);
+            controller.state.throttledOrigins['example.com'],
+          ).toStrictEqual({ rejections: 1, lastRejection: expect.any(Number) });
         });
       });
-
-      it('should return true if the origin is throttled and within the blocking threshold', async () => {
-        await withController(
-          {
-            state: {
-              throttledOrigins: {
-                'example.com': {
-                  rejections: 5,
-                  lastRejection: Date.now(),
-                },
-              },
-            },
-          },
-          ({ controller }) => {
-            expect(
-              controller.isOriginBlockedForConfirmations('example.com'),
-            ).toBe(true);
-          },
-        );
-      });
-
-      it('should return false if the origin is throttled but outside the blocking threshold', async () => {
-        await withController(
-          {
-            state: {
-              throttledOrigins: {
-                'example.com': {
-                  rejections: 5,
-                  lastRejection: Date.now() - 600000, // 10 minutes ago
-                },
-              },
-            },
-          },
-          ({ controller }) => {
-            expect(
-              controller.isOriginBlockedForConfirmations('example.com'),
-            ).toBe(false);
-          },
-        );
-      });
     });
 
-    describe('onRequestAccepted', () => {
-      it('should reset throttling state on approval acceptance', async () => {
-        await withController(
-          {
-            state: {
-              throttledOrigins: {
-                'example.com': { rejections: 3, lastRejection: Date.now() },
-              },
-            },
-          },
-          ({ controller }) => {
-            controller.onRequestAccepted('example.com');
-
-            expect(
-              controller.state.throttledOrigins['example.com'],
-            ).toBeUndefined();
-          },
-        );
-      });
-    });
-
-    describe('onRequestRejectedByUser', () => {
-      it('should increase rejection count for user rejected errors', async () => {
-        await withController(async ({ controller }) => {
-          const origin = 'example.com';
-
-          controller.onRequestRejectedByUser(origin);
-
-          expect(controller.state.throttledOrigins[origin].rejections).toBe(1);
+    describe('getThrottledOriginState', () => {
+      it('should return the throttledOriginState for a given origin', async () => {
+        await withController(({ controller }) => {
+          controller.updateThrottledOriginState('example.com', {
+            rejections: 1,
+            lastRejection: Date.now(),
+          });
+          expect(
+            controller.getThrottledOriginState('example.com'),
+          ).toStrictEqual({ rejections: 1, lastRejection: expect.any(Number) });
         });
       });
     });
