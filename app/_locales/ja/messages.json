@@ -416,6 +416,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "このトランザクションの推定増減額が更新されました。先に進む前によく確認してください。"
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "このアドレスとやり取りするのは初めてです。先に進む前に、これが正しいことを確認してください。"
+  },
   "alertMessageGasEstimateFailed": {
     "message": "正確な手数料を提供できず、この見積もりは高い可能性があります。カスタムガスリミットの入力をお勧めしますが、それでもトランザクションが失敗するリスクがあります。"
   },
@@ -452,6 +455,9 @@
   "alertReasonChangeInSimulationResults": {
     "message": "結果が変更されました"
   },
+  "alertReasonFirstTimeInteraction": {
+    "message": "初回のやり取り"
+  },
   "alertReasonGasEstimateFailed": {
     "message": "不正確な手数料"
   },
@@ -479,6 +485,9 @@
   "alertReasonWrongAccount": {
     "message": "正しくないアカウント"
   },
+  "alertSelectedAccountWarning": {
+    "message": "このリクエストは、ウォレットで選択されているアカウントとは別のアカウントに対するものです。別のアカウントを使用するには、そのアカウントをサイトに接続してください。"
+  },
   "alerts": {
     "message": "アラート"
   },
@@ -490,6 +499,9 @@
   },
   "allCustodianAccountsConnectedTitle": {
     "message": "接続できるアカウントがありません"
+  },
+  "allNetworks": {
+    "message": "すべてのネットワーク"
   },
   "allOfYour": {
     "message": "すべての$1",
@@ -562,6 +574,9 @@
     "message": "MetaMask Institutional",
     "description": "The name of the application (MMI)"
   },
+  "apply": {
+    "message": "適用"
+  },
   "approve": {
     "message": "使用限度額の承認"
   },
@@ -615,8 +630,14 @@
   "asset": {
     "message": "アセット"
   },
+  "assetMultipleNFTsBalance": {
+    "message": "$1個のNFT"
+  },
   "assetOptions": {
     "message": "アセットのオプション"
+  },
+  "assetSingleNFTBalance": {
+    "message": "$1個のNFT"
   },
   "assets": {
     "message": "アセット"
@@ -716,12 +737,14 @@
   "beCareful": {
     "message": "ご注意ください"
   },
+  "bestPrice": {
+    "message": "最適な価格"
+  },
   "beta": {
     "message": "ベータ版"
   },
   "betaHeaderText": {
-    "message": "これはベータ版です。バグは報告してください $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "これはベータ版です。バグは報告してください $1"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "MetaMask Institutionalベータ版"
@@ -825,14 +848,50 @@
   "bridge": {
     "message": "ブリッジ"
   },
+  "bridgeAllowSwappingOf": {
+    "message": "ブリッジ用に$3の$1 $2への正確なアクセスを許可する",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
+  "bridgeApproval": {
+    "message": "$1のブリッジを承認",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
+  "bridgeApprovalWarning": {
+    "message": "指定された金額、$1 $2へのアクセスを許可しようとしています。このコントラクトはそれ以上の資金にはアクセスしません。"
+  },
+  "bridgeApprovalWarningForHardware": {
+    "message": "ブリッジ用に$1 $2へのアクセスを許可し、$2へのブリッジを承認する必要があります。これには2回の別々の承認が必要です。"
+  },
   "bridgeCalculatingAmount": {
     "message": "計算中..."
+  },
+  "bridgeConfirmTwoTransactions": {
+    "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります:"
   },
   "bridgeEnterAmount": {
     "message": "金額を入力"
   },
+  "bridgeExplorerLinkViewOn": {
+    "message": "$1で表示"
+  },
+  "bridgeFetchNewQuotes": {
+    "message": "新しいものを取得しますか？"
+  },
   "bridgeFrom": {
     "message": "ブリッジ元:"
+  },
+  "bridgeFromTo": {
+    "message": "$1 $2を$3にブリッジ",
+    "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
+  },
+  "bridgeGasFeesSplit": {
+    "message": "前の画面のクォートのネットワーク手数料には両方のトランザクションが含まれていて、分割されます。"
+  },
+  "bridgeNetCost": {
+    "message": "純コスト"
+  },
+  "bridgeQuoteExpired": {
+    "message": "クォートがタイムアウトしました。"
   },
   "bridgeSelectNetwork": {
     "message": "ネットワークを選択"
@@ -840,8 +899,81 @@
   "bridgeSelectTokenAndAmount": {
     "message": "トークンと金額を選択"
   },
+  "bridgeStepActionBridgeComplete": {
+    "message": "$2で$1を受け取りました",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionBridgePending": {
+    "message": "$2で$1を受け取っています",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "$1を$2にスワップしました",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "$1を$2にスワップしています",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeTerms": {
+    "message": "利用規約"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1分",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
   "bridgeTo": {
     "message": "ブリッジ先:"
+  },
+  "bridgeToChain": {
+    "message": "$1にブリッジ"
+  },
+  "bridgeTxDetailsBridging": {
+    "message": "ブリッジ"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "お問い合わせ先:"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMaskサポート"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "3時間を経過していますか？"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "ナンス"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "ステータス"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "タイムスタンプ"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$1 $2",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "次のネットワークの$1 $2:",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "ガス代合計"
+  },
+  "bridgeTxDetailsYouReceived": {
+    "message": "受取"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "送金"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "このブリッジのガス代を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
+  },
+  "bridgeValidationInsufficientGasTitle": {
+    "message": "ガス代により多くの$1が必要です"
+  },
+  "bridging": {
+    "message": "ブリッジ"
   },
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
@@ -851,6 +983,9 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
+  },
+  "bulletpoint": {
+    "message": "·"
   },
   "busy": {
     "message": "ビジー状態"
@@ -1003,6 +1138,9 @@
   "confirmRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズの確認"
   },
+  "confirmTitleApproveTransactionNFT": {
+    "message": "出金のリクエスト"
+  },
   "confirmTitleDeployContract": {
     "message": "コントラクトを展開"
   },
@@ -1041,6 +1179,9 @@
   },
   "confirmTitleTransaction": {
     "message": "トランザクションの要求"
+  },
+  "confirmationAlertDetails": {
+    "message": "資産を守るため、リクエストを拒否することをお勧めします。"
   },
   "confirmationAlertModalTitle": {
     "message": "この要求は不審です"
@@ -1296,8 +1437,15 @@
   "creatorAddress": {
     "message": "クリエイターのアドレス"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "これにはすべてのネットワークで所有している全トークンの価値が反映されています。この値をETHまたはその他の通貨で表示する場合は、$1に移動します。",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolioでネットワーク間でスワップ"
+  },
+  "crossChainSwapsLinkNative": {
+    "message": " ブリッジによるネットワーク間のスワップ"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1326,6 +1474,10 @@
   },
   "currentLanguage": {
     "message": "現在の言語"
+  },
+  "currentNetwork": {
+    "message": "現在のネットワーク",
+    "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
     "message": "このネットワークの現在のRPC URLは非推奨となりました。"
@@ -1405,6 +1557,9 @@
   "customGasSettingToolTipMessage": {
     "message": "ガス価格をカスタマイズするには$1を使用します。慣れていない場合はわかりにくい可能性があります。自己責任で操作してください。",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
+  },
+  "customSlippage": {
+    "message": "カスタム"
   },
   "customSpendLimit": {
     "message": "カスタム使用限度額"
@@ -1679,6 +1834,12 @@
   "dropped": {
     "message": "削除されました"
   },
+  "duplicateContactTooltip": {
+    "message": "この連絡先名は既存のアカウントまたは連絡先と矛盾しています"
+  },
+  "duplicateContactWarning": {
+    "message": "重複する連絡先があります"
+  },
   "edit": {
     "message": "編集"
   },
@@ -1764,6 +1925,9 @@
   },
   "editGasTooLow": {
     "message": "不明な処理時間"
+  },
+  "editInPortfolio": {
+    "message": "Portfolioで編集"
   },
   "editNetworkLink": {
     "message": "元のネットワークを編集"
@@ -2202,6 +2366,9 @@
   "gotIt": {
     "message": "了解"
   },
+  "grantExactAccess": {
+    "message": "正確なアクセスを許可する"
+  },
   "grantedToWithColon": {
     "message": "付与先:"
   },
@@ -2329,6 +2496,12 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "長押ししてロックが解除された円を表示します"
+  },
+  "howQuotesWork": {
+    "message": "クォートの仕組み"
+  },
+  "howQuotesWorkExplanation": {
+    "message": "このクォートには、当社が検索した中で最も有利なクォートが含まれています。これは、ブリッジ手数料と$1%のMetaMaskの手数料からガス代を引いた、スワップレートに基づいています。ガス代は、ネットワークの混雑状況とトランザクションの複雑さによって変わります。"
   },
   "id": {
     "message": "ID"
@@ -2769,6 +2942,9 @@
   "loadingScreenSnapMessage": {
     "message": "Snapでトランザクションを完了させてください。"
   },
+  "loadingTokenList": {
+    "message": "トークンリストをロードしています"
+  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -2787,6 +2963,12 @@
   },
   "low": {
     "message": "低"
+  },
+  "lowEstimatedReturnTooltipMessage": {
+    "message": "手数料として、開始金額の$1%を超える額を支払うことになります。受取額とネットワーク手数料を確認してください。"
+  },
+  "lowEstimatedReturnTooltipTitle": {
+    "message": "ハイコスト"
   },
   "lowGasSettingToolTipMessage": {
     "message": "値下がりを待つには$1を使用してください。価格がやや予測不能なため、予想時間はあまり正確ではありません。",
@@ -2941,6 +3123,9 @@
     "message": "+ $1個のネットワーク",
     "description": "$1 is the number of networks"
   },
+  "moreQuotes": {
+    "message": "他のクォート"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "このネットワークをMetaMaskに追加し、サイトがそれを使用することを許可しようとしています。"
   },
@@ -2957,6 +3142,9 @@
   "nameAddressLabel": {
     "message": "アドレス",
     "description": "Label above address field in name component modal."
+  },
+  "nameAlreadyInUse": {
+    "message": "名前がすでに使用されています"
   },
   "nameInstructionsNew": {
     "message": "このアドレスを知っている場合は、今後認識できるようニックネームを付けてください。",
@@ -3061,6 +3249,9 @@
   "networkFee": {
     "message": "ネットワーク手数料"
   },
+  "networkFees": {
+    "message": "ネットワーク手数料"
+  },
   "networkIsBusy": {
     "message": "ネットワークが混み合っています。ガス代が高く、見積もりはあまり正確ではありません。"
   },
@@ -3105,6 +3296,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameSolana": {
+    "message": "Solana"
   },
   "networkNameTestnet": {
     "message": "テストネット"
@@ -3291,6 +3485,9 @@
   },
   "noNetworksFound": {
     "message": "入力された検索クエリでネットワークが見つかりません"
+  },
+  "noOptionsAvailableMessage": {
+    "message": "この取引ルートは現在使用できません。金額、ネットワーク、またはトークンを変更すれば、最適なオプションをお探しします。"
   },
   "noSnaps": {
     "message": "snapがインストールされていません"
@@ -3796,6 +3993,14 @@
   "pending": {
     "message": "保留中"
   },
+  "pendingTransactionAlertMessage": {
+    "message": "このトランザクションは、前のトランザクションが完了するまで実行されません。$1",
+    "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
+  },
+  "pendingTransactionAlertMessageHyperlink": {
+    "message": "トランザクションをキャンセルまたは高速化する方法をご覧ください。",
+    "description": "The text for the hyperlink in the pending transaction alert message"
+  },
   "pendingTransactionInfo": {
     "message": "このトランザクションは、そのトランザクションが完了するまで処理されません。"
   },
@@ -4053,6 +4258,27 @@
   "permissionsPageEmptySubContent": {
     "message": "ここには、インストールされたSnapや接続されたサイトに付与したアクセス許可が表示されます。"
   },
+  "permitSimulationChange_approve": {
+    "message": "使用上限"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "入札"
+  },
+  "permitSimulationChange_listing": {
+    "message": "出品"
+  },
+  "permitSimulationChange_nft_listing": {
+    "message": "出品価格"
+  },
+  "permitSimulationChange_receive": {
+    "message": "受取"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "使用上限"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "送金"
+  },
   "permitSimulationDetailInfo": {
     "message": "この数量のトークンをアカウントから転送する権限を使用者に付与しようとしています。"
   },
@@ -4091,6 +4317,9 @@
   "popularNetworkAddToolTip": {
     "message": "これらのネットワークの一部はサードパーティに依存しているため、接続の信頼性が低かったり、サードパーティによるアクティビティの追跡が可能になったりする可能性があります。$1",
     "description": "$1 is Learn more link"
+  },
+  "popularNetworks": {
+    "message": "人気のネットワーク"
   },
   "portfolio": {
     "message": "Portfolio"
@@ -4256,8 +4485,17 @@
   "quoteRate": {
     "message": "クォートレート"
   },
+  "quotedReceiveAmount": {
+    "message": "$1の受取額"
+  },
+  "quotedTotalCost": {
+    "message": "$1の合計コスト"
+  },
   "rank": {
     "message": "ランク"
+  },
+  "rateIncludesMMFee": {
+    "message": "レートには$1%の手数料が含まれています"
   },
   "reAddAccounts": {
     "message": "他のアカウントを再度追加"
@@ -4589,6 +4827,9 @@
   "searchTokens": {
     "message": "トークンを検索"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "トークンを名前またはアドレスで検索する"
+  },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
@@ -4726,6 +4967,9 @@
   },
   "selectType": {
     "message": "種類を選択"
+  },
+  "selectedAccountMismatch": {
+    "message": "別のアカウントが選択されました"
   },
   "selectingAllWillAllow": {
     "message": "すべてを選択すると、このサイトに現在のすべてのアカウントが表示されます。このサイトが信頼できることを確認してください。"
@@ -4878,6 +5122,12 @@
   "signatureRequestGuidance": {
     "message": "このメッセージの内容を完全に理解し、リクエスト元のサイトを信頼する場合にのみ署名してください。"
   },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "入札が受け入れられると、NFTがウォレットに反映されます。"
+  },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "お手持ちのNFTが購入された場合のみ変更されます。"
+  },
   "signed": {
     "message": "署名が完了しました"
   },
@@ -4889,6 +5139,9 @@
   },
   "signingInWith": {
     "message": "サインイン方法:"
+  },
+  "signingWith": {
+    "message": "署名方法:"
   },
   "simulationApproveHeading": {
     "message": "引き出し"
@@ -4936,8 +5189,14 @@
   "simulationErrorMessageV2": {
     "message": "ガス代を見積もることができませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
   },
+  "simulationsSettingDescription": {
+    "message": "トランザクションと署名を確定する前に残高の増減を予測するには、この機能をオンにします。これは最終的な結果を保証するものではありません。$1"
+  },
   "simulationsSettingSubHeader": {
     "message": "予測される残高の増減"
+  },
+  "singleNetwork": {
+    "message": "1つのネットワーク"
   },
   "siweIssued": {
     "message": "発行済み"
@@ -4962,6 +5221,30 @@
   },
   "skipAccountSecurityDetails": {
     "message": "私は、シークレットリカバリーフレーズをバックアップするまで、アカウントとそのアセットのすべてを失う可能性があることを理解しています。"
+  },
+  "slideBridgeDescription": {
+    "message": "9つのチェーン間での移動がすべてウォレット内で"
+  },
+  "slideBridgeTitle": {
+    "message": "ブリッジの準備はいいですか？"
+  },
+  "slideCashOutDescription": {
+    "message": "仮想通貨を売ってキャッシュを入手"
+  },
+  "slideCashOutTitle": {
+    "message": "MetaMaskでキャッシュアウト"
+  },
+  "slideDebitCardDescription": {
+    "message": "一部地域で利用可能"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMaskデビットカード"
+  },
+  "slideFundWalletDescription": {
+    "message": "まずは資金を入金"
+  },
+  "slideFundWalletTitle": {
+    "message": "ウォレットに入金"
   },
   "smartContracts": {
     "message": "スマートコントラクト"
@@ -4992,6 +5275,15 @@
   },
   "smartTransactions": {
     "message": "スマートトランザクション"
+  },
+  "smartTransactionsEnabledDescription": {
+    "message": " そしてMEV保護。デフォルトでオンになりました。"
+  },
+  "smartTransactionsEnabledLink": {
+    "message": "より高い成功率"
+  },
+  "smartTransactionsEnabledTitle": {
+    "message": "トランザクションがさらにスマートに"
   },
   "snapAccountCreated": {
     "message": "アカウントが作成されました"
@@ -5168,6 +5460,9 @@
   "solanaSupportToggleTitle": {
     "message": "「新規Solanaアカウントの追加 (ベータ)」を有効にする"
   },
+  "someNetworks": {
+    "message": "$1個のネットワーク"
+  },
   "somethingDoesntLookRight": {
     "message": "何か不審な点があれば、$1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5252,6 +5547,9 @@
   },
   "spendingCapTooltipDesc": {
     "message": "これは、使用者が代理でアクセスできるようになるトークンの金額です。"
+  },
+  "spendingCaps": {
+    "message": "使用上限"
   },
   "srpInputNumberOfWords": {
     "message": "$1語のフレーズがあります",
@@ -5888,6 +6186,10 @@
     "message": "$1が$2で有効になりました",
     "description": "$1 represents the account name, $2 represents the network name"
   },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "$1に切り替えました",
+    "description": "$1 represents the network name"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "ネットワークを切り替えると、保留中の承認がすべてキャンセルされます"
   },
@@ -5953,6 +6255,9 @@
   "toAddress": {
     "message": "移動先: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleDecodeDescription": {
+    "message": "当社は4byte.directoryとSourcifyサービスを使用してトランザクションデータを解読し、より読みやすい形で表示しています。これにより、保留中および過去のトランザクションの結果を理解しやすくなりますが、IPアドレスが共有される可能性があります。"
   },
   "token": {
     "message": "トークン"
@@ -6086,6 +6391,9 @@
   },
   "transactionFailed": {
     "message": "トランザクションに失敗しました"
+  },
+  "transactionFailedBannerMessage": {
+    "message": "このトランザクションには追加の手数料がかかるため、中止しました。資金はウォレットから移動していません。"
   },
   "transactionFee": {
     "message": "トランザクション手数料"
@@ -6492,6 +6800,12 @@
   "whatsThis": {
     "message": "これは何ですか？"
   },
+  "willApproveAmountForBridging": {
+    "message": "これによりブリッジ用に$1が承認されます。"
+  },
+  "willApproveAmountForBridgingHardware": {
+    "message": "ハードウェアウォレットで2つのトランザクションを確定する必要があります。"
+  },
   "withdrawing": {
     "message": "引き出し中"
   },
@@ -6503,6 +6817,9 @@
   },
   "you": {
     "message": "ユーザー"
+  },
+  "youDeclinedTheTransaction": {
+    "message": "トランザクションを拒否しました。"
   },
   "youNeedToAllowCameraAccess": {
     "message": "この機能を使用するには、カメラへのアクセスを許可する必要があります。"
@@ -6524,6 +6841,9 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"
+  },
+  "yourNetworks": {
+    "message": "あなたのネットワーク"
   },
   "yourPrivateSeedPhrase": {
     "message": "シークレットリカバリーフレーズ"

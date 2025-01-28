@@ -416,6 +416,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "此交易的预计更改已更新。继续之前请仔细审查。"
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "您首次与此地址交互。请确保地址正确，然后再继续。"
+  },
   "alertMessageGasEstimateFailed": {
     "message": "我们无法提供准确的费用，估算可能较高。我们建议您输入自定义的燃料限制，但交易仍存在失败风险。"
   },
@@ -452,6 +455,9 @@
   "alertReasonChangeInSimulationResults": {
     "message": "结果已发生变化"
   },
+  "alertReasonFirstTimeInteraction": {
+    "message": "首次交互"
+  },
   "alertReasonGasEstimateFailed": {
     "message": "费用不准确"
   },
@@ -479,6 +485,9 @@
   "alertReasonWrongAccount": {
     "message": "错误账户"
   },
+  "alertSelectedAccountWarning": {
+    "message": "此请求针对与您钱包中所选账户不同的账户。要使用其他账户，请将其连接到该站点。"
+  },
   "alerts": {
     "message": "提醒"
   },
@@ -490,6 +499,9 @@
   },
   "allCustodianAccountsConnectedTitle": {
     "message": "没有可连接的账户"
+  },
+  "allNetworks": {
+    "message": "所有网络"
   },
   "allOfYour": {
     "message": "您的所有$1",
@@ -562,6 +574,9 @@
     "message": "MetaMask Institutional",
     "description": "The name of the application (MMI)"
   },
+  "apply": {
+    "message": "应用"
+  },
   "approve": {
     "message": "批准消费限额"
   },
@@ -615,8 +630,14 @@
   "asset": {
     "message": "资产"
   },
+  "assetMultipleNFTsBalance": {
+    "message": "$1 NFT"
+  },
   "assetOptions": {
     "message": "资产选项"
+  },
+  "assetSingleNFTBalance": {
+    "message": "$1 NFT"
   },
   "assets": {
     "message": "资产"
@@ -716,12 +737,14 @@
   "beCareful": {
     "message": "请小心"
   },
+  "bestPrice": {
+    "message": "最优价格"
+  },
   "beta": {
     "message": "测试版"
   },
   "betaHeaderText": {
-    "message": "此为测试版。请$1报告错误",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "此为测试版。请$1报告错误"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "MetaMask Institutional 测试版本"
@@ -825,14 +848,50 @@
   "bridge": {
     "message": "跨链桥"
   },
+  "bridgeAllowSwappingOf": {
+    "message": "允许精确获取 $3 上的 $1 $2 以进行桥接",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
+  "bridgeApproval": {
+    "message": "批准 $1 进行桥接",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
+  "bridgeApprovalWarning": {
+    "message": "您将允许获取指定金额 $1 $2。该合约将不会获取任何额外资金。"
+  },
+  "bridgeApprovalWarningForHardware": {
+    "message": "您需要允许获取 $1 $2 用于桥接，然后批准桥接到 $2。这需要两次单独的确认。"
+  },
   "bridgeCalculatingAmount": {
     "message": "正在计算......"
+  },
+  "bridgeConfirmTwoTransactions": {
+    "message": "您需要在您的硬件钱包上确认 2 笔交易："
   },
   "bridgeEnterAmount": {
     "message": "输入金额"
   },
+  "bridgeExplorerLinkViewOn": {
+    "message": "在 $1 上查看"
+  },
+  "bridgeFetchNewQuotes": {
+    "message": "获取一个新的？"
+  },
   "bridgeFrom": {
     "message": "桥接自"
+  },
+  "bridgeFromTo": {
+    "message": "将 $1 $2 桥接到 $3",
+    "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
+  },
+  "bridgeGasFeesSplit": {
+    "message": "前一个屏幕中报出的任何网络费用均包含两笔交易，并将进行分割。"
+  },
+  "bridgeNetCost": {
+    "message": "净成本"
+  },
+  "bridgeQuoteExpired": {
+    "message": "您的报价已超时。"
   },
   "bridgeSelectNetwork": {
     "message": "选择网络"
@@ -840,8 +899,81 @@
   "bridgeSelectTokenAndAmount": {
     "message": "选择代币和金额"
   },
+  "bridgeStepActionBridgeComplete": {
+    "message": "在 $2 上收到了 $1",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionBridgePending": {
+    "message": "正在 $2 上接收 $1",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "已用 $1 兑换 $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "正在用 $1 兑换 $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeTerms": {
+    "message": "条款"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1 分钟",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
   "bridgeTo": {
     "message": "桥接至"
+  },
+  "bridgeToChain": {
+    "message": "桥接至 $1"
+  },
+  "bridgeTxDetailsBridging": {
+    "message": "桥接"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "联系"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "MetaMask 支持团队"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "超过 3 小时了吗？"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "随机数"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "状态"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "时间戳"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$1 在 $2",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "$1 $2 位于",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "燃料费总额"
+  },
+  "bridgeTxDetailsYouReceived": {
+    "message": "您收到了"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "您发送了"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "您没有足够的 $1 用于支付此次桥接的燃料费。请输入更小的金额或者购买更多 $1。"
+  },
+  "bridgeValidationInsufficientGasTitle": {
+    "message": "需要更多的 $1 用于燃料"
+  },
+  "bridging": {
+    "message": "桥接"
   },
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
@@ -851,6 +983,9 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask 是在世界各地设计和建造的。"
+  },
+  "bulletpoint": {
+    "message": "·"
   },
   "busy": {
     "message": "忙碌中"
@@ -1003,6 +1138,9 @@
   "confirmRecoveryPhrase": {
     "message": "确认私钥助记词"
   },
+  "confirmTitleApproveTransactionNFT": {
+    "message": "提取请求"
+  },
   "confirmTitleDeployContract": {
     "message": "部署合约"
   },
@@ -1041,6 +1179,9 @@
   },
   "confirmTitleTransaction": {
     "message": "交易请求"
+  },
+  "confirmationAlertDetails": {
+    "message": "为了保护您的资产，我们建议您拒绝该请求。"
   },
   "confirmationAlertModalTitle": {
     "message": "此请求可疑"
@@ -1296,8 +1437,15 @@
   "creatorAddress": {
     "message": "创建者地址"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "这反映了您在所有网络上拥有的所有代币的价值。如果您更愿意看到以 ETH 或其他货币反映代币价值，请转到 $1。",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "使用 MetaMask Portfolio 跨网络兑换"
+  },
+  "crossChainSwapsLinkNative": {
+    "message": "使用跨链桥跨网络兑换"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1326,6 +1474,10 @@
   },
   "currentLanguage": {
     "message": "当前语言"
+  },
+  "currentNetwork": {
+    "message": "当前网络",
+    "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
     "message": "此网络的当前 RPC URL 已被弃用。"
@@ -1405,6 +1557,9 @@
   "customGasSettingToolTipMessage": {
     "message": "使用$1来定制燃料价格。如果您不熟悉这可能会引起混淆。操作风险自付。",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
+  },
+  "customSlippage": {
+    "message": "自定义"
   },
   "customSpendLimit": {
     "message": "自定义消费限额"
@@ -1679,6 +1834,12 @@
   "dropped": {
     "message": "失败"
   },
+  "duplicateContactTooltip": {
+    "message": "此联系人名称与现有账户或联系人冲突"
+  },
+  "duplicateContactWarning": {
+    "message": "您有重复的联系人"
+  },
   "edit": {
     "message": "编辑"
   },
@@ -1764,6 +1925,9 @@
   },
   "editGasTooLow": {
     "message": "处理时间未知"
+  },
+  "editInPortfolio": {
+    "message": "在 Portfolio 上编辑"
   },
   "editNetworkLink": {
     "message": "编辑原始网络"
@@ -2202,6 +2366,9 @@
   "gotIt": {
     "message": "知道了"
   },
+  "grantExactAccess": {
+    "message": "授予精确获取权限"
+  },
   "grantedToWithColon": {
     "message": "授予："
   },
@@ -2329,6 +2496,12 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "按住以显示圆圈解锁"
+  },
+  "howQuotesWork": {
+    "message": "报价如何运作"
+  },
+  "howQuotesWorkExplanation": {
+    "message": "在我们搜索到的报价中，该报价的回报率最高。这是基于兑换价格计算的，其中包括桥接费和 $1% 的 MetaMask 费用，减去燃料费。燃料费取决于网络的繁忙程度和交易的复杂程度。"
   },
   "id": {
     "message": "ID"
@@ -2769,6 +2942,9 @@
   "loadingScreenSnapMessage": {
     "message": "请在Snap上完成交易。"
   },
+  "loadingTokenList": {
+    "message": "正在加载代币列表"
+  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -2787,6 +2963,12 @@
   },
   "low": {
     "message": "低级型"
+  },
+  "lowEstimatedReturnTooltipMessage": {
+    "message": "您将支付超过您的起始金额 $1% 的费用。请检查您的收款金额和网络费用。"
+  },
+  "lowEstimatedReturnTooltipTitle": {
+    "message": "高费用"
   },
   "lowGasSettingToolTipMessage": {
     "message": "使用$1等待较便宜的价格。时间估计远不准确，因为价格有些难以预测。",
@@ -2941,6 +3123,9 @@
     "message": "+ 另外 $1 个网络",
     "description": "$1 is the number of networks"
   },
+  "moreQuotes": {
+    "message": "更多报价"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "您正在将此网络添加到 MetaMask 并授予该网站其使用许可。"
   },
@@ -2957,6 +3142,9 @@
   "nameAddressLabel": {
     "message": "地址",
     "description": "Label above address field in name component modal."
+  },
+  "nameAlreadyInUse": {
+    "message": "名称已占用"
   },
   "nameInstructionsNew": {
     "message": "如果您知道此地址，则为其添加昵称，以便将来识别。",
@@ -3061,6 +3249,9 @@
   "networkFee": {
     "message": "网络费"
   },
+  "networkFees": {
+    "message": "网络费"
+  },
   "networkIsBusy": {
     "message": "网络繁忙。燃料价格较高，估值较不准确。"
   },
@@ -3105,6 +3296,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameSolana": {
+    "message": "Solana"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -3291,6 +3485,9 @@
   },
   "noNetworksFound": {
     "message": "未找到符合搜索查询条件的网络"
+  },
+  "noOptionsAvailableMessage": {
+    "message": "此交易路径目前不可用。请尝试更改金额、网络或者代币，我们会找到最佳选项。"
   },
   "noSnaps": {
     "message": "您没有安装 snap。"
@@ -3796,6 +3993,14 @@
   "pending": {
     "message": "待处理"
   },
+  "pendingTransactionAlertMessage": {
+    "message": "您的上一笔交易完成后，此交易才能继续进行。$1",
+    "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
+  },
+  "pendingTransactionAlertMessageHyperlink": {
+    "message": "了解如何取消或加速交易。",
+    "description": "The text for the hyperlink in the pending transaction alert message"
+  },
   "pendingTransactionInfo": {
     "message": "在那笔交易完成之前，这笔交易不会被处理。"
   },
@@ -4053,6 +4258,27 @@
   "permissionsPageEmptySubContent": {
     "message": "您可以在此处查看您授予已安装 Snap 或已连接站点的许可。"
   },
+  "permitSimulationChange_approve": {
+    "message": "支出上限"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "您出价"
+  },
+  "permitSimulationChange_listing": {
+    "message": "您挂牌"
+  },
+  "permitSimulationChange_nft_listing": {
+    "message": "挂牌价格"
+  },
+  "permitSimulationChange_receive": {
+    "message": "您收到"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "支出上限"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "您发送"
+  },
   "permitSimulationDetailInfo": {
     "message": "您将授予该消费者许可从您的账户中支出这些代币。"
   },
@@ -4091,6 +4317,9 @@
   "popularNetworkAddToolTip": {
     "message": "这些网络中的其中一些依赖于第三方。此连接可能不太可靠，或使第三方可进行活动跟踪。$1",
     "description": "$1 is Learn more link"
+  },
+  "popularNetworks": {
+    "message": "热门网络"
   },
   "portfolio": {
     "message": "Portfolio"
@@ -4256,8 +4485,17 @@
   "quoteRate": {
     "message": "报价"
   },
+  "quotedReceiveAmount": {
+    "message": "$1 收到金额"
+  },
+  "quotedTotalCost": {
+    "message": "$1 总费用"
+  },
   "rank": {
     "message": "排名"
+  },
+  "rateIncludesMMFee": {
+    "message": "价格包括 $1% 费用"
   },
   "reAddAccounts": {
     "message": "重新添加任何其他账户"
@@ -4589,6 +4827,9 @@
   "searchTokens": {
     "message": "搜索代币"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "按名称或地址搜索代币"
+  },
   "secretRecoveryPhrase": {
     "message": "私钥助记词"
   },
@@ -4726,6 +4967,9 @@
   },
   "selectType": {
     "message": "选择类型"
+  },
+  "selectedAccountMismatch": {
+    "message": "已选择不同账户"
   },
   "selectingAllWillAllow": {
     "message": "选择全部将允许本网站查看您当前的所有账户。确保您信任这个网站。"
@@ -4878,6 +5122,12 @@
   "signatureRequestGuidance": {
     "message": "只有在您完全理解内容并信任请求网站的情况下，才能签署此消息。"
   },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "当接受出价时，NFT 将反映在您的钱包中。"
+  },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "只有当有人购买您的 NFT 时才会发生变化。"
+  },
   "signed": {
     "message": "已签名"
   },
@@ -4888,6 +5138,9 @@
     "message": "签名"
   },
   "signingInWith": {
+    "message": "使用以下登录方式"
+  },
+  "signingWith": {
     "message": "使用以下登录方式"
   },
   "simulationApproveHeading": {
@@ -4936,8 +5189,14 @@
   "simulationErrorMessageV2": {
     "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
   },
+  "simulationsSettingDescription": {
+    "message": "开启此选项，以便在确认交易和签名之前预估交易余额的变化。这并不能保证交易的最终结果。$1"
+  },
   "simulationsSettingSubHeader": {
     "message": "预计余额变化"
+  },
+  "singleNetwork": {
+    "message": "1 个网络"
   },
   "siweIssued": {
     "message": "已签发"
@@ -4962,6 +5221,30 @@
   },
   "skipAccountSecurityDetails": {
     "message": "我明白，在我备份我的账户私钥助记词之前，我可能会丢失我的账户及其所有资产。"
+  },
+  "slideBridgeDescription": {
+    "message": "横跨 9 条链，一切尽在您的钱包"
+  },
+  "slideBridgeTitle": {
+    "message": "准备好桥接了吗？"
+  },
+  "slideCashOutDescription": {
+    "message": "卖出加密货币，获取现金"
+  },
+  "slideCashOutTitle": {
+    "message": "通过 MetaMask 兑现"
+  },
+  "slideDebitCardDescription": {
+    "message": "适用于选定地区"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMask 借记卡"
+  },
+  "slideFundWalletDescription": {
+    "message": "通过添加资金开始"
+  },
+  "slideFundWalletTitle": {
+    "message": "为您的钱包存入资金"
   },
   "smartContracts": {
     "message": "智能合约"
@@ -4992,6 +5275,15 @@
   },
   "smartTransactions": {
     "message": "智能交易"
+  },
+  "smartTransactionsEnabledDescription": {
+    "message": " 和 MEV 保护。现在默认开启。"
+  },
+  "smartTransactionsEnabledLink": {
+    "message": "更高的成功率"
+  },
+  "smartTransactionsEnabledTitle": {
+    "message": "交易变得更加智能"
   },
   "snapAccountCreated": {
     "message": "账户已创建"
@@ -5168,6 +5460,9 @@
   "solanaSupportToggleTitle": {
     "message": "启用“添加新的 Solana 账户（测试版）”"
   },
+  "someNetworks": {
+    "message": "$1 网络"
+  },
   "somethingDoesntLookRight": {
     "message": "有什么不对劲吗？$1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5252,6 +5547,9 @@
   },
   "spendingCapTooltipDesc": {
     "message": "他人可代表您访问该代币金额并进行消费。"
+  },
+  "spendingCaps": {
+    "message": "支出上限"
   },
   "srpInputNumberOfWords": {
     "message": "我有一个包含$1个单词的私钥助记词",
@@ -5888,6 +6186,10 @@
     "message": "$1 现已在 $2 上激活",
     "description": "$1 represents the account name, $2 represents the network name"
   },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "您现在使用的是 $1",
+    "description": "$1 represents the network name"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "切换网络将取消所有待处理的确认"
   },
@@ -5953,6 +6255,9 @@
   "toAddress": {
     "message": "至：$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleDecodeDescription": {
+    "message": "我们使用 4byte.directory 和 Sourcify 服务来解码和显示更易读的交易数据。这可以帮助您了解待定交易和过去交易的结果，但可能会导致您的 IP 地址共享。"
   },
   "token": {
     "message": "代币"
@@ -6086,6 +6391,9 @@
   },
   "transactionFailed": {
     "message": "交易失败"
+  },
+  "transactionFailedBannerMessage": {
+    "message": "此次交易会收取额外费用，因此我们终止了该交易。您的钱仍在您的钱包中。"
   },
   "transactionFee": {
     "message": "交易费用"
@@ -6492,6 +6800,12 @@
   "whatsThis": {
     "message": "这是什么？"
   },
+  "willApproveAmountForBridging": {
+    "message": "这将会批准 $1 用于桥接。"
+  },
+  "willApproveAmountForBridgingHardware": {
+    "message": "您将需要在您的硬件钱包上确认两笔交易。"
+  },
   "withdrawing": {
     "message": "提取"
   },
@@ -6503,6 +6817,9 @@
   },
   "you": {
     "message": "您"
+  },
+  "youDeclinedTheTransaction": {
+    "message": "您拒绝了该交易。"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要开启相机访问权限，才能使用该功能。"
@@ -6524,6 +6841,9 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
+  },
+  "yourNetworks": {
+    "message": "您的网络"
   },
   "yourPrivateSeedPhrase": {
     "message": "您的个人账户私钥助记词"

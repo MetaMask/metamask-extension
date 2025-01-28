@@ -416,6 +416,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "Se actualizaron los cambios estimados para esta transacción. Revíselos detenidamente antes de proceder."
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "Está interactuando con esta dirección por primera vez. Asegúrese de que sea correcta antes de continuar."
+  },
   "alertMessageGasEstimateFailed": {
     "message": "No podemos proporcionar una tarifa exacta y esta estimación podría ser alta. Le sugerimos que ingrese un límite de gas personalizado, pero existe el riesgo de que la transacción aún falle."
   },
@@ -452,6 +455,9 @@
   "alertReasonChangeInSimulationResults": {
     "message": "Los resultados cambiaron"
   },
+  "alertReasonFirstTimeInteraction": {
+    "message": "1.ª interacción"
+  },
   "alertReasonGasEstimateFailed": {
     "message": "Tarifa inexacta"
   },
@@ -479,6 +485,9 @@
   "alertReasonWrongAccount": {
     "message": "Cuenta incorrecta"
   },
+  "alertSelectedAccountWarning": {
+    "message": "Esta solicitud es para una cuenta distinta a la seleccionada en su monedero. Para utilizar otra cuenta, conéctela al sitio."
+  },
   "alerts": {
     "message": "Alertas"
   },
@@ -490,6 +499,9 @@
   },
   "allCustodianAccountsConnectedTitle": {
     "message": "No hay cuentas disponibles para conectarse"
+  },
+  "allNetworks": {
+    "message": "Todas las redes"
   },
   "allOfYour": {
     "message": "Todo su $1",
@@ -562,6 +574,9 @@
     "message": "MetaMask Institutional",
     "description": "The name of the application (MMI)"
   },
+  "apply": {
+    "message": "Solicitar"
+  },
   "approve": {
     "message": "Aprobar límite de gastos"
   },
@@ -615,8 +630,14 @@
   "asset": {
     "message": "Activo"
   },
+  "assetMultipleNFTsBalance": {
+    "message": "$1 NFTs"
+  },
   "assetOptions": {
     "message": "Opciones de activos"
+  },
+  "assetSingleNFTBalance": {
+    "message": "$1 NFT"
   },
   "assets": {
     "message": "Activos"
@@ -716,12 +737,14 @@
   "beCareful": {
     "message": "Sea cuidadoso"
   },
+  "bestPrice": {
+    "message": "Mejor precio"
+  },
   "beta": {
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "Esta es una versión beta. Por favor, comunique los errores $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "Esta es una versión beta. Por favor, comunique los errores $1"
   },
   "betaMetamaskInstitutionalVersion": {
     "message": "Versión beta de MetaMask Institutional"
@@ -825,14 +848,50 @@
   "bridge": {
     "message": "Puente"
   },
+  "bridgeAllowSwappingOf": {
+    "message": "Permitir acceso exacto a $1 $2 en $3 para puentear",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
+  "bridgeApproval": {
+    "message": "Aprobar $1 para puentear",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
+  "bridgeApprovalWarning": {
+    "message": "Usted está permitiendo el acceso al monto especificado, $1 $2. El contrato no tendrá acceso a fondos adicionales."
+  },
+  "bridgeApprovalWarningForHardware": {
+    "message": "Deberá permitir el acceso a $1 $2 para puentear y luego aprobar el puente a $2. Esto requerirá dos confirmaciones por separado."
+  },
   "bridgeCalculatingAmount": {
     "message": "Calculando..."
+  },
+  "bridgeConfirmTwoTransactions": {
+    "message": "Deberá confirmar 2 transacciones en su monedero físico:"
   },
   "bridgeEnterAmount": {
     "message": "Ingrese el monto"
   },
+  "bridgeExplorerLinkViewOn": {
+    "message": "Ver en $1"
+  },
+  "bridgeFetchNewQuotes": {
+    "message": "¿Obtener una nueva?"
+  },
   "bridgeFrom": {
     "message": "Puentear desde"
+  },
+  "bridgeFromTo": {
+    "message": "Puentear $1 $2 a $3",
+    "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
+  },
+  "bridgeGasFeesSplit": {
+    "message": "Cualquier tarifa de red indicada en la pantalla anterior incluye ambas transacciones y se dividirá."
+  },
+  "bridgeNetCost": {
+    "message": "Costo neto"
+  },
+  "bridgeQuoteExpired": {
+    "message": "Su cotización caducó."
   },
   "bridgeSelectNetwork": {
     "message": "Seleccionar red"
@@ -840,8 +899,81 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Seleccione token y monto"
   },
+  "bridgeStepActionBridgeComplete": {
+    "message": "$1 recibido en $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionBridgePending": {
+    "message": "Recibiendo $1 en $2",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "Se intercambió $1 por $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "Intercambiando $1 por $2",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeTerms": {
+    "message": "Términos"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1 min",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
   "bridgeTo": {
     "message": "Puentear hacia"
+  },
+  "bridgeToChain": {
+    "message": "Puentear hacia $1"
+  },
+  "bridgeTxDetailsBridging": {
+    "message": "Puentear"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "Comuníquese con"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "Soporte de MetaMask"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "¿Han pasado más de 3 horas?"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "Nonce"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "Estado"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "Marca de tiempo"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$1 a $2",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "$1 $2 en",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "Tarifa total de gas"
+  },
+  "bridgeTxDetailsYouReceived": {
+    "message": "Recibió"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "Envió"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "No dispone de suficiente $1 para pagar la tarifa de gas de este puente. Introduzca un monto menor o compre más $1."
+  },
+  "bridgeValidationInsufficientGasTitle": {
+    "message": "Se necesita más $1 para gas"
+  },
+  "bridging": {
+    "message": "Puentear"
   },
   "browserNotSupported": {
     "message": "Su explorador no es compatible..."
@@ -851,6 +983,9 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask está diseñado y construido en todo el mundo."
+  },
+  "bulletpoint": {
+    "message": "·"
   },
   "busy": {
     "message": "Ocupado"
@@ -1003,6 +1138,9 @@
   "confirmRecoveryPhrase": {
     "message": "Confirmar frase secreta de recuperación"
   },
+  "confirmTitleApproveTransactionNFT": {
+    "message": "Solicitud de retiro"
+  },
   "confirmTitleDeployContract": {
     "message": "Implementar un contrato"
   },
@@ -1041,6 +1179,9 @@
   },
   "confirmTitleTransaction": {
     "message": "Solicitud de transacción"
+  },
+  "confirmationAlertDetails": {
+    "message": "Para proteger sus activos, le sugerimos que rechace la solicitud."
   },
   "confirmationAlertModalTitle": {
     "message": "Esta solicitud es sospechosa"
@@ -1296,8 +1437,15 @@
   "creatorAddress": {
     "message": "Dirección del creador"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "Esto refleja el valor de todos los tokens que posee en todas las redes. Si prefiere ver este valor en ETH u otras monedas, vaya a $1.",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "Intercambie entre redes con MetaMask Portfolio"
+  },
+  "crossChainSwapsLinkNative": {
+    "message": "Intercambie entre redes con puente"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1326,6 +1474,10 @@
   },
   "currentLanguage": {
     "message": "Idioma actual"
+  },
+  "currentNetwork": {
+    "message": "Red actual",
+    "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
   },
   "currentRpcUrlDeprecated": {
     "message": "La URL de rpc actual para esta red ha quedado obsoleta."
@@ -1405,6 +1557,9 @@
   "customGasSettingToolTipMessage": {
     "message": "Use $1 para personalizar el precio de gas. Esto puede ser confuso si no está familiarizado. Interactúe bajo su propio riesgo.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
+  },
+  "customSlippage": {
+    "message": "Personalizado"
   },
   "customSpendLimit": {
     "message": "Límite de gastos personalizado"
@@ -1679,6 +1834,12 @@
   "dropped": {
     "message": "Abandonado"
   },
+  "duplicateContactTooltip": {
+    "message": "Este nombre de contacto coincide con una cuenta o contacto existente"
+  },
+  "duplicateContactWarning": {
+    "message": "Tiene contactos duplicados"
+  },
   "edit": {
     "message": "Editar"
   },
@@ -1764,6 +1925,9 @@
   },
   "editGasTooLow": {
     "message": "Se desconoce el tiempo de procesamiento"
+  },
+  "editInPortfolio": {
+    "message": "Editar en Portfolio"
   },
   "editNetworkLink": {
     "message": "editar la red original"
@@ -2202,8 +2366,11 @@
   "gotIt": {
     "message": "Entendido"
   },
+  "grantExactAccess": {
+    "message": "Otorgar acceso exacto"
+  },
   "grantedToWithColon": {
-    "message": "Concedido a:"
+    "message": "Otorgado a:"
   },
   "gwei": {
     "message": "GWEI"
@@ -2329,6 +2496,12 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "mantenga presionado para revelar el círculo desbloqueado"
+  },
+  "howQuotesWork": {
+    "message": "Cómo funcionan las cotizaciones"
+  },
+  "howQuotesWorkExplanation": {
+    "message": "Esta cotización tiene la mejor rentabilidad de las cotizaciones que buscamos. Se basa en la tarifa de intercambio, que incluye las tarifas de puente y una tarifa de MetaMask del $1 %, menos las tarifas de gas. Las tarifas de gas dependen de lo ocupada que esté la red y de lo compleja que sea la transacción."
   },
   "id": {
     "message": "ID"
@@ -2769,6 +2942,9 @@
   "loadingScreenSnapMessage": {
     "message": "Por favor, complete la transacción en el Snap."
   },
+  "loadingTokenList": {
+    "message": "Cargando lista de tokens"
+  },
   "localhost": {
     "message": "Host local 8545"
   },
@@ -2787,6 +2963,12 @@
   },
   "low": {
     "message": "Bajo"
+  },
+  "lowEstimatedReturnTooltipMessage": {
+    "message": "Pagará más del $1 % de su monto inicial en tarifas. Compruebe el monto que recibe y las tarifas de red."
+  },
+  "lowEstimatedReturnTooltipTitle": {
+    "message": "Costo elevado"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Utilice $1 para esperar un precio más bajo. Las estimaciones de tiempo son mucho menos precisas ya que los precios son algo imprevisibles.",
@@ -2941,6 +3123,9 @@
     "message": "Más de $1 redes adicionales",
     "description": "$1 is the number of networks"
   },
+  "moreQuotes": {
+    "message": "Más cotizaciones"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Está agregando esta red a MetaMask y otorgando permiso a este sitio para usarla."
   },
@@ -2957,6 +3142,9 @@
   "nameAddressLabel": {
     "message": "Dirección",
     "description": "Label above address field in name component modal."
+  },
+  "nameAlreadyInUse": {
+    "message": "El nombre ya está en uso"
   },
   "nameInstructionsNew": {
     "message": "Si conoce esta dirección, asígnele un apodo para reconocerla en el futuro.",
@@ -3061,6 +3249,9 @@
   "networkFee": {
     "message": "Tarifa de red"
   },
+  "networkFees": {
+    "message": "Tarifas de red"
+  },
   "networkIsBusy": {
     "message": "La red está ocupada. Los precios del gas son altos y las estimaciones son menos precisas."
   },
@@ -3105,6 +3296,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameSolana": {
+    "message": "Solana"
   },
   "networkNameTestnet": {
     "message": "Red de prueba"
@@ -3291,6 +3485,9 @@
   },
   "noNetworksFound": {
     "message": "No se encontraron redes para la consulta de búsqueda dada"
+  },
+  "noOptionsAvailableMessage": {
+    "message": "Esta ruta comercial no está disponible en este momento. Intente cambiar el monto, la red o el token y encontraremos la mejor opción."
   },
   "noSnaps": {
     "message": "No tiene ningún snap instalado."
@@ -3796,6 +3993,14 @@
   "pending": {
     "message": "Pendiente"
   },
+  "pendingTransactionAlertMessage": {
+    "message": "Esta transacción no se realizará hasta que haya finalizado una transacción anterior. $1",
+    "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
+  },
+  "pendingTransactionAlertMessageHyperlink": {
+    "message": "Aprenda a cancelar o acelerar una transacción.",
+    "description": "The text for the hyperlink in the pending transaction alert message"
+  },
   "pendingTransactionInfo": {
     "message": "Esta transacción no se procesará hasta que aquella haya finalizado."
   },
@@ -4053,6 +4258,27 @@
   "permissionsPageEmptySubContent": {
     "message": "Aquí es donde puedes ver los permisos que has otorgado a los Snaps instalados o a los sitios conectados."
   },
+  "permitSimulationChange_approve": {
+    "message": "Límite de gasto"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "Usted hace una oferta"
+  },
+  "permitSimulationChange_listing": {
+    "message": "Usted publica una oferta"
+  },
+  "permitSimulationChange_nft_listing": {
+    "message": "Precio de venta"
+  },
+  "permitSimulationChange_receive": {
+    "message": "Usted recibe"
+  },
+  "permitSimulationChange_revoke": {
+    "message": "Límite de gasto"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "Usted envía"
+  },
   "permitSimulationDetailInfo": {
     "message": "Le está dando permiso al gastador para gastar esta cantidad de tokens de su cuenta."
   },
@@ -4091,6 +4317,9 @@
   "popularNetworkAddToolTip": {
     "message": "Algunas de estas redes dependen de terceros. Las conexiones pueden ser menos confiables o permitir que terceros realicen un seguimiento de la actividad. $1",
     "description": "$1 is Learn more link"
+  },
+  "popularNetworks": {
+    "message": "Redes populares"
   },
   "portfolio": {
     "message": "Portafolio"
@@ -4256,8 +4485,17 @@
   "quoteRate": {
     "message": "Tarifa de cotización"
   },
+  "quotedReceiveAmount": {
+    "message": "Monto recibido de $1"
+  },
+  "quotedTotalCost": {
+    "message": "Costo total de $1"
+  },
   "rank": {
     "message": "Rango"
+  },
+  "rateIncludesMMFee": {
+    "message": "La tarifa incluye una cuota del $1 %"
   },
   "reAddAccounts": {
     "message": "volver a agregar cualquier otra cuenta"
@@ -4589,6 +4827,9 @@
   "searchTokens": {
     "message": "Buscar tokens"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "Buscar tokens por nombre o dirección"
+  },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
   },
@@ -4726,6 +4967,9 @@
   },
   "selectType": {
     "message": "Seleccionar tipo"
+  },
+  "selectedAccountMismatch": {
+    "message": "Se seleccionó una cuenta distinta"
   },
   "selectingAllWillAllow": {
     "message": "Seleccionar todo permitirá que este sitio vea todas las cuentas actuales. Asegúrese de que este sitio sea de confianza."
@@ -4878,6 +5122,12 @@
   "signatureRequestGuidance": {
     "message": "Solo firme este mensaje si comprende completamente el contenido y confía en el sitio solicitante."
   },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "Una vez aceptada la oferta, el NFT se reflejará en su monedero."
+  },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "Espere cambios solo si alguien compra sus NFT."
+  },
   "signed": {
     "message": "Firmado"
   },
@@ -4889,6 +5139,9 @@
   },
   "signingInWith": {
     "message": "Iniciar sesión con"
+  },
+  "signingWith": {
+    "message": "Firmando con"
   },
   "simulationApproveHeading": {
     "message": "Retirar"
@@ -4936,8 +5189,14 @@
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
+  "simulationsSettingDescription": {
+    "message": "Active esta opción para calcular los cambios de saldo de las transacciones y firmas antes de confirmarlas. Esto no garantiza su resultado final. $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "Estimar cambios de saldo"
+  },
+  "singleNetwork": {
+    "message": "1 red"
   },
   "siweIssued": {
     "message": "Emitido"
@@ -4962,6 +5221,30 @@
   },
   "skipAccountSecurityDetails": {
     "message": "Entiendo que hasta que no haga una copia de seguridad de mi frase secreta de recuperación, puedo perder mis cuentas y todos los activos asociados."
+  },
+  "slideBridgeDescription": {
+    "message": "Opere en 9 cadenas, todas dentro de su monedero"
+  },
+  "slideBridgeTitle": {
+    "message": "¿Listo para puentear?"
+  },
+  "slideCashOutDescription": {
+    "message": "Venda sus criptomonedas por efectivo"
+  },
+  "slideCashOutTitle": {
+    "message": "Retire su dinero con MetaMask"
+  },
+  "slideDebitCardDescription": {
+    "message": "Disponible en regiones seleccionadas"
+  },
+  "slideDebitCardTitle": {
+    "message": "Tarjeta de débito MetaMask"
+  },
+  "slideFundWalletDescription": {
+    "message": "Comience añadiendo fondos"
+  },
+  "slideFundWalletTitle": {
+    "message": "Añada fondos a su monedero"
   },
   "smartContracts": {
     "message": "Contratos inteligentes"
@@ -4992,6 +5275,15 @@
   },
   "smartTransactions": {
     "message": "Transacciones inteligentes"
+  },
+  "smartTransactionsEnabledDescription": {
+    "message": " y protección MEV. Ahora activadas por defecto."
+  },
+  "smartTransactionsEnabledLink": {
+    "message": "Mayores tasas de éxito"
+  },
+  "smartTransactionsEnabledTitle": {
+    "message": "Las transacciones ahora son más inteligentes"
   },
   "snapAccountCreated": {
     "message": "Cuenta creada"
@@ -5168,6 +5460,9 @@
   "solanaSupportToggleTitle": {
     "message": "Activar \"Añadir una nueva cuenta de Solana (Beta)\""
   },
+  "someNetworks": {
+    "message": "Redes de $1"
+  },
   "somethingDoesntLookRight": {
     "message": "Algo no se ve bien, ¿cierto? $1",
     "description": "A false positive message for users to contact support. $1 is a link to the support page."
@@ -5252,6 +5547,9 @@
   },
   "spendingCapTooltipDesc": {
     "message": "Esta es la cantidad de tokens a la que el gastador podrá acceder en su nombre."
+  },
+  "spendingCaps": {
+    "message": "Límites de gasto"
   },
   "srpInputNumberOfWords": {
     "message": "Tengo una frase de $1 palabras",
@@ -5888,6 +6186,10 @@
     "message": "$1 ahora está activo en $2",
     "description": "$1 represents the account name, $2 represents the network name"
   },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "Ahora está usando $1",
+    "description": "$1 represents the network name"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Cambiar de red cancelará todas las confirmaciones pendientes"
   },
@@ -5953,6 +6255,9 @@
   "toAddress": {
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleDecodeDescription": {
+    "message": "Utilizamos los servicios de 4byte.directory y Sourcify para decodificar y mostrar datos de transacciones de forma más legible. Esto le ayuda a comprender el resultado de las transacciones pendientes y pasadas, pero puede dar lugar a que se comparta su dirección IP."
   },
   "token": {
     "message": "Token"
@@ -6087,6 +6392,9 @@
   "transactionFailed": {
     "message": "Transacción fallida"
   },
+  "transactionFailedBannerMessage": {
+    "message": "Esta transacción le hubiera generado tarifas adicionales, así que la interrumpimos. Su dinero sigue en su monedero."
+  },
   "transactionFee": {
     "message": "Tarifa de transacción"
   },
@@ -6172,7 +6480,7 @@
     "message": "MetaMask tuvo problemas para iniciar. Este error podría ser intermitente, así que intente reiniciar la extensión."
   },
   "trustSiteApprovePermission": {
-    "message": "Al conceder el permiso, usted permite que los siguientes $1 tengan acceso a sus fondos"
+    "message": "Al otorgar el permiso, usted permite que los siguientes $1 tengan acceso a sus fondos"
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"
@@ -6492,6 +6800,12 @@
   "whatsThis": {
     "message": "¿Qué es esto?"
   },
+  "willApproveAmountForBridging": {
+    "message": "Esto aprobará $1 para puentear."
+  },
+  "willApproveAmountForBridgingHardware": {
+    "message": "Deberá confirmar dos transacciones en su monedero físico."
+  },
   "withdrawing": {
     "message": "Retirando"
   },
@@ -6503,6 +6817,9 @@
   },
   "you": {
     "message": "Usted"
+  },
+  "youDeclinedTheTransaction": {
+    "message": "Usted rechazó la transacción."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."
@@ -6524,6 +6841,9 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Sus NFT podrían estar en riesgo"
+  },
+  "yourNetworks": {
+    "message": "Sus redes"
   },
   "yourPrivateSeedPhrase": {
     "message": "Su frase secreta de recuperación"
