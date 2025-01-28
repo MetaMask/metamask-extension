@@ -10,17 +10,18 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:page-settings': 'endowment:page-settings',
   'endowment:signature-insight': 'endowment:signature-insight',
   'endowment:name-lookup': 'endowment:name-lookup',
+  'endowment:assets': 'endowment:assets',
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   'endowment:keyring': 'endowment:keyring',
   ///: END:ONLY_INCLUDE_IF
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
-export const ExcludedSnapPermissions = Object.freeze({
-  eth_accounts:
+export const ExcludedSnapPermissions = Object.freeze({});
+
+export const ExcludedSnapEndowments = Object.freeze({
+  'endowment:caip25':
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps/issues/990.',
 });
 
-export const ExcludedSnapEndowments = Object.freeze({});
-
-export const DynamicSnapPermissions = Object.freeze(['eth_accounts']);
+export const DynamicSnapPermissions = Object.freeze(['endowment:caip25']);

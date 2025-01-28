@@ -7,7 +7,8 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-const SOLANA_URL_REGEX = /.*/u;
+const SOLANA_URL_REGEX =
+  /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
 // const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';
 const SOLANA_PRICE_REGEX =
   /^https:\/\/price-api\.metamask-institutional\.io\/v2\/chains\/solana:/u;
@@ -62,6 +63,96 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getBalance',
     })
+    .thenCallback(() => {
+      return response;
+    });
+}
+export async function simulateSolanaTransaction(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        context: {
+          slot: 218,
+        },
+        value: {
+          // eslint-disable-next-line id-denylist
+          err: null,
+          accounts: null,
+          logs: [
+            'Program 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri invoke [1]',
+            'Program 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri consumed 2366 of 1400000 compute units',
+            'Program return: 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri KgAAAAAAAAA=',
+            'Program 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri success',
+          ],
+          returnData: {
+            data: ['Kg==', 'base64'],
+            programId: '83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri',
+          },
+          unitsConsumed: 2366,
+        },
+        id: 1337,
+      },
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'simulateTransaction',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetTransaction(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        slot: 98123569,
+        meta: {
+          err: null,
+          fee: 5000,
+          preBalances: [1000000, 5000],
+          postBalances: [995000, 0],
+          innerInstructions: [],
+          logMessages: [],
+          preTokenBalances: [],
+          postTokenBalances: [],
+          rewards: [],
+          loadedAddresses: {
+            writable: [],
+            readonly: [],
+          },
+        },
+        transaction: {
+          signatures: [
+            '5f84uRa5xsJv7iyzVfXTXQJ7ySskAqYYeXYaz5VUKxf2FLVzFfcs8QePFE3yQieYMDm4K8F1wfwStP6dTrY7gjvZ',
+          ],
+          message: {
+            accountKeys: [
+              {
+                pubkey: '9vNYXEehFV8V1jxzjH7Sv3BBtsYZ92HPKYP1stgNGHJE',
+                signer: true,
+                writable: true,
+              },
+              {
+                pubkey: 'HUNMbn6FnUDoFmrATKUkq3GjSRjWX4ytkX4nvP7XNYfH',
+                signer: false,
+                writable: true,
+              },
+            ],
+            instructions: [],
+            recentBlockhash: '8LiyWuxtdHEH7ik6u1E5yy8TP4Fm1ZJdN6K8zmrtyjsW',
+          },
+        },
+      },
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withQuery({ method: 'getTransaction' })
     .thenCallback(() => {
       return response;
     });
@@ -191,34 +282,100 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
 }
 
 export async function mockSolanaRatesCall(mockServer: Mockttp) {
+  return await mockServer.forGet(SOLANA_PRICE_REGEX).thenCallback(() => {
+    const priceResponse = {
+      id: 'wrapped-solana',
+      price: 210.57,
+      marketCap: 0,
+      allTimeHigh: 263.68,
+      allTimeLow: 8.11,
+      totalVolume: 3141761864,
+      high1d: 218.26,
+      low1d: 200.85,
+      circulatingSupply: 0,
+      dilutedMarketCap: 124394527657,
+      marketCapPercentChange1d: 0,
+      priceChange1d: -7.68288033909846,
+      pricePercentChange1h: 0.5794201955743261,
+      pricePercentChange1d: -3.520101943578202,
+      pricePercentChange7d: -8.192700158252544,
+      pricePercentChange14d: -12.477367449577399,
+      pricePercentChange30d: -14.588630064677465,
+      pricePercentChange200d: 28.111509321033513,
+      pricePercentChange1y: 181.48381055890258,
+    };
+    return {
+      statusCode: 200,
+      json: priceResponse,
+    };
+  });
+}
+
+export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
   return await mockServer
-    .forGet(SOLANA_PRICE_REGEX)
-    .withQuery({ vsCurrency: 'usd' })
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getTokenAccountsByOwner',
+    })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
-          id: 'wrapped-solana',
-          price: 210.57,
-          marketCap: 0,
-          allTimeHigh: 263.68,
-          allTimeLow: 8.11,
-          totalVolume: 3141761864,
-          high1d: 218.26,
-          low1d: 200.85,
-          circulatingSupply: 0,
-          dilutedMarketCap: 124394527657,
-          marketCapPercentChange1d: 0,
-          priceChange1d: -7.68288033909846,
-          pricePercentChange1h: 0.5794201955743261,
-          pricePercentChange1d: -3.520101943578202,
-          pricePercentChange7d: -8.192700158252544,
-          pricePercentChange14d: -12.477367449577399,
-          pricePercentChange30d: -14.588630064677465,
-          pricePercentChange200d: 28.111509321033513,
-          pricePercentChange1y: 181.48381055890258,
+          result: {
+            context: {
+              slot: 137568828,
+            },
+            value: [
+              {
+                account: {
+                  data: {
+                    parsed: {
+                      info: {
+                        isNative: false,
+                        mint: '2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk',
+                        owner: 'J27ma1MPBRvmPJxLqBqQGNECMXDm9L6abFa4duKiPosa',
+                        state: 'initialized',
+                        tokenAmount: {
+                          amount: '821',
+                          decimals: 6,
+                          uiAmount: 8.21e-4,
+                          uiAmountString: '0.000821',
+                        },
+                      },
+                      type: 'account',
+                    },
+                    program: 'spl-token',
+                    space: 165,
+                  },
+                  executable: false,
+                  lamports: 2039280,
+                  owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+                  rentEpoch: 318,
+                },
+                pubkey: 'Exo9AH6fNchE43GaJB85FT7ToYiuKnKzYDyW5mFeTXRR',
+              },
+            ],
+          },
         },
       };
+    });
+}
+
+export async function mockGetFeeForMessage(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: { context: { slot: 5068 }, value: 5000 },
+      id: 1337,
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getFeeForMessage',
+    })
+    .thenCallback(() => {
+      return response;
     });
 }
 
@@ -229,12 +386,14 @@ export async function withSolanaAccountSnap(
     showNativeTokenAsMainBalance,
     mockCalls,
     mockSendTransaction,
+    importAccount,
   }: {
     title?: string;
     solanaSupportEnabled?: boolean;
     showNativeTokenAsMainBalance?: boolean;
     mockCalls?: boolean;
     mockSendTransaction?: boolean;
+    importAccount?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -257,9 +416,13 @@ export async function withSolanaAccountSnap(
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
             await mockSolanaRatesCall(mockServer),
+            await mockGetTransaction(mockServer),
+            await simulateSolanaTransaction(mockServer),
+            await mockGetTokenAccountsByOwner(mockServer),
             await mockGetSignaturesForAddress(mockServer),
             await mockMultiCoinPrice(mockServer),
             await mockGetLatestBlockhash(mockServer),
+            await mockGetFeeForMessage(mockServer),
           ]);
         }
         if (mockSendTransaction) {
@@ -267,16 +430,22 @@ export async function withSolanaAccountSnap(
         }
         return mockList;
       },
+      ignoredConsoleErrors: [
+        'SES_UNHANDLED_REJECTION: 0, never, undefined, index, Array(1)',
+        'SES_UNHANDLED_REJECTION: 1, never, undefined, index, Array(1)',
+      ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithBalanceValidation(driver);
       const headerComponen = new HeaderNavbar(driver);
       await headerComponen.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.addAccount({
-        accountType: ACCOUNT_TYPE.Solana,
-        accountName: 'Solana 1',
-      });
+      if (!importAccount) {
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Solana,
+          accountName: 'Solana 1',
+        });
+      }
       await test(driver, mockServer);
     },
   );

@@ -677,13 +677,9 @@ function emitDappViewedMetricEvent(origin) {
     return;
   }
 
-  const permissions = controller.controllerMessenger.call(
-    'PermissionController:getPermissions',
-    origin,
-  );
   const numberOfConnectedAccounts =
-    permissions?.eth_accounts?.caveats[0]?.value.length;
-  if (!numberOfConnectedAccounts) {
+    controller.getPermittedAccounts(origin).length;
+  if (numberOfConnectedAccounts === 0) {
     return;
   }
 
@@ -1049,12 +1045,12 @@ export function setupController(
   //
   updateBadge();
 
-  controller.decryptMessageController.hub.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE,
     updateBadge,
   );
-  controller.encryptionPublicKeyController.hub.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.ENCRYPTION_PUBLIC_KEY_MANAGER_UPDATE_BADGE,
     updateBadge,
   );
   controller.signatureController.hub.on(

@@ -24,7 +24,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 
 describe('MultiRpc:', function (this: Suite) {
-  it('should migrate to multi rpc @no-mmi', async function () {
+  it('should migrate to multi rpc', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -292,7 +292,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-  it('should select rpc from settings @no-mmi', async function () {
+  it('should select rpc from settings', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
