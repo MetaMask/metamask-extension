@@ -3353,7 +3353,7 @@ export default class MetamaskController extends EventEmitter {
 
     return {
       chainId,
-      networkVersion,
+      networkVersion: networkVersion ?? 'loading',
       isConnected: metadata?.status === NetworkStatus.Available
     };
   }
