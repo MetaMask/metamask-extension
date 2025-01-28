@@ -35,7 +35,7 @@ const ApproveInfo = () => {
 
   const { spendingCap, pending } = useApproveTokenSimulation(
     transactionMeta,
-    decimals || '0',
+    decimals,
   );
 
   const showRevokeVariant =
@@ -46,7 +46,7 @@ const ApproveInfo = () => {
     return null;
   }
 
-  if (pending) {
+  if (pending || (!isNFT && !decimals)) {
     return <ConfirmLoader />;
   }
 

@@ -212,7 +212,7 @@ const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('use4ByteResolution'),
-    descriptionMessage: (t) => t('use4ByteResolutionDescription'),
+    descriptionMessage: (t) => t('toggleDecodeDescription'),
     route: `${SECURITY_ROUTE}#decode-smart-contracts`,
     icon: 'fa fa-lock',
   },
@@ -475,22 +475,6 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('notificationsFeatureToggle'),
     descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
     route: `${EXPERIMENTAL_ROUTE}#notifications`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[2]
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('redesignedConfirmationsEnabledToggle'),
-    descriptionMessage: (t) => t('redesignedConfirmationsToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[3]
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('redesignedTransactionsEnabledToggle'),
-    descriptionMessage: (t) => t('redesignedTransactionsToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#redesigned-transactions`,
     icon: 'fas fa-flask',
   },
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

@@ -369,9 +369,6 @@
   "loading": {
     "message": "በመጫን ላይ…"
   },
-  "loadingTokens": {
-    "message": "ተለዋጭ ስሞችን በመጫን ላይ..."
-  },
   "lock": {
     "message": "ዘግተህ ውጣ"
   },
@@ -430,9 +427,6 @@
   },
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
-  },
-  "noTransactions": {
-    "message": "ግብይቶች የሉዎትም"
   },
   "noWebcamFound": {
     "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"

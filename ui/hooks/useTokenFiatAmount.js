@@ -2,12 +2,17 @@ import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
   getTokenExchangeRates,
-  getCurrentCurrency,
   getShouldShowFiat,
   getConfirmationExchangeRates,
+  getMarketData,
+  getCurrencyRates,
 } from '../selectors';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getConversionRate } from '../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 /**
@@ -22,6 +27,7 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
  * @param {boolean} [overrides.showFiat] - If truthy, ensures the fiat value is shown even if the showFiat value from state is falsey
  * @param {boolean} hideCurrencySymbol - Indicates whether the returned formatted amount should include the trailing currency symbol
  * @returns {string} The formatted token amount in the user's chosen fiat currency
+ * @param {string} [chainId] - The chain id
  */
 export function useTokenFiatAmount(
   tokenAddress,
@@ -29,17 +35,45 @@ export function useTokenFiatAmount(
   tokenSymbol,
   overrides = {},
   hideCurrencySymbol,
+  chainId = null,
 ) {
+  const allMarketData = useSelector(getMarketData);
+
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
     shallowEqual,
   );
+
+  const contractMarketData =
+    chainId && allMarketData[chainId]
+      ? Object.entries(allMarketData[chainId]).reduce(
+          (acc, [address, marketData]) => {
+            acc[address] = marketData?.price ?? null;
+            return acc;
+          },
+          {},
+        )
+      : null;
+
+  const tokenMarketData = chainId ? contractMarketData : contractExchangeRates;
+
   const confirmationExchangeRates = useSelector(getConfirmationExchangeRates);
   const mergedRates = {
-    ...contractExchangeRates,
+    ...tokenMarketData,
     ...confirmationExchangeRates,
   };
+
+  const currencyRates = useSelector(getCurrencyRates);
   const conversionRate = useSelector(getConversionRate);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+
+  const tokenConversionRate = chainId
+    ? currencyRates?.[networkConfigurationsByChainId[chainId]?.nativeCurrency]
+        ?.conversionRate
+    : conversionRate;
+
   const currentCurrency = useSelector(getCurrentCurrency);
   const userPrefersShownFiat = useSelector(getShouldShowFiat);
   const showFiat = overrides.showFiat ?? userPrefersShownFiat;
@@ -53,7 +87,7 @@ export function useTokenFiatAmount(
     () =>
       getTokenFiatAmount(
         tokenExchangeRate,
-        conversionRate,
+        tokenConversionRate,
         currentCurrency,
         tokenAmount,
         tokenSymbol,
@@ -61,8 +95,8 @@ export function useTokenFiatAmount(
         hideCurrencySymbol,
       ),
     [
+      tokenConversionRate,
       tokenExchangeRate,
-      conversionRate,
       currentCurrency,
       tokenAmount,
       tokenSymbol,

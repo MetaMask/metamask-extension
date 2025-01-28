@@ -2,10 +2,18 @@
   position: relative;
   cursor: pointer;
 
-  &:not(.multichain-network-list-item--selected) {
+  &:not(.multichain-network-list-item--selected, .multichain-network-list-item--disabled) {
     &:hover,
     &:focus-within {
       background: var(--color-background-default-hover);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.4;
+
+    .mm-avatar-network {
+      filter: grayscale(1);
     }
   }
 

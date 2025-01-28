@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
 import Box from '../box';
 import {
   BackgroundColor,
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { detectNfts } from '../../../store/actions';
 
 const Tabs = ({
   defaultActiveTabKey,
@@ -22,7 +20,6 @@ const Tabs = ({
   const _getValidChildren = () => {
     return React.Children.toArray(children).filter(Boolean);
   };
-  const dispatch = useDispatch();
 
   /**
    * Returns the index of the child with the given key
@@ -43,10 +40,6 @@ const Tabs = ({
     if (tabIndex !== activeTabIndex) {
       setActiveTabIndex(tabIndex);
       onTabClick?.(tabKey);
-    }
-
-    if (tabKey === 'nfts') {
-      dispatch(detectNfts());
     }
   };
 

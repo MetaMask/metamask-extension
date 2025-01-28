@@ -27,7 +27,7 @@ import {
 } from '../../../ui/helpers/utils/metrics';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
+import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -195,7 +195,6 @@ function finalizeSignatureFragment(
  *  that should be tracked for methods rate limited by random sample.
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
- * @param {Function} opts.isConfirmationRedesignEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
@@ -213,7 +212,6 @@ export default function createRPCMethodTrackingMiddleware({
   globalRateLimitMaxAmount = 10, // max of events in the globalRateLimitTimeout window. pass 0 for no global rate limit
   getAccountType,
   getDeviceModel,
-  isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
@@ -315,13 +313,11 @@ export default function createRPCMethodTrackingMiddleware({
             req.securityAlertResponse.description;
         }
 
-        const isConfirmationRedesign =
-          isConfirmationRedesignEnabled() &&
-          REDESIGN_APPROVAL_TYPES.find(
-            (type) => type === MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
-          );
-
-        if (isConfirmationRedesign) {
+        if (
+          shouldUseRedesignForSignatures({
+            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
+          })
+        ) {
           eventProperties.ui_customizations = [
             ...(eventProperties.ui_customizations || []),
             MetaMetricsEventUiCustomization.RedesignedConfirmation,

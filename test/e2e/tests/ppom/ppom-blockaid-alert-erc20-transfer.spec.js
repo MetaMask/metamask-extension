@@ -59,7 +59,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
   await mockRequest(mockServer, maliciousTransferAlert);
 }
 
-describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
+describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function () {
   it('should show banner alert', async function () {
     // we need to use localhost instead of the ip
     // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560

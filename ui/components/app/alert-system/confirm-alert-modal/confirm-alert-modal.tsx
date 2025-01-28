@@ -87,7 +87,7 @@ function ConfirmDetails({
     <>
       <Box alignItems={AlignItems.center} textAlign={TextAlign.Center}>
         <Text variant={TextVariant.bodyMd}>
-          {t('confirmationAlertModalDetails')}
+          {t('confirmationAlertDetails')}
         </Text>
         <ButtonLink
           marginTop={4}

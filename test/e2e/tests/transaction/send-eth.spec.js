@@ -126,11 +126,12 @@ describe('Send ETH', function () {
           await driver.clickElement({ text: 'Continue', tag: 'button' });
 
           await driver.delay(1000);
-          const transactionAmounts = await driver.findElements(
-            '.currency-display-component__text',
-          );
-          const transactionAmount = transactionAmounts[0];
-          assert.equal(await transactionAmount.getText(), '1');
+
+          // Transaction Amount
+          await driver.findElement({
+            css: 'h2',
+            text: '1 ETH',
+          });
 
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -161,25 +162,19 @@ describe('Send ETH', function () {
           smartContract,
           title: this.test.fullTitle(),
         },
-        async ({ driver, contractRegistry, ganacheServer }) => {
-          const contractAddress = await contractRegistry.getContractAddress(
-            smartContract,
-          );
+        async ({ driver, ganacheServer }) => {
           await logInWithBalanceValidation(driver, ganacheServer);
 
           // Wait for balance to load
           await driver.delay(500);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
-          await driver.fill(
-            'input[placeholder="Enter public address (0x) or domain name"]',
-            contractAddress,
-          );
+          await driver.clickElement({ text: 'Account 1', tag: 'button' });
 
           const inputAmount = await driver.findElement(
             'input[placeholder="0"]',
           );
-          await inputAmount.press('1');
+          await inputAmount.sendKeys('1');
 
           // Continue to next screen
           await driver.clickElement({ text: 'Continue', tag: 'button' });
@@ -266,12 +261,7 @@ describe('Send ETH', function () {
               windowHandles,
             );
 
-            await driver.assertElementNotPresent(
-              { text: 'Data', tag: 'li' },
-              { findElementGuard: { text: 'Estimated gas fee', tag: 'h6' } }, // make sure the Dialog has loaded
-            );
-
-            await driver.clickElement({ text: 'Edit', tag: 'button' });
+            await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
             await driver.waitForSelector({
               text: '0.00021 ETH',
             });
@@ -284,10 +274,16 @@ describe('Send ETH', function () {
               tag: 'header',
             });
             await editGasFeeForm(driver, '21000', '100');
-            await driver.waitForSelector({
-              css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+            await driver.findElement({
+              css: '[data-testid="first-gas-field"]',
               text: '0.0021 ETH',
             });
+
+            await driver.findElement({
+              css: '[data-testid="native-currency"]',
+              text: '$3.57',
+            });
+
             await driver.clickElement({ text: 'Confirm', tag: 'button' });
             await driver.waitUntilXWindowHandles(2);
             await driver.switchToWindow(extension);
@@ -334,18 +330,16 @@ describe('Send ETH', function () {
 
             // initiates a transaction from the dapp
             await openDapp(driver);
-            await driver.clickElement({ text: 'Create Token', tag: 'button' });
+            await driver.clickElement({
+              text: 'Create Token',
+              tag: 'button',
+            });
             const windowHandles = await driver.waitUntilXWindowHandles(3);
 
             const extension = windowHandles[0];
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.Dialog,
               windowHandles,
-            );
-
-            await driver.assertElementNotPresent(
-              { text: 'Data', tag: 'li' },
-              { findElementGuard: { text: 'Estimated fee' } }, // make sure the Dialog has loaded
             );
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
@@ -364,9 +358,14 @@ describe('Send ETH', function () {
 
             await driver.clickElement({ text: 'Save', tag: 'button' });
 
-            await driver.waitForSelector({
-              css: '.currency-display-component__text',
-              text: '0.0550741',
+            await driver.findElement({
+              css: '[data-testid="first-gas-field"]',
+              text: '0.045 ETH',
+            });
+
+            await driver.findElement({
+              css: '[data-testid="native-currency"]',
+              text: '$76.57',
             });
 
             await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -459,12 +458,7 @@ describe('Send ETH', function () {
             });
             await driver.clickElement({ text: 'Continue', tag: 'button' });
 
-            await driver.findClickableElement(
-              '[data-testid="sender-to-recipient__name"]',
-            );
-            await driver.clickElement(
-              '[data-testid="sender-to-recipient__name"]',
-            );
+            await driver.clickElement('[data-testid="recipient-address"]');
 
             const recipientAddress = await driver.findElements({
               text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',

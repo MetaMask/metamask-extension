@@ -1,5 +1,22 @@
-import EventEmitter from 'events';
-import { ObservableStore } from '@metamask/obs-store';
+import {
+  BaseController,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
+
+// Unique name for the controller
+const controllerName = 'AppMetadataController';
+
+/**
+ * The options that AppMetadataController takes.
+ */
+export type AppMetadataControllerOptions = {
+  state?: Partial<AppMetadataControllerState>;
+  messenger: AppMetadataControllerMessenger;
+  currentMigrationVersion?: number;
+  currentAppVersion?: string;
+};
 
 /**
  * The state of the AppMetadataController
@@ -12,19 +29,84 @@ export type AppMetadataControllerState = {
 };
 
 /**
- * The options that NetworkController takes.
+ * Function to get default state of the {@link AppMetadataController}.
  */
-export type AppMetadataControllerOptions = {
-  currentMigrationVersion?: number;
-  currentAppVersion?: string;
-  state?: Partial<AppMetadataControllerState>;
-};
+export const getDefaultAppMetadataControllerState =
+  (): AppMetadataControllerState => ({
+    currentAppVersion: '',
+    previousAppVersion: '',
+    previousMigrationVersion: 0,
+    currentMigrationVersion: 0,
+  });
 
-const defaultState: AppMetadataControllerState = {
-  currentAppVersion: '',
-  previousAppVersion: '',
-  previousMigrationVersion: 0,
-  currentMigrationVersion: 0,
+/**
+ * Returns the state of the {@link AppMetadataController}.
+ */
+export type AppMetadataControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  AppMetadataControllerState
+>;
+
+/**
+ * Actions exposed by the {@link AppMetadataController}.
+ */
+export type AppMetadataControllerActions = AppMetadataControllerGetStateAction;
+
+/**
+ * Event emitted when the state of the {@link AppMetadataController} changes.
+ */
+export type AppMetadataControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  AppMetadataControllerState
+>;
+
+export type AppMetadataControllerEvents = AppMetadataControllerStateChangeEvent;
+
+/**
+ * Actions that this controller is allowed to call.
+ */
+type AllowedActions = never;
+
+/**
+ * Events that this controller is allowed to subscribe.
+ */
+type AllowedEvents = never;
+
+/**
+ * Messenger type for the {@link AppMetadataController}.
+ */
+type AppMetadataControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  AppMetadataControllerActions | AllowedActions,
+  AppMetadataControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
+
+/**
+ * {@link AppMetadataController}'s metadata.
+ *
+ * This allows us to choose if fields of the state should be persisted or not
+ * using the `persist` flag; and if they can be sent to Sentry or not, using
+ * the `anonymous` flag.
+ */
+const controllerMetadata = {
+  currentAppVersion: {
+    persist: true,
+    anonymous: true,
+  },
+  previousAppVersion: {
+    persist: true,
+    anonymous: true,
+  },
+  previousMigrationVersion: {
+    persist: true,
+    anonymous: true,
+  },
+  currentMigrationVersion: {
+    persist: true,
+    anonymous: true,
+  },
 };
 
 /**
@@ -33,30 +115,34 @@ const defaultState: AppMetadataControllerState = {
  * run migration.
  *
  */
-export default class AppMetadataController extends EventEmitter {
-  /**
-   * Observable store containing controller data.
-   */
-  store: ObservableStore<AppMetadataControllerState>;
-
+export default class AppMetadataController extends BaseController<
+  typeof controllerName,
+  AppMetadataControllerState,
+  AppMetadataControllerMessenger
+> {
   /**
    * Constructs a AppMetadata controller.
    *
    * @param options - the controller options
    * @param options.state - Initial controller state.
+   * @param options.messenger - Messenger used to communicate with BaseV2 controller.
    * @param options.currentMigrationVersion
    * @param options.currentAppVersion
    */
   constructor({
+    state = {},
+    messenger,
     currentAppVersion = '',
     currentMigrationVersion = 0,
-    state = {},
   }: AppMetadataControllerOptions) {
-    super();
-
-    this.store = new ObservableStore({
-      ...defaultState,
-      ...state,
+    super({
+      name: controllerName,
+      metadata: controllerMetadata,
+      state: {
+        ...getDefaultAppMetadataControllerState(),
+        ...state,
+      },
+      messenger,
     });
 
     this.#maybeUpdateAppVersion(currentAppVersion);
@@ -70,12 +156,12 @@ export default class AppMetadataController extends EventEmitter {
    * @param maybeNewAppVersion
    */
   #maybeUpdateAppVersion(maybeNewAppVersion: string): void {
-    const oldCurrentAppVersion = this.store.getState().currentAppVersion;
+    const oldCurrentAppVersion = this.state.currentAppVersion;
 
     if (maybeNewAppVersion !== oldCurrentAppVersion) {
-      this.store.updateState({
-        currentAppVersion: maybeNewAppVersion,
-        previousAppVersion: oldCurrentAppVersion,
+      this.update((state) => {
+        state.currentAppVersion = maybeNewAppVersion;
+        state.previousAppVersion = oldCurrentAppVersion;
       });
     }
   }
@@ -86,13 +172,12 @@ export default class AppMetadataController extends EventEmitter {
    * @param maybeNewMigrationVersion
    */
   #maybeUpdateMigrationVersion(maybeNewMigrationVersion: number): void {
-    const oldCurrentMigrationVersion =
-      this.store.getState().currentMigrationVersion;
+    const oldCurrentMigrationVersion = this.state.currentMigrationVersion;
 
     if (maybeNewMigrationVersion !== oldCurrentMigrationVersion) {
-      this.store.updateState({
-        previousMigrationVersion: oldCurrentMigrationVersion,
-        currentMigrationVersion: maybeNewMigrationVersion,
+      this.update((state) => {
+        state.previousMigrationVersion = oldCurrentMigrationVersion;
+        state.currentMigrationVersion = maybeNewMigrationVersion;
       });
     }
   }

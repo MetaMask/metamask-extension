@@ -19,6 +19,7 @@ import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
+import { getCurrentChainId } from '../shared/modules/selectors/networks';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -28,8 +29,6 @@ import {
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
-  getUseRequestQueue,
-  getCurrentChainId,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -243,10 +242,7 @@ async function runInitialActions(store) {
 
   // Register this window as the current popup
   // and set in background state
-  if (
-    getUseRequestQueue(state) &&
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-  ) {
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const thisPopupId = Date.now();
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));

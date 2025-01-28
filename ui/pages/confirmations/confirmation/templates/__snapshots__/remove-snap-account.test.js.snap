@@ -7,7 +7,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
   >
     <div
       class="mm-box confirmation-page__content mm-box--padding-4"
-      style="margin-top: 0px; overflow-y: auto;"
+      style="overflow-y: auto;"
     >
       <div
         class="mm-box remove-snap-account-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
@@ -208,7 +208,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                               style="bottom: -1px; right: 2px;"
                             >
                               <div
-                                class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                                class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                               />
                             </div>
                           </div>

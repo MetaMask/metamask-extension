@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BlockTracker, Provider } from '@metamask/network-controller';
 
 import { flushPromises } from '../../../test/lib/timer-helpers';
@@ -368,6 +368,23 @@ describe('AccountTrackerController', () => {
       });
     });
 
+    it('should gracefully handle unknown polling tokens', async () => {
+      await withController(({ controller, blockTrackerFromHookStub }) => {
+        jest.spyOn(controller, 'updateAccounts').mockResolvedValue();
+
+        const pollingToken =
+          controller.startPollingByNetworkClientId('mainnet');
+
+        controller.stopPollingByPollingToken('unknown-token');
+        controller.stopPollingByPollingToken(pollingToken);
+
+        expect(blockTrackerFromHookStub.removeListener).toHaveBeenCalledWith(
+          'latest',
+          expect.any(Function),
+        );
+      });
+    });
+
     it('should not unsubscribe from the block tracker if called with one of multiple active polling tokens for a given networkClient', async () => {
       await withController(({ controller, blockTrackerFromHookStub }) => {
         jest.spyOn(controller, 'updateAccounts').mockResolvedValue();
@@ -389,14 +406,6 @@ describe('AccountTrackerController', () => {
         expect(() => {
           controller.stopPollingByPollingToken(undefined);
         }).toThrow('pollingToken required');
-      });
-    });
-
-    it('should error if no matching pollingToken is found', async () => {
-      await withController(({ controller }) => {
-        expect(() => {
-          controller.stopPollingByPollingToken('potato');
-        }).toThrow('pollingToken not found');
       });
     });
   });

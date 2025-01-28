@@ -9,6 +9,7 @@ import SmartTransactionsController, {
 } from '@metamask/smart-transactions-controller';
 import { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { submitSmartTransactionHook } from './smart-transactions';
 import type {
@@ -107,13 +108,15 @@ function withRequest<ReturnValue>(
   });
 
   const smartTransactionsController = new SmartTransactionsController({
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger,
     getNonceLock: jest.fn(),
     confirmExternalTransaction: jest.fn(),
     trackMetaMetricsEvent: jest.fn(),
     getTransactions: jest.fn(),
     getMetaMetricsProps: jest.fn(),
+    clientId: ClientId.Extension,
+    getFeatureFlags: jest.fn(),
+    updateTransaction: jest.fn(),
   });
 
   jest.spyOn(smartTransactionsController, 'getFees').mockResolvedValue({
@@ -147,6 +150,7 @@ function withRequest<ReturnValue>(
       },
       type: TransactionType.simpleSend,
       chainId: CHAIN_IDS.MAINNET,
+      networkClientId: 'testNetworkClientId',
       time: 1624408066355,
       defaultGasEstimates: {
         gas: '0x7b0d',
@@ -169,7 +173,7 @@ function withRequest<ReturnValue>(
       smartTransactions: {
         expectedDeadline: 45,
         maxDeadline: 150,
-        returnTxHashAsap: false,
+        extensionReturnTxHashAsap: false,
       },
     },
     ...options,
@@ -177,7 +181,6 @@ function withRequest<ReturnValue>(
 
   return fn({
     request,
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger,
     startFlowSpy,
     addRequestSpy,
@@ -238,7 +241,7 @@ describe('submitSmartTransactionHook', () => {
 
   it('returns a txHash asap if the feature flag requires it', async () => {
     withRequest(async ({ request }) => {
-      request.featureFlags.smartTransactions.returnTxHashAsap = true;
+      request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
       const result = await submitSmartTransactionHook(request);
       expect(result).toEqual({ transactionHash: txHash });
     });

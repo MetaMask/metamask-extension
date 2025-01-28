@@ -164,4 +164,16 @@ describe('useMaxPriorityFeePerGasInput', () => {
       userFeeLevel: 'dappSuggested',
     });
   });
+
+  it('returns early when gasFeeEstimates is undefined', () => {
+    const mockUpdateTransaction = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      gasFeeEstimates: undefined,
+    });
+    result.current.updateTransactionUsingEstimate(GasRecommendations.low);
+    expect(mockUpdateTransaction).not.toHaveBeenCalled();
+  });
 });

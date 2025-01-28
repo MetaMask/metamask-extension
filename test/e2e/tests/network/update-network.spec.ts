@@ -23,7 +23,7 @@ const selectors = {
   deleteButton: { text: 'Delete', tag: 'button' },
   cancelButton: { text: 'Cancel', tag: 'button' },
   saveButton: { text: 'Save', tag: 'button' },
-  updatedNetworkDropDown: { tag: 'span', text: 'Update Network' },
+  updatedNetworkDropDown: { tag: 'p', text: 'Update Network' },
   errorMessageInvalidUrl: {
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },

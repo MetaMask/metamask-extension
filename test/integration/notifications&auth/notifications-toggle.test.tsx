@@ -48,14 +48,12 @@ describe('Notifications Toggle', () => {
 
   const clickElement = async (testId: string) => {
     await act(async () => {
-      fireEvent.click(screen.getByTestId(testId));
+      fireEvent.click(await screen.findByTestId(testId));
     });
   };
 
   const waitForElement = async (testId: string) => {
-    await waitFor(() => {
-      expect(screen.getByTestId(testId)).toBeInTheDocument();
-    });
+    expect(await screen.findByTestId(testId)).toBeInTheDocument();
   };
 
   it('disabling notifications from settings', async () => {
@@ -73,12 +71,12 @@ describe('Notifications Toggle', () => {
       await clickElement('notifications-settings-button');
       await waitForElement('notifications-settings-allow-notifications');
 
-      const toggleSection = screen.getByTestId(
+      const toggleSection = await screen.findByTestId(
         'notifications-settings-allow-notifications',
       );
 
       await act(async () => {
-        fireEvent.click(within(toggleSection).getByRole('checkbox'));
+        fireEvent.click(await within(toggleSection).findByRole('checkbox'));
       });
 
       await waitFor(() => {
@@ -159,7 +157,7 @@ describe('Notifications Toggle', () => {
       await clickElement('notifications-settings-button');
       await waitForElement('notifications-settings-allow-notifications');
 
-      const allToggles = screen.getAllByTestId('test-toggle');
+      const allToggles = await screen.findAllByTestId('test-toggle');
 
       await act(async () => {
         fireEvent.click(allToggles[1]);

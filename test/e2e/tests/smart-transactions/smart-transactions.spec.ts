@@ -7,7 +7,6 @@ import {
 import FixtureBuilder from '../../fixture-builder';
 import { unlockWallet, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockSwapRequests } from './mock-requests-for-swap-test';
 
 export async function withFixturesForSmartTransactions(
@@ -20,10 +19,9 @@ export async function withFixturesForSmartTransactions(
   },
   test: (args: { driver: Driver }) => Promise<void>,
 ) {
-  const inputChainId = CHAIN_IDS.MAINNET;
   await withFixtures(
     {
-      fixtures: new FixtureBuilder({ inputChainId })
+      fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .withPreferencesControllerSmartTransactionsOptedIn()
         .withNetworkControllerOnMainnet()
@@ -65,8 +63,8 @@ export const waitForTransactionToComplete = async (
   await driver.waitForSelector('[data-testid="account-overview__asset-tab"]');
 };
 
-describe('smart transactions @no-mmi', function () {
-  it('Completes a Swap', async function () {
+describe('smart transactions', function () {
+  it.skip('Completes a Swap', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),

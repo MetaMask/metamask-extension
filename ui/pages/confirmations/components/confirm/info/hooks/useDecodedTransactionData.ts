@@ -1,6 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
+import { useSelector } from 'react-redux';
 import {
   AsyncResult,
   useAsyncResult,
@@ -9,11 +10,13 @@ import { decodeTransactionData } from '../../../../../../store/actions';
 import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 import { useConfirmContext } from '../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
+import { use4ByteResolutionSelector } from '../../../../../../selectors';
 
 export function useDecodedTransactionData(
   transactionTypeFilter?: string,
 ): AsyncResult<DecodedTransactionDataResponse | undefined> {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isDecodeEnabled = useSelector(use4ByteResolutionSelector);
 
   const currentTransactionType = currentConfirmation?.type;
   const chainId = currentConfirmation?.chainId as Hex;
@@ -23,6 +26,7 @@ export function useDecodedTransactionData(
 
   return useAsyncResult(async () => {
     if (
+      !isDecodeEnabled ||
       !hasTransactionData(transactionData) ||
       !transactionTo ||
       (transactionTypeFilter &&
@@ -36,5 +40,11 @@ export function useDecodedTransactionData(
       chainId,
       contractAddress,
     });
-  }, [transactionData, transactionTo, chainId, contractAddress]);
+  }, [
+    isDecodeEnabled,
+    transactionData,
+    transactionTo,
+    chainId,
+    contractAddress,
+  ]);
 }

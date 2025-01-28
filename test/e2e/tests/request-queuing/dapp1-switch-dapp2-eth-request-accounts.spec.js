@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -21,7 +20,6 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         dappOptions: { numberOfDapps: 2 },
@@ -49,7 +47,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector({
-          text: 'Reject',
+          text: 'Cancel',
           tag: 'button',
         });
 
@@ -79,8 +77,9 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
 
         // Reject the pending confirmation from the first dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Reject',
+
+        await driver.clickElement({
+          text: 'Cancel',
           tag: 'button',
         });
 
@@ -111,7 +110,6 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .withPermissionControllerConnectedToTwoTestDapps()
           .build(),
         dappOptions: { numberOfDapps: 2 },
