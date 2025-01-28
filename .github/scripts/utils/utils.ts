@@ -75,9 +75,19 @@ export async function downloadCircleCiArtifact(branch: string, headCommitHash: s
     }
 
     const artifactUrl = artifact.url;
+    console.log('Artifact URL:', artifactUrl);
+
+    // Ensure the directory exists
+    const dir = require('path').dirname(outputFilePath);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
 
     // Download the artifact
     const artifactDownloadResponse = await fetch(artifactUrl);
+    if (!artifactDownloadResponse.ok) {
+        throw new Error(`Failed to download artifact: ${artifactDownloadResponse.statusText}`);
+    }
     const artifactArrayBuffer = await artifactDownloadResponse.arrayBuffer();
     const artifactBuffer = Buffer.from(artifactArrayBuffer);
     fs.writeFileSync(outputFilePath, artifactBuffer);
