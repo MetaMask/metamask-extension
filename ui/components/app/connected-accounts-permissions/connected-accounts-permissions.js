@@ -61,11 +61,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
         padding={0}
         backgroundColor={BackgroundColor.backgroundDefault}
       >
-        <Text
-          onClick={toggleExpanded}
-          as="h6"
-          variant={TextVariant.bodyMdMedium}
-        >
+        <Text onClick={toggleExpanded} variant={TextVariant.bodyMdMedium}>
           {t('permissions')}
         </Text>
 

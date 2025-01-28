@@ -28,11 +28,11 @@ exports[`Bridge renders the component with initial props 1`] = `
         <div
           class="mm-box"
         >
-          <h4
+          <h2
             class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
             Bridge
-          </h4>
+          </h2>
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"

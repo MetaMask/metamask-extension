@@ -235,7 +235,7 @@ export const Connections = () => {
           )}
           <Text
             as="span"
-            variant={TextVariant.headingMd}
+            variant={TextVariant.headingSm}
             textAlign={TextAlign.Center}
             ellipsis
           >

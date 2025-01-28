@@ -15,8 +15,8 @@ exports[`ConnectPage should render correctly 1`] = `
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <h2
+            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
             <h2
               class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
@@ -29,7 +29,7 @@ exports[`ConnectPage should render correctly 1`] = `
               This site wants to
               : 
             </p>
-          </p>
+          </h2>
         </div>
       </div>
       <div
@@ -265,8 +265,8 @@ exports[`ConnectPage should render with defaults from the requested permissions 
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <h2
+            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
             <h2
               class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
@@ -279,7 +279,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
               This site wants to
               : 
             </p>
-          </p>
+          </h2>
         </div>
       </div>
       <div
