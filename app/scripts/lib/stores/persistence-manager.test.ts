@@ -120,7 +120,10 @@ describe('PersistanceManager', () => {
     it('updates mostRecentRetrievedState if extension has not been initialized', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: { config: { foo: 'bar' } } });
 
-      await manager.get();
+      const result = await manager.get();
+      expect(result).toStrictEqual({
+        data: { config: { foo: 'bar' } },
+      });
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: { config: { foo: 'bar' } },
       });
