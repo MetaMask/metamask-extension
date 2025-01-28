@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 
-const owner = process.env.BRANCH;
+const owner = process.env.OWNER;
 const repository = process.env.REPOSITORY;
 
 /**
@@ -15,6 +15,9 @@ const repository = process.env.REPOSITORY;
 export async function downloadCircleCiArtifact(branch: string, headCommitHash: string, artifactName: string, outputFilePath: string, jobName: string): Promise<void> {
     console.log('Branch', branch);
     console.log('Commit', headCommitHash);
+    console.log('Owner', owner);
+    console.log('Repository', repository);
+    console.log('url', `https://circleci.com/api/v2/project/gh/${owner}/${repository}/pipeline?branch=${branch}`);
 
     // Get the pipeline ID for the current branch
     const pipelineResponse = await fetch(
