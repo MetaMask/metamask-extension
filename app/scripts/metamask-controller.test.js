@@ -2450,7 +2450,9 @@ describe('MetaMaskController', () => {
 
       it('#addNewAccount', async () => {
         await metamaskController.createNewVaultAndKeychain('password');
+        console.log(111);
         await metamaskController.addNewAccount(1);
+        console.log(222);
         const getAccounts =
           await metamaskController.keyringController.getAccounts();
         expect(getAccounts).toHaveLength(2);
