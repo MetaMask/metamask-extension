@@ -12,11 +12,12 @@ exports[`Unlock Page should match snapshot 1`] = `
       <div
         class="unlock-page__mascot-container"
       >
-        <div
-          style="z-index: 0;"
-        >
-          <svg />
-        </div>
+        <img
+          height="120px"
+          src="images/logo/metamask-fox.svg"
+          style="margin-bottom: 16px;"
+          width="120px"
+        />
       </div>
       <h1
         class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-1 mm-box--color-text-alternative"
