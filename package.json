@@ -320,7 +320,7 @@
     "@metamask/message-manager": "^12.0.0",
     "@metamask/message-signing-snap": "^0.6.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain": "^2.1.0",
+    "@metamask/multichain": "npm:@metamask-previews/multichain@2.1.0-preview-4c0b55a",
     "@metamask/multichain-transactions-controller": "^0.0.1",
     "@metamask/name-controller": "^8.0.0",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A22.1.1#~/.yarn/patches/@metamask-network-controller-npm-22.1.1-09b6510f1e.patch",
