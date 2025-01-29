@@ -23,6 +23,15 @@ const scrollReducer = (state, action) => {
   }
 };
 
+/**
+ * This hook accepts `isScrollable` from the `useScrollRequired` hook and manages state for a scroll arrow
+ * and buttons that may exist within content that has `useScrollRequired`'s ref attached to it.
+ * It returns scroll state and handlers for scroll events on that content.
+ *
+ * @param {boolean} requireScroll - Whether the content requires scrolling.
+ * @param {boolean} isScrollable - Whether the content is scrollable.
+ * @returns {object} The scroll state and the handlers for the scroll events.
+ */
 export const useScrollHandling = (requireScroll, isScrollable) => {
   const [scrollState, dispatch] = useReducer(scrollReducer, {
     isProgrammaticScroll: false,

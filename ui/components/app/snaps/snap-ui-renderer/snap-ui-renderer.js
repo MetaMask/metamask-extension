@@ -25,6 +25,16 @@ import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { useScrollHandling } from '../../../../hooks/useScrollHandling';
 import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
 
+/**
+ * This hook is used to process the content of the Snap UI Renderer.
+ * It adds the scroll arrow and the footer to the content if required.
+ *
+ * @param {object} rawContent - The raw content of the Snap UI Renderer.
+ * @param {object} scrollState - The state of the scroll handling.
+ * @param {object} scrollArrow - The scroll arrow component.
+ * @param {boolean} requireScroll - Whether the content requires scrolling.
+ * @returns The processed content.
+ */
 const useProcessedContent = (
   rawContent,
   scrollState,
@@ -205,6 +215,7 @@ const SnapUIRendererComponent = ({
         promptLegacyProps,
         t,
         contentBackgroundColor: backgroundColor,
+        // We have to pass the props at the top level to ensure the children components get the correct props.
         requireScroll,
         isScrolledToBottom: scrollState.buttonsEnabled,
       }),
