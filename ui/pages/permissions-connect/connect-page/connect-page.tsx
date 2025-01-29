@@ -119,7 +119,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [accounts]);
 
   const supportedRequestedAccounts = requestedAccounts.filter((account) =>
-    evmAccounts.find((a) => isEqualCaseInsensitive(a.address, account)),
+    evmAccounts.find(({ address }) => isEqualCaseInsensitive(address, account)),
   );
 
   const currentAccount = useSelector(getSelectedInternalAccount);
