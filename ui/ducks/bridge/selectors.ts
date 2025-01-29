@@ -292,12 +292,14 @@ const _getQuotesWithMetadata = createSelector(
   getToTokenConversionRate,
   getFromTokenConversionRate,
   getConversionRate,
+  getUSDConversionRate,
   _getBridgeFeesPerGas,
   (
     quotes,
     toTokenExchangeRate,
     fromTokenExchangeRate,
-    nativeExchangeRate,
+    nativeToDisplayCurrencyExchangeRate,
+    nativeToUsdExchangeRate,
     {
       estimatedBaseFeeInDecGwei,
       maxPriorityFeePerGasInDecGwei,
@@ -308,39 +310,50 @@ const _getQuotesWithMetadata = createSelector(
       const toTokenAmount = calcToAmount(
         quote.quote,
         toTokenExchangeRate.valueInCurrency,
+        toTokenExchangeRate.usd,
       );
       const gasFee = calcEstimatedAndMaxTotalGasFee({
         bridgeQuote: quote,
         estimatedBaseFeeInDecGwei,
         maxFeePerGasInDecGwei,
         maxPriorityFeePerGasInDecGwei,
-        nativeExchangeRate,
+        nativeToDisplayCurrencyExchangeRate,
+        nativeToUsdExchangeRate,
       });
-      const relayerFee = calcRelayerFee(quote, nativeExchangeRate);
+      const relayerFee = calcRelayerFee(
+        quote,
+        nativeToDisplayCurrencyExchangeRate,
+        nativeToUsdExchangeRate,
+      );
       const totalEstimatedNetworkFee = {
         amount: gasFee.amount.plus(relayerFee.amount),
         valueInCurrency:
           gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
           null,
+        usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
       };
       const totalMaxNetworkFee = {
         amount: gasFee.amountMax.plus(relayerFee.amount),
         valueInCurrency:
           gasFee.valueInCurrencyMax?.plus(relayerFee.valueInCurrency || '0') ??
           null,
+        usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
       };
 
       const sentAmount = calcSentAmount(
         quote.quote,
         fromTokenExchangeRate.valueInCurrency,
+        fromTokenExchangeRate.usd,
       );
       const adjustedReturn = calcAdjustedReturn(
-        toTokenAmount.valueInCurrency,
-        totalEstimatedNetworkFee.valueInCurrency,
+        toTokenAmount,
+        totalEstimatedNetworkFee,
       );
 
       return {
         ...quote,
+
+        // QuoteMetadata fields
         toTokenAmount,
         sentAmount,
         totalNetworkFee: totalEstimatedNetworkFee,
@@ -348,10 +361,7 @@ const _getQuotesWithMetadata = createSelector(
         adjustedReturn,
         gasFee,
         swapRate: calcSwapRate(sentAmount.amount, toTokenAmount.amount),
-        cost: calcCost(
-          adjustedReturn.valueInCurrency,
-          sentAmount.valueInCurrency,
-        ),
+        cost: calcCost(adjustedReturn, sentAmount),
       };
     });
 
@@ -467,16 +477,27 @@ export const getFromAmountInCurrency = createSelector(
     fromToken,
     fromChain,
     validatedSrcAmount,
-    { valueInCurrency: fromTokenToCurrencyExchangeRate },
+    {
+      valueInCurrency: fromTokenToCurrencyExchangeRate,
+      usd: fromTokenToUsdExchangeRate,
+    },
   ) => {
     if (fromToken?.symbol && fromChain?.chainId && validatedSrcAmount) {
-      if (fromTokenToCurrencyExchangeRate) {
-        return new BigNumber(validatedSrcAmount).mul(
-          new BigNumber(fromTokenToCurrencyExchangeRate.toString() ?? 1),
-        );
+      if (fromTokenToCurrencyExchangeRate && fromTokenToUsdExchangeRate) {
+        return {
+          valueInCurrency: new BigNumber(validatedSrcAmount).mul(
+            new BigNumber(fromTokenToCurrencyExchangeRate.toString() ?? 1),
+          ),
+          usd: new BigNumber(validatedSrcAmount).mul(
+            new BigNumber(fromTokenToUsdExchangeRate.toString() ?? 1),
+          ),
+        };
       }
     }
-    return new BigNumber(0);
+    return {
+      valueInCurrency: new BigNumber(0),
+      usd: new BigNumber(0),
+    };
   },
 );
 
