@@ -144,7 +144,7 @@ describe('ReviewQuote', () => {
     expect(getByText('Swap')).toBeInTheDocument();
   });
 
-  it('should call setIsEstimatedReturnLow(true) when return value is less than 80% of sent funds', async () => {
+  it('should call setIsEstimatedReturnLow(true) when return value is less than 65% of sent funds', async () => {
     const setReceiveToAmountMock = jest.fn();
     const setIsEstimatedReturnLowMock = jest.fn();
     const props = {
@@ -164,13 +164,13 @@ describe('ReviewQuote', () => {
         },
         '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
           // USDC
-          price: 70,
+          price: 60,
           decimal: 6,
         },
       },
     };
 
-    // Set up the quotes with amounts that will result in less than 80% return
+    // Set up the quotes with amounts that will result in less than 65% return
     state.metamask.swapsState.quotes = {
       TEST_AGG_2: {
         sourceAmount: '1000000000000000000', // 1 DAI (18 decimals)

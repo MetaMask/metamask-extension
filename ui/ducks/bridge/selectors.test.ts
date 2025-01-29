@@ -1139,7 +1139,7 @@ describe('Bridge selectors', () => {
       ).toStrictEqual(false);
     });
 
-    it('should return isEstimatedReturnLow=true return value is less than 80% of sent funds', () => {
+    it('should return isEstimatedReturnLow=true return value is less than 65% of sent funds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           extensionConfig: {
@@ -1195,7 +1195,7 @@ describe('Bridge selectors', () => {
       expect(result.isEstimatedReturnLow).toStrictEqual(true);
     });
 
-    it('should return isEstimatedReturnLow=false when return value is more than 80% of sent funds', () => {
+    it('should return isEstimatedReturnLow=false when return value is more than 65% of sent funds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           extensionConfig: {
