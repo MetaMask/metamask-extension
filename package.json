@@ -783,14 +783,14 @@
       "algorithm": "sha256",
       "binaries": {
         "anvil": {
-          "darwin-amd64": "6ad1c31bb8bc8c78551792ad538028385eb5a44d105f9af40ddeb1b75c1327b1",
-          "darwin-arm64": "cbb36860b2e08a7d5a35bec430904a1dc0319602ac0923017b81d9a8ffdcc5b0",
-          "linux-amd64": "56054e7d59547beb6adacbb9060a58595a8c5cca185f946317334ece509e0433",
-          "linux-arm64": "16494ae631d8ef73944abaaaa756661c1d43bbfc7642e7fff0a0d807d6d143c4",
-          "win32-amd64": "2034bdf35023e59c5dc06d6717a8eb2cede1204dbc60fd2507564422f03dceb3"
+          "darwin-amd64": "8404e555223fe884557d5e22de494baf8b5f0b82c6f87a4c790c5150e546c9d0",
+          "darwin-arm64": "888500bc210752e71a355ed4d492ad6dcb4c0ef54d283c105a29a5ccc73d0dbd",
+          "linux-amd64": "6104069b183fa0f3cdcb692681da9dbd203a3c1bceb435853bbf7abd991c649e",
+          "linux-arm64": "d66ed8f848e829882ebb65d28aaac72aeab6a101655bb62147186040655928b5",
+          "win32-amd64": "6c71d9a7be39ed32b53c89bdbc83aa748f41587517212ffe2a8b955c3e9c2e9b"
         }
       }
     },
-    "version": "nightly-31dd1f77fd9156d09836486d97963cec7f555343"
+    "version": "v0.3.0"
   }
 }
