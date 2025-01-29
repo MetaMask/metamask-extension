@@ -40,6 +40,7 @@ import {
   getCaip25PermissionsResponse,
   PermissionsRequest,
 } from './utils';
+import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 
 export type ConnectPageRequest = {
   id: string;
@@ -94,12 +95,18 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const selectedNetworksList = selectedTestNetwork
-    ? [...nonTestNetworks, selectedTestNetwork]
-    : nonTestNetworks;
+    ? [...nonTestNetworks, selectedTestNetwork].map(({ chainId }) => chainId)
+    : nonTestNetworks.map(({ chainId }) => chainId);
+
+  const supportedRequestedChainIds = requestedChainIds.filter((chainId) =>
+    selectedNetworksList.includes(chainId),
+  );
+
   const defaultSelectedChainIds =
-    requestedChainIds.length > 0
-      ? requestedChainIds
-      : selectedNetworksList.map(({ chainId }) => chainId);
+    supportedRequestedChainIds.length > 0
+      ? supportedRequestedChainIds
+      : selectedNetworksList;
+
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
   );
@@ -111,12 +118,18 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     );
   }, [accounts]);
 
+  const supportedRequestedAccounts = requestedAccounts.filter((account) =>
+    evmAccounts.find((a) => isEqualCaseInsensitive(a.address, account)),
+  );
+
   const currentAccount = useSelector(getSelectedInternalAccount);
   const currentAccountAddress = isEvmAccountType(currentAccount.type)
     ? [currentAccount.address]
     : []; // We do not support non-EVM accounts connections
   const defaultAccountsAddresses =
-    requestedAccounts.length > 0 ? requestedAccounts : currentAccountAddress;
+    supportedRequestedAccounts.length > 0
+      ? supportedRequestedAccounts
+      : currentAccountAddress;
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultAccountsAddresses,
   );
