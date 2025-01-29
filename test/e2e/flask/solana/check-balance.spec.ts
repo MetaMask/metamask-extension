@@ -6,10 +6,7 @@ describe('Check balance', function (this: Suite) {
   this.timeout(300000);
   it('Just created Solana account shows 0 SOL when native token is enabled', async function () {
     await withSolanaAccountSnap(
-      {
-        title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-      },
+      { title: this.test?.fullTitle(), showNativeTokenAsMainBalance: true },
       async (driver) => {
         await driver.refresh();
         const homePage = new NonEvmHomepage(driver);
@@ -37,6 +34,7 @@ describe('Check balance', function (this: Suite) {
         title: this.test?.fullTitle(),
         solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: true,
+        mockCalls: true,
       },
       async (driver) => {
         await driver.refresh();
@@ -51,6 +49,7 @@ describe('Check balance', function (this: Suite) {
         title: this.test?.fullTitle(),
         solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: false,
+        mockCalls: true,
       },
       async (driver) => {
         await driver.refresh();

@@ -397,7 +397,7 @@ export async function withSolanaAccountSnap(
     title,
     solanaSupportEnabled,
     showNativeTokenAsMainBalance,
-    mockCalls = true,
+    mockCalls,
     mockSendTransaction,
     importAccount,
   }: {
@@ -425,10 +425,13 @@ export async function withSolanaAccountSnap(
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList = [];
+
+        // Default Solana mocks
+        mockList.push(await mockFungibleAssets(mockServer));
+
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
-            await mockFungibleAssets(mockServer),
             await mockSolanaRatesCall(mockServer),
             await mockGetTransaction(mockServer),
             await simulateSolanaTransaction(mockServer),
