@@ -392,7 +392,7 @@
   "alert": {
     "message": "Alert"
   },
-  "alertActionBuy": {
+  "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
   "alertActionUpdateGas": {
@@ -425,7 +425,7 @@
   "alertMessageGasTooLow": {
     "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
   },
-  "alertMessageInsufficientBalance2": {
+  "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "You do not have enough $1 in your account to pay for network fees."
   },
   "alertMessageNetworkBusy": {

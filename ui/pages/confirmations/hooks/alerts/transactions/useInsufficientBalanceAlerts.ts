@@ -52,13 +52,15 @@ export function useInsufficientBalanceAlerts(): Alert[] {
         actions: [
           {
             key: AlertActionKey.Buy,
-            label: t('alertActionBuy', [nativeCurrency]),
+            label: t('alertActionBuyWithNativeCurrency', [nativeCurrency]),
           },
         ],
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'insufficientBalance',
-        message: t('alertMessageInsufficientBalance2', [nativeCurrency]),
+        message: t('alertMessageInsufficientBalanceWithNativeCurrency', [
+          nativeCurrency,
+        ]),
         reason: t('alertReasonInsufficientBalance'),
         severity: Severity.Danger,
       },
