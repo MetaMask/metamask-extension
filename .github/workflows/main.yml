@@ -6,6 +6,7 @@ on:
       - main
       - master
       - Version-v*
+      - trigger-ci*
   pull_request:
     types:
       - opened
@@ -16,7 +17,7 @@ on:
 jobs:
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@c534f265e02af2f2422a3c686bb09a11bfbf4cc2
+    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@benchmarks
 
   test-lint-shellcheck:
     name: Test lint shellcheck
@@ -66,9 +67,45 @@ jobs:
     name: Validate lavamoat policy webapp
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
+  prep-build-test-webpack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main
+
+      - run: yarn webpack --test --no-lavamoat --no-cache --browser=chrome --lockdown --sentry --snow --env production
+        env:
+          SEGMENT_PROD_WRITE_KEY: '-' # A fake key just to make the build succeed
+
+      - name: Upload artifact prep-build-test-webpack
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-webpack
+          path: ./dist/
+          retention-days: 1
+
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
+
+  run-pageload-benchmark:
+    name: Run Benchmarks # So that the level 1 name will be "Run Benchmarks" in the GitHub Actions UI
+    needs: prep-build-test-webpack
+    uses: ./.github/workflows/benchmarks.yml
+    with:
+      name: run-pageload-benchmark # The level 2 name
+      command: 'yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2'
+
+  run-user-actions-benchmark:
+    name: Run Benchmarks # So that the level 1 name will be "Run Benchmarks" in the GitHub Actions UI
+    needs: prep-build-test-webpack
+    uses: ./.github/workflows/benchmarks.yml
+    with:
+      name: run-user-actions-benchmark # The level 2 name
+      command: 'yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2'
 
   wait-for-circleci-workflow-status:
     name: Wait for CircleCI workflow status
@@ -112,6 +149,8 @@ jobs:
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
+  # Explanation for all-jobs-completed and all-jobs-pass being separate:
+  # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
@@ -128,6 +167,8 @@ jobs:
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
       - run-tests
+      # - run-pageload-benchmark # Will enable this as a required job in a later PR
+      # - run-user-actions-benchmark # Will enable this as a required job in a later PR
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
