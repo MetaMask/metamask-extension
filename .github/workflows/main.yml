@@ -26,6 +26,10 @@ jobs:
     name: Test lint
     uses: ./.github/workflows/test-lint.yml
 
+  test-circular-deps:
+    name: Test circular deps
+    uses: ./.github/workflows/test-circular-deps.yml
+
   test-lint-changelog:
     name: Test lint changelog
     uses: ./.github/workflows/test-lint-changelog.yml

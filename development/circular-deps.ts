@@ -51,7 +51,7 @@ const ENTRYPOINT_PATTERNS = [
   'ui/**/*', // UI components and styles
 ];
 
-// Converts a glob pattern to a RegExp patter
+// Converts a glob pattern to a RegExp pattern
 function globToRegExp(pattern: string): RegExp {
   return new RegExp(
     pattern
