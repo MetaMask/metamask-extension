@@ -35,8 +35,8 @@ const scrollReducer = (state, action) => {
 export const useScrollHandling = (requireScroll, isScrollable) => {
   const [scrollState, dispatch] = useReducer(scrollReducer, {
     isProgrammaticScroll: false,
-    buttonsEnabled: false,
-    showArrow: true,
+    buttonsEnabled: !requireScroll,
+    showArrow: requireScroll && isScrollable,
   });
 
   const isProgrammaticScrollRef = useRef(false);
