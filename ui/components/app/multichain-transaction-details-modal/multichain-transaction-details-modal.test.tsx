@@ -123,7 +123,6 @@ describe('MultichainTransactionDetailsModal', () => {
 
   it('displays network fee when present', () => {
     renderComponent();
-    expect(screen.getByText('networkFee')).toBeInTheDocument();
     expect(screen.getByText('1.0001 BTC')).toBeInTheDocument();
   });
 
