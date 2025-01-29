@@ -541,8 +541,33 @@ export default function PrepareSwapPage({
     if (!fromToken?.symbol && !fetchParamsFromToken?.symbol) {
       dispatch(setSwapsFromToken(defaultSwapsToken));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    console.log('topAssets', topAssets);
+
+    // Find first top asset that isn't the from token
+    const topAssetAddresses = Object.keys(topAssets);
+    const firstDifferentTopAssetAddress = topAssetAddresses.find(
+      (address) => !isEqualCaseInsensitive(address, fromToken?.address),
+    );
+
+    // Find matching token in tokensToSearchSwapTo
+    const defaultToToken = tokensToSearchSwapTo.find((token) =>
+      isEqualCaseInsensitive(token.address, firstDifferentTopAssetAddress),
+    );
+
+    if (!toToken?.symbol && defaultToToken) {
+      dispatch(setSwapToToken(defaultToToken));
+    }
+  }, [
+    dispatch,
+    fromToken?.symbol,
+    fromToken?.address,
+    fetchParamsFromToken?.symbol,
+    defaultSwapsToken,
+    toToken?.symbol,
+    tokensToSearchSwapTo,
+    topAssets,
+  ]);
 
   useEffect(() => {
     if (prevFromTokenBalance !== fromTokenBalance) {
