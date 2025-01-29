@@ -19,7 +19,7 @@ jobs:
     with:
       platform: extension
       base-branch: rls-alignment
-      semver-version: 12.10.102
+      semver-version: 12.10.103
       previous-version-tag: v12.10.2
     secrets:
       github-token: ${{ secrets.PR_TOKEN }}
