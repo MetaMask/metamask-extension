@@ -1,25 +1,33 @@
 import React from 'react';
+import { CaipChainId } from '@metamask/utils';
+import { CaipAssetType, TransactionStatus } from '@metamask/keyring-api';
 import { screen, fireEvent } from '@testing-library/react';
+import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
+import { getTransactionUrl } from './helpers';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
 }));
 
 const mockTransaction = {
-  type: 'Send BTC',
-  status: 'confirmed',
+  type: 'send' as const,
+  status: TransactionStatus.Confirmed as TransactionStatus,
   timestamp: new Date('2023-09-30T12:56:00').getTime(),
   id: 'b93ea2cb4eed0f9e13284ed8860bcfc45de2488bb6a8b0b2a843c4b2fbce40f3',
+  chain: 'bip122:000000000019d6689c085ae165831e93' as CaipChainId,
+  account: 'test-account-id',
+  events: [],
   from: [
     {
       address: 'bc1ql49ydapnjafl5t2cp9zqpjwe6pdgmxy98859v2',
       asset: {
-        fungible: true,
-        type: 'native',
+        fungible: true as const,
+        type: 'native' as CaipAssetType,
         amount: '1.2',
         unit: 'BTC',
       },
@@ -29,8 +37,8 @@ const mockTransaction = {
     {
       address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
       asset: {
-        fungible: true,
-        type: 'native',
+        fungible: true as const,
+        type: 'native' as CaipAssetType,
         amount: '1.2',
         unit: 'BTC',
       },
@@ -38,10 +46,10 @@ const mockTransaction = {
   ],
   fees: [
     {
-      type: 'base',
+      type: 'base' as const,
       asset: {
-        fungible: true,
-        type: 'native',
+        fungible: true as const,
+        type: 'native' as CaipAssetType,
         amount: '1.0001',
         unit: 'BTC',
       },
@@ -56,11 +64,10 @@ const mockProps = {
   multichainNetwork: {
     nickname: 'Bitcoin',
     isEvmNetwork: false,
-    chainId: 'bip122:000000000019d6689c085ae165831e93' as `${string}:${string}`,
+    chainId: 'bip122:000000000019d6689c085ae165831e93' as CaipChainId,
     network: {
       type: 'bitcoin',
-      chainId:
-        'bip122:000000000019d6689c085ae165831e93' as `${string}:${string}`,
+      chainId: 'bip122:000000000019d6689c085ae165831e93' as CaipChainId,
       ticker: 'BTC',
       nickname: 'Bitcoin',
       isAddressCompatible: (_address: string) => true,
@@ -94,7 +101,7 @@ describe('MultichainTransactionDetailsModal', () => {
   it('renders the modal with transaction details', () => {
     renderComponent();
 
-    expect(screen.getByText('Send btc')).toBeInTheDocument();
+    expect(screen.getByText('Send')).toBeInTheDocument();
     expect(screen.getByText('Confirmed')).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '1.2 BTC',
@@ -110,9 +117,7 @@ describe('MultichainTransactionDetailsModal', () => {
   it('shows transaction ID in shortened format', () => {
     renderComponent();
     const txId = mockTransaction.id;
-    const shortenedTxId = screen.getByText(
-      `${txId.substring(0, 7)}...${txId.substring(txId.length - 5)}`,
-    );
+    const shortenedTxId = screen.getByText(shortenAddress(txId));
     expect(shortenedTxId).toBeInTheDocument();
   });
 
@@ -137,21 +142,61 @@ describe('MultichainTransactionDetailsModal', () => {
     expect(mockTrackEvent).toHaveBeenCalled();
   });
 
-  it('handles different transaction statuses', () => {
-    const statuses = ['confirmed', 'pending', 'failed'];
-    statuses.forEach((status) => {
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each(['confirmed', 'pending', 'failed'] as const)(
+    'handles different transaction status: %s',
+    (status: string) => {
       const propsWithStatus = {
         ...mockProps,
         transaction: {
           ...mockTransaction,
-          status,
+          status: status as TransactionStatus,
         },
       };
-      const { rerender } = renderComponent(propsWithStatus);
+      renderComponent(propsWithStatus);
       expect(
         screen.getByText(status.charAt(0).toUpperCase() + status.slice(1)),
       ).toBeInTheDocument();
-      rerender(<div />);
-    });
+    },
+  );
+
+  it('returns correct Bitcoin mainnet transaction URL', () => {
+    const txId =
+      '447755f24ab40f469309f357cfdd9e375e9569b2cf68aaeba2ebcc232eac9568';
+    const chainId = MultichainNetworks.BITCOIN;
+
+    expect(getTransactionUrl(txId, chainId)).toBe(
+      `https://blockstream.info/tx/${txId}`,
+    );
+  });
+
+  it('returns correct Bitcoin testnet transaction URL', () => {
+    const txId =
+      '447755f24ab40f469309f357cfdd9e375e9569b2cf68aaeba2ebcc232eac9568';
+    const chainId = MultichainNetworks.BITCOIN_TESTNET;
+
+    expect(getTransactionUrl(txId, chainId)).toBe(
+      `https://blockstream.info/testnet/tx/${txId}`,
+    );
+  });
+
+  it('returns correct Solana mainnet transaction URL', () => {
+    const txId =
+      '5Y64J6gUNd67hM63Aeks3qVLGWRM3A52PFFjqKSPTVDdAZFbaPDHHLTFCs3ioeFcAAXFmqcUftZeLJVZCzqovAJ4';
+    const chainId = MultichainNetworks.SOLANA;
+
+    expect(getTransactionUrl(txId, chainId)).toBe(
+      `https://explorer.solana.com/tx/${txId}`,
+    );
+  });
+
+  it('returns correct Solana devnet transaction URL', () => {
+    const txId =
+      '5Y64J6gUNd67hM63Aeks3qVLGWRM3A52PFFjqKSPTVDdAZFbaPDHHLTFCs3ioeFcAAXFmqcUftZeLJVZCzqovAJ4';
+    const chainId = MultichainNetworks.SOLANA_DEVNET;
+
+    expect(getTransactionUrl(txId, chainId)).toBe(
+      `https://explorer.solana.com/tx/${txId}?cluster=devnet`,
+    );
   });
 });

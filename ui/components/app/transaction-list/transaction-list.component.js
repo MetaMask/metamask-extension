@@ -347,7 +347,6 @@ export default function TransactionList({
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
             addressLink={addressLink}
-            multichainNetwork={multichainNetwork}
           />
         )}
 

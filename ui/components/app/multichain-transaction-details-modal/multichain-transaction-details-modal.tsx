@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { capitalize } from 'lodash';
+import { Transaction, TransactionStatus } from '@metamask/keyring-api';
 import {
   Display,
   FlexDirection,
@@ -32,72 +33,65 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
-import { MultichainNetwork } from '../../../selectors/multichain';
-import {
-  formatDateWithYearContext,
-  shortenAddress,
-} from '../../../helpers/utils/util';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { formatTimestamp, getTransactionUrl, getAddressUrl } from './helpers';
 
-type Asset = {
-  fungible: boolean;
-  type: string;
-  unit: string;
-  amount: string;
-};
-
-type TransactionFrom = {
-  address: string;
-  asset: Asset;
-};
-
-type TransactionTo = {
-  address: string;
-  asset: Asset;
-};
-
-type Transaction = {
-  type: string;
-  status: string;
-  timestamp?: number;
-  id: string;
-  from: TransactionFrom[];
-  to: TransactionTo[];
-  fees: {
-    type: string;
-    asset: Asset;
-  }[];
-};
-
-type MultichainTransactionDetailsModalProps = {
+export type MultichainTransactionDetailsModalProps = {
   transaction: Transaction;
   onClose: () => void;
   addressLink: string;
-  multichainNetwork: MultichainNetwork;
 };
 
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
   addressLink,
-  multichainNetwork,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'confirmed':
+      case TransactionStatus.Confirmed:
         return TextColor.successDefault;
-      case 'pending':
+      case TransactionStatus.Unconfirmed:
         return TextColor.warningDefault;
-      case 'failed':
+      case TransactionStatus.Failed:
         return TextColor.errorDefault;
       default:
         return TextColor.textDefault;
     }
   };
 
-  const blockExplorerUrl = multichainNetwork.network.rpcPrefs?.blockExplorerUrl;
+  const getAssetDisplay = (asset: typeof fromAsset) => {
+    if (!asset) {
+      return null;
+    }
+    if (asset.fungible === true) {
+      return `${asset.amount} ${asset.unit}`;
+    }
+    if (asset.fungible === false) {
+      return asset.id;
+    }
+    return null;
+  };
+
+  if (!transaction?.from?.[0] || !transaction?.to?.[0]) {
+    return null;
+  }
+
+  // We only support 1 recipient for "from" and "to" for now:
+  const {
+    id: txId,
+    from: [{ address: fromAddress, asset: fromAsset }],
+    to: [{ address: toAddress }],
+    fees: [{ asset: feeAsset }],
+    fees,
+    timestamp,
+    status,
+    chain,
+    type,
+  } = transaction;
 
   return (
     <Modal
@@ -117,27 +111,14 @@ export function MultichainTransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {capitalize(transaction.type)}
+            {capitalize(type)}
           </Text>
           <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             textAlign={TextAlign.Center}
           >
-            {transaction.timestamp
-              ? `${formatDateWithYearContext(
-                  transaction.timestamp,
-                  'MMM d, y',
-                  'MMM d',
-                )}, ${new Date(transaction.timestamp)
-                  .toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false,
-                    timeZone: undefined,
-                  })
-                  .slice(0, 5)}`
-              : ''}
+            {formatTimestamp(timestamp)}
           </Text>
         </ModalHeader>
 
@@ -158,11 +139,8 @@ export function MultichainTransactionDetailsModal({
               <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
                 {t('status')}
               </Text>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={getStatusColor(transaction.status)}
-              >
-                {capitalize(transaction.status)}
+              <Text variant={TextVariant.bodyMd} color={getStatusColor(status)}>
+                {capitalize(status)}
               </Text>
             </Box>
 
@@ -187,9 +165,10 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={`${blockExplorerUrl}/tx/${transaction.id}`}
+                  href={getTransactionUrl(txId, chain)}
                 >
-                  {shortenAddress(transaction.id)}
+                  {/* For transactions we use a similar output for now, but shortenTransactionId will be added later */}
+                  {shortenAddress(txId)}
                   <Icon
                     marginLeft={2}
                     name={IconName.Export}
@@ -197,7 +176,7 @@ export function MultichainTransactionDetailsModal({
                     color={IconColor.primaryDefault}
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        `${blockExplorerUrl}/tx/${transaction.id}`,
+                        getTransactionUrl(txId, chain),
                       )
                     }
                   />
@@ -236,9 +215,9 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={`${blockExplorerUrl}/tx/${transaction.id}`}
+                  href={getTransactionUrl(txId, chain)}
                 >
-                  {shortenAddress(transaction.from[0]?.address)}
+                  {shortenAddress(fromAddress)}
                   <Icon
                     marginLeft={2}
                     name={IconName.Export}
@@ -246,7 +225,7 @@ export function MultichainTransactionDetailsModal({
                     color={IconColor.primaryDefault}
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        `${blockExplorerUrl}/address/${transaction.from[0]?.address}`,
+                        getAddressUrl(fromAddress, chain),
                       )
                     }
                   />
@@ -275,9 +254,9 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={`${blockExplorerUrl}/tx/${transaction.id}`}
+                  href={getTransactionUrl(txId, chain)}
                 >
-                  {shortenAddress(transaction.to[0]?.address)}
+                  {shortenAddress(toAddress)}
                   <Icon
                     marginLeft={2}
                     name={IconName.Export}
@@ -285,7 +264,7 @@ export function MultichainTransactionDetailsModal({
                     color={IconColor.primaryDefault}
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        `${blockExplorerUrl}/address/${transaction.to[0]?.address}`,
+                        getAddressUrl(toAddress, chain),
                       )
                     }
                   />
@@ -310,14 +289,13 @@ export function MultichainTransactionDetailsModal({
                   variant={TextVariant.bodyMd}
                   data-testid="transaction-amount"
                 >
-                  {transaction.from[0]?.asset?.amount}{' '}
-                  {transaction.from[0]?.asset?.unit}
+                  {getAssetDisplay(fromAsset)}
                 </Text>
               </Box>
             </Box>
 
             {/* Network Fee */}
-            {transaction.fees?.length > 0 && (
+            {fees?.length > 0 && (
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -334,7 +312,7 @@ export function MultichainTransactionDetailsModal({
                   alignItems={AlignItems.flexEnd}
                 >
                   <Text variant={TextVariant.bodyMd}>
-                    {`${transaction.fees[0].asset.amount} ${transaction.fees[0].asset.unit}`}
+                    {getAssetDisplay(feeAsset)}
                   </Text>
                 </Box>
               </Box>
