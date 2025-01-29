@@ -13,13 +13,17 @@ export default class MetaFoxLogo extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     src: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     theme: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   static defaultProps = {
     onClick: undefined,
+    unsetIconHeight: false,
+    isOnboarding: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    src: undefined,
+    ///: END:ONLY_INCLUDE_IF
+    theme: undefined,
   };
 
   render() {
