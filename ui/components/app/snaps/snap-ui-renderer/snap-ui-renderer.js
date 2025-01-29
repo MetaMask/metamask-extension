@@ -1,11 +1,4 @@
-import React, {
-  memo,
-  useMemo,
-  useRef,
-  useCallback,
-  useReducer,
-  useEffect,
-} from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
@@ -29,42 +22,22 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
+import { useScrollHandling } from '../../../../hooks/useScrollHandling';
 import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
 
-const scrollReducer = (state, action) => {
-  switch (action.type) {
-    case 'START_PROGRAMMATIC_SCROLL':
-      return {
-        ...state,
-        isProgrammaticScroll: true,
-      };
-    case 'END_PROGRAMMATIC_SCROLL':
-      return {
-        isProgrammaticScroll: false,
-        buttonsEnabled: true,
-        showArrow: false,
-      };
-    case 'MANUAL_SCROLL':
-      return state.isProgrammaticScroll
-        ? state
-        : {
-            ...state,
-            buttonsEnabled: action.isAtBottom,
-            showArrow: !action.isAtBottom && action.isScrollable,
-          };
-    default:
-      return state;
-  }
-};
-
-const useProcessedContent = (rawContent, scrollState, scrollArrow) => {
+const useProcessedContent = (
+  rawContent,
+  scrollState,
+  scrollArrow,
+  requireScroll,
+) => {
   return useMemo(() => {
     const baseContent =
       rawContent?.type === 'Container' || !rawContent
         ? rawContent
         : Container({ children: rawContent });
 
-    if (baseContent?.props?.children?.[1]?.props?.requireScroll) {
+    if (requireScroll) {
       const children = [...baseContent.props.children];
       const footer = {
         ...children[children.length - 1],
@@ -91,7 +64,7 @@ const useProcessedContent = (rawContent, scrollState, scrollArrow) => {
     }
 
     return baseContent;
-  }, [rawContent, scrollState, scrollArrow]);
+  }, [rawContent, scrollState, scrollArrow, requireScroll]);
 };
 
 const LoadingSpinner = memo(function LoadingSpinner() {
@@ -129,13 +102,6 @@ const SnapUIRendererComponent = ({
   contentBackgroundColor,
 }) => {
   const t = useI18nContext();
-  const isProgrammaticScrollRef = useRef(false);
-
-  const [scrollState, dispatch] = useReducer(scrollReducer, {
-    isProgrammaticScroll: false,
-    buttonsEnabled: false,
-    showArrow: true,
-  });
 
   const interfaceState = useSelector(
     (state) => getMemoizedInterface(state, interfaceId),
@@ -153,66 +119,25 @@ const SnapUIRendererComponent = ({
     { enabled: requireScroll },
   );
 
-  useEffect(() => {
-    // If the content doesn't require scrolling, we don't need to update the scroll state
-    if (!requireScroll) {
-      return;
-    }
-
-    if (isScrollable) {
-      dispatch({
-        type: 'MANUAL_SCROLL',
-        isAtBottom: false,
-        isScrollable: true,
-      });
-    } else {
-      dispatch({
-        type: 'MANUAL_SCROLL',
-        isAtBottom: true,
-        isScrollable: false,
-      });
-    }
-  }, [isScrollable, requireScroll]);
-
-  const wrappedOnScroll = useCallback(
-    (e) => {
-      // If the content doesn't require scrolling, we don't need to update the scroll state
-      if (!requireScroll) {
-        return;
-      }
-
-      const isActuallyAtBottom =
-        Math.abs(
-          e.target.scrollTop + e.target.clientHeight - e.target.scrollHeight,
-        ) < 2; // Small threshold for rounding errors
-
-      if (isProgrammaticScrollRef.current && isActuallyAtBottom) {
-        isProgrammaticScrollRef.current = false;
-        dispatch({ type: 'END_PROGRAMMATIC_SCROLL' });
-      } else {
-        dispatch({
-          type: 'MANUAL_SCROLL',
-          isAtBottom: isActuallyAtBottom,
-          isScrollable,
-        });
-      }
-      onScroll(e);
-    },
-    [isScrollable, onScroll, dispatch, requireScroll],
-  );
-
-  const handleScrollToBottom = useCallback(() => {
-    if (isProgrammaticScrollRef.current) {
-      return;
-    }
-    isProgrammaticScrollRef.current = true;
-    dispatch({ type: 'START_PROGRAMMATIC_SCROLL' });
-    scrollToBottom();
-  }, [scrollToBottom]);
-
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
+
+  const { scrollState, handleScroll, handleScrollToBottom } = useScrollHandling(
+    requireScroll,
+    isScrollable,
+  );
+
+  const wrappedOnScroll = useCallback(
+    (e) => {
+      handleScroll(e, onScroll);
+    },
+    [handleScroll, onScroll],
+  );
+
+  const handleScrollToBottomClick = useCallback(() => {
+    handleScrollToBottom(scrollToBottom);
+  }, [handleScrollToBottom, scrollToBottom]);
 
   const scrollArrow = useMemo(() => {
     if (!requireScroll || !scrollState.showArrow) {
@@ -227,7 +152,7 @@ const SnapUIRendererComponent = ({
         backgroundColor: BackgroundColor.infoDefault,
         color: IconColor.primaryInverse,
         className: 'snap-ui-renderer__scroll-button',
-        onClick: handleScrollToBottom,
+        onClick: handleScrollToBottomClick,
         style: {
           cursor: 'pointer',
           position: 'absolute',
@@ -240,12 +165,13 @@ const SnapUIRendererComponent = ({
         },
       },
     };
-  }, [handleScrollToBottom, requireScroll, scrollState.showArrow]);
+  }, [handleScrollToBottomClick, requireScroll, scrollState.showArrow]);
 
   const processedContent = useProcessedContent(
     interfaceState?.content,
     scrollState,
     scrollArrow,
+    requireScroll,
   );
 
   const promptLegacyProps = useMemo(
