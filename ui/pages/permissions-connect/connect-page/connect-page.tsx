@@ -5,6 +5,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
 import { Hex } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
@@ -40,7 +41,6 @@ import {
   getCaip25PermissionsResponse,
   PermissionsRequest,
 } from './utils';
-import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 
 export type ConnectPageRequest = {
   id: string;
