@@ -281,6 +281,9 @@ export const SENTRY_BACKGROUND_STATE = {
     rates: true,
     cryptocurrencies: true,
   },
+  MultichainTokensRatesController: {
+    rates: true,
+  },
   QueuedRequestController: {
     queuedRequestCount: true,
   },
