@@ -1260,16 +1260,17 @@ class Driver {
         await this.driver.switchTo().window(handle);
 
         const htmlSource = await this.driver.getPageSource();
-        await fs.writeFile(`${filepathBase}-dom-${windowNumber}.html`, htmlSource);
+        await fs.writeFile(
+          `${filepathBase}-dom-${windowNumber}.html`,
+          htmlSource,
+        );
       }
     } catch (e) {
       console.error('Failed to capture DOM snapshot', e);
     }
 
-
     // We want to take a state snapshot of the app if possible, this is useful for debugging
     try {
-      const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
         const uiState = await this.driver.executeScript(
