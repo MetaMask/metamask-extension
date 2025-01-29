@@ -967,7 +967,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedPermissions: {},
+            permissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1008,7 +1008,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedPermissions: {},
+            permissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1071,7 +1071,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedPermissions: {},
+            permissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1137,7 +1137,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedPermissions: {},
+            permissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1211,7 +1211,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedPermissions: {},
+            permissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1274,7 +1274,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedPermissions: {},
+            permissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1337,7 +1337,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedPermissions: {},
+            permissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1425,7 +1425,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedPermissions: {
+            permissions: {
               [Caip25EndowmentPermissionName]: {
                 caveats: [
                   {
@@ -1509,7 +1509,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedPermissions: {
+            permissions: {
               [Caip25EndowmentPermissionName]: {
                 caveats: [
                   {
@@ -1621,7 +1621,7 @@ describe('MetaMaskController', () => {
           {},
         );
 
-        expect(result).toStrictEqual(expectedPermissions.permissions);
+        expect(result).toStrictEqual(expectedPermissions);
       });
     });
 

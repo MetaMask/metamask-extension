@@ -124,11 +124,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = () => {
     const _request = {
       ...request,
-      permissions: { ...request.permissions },
-      approvedPermissions: getCaip25PermissionsResponse(
-        selectedAccountAddresses as Hex[],
-        selectedChainIds,
-      ),
+      permissions: {
+        ...request.permissions,
+        ...getCaip25PermissionsResponse(
+          selectedAccountAddresses as Hex[],
+          selectedChainIds,
+        ),
+      },
     };
     approveConnection(_request);
   };

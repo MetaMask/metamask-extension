@@ -5510,7 +5510,7 @@ export default class MetamaskController extends EventEmitter {
 
     const id = nanoid();
 
-    const { approvedPermissions } =
+    const { permissions: approvedPermissions } =
       await this.approvalController.addAndShowApprovalRequest({
         id,
         origin,
