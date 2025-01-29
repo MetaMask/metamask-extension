@@ -14,7 +14,7 @@ on:
         required: true
 jobs:
   create-release-pr:
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@rls-alignment
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@v0.1.0
     with:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
