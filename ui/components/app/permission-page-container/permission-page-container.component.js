@@ -158,8 +158,7 @@ export default class PermissionPageContainer extends Component {
 
     const request = {
       ..._request,
-      permissions: { ..._request.permissions },
-      approvedSessionScopes: getCaip25PermissionsResponse(
+      approvedPermissions: getCaip25PermissionsResponse(
         approvedAccounts,
         approvedChainIds,
       ),

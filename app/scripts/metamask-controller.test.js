@@ -967,7 +967,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: {},
+            approvedPermissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1008,7 +1008,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: {},
+            approvedPermissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1071,7 +1071,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: {},
+            approvedPermissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1137,7 +1137,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: {},
+            approvedPermissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1211,7 +1211,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: {},
+            approvedPermissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1274,7 +1274,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: {},
+            approvedPermissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1337,7 +1337,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: {},
+            approvedPermissions: {},
           });
         jest
           .spyOn(metamaskController.permissionController, 'grantPermissions')
@@ -1425,20 +1425,18 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: {
-              permissions: {
-                [Caip25EndowmentPermissionName]: {
-                  caveats: [
-                    {
-                      type: Caip25CaveatType,
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {},
-                        isMultichainOrigin: false,
-                      },
+            approvedPermissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      isMultichainOrigin: false,
                     },
-                  ],
-                },
+                  },
+                ],
               },
             },
           });
@@ -1511,20 +1509,18 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: {
-              permissions: {
-                [Caip25EndowmentPermissionName]: {
-                  caveats: [
-                    {
-                      type: Caip25CaveatType,
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {},
-                        isMultichainOrigin: false,
-                      },
+            approvedPermissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      isMultichainOrigin: false,
                     },
-                  ],
-                },
+                  },
+                ],
               },
             },
           });
@@ -1592,24 +1588,22 @@ describe('MetaMaskController', () => {
       });
 
       it('should return sessions scopes returned from calling ApprovalController.addAndShowApprovalRequest', async () => {
-        const expectedApprovedSessionScopes = {
-          permissions: {
-            [Caip25EndowmentPermissionName]: {
-              caveats: [
-                {
-                  type: Caip25CaveatType,
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      'wallet:eip155': {
-                        accounts: ['wallet:eip155:0xdeadbeef'],
-                      },
+        const expectedPermissions = {
+          [Caip25EndowmentPermissionName]: {
+            caveats: [
+              {
+                type: Caip25CaveatType,
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'wallet:eip155': {
+                      accounts: ['wallet:eip155:0xdeadbeef'],
                     },
-                    isMultichainOrigin: false,
                   },
+                  isMultichainOrigin: false,
                 },
-              ],
-            },
+              },
+            ],
           },
         };
 
@@ -1619,7 +1613,7 @@ describe('MetaMaskController', () => {
             'addAndShowApprovalRequest',
           )
           .mockResolvedValue({
-            approvedSessionScopes: expectedApprovedSessionScopes,
+            permissions: expectedPermissions,
           });
 
         const result = await metamaskController.requestCaip25Approval(
@@ -1627,7 +1621,7 @@ describe('MetaMaskController', () => {
           {},
         );
 
-        expect(result).toStrictEqual(expectedApprovedSessionScopes.permissions);
+        expect(result).toStrictEqual(expectedPermissions.permissions);
       });
     });
 

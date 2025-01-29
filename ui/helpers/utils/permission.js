@@ -61,7 +61,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       permissions: permissionValue,
     });
     const requestedAccounts = getEthAccounts(caveatValue);
-    const isLegacySwitchChain = Boolean(!requestedAccounts.length);
+    const isLegacySwitchChain = requestedAccounts.length === 0;
 
     if (isLegacySwitchChain) {
       return {

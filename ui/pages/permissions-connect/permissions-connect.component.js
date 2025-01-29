@@ -29,7 +29,7 @@ function getDefaultSelectedAccounts(currentAddress, permissions) {
   const requestedSessionsScopes = getRequestedSessionScopes(permissions);
   const requestedAccounts = getEthAccounts(requestedSessionsScopes);
 
-  if (requestedAccounts.length) {
+  if (requestedAccounts.length > 0) {
     return new Set(
       requestedAccounts
         .map((address) => address.toLowerCase())

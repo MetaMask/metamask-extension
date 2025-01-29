@@ -124,7 +124,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = () => {
     const _request = {
       ...request,
-      approvedSessionScopes: getCaip25PermissionsResponse(
+      permissions: { ...request.permissions },
+      approvedPermissions: getCaip25PermissionsResponse(
         selectedAccountAddresses as Hex[],
         selectedChainIds,
       ),

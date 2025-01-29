@@ -42,10 +42,8 @@ export function getCaip25PermissionsResponse(
   addresses: Hex[],
   hexChainIds: Hex[],
 ): {
-  permissions: {
-    [Caip25EndowmentPermissionName]: {
-      caveats: [{ type: string; value: Caip25CaveatValue }];
-    };
+  [Caip25EndowmentPermissionName]: {
+    caveats: [{ type: string; value: Caip25CaveatValue }];
   };
 } {
   const caveatValue: Caip25CaveatValue = {
@@ -69,15 +67,13 @@ export function getCaip25PermissionsResponse(
   );
 
   return {
-    permissions: {
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: caveatValueWithAccounts,
-          },
-        ],
-      },
+    [Caip25EndowmentPermissionName]: {
+      caveats: [
+        {
+          type: Caip25CaveatType,
+          value: caveatValueWithAccounts,
+        },
+      ],
     },
   };
 }

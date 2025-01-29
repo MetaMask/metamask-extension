@@ -108,9 +108,7 @@ export function getPermissionBackgroundApiMethods({
      * After the factory method is added, we can move to requesting "endowment:caip25"
      * directly from the PermissionController instead.
      */
-    const {
-      approvedSessionScopes: { permissions },
-    } = await approvalController.addAndShowApprovalRequest({
+    const { permissions } = await approvalController.addAndShowApprovalRequest({
       id,
       origin,
       requestData: {

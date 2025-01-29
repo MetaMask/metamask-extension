@@ -5503,14 +5503,14 @@ export default class MetamaskController extends EventEmitter {
       isSnapId(origin) ? [] : requestedChains,
     );
 
-    const caveatValueWithAccounts = setEthAccounts(
+    const caveatValueWithAccountsAndChains = setEthAccounts(
       caveatValueWithChains,
       requestedAccounts,
     );
 
     const id = nanoid();
 
-    const { approvedSessionScopes } =
+    const { approvedPermissions } =
       await this.approvalController.addAndShowApprovalRequest({
         id,
         origin,
@@ -5524,7 +5524,7 @@ export default class MetamaskController extends EventEmitter {
               caveats: [
                 {
                   type: Caip25CaveatType,
-                  value: caveatValueWithAccounts,
+                  value: caveatValueWithAccountsAndChains,
                 },
               ],
             },
@@ -5533,7 +5533,7 @@ export default class MetamaskController extends EventEmitter {
         type: MethodNames.RequestPermissions,
       });
 
-    return approvedSessionScopes.permissions;
+    return approvedPermissions;
   }
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
