@@ -17,18 +17,15 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import {
-  setActiveNetwork,
-  setEditedNetwork,
-  toggleNetworkMenu,
-  updateNetwork,
-} from '../../../../store/actions';
+import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
 
 export const SelectRpcUrlModal = ({
   networkConfiguration,
+  onNetworkChange,
 }: {
   networkConfiguration: NetworkConfiguration;
+  onNetworkChange: (network: NetworkConfiguration) => void;
 }) => {
   const dispatch = useDispatch();
 
@@ -69,15 +66,13 @@ export const SelectRpcUrlModal = ({
           display={Display.Flex}
           key={rpcEndpoint.url}
           onClick={() => {
-            dispatch(
-              updateNetwork({
-                ...networkConfiguration,
-                defaultRpcEndpointIndex: index,
-              }),
-            );
-            dispatch(setActiveNetwork(rpcEndpoint.networkClientId));
+            const network = {
+              ...networkConfiguration,
+              defaultRpcEndpointIndex: index,
+            };
+            dispatch(updateNetwork(network));
             dispatch(setEditedNetwork());
-            dispatch(toggleNetworkMenu());
+            onNetworkChange(network);
           }}
           className={classnames('select-rpc-url__item', {
             'select-rpc-url__item--selected':

@@ -22,7 +22,6 @@ import { fireEvent } from '../../../../../../test/jest';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import * as confirmContext from '../../../context/confirm';
@@ -221,34 +220,6 @@ describe('ConfirmFooter', () => {
     );
     const submitButton = getAllByRole('button')[1];
     expect(submitButton).toBeDisabled();
-  });
-
-  it('submit button should be disabled if useMMIConfirmations returns true for mmiSubmitDisabled', () => {
-    jest
-      .spyOn(MMIConfirmations, 'useMMIConfirmations')
-      .mockImplementation(() => ({
-        mmiOnSignCallback: () => Promise.resolve(),
-        mmiOnTransactionCallback: () => Promise.resolve(),
-        mmiSubmitDisabled: true,
-      }));
-    const { getAllByRole } = render();
-    const submitButton = getAllByRole('button')[1];
-    expect(submitButton).toBeDisabled();
-  });
-
-  it('invoke mmiOnSignCallback returned from hook useMMIConfirmations when submit button is clicked', () => {
-    const mockFn = jest.fn();
-    jest
-      .spyOn(MMIConfirmations, 'useMMIConfirmations')
-      .mockImplementation(() => ({
-        mmiOnSignCallback: mockFn,
-        mmiOnTransactionCallback: mockFn,
-        mmiSubmitDisabled: false,
-      }));
-    const { getAllByRole } = render();
-    const submitButton = getAllByRole('button')[1];
-    fireEvent.click(submitButton);
-    expect(mockFn).toHaveBeenCalledTimes(1);
   });
 
   describe('ConfirmButton', () => {
