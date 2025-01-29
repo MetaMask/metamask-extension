@@ -12,13 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
         with:
           fetch-depth: 0 # This is needed to checkout all branches
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
 
       - name: Get the next semver version
         id: get-next-semver-version

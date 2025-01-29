@@ -15,11 +15,10 @@ jobs:
     container:
       image: cimg/node:22.13-browsers
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@benchmarks
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        with:
+          should-cache-restore: ${{ vars.USE_CACHING }}
 
       - name: Download artifact prep-build-test-webpack
         uses: actions/download-artifact@v4

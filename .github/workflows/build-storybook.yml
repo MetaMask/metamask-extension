@@ -8,11 +8,10 @@ jobs:
     name: Build storybook
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: metamask/github-tools/.github/actions/setup-environment@caching
+        with:
+          no-cache-for-release: 'true' # Turn off yarn cache as well
 
       - name: Build storybook
         run: yarn storybook:build
