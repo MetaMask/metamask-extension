@@ -78,13 +78,22 @@ async function verifyE2ePageObjectsUsage() {
 
     // Check each E2E file for page object usage
     for (const file of e2eFiles) {
-        const content = fs.readFileSync(file, 'utf8');
-        // Check for the presence of page object imports
-        const usesPageObjectModel = content.includes('./page-objects/');
+        try {
+            const content = fs.readFileSync(file, 'utf8');
+            // Check for the presence of page object imports
+            const usesPageObjectModel = content.includes('./page-objects/');
 
-        if (!usesPageObjectModel) {
-            console.error(`\x1b[31mFailure: You need to use Page Object Model in ${file}\x1b[0m`);
-            process.exit(1);
+            if (!usesPageObjectModel) {
+                console.error(`\x1b[31mFailure: You need to use Page Object Model in ${file}\x1b[0m`);
+                process.exit(1);
+            }
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                console.warn(`File not found: ${file}`);
+                continue; // Skip this file because it was deleted, so no need to validate
+            } else {
+                throw error; // Re-throw if it's a different error
+            }
         }
     }
 
