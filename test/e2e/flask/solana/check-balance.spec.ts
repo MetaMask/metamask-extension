@@ -9,7 +9,6 @@ describe('Check balance', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
       },
       async (driver) => {
         await driver.refresh();
@@ -38,7 +37,6 @@ describe('Check balance', function (this: Suite) {
         title: this.test?.fullTitle(),
         solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
       },
       async (driver) => {
         await driver.refresh();
@@ -53,7 +51,6 @@ describe('Check balance', function (this: Suite) {
         title: this.test?.fullTitle(),
         solanaSupportEnabled: true,
         showNativeTokenAsMainBalance: false,
-        mockCalls: true,
       },
       async (driver) => {
         await driver.refresh();

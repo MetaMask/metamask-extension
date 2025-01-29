@@ -397,7 +397,7 @@ export async function withSolanaAccountSnap(
     title,
     solanaSupportEnabled,
     showNativeTokenAsMainBalance,
-    mockCalls,
+    mockCalls = true,
     mockSendTransaction,
     importAccount,
   }: {
