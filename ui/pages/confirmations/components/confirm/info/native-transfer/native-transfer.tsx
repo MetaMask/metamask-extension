@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../context/confirm';
 import { SimulationDetails } from '../../../simulation-details';
