@@ -10,7 +10,6 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { rejectPendingApproval } from '../../../../store/actions';
-import { shortenAddress } from '../../../../helpers/utils/util';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import SignatureRequestOriginal from '.';
@@ -190,30 +189,5 @@ describe('SignatureRequestOriginal', () => {
 
     render();
     expect(screen.getByText('This is a deceptive request')).toBeInTheDocument();
-  });
-
-  it('should display mismatch info when selected account address and from account address are not the same', () => {
-    const selectedAccount = {
-      address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
-      id: '7ae06c6d-114a-4319-bf75-9fa3efa2c8b9',
-      metadata: {
-        name: 'Account 1',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: ETH_EOA_METHODS,
-      type: EthAccountType.Eoa,
-    };
-    const mismatchAccountText = `Your selected account (${shortenAddress(
-      selectedAccount.address,
-    )}) is different than the account trying to sign (${shortenAddress(
-      address,
-    )})`;
-
-    render({ selectedAccount });
-
-    expect(screen.getByText(mismatchAccountText)).toBeInTheDocument();
   });
 });
