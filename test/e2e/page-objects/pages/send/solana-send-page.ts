@@ -1,3 +1,4 @@
+import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class SendSolanaPage {
@@ -6,6 +7,11 @@ class SendSolanaPage {
   private readonly sendAmountInput = '#send-amount-input';
 
   private readonly toAddressInput = '#send-to';
+
+  private readonly amountCurrencyLabel = (tokenName: string) =>
+    By.xpath(
+      `//label[@for="send-amount-input"]/..//p[contains(text(), "${tokenName}")]`,
+    );
 
   private readonly continueButton = {
     text: 'Continue',
@@ -32,6 +38,48 @@ class SendSolanaPage {
       { timeout: 10000 },
     );
     await swapCurrencyButton.click();
+  }
+
+  async check_tokenByNameIsDisplayed(tokenName: string): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(
+      {
+        text: tokenName,
+        tag: 'p',
+      },
+      { timeout: 2000 },
+    );
+  }
+
+  async selectTokenFromTokenList(tokenName: string): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement({
+      text: tokenName,
+      tag: 'p',
+    });
+  }
+
+  async check_tokenBalanceIsDisplayed(
+    amount: string,
+    tokenName: string,
+  ): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement({
+      text: `Balance: ${amount} ${tokenName}`,
+      tag: 'p',
+    });
+  }
+
+  async check_amountCurrencyIsDisplayed(currency: string): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(this.amountCurrencyLabel(currency));
+  }
+
+  async openTokenList(): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement(
+      By.xpath('//label[@for="send-asset-selector"]/../button'),
+    );
   }
 
   async check_validationErrorAppears(

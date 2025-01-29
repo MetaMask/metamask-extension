@@ -420,6 +420,34 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
     });
 }
 
+export async function mockGetAccountInfo(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        context: { apiVersion: '2.0.15', slot: 341197053 },
+        value: {
+          data: ['', 'base58'],
+          executable: true,
+          lamports: 88849814690250,
+          owner: '11111111111111111111111111111111',
+          // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+          rentEpoch: 18446744073709551615,
+          space: 0,
+        },
+      },
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX)
+    .withJsonBodyIncluding({
+      method: 'getAccountInfo',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
 export async function mockGetFeeForMessage(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
@@ -482,6 +510,7 @@ export async function withSolanaAccountSnap(
             await mockMultiCoinPrice(mockServer),
             await mockGetLatestBlockhash(mockServer),
             await mockGetFeeForMessage(mockServer),
+            await mockGetAccountInfo(mockServer),
           ]);
         }
         if (mockSendTransaction) {

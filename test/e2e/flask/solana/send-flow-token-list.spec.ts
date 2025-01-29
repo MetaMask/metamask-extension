@@ -34,14 +34,24 @@ describe('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled when no address',
         );
-        await driver.delay(10000000);
-        await sendSolanaPage.clickOnSwapCurrencyButton();
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when no address nor amount',
-        );
+        await console.log('openTokenList');
+        await sendSolanaPage.openTokenList();
+        await console.log('check_tokenByNameIsDisplayed SOL');
+        await sendSolanaPage.check_tokenByNameIsDisplayed('SOL');
+
+        await sendSolanaPage.check_tokenByNameIsDisplayed('soETH');
+        await sendSolanaPage.check_tokenByNameIsDisplayed('wUSDT');
+        await sendSolanaPage.check_tokenByNameIsDisplayed('HNT');
+
+        await sendSolanaPage.selectTokenFromTokenList('wUSDT');
+
+        await sendSolanaPage.check_amountCurrencyIsDisplayed('wUSDT');
+        await sendSolanaPage.check_tokenBalanceIsDisplayed('250,000', 'wUSDT');
         await sendSolanaPage.setAmount('0.1');
+        await driver.delay(10000000);
+        await sendSolanaPage.clickOnContinue();
+        await driver.delay(10000000);
+
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         await sendSolanaPage.clickOnContinue();
         assert.equal(
