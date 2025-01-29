@@ -167,6 +167,7 @@ export const unrestrictedMethods = Object.freeze([
   'wallet_invokeSnap',
   'wallet_invokeKeyring',
   'wallet_sendCalls',
+  'wallet_getCallsStatus',
   'snap_getClientStatus',
   'snap_getCurrencyRate',
   'snap_clearState',

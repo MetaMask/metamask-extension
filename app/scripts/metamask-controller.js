@@ -2523,6 +2523,7 @@ export default class MetamaskController extends EventEmitter {
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
       addTransactionBatch: this.addTransactionBatch.bind(this),
+      getTransactions: () => this.txController.state.transactions,
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates

@@ -22,6 +22,7 @@ export default function createMetamaskMiddleware({
   getPendingNonce,
   getPendingTransactionByHash,
   addTransactionBatch,
+  getTransactions,
 }) {
   const metamaskMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
@@ -40,7 +41,7 @@ export default function createMetamaskMiddleware({
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
     createPendingTxMiddleware({ getPendingTransactionByHash }),
-    create5792Middleware({ addTransactionBatch }),
+    create5792Middleware({ addTransactionBatch, getTransactions }),
   ]);
   return metamaskMiddleware;
 }
