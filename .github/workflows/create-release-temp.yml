@@ -1,0 +1,28 @@
+name: Temp Create Release Pull Request V2
+
+on:
+  push:
+    branches: '**'
+
+jobs:
+  # Commented for testing so we don't create extra versions
+  # generate-build-version:
+  #   uses: MetaMask/metamask-mobile-build-version/.github/workflows/metamask-mobile-build-version.yml@v0.2.0
+  #   permissions:
+  #     id-token: write
+
+
+  create-release-pr:
+    # Uncomment and use `needs` if generate-build-version is uncommented
+    # needs: generate-build-version
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@platform-shared-workflows
+    with:
+      platform: extension
+      base-branch: rls-alignment
+      semver-version: 12.10.99
+      previous-version-tag: v12.10.2
+    secrets:
+      github-token: ${{ secrets.PR_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
