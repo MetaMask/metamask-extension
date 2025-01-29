@@ -3,6 +3,8 @@ import ExtensionStore from './extension-store';
 
 const MOCK_STATE = { data: {}, meta: { version: 1 } };
 
+global.sentry = global.sentry || {};
+
 jest.mock('webextension-polyfill', () => ({
   runtime: { lastError: null },
   storage: { local: true },
