@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createSelector } from 'reselect';
 import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
-import { CaipChainId, Hex } from '@metamask/utils';
-import { NetworkType } from '@metamask/controller-utils';
 import { Numeric } from '../../shared/modules/Numeric';
 import {
   MultichainProviderConfig,
@@ -36,26 +34,6 @@ import type {
   TransactionsState,
 } from './multichain.types';
 import { getMultichainProviderConfig } from './multichain-provider-config';
-
-// TODO: Remove after updating to @metamask/network-controller 20.0.0
-export type ProviderConfigWithImageUrlAndExplorerUrl = {
-  rpcUrl?: string;
-  type: NetworkType;
-  chainId: Hex;
-  ticker: string;
-  nickname?: string;
-  id?: string;
-} & {
-  rpcPrefs?: { blockExplorerUrl?: string; imageUrl?: string };
-};
-
-export type MultichainNetwork = {
-  nickname: string;
-  isEvmNetwork: boolean;
-  chainId: CaipChainId;
-  network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
-  ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
-};
 
 export const MultichainNetworkPropType = PropTypes.shape({
   nickname: PropTypes.string.isRequired,
