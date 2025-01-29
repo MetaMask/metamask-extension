@@ -2497,11 +2497,6 @@ export default class MetamaskController extends EventEmitter {
       SnapsRegistry: this.snapsRegistry,
       SnapInterfaceController: this.snapInterfaceController,
       SnapInsightsController: this.snapInsightsController,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      CustodyController: this.custodyController,
-      InstitutionalFeaturesController: this.institutionalFeaturesController,
-      MmiConfigurationController: this.mmiConfigurationController,
-      ///: END:ONLY_INCLUDE_IF
       NameController: this.nameController,
       UserOperationController: this.userOperationController,
       // Notification Controllers
@@ -2554,11 +2549,6 @@ export default class MetamaskController extends EventEmitter {
         SnapsRegistry: this.snapsRegistry,
         SnapInterfaceController: this.snapInterfaceController,
         SnapInsightsController: this.snapInsightsController,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        CustodyController: this.custodyController,
-        InstitutionalFeaturesController: this.institutionalFeaturesController,
-        MmiConfigurationController: this.mmiConfigurationController,
-        ///: END:ONLY_INCLUDE_IF
         NameController: this.nameController,
         UserOperationController: this.userOperationController,
         // Notification Controllers

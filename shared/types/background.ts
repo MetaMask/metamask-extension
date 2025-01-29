@@ -189,7 +189,6 @@ export type ResetOnRestartStores = {
   BridgeStatusController: BridgeStatusController;
   EnsController: EnsController;
   ApprovalController: ApprovalController;
-  PPOMController: PPOMController;
 };
 
 export type ResetOnRestartStoresComposedState = {
@@ -253,11 +252,6 @@ export type StoreControllers = ResetOnRestartStores &
     SnapsRegistry: JsonSnapsRegistry;
     SnapInterfaceController: SnapInterfaceController;
     SnapInsightsController: SnapInsightsController;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    CustodyController: CustodyController;
-    InstitutionalFeaturesController: InstitutionalFeaturesController;
-    MmiConfigurationController: MmiConfigurationController;
-    ///: END:ONLY_INCLUDE_IF
     NameController: NameController;
     UserOperationController: UserOperationController;
     // Notification Controllers
@@ -304,19 +298,14 @@ export type StoreControllersComposedState = ResetOnRestartStoresComposedState &
     SnapsRegistry: SnapsRegistryState;
     SnapInterfaceController: SnapInterfaceControllerState;
     SnapInsightsController: SnapInsightsControllerState;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    CustodyController: CustodyControllerState;
-    InstitutionalFeaturesController: InstitutionalFeaturesControllerState;
-    MmiConfigurationController: MmiConfigurationControllerState;
-    ///: END:ONLY_INCLUDE_IF
     NameController: NameControllerState;
     UserOperationController: UserOperationControllerState;
+    RemoteFeatureFlagController: RemoteFeatureFlagControllerState;
     // Notification Controllers
     AuthenticationController: AuthenticationController.AuthenticationControllerState;
     UserStorageController: UserStorageController.UserStorageControllerState;
     NotificationServicesController: NotificationServicesController.NotificationServicesControllerState;
     NotificationServicesPushController: NotificationServicesPushController.NotificationServicesPushControllerState;
-    RemoteFeatureFlagController: RemoteFeatureFlagControllerState;
   };
 
 export type MemControllers = {
@@ -536,14 +525,4 @@ export type FlattenedBackgroundStateProxy = {
   isProfileSyncingUpdateLoading: UserStorageController.UserStorageControllerState['isProfileSyncingUpdateLoading'];
   hasAccountSyncingSyncedAtLeastOnce: UserStorageController.UserStorageControllerState['hasAccountSyncingSyncedAtLeastOnce'];
   isAccountSyncingReadyToBeDispatched: UserStorageController.UserStorageControllerState['isAccountSyncingReadyToBeDispatched'];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyAccountDetails: CustodyControllerState['custodyAccountDetails'];
-  apiRequestLogs: CustodyControllerState['apiRequestLogs'];
-  custodianConnectRequest: CustodyControllerState['custodianConnectRequest'];
-  custodyStatusMaps: CustodyControllerState['custodyStatusMaps'];
-  custodianSupportedChains: CustodyControllerState['custodianSupportedChains'];
-  waitForConfirmDeepLinkDialog: CustodyControllerState['waitForConfirmDeepLinkDialog'];
-  institutionalFeatures: InstitutionalFeaturesControllerState['institutionalFeatures'];
-  mmiConfiguration: MmiConfigurationControllerState['mmiConfiguration'];
-  ///: END:ONLY_INCLUDE_IF
 };
