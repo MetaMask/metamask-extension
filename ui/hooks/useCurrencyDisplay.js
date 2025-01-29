@@ -73,7 +73,7 @@ function formatNonEvmAssetCurrencyDisplay({
   conversionRate,
 }) {
   if (isNativeCurrency || (!isUserPreferredCurrency && !nativeCurrency)) {
-    // NOTE: We use the value coming from the BalancesController here (and thus, the non-EVM
+    // NOTE: We use the value coming from the MultichainBalancesController here (and thus, the non-EVM
     // account Snap).
     // We use `Numeric` here, so we handle those amount the same way than for EVMs (it's worth
     // noting that if `inputValue` is not properly defined, the amount will be set to '0', see

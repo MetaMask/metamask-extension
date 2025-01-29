@@ -16,7 +16,14 @@ import { getMultichainSelectedAccountCachedBalance } from '../../../selectors/mu
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
-import { getSelectedInternalAccount } from '../../../selectors';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  getIsSwapsChain,
+  getIsBridgeChain,
+  ///: END:ONLY_INCLUDE_IF
+  getSelectedInternalAccount,
+  getSwapsDefaultToken,
+} from '../../../selectors';
 import { CoinOverview } from './coin-overview';
 
 type NonEvmOverviewProps = {
@@ -39,6 +46,14 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const isBtc = accountType === BtcAccountType.P2wpkh;
   const isBuyableChain = isBtc ? isBtcBuyable && isBtcMainnetAccount : false;
   ///: END:ONLY_INCLUDE_IF
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+
+  let isSwapsChain = false;
+  let isBridgeChain = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
+  isBridgeChain = useSelector((state) => getIsBridgeChain(state, chainId));
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <CoinOverview
@@ -49,9 +64,10 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       className={className}
       chainId={chainId}
       isSigningEnabled={true}
-      isSwapsChain={false}
+      isSwapsChain={isSwapsChain}
+      defaultSwapsToken={defaultSwapsToken}
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      isBridgeChain={false}
+      isBridgeChain={isBridgeChain}
       isBuyableChain={isBuyableChain}
       ///: END:ONLY_INCLUDE_IF
     />

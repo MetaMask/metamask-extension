@@ -30,14 +30,6 @@ import {
   isLegacyTransaction,
 } from '../../../helpers/utils/transactions.util';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import TabbedNoteToTrader from '../../../components/institutional/note-to-trader/note-to-trader-tabbed';
-///: END:ONLY_INCLUDE_IF
-import {
-  AccountType,
-  CustodyStatus,
-} from '../../../../shared/constants/custody';
-
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import TransactionDetail from '../components/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../components/transaction-detail-item/transaction-detail-item.component';
@@ -158,18 +150,8 @@ export default class ConfirmTransactionBase extends Component {
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
     useCurrencyRateCheck: PropTypes.bool,
-    isNotification: PropTypes.bool,
-    accountType: PropTypes.string,
-    setWaitForConfirmDeepLinkDialog: PropTypes.func,
-    showTransactionsFailedModal: PropTypes.func,
-    showCustodianDeepLink: PropTypes.func,
-    isNoteToTraderSupported: PropTypes.bool,
-    custodianPublishesTransaction: PropTypes.bool,
-    rpcUrl: PropTypes.string,
-    isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
-    updateTransaction: PropTypes.func,
     updateTransactionValue: PropTypes.func,
     setSwapsFeatureFlags: PropTypes.func,
     fetchSmartTransactionsLiveness: PropTypes.func,
@@ -181,9 +163,9 @@ export default class ConfirmTransactionBase extends Component {
     smartTransactionsPreferenceEnabled: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
     selectedNetworkClientId: PropTypes.string,
-    isSmartTransactionsEnabled: PropTypes.bool,
     hasPriorityApprovalRequest: PropTypes.bool,
     chainId: PropTypes.string,
+    setSmartTransactionsRefreshInterval: PropTypes.func,
   };
 
   state = {
@@ -194,9 +176,6 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    noteText: '',
-    ///: END:ONLY_INCLUDE_IF
   };
 
   componentDidUpdate(prevProps) {
@@ -724,9 +703,7 @@ export default class ConfirmTransactionBase extends Component {
       return;
     }
 
-    this.props.isMainBetaFlask
-      ? this.handleMainSubmit()
-      : this.handleMMISubmit();
+    this.handleMainSubmit();
   }
 
   handleMainSubmit() {
@@ -831,144 +808,6 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  async handleMMISubmit() {
-    const {
-      sendTransaction,
-      updateTransaction,
-      txData,
-      history,
-      mostRecentOverviewPage,
-      updateCustomNonce,
-      setNextNonce,
-      unapprovedTxCount,
-      accountType,
-      isNotification,
-      setWaitForConfirmDeepLinkDialog,
-      showTransactionsFailedModal,
-      fromAddress,
-      isNoteToTraderSupported,
-      custodianPublishesTransaction,
-      rpcUrl,
-      methodData,
-      maxFeePerGas,
-      customTokenAmount,
-      dappProposedTokenAmount,
-      currentTokenBalance,
-      maxPriorityFeePerGas,
-      baseFeePerGas,
-      addToAddressBookIfNew,
-      toAccounts,
-      toAddress,
-      showCustodianDeepLink,
-      clearConfirmTransaction,
-      isSmartTransactionsEnabled,
-    } = this.props;
-    const { noteText } = this.state;
-
-    if (accountType === AccountType.CUSTODY) {
-      txData.custodyStatus = CustodyStatus.CREATED;
-      txData.metadata = txData.metadata || {};
-
-      if (isNoteToTraderSupported) {
-        txData.metadata.note = noteText;
-      }
-
-      if (isSmartTransactionsEnabled) {
-        txData.origin += '#smartTransaction';
-      }
-
-      txData.metadata.custodianPublishesTransaction =
-        custodianPublishesTransaction;
-      txData.metadata.rpcUrl = rpcUrl;
-
-      await updateTransaction(txData);
-    }
-
-    updateTxData({
-      txData,
-      maxFeePerGas,
-      customTokenAmount,
-      dappProposedTokenAmount,
-      currentTokenBalance,
-      maxPriorityFeePerGas,
-      baseFeePerGas,
-      addToAddressBookIfNew,
-      toAccounts,
-      toAddress,
-      name: methodData.name,
-    });
-
-    this.setState(
-      {
-        submitting: true,
-        submitError: null,
-      },
-      () => {
-        this._removeBeforeUnload();
-
-        if (txData.custodyStatus) {
-          setWaitForConfirmDeepLinkDialog(true);
-        }
-
-        sendTransaction(txData)
-          .then(() => {
-            updateCustomNonce('');
-            setNextNonce('');
-            if (txData.custodyStatus) {
-              showCustodianDeepLink({
-                fromAddress,
-                closeNotification: isNotification && unapprovedTxCount === 1,
-                txId: txData.id,
-                onDeepLinkFetched: () => {
-                  this.context.trackEvent({
-                    category: 'MMI',
-                    event: 'Show deeplink for transaction',
-                  });
-                },
-                onDeepLinkShown: () => {
-                  clearConfirmTransaction();
-                  if (!this._isMounted) {
-                    return;
-                  }
-                  this.setState({ submitting: false }, () => {
-                    history.push(mostRecentOverviewPage);
-                  });
-                },
-              });
-            } else {
-              if (!this._isMounted) {
-                return;
-              }
-              this.setState(
-                {
-                  submitting: false,
-                },
-                () => {
-                  history.push(mostRecentOverviewPage);
-                },
-              );
-            }
-          })
-          .catch((error) => {
-            updateCustomNonce('');
-            setNextNonce('');
-
-            if (!this._isMounted) {
-              return;
-            }
-
-            showTransactionsFailedModal(error.message, isNotification);
-
-            this.setState({
-              submitting: false,
-              submitError: error.message,
-            });
-            setWaitForConfirmDeepLinkDialog(true);
-          });
-      },
-    );
-  }
-
   handleSetApprovalForAll() {
     this.setState({ showWarningModal: true });
   }
@@ -1023,6 +862,7 @@ export default class ConfirmTransactionBase extends Component {
       currentChainSupportsSmartTransactions,
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
+      setSmartTransactionsRefreshInterval,
     } = this.props;
 
     const { trackEvent } = this.context;
@@ -1071,7 +911,12 @@ export default class ConfirmTransactionBase extends Component {
       Promise.all([
         fetchSwapsFeatureFlags(),
         fetchSmartTransactionsLiveness(),
-      ]).then(([swapsFeatureFlags]) => setSwapsFeatureFlags(swapsFeatureFlags));
+      ]).then(([swapsFeatureFlags]) => {
+        setSwapsFeatureFlags(swapsFeatureFlags);
+        setSmartTransactionsRefreshInterval(
+          swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
+        );
+      });
     }
   }
 
@@ -1114,9 +959,6 @@ export default class ConfirmTransactionBase extends Component {
       displayAccountBalanceHeader,
       title,
       isSigningOrSubmitting,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      isNoteToTraderSupported,
-      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const {
       submitting,
@@ -1182,19 +1024,6 @@ export default class ConfirmTransactionBase extends Component {
           detailsComponent={this.renderDetails()}
           dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          noteComponent={
-            isNoteToTraderSupported && (
-              <TabbedNoteToTrader
-                maxLength={280}
-                placeholder={t('notePlaceholder')}
-                onChange={(value) => this.setState({ noteText: value })}
-                noteText={this.state.noteText}
-                labelText={t('transactionNote')}
-              />
-            )
-          }
-          ///: END:ONLY_INCLUDE_IF
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
           tokenAddress={tokenAddress}

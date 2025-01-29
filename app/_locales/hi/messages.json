@@ -290,9 +290,6 @@
   "addNewSolanaAccount": {
     "message": "एक नया Solana अकाउंट जोड़ें (बीटा)"
   },
-  "addNewToken": {
-    "message": "नया टोकन जोड़ें"
-  },
   "addNft": {
     "message": "NFT जोड़ें"
   },
@@ -485,12 +482,6 @@
   "all": {
     "message": "सभी"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "आपने या तो अपने सभी कस्टोडियन एकाउंट्स को पहले ही जोड़ लिया है या MetaMask इंस्टीट्यूशनल से जुड़ने के लिए कोई अकाउंट नहीं है।"
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "कनेक्ट करने के लिए कोई अकाउंट उपलब्ध नहीं हैं"
-  },
   "allOfYour": {
     "message": "आपके सभी $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -507,12 +498,6 @@
   "allYourNFTsOf": {
     "message": "आपके सभी NFTs $1 से शुरू",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "अनुमति दें"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "यह आपके एकाउंट्स को इम्पोर्ट करने के लिए MMI को $1 से कनेक्ट करने की अनुमति देगा।"
   },
   "allowNotifications": {
     "message": "नोटिफिकेशंस की अनुमति दें"
@@ -655,9 +640,6 @@
   "average": {
     "message": "औसत"
   },
-  "awaitingApproval": {
-    "message": "एप्रूवल का इंतज़ार है..."
-  },
   "back": {
     "message": "वापस"
   },
@@ -723,9 +705,6 @@
     "message": "यह बीटा वर्शन है। कृपया बग रिपोर्ट करें $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional बीटा वर्शन"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask बीटा वर्शन"
   },
@@ -735,9 +714,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinActivityNotSupported": {
-    "message": "Bitcoin गतिविधि सपोर्ट नहीं करती है"
   },
   "bitcoinSupportSectionTitle": {
     "message": "Bitcoin"
@@ -985,15 +961,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "मैंने एलर्ट को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "'जारी रखें' पर क्लिक करने पर हम आपको $1 पर रीडायरेक्ट कर देंगे।"
-  },
-  "confirmConnectCustodianText": {
-    "message": "अपने एकाउंट्स को कनेक्ट करने के लिए, अपने $1 अकाउंट में लॉग इन करें और 'MMI से कनेक्ट करें' बटन पर क्लिक करें।"
-  },
-  "confirmConnectionTitle": {
-    "message": "$1 से कनेक्शन को कन्फर्म करें"
-  },
   "confirmFieldPaymaster": {
     "message": "के द्वारा शुल्क का भुगतान किया गया"
   },
@@ -1074,18 +1041,6 @@
   },
   "connectAccounts": {
     "message": "एकाउंट्स को कनेक्ट करें"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "कस्टोडियल अकाउंट कनेक्ट करें"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "टोकन जोड़ने या रीफ्रेश करने के लिए कृपया उस कस्टोडियन को चुनें जिससे आप जुड़ना चाहते हैं।"
-  },
-  "connectCustodialAccountTitle": {
-    "message": "कस्टोडियल अकाउंट"
-  },
-  "connectCustodianAccounts": {
-    "message": "$1 एकाउंट्स को कनेक्ट करें"
   },
   "connectManually": {
     "message": "वर्तमान साइट से मैन्युअल रूप से कनेक्ट करें"
@@ -1208,12 +1163,6 @@
   },
   "continue": {
     "message": "जारी रखें"
-  },
-  "continueMmiOnboarding": {
-    "message": "MetaMask Institutional ऑनबोर्डिंग जारी रखें"
-  },
-  "continueToWallet": {
-    "message": "वॉलेट जारी रखें"
   },
   "contract": {
     "message": "कॉन्ट्रैक्ट"
@@ -1347,60 +1296,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "मार्केट गैस एस्टीमेट ग्राफ"
-  },
-  "custodian": {
-    "message": "कस्टोडियन"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "अब आप MetaMask Institutional में अपने एकाउंट्स का इस्तेमाल कर सकते हैं।"
-  },
-  "custodianAccountAddedTitle": {
-    "message": "चुने गए $1 एकाउंट्स जोड़ दिए गए हैं।"
-  },
-  "custodianQRCodeScan": {
-    "message": "QR कोड को अपने $1 मोबाइल ऐप से स्कैन करें"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "या अपने $1 अकाउंट में लॉग इन करें और 'Connect to MMI' बटन पर क्लिक करें"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "कृपया $1 पर जाएं और अपने एकाउंट्स को फिर से MMI से जोड़ने के लिए उनके यूज़र इंटरफेस के भीतर 'MMI से कनेक्ट करें' बटन पर क्लिक करें।"
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "अब आप MetaMask Institutional में अपने कस्टोडियन एकाउंट्स का इस्तेमाल कर सकते हैं।"
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "आपका कस्टोडियन टोकन रीफ्रेश कर दिया गया है"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "यह निम्नलिखित एड्रेस के लिए कस्टोडियन टोकन को रिप्लेस करेगा:"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "कस्टोडियन टोकन बदलें"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "$1 ऐप में ट्रांसेक्शन को एप्रूव करें। एक बार सभी आवश्यक कस्टडी एप्रूवल किए जाने के बाद ट्रांसेक्शन पूरा हो जाएगा। स्केटेटस लिए अपना $1 ऐप देखें।"
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "कृपया $1 पर जाएं और अपने एकाउंट्स को फिर से MMI से जोड़ने के लिए उनके यूज़र इंटरफेस के भीतर 'MMI से कनेक्ट करें' बटन पर क्लिक करें।"
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "आपका कस्टोडियन एक टोकन जारी करता है जो MetaMask Institutional एक्सटेंशन को ऑथेंटिकेट करता है, जिससे आप अपने एकाउंट्स को कनेक्ट कर सकते हैं।"
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "यह टोकन सुरक्षा कारणों से एक निश्चित अवधि के बाद समाप्त हो जाता है। इसके लिए आपको MMI से फिर से कनेक्ट करना होगा।"
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "मुझे यह क्यों दिख रहा है?"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "आपका कस्टोडियन सेशन समाप्त हो गया"
-  },
-  "custodySessionExpired": {
-    "message": "कस्टोडियन सेशन समाप्त हो गया।"
-  },
-  "custodyWrongChain": {
-    "message": "यह अकाउंट $1 के साथ इस्तेमाल करने के लिए सेटअप नहीं किया गया है"
   },
   "custom": {
     "message": "एडवांस्ड"
@@ -1864,9 +1759,6 @@
   "enterChainId": {
     "message": "चेन ID डालें"
   },
-  "enterCustodianToken": {
-    "message": "अपना $1 टोकन डालें या एक नया टोकन जोड़ें"
-  },
   "enterMaxSpendLimit": {
     "message": "अधिकतम खर्च की लिमिट डालें"
   },
@@ -2002,12 +1894,6 @@
   "extendWalletWithSnaps": {
     "message": "अपने Web3 एक्सपीरियंस को कस्टमाइज़ करने के लिए कम्युनिटी-बिल्ट Snaps को एक्सप्लोर करें।",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
-  },
-  "extensionInsallCompleteDescription": {
-    "message": "अपने कस्टोडियल या सेल्फ-कस्टोडियल एकाउंट्स को जोड़ने के लिए MetaMask Institutional प्रोडक्ट ऑनबोर्डिंग पर वापस आएं।"
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "एक्सटेंशन इनस्टॉल पूरा हो गया"
   },
   "externalExtension": {
     "message": "बाहरी एक्स्टेन्शन"
@@ -2469,12 +2355,6 @@
   "install": {
     "message": "इंस्टॉल करें"
   },
-  "installExtension": {
-    "message": "एक्सटेंशन इनस्टॉल करें"
-  },
-  "installExtensionDescription": {
-    "message": "दुनिया में तेज़ी से अपना पाँव जमाने वाले Web3 वॉलेट, MetaMask का इंस्टीट्यूशन-कंप्लायंट संस्करण।"
-  },
   "installOrigin": {
     "message": "ओरिजिन इंस्टॉल करें"
   },
@@ -2867,9 +2747,6 @@
     "message": "$1 को npm पर होस्ट किया गया है और $2 इस Snap का यूनीक आइडेंटिफायर है।",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional वर्शन"
-  },
   "metamaskNotificationsAreOff": {
     "message": "वॉलेट नोटिफिकेशंस वर्तमान में सक्रिय नहीं हैं।"
   },
@@ -2894,9 +2771,6 @@
   "millionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "आपका चुना गया अकाउंट ($1) साइन-इन करने की कोशिश करने वाले अकाउंट ($2) से अलग है"
   },
   "mismatchedChainLinkText": {
     "message": "नेटवर्क विवरण वेरीफ़ाई करें",
@@ -2923,15 +2797,6 @@
   },
   "missingSettingRequest": {
     "message": "यहां रिक्वेस्ट करें"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional को दुनिया भर में डिजाइन किया और बनाया गया है।"
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "MetaMask Institutional को ऑटोमेटिक तरीके से NFTs का पता लगाने और आपके वॉलेट में दिखाने के लिए अनुमति दें।"
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "यह पासवर्ड केवल आपके MetaMask Institutional एक्सटेंशन को ही अनलॉक करेगा।"
   },
   "more": {
     "message": "अधिक"
@@ -3307,9 +3172,6 @@
   "noWebcamFoundTitle": {
     "message": "वेबकैम नहीं मिला"
   },
-  "nonCustodialAccounts": {
-    "message": "MetaMask इंस्टीट्यूशनल आपको नॉन-कस्टोडियल अकाउंट का उपयोग करने की अनुमति देता है, यदि आप इन अकाउंट का उपयोग करने की योजना बना रहे हैं, तो सीक्रेट रिकवरी फ्रेज़ का बैकअप लें।"
-  },
   "nonce": {
     "message": "Nonce"
   },
@@ -3336,12 +3198,6 @@
   },
   "notEnoughGas": {
     "message": "गैस कम है"
-  },
-  "note": {
-    "message": "टिप्पणी"
-  },
-  "notePlaceholder": {
-    "message": "अनुमोदक इस टिप्पणी को कस्टोडियन के पास ट्रांसेक्शन का एप्रूवल करते समय देखेगा।"
   },
   "notificationDetail": {
     "message": "विवरण"
@@ -3677,9 +3533,6 @@
   "onboardingPinExtensionTitle": {
     "message": "आपका MetaMask इंस्टॉल पूरा हो गया है!"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "MetaMask Institutional को पिन करें"
-  },
   "oneDayAbbreviation": {
     "message": "1D",
     "description": "Shortened form of '1 day'"
@@ -3703,10 +3556,6 @@
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं। $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "$1 ऐप खोलें",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "अपने Ledger को कनेक्ट करने के लिए फुल स्क्रीन पर जाएं।",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3717,17 +3566,11 @@
   "openSeaNew": {
     "message": "ओपनसी"
   },
-  "operationFailed": {
-    "message": "प्रचालन नहीं हो पाया"
-  },
   "optional": {
     "message": "वैकल्पिक"
   },
   "options": {
     "message": "विकल्प"
-  },
-  "or": {
-    "message": "या"
   },
   "origin": {
     "message": "ओरिजिन"
@@ -3763,9 +3606,6 @@
   "password": {
     "message": "पासवर्ड"
   },
-  "passwordMmiTermsWarning": {
-    "message": "मैं समझता हूं कि MetaMask Institutional मेरे लिए इस पासवर्ड को रिकवर नहीं कर सकता। $1"
-  },
   "passwordNotLongEnough": {
     "message": "पासवर्ड की लंबाई पर्याप्त नहीं है"
   },
@@ -3784,9 +3624,6 @@
   },
   "passwordsDontMatch": {
     "message": "पासवर्ड मेल नहीं खाता"
-  },
-  "pasteJWTToken": {
-    "message": "अपना टोकन यहां पेस्ट या ड्रॉप करें:"
   },
   "pastePrivateKey": {
     "message": "अपनी प्राइवेट की (key) स्ट्रिंग यहाँ पेस्ट करें:",
@@ -4071,12 +3908,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "यह आपको किसी भी एड्रेस पर एक उपनाम देने की सुविधा देता है। जब भी संभव होगा हम उन एड्रेसों के लिए नाम सुझाएंगे जिनसे आप इंटरैक्ट करते हैं।"
   },
-  "pinExtensionDescription": {
-    "message": "बिना रोक-टोक एक्सेस के लिए एक्सटेंशन मेनू पर जाएं और MetaMask Institutional को पिन करें।"
-  },
-  "pinExtensionTitle": {
-    "message": "एक्सटेंशन को पिन करें"
-  },
   "pinToTop": {
     "message": "सबसे ऊपर ले जाएं"
   },
@@ -4097,9 +3928,6 @@
   },
   "portfolio": {
     "message": "पोर्टफोलियो"
-  },
-  "portfolioDashboard": {
-    "message": "पोर्टफोलियो डैशबोर्ड"
   },
   "preparingSwap": {
     "message": "स्वैप की तैयारी कर रहा है..."
@@ -4307,18 +4135,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "अपने धन को सुरक्षित रखें"
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "बेहतर सिग्नेचर अनुरोध"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "उन्नत फॉर्मेट में सिग्नेचर अनुरोध देखने के लिए इसे चालू करें।"
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "बेहतर ट्रांसेक्शन के अनुरोध"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "उन्नत फॉर्मेट में ट्रांसेक्शन के अनुरोध देखने के लिए इसे चालू करें।"
-  },
   "refreshList": {
     "message": "लिस्ट रिफ्रेश करें"
   },
@@ -4357,12 +4173,6 @@
   },
   "removeAccountDescription": {
     "message": "यह अकाउंट आपके वॉलेट से निकाल दिया जाएगा। कृपया पक्का करें कि जारी रखने से पहले आपके पास इस इम्पोर्टित अकाउंट के लिए ओरिजिनल सीक्रेट रिकवरी फ्रेज या प्राइवेट की (key) है। आप अकाउंट ड्रॉप-डाउन से फिर से अकाउंट इम्पोर्ट कर सकते हैं या बना सकते हैं। "
-  },
-  "removeJWT": {
-    "message": "कस्टोडियन टोकन हटाएं"
-  },
-  "removeJWTDescription": {
-    "message": "क्या आप सुनिश्चित हैं कि आप इस टोकन को हटाना चाहते हैं? इस टोकन को सौंपे गए सभी एकाउंट्स को एक्सटेंशन से भी हटा दिया जाएगा: "
   },
   "removeKeyringSnap": {
     "message": "इस Snap को हटाने पर ये एकाउंट्स MetaMask से हट जाते हैं:"
@@ -4709,26 +4519,17 @@
   "selectAll": {
     "message": "सभी को चुनें"
   },
-  "selectAllAccounts": {
-    "message": "सभी एकाउंट्स को चुनें"
-  },
   "selectAnAccount": {
     "message": "किसी अकाउंट को चुनें"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "यह अकाउंट पहले ही MetaMask से जुड़ा हुआ है"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask Institutional में इस्तेमाल करने के लिए कस्टोडियन एकाउंट्स को चुनें।"
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "डिस्प्ले NFT मीडिया चालू करें"
   },
   "selectHdPath": {
     "message": "HD पथ को चुनें"
-  },
-  "selectJWT": {
-    "message": "टोकन चुनें"
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT ऑटोडिटेक्शन चालू करें"
@@ -6099,9 +5900,6 @@
   "transactionErrored": {
     "message": "ट्रांसेक्शन में गड़बड़ी हुई।"
   },
-  "transactionFailed": {
-    "message": "ट्रांसेक्शन नहीं हो पाया"
-  },
   "transactionFee": {
     "message": "ट्रांसेक्शन फ़ीस"
   },
@@ -6128,9 +5926,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "कुल गैस फ़ीस"
-  },
-  "transactionNote": {
-    "message": "ट्रांसेक्शन टिप्पणी"
   },
   "transactionResubmitted": {
     "message": "$2 गैस फ़ीस में $1 वृद्धि के साथ ट्रांसेक्शन फिर से सबमिट किया गया"
@@ -6409,9 +6204,6 @@
   },
   "viewTransaction": {
     "message": "ट्रांसेक्शन देखें"
-  },
-  "viewinCustodianApp": {
-    "message": "Custodian ऐप में देखें"
   },
   "viewinExplorer": {
     "message": "एक्सप्लोरर में $1 देखें",

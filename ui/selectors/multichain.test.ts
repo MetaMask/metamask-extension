@@ -83,6 +83,13 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
           },
         },
       },
+      nonEvmTransactions: {
+        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
+          transactions: [],
+          next: null,
+          lastUpdated: 0,
+        },
+      },
       balances: {
         [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
           [MultichainNativeAssets.BITCOIN]: {

@@ -60,6 +60,7 @@ import {
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-account';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
+import { Skeleton } from '../../component-library/skeleton';
 ///: END:ONLY_INCLUDE_IF
 
 export const safeComponentList = {
@@ -108,6 +109,7 @@ export const safeComponentList = {
   SnapUITooltip,
   span: 'span',
   Spinner,
+  Skeleton,
   Text,
   TextArea,
   TextField,

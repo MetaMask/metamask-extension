@@ -14,7 +14,7 @@ export const AccountOverviewEth = (props: AccountOverviewEthProps) => {
       {...props}
     >
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <EthOverview />
         ///: END:ONLY_INCLUDE_IF
       }
