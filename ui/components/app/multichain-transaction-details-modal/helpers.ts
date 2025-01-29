@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import {
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_URL_MAP,
   MultichainNetworks,
@@ -83,15 +84,13 @@ export const formatTimestamp = (timestamp: number | null) => {
     return '';
   }
 
-  const date = formatDateWithYearContext(timestamp, 'MMM d, y', 'MMM d');
-  const time = new Date(timestamp)
-    .toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-      timeZone: undefined,
-    })
-    .slice(0, 5);
+  // It's typical for Solana timestamps to use seconds, while JS Dates and most EVM chains use milliseconds.
+  // Hence we needed to use the conversion `timestamp < 1e12 ? timestamp * 1000 : timestamp` for it to work.
+  const timestampMs = timestamp < 1e12 ? timestamp * 1000 : timestamp;
+
+  const dateTime = DateTime.fromMillis(timestampMs);
+  const date = formatDateWithYearContext(timestampMs, 'MMM d, y', 'MMM d');
+  const time = dateTime.toFormat('HH:mm');
 
   return `${date}, ${time}`;
 };
