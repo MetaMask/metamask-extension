@@ -1,11 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import {
-  useDispatch,
-  useSelector,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shallowEqual,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { memoize } from 'lodash';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
@@ -19,20 +13,9 @@ import {
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
   selectNetworkConfigurationByChainId,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  accountsWithSendEtherInfoSelector,
-  getSelectedAccount,
-  getAccountType,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
 import { isAddressLedger } from '../../../../ducks/metamask/metamask';
-import {
-  sanitizeMessage,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getAccountByAddress,
-  shortenAddress,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../helpers/utils/util';
+import { sanitizeMessage } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRejectTransactionModal } from '../../hooks/useRejectTransactionModal';
 import { ConfirmPageContainerNavigation } from '../confirm-page-container';
@@ -51,12 +34,6 @@ import {
   TextColor,
   TextVariant,
   Size,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  IconColor,
-  BackgroundColor,
-  Display,
-  BlockSize,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonVariant,
@@ -64,17 +41,8 @@ import {
   ButtonLink,
   TagUrl,
   Text,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  Icon,
-  IconName,
-  Box,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMessage';
-import { AccountType } from '../../../../../shared/constants/custody';
-///: END:ONLY_INCLUDE_IF
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
@@ -114,19 +82,6 @@ const SignatureRequest = ({ txData, warnings }) => {
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
   const { handleCancelAll } = useRejectTransactionModal();
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  // Used to show a warning if the signing account is not the selected account
-  // Largely relevant for contract wallet custodians
-  const selectedAccount = useSelector(getSelectedAccount);
-  const accountType = useSelector(getAccountType);
-  const allAccounts = useSelector(
-    accountsWithSendEtherInfoSelector,
-    shallowEqual,
-  );
-  const { address } = getAccountByAddress(allAccounts, from) || {};
-  const { custodySignFn } = useMMICustodySignMessage();
-  ///: END:ONLY_INCLUDE_IF
-
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
     useState(false);
 
@@ -155,12 +110,6 @@ const SignatureRequest = ({ txData, warnings }) => {
       : 'primary';
 
   const onSign = async () => {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (accountType === AccountType.CUSTODY) {
-      await custodySignFn(txData);
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     await dispatch(resolvePendingApproval(id));
     completedTx(id);
 
@@ -228,36 +177,6 @@ const SignatureRequest = ({ txData, warnings }) => {
               securityProviderResponse={txData.securityProviderResponse}
             />
           ) : null}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            selectedAccount.address === address ? null : (
-              <Box
-                className="request-signature__mismatch-info"
-                display={Display.Flex}
-                width={BlockSize.Full}
-                padding={4}
-                marginBottom={4}
-                backgroundColor={BackgroundColor.primaryMuted}
-              >
-                <Icon
-                  name={IconName.Info}
-                  color={IconColor.infoDefault}
-                  marginRight={2}
-                />
-                <Text
-                  variant={TextVariant.bodyXs}
-                  color={TextColor.textDefault}
-                  as="h6"
-                >
-                  {t('mismatchAccount', [
-                    shortenAddress(selectedAccount.address),
-                    shortenAddress(address),
-                  ])}
-                </Text>
-              </Box>
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
           <div className="signature-request__origin">
             <TagUrl
               label={origin}
@@ -329,9 +248,6 @@ const SignatureRequest = ({ txData, warnings }) => {
             return onSign();
           }}
           disabled={
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            Boolean(txData?.custodyId) ||
-            ///: END:ONLY_INCLUDE_IF
             hardwareWalletRequiresConnection ||
             (messageIsScrollable && !hasScrolledMessage)
           }
