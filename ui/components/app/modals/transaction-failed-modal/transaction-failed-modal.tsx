@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import withModalProps from '../../../helpers/higher-order-components/with-modal-props';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AlignItems,
   BorderRadius,
@@ -8,7 +8,7 @@ import {
   FlexDirection,
   TextAlign,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 import {
   Icon,
   IconName,
@@ -22,7 +22,7 @@ import {
   ButtonSize,
   ModalContent,
   ModalHeader,
-} from '../../component-library';
+} from '../../../component-library';
 
 type TransactionFailedModalProps = {
   hideModal: () => void;

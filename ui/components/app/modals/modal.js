@@ -16,8 +16,8 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
 import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
 import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
-import TransactionFailed from '../../institutional/transaction-failed-modal';
 ///: END:ONLY_INCLUDE_IF
+import TransactionFailed from './transaction-failed-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
@@ -274,9 +274,9 @@ const MODALS = {
     },
   },
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CONFIRM_REMOVE_JWT: {
-    contents: <ConfirmRemoveJWT />,
+  TRANSACTION_FAILED: {
+    disableBackdropClick: true,
+    contents: <TransactionFailed />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -288,9 +288,9 @@ const MODALS = {
     },
   },
 
-  TRANSACTION_FAILED: {
-    disableBackdropClick: true,
-    contents: <TransactionFailed />,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  CONFIRM_REMOVE_JWT: {
+    contents: <ConfirmRemoveJWT />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
