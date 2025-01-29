@@ -29,6 +29,7 @@ import {
   getCurrentNetwork,
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
+  getPendingTokens,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -90,10 +91,7 @@ import {
 } from '../../../helpers/utils/util';
 import { tokenInfoGetter } from '../../../helpers/utils/token-util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getNativeCurrency,
-  getPendingTokens,
-} from '../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -633,6 +631,7 @@ export const ImportTokensModal = ({ onClose }) => {
                               ? Severity.Warning
                               : Severity.Info
                           }
+                          data-testid="custom-token-warning"
                         >
                           <Text variant={TextVariant.bodyMd}>
                             {t(

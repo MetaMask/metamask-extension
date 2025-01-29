@@ -14,6 +14,8 @@ const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
 const state = {
   appState: {
     customTokenAmount: '1',
+    nextNonce: 1,
+    customNonceValue: '',
   },
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -101,8 +103,6 @@ const state = {
         accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
-    nextNonce: 1,
-    customNonceValue: '',
     pendingApprovals: {
       '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
         id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
@@ -320,7 +320,7 @@ describe('TokenAllowancePage', () => {
 
   it('should render edited custom nonce value', () => {
     props.useNonceField = true;
-    state.metamask.customNonceValue = '3';
+    state.appState.customNonceValue = '3';
     const { queryByText, getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
@@ -363,7 +363,7 @@ describe('TokenAllowancePage', () => {
 
   it('should render customize nonce modal when next button is clicked and if useNonceField is set to true', () => {
     props.useNonceField = true;
-    state.metamask.customNonceValue = '2';
+    state.appState.customNonceValue = '2';
     const { getByText, getAllByText, queryByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
@@ -381,7 +381,7 @@ describe('TokenAllowancePage', () => {
 
   it('should render customize nonce modal when next button is clicked, than back button is clicked, than return to previous page and if useNonceField is set to true', () => {
     props.useNonceField = true;
-    state.metamask.customNonceValue = '2';
+    state.appState.customNonceValue = '2';
     const { getByText, queryByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,

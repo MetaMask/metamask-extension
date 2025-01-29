@@ -7,12 +7,6 @@ import {
 } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { CHAIN_ID_TO_RPC_URL_MAP } from '../../../../shared/constants/network';
-
-///: END:ONLY_INCLUDE_IF
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -30,6 +24,7 @@ import {
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
   setNextNonce,
+  setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -58,9 +53,6 @@ import {
 } from '../../../selectors';
 import {
   getCurrentChainSupportsSmartTransactions,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getSmartTransactionsEnabled,
-  ///: END:ONLY_INCLUDE_IF
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -74,9 +66,6 @@ import {
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
   addHexPrefix,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getEnvironmentType,
-  ///: END:ONLY_INCLUDE_IF
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/util';
@@ -100,20 +89,6 @@ import {
   // eslint-disable-next-line import/no-duplicates
 } from '../../../selectors/selectors';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  getAccountType,
-  selectDefaultRpcEndpointByChainId,
-  // eslint-disable-next-line import/no-duplicates
-} from '../../../selectors/selectors';
-// eslint-disable-next-line import/no-duplicates
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
-import {
-  getIsNoteToTraderSupported,
-  getIsCustodianPublishesTransactionSupported,
-} from '../../../selectors/institutional/selectors';
-import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
-///: END:ONLY_INCLUDE_IF
 import { calcGasTotal } from '../../../../shared/lib/transactions-controller-utils';
 import { subtractHexes } from '../../../../shared/modules/conversion.utils';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
@@ -164,11 +139,6 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const envType = getEnvironmentType();
-  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  ///: END:ONLY_INCLUDE_IF
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
@@ -282,36 +252,14 @@ const mapStateToProps = (state, ownProps) => {
   const { nativeCurrency } =
     selectNetworkConfigurationByChainId(state, chainId) ?? {};
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const accountType = getAccountType(state, fromAddress);
-  const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
-  const isNoteToTraderSupported = getIsNoteToTraderSupported(
-    state,
-    fromChecksumHexAddress,
-  );
-  const custodianPublishesTransaction =
-    getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress);
-  const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
-
-  const { url: customRpcUrl } =
-    selectDefaultRpcEndpointByChainId(state, chainId) ?? {};
-
-  const rpcUrl = customRpcUrl || builtinRpcUrl;
-
-  ///: END:ONLY_INCLUDE_IF
-
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isUsingPaymaster = getIsUsingPaymaster(state);
 
-  let isSigningOrSubmitting = Boolean(
+  const isSigningOrSubmitting = Boolean(
     getApprovedAndSignedTransactions(state).length,
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isSigningOrSubmitting = false;
-  ///: END:ONLY_INCLUDE_IF
 
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
@@ -381,21 +329,10 @@ const mapStateToProps = (state, ownProps) => {
     smartTransactionsPreferenceEnabled,
     currentChainSupportsSmartTransactions,
     hasPriorityApprovalRequest,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    accountType,
-    isNoteToTraderSupported,
-    isNotification,
-    custodianPublishesTransaction,
-    rpcUrl,
-    isSmartTransactionsEnabled: getSmartTransactionsEnabled(state),
-    ///: END:ONLY_INCLUDE_IF
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IF
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
@@ -455,37 +392,8 @@ export const mapDispatchToProps = (dispatch) => {
         dispatch(addToAddressBook(hexPrefixedAddress, nickname));
       }
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    getCustodianConfirmDeepLink: (id) =>
-      dispatch(mmiActions.getCustodianConfirmDeepLink(id)),
-    showTransactionsFailedModal: (errorMessage, closeNotification) =>
-      dispatch(
-        showModal({
-          name: 'TRANSACTION_FAILED',
-          errorMessage,
-          closeNotification,
-        }),
-      ),
-    showCustodianDeepLink: ({
-      txId,
-      fromAddress,
-      closeNotification,
-      onDeepLinkFetched,
-      onDeepLinkShown,
-    }) =>
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId,
-        fromAddress,
-        closeNotification,
-        onDeepLinkFetched,
-        onDeepLinkShown,
-        showCustodyConfirmLink,
-      }),
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    ///: END:ONLY_INCLUDE_IF
+    setSmartTransactionsRefreshInterval: (interval) =>
+      dispatch(setSmartTransactionsRefreshInterval(interval)),
   };
 };
 

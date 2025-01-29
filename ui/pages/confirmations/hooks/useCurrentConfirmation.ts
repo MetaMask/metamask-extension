@@ -5,9 +5,6 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
-  getIsRedesignedConfirmationsDeveloperEnabled,
-  getRedesignedConfirmationsEnabled,
-  getRedesignedTransactionsEnabled,
   getUnapprovedTransaction,
   oldestPendingConfirmationSelector,
   selectPendingApproval,
@@ -31,18 +28,6 @@ const useCurrentConfirmation = () => {
   const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
   const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
 
-  const isRedesignedSignaturesUserSettingEnabled = useSelector(
-    getRedesignedConfirmationsEnabled,
-  );
-
-  const isRedesignedTransactionsUserSettingEnabled = useSelector(
-    getRedesignedTransactionsEnabled,
-  );
-
-  const isRedesignedConfirmationsDeveloperEnabled = useSelector(
-    getIsRedesignedConfirmationsDeveloperEnabled,
-  );
-
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
   );
@@ -58,14 +43,10 @@ const useCurrentConfirmation = () => {
 
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({
     approvalType: pendingApproval?.type as ApprovalType,
-    isRedesignedSignaturesUserSettingEnabled,
-    isRedesignedConfirmationsDeveloperEnabled,
   });
 
   const useRedesignedForTransaction = shouldUseRedesignForTransactions({
     transactionMetadataType: transactionMetadata?.type,
-    isRedesignedTransactionsUserSettingEnabled,
-    isRedesignedConfirmationsDeveloperEnabled,
   });
 
   const shouldUseRedesign =

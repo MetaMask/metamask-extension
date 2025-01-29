@@ -290,9 +290,6 @@
   "addNewSolanaAccount": {
     "message": "添加新的Solana账户（测试版）"
   },
-  "addNewToken": {
-    "message": "添加新代币"
-  },
   "addNft": {
     "message": "添加 NFT"
   },
@@ -485,12 +482,6 @@
   "all": {
     "message": "所有"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "您或者已连接所有托管账户，或者没有任何账户可连接到 MetaMask Institutional。"
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "没有可连接的账户"
-  },
   "allOfYour": {
     "message": "您的所有$1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -507,12 +498,6 @@
   "allYourNFTsOf": {
     "message": "您所有在$1的NFT",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "允许"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "这将允许 MMI 连接到 $1，以导入您的账户。"
   },
   "allowNotifications": {
     "message": "允许通知"
@@ -655,9 +640,6 @@
   "average": {
     "message": "平均值"
   },
-  "awaitingApproval": {
-    "message": "等待批准......"
-  },
   "back": {
     "message": "返回"
   },
@@ -723,9 +705,6 @@
     "message": "此为测试版。请$1报告错误",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional 测试版本"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask 测试版本"
   },
@@ -735,9 +714,6 @@
   "billionAbbreviation": {
     "message": "十亿",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinActivityNotSupported": {
-    "message": "比特币活动不受支持"
   },
   "bitcoinSupportSectionTitle": {
     "message": "比特币"
@@ -985,15 +961,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "我已知晓提醒并仍想继续"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "点击“继续”后，我们会将您重定向到 $1。"
-  },
-  "confirmConnectCustodianText": {
-    "message": "要连接您的账户，请登录您的 $1 账户，然后点击“连接到 MMI”按钮。"
-  },
-  "confirmConnectionTitle": {
-    "message": "确认连接到$1"
-  },
   "confirmFieldPaymaster": {
     "message": "费用支付方"
   },
@@ -1045,9 +1012,6 @@
   "confirmTitleTransaction": {
     "message": "交易请求"
   },
-  "confirmationAlertModalDetails": {
-    "message": "为了保护您的资产和登录信息，我们建议您拒绝该请求。"
-  },
   "confirmationAlertModalTitle": {
     "message": "此请求可疑"
   },
@@ -1077,18 +1041,6 @@
   },
   "connectAccounts": {
     "message": "连接账户"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "连接托管账户"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "请选择您想要连接的托管账户，以添加或刷新代币。"
-  },
-  "connectCustodialAccountTitle": {
-    "message": "托管账户"
-  },
-  "connectCustodianAccounts": {
-    "message": "连接 $1 账户"
   },
   "connectManually": {
     "message": "手动连接到当前站点"
@@ -1211,12 +1163,6 @@
   },
   "continue": {
     "message": "继续"
-  },
-  "continueMmiOnboarding": {
-    "message": "继续MetaMask Institutional入门过程"
-  },
-  "continueToWallet": {
-    "message": "继续前往钱包"
   },
   "contract": {
     "message": "合约"
@@ -1350,60 +1296,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "市场价燃料估算图"
-  },
-  "custodian": {
-    "message": "托管人"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "您现在可以在 MetaMask Institutional 使用您的账户。"
-  },
-  "custodianAccountAddedTitle": {
-    "message": "已添加所选 $1 账户。"
-  },
-  "custodianQRCodeScan": {
-    "message": "使用 $1 移动应用程序扫描二维码"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "或者登录您的 $1 账户，然后点击“连接到 MMI” 按钮"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "请转到 $1，点击其用户界面内的“连接到 MMI”按钮，再次将您的账户连接到 MMI。"
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "您现在可以在 MetaMask Institutional 使用您的托管账户。"
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "您的托管代币已刷新"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "这将替换以下地址的托管代币："
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "替换托管代币"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "在 $1 应用程序中批准交易。一旦执行了所有所需的托管批准，交易即完成。在您的 $1 应用程序中查看状态。"
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "请转到$1，然后点击用户界面中的“连接到MMI”按钮，将您的账户再次连接到MMI。"
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "您的托管人会发出一个令牌来验证 MetaMask Institutional 扩展，使您可以连接您的账户。"
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "由于安全原因，此令牌会在一段时间后过期。这使您需要重新连接到MMI。"
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "我为什么会看到这个？"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "您的托管人会话已过期"
-  },
-  "custodySessionExpired": {
-    "message": "托管会话已过期。"
-  },
-  "custodyWrongChain": {
-    "message": "此账户未设置为与 $1 一起使用"
   },
   "custom": {
     "message": "高级"
@@ -1867,9 +1759,6 @@
   "enterChainId": {
     "message": "输入链 ID"
   },
-  "enterCustodianToken": {
-    "message": "输入您的 $1 代币或添加新代币"
-  },
   "enterMaxSpendLimit": {
     "message": "输入最大消费限额"
   },
@@ -2005,12 +1894,6 @@
   "extendWalletWithSnaps": {
     "message": "探索社区构建的 Snap，定制您的 Web3 体验",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
-  },
-  "extensionInsallCompleteDescription": {
-    "message": "返回MetaMask Institutional产品的入门页面，以连接您的托管或自托管账户。"
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "扩展程序安装完成"
   },
   "externalExtension": {
     "message": "外部扩展程序"
@@ -2472,12 +2355,6 @@
   "install": {
     "message": "安装"
   },
-  "installExtension": {
-    "message": "安装扩展程序"
-  },
-  "installExtensionDescription": {
-    "message": "世界领先的web3钱包MetaMask的符合机构标准的版本。"
-  },
   "installOrigin": {
     "message": "安装源"
   },
@@ -2870,9 +2747,6 @@
     "message": "$1 托管于 npm 上，$2 是此 Snap 的唯一标识符。",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional 版本"
-  },
   "metamaskNotificationsAreOff": {
     "message": "钱包通知目前未开启。"
   },
@@ -2897,9 +2771,6 @@
   "millionAbbreviation": {
     "message": "百万",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "您选中的账户（$1）与尝试登录的账户（$2）不同"
   },
   "mismatchedChainLinkText": {
     "message": "验证网络信息",
@@ -2926,15 +2797,6 @@
   },
   "missingSettingRequest": {
     "message": "在这里请求"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional 面向全球各地设计并建立。"
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "让 MetaMask Institutional 自动检测您钱包中的 NFT，并在检测到时显示那些 NFT。"
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "此密码仅会解锁您的MetaMask Institutional扩展程序。"
   },
   "more": {
     "message": "更多"
@@ -3310,9 +3172,6 @@
   "noWebcamFoundTitle": {
     "message": "未找到网络摄像头"
   },
-  "nonCustodialAccounts": {
-    "message": "MetaMask Institutional 允许您使用非托管账户，如果您计划使用这些账户，请备份私钥助记词。"
-  },
   "nonce": {
     "message": "Nonce"
   },
@@ -3339,12 +3198,6 @@
   },
   "notEnoughGas": {
     "message": "燃料不足"
-  },
-  "note": {
-    "message": "单据"
-  },
-  "notePlaceholder": {
-    "message": "审批人在托管人处审批交易时会看到此单据。"
   },
   "notificationDetail": {
     "message": "详情"
@@ -3680,9 +3533,6 @@
   "onboardingPinExtensionTitle": {
     "message": "您的 MetaMask 安装完成！"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "将MetaMask Institutional置顶"
-  },
   "oneDayAbbreviation": {
     "message": "1 天",
     "description": "Shortened form of '1 day'"
@@ -3706,10 +3556,6 @@
     "message": "仅连接您信任的网站。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "打开$1应用程序",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "全屏打开以连接您的 Ledger。",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3720,17 +3566,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "操作失败"
-  },
   "optional": {
     "message": "可选"
   },
   "options": {
     "message": "期权"
-  },
-  "or": {
-    "message": "或"
   },
   "origin": {
     "message": "来源"
@@ -3766,9 +3606,6 @@
   "password": {
     "message": "密码"
   },
-  "passwordMmiTermsWarning": {
-    "message": "我明白MetaMask Institutional无法为我恢复此密码。$1"
-  },
   "passwordNotLongEnough": {
     "message": "密码长度不足"
   },
@@ -3787,9 +3624,6 @@
   },
   "passwordsDontMatch": {
     "message": "密码不匹配"
-  },
-  "pasteJWTToken": {
-    "message": "在此处粘贴或拖放代币："
   },
   "pastePrivateKey": {
     "message": "请粘贴您的私钥:",
@@ -4074,12 +3908,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "这样可以协助您为任何地址添加昵称。我们将在可能的情况下为您与之交互的地址提供名称建议。"
   },
-  "pinExtensionDescription": {
-    "message": "前往扩展程序菜单，将MetaMask Institutional置顶，以实现无缝访问。"
-  },
-  "pinExtensionTitle": {
-    "message": "将扩展程序置顶"
-  },
   "pinToTop": {
     "message": "置顶"
   },
@@ -4100,9 +3928,6 @@
   },
   "portfolio": {
     "message": "Portfolio"
-  },
-  "portfolioDashboard": {
-    "message": "Portfolio 控制面板"
   },
   "preparingSwap": {
     "message": "正在准备交换......"
@@ -4310,18 +4135,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "保护您的资金"
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "批准的签名请求"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "开启此选项以查看增强格式的签名请求。"
-  },
-  "redesignedTransactionsEnabledToggle": {
-    "message": "经过改进的交易请求"
-  },
-  "redesignedTransactionsToggleDescription": {
-    "message": "开启此选项以查看增强格式的交易请求。"
-  },
   "refreshList": {
     "message": "刷新列表"
   },
@@ -4360,12 +4173,6 @@
   },
   "removeAccountDescription": {
     "message": "该账户将从您的钱包中删除。在继续操作前，确认您已拥有该导入账户的原始账户私钥助记词或私钥。您可以通过账户下拉菜单再次导入或创建账户。 "
-  },
-  "removeJWT": {
-    "message": "删除托管代币"
-  },
-  "removeJWTDescription": {
-    "message": "您确定要删除此代币吗？分配给此代币的所有账户也将从扩展中删除： "
   },
   "removeKeyringSnap": {
     "message": "去除此Snap，会同时将以下账户从MetaMask中去除："
@@ -4712,26 +4519,17 @@
   "selectAll": {
     "message": "全部选择"
   },
-  "selectAllAccounts": {
-    "message": "选择所有账户"
-  },
   "selectAnAccount": {
     "message": "选择一个账户"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "此账户已连接到 MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "选择要在 MetaMask Institutional 使用的托管账户。"
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "打开\"显示 NFT 媒体\""
   },
   "selectHdPath": {
     "message": "选择 HD 路径"
-  },
-  "selectJWT": {
-    "message": "选择代币"
   },
   "selectNFTPrivacyPreference": {
     "message": "在设置中打开 NFT 检测"
@@ -6102,9 +5900,6 @@
   "transactionErrored": {
     "message": "交易出现错误。"
   },
-  "transactionFailed": {
-    "message": "交易失败"
-  },
   "transactionFee": {
     "message": "交易费用"
   },
@@ -6131,9 +5926,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "燃料费总额"
-  },
-  "transactionNote": {
-    "message": "交易单据"
   },
   "transactionResubmitted": {
     "message": "已在 $2 重新提交交易，燃料费预计升至 $1"
@@ -6412,9 +6204,6 @@
   },
   "viewTransaction": {
     "message": "查看交易"
-  },
-  "viewinCustodianApp": {
-    "message": "在托管应用程序中查看"
   },
   "viewinExplorer": {
     "message": "在 Explorer 中查看 $1",

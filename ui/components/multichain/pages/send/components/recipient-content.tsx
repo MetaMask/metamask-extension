@@ -72,12 +72,6 @@ export const SendPageRecipientContent = ({
     isSwapQuoteLoading,
   } = useSelector(getCurrentDraftTransaction);
 
-  let isSwapAllowed;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isSwapAllowed = false;
-  ///: END:ONLY_INCLUDE_IF
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
@@ -95,11 +89,11 @@ export const SendPageRecipientContent = ({
   const ipfsGateway = useSelector(getIpfsGateway);
 
   const nftImageURL = useGetAssetImageUrl(
-    sendAsset.details?.image ?? null,
+    sendAsset.details?.image ?? undefined,
     ipfsGateway,
   );
 
-  isSwapAllowed =
+  const isSwapAllowed =
     isSwapsChain &&
     !isSwapAndSendDisabledForNetwork &&
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&

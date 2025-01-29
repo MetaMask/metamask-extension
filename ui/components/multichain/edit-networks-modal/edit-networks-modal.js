@@ -52,7 +52,10 @@ export const EditNetworksModal = ({
 
   useEffect(() => {
     setSelectedChainIds(defaultSelectedChainIds);
-  }, [defaultSelectedChainIds]);
+  }, [
+    // TODO: Fix the source of this prop value to be the same array instance each render
+    JSON.stringify(defaultSelectedChainIds),
+  ]);
 
   const selectAll = () => {
     const allNetworksChainIds = allNetworks.map(({ chainId }) => chainId);

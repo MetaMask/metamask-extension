@@ -13,6 +13,8 @@ import bowser from 'bowser';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
@@ -227,7 +229,11 @@ export function formatBalance(
 }
 
 export function getContractAtAddress(tokenAddress) {
-  return global.eth.contract(abi).at(tokenAddress);
+  return new Contract(
+    tokenAddress,
+    abi,
+    new Web3Provider(global.ethereumProvider),
+  );
 }
 
 export function getRandomFileName() {
