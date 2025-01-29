@@ -72,9 +72,7 @@ import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain-network';
-import {
-  getSelectedAccountMultichainTransactions,
-} from '../../../selectors/multichain';
+import { getSelectedAccountMultichainTransactions } from '../../../selectors/multichain';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,

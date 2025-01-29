@@ -13,7 +13,6 @@ import { getMultichainNetwork } from './multichain-network';
  * @param account - The multichain account.
  * @returns The current multichain provider configuration.
  */
-
 export function getMultichainProviderConfig(
   state: MultichainState,
   account?: InternalAccount,

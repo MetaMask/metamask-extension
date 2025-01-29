@@ -30,7 +30,11 @@ import {
 } from './selectors';
 import { getMultichainSelectedAccountCachedBalance } from './multichain-selected-account-cached-balance';
 import { getMultichainIsEvm } from './multichain-isevm';
-import type { BalancesState, MultichainState } from './multichain.types';
+import type {
+  BalancesState,
+  MultichainState,
+  TransactionsState,
+} from './multichain.types';
 import { getMultichainProviderConfig } from './multichain-provider-config';
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
