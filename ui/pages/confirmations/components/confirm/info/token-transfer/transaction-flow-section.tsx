@@ -35,7 +35,7 @@ export const TransactionFlowSection = () => {
   const recipientAddress =
     transactionMeta.type === TransactionType.simpleSend
       ? transactionMeta.txParams.to
-      : parsedTransactionData?.args?._to;
+      : parsedTransactionData?.args?._to || parsedTransactionData?.args?.to;
 
   const { chainId } = transactionMeta;
 
