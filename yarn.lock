@@ -26876,7 +26876,6 @@ __metadata:
     deep-freeze-strict: "npm:1.1.1"
     del: "npm:^6.1.1"
     depcheck: "npm:^1.4.3"
-    dependency-tree: "npm:^10.0.9"
     detect-port: "npm:^1.5.1"
     dotenv: "npm:^16.4.5"
     duplexify: "npm:^4.1.1"
