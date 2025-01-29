@@ -11,11 +11,12 @@ import { usePrevious } from './usePrevious';
  * @param dependencies - Any optional hook dependencies for updating the scroll state.
  * @param opt
  * @param {number} opt.offsetPxFromBottom
+ * @param {boolean} opt.enabled
  * @returns Flags for isScrollable and isScrollToBottom, a ref to use for the scrolling content, a scrollToBottom function and a onScroll handler.
  */
 export const useScrollRequired = (
   dependencies = [],
-  { offsetPxFromBottom = 16 } = {},
+  { offsetPxFromBottom = 16, enabled = true } = {},
 ) => {
   const ref = useRef(null);
   const prevOffsetHeight = usePrevious(ref.current?.offsetHeight);
@@ -25,7 +26,7 @@ export const useScrollRequired = (
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
 
   const update = () => {
-    if (!ref.current) {
+    if (!ref.current || !enabled) {
       return;
     }
 
@@ -53,7 +54,12 @@ export const useScrollRequired = (
     }
   };
 
-  useEffect(update, [ref, ...dependencies]);
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+    update();
+  }, [ref, enabled, ...dependencies]);
 
   useEffect(() => {
     if (prevOffsetHeight !== ref.current?.offsetHeight) {
