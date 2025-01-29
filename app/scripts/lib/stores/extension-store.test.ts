@@ -15,7 +15,7 @@ const setup = (
     // @ts-expect-error Mock used just to spy on calls, doesn't implement API
     jest.replaceProperty(browser.storage, 'local', jest.fn());
   } else if (options.localMock === false) {
-    const storageApi: Partial<typeof browser.storage> = { ...browser.storage};
+    const storageApi: Partial<typeof browser.storage> = { ...browser.storage };
     delete storageApi.local;
     // @ts-expect-error Intentionally incomplete to test behavior when API is missing
     jest.replaceProperty(browser, 'storage', storageApi);
