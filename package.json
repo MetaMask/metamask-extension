@@ -689,7 +689,8 @@
     "ws": "^8.17.1",
     "yaml": "^2.4.1",
     "yargs": "^17.7.2",
-    "yargs-parser": "^21.1.1"
+    "yargs-parser": "^21.1.1",
+    "@octokit/rest": "^21.0.0"
   },
   "engines": {
     "node": ">= 20",
