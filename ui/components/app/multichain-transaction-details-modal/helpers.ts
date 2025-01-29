@@ -25,7 +25,7 @@ export const getTransactionUrl = (txId: string, chainId: string): string => {
 
   // Change address URL to transaction URL for Bitcoin
   if (chainId.startsWith('bip122:')) {
-    return explorerBaseUrl.replace('/address', '/tx') + `/${txId}`;
+    return `${explorerBaseUrl.replace('/address', '/tx')}/${txId}`;
   }
 
   const baseUrl = explorerBaseUrl.split('?')[0];
