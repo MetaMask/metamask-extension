@@ -37,25 +37,21 @@ const scrollReducer = (state, action) => {
       return {
         ...state,
         isProgrammaticScroll: true,
-        buttonsEnabled: state.buttonsEnabled,
-        showArrow: state.showArrow, // Keep arrow visible during scroll
       };
     case 'END_PROGRAMMATIC_SCROLL':
       return {
-        ...state,
         isProgrammaticScroll: false,
         buttonsEnabled: true,
         showArrow: false,
       };
     case 'MANUAL_SCROLL':
-      if (state.isProgrammaticScroll) {
-        return state;
-      }
-      return {
-        ...state,
-        buttonsEnabled: action.isAtBottom,
-        showArrow: !action.isAtBottom && action.isScrollable,
-      };
+      return state.isProgrammaticScroll
+        ? state
+        : {
+            ...state,
+            buttonsEnabled: action.isAtBottom,
+            showArrow: !action.isAtBottom && action.isScrollable,
+          };
     default:
       return state;
   }
@@ -70,12 +66,13 @@ const useProcessedContent = (rawContent, scrollState, scrollArrow) => {
 
     if (baseContent?.props?.children?.[1]?.props?.requireScroll) {
       const children = [...baseContent.props.children];
-      const footer = { ...children[children.length - 1] };
-
-      footer.props = {
-        ...footer.props,
-        isScrolledToBottom: scrollState.buttonsEnabled,
-        requireScroll: true,
+      const footer = {
+        ...children[children.length - 1],
+        props: {
+          ...children[children.length - 1].props,
+          isScrolledToBottom: scrollState.buttonsEnabled,
+          requireScroll: true,
+        },
       };
 
       children[children.length - 1] = footer;
@@ -152,12 +149,12 @@ const SnapUIRendererComponent = ({
 
   const { isScrollable, scrollToBottom, onScroll, ref } = useScrollRequired(
     [],
-    // Only enable scrollRequired if the content requires scrolling
+    // Only enable hook if the content requires scrolling
     { enabled: requireScroll },
   );
 
   useEffect(() => {
-    // If the content does not require scrolling, we don't need to update the scroll state
+    // If the content doesn't require scrolling, we don't need to update the scroll state
     if (!requireScroll) {
       return;
     }
@@ -179,6 +176,11 @@ const SnapUIRendererComponent = ({
 
   const wrappedOnScroll = useCallback(
     (e) => {
+      // If the content doesn't require scrolling, we don't need to update the scroll state
+      if (!requireScroll) {
+        return;
+      }
+
       const isActuallyAtBottom =
         Math.abs(
           e.target.scrollTop + e.target.clientHeight - e.target.scrollHeight,
@@ -196,7 +198,7 @@ const SnapUIRendererComponent = ({
       }
       onScroll(e);
     },
-    [isScrollable, onScroll, dispatch],
+    [isScrollable, onScroll, dispatch, requireScroll],
   );
 
   const handleScrollToBottom = useCallback(() => {
@@ -212,8 +214,12 @@ const SnapUIRendererComponent = ({
     getSnapMetadata(state, snapId),
   );
 
-  const scrollArrow = useMemo(
-    () => ({
+  const scrollArrow = useMemo(() => {
+    if (!requireScroll || !scrollState.showArrow) {
+      return null;
+    }
+
+    return {
       type: 'AvatarIcon',
       key: 'snap-ui-renderer__scroll-arrow',
       props: {
@@ -233,9 +239,8 @@ const SnapUIRendererComponent = ({
           bottom: '84px',
         },
       },
-    }),
-    [handleScrollToBottom],
-  );
+    };
+  }, [handleScrollToBottom, requireScroll, scrollState.showArrow]);
 
   const processedContent = useProcessedContent(
     interfaceState?.content,
