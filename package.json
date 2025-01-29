@@ -255,7 +255,7 @@
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
     "undici@npm:5.28.4": "5.28.5",
-    "@metamask/transaction-controller@^43.0.0": "npm:@metamask-previews/transaction-controller@43.0.0-preview-009eef6b"
+    "@metamask/transaction-controller@^43.0.0": "npm:@metamask-previews/transaction-controller@43.0.0-preview-455ba549"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
