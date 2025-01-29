@@ -77,9 +77,10 @@ export const footer: UIComponentFactory<FooterElement> = ({
       props: {
         ...buttonMapped.props,
         variant:
-          providedChildren.length === 2 && index === 0
+          buttonMapped.props?.variant ??
+          (providedChildren.length === 2 && index === 0
             ? ButtonVariant.Secondary
-            : ButtonVariant.Primary,
+            : ButtonVariant.Primary),
         isSnapAction: true,
       },
       children: buttonMapped.children,

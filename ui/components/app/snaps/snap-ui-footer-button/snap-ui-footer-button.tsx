@@ -23,9 +23,11 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
 import { getHideSnapBranding } from '../../../../selectors';
 
+type SnapButtonVariant = ButtonVariant & 'destructive';
+
 type SnapUIFooterButtonProps = {
   name?: string;
-  variant?: ButtonVariant;
+  variant?: SnapButtonVariant;
   isSnapAction?: boolean;
   onCancel?: () => void;
 };
@@ -40,7 +42,7 @@ export const SnapUIFooterButton: FunctionComponent<
   loading = false,
   isSnapAction = false,
   type,
-  variant = ButtonVariant.Primary,
+  variant = ButtonVariant.Primary as SnapButtonVariant,
   form,
   ...props
 }) => {
@@ -88,6 +90,7 @@ export const SnapUIFooterButton: FunctionComponent<
         flexDirection: FlexDirection.Row,
       }}
       data-theme={null}
+      danger={variant === 'destructive'}
     >
       {isSnapAction && !hideSnapBranding && !loading && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
