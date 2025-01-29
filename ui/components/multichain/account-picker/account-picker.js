@@ -31,7 +31,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
-import { trace, TraceName } from '../../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 export const AccountPicker = ({
   address,
@@ -60,7 +60,10 @@ export const AccountPicker = ({
       className={classnames('multichain-account-picker', className)}
       data-testid="account-menu-icon"
       onClick={() => {
-        trace({ name: TraceName.AccountList });
+        trace({
+          name: TraceName.AccountList,
+          op: TraceOperation.ComponentLoad,
+        });
         onClick();
       }}
       backgroundColor={BackgroundColor.transparent}
