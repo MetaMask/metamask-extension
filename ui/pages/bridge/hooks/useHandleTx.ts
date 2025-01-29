@@ -23,6 +23,8 @@ import type { ChainId } from '../../../../shared/types/bridge';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -94,6 +96,7 @@ export default function useHandleTx() {
   };
 
   const selectedAccount = useMultichainSelector(getSelectedInternalAccount);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
 
   const handleSolanaTx = async ({
     txType,
@@ -108,7 +111,7 @@ export default function useHandleTx() {
       selectedAccount.metadata.snap.id,
       {
         account: selectedAccount.id,
-        scope: selectedAccount.options.scope,
+        scope: currentChainId,
         base64EncodedTransactionMessage: trade,
       },
     );
