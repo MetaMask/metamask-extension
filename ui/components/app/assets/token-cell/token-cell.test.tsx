@@ -10,9 +10,9 @@ import {
   getTokenList,
   getPreferences,
   getCurrencyRates,
+  getMultichainCurrentChainId,
+  getMultichainIsEvm,
 } from '../../../../selectors';
-import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
-import { getMultichainIsEvm } from '../../../../selectors/multichain-isevm';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';

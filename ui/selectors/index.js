@@ -11,6 +11,7 @@ export * from './accounts';
 export * from './getMetaMaskAccounts';
 export * from './getUpdatedAndSortedAccounts';
 export * from './accounts-for-tab';
+export * from './multichain';
 export * from './multichain-core';
 export * from './multichain-selected-account-cached-balance';
 export * from './multichain-isevm';

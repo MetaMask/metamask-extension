@@ -6,12 +6,10 @@ import {
   getTokenList,
   selectERC20TokensByChain,
   getNativeCurrencyForChain,
-} from '../../../../selectors';
-import {
   isChainIdMainnet,
   getImageForChainId,
-} from '../../../../selectors/multichain';
-import { getMultichainIsEvm } from '../../../../selectors/multichain-isevm';
+  getMultichainIsEvm,
+} from '../../../../selectors';
 import { TokenListItem } from '../../../multichain';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { getIntlLocale } from '../../../../ducks/locale/locale';

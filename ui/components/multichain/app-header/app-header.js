@@ -21,7 +21,10 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { getUnapprovedTransactions } from '../../../selectors';
+import {
+  getUnapprovedTransactions,
+  getMultichainNetwork,
+} from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
 // TODO: Remove restricted import
@@ -30,7 +33,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
-import { getMultichainNetwork } from '../../../selectors/multichain-network';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';

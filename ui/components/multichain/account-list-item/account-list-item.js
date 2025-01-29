@@ -54,14 +54,12 @@ import {
   getShowFiatInTestnets,
   getChainIdsToPoll,
   getSnapsMetadata,
-} from '../../../selectors';
-import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
   getMultichainShouldShowFiat,
-} from '../../../selectors/multichain';
-import { getMultichainNetwork } from '../../../selectors/multichain-network';
+  getMultichainNetwork,
+} from '../../../selectors';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
 // TODO: Remove restricted import

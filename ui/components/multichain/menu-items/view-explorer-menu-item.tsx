@@ -20,10 +20,12 @@ import {
   MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
-import { getBlockExplorerLinkText } from '../../../selectors';
+import {
+  getBlockExplorerLinkText,
+  getMultichainNetwork,
+} from '../../../selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { getMultichainNetwork } from '../../../selectors/multichain-network';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export type ViewExplorerMenuItemProps = {

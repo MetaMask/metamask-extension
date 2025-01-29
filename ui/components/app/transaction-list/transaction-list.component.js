@@ -25,6 +25,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
   ///: END:ONLY_INCLUDE_IF
+  isSelectedInternalAccountSolana,
+  getMultichainNetwork,
+  getSelectedAccountMultichainTransactions,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
@@ -71,9 +74,6 @@ import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/block
 import { ActivityListItem } from '../../multichain';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/multichain-network';
-import { getSelectedAccountMultichainTransactions } from '../../../selectors/multichain';
-import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,

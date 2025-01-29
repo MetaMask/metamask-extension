@@ -28,11 +28,7 @@ import {
 } from './selectors';
 import { getMultichainSelectedAccountCachedBalance } from './multichain-selected-account-cached-balance';
 import { getMultichainIsEvm } from './multichain-isevm';
-import type {
-  BalancesState,
-  MultichainState,
-  TransactionsState,
-} from './multichain.types';
+import type { MultichainState, TransactionsState } from './multichain.types';
 import { getMultichainProviderConfig } from './multichain-provider-config';
 
 export const MultichainNetworkPropType = PropTypes.shape({
@@ -98,13 +94,6 @@ export function getMultichainIsSolana(
   const { symbol } = getMultichainDefaultToken(state, account);
 
   return !isEvm && symbol === 'SOL';
-}
-
-export function getMultichainCurrentNetwork(
-  state: MultichainState,
-  account?: InternalAccount,
-) {
-  return getMultichainProviderConfig(state, account);
 }
 
 export function getMultichainNativeCurrency(
@@ -211,12 +200,6 @@ export function getMultichainIsTestnet(
       // update this for other non-EVM networks later!
       (providerConfig as MultichainProviderConfig).chainId ===
         MultichainNetworks.BITCOIN_TESTNET;
-}
-
-export function getMultichainBalances(
-  state: MultichainState,
-): BalancesState['metamask']['balances'] {
-  return state.metamask.balances;
 }
 
 export function getMultichainTransactions(

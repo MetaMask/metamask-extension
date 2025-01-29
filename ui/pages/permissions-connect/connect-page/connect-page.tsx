@@ -7,6 +7,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getMultichainNetwork,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -37,7 +38,6 @@ import {
   EndowmentTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
-import { getMultichainNetwork } from '../../../selectors/multichain-network';
 
 export type ConnectPageRequest = {
   id: string;
