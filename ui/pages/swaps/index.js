@@ -22,8 +22,9 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
-} from '../../selectors/selectors';
-import { getSelectedAccount } from '../../selectors/getMetaMaskAccounts';
+  getSelectedAccount,
+  getCurrentNetworkTransactions,
+} from '../../selectors';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   getQuotes,
@@ -44,7 +45,6 @@ import {
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
-import { getCurrentNetworkTransactions } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,

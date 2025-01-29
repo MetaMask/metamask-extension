@@ -14,7 +14,7 @@ import {
   getSubjectMetadata,
   getOriginOfCurrentTab,
 } from './accounts-core';
-import { getMetaMaskAccountsOrdered } from './getMetaMaskAccounts';
+import { getMetaMaskAccountsOrdered } from './accounts-get';
 import { getSelectedInternalAccount } from './accounts';
 
 // selectors

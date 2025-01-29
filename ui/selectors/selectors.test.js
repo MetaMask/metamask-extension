@@ -15,8 +15,8 @@ import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-master/selectors';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import * as selectors from './selectors';
-import * as getMetaMaskAccounts from './getMetaMaskAccounts';
-import * as getMetaMaskAccountsConnected from './getUpdatedAndSortedAccounts';
+import * as getMetaMaskAccounts from './accounts-get';
+import * as getMetaMaskAccountsConnected from './accounts-updated-and-sorted';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../shared/modules/selectors/networks'),

@@ -37,7 +37,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getTokenExchangeRates,
 } from './selectors';
-import { getMetaMaskAccounts } from './getMetaMaskAccounts';
+import { getMetaMaskAccounts } from './accounts-get';
 import {
   getUnapprovedTransactions,
   selectTransactionMetadata,

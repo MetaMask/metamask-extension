@@ -115,7 +115,7 @@ import {
   getSelectedAccount,
   getMetaMaskCachedBalances,
   getMetaMaskAccountsOrdered,
-} from './getMetaMaskAccounts';
+} from './accounts-get';
 import {
   getTargetSubjectMetadata,
   getMetaMaskAccountBalances,

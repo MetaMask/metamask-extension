@@ -1,5 +1,5 @@
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { getMetaMaskAccountsOrdered } from './getMetaMaskAccounts';
+import { getMetaMaskAccountsOrdered } from './accounts-get';
 import { getPinnedAccountsList, getHiddenAccountsList } from './accounts-core';
 import { getOrderedConnectedAccountsForActiveTab } from './accounts-for-tab';
 
