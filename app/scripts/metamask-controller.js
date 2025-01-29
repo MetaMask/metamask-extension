@@ -11,6 +11,7 @@ import {
   TokensController,
   CodefiTokenPricesServiceV2,
   RatesController,
+  MultichainTokensRatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
   MultichainBalancesController,
@@ -1022,6 +1023,17 @@ export default class MetamaskController extends EventEmitter {
       includeUsdRate: true,
       fetchMultiExchangeRate,
     });
+
+    console.log('HERE *****************************');
+    // const multichainTokensRatesControllerMessenger =
+    //   this.controllerMessenger.getRestricted({
+    //     name: 'MultichainTokensRatesController',
+    //   });
+
+    // this.multichainTokenRatesController = new MultichainTokensRatesController({
+    //   state: initState.MultichainRatesController,
+    //   messenger: multichainTokensRatesControllerMessenger,
+    // });
 
     const tokenRatesMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenRatesController',
