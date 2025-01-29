@@ -124,7 +124,9 @@ describe('PersistenceManager', () => {
 
       const result = await manager.get();
       expect(result).toStrictEqual({ data: MOCK_DATA });
-      expect(manager.mostRecentRetrievedState).toStrictEqual({ data: MOCK_DATA });
+      expect(manager.mostRecentRetrievedState).toStrictEqual({
+        data: MOCK_DATA,
+      });
     });
 
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
@@ -140,7 +142,9 @@ describe('PersistenceManager', () => {
         data: { config: { newData: true } },
       });
       await manager.get();
-      expect(manager.mostRecentRetrievedState).toStrictEqual({ data: MOCK_DATA });
+      expect(manager.mostRecentRetrievedState).toStrictEqual({
+        data: MOCK_DATA,
+      });
     });
   });
 
