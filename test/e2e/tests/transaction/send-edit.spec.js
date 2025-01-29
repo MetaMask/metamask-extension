@@ -64,12 +64,12 @@ describe('Editing Confirm Transaction', function () {
         // has correct updated value on the confirm screen the transaction
         await driver.findElement({
           css: '[data-testid="first-gas-field"]',
-          text: '0.0008 ETH',
+          text: '0.0002 ETH',
         });
 
         await driver.findElement({
           css: '[data-testid="native-currency"]',
-          text: '$1.36',
+          text: '$0.29',
         });
 
         // confirms the transaction
@@ -158,12 +158,12 @@ describe('Editing Confirm Transaction', function () {
         // has correct updated value on the confirm screen the transaction
         await driver.findElement({
           css: '[data-testid="first-gas-field"]',
-          text: '0.0008 ETH',
+          text: '0.0002 ETH',
         });
 
         await driver.findElement({
           css: '[data-testid="native-currency"]',
-          text: '$1.36',
+          text: '$0.29',
         });
 
         // confirms the transaction

@@ -279,16 +279,24 @@ describe('toast display', () => {
       subjects: {
         [mockOrigin]: {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [mockAccount.address],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [`eip155:1:${mockAccount.address}`],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               date: 1719910288437,
               invoker: 'https://metamask.github.io',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },
