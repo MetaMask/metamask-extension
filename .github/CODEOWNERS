@@ -46,8 +46,8 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
 
 # A machine-generated file that tracks circular dependencies in the codebase.
-# It is updated using yarn circular-deps.jsonc
-development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBraham
+# It is updated using yarn circular-deps:update
+development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBraham @dbrans
 
 # The CODEOWNERS file constitutes an agreement amongst organization
 # admins and maintainers to restrict approval capabilities to a subset
