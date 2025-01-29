@@ -129,22 +129,32 @@ export async function getArtifactUrl(branch: string, headCommitHash: string, job
  * @throws Will throw an error if the download fails or if the file cannot be written.
  */
 export async function downloadArtifact(artifactUrl: string, outputFilePath: string): Promise<void> {
-    // Ensure the directory exists
-    const dir = require('path').dirname(outputFilePath);
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-    // Download the artifact
-    const artifactDownloadResponse = await fetch(artifactUrl);
-    if (!artifactDownloadResponse.ok) {
-        throw new Error(`Failed to download artifact: ${artifactDownloadResponse.statusText}`);
-    }
-    const artifactArrayBuffer = await artifactDownloadResponse.arrayBuffer();
-    const artifactBuffer = Buffer.from(artifactArrayBuffer);
-    fs.writeFileSync(outputFilePath, artifactBuffer);
+    try {
+        // Ensure the directory exists
+        const dir = require('path').dirname(outputFilePath);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
 
-    if (!fs.existsSync(outputFilePath)) {
-        throw new Error(`Failed to download artifact to ${outputFilePath}`);
+        console.log(`Downloading artifact from URL: ${artifactUrl} to ${outputFilePath}`);
+
+        // Download the artifact
+        const artifactDownloadResponse = await fetch(artifactUrl);
+        if (!artifactDownloadResponse.ok) {
+            throw new Error(`Failed to download artifact: ${artifactDownloadResponse.statusText}`);
+        }
+        const artifactArrayBuffer = await artifactDownloadResponse.arrayBuffer();
+        const artifactBuffer = Buffer.from(artifactArrayBuffer);
+        fs.writeFileSync(outputFilePath, artifactBuffer);
+
+        if (!fs.existsSync(outputFilePath)) {
+            throw new Error(`Failed to download artifact to ${outputFilePath}`);
+        }
+
+        console.log(`Artifact downloaded successfully to ${outputFilePath}`);
+    } catch (error) {
+        console.error(`Error during artifact download: ${error.message}`);
+        throw error;
     }
 }
 

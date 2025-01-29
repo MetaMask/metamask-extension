@@ -6,7 +6,7 @@ import {
     getArtifactUrl,
     readFileContent,
     sleep,
-} from './shared/circle-reqs';
+} from './shared/circle-artifacts';
 
 async function verifyE2ePageObjectsUsage() {
     let e2eFiles: string[];
@@ -25,11 +25,11 @@ async function verifyE2ePageObjectsUsage() {
 
         // Small buffer to ensure the job id is accessible in circle ci
         // once we have that job migrated into github actions, we can just add a dependency rule
-        await sleep(120);
+        await sleep(180);
 
         while (attempts < maxAttempts) {
             try {
-                console.log(`Downloading artifact: Attempt ${attempts + 1}/${maxAttempts}`);
+                console.log(`Attempt ${attempts + 1}/${maxAttempts}`);
 
                 const outputDir = `${artifactPath}/changed-files.txt`;
                 const changedFilesArtifactUrl = await getArtifactUrl(branch, headCommitHash, jobName, artifactName);
@@ -48,8 +48,8 @@ async function verifyE2ePageObjectsUsage() {
 
             attempts++;
             if (attempts < maxAttempts) {
-                console.log(`Retrying in 10 seconds... (${attempts}/${maxAttempts})`);
-                await sleep(10);
+                console.log(`Retrying in 15 seconds... (${attempts}/${maxAttempts})`);
+                await sleep(15);
             }
         }
 

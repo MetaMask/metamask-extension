@@ -4,7 +4,7 @@ import {
   getJobsByWorkflowId,
   getPipelineId,
   getWorkflowId,
-} from '../.github/scripts/shared/circle-reqs';
+} from '../.github/scripts/shared/circle-artifacts';
 const exec = util.promisify(require('node:child_process').exec);
 
 async function getBuilds(branch: string, jobNames: string[]) {
