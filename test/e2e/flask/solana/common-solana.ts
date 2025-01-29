@@ -20,6 +20,8 @@ export enum SendFlowPlaceHolders {
   LOADING = 'Preparing transaction',
 }
 
+export const SIMPLEHASH_URL = 'https://api.simplehash.com';
+
 export const SOL_BALANCE = 50000000000;
 
 export const SOL_TO_USD_RATE = 225.88;
@@ -67,6 +69,17 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
       return response;
     });
 }
+
+export async function mockFungibleAssets(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`${SIMPLEHASH_URL}/api/v0/fungibles/assets`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
 export async function simulateSolanaTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
@@ -415,6 +428,7 @@ export async function withSolanaAccountSnap(
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
+            await mockFungibleAssets(mockServer),
             await mockSolanaRatesCall(mockServer),
             await mockGetTransaction(mockServer),
             await simulateSolanaTransaction(mockServer),
