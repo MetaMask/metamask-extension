@@ -17,7 +17,8 @@ import {
   passwordLockMetamaskExtension,
 } from './testHelpers';
 
-describe("A dapp is connected with account and chain permissions previously granted via `wallet_createSession`, user's extension becomes password locked", function () {
+// Skipping these until we add this prompt to unlock behavior to the EIP-1193 API as well
+describe.skip("A dapp is connected with account and chain permissions previously granted via `wallet_createSession`, user's extension becomes password locked", function () {
   describe('the dapp sends a request through the Multichain API that requires user confirmation on the permitted account', function () {
     it('should prompts the user to unlock MetaMask before showing the request confirmation', async function () {
       await withFixtures(
