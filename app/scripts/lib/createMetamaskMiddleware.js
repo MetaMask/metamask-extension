@@ -1,5 +1,4 @@
 import {
-  createAsyncMiddleware,
   createScaffoldMiddleware,
   mergeMiddleware,
 } from '@metamask/json-rpc-engine';
@@ -8,6 +7,7 @@ import {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,
 } from './middleware/pending';
+import { create5792Middleware } from './create5792Middleware';
 
 export default function createMetamaskMiddleware({
   version,
@@ -40,20 +40,7 @@ export default function createMetamaskMiddleware({
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
     createPendingTxMiddleware({ getPendingTransactionByHash }),
-    createTransactionBatchMiddleware({ addTransactionBatch }),
+    create5792Middleware({ addTransactionBatch }),
   ]);
   return metamaskMiddleware;
-}
-
-function createTransactionBatchMiddleware({ addTransactionBatch }) {
-  return createAsyncMiddleware(async (req, res, next) => {
-    const { method, params } = req;
-
-    if (method !== 'wallet_sendTransactionBatch') {
-      next();
-      return;
-    }
-
-    res.result = await addTransactionBatch(...params);
-  });
 }

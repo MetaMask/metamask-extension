@@ -166,6 +166,7 @@ export const unrestrictedMethods = Object.freeze([
   'wallet_requestSnaps',
   'wallet_invokeSnap',
   'wallet_invokeKeyring',
+  'wallet_sendCalls',
   'snap_getClientStatus',
   'snap_getCurrencyRate',
   'snap_clearState',
@@ -180,7 +181,6 @@ export const unrestrictedMethods = Object.freeze([
   'snap_scheduleBackgroundEvent',
   'snap_cancelBackgroundEvent',
   'snap_getBackgroundEvents',
-  'wallet_sendTransactionBatch',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   'metamaskinstitutional_authenticate',
   'metamaskinstitutional_reauthenticate',
