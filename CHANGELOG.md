@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [12.10.3]
 ### Fixed
 - fix: ensure recipient address is shown on when sending erc 1155 tokens ([#29775](https://github.com/MetaMask/metamask-extension/pull/29775))
+- fix: Transaction flow component for 1155 token send ([#29973](https://github.com/MetaMask/metamask-extension/pull/29973))
+- fix: fix undici audit (5.28.4 -> 5.28.5) (#29914) ([#29914](https://github.com/MetaMask/metamask-extension/pull/29914))
 
 ## [12.10.2]
 ### Fixed
