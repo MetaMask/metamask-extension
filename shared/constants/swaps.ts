@@ -24,7 +24,7 @@ export const SLIPPAGE_LOW_ERROR = 'slippage-low';
 export const SLIPPAGE_NEGATIVE_ERROR = 'slippage-negative';
 
 export const MAX_ALLOWED_SLIPPAGE = 15;
-export const SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = 0.2;
+export const SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = 0.35;
 
 // An address that the metaswap-api recognizes as the default token for the current network,
 // in place of the token address that ERC-20 tokens have
