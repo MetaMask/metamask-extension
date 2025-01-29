@@ -138,8 +138,10 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(institutional-snap)
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
+///: END:ONLY_INCLUDE_IF
 
 const ACTION_MODES = {
   // Displays the search box and account list
