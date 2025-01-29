@@ -3480,6 +3480,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async getProviderState(origin) {
     const providerNetworkState = await this.getProviderNetworkState(origin);
+    console.log(providerNetworkState);
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     const { chrome } = globalThis;
     ///: END:ONLY_INCLUDE_IF
@@ -5402,6 +5403,7 @@ export default class MetamaskController extends EventEmitter {
       if (err instanceof PermissionDoesNotExistError) {
         // suppress expected error in case that the origin
         // does not have the target permission yet
+        return [];
       } else {
         throw err;
       }
