@@ -33,8 +33,7 @@ export const requestPermissionsHandler = {
   hookNames: {
     getAccounts: true,
     requestPermissionsForOrigin: true,
-    requestCaip25ApprovalForOrigin: true,
-    grantPermissionsForOrigin: true,
+    getCaip25PermissionFromLegacyPermissionsForOrigin: true,
   },
 };
 
@@ -56,8 +55,7 @@ type GrantedPermissions = Awaited<
  * @param end - JsonRpcEngine end() callback
  * @param options - Method hooks passed to the method implementation
  * @param options.getAccounts - A hook that returns the permitted eth accounts for the origin sorted by lastSelected.
- * @param options.requestCaip25ApprovalForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
- * @param options.grantPermissionsForOrigin - A hook that grants permission for the approved permissions for the origin.
+ * @param options.requestCaip25PermissionForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
  * @param options.requestPermissionsForOrigin - A hook that requests permissions for the origin.
  * @returns A promise that resolves to nothing
  */
@@ -69,22 +67,15 @@ async function requestPermissionsImplementation(
   {
     getAccounts,
     requestPermissionsForOrigin,
-    requestCaip25ApprovalForOrigin,
-    grantPermissionsForOrigin,
+    getCaip25PermissionFromLegacyPermissionsForOrigin,
   }: {
     getAccounts: () => string[];
     requestPermissionsForOrigin: (
       requestedPermissions: RequestedPermissions,
     ) => Promise<[GrantedPermissions]>;
-    requestCaip25ApprovalForOrigin: (
+    getCaip25PermissionFromLegacyPermissionsForOrigin: (
       requestedPermissions?: RequestedPermissions,
-    ) => Promise<RequestedPermissions>;
-    grantPermissionsForOrigin: (approvedPermissions: RequestedPermissions) => {
-      [Caip25EndowmentPermissionName]: ValidPermission<
-        typeof Caip25EndowmentPermissionName,
-        Caveat<typeof Caip25CaveatType, Caip25CaveatValue>
-      >;
-    };
+    ) => RequestedPermissions;
   },
 ) {
   const { params } = req;
@@ -93,7 +84,8 @@ async function requestPermissionsImplementation(
     return end(invalidParams({ data: { request: req } }));
   }
 
-  const [requestedPermissions] = params;
+  let [requestedPermissions] = params;
+  delete requestedPermissions[Caip25EndowmentPermissionName];
   const caip25EquivalentPermissions: Partial<
     Pick<RequestedPermissions, 'eth_accounts' | 'endowment:permitted-chains'>
   > = pick(requestedPermissions, [
@@ -105,38 +97,21 @@ async function requestPermissionsImplementation(
 
   const hasCaip25EquivalentPermissions =
     Object.keys(caip25EquivalentPermissions).length > 0;
-  const hasOtherRequestedPermissions =
-    Object.keys(requestedPermissions).length > 0;
+
+  if (hasCaip25EquivalentPermissions) {
+    const caip25Permission = getCaip25PermissionFromLegacyPermissionsForOrigin(caip25EquivalentPermissions)
+    requestedPermissions = {...requestedPermissions, ...caip25Permission}
+  }
 
   let grantedPermissions: GrantedPermissions = {};
 
-  let caip25Approval;
+  const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
+    requestedPermissions,
+  );
+  grantedPermissions = { ...frozenGrantedPermissions };
+
   if (hasCaip25EquivalentPermissions) {
-    try {
-      caip25Approval = await requestCaip25ApprovalForOrigin(
-        caip25EquivalentPermissions,
-      );
-    } catch (error) {
-      return end(error as unknown as Error);
-    }
-  }
-
-  if (hasOtherRequestedPermissions || !hasCaip25EquivalentPermissions) {
-    try {
-      const [frozenGrantedPermissions] = await requestPermissionsForOrigin(
-        requestedPermissions,
-      );
-      grantedPermissions = { ...frozenGrantedPermissions };
-    } catch (error) {
-      return end(error as unknown as Error);
-    }
-  }
-
-  if (caip25Approval) {
-    const grantedCaip25Permissions = grantPermissionsForOrigin(caip25Approval);
-    const caip25Endowment =
-      grantedCaip25Permissions[Caip25EndowmentPermissionName];
-
+    const caip25Endowment = grantedPermissions[Caip25EndowmentPermissionName];
     const caip25CaveatValue = caip25Endowment?.caveats?.find(
       ({ type }) => type === Caip25CaveatType,
     )?.value as Caip25CaveatValue | undefined;
@@ -146,6 +121,8 @@ async function requestPermissionsImplementation(
         `could not find ${Caip25CaveatType} in granted ${Caip25EndowmentPermissionName} permission.`,
       );
     }
+
+    delete grantedPermissions[Caip25EndowmentPermissionName];
 
     // We cannot derive correct eth_accounts value directly from the CAIP-25 permission
     // because the accounts will not be in order of lastSelected

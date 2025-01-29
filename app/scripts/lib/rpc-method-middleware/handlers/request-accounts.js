@@ -14,8 +14,8 @@ const requestEthereumAccounts = {
     getUnlockPromise: true,
     sendMetrics: true,
     metamaskState: true,
-    requestCaip25ApprovalForOrigin: true,
-    grantPermissionsForOrigin: true,
+    getCaip25PermissionFromLegacyPermissionsForOrigin: true,
+    requestPermissionsForOrigin: true,
   },
 };
 export default requestEthereumAccounts;
@@ -39,8 +39,7 @@ const locks = new Set();
  * @param options.getUnlockPromise - A hook that resolves when the wallet is unlocked.
  * @param options.sendMetrics - A hook that helps track metric events.
  * @param options.metamaskState - The MetaMask app state.
- * @param options.requestCaip25ApprovalForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
- * @param options.grantPermissionsForOrigin - A hook that grants permission for the approved permissions for the origin.
+ * @param options.requestCaip25PermissionForOrigin - A hook that requests approval for the CAIP-25 permission for the origin.
  * @returns A promise that resolves to nothing
  */
 async function requestEthereumAccountsHandler(
@@ -53,8 +52,8 @@ async function requestEthereumAccountsHandler(
     getUnlockPromise,
     sendMetrics,
     metamaskState,
-    requestCaip25ApprovalForOrigin,
-    grantPermissionsForOrigin,
+    getCaip25PermissionFromLegacyPermissionsForOrigin,
+    requestPermissionsForOrigin,
   },
 ) {
   const { origin } = req;
@@ -84,8 +83,10 @@ async function requestEthereumAccountsHandler(
   }
 
   try {
-    const caip25Approval = await requestCaip25ApprovalForOrigin();
-    await grantPermissionsForOrigin(caip25Approval);
+    const caip25Permission = getCaip25PermissionFromLegacyPermissionsForOrigin()
+    await requestPermissionsForOrigin(
+      caip25Permission,
+    );
   } catch (error) {
     return end(error);
   }
