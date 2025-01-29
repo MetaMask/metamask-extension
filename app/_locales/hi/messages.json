@@ -385,10 +385,6 @@
     "message": "यह किसी दिए गए नेटवर्क पर आपके स्वामित्व वाले सभी टोकन के मूल्य को दर्शाता है। यदि आप इस मूल्य को ETH या अन्य मुद्राओं में देखना पसंद करते हैं, तो $1 पर जाएं।",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "मैं MetaMask के $1 से सहमत हूं",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },

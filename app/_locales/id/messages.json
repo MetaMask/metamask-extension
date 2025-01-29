@@ -385,10 +385,6 @@
     "message": "Ini mencerminkan nilai semua token yang Anda miliki di jaringan tertentu. Jika Anda lebih suka melihat nilai ini dalam ETH atau mata uang lainnya, pilih $1.",
     "description": "$1 represents the settings page"
   },
-  "agreeTermsOfUse": {
-    "message": "Saya menyetujui $1 MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
