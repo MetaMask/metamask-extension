@@ -62,6 +62,12 @@ export const useScrollHandling = (requireScroll, isScrollable) => {
     }
   }, [isScrollable, requireScroll]);
 
+  /**
+   * Handle scroll events on the content.
+   *
+   * @param {Event} e - The scroll event.
+   * @param {Function} onScroll - The scroll event handler.
+   */
   const handleScroll = useCallback(
     (e, onScroll) => {
       if (!requireScroll) {
@@ -88,6 +94,11 @@ export const useScrollHandling = (requireScroll, isScrollable) => {
     [requireScroll, isScrollable],
   );
 
+  /**
+   * Handle scroll to bottom events on the content.
+   *
+   * @param {Function} scrollToBottom - The scroll to bottom function.
+   */
   const handleScrollToBottom = useCallback((scrollToBottom) => {
     if (isProgrammaticScrollRef.current) {
       return;
