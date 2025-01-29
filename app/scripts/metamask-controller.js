@@ -5404,9 +5404,8 @@ export default class MetamaskController extends EventEmitter {
         // suppress expected error in case that the origin
         // does not have the target permission yet
         return [];
-      } else {
-        throw err;
       }
+      throw err;
     }
 
     if (!this.isUnlocked() && !ignoreLock) {
