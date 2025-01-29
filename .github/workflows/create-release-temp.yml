@@ -22,6 +22,7 @@ jobs:
       semver-version: 12.10.105
       previous-version-tag: v12.10.2
     secrets:
+      # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       github-token: ${{ secrets.PR_TOKEN }}
     permissions:
       contents: write
