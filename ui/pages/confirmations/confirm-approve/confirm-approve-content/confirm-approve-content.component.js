@@ -286,10 +286,6 @@ export default class ConfirmApproveContent extends Component {
     const { t } = this.context;
     const { data, isSetApproveForAll, isApprovalOrRejection } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const { tokenAddress } = this.props;
-    ///: END:ONLY_INCLUDE_IF
-
     return (
       <Box className="flex-column">
         <Text className="confirm-approve-content__small-text">
@@ -302,16 +298,6 @@ export default class ConfirmApproveContent extends Component {
             <Text className="confirm-approve-content__small-text">
               {`${t('parameters')}: ${isApprovalOrRejection}`}
             </Text>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {`${t('tokenContractAddress')}: ${tokenAddress}`}
-              </Text>
-              ///: END:ONLY_INCLUDE_IF
-            }
           </>
         ) : null}
         <Text className="confirm-approve-content__small-text confirm-approve-content__data__data-block">

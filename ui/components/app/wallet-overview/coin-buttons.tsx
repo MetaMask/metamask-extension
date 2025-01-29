@@ -31,12 +31,7 @@ import { SnapId } from '@metamask/snaps-sdk';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
+
 import { I18nContext } from '../../../contexts/i18n';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -239,74 +234,6 @@ const CoinButtons = ({
     return {};
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-
-  const portfolioEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
-
-  const stakingEvent = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-    });
-  };
-
-  const handleMmiStakingOnClick = useCallback(() => {
-    stakingEvent();
-    global.platform.openTab({
-      url: `${mmiPortfolioUrl}/stake`,
-    });
-  }, [mmiPortfolioUrl]);
-
-  const handleMmiPortfolioOnClick = useCallback(() => {
-    portfolioEvent();
-    global.platform.openTab({
-      url: mmiPortfolioUrl,
-    });
-  }, [mmiPortfolioUrl]);
-
-  const renderInstitutionalButtons = () => {
-    return (
-      <>
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
-          Icon={
-            <Icon
-              name={IconName.Stake}
-              color={IconColor.primaryInverse}
-              size={IconSize.Sm}
-            />
-          }
-          label={t('stake')}
-          onClick={handleMmiStakingOnClick}
-        />
-        {mmiPortfolioEnabled && (
-          <IconButton
-            className={`${classPrefix}-overview__button`}
-            iconButtonClassName={iconButtonClassName}
-            Icon={
-              <Icon
-                name={IconName.Diagram}
-                color={IconColor.primaryInverse}
-                size={IconSize.Sm}
-              />
-            }
-            label={t('portfolio')}
-            onClick={handleMmiPortfolioOnClick}
-          />
-        )}
-      </>
-    );
-  };
-  ///: END:ONLY_INCLUDE_IF
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
 
@@ -449,11 +376,6 @@ const CoinButtons = ({
     ///: END:ONLY_INCLUDE_IF
 
     await setCorrectChain();
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    global.platform.openTab({
-      url: `${mmiPortfolioUrl}/swap`,
-    });
-    ///: END:ONLY_INCLUDE_IF
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (isSwapsChain) {
@@ -485,9 +407,6 @@ const CoinButtons = ({
     usingHardwareWallet,
     defaultSwapsToken,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    mmiPortfolioUrl,
-    ///: END:ONLY_INCLUDE_IF
   ]);
 
   return (
@@ -515,11 +434,6 @@ const CoinButtons = ({
         ///: END:ONLY_INCLUDE_IF
       }
 
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        renderInstitutionalButtons()
-        ///: END:ONLY_INCLUDE_IF
-      }
       <IconButton
         className={`${classPrefix}-overview__button`}
         iconButtonClassName={iconButtonClassName}
