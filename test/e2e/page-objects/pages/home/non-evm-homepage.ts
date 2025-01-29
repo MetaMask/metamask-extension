@@ -9,6 +9,11 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
 
+  async check_pageIsLoaded(): Promise<void> {
+    await super.check_pageIsLoaded();
+    await this.driver.delayFirefox(2000);
+  }
+
   protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
   /**
