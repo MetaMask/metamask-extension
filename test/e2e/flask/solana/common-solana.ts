@@ -71,28 +71,33 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
     });
 }
 export async function simulateSolanaTransaction(mockServer: Mockttp) {
+  console.log('AQUI ENTRA EN SIMULATE');
   const response = {
     statusCode: 200,
     json: {
       result: {
         context: {
-          slot: 218,
+          apiVersion: '2.0.21',
+          slot: 317166063,
         },
         value: {
-          // eslint-disable-next-line id-denylist
-          err: null,
           accounts: null,
+          err: null,
+          innerInstructions: null,
           logs: [
-            'Program 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri invoke [1]',
-            'Program 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri consumed 2366 of 1400000 compute units',
-            'Program return: 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri KgAAAAAAAAA=',
-            'Program 83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri success',
+            'Program ComputeBudget111111111111111111111111111111 invoke [1]',
+            'Program ComputeBudget111111111111111111111111111111 success',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]',
+            'Program log: Instruction: TransferChecked',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 6228 of 1399850 compute units',
+            'Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success',
           ],
-          returnData: {
-            data: ['Kg==', 'base64'],
-            programId: '83astBRguLMdt2h5U1Tpdq5tjFoJ6noeGwaY3mDLVcri',
+          replacementBlockhash: {
+            blockhash: '7D3DdWuTUE1DN7xp16wgirt3fXApvdVFqPtfnJYrWKjw',
+            lastValidBlockHeight: 295455309,
           },
-          unitsConsumed: 2366,
+          returnData: null,
+          unitsConsumed: 6378,
         },
         id: 1337,
       },
@@ -421,20 +426,16 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
 }
 
 export async function mockGetAccountInfo(mockServer: Mockttp) {
+  console.log('AQUI ENTRA EN GET ACCOUNT INFO');
   const response = {
     statusCode: 200,
     json: {
       result: {
-        context: { apiVersion: '2.0.15', slot: 341197053 },
-        value: {
-          data: ['', 'base58'],
-          executable: true,
-          lamports: 88849814690250,
-          owner: '11111111111111111111111111111111',
-          // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
-          rentEpoch: 18446744073709551615,
-          space: 0,
+        context: {
+          apiVersion: '2.0.21',
+          slot: 317161313,
         },
+        value: null,
       },
     },
   };
@@ -452,7 +453,10 @@ export async function mockGetFeeForMessage(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
-      result: { context: { slot: 5068 }, value: 5000 },
+      result: {
+        context: { apiVersion: '2.0.18', slot: 317144874 },
+        value: 10,
+      },
       id: 1337,
     },
   };
@@ -510,11 +514,11 @@ export async function withSolanaAccountSnap(
             await mockMultiCoinPrice(mockServer),
             await mockGetLatestBlockhash(mockServer),
             await mockGetFeeForMessage(mockServer),
-            await mockGetAccountInfo(mockServer),
           ]);
         }
         if (mockSendTransaction) {
           mockList.push(await mockSendSolanaTransaction(mockServer));
+          mockList.push(await mockGetAccountInfo(mockServer));
         }
         return mockList;
       },
