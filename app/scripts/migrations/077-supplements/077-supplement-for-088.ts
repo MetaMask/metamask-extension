@@ -11,7 +11,7 @@ import { hasProperty, isObject, isStrictHexString } from '@metamask/utils';
  * @param state - The persisted MetaMask state, keyed by controller.
  * @returns Updated versioned MetaMask extension state.
  */
-export default function transformState077For086(
+export default function transformState077For088(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
   if (hasProperty(state, 'NftController') && isObject(state.NftController)) {
