@@ -169,7 +169,7 @@ async function check(): Promise<void> {
 
     if (actualStr !== baselineStr) {
       console.error(
-        `Error: Codebase circular dependencies are out of sync in ${TARGET_FILE}`,
+        `Error: Codebase circular dependencies are out of sync with ${TARGET_FILE}`,
       );
       console.log(RESOLUTION_STEPS);
       process.exit(1);
