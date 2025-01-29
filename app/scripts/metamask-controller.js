@@ -2393,10 +2393,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'notify:accountAssetListUpdated',
       ({ assetsChanged }) => {
-        console.log(
-          '🚀 ~ #stateChange ~ AccountsController:stateChange:',
-          assetsChanged,
-        );
+        this.multichainAssetsController.updateAccountAssetsList(assetsChanged);
       },
     );
 
