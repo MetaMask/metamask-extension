@@ -4885,6 +4885,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/eth-hd-keyring@npm:9.0.1-15c90e6":
+  version: 9.0.1-15c90e6
+  resolution: "@metamask-previews/eth-hd-keyring@npm:9.0.1-15c90e6"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/eth-sig-util": "npm:^8.1.2"
+    "@metamask/key-tree": "npm:^10.0.2"
+    "@metamask/scure-bip39": "npm:^2.1.1"
+    "@metamask/utils": "npm:^11.0.1"
+    ethereum-cryptography: "npm:^2.1.2"
+  checksum: 10/85aa33c74260c79353603a6af2cc928d6ef3b01827c39599bc0ee8dbc0d68d093144ca6923e2c4cee4343abca46184e9478e554445107f0d798a3018f5c900ad
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^2.0.2, @metamask/abi-utils@npm:^2.0.3, @metamask/abi-utils@npm:^2.0.4":
   version: 2.0.4
   resolution: "@metamask/abi-utils@npm:2.0.4"
@@ -26672,6 +26686,7 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.2.0"
     "@metamask-institutional/transaction-update": "npm:^0.2.6"
     "@metamask-institutional/types": "npm:^1.2.0"
+    "@metamask-previews/eth-hd-keyring": "npm:9.0.1-15c90e6"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
     "@metamask/accounts-controller": "npm:^21.0.2"

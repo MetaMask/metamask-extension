@@ -284,6 +284,7 @@
     "@metamask-institutional/sdk": "^0.2.0",
     "@metamask-institutional/transaction-update": "^0.2.6",
     "@metamask-institutional/types": "^1.2.0",
+    "@metamask-previews/eth-hd-keyring": "9.0.1-15c90e6",
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/account-watcher": "^4.1.2",
     "@metamask/accounts-controller": "^21.0.2",
