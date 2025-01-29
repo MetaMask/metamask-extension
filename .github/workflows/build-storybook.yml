@@ -29,6 +29,9 @@ jobs:
           path: storybook-build
 
       - name: Deploy storybook
+        # For a `pull_request` event, the branch is `github.head_ref``.
+        # For a `push` event, the branch is `github.ref_name`.
+        if: ${{ (github.head_ref || github.ref_name) == 'main' }}
         run: |
           git remote add storybook https://${{ secrets.STORYBOOK_TOKEN }}@github.com/MetaMask/metamask-storybook.git
           yarn storybook:deploy
