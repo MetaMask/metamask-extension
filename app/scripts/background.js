@@ -650,7 +650,7 @@ export async function loadStateFromPersistence() {
     );
   }
   // this initializes the meta/version data as a class variable to be used for future writes
-  localStore.setMetadata(versionedData.meta);
+  persistenceManager.setMetadata(versionedData.meta);
 
   // write to disk
   persistenceManager.set(versionedData.data);
