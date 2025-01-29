@@ -482,6 +482,7 @@
     "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "8.13.0",
     "@octokit/core": "^3.6.0",
+    "@octokit/rest": "^21.0.0",
     "@open-rpc/meta-schema": "^1.14.6",
     "@open-rpc/mock-server": "^1.7.5",
     "@open-rpc/schema-utils-js": "^1.16.2",
@@ -689,8 +690,7 @@
     "ws": "^8.17.1",
     "yaml": "^2.4.1",
     "yargs": "^17.7.2",
-    "yargs-parser": "^21.1.1",
-    "@octokit/rest": "^21.0.0"
+    "yargs-parser": "^21.1.1"
   },
   "engines": {
     "node": ">= 20",
