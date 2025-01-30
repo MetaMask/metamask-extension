@@ -24,7 +24,6 @@ const mockShowError = jest.fn();
 const mockGetAccounts = jest.fn();
 const mockSnapId = 'snapId';
 const mockSnapName = 'mock-snap';
-const mockSnapController = jest.fn();
 const mockPersisKeyringHelper = jest.fn();
 const mockSetSelectedAccount = jest.fn();
 const mockSetAccountName = jest.fn();
@@ -68,7 +67,7 @@ const createControllerMessenger = ({
     SnapKeyringBuilderAllowActions,
     never
   >().getRestricted({
-    name: 'SnapKeyringBuilder',
+    name: 'SnapKeyring',
     allowedActions: [
       'ApprovalController:addRequest',
       'ApprovalController:acceptRequest',
@@ -137,7 +136,6 @@ const createSnapKeyringBuilder = ({
 } = {}) => {
   return snapKeyringBuilder(
     createControllerMessenger(),
-    mockSnapController,
     mockPersisKeyringHelper,
     mockRemoveAccountHelper,
     mockTrackEvent,
