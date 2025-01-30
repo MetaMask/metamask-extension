@@ -395,9 +395,6 @@
   "alert": {
     "message": "Alerta"
   },
-  "alertActionBuy": {
-    "message": "Comprar ETH"
-  },
   "alertActionUpdateGas": {
     "message": "Actualizar el límite de gas"
   },
@@ -424,9 +421,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Para continuar con esta transacción, deberá aumentar el límite de gas a 21000 o más."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "No tiene suficiente ETH en su cuenta para pagar las tarifas de red."
   },
   "alertMessageNetworkBusy": {
     "message": "Los precios del gas son altos y las estimaciones son menos precisas."
