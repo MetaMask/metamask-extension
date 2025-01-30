@@ -5,7 +5,7 @@ import { getSelectedInternalAccount } from './accounts';
 import { getSelectedAccountCachedBalance } from './selectors';
 import { getMultichainBalances } from './multichain-core';
 import type { MultichainState } from './multichain.types';
-import { getMultichainCurrentNetwork } from './multichain-currentnetwork';
+import { getMultichainCurrentNetwork } from './multichain-network';
 import { getMultichainIsEvm } from './multichain-isevm';
 
 function getNonEvmCachedBalance(

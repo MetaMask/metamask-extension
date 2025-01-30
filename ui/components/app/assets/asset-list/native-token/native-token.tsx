@@ -7,8 +7,8 @@ import {
   getMultichainCurrentNetwork,
   getMultichainIsEvm,
   getMultichainSelectedAccountCachedBalance,
+  getPreferences,
 } from '../../../../../selectors';
-import { getPreferences } from '../../../../../selectors';
 import { TokenListItem } from '../../../../multichain';
 import { AssetListProps } from '../asset-list';
 import { useNativeTokenBalance } from './use-native-token-balance';

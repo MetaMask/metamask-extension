@@ -11,7 +11,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMultichainDefaultToken } from '../../../selectors/multichain';
-import { getMultichainCurrentNetwork } from '../../../selectors/multichain-currentnetwork';
+import { getMultichainCurrentNetwork } from '../../../selectors/multichain-network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

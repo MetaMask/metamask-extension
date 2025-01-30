@@ -33,7 +33,7 @@ jest.mock('../../../selectors', () => ({
   },
 }));
 
-jest.mock('../../../selectors/getMetaMaskAccounts', () => ({
+jest.mock('../../../selectors/accounts-get', () => ({
   getMetaMaskAccounts: () => {
     return {};
   },
@@ -42,7 +42,7 @@ jest.mock('../../../selectors/getMetaMaskAccounts', () => ({
   },
 }));
 
-jest.mock('../../../selectors/getMetaMaskAccounts', () => ({
+jest.mock('../../../selectors/accounts-get', () => ({
   getInternalAccountsSortedByKeyring: () => {
     return {};
   },

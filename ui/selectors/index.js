@@ -15,6 +15,5 @@ export * from './multichain';
 export * from './multichain-core';
 export * from './multichain-selected-account-cached-balance';
 export * from './multichain-isevm';
-export * from './multichain-currentnetwork';
 export * from './multichain-network';
 export * from './accounts-core';

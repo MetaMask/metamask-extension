@@ -14,7 +14,7 @@ import {
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import { getMultichainDefaultToken } from '../../../selectors/multichain';
-import { getMultichainCurrentNetwork } from '../../../selectors/multichain-currentnetwork';
+import { getMultichainCurrentNetwork } from '../../../selectors/multichain-network';
 import useRamps, {
   RampsMetaMaskEntry,
 } from '../../../hooks/ramps/useRamps/useRamps';

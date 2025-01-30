@@ -14,6 +14,7 @@ import type {
   ProviderConfigWithImageUrlAndExplorerUrl,
   MultichainNetwork,
 } from './multichain.types';
+import { getMultichainProviderConfig } from './multichain-provider-config';
 
 export function getMultichainNetwork(
   state: MultichainState,
@@ -77,4 +78,10 @@ export function getMultichainNetwork(
     chainId: nonEvmNetwork?.chainId,
     network: nonEvmNetwork,
   };
+}
+export function getMultichainCurrentNetwork(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  return getMultichainProviderConfig(state, account);
 }
