@@ -3,7 +3,6 @@ import { strict as assert } from 'assert';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
-  largeDelayMs,
   multipleGanacheOptions,
   unlockWallet,
   veryLargeDelayMs,
