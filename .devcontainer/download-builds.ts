@@ -7,6 +7,13 @@ import {
 } from '../.github/scripts/shared/circle-artifacts';
 const exec = util.promisify(require('node:child_process').exec);
 
+function getGitBranch() {
+  const gitOutput = execSync('git status').toString();
+
+  const branchRegex = /On branch (?<branch>.*)\n/;
+  return gitOutput.match(branchRegex)?.groups?.branch || 'main';
+}
+
 async function getBuilds(branch: string, jobNames: string[]) {
   const pipelineId = await getPipelineId(branch);
   const workflowId = await getWorkflowId(pipelineId);
@@ -110,11 +117,7 @@ function unzipBuilds(folder: 'builds' | 'builds-test', versionNumber: string) {
 }
 
 async function main(jobNames: string[]) {
-  const branch = process.env.CIRCLE_BRANCH;
-
-  if (!branch) {
-    throw new Error('CIRCLE_BRANCH environment variable is not set.');
-  }
+  const branch = process.env.CIRCLE_BRANCH || getGitBranch();
 
   const builds = await getBuilds(branch, jobNames);
 
