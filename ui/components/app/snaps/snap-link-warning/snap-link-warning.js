@@ -60,6 +60,13 @@ const SnapLinkDisplay = ({ url }) => {
   );
 };
 
+SnapLinkDisplay.propTypes = {
+  /**
+   * The URL to display
+   */
+  url: PropTypes.string,
+};
+
 export default function SnapLinkWarning({ isOpen, onClose, url }) {
   const t = useI18nContext();
 
