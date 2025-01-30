@@ -18,7 +18,7 @@ describe('migration #135', () => {
     expect(newStorage.meta).toStrictEqual({ version: 135 });
   });
 
-  it('should set stx opt-in to true and mark as migration-enabled when opt-in status is null', async () => {
+  it('should preserve existing state when opt-in status is null (default-enabled from previous versions)', async () => {
     const oldStorage: VersionedData = {
       meta: { version: prevVersion },
       data: {
@@ -34,11 +34,34 @@ describe('migration #135', () => {
     expect(
       newStorage.data.PreferencesController?.preferences
         ?.smartTransactionsOptInStatus,
-    ).toBe(true);
+    ).toBe(null);
     expect(
       newStorage.data.PreferencesController?.preferences
         ?.smartTransactionsMigrationApplied,
-    ).toBe(true);
+    ).toBe(false);
+  });
+
+  it('should preserve existing state when opt-in status is null (default-enabled from previous versions)', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: prevVersion },
+      data: {
+        PreferencesController: {
+          preferences: {
+            smartTransactionsOptInStatus: null,
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsOptInStatus,
+    ).toBe(null);
+    expect(
+      newStorage.data.PreferencesController?.preferences
+        ?.smartTransactionsMigrationApplied,
+    ).toBe(false);
   });
 
   it('should set stx opt-in to true and mark as migration-enabled when opt-in status is undefined', async () => {
