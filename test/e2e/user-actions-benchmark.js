@@ -33,6 +33,7 @@ async function loadNewAccount() {
     {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,
+      disableServerMochaToBackground: true,
     },
     async ({ driver }) => {
       await unlockWallet(driver);
@@ -46,7 +47,7 @@ async function loadNewAccount() {
         '[data-testid="multichain-account-menu-popover-add-account"]',
       );
       await driver.fill('[placeholder="Account 2"]', '2nd account');
-      await driver.clickElement({ text: 'Create', tag: 'button' });
+      await driver.clickElement({ text: 'Add account', tag: 'button' });
       await driver.waitForSelector({
         css: '.currency-display-component__text',
         text: '0',
@@ -64,31 +65,32 @@ async function confirmTx() {
     {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,
+      disableServerMochaToBackground: true,
     },
     async ({ driver, ganacheServer }) => {
       await logInWithBalanceValidation(driver, ganacheServer);
 
       await openActionMenuAndStartSendFlow(driver);
-      if (process.env.MULTICHAIN) {
-        return;
-      }
+
       await driver.fill(
-        'input[placeholder="Enter public address (0x) or ENS name"]',
+        'input[placeholder="Enter public address (0x) or domain name"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 
       const inputAmount = await driver.findElement('.unit-input__input');
       await inputAmount.fill('1');
 
-      await driver.waitForSelector({ text: 'Next', tag: 'button' });
-      await driver.clickElement({ text: 'Next', tag: 'button' });
+      await driver.waitForSelector({ text: 'Continue', tag: 'button' });
+      await driver.clickElement({ text: 'Continue', tag: 'button' });
 
       const timestampBeforeAction = new Date();
 
       await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-      await driver.clickElement('[data-testid="home__activity-tab"]');
+      await driver.clickElement(
+        '[data-testid="account-overview__activity-tab"]',
+      );
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .transaction-list-item',

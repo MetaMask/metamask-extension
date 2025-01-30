@@ -9,7 +9,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
       class="transaction-detail-item__row"
     >
       <h6
-        class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-bottom-1 mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--color-text-default"
       >
         Estimated gas fee
         <div
@@ -51,6 +51,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                data-testid="account-value-and-suffix"
               >
                 0.000021
               </span>
@@ -58,7 +59,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
           </div>
         </h6>
         <h6
-          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
         >
           <div>
             <div
@@ -66,12 +67,13 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
               title="0.000021 ETH"
             >
               <span
-                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                class="mm-box mm-text currency-display-component__text mm-text--body-md-bold mm-text--ellipsis mm-box--color-text-default"
+                data-testid="account-value-and-suffix"
               >
                 0.000021
               </span>
               <span
-                class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                class="mm-box mm-text currency-display-component__suffix mm-text--body-md-bold mm-box--margin-inline-start-1 mm-box--color-text-default"
               >
                 ETH
               </span>
@@ -83,7 +85,10 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
     <div
       class="transaction-detail-item__row"
     >
-      <div />
+      <h6
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-muted"
+        style="flex: 1 0 auto;"
+      />
       <h6
         class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
       >
@@ -97,6 +102,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
           >
             <span
               class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+              data-testid="account-value-and-suffix"
             >
               0.000021
             </span>
@@ -112,5 +118,3 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
   </div>
 </div>
 `;
-
-exports[`ConfirmLegacyGasDisplay should match snapshot 2`] = `<div />`;

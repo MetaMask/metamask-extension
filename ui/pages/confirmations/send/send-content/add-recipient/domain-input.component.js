@@ -3,18 +3,30 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { isHexString } from '@metamask/utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
-import { isValidDomainName } from '../../../../../helpers/utils/util';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
+  toChecksumHexAddress,
 } from '../../../../../../shared/modules/hexstring-utils';
 import {
   ButtonIcon,
   IconName,
   IconSize,
+  AvatarAccount,
+  AvatarAccountVariant,
+  Text,
 } from '../../../../../components/component-library';
-import { IconColor } from '../../../../../helpers/constants/design-system';
+import {
+  IconColor,
+  Size,
+  BackgroundColor,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
   static contextTypes = {
@@ -24,6 +36,7 @@ export default class DomainInput extends Component {
 
   static propTypes = {
     className: PropTypes.string,
+    useBlockie: PropTypes.bool,
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     scanQrCode: PropTypes.func,
@@ -72,14 +85,7 @@ export default class DomainInput extends Component {
       return null;
     }
 
-    let isFlask = false;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    isFlask = true;
-    ///: END:ONLY_INCLUDE_IF
-
-    if ((isFlask && !isHexString(input)) || isValidDomainName(input)) {
-      lookupDomainName(input);
-    } else {
+    if (isHexString(input)) {
       resetDomainResolution();
       if (
         onValidAddressTyped &&
@@ -88,6 +94,8 @@ export default class DomainInput extends Component {
       ) {
         onValidAddressTyped(addHexPrefix(input));
       }
+    } else {
+      lookupDomainName(input);
     }
 
     return null;
@@ -95,9 +103,15 @@ export default class DomainInput extends Component {
 
   render() {
     const { t } = this.context;
-    const { className, selectedAddress, selectedName, userInput } = this.props;
+    const { className, selectedAddress, selectedName, userInput, useBlockie } =
+      this.props;
 
     const hasSelectedAddress = Boolean(selectedAddress);
+
+    const shortenedAddress =
+      selectedName && selectedAddress
+        ? shortenAddress(toChecksumHexAddress(selectedAddress))
+        : undefined;
 
     return (
       <div className={classnames('ens-input', className)}>
@@ -110,15 +124,32 @@ export default class DomainInput extends Component {
         >
           {hasSelectedAddress ? (
             <>
-              <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
+              <div
+                className="ens-input__wrapper__input ens-input__wrapper__input--selected"
+                data-testid="ens-input-selected"
+              >
+                <AvatarAccount
+                  variant={
+                    useBlockie
+                      ? AvatarAccountVariant.Blockies
+                      : AvatarAccountVariant.Jazzicon
+                  }
+                  address={selectedAddress}
+                  size={Size.MD}
+                  borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+                />
                 <div className="ens-input__selected-input__title">
                   {selectedName || selectedAddress}
+                  {shortenedAddress ? (
+                    <Text
+                      color={TextColor.textAlternative}
+                      variant={TextVariant.bodySm}
+                      ellipsis
+                    >
+                      {shortenedAddress}
+                    </Text>
+                  ) : null}
                 </div>
-                {selectedName !== selectedAddress && (
-                  <div className="ens-input__selected-input__subtitle">
-                    {selectedAddress}
-                  </div>
-                )}
               </div>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -134,7 +165,7 @@ export default class DomainInput extends Component {
                 className="ens-input__wrapper__input"
                 type="text"
                 dir="auto"
-                placeholder={t('recipientAddressPlaceholder')}
+                placeholder={t('recipientAddressPlaceholderNew')}
                 onChange={this.onChange}
                 onPaste={this.onPaste}
                 spellCheck="false"
@@ -145,7 +176,7 @@ export default class DomainInput extends Component {
               <ButtonIcon
                 className="ens-input__wrapper__action-icon-button"
                 onClick={() => {
-                  if (userInput) {
+                  if (userInput?.length > 0) {
                     this.props.onReset();
                   } else {
                     this.props.scanQrCode();

@@ -1,0 +1,45 @@
+diff --git a/lib/common.js b/lib/common.js
+index 336bc4d376d07306d6adf79b8e73cffd4dfff4f7..271d50d42a5a370440fd93de00072ddfdd2fcf4b 100644
+--- a/lib/common.js
++++ b/lib/common.js
+@@ -1,7 +1,17 @@
+ 'use strict'
+ 
+ const debug = require('debug')('nock.common')
+-const timers = require('timers')
++/**
++ * PATCH NOTES:
++ * 
++ * Replace Node.js `timers` module with global timers, because Jest/Sinon fake timers do not work
++ * with the Node.js timers module in the version we are using.
++ * 
++ * This is resolved in `@sinon/fake-timers@11`, which is introduced in the upcoming `jest@30`
++ * release.
++ * 
++ * TODO: Remove this patch after updating to `jest@30`.
++ */
+ const url = require('url')
+ const util = require('util')
+ 
+@@ -598,16 +608,16 @@ const intervals = []
+ const immediates = []
+ 
+ const wrapTimer =
+-  (timer, ids) =>
++  (timerName, ids) =>
+   (...args) => {
+-    const id = timer(...args)
++    const id = globalThis[timerName](...args)
+     ids.push(id)
+     return id
+   }
+ 
+-const setTimeout = wrapTimer(timers.setTimeout, timeouts)
+-const setInterval = wrapTimer(timers.setInterval, intervals)
+-const setImmediate = wrapTimer(timers.setImmediate, immediates)
++const setTimeout = wrapTimer('setTimeout', timeouts)
++const setInterval = wrapTimer('setInterval', intervals)
++const setImmediate = wrapTimer('setImmediate', immediates)
+ 
+ function clearTimer(clear, ids) {
+   while (ids.length) {

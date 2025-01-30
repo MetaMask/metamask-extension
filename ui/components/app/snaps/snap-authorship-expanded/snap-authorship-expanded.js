@@ -16,21 +16,17 @@ import {
   FontWeight,
   JustifyContent,
   OverflowWrap,
-  TextColor,
+  TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { formatDate, getSnapName } from '../../../../helpers/utils/util';
+import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import {
-  getSnapRegistryData,
-  getTargetSubjectMetadata,
-} from '../../../../selectors';
+import { getSnapRegistryData } from '../../../../selectors';
 import { disableSnap, enableSnap } from '../../../../store/actions';
 import { Box, ButtonLink, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
 import Tooltip from '../../../ui/tooltip/tooltip';
-import SnapAvatar from '../snap-avatar';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 
@@ -51,16 +47,12 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
     ? `https://www.npmjs.com/package/${packageName}${versionPath}`
     : packageName;
 
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
-  );
   const snapRegistryData = useSelector((state) =>
     getSnapRegistryData(state, snapId),
   );
+
   const { website = undefined } = snapRegistryData?.metadata ?? {};
   const safeWebsite = useSafeWebsite(website);
-
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
   const versionHistory = snap?.versionHistory ?? [];
   const installInfo = versionHistory.length
@@ -86,37 +78,6 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
       borderRadius={BorderRadius.LG}
     >
       <Box
-        alignItems={AlignItems.center}
-        display={Display.Flex}
-        width={BlockSize.Full}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={3}
-        paddingBottom={3}
-      >
-        <Box>
-          <SnapAvatar snapId={snapId} />
-        </Box>
-        <Box
-          marginLeft={4}
-          marginRight={0}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          style={{ overflow: 'hidden' }}
-        >
-          <Text ellipsis fontWeight={FontWeight.Medium}>
-            {friendlyName}
-          </Text>
-          <Text
-            ellipsis
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-          >
-            {packageName}
-          </Text>
-        </Box>
-      </Box>
-      <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
@@ -128,6 +89,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
         style={{
           borderLeft: BorderStyle.none,
           borderRight: BorderStyle.none,
+          borderTop: BorderStyle.none,
         }}
       >
         <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
@@ -182,7 +144,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
               flexDirection={FlexDirection.Column}
               alignItems={AlignItems.flexEnd}
             >
-              <Text>{installOrigin.host}</Text>
+              <Text textAlign={TextAlign.End}>{installOrigin.host}</Text>
               <Text color={Color.textMuted}>
                 {t('installedOn', [
                   formatDate(installInfo.date, 'dd MMM yyyy'),

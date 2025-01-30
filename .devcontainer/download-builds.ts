@@ -7,7 +7,7 @@ function getGitBranch() {
   const gitOutput = execSync('git status').toString();
 
   const branchRegex = /On branch (?<branch>.*)\n/;
-  return gitOutput.match(branchRegex)?.groups?.branch || 'develop';
+  return gitOutput.match(branchRegex)?.groups?.branch || 'main';
 }
 
 async function getCircleJobs(branch: string) {
@@ -45,13 +45,18 @@ async function getBuilds(branch: string, jobNames: string[]) {
 
     console.log(`jobName: ${jobName}, jobId: ${jobId}`);
 
+    // Using the CircleCI API version 1.1 here, because this endpoint recently started requiring Authorization in v2
     const response = await fetch(
-      `https://circleci.com/api/v2/project/gh/MetaMask/metamask-extension/${jobId}/artifacts`,
+      `https://circleci.com/api/v1.1/project/gh/MetaMask/metamask-extension/${jobId}/artifacts`,
     );
 
-    const artifacts = (await response.json()).items;
+    const artifacts = await response.json();
 
-    if (!artifacts || artifacts.length === 0) {
+    if (
+      !artifacts ||
+      artifacts.length === 0 ||
+      artifacts.message === 'Not Found'
+    ) {
       return [];
     }
 

@@ -80,7 +80,7 @@ const AssetOptions = ({
               {t('hideTokenSymbol', [tokenSymbol])}
             </MenuItem>
           )}
-          {isNativeAsset ? null : (
+          {isNativeAsset || !onViewTokenDetails ? null : (
             <MenuItem
               iconName={IconName.Info}
               data-testid="asset-options__token-details"
@@ -112,13 +112,7 @@ AssetOptions.propTypes = {
       );
     }
   },
-  onViewTokenDetails: (props) => {
-    if (props.isNativeAsset === false && isNotFunc(props.onViewTokenDetails)) {
-      throw new Error(
-        'When isNativeAsset is true, onViewTokenDetails is a required prop',
-      );
-    }
-  },
+  onViewTokenDetails: PropTypes.func,
   tokenSymbol: (props) => {
     if (
       props.isNativeAsset === false &&

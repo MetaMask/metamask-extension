@@ -79,9 +79,6 @@
   "asset": {
     "message": "الأصل"
   },
-  "attemptingConnect": {
-    "message": "محاولة الاتصال بسلسلة الكتل."
-  },
   "attributions": {
     "message": "الصفات"
   },
@@ -212,9 +209,6 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteNetwork": {
-    "message": "هل تريد حذف الشبكة؟"
-  },
   "details": {
     "message": "التفاصيل"
   },
@@ -235,9 +229,6 @@
   },
   "editContact": {
     "message": "تعديل جهة الاتصال"
-  },
-  "ensRegistrationError": {
-    "message": "خطأ في تسجيل اسم ENS"
   },
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
@@ -357,12 +348,6 @@
   "invalidAddressRecipient": {
     "message": "عنوان المستلم غير صحيح"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "لا تجعلها شبكة ETH، قم بتعيين الأحرف صغيرة"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "غير صحيح Block Explorer رابط"
-  },
   "invalidRPC": {
     "message": "رابط آر بي سي غير صحيح"
   },
@@ -399,9 +384,6 @@
   },
   "loading": {
     "message": "جارٍ التحميل..."
-  },
-  "loadingTokens": {
-    "message": "جارِ تحميل العملات الرمزية ..."
   },
   "localhost": {
     "message": "المضيف المحلي 8545"
@@ -459,14 +441,8 @@
   "next": {
     "message": "التالي"
   },
-  "noAddressForName": {
-    "message": "لم يتم تعيين عنوان لهذا الاسم."
-  },
   "noConversionRateAvailable": {
     "message": "لا يوجد معدل تحويل متاح"
-  },
-  "noTransactions": {
-    "message": "لا توجد لديك معاملات"
   },
   "noWebcamFound": {
     "message": "لم يتم العثور على كاميرا ويب للكمبيوتر الخاص بك. حاول مرة اخرى."
@@ -523,12 +499,6 @@
   "prev": {
     "message": "السابق"
   },
-  "primaryCurrencySetting": {
-    "message": "العملة الأساسية"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "حدد خيار \"المحلية\" لتحديد أولويات عرض القيم بالعملة المحلية للسلسلة (مثلاً ETH). حدد Fiat لتحديد أولويات عرض القيم بعملات fiat المحددة الخاصة بك."
-  },
   "privacyMsg": {
     "message": "سياسة الخصوصية"
   },
@@ -544,9 +514,6 @@
   },
   "readdToken": {
     "message": "يمكنك إضافة هذه العملة الرمزية مرة أخرى في المستقبل من خلال الانتقال إلى \"إضافة عملة رمزية\" في قائمة خيارات الحسابات الخاصة بك."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "البحث، العنوان العام (0x)، أو ENS"
   },
   "reject": {
     "message": "رفض"
@@ -626,9 +593,6 @@
   },
   "send": {
     "message": "إرسال"
-  },
-  "sendTokens": {
-    "message": "إرسال عملات رمزية"
   },
   "settings": {
     "message": "الإعدادات"
@@ -785,9 +749,6 @@
   },
   "unlockMessage": {
     "message": "شبكة الويب اللامركزية بانتظارك"
-  },
-  "updatedWithDate": {
-    "message": "تم تحديث $1"
   },
   "urlErrorMsg": {
     "message": "تتطلب الروابط بادئة HTTP/HTTPS مناسبة."

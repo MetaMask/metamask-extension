@@ -16,6 +16,8 @@ type MakePropsOptional<T> = {
   [K in keyof T]?: T[K];
 };
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ButtonIconStyleUtilityProps extends StyleUtilityProps {
   /**
    * String that adds an accessible name for ButtonIcon

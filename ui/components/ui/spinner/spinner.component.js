@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Spinner = ({ className = '', color = 'var(--color-text-default)' }) => {
+const Spinner = ({ className = '', color = 'var(--color-icon-muted)' }) => {
   return (
     <div className={`spinner ${className}`}>
       <svg

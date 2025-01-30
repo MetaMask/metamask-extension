@@ -75,9 +75,6 @@
   "asset": {
     "message": "Tillgång"
   },
-  "attemptingConnect": {
-    "message": "Försöker ansluta till blockkedja."
-  },
   "attributions": {
     "message": "Tillskrivningar"
   },
@@ -202,9 +199,6 @@
   "delete": {
     "message": "Radera"
   },
-  "deleteNetwork": {
-    "message": "Radera nätverk?"
-  },
   "details": {
     "message": "Info"
   },
@@ -225,9 +219,6 @@
   },
   "editContact": {
     "message": "Redigera kontakt"
-  },
-  "ensRegistrationError": {
-    "message": "Fel i ENS-namnregistrering"
   },
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
@@ -347,12 +338,6 @@
   "invalidAddressRecipient": {
     "message": "Mottagarens adress är ogiltig"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ej ETH-nätverk, ange med små bokstäver"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Ogiltig Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"
   },
@@ -389,9 +374,6 @@
   },
   "loading": {
     "message": "Läser in..."
-  },
-  "loadingTokens": {
-    "message": "Laddar tokens..."
   },
   "lock": {
     "message": "Logga ut"
@@ -446,14 +428,8 @@
   "next": {
     "message": "Nästa"
   },
-  "noAddressForName": {
-    "message": "Inga adresser har angetts för detta namn."
-  },
   "noConversionRateAvailable": {
     "message": "Ingen omräkningskurs tillgänglig"
-  },
-  "noTransactions": {
-    "message": "Du har inga överföringar"
   },
   "noWebcamFound": {
     "message": "Din dators webbkamera hittades inte. Vänligen försök igen."
@@ -510,12 +486,6 @@
   "prev": {
     "message": "Föregående"
   },
-  "primaryCurrencySetting": {
-    "message": "Primär valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Välj native för att prioritera visning av värden i den ursprungliga valutan i kedjan (t.ex. ETH). Välj Fiat för att prioritera visning av värden i din valda fiatvaluta."
-  },
   "privacyMsg": {
     "message": "Integritetspolicy"
   },
@@ -531,9 +501,6 @@
   },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Sök, allmän adress (0x) eller ENS"
   },
   "reject": {
     "message": "Avvisa"
@@ -613,9 +580,6 @@
   },
   "send": {
     "message": "Skicka"
-  },
-  "sendTokens": {
-    "message": "Skicka tokens"
   },
   "settings": {
     "message": "Inställningar"
@@ -763,9 +727,6 @@
   },
   "unlockMessage": {
     "message": "Den decentraliserade webben väntar"
-  },
-  "updatedWithDate": {
-    "message": "Uppdaterat $1"
   },
   "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."

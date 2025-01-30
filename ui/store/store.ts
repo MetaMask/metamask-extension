@@ -4,7 +4,12 @@ import devtoolsEnhancer from 'remote-redux-devtools';
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import {
+  NftControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
+import { NotificationServicesControllerState } from '@metamask/notification-services-controller/notification-services';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import rootReducer from '../ducks';
 import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
 import type { NetworkStatus } from '../../shared/constants/network';
@@ -17,24 +22,18 @@ import type { NetworkStatus } from '../../shared/constants/network';
  *
  * TODO: Replace this
  */
-export interface TemporaryMessageDataType {
+export type TemporaryMessageDataType = {
   id: string;
   type: string;
   msgParams: {
     metamaskId: string;
     data: string;
   };
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  metadata?: {
-    custodyId?: string;
-  };
-  status?: string;
-  ///: END:ONLY_INCLUDE_IF
-}
+};
 
-export interface MessagesIndexedById {
+export type MessagesIndexedById = {
   [id: string]: TemporaryMessageDataType;
-}
+};
 
 /**
  * This interface is a temporary interface to describe the state tree that is
@@ -45,51 +44,45 @@ export interface MessagesIndexedById {
  * state received from the background takes precedence over anything in the
  * metamask reducer.
  */
-interface TemporaryBackgroundState {
-  addressBook: {
-    [chainId: string]: {
-      name: string;
-    }[];
-  };
-  providerConfig: {
-    chainId: string;
-  };
-  transactions: TransactionMeta[];
-  selectedAddress: string;
-  identities: {
-    [address: string]: {
-      balance: string;
+type TemporaryBackgroundState = NftControllerState &
+  NotificationServicesControllerState &
+  TokensControllerState & {
+    addressBook: {
+      [chainId: string]: {
+        name: string;
+      }[];
     };
-  };
-  ledgerTransportType: LedgerTransportTypes;
-  unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedMsgs: MessagesIndexedById;
-  unapprovedPersonalMsgs: MessagesIndexedById;
-  unapprovedTypedMessages: MessagesIndexedById;
-  networksMetadata: {
-    [NetworkClientId: string]: {
-      EIPS: { [eip: string]: boolean };
-      status: NetworkStatus;
+    // todo: can this be deleted post network controller v20
+    providerConfig: {
+      chainId: string;
     };
-  };
-  selectedNetworkClientId: string;
-  pendingApprovals: ApprovalControllerState['pendingApprovals'];
-  approvalFlows: ApprovalControllerState['approvalFlows'];
-  knownMethodData?: {
-    [fourBytePrefix: string]: Record<string, unknown>;
-  };
-  gasFeeEstimates: GasFeeEstimates;
-  gasEstimateType: GasEstimateType;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyAccountDetails?: { [key: string]: any };
-  ///: END:ONLY_INCLUDE_IF
-  internalAccounts: {
-    accounts: {
-      [key: string]: InternalAccount;
+    transactions: TransactionMeta[];
+    ledgerTransportType: LedgerTransportTypes;
+    unapprovedDecryptMsgs: MessagesIndexedById;
+    unapprovedPersonalMsgs: MessagesIndexedById;
+    unapprovedTypedMessages: MessagesIndexedById;
+    networksMetadata: {
+      [NetworkClientId: string]: {
+        EIPS: { [eip: string]: boolean };
+        status: NetworkStatus;
+      };
     };
-    selectedAccount: string;
+    selectedNetworkClientId: string;
+    pendingApprovals: ApprovalControllerState['pendingApprovals'];
+    approvalFlows: ApprovalControllerState['approvalFlows'];
+    knownMethodData?: {
+      [fourBytePrefix: string]: Record<string, unknown>;
+    };
+    gasFeeEstimates: GasFeeEstimates;
+    gasEstimateType: GasEstimateType;
+    internalAccounts: {
+      accounts: {
+        [key: string]: InternalAccount;
+      };
+      selectedAccount: string;
+    };
+    keyrings: { type: string; accounts: string[] }[];
   };
-}
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
 
@@ -98,8 +91,20 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
     origin: string;
   };
   metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
+  appState: RootReducerReturnType['appState'];
+  send: RootReducerReturnType['send'];
+  DNS: RootReducerReturnType['DNS'];
+  history: RootReducerReturnType['history'];
+  confirmAlerts: RootReducerReturnType['confirmAlerts'];
+  confirmTransaction: RootReducerReturnType['confirmTransaction'];
+  swaps: RootReducerReturnType['swaps'];
+  bridge: RootReducerReturnType['bridge'];
+  gas: RootReducerReturnType['gas'];
+  localeMessages: RootReducerReturnType['localeMessages'];
 };
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
   const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);
   const isDev = debugModeEnabled && !process.env.IN_TEST;
@@ -132,16 +137,10 @@ export default function configureStore(preloadedState: any) {
         serializableCheck: false,
         /**
          * immutableCheck controls whether we get warnings about mutation of
-         * state, which will be true in dev. However in test lavamoat complains
-         * about something the middleware is doing. It would be good to figure
-         * that out and enable this in test environments so that mutation
-         * causes E2E failures.
+         * state, this is turned off by default for now since it heavily affects
+         * performance due to the Redux state growing larger.
          */
-        immutableCheck: isDev
-          ? {
-              warnAfter: 100,
-            }
-          : false,
+        immutableCheck: false,
       }),
     devTools: false,
     enhancers,

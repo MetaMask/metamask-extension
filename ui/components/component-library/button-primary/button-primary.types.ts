@@ -8,6 +8,9 @@ export enum ButtonPrimarySize {
 }
 
 export type ValidButtonTagType = 'button' | 'a';
+
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ButtonPrimaryStyleUtilityProps
   extends Omit<ButtonBaseStyleUtilityProps, 'size'> {
   /**

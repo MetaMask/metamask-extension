@@ -42,6 +42,7 @@
     color: var(--color-text-default);
     background: transparent;
     border: none;
+    min-width: 0;
     max-width: 15ch;
     overflow: hidden;
     text-overflow: ellipsis;

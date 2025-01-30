@@ -9,8 +9,15 @@ import {
 import {
   TOKENS,
   MOCK_TRADE_RESPONSE_2,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../ui/pages/swaps/swaps-util-test-constants';
-import { fetchTradesInfo, shouldEnableDirectWrapping } from './swaps-utils';
+import {
+  fetchTradesInfo,
+  shouldEnableDirectWrapping,
+  calculateMaxGasLimit,
+  calcTokenValue,
+} from './swaps-utils';
 
 jest.mock('./storage-helpers', () => ({
   getStorageItem: jest.fn(),
@@ -63,7 +70,7 @@ describe('Swaps Utils', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock('https://swap.metaswap.codefi.network')
+      nock('https://swap.api.cx.metamask.io')
         .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);
@@ -80,6 +87,7 @@ describe('Swaps Utils', () => {
           sourceDecimals: TOKENS[0].decimals,
           sourceTokenInfo: { ...TOKENS[0] },
           destinationTokenInfo: { ...TOKENS[1] },
+          enableGasIncludedQuotes: false,
         },
         { chainId: CHAIN_IDS.MAINNET },
       );
@@ -222,6 +230,57 @@ describe('Swaps Utils', () => {
 
     it('returns false if source and destination tokens are undefined', () => {
       expect(shouldEnableDirectWrapping(CHAIN_IDS.MAINNET)).toBe(false);
+    });
+  });
+
+  describe('calculateMaxGasLimit', () => {
+    const gasEstimate = '0x37b15';
+    const maxGas = 273740;
+    let expectedMaxGas = '42d4c';
+    let gasMultiplier = 1.2;
+    let customMaxGas = '';
+
+    it('should return the max gas limit', () => {
+      const result = calculateMaxGasLimit(
+        gasEstimate,
+        gasMultiplier,
+        maxGas,
+        customMaxGas,
+      );
+      expect(result).toStrictEqual(expectedMaxGas);
+    });
+
+    it('should return the custom max gas limit', () => {
+      customMaxGas = '46d4c';
+      const result = calculateMaxGasLimit(
+        gasEstimate,
+        gasMultiplier,
+        maxGas,
+        customMaxGas,
+      );
+      expect(result).toStrictEqual(customMaxGas);
+    });
+
+    it('should return the max gas limit with a gas multiplier of 4.5', () => {
+      gasMultiplier = 4.5;
+      expectedMaxGas = 'fa9df';
+      customMaxGas = '';
+      const result = calculateMaxGasLimit(
+        gasEstimate,
+        gasMultiplier,
+        maxGas,
+        customMaxGas,
+      );
+      expect(result).toStrictEqual(expectedMaxGas);
+    });
+  });
+
+  describe('calcTokenValue', () => {
+    it('should be possible to calculate very big values', () => {
+      let result = calcTokenValue(1, 20);
+      expect(result.toString()).toStrictEqual('100000000000000000000');
+      result = calcTokenValue(1, 30);
+      expect(result.toString()).toStrictEqual('1e+30');
     });
   });
 });

@@ -2,19 +2,23 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TokenAllowance from './token-allowance';
 
 const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
 const state = {
   appState: {
     customTokenAmount: '1',
+    nextNonce: 1,
+    customNonceValue: '',
   },
   metamask: {
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     accounts: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -22,17 +26,6 @@ const state = {
       },
     },
     gasEstimateType: 'none',
-    selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-    identities: {
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        name: 'Account 1',
-      },
-      '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-        address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-        name: 'Account 2',
-      },
-    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -45,7 +38,7 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -58,7 +51,7 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -81,17 +74,7 @@ const state = {
         name: 'Address Book Account 1',
       },
     ],
-    providerConfig: {
-      type: 'mainnet',
-      nickname: '',
-    },
-    selectedNetworkClientId: NetworkType.mainnet,
-    networksMetadata: {
-      [NetworkType.mainnet]: {
-        EIPS: { 1559: true },
-        status: NetworkStatus.Available,
-      },
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, nickname: 'mainnet' }),
     preferences: {
       showFiatInTestnets: true,
     },
@@ -120,8 +103,19 @@ const state = {
         accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
-    nextNonce: 1,
-    customNonceValue: '',
+    pendingApprovals: {
+      '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+        id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        origin: 'http://127.0.0.1:8080',
+        type: 'transaction',
+        time: 1721383540624,
+        requestData: {
+          txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        },
+        requestState: null,
+        expectsResult: true,
+      },
+    },
   },
   history: {
     mostRecentOverviewPage: '/',
@@ -138,15 +132,11 @@ const mockShowModal = jest.fn();
 const mockedState = jest.mocked(state);
 
 jest.mock('../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>
@@ -194,7 +184,6 @@ describe('TokenAllowancePage', () => {
     ethTransactionTotal: '0.0012',
     fiatTransactionTotal: '1.6',
     hexTransactionTotal: '0x44364c5bb0000',
-    isMultiLayerFeeNetwork: false,
     supportsEIP1559: true,
     userAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tokenAddress: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
@@ -214,7 +203,7 @@ describe('TokenAllowancePage', () => {
       status: 'unapproved',
       originalGasEstimate: '0xea60',
       userEditedGasLimit: false,
-      chainId: '0x3',
+      chainId: CHAIN_IDS.MAINNET,
       loadingDefaults: false,
       dappSuggestedGasFees: {
         gasPrice: '0x4a817c800',
@@ -331,7 +320,7 @@ describe('TokenAllowancePage', () => {
 
   it('should render edited custom nonce value', () => {
     props.useNonceField = true;
-    state.metamask.customNonceValue = '3';
+    state.appState.customNonceValue = '3';
     const { queryByText, getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
@@ -374,7 +363,7 @@ describe('TokenAllowancePage', () => {
 
   it('should render customize nonce modal when next button is clicked and if useNonceField is set to true', () => {
     props.useNonceField = true;
-    state.metamask.customNonceValue = '2';
+    state.appState.customNonceValue = '2';
     const { getByText, getAllByText, queryByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
@@ -392,7 +381,7 @@ describe('TokenAllowancePage', () => {
 
   it('should render customize nonce modal when next button is clicked, than back button is clicked, than return to previous page and if useNonceField is set to true', () => {
     props.useNonceField = true;
-    state.metamask.customNonceValue = '2';
+    state.appState.customNonceValue = '2';
     const { getByText, queryByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
@@ -538,7 +527,6 @@ describe('TokenAllowancePage', () => {
       ...state,
       metamask: {
         ...state.metamask,
-        selectedAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
       },
     };
     const newStore = configureMockStore([thunk])(newState);

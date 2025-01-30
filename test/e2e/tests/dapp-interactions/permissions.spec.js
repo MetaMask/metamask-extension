@@ -28,59 +28,45 @@ describe('Permissions', function () {
           tag: 'button',
         });
 
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.clickElement({
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // shows connected sites
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        await driver.clickElement('.menu-item:nth-of-type(3)');
-
-        await driver.findElement({
-          text: 'Connected sites',
-          tag: 'h2',
+        await driver.clickElement({
+          text: 'All Permissions',
+          tag: 'div',
         });
         await driver.waitForSelector({
-          css: '.connected-sites-list__subject-name',
           text: '127.0.0.1:8080',
+          tag: 'p',
         });
         const domains = await driver.findClickableElements(
-          '.connected-sites-list__subject-name',
+          '[data-testid="connection-list-item"]',
         );
         assert.equal(domains.length, 1);
 
         // can get accounts within the dapp
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await driver.clickElement({
           text: 'eth_accounts',
           tag: 'button',
         });
 
-        const getAccountsResult = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '#getAccountsResult',
           text: publicAddress,
         });
-        assert.equal(
-          (await getAccountsResult.getText()).toLowerCase(),
-          publicAddress.toLowerCase(),
-        );
       },
     );
   });

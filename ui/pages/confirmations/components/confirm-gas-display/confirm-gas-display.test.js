@@ -1,8 +1,6 @@
 import React from 'react';
 import { act, screen } from '@testing-library/react';
 
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -10,6 +8,9 @@ import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmGasDisplay from './confirm-gas-display';
 
 jest.mock('../../../../store/actions', () => ({
@@ -23,6 +24,9 @@ jest.mock('../../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 const render = async ({ transactionProp = {}, contextProps = {} } = {}) => {
   const store = configureStore({
     ...mockState,
@@ -30,14 +34,12 @@ const render = async ({ transactionProp = {}, contextProps = {} } = {}) => {
     metamask: {
       ...mockState.metamask,
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [mockSelectedInternalAccount.address]: {
+          address: mockSelectedInternalAccount.address,
           balance: '0x1F4',
         },
       },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      preferences: {},
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
       gasFeeEstimatesByChainId: {
@@ -73,6 +75,7 @@ describe('ConfirmGasDisplay', () => {
         txParams: {
           gas: '0x5208',
         },
+        gasLimitNoBuffer: '0x5208',
         userFeeLevel: 'medium',
       },
     });
@@ -97,15 +100,10 @@ describe('ConfirmGasDisplay', () => {
     await render({
       contextProps: {
         metamask: {
-          selectedNetworkClientId: NetworkType.goerli,
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: {
-                1559: false,
-              },
-              status: NetworkStatus.Available,
-            },
-          },
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.GOERLI,
+            metadata: { EIPS: { 1559: false } },
+          }),
         },
         confirmTransaction: {
           txData: {

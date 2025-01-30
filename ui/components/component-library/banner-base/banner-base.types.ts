@@ -17,6 +17,8 @@ type MakePropsOptional<T> = {
   [K in keyof T]?: T[K];
 };
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * The title of the BannerBase
@@ -62,7 +64,7 @@ export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
    * The onClick handler for the close button
    * When passed this will allow for the close button to show
    */
-  onClose?: () => void;
+  onClose?: (e: React.MouseEvent<HTMLElement>) => void;
   /**
    * The props to pass to the close button
    */

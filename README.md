@@ -1,16 +1,18 @@
 # MetaMask Browser Extension
 
-You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
+You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://support.metamask.io/).
 
 For [general questions](https://community.metamask.io/c/learn/26), [feature requests](https://community.metamask.io/c/feature-requests-ideas/13), or [developer questions](https://community.metamask.io/c/developer-questions/11), visit our [Community Forum](https://community.metamask.io/).
 
 MetaMask supports Firefox, Google Chrome, and Chromium-based browsers. We recommend using the latest available browser version.
 
-For up to the minute news, follow our [Twitter](https://twitter.com/metamask) or [Medium](https://medium.com/metamask) pages.
+For up to the minute news, follow us on [X](https://x.com/MetaMask).
 
-To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
+To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://docs.metamask.io/).
 
-To learn how to contribute to the MetaMask project itself, visit our [Internal Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
+To learn how to contribute to the MetaMask codebase, visit our [Contributor Docs](https://github.com/MetaMask/contributor-docs).
+
+To learn how to contribute to the MetaMask Extension project itself, visit our [Extension Docs](https://github.com/MetaMask/metamask-extension/tree/main/docs).
 
 ## GitHub Codespaces quickstart
 
@@ -55,9 +57,9 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
   - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
 - Run `yarn install` to install the dependencies.
-- Build the project to the `./dist/` folder with `yarn dist`.
+- Build the project to the `./dist/` folder with `yarn dist` (for Chromium-based browsers) or `yarn dist:mv2` (for Firefox)
 
-  - Optionally, you may run `yarn start` to run dev mode.
+  - Optionally, to create a development build you can instead run `yarn start` (for Chromium-based browsers) or `yarn start:mv2` (for Firefox)
   - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
   - See the [build system readme](./development/build/README.md) for build system usage information.
 
@@ -80,6 +82,18 @@ If you are using VS Code and are unable to make commits from the source control 
 ### Development builds
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
+
+#### Development build with wallet state
+
+You can start a development build with a preloaded wallet state, by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file. Then you have the following options:
+
+1. Start the wallet with the default fixture flags, by running `yarn start:with-state`.
+2. Check the list of available fixture flags, by running `yarn start:with-state --help`.
+3. Start the wallet with custom fixture flags, by running `yarn start:with-state --FIXTURE_NAME=VALUE` for example `yarn start:with-state --withAccounts=100`. You can pass as many flags as you want. The rest of the fixtures will take the default values.
+
+#### Development build with Webpack
+
+You can also start a development build using the `yarn webpack` command, or `yarn webpack --watch`. This uses an alternative build system that is much faster, but not yet production ready. See the [Webpack README](./development/webpack/README.md) for more information.
 
 #### React and Redux DevTools
 
@@ -117,21 +131,23 @@ Before running e2e tests, ensure you've run `yarn install` to download dependenc
 
 1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
 2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
-    - `yarn build:test` for main build
-    - `yarn build:test:flask` for flask build
-    - `yarn build:test:mmi` for mmi build
-    - `yarn build:test:mv3` for mv3 build
-3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes.This option is ideal for iterative testing and development.
-This command also allows you to generate test builds for various types, including:
-    - `yarn start:test` for main build
-    - `yarn start:test:flask` for flask build
-    - `yarn start:test:mv3` for mv3 build
+   - `yarn build:test` for main build
+   - `yarn build:test:flask` for flask build
+   - `yarn build:test:mv2` for mv2 build
+   - `yarn build:test:mmi` for mmi build
+3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
+   - `yarn start:test` for main build
+   - `yarn start:test:flask` for flask build
+   - `yarn start:test:mv2` for mv2 build
 
 Note: The `yarn start:test` command (which initiates the testDev build type) has LavaMoat disabled for both the build system and the application, offering a streamlined testing experience during development. On the other hand, `yarn build:test` enables LavaMoat for enhanced security in both the build system and application, mirroring production environments more closely.
 
 #### Running Tests
+
 Once you have your test build ready, choose the browser for your e2e tests:
+
 - For Firefox, run `yarn test:e2e:firefox`.
+  - Note: If you are running Firefox as a snap package on Linux, ensure you enable the appropriate environment variable: `FIREFOX_SNAP=true yarn test:e2e:firefox`
 - For Chrome, run `yarn test:e2e:chrome`.
 
 These scripts support additional options for debugging. Use `--help`to see all available options.
@@ -141,10 +157,11 @@ These scripts support additional options for debugging. Use `--help`to see all a
 Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
-  --browser           Set the browser used; either 'chrome' or 'firefox'.
-                                            [string] [choices: "chrome", "firefox"]
+  --browser           Set the browser to be used; specify 'chrome', 'firefox', 'all'
+                      or leave unset to run on 'all' by default.
+                                                          [string] [default: 'all']
   --debug             Run tests in debug mode, logging each driver interaction
-                                                         [boolean] [default: false]
+                                                         [boolean] [default: true]
   --retries           Set how many times the test should be retried upon failure.
                                                               [number] [default: 0]
   --leave-running     Leaves the browser running after a test fails, along with
@@ -155,10 +172,10 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
 ```
 
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
-`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --debug --leave-running`
-
+`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --leave-running`
 
 #### Running e2e tests against specific feature flag
+
 While developing new features, we often use feature flags. As we prepare to make these features generally available (GA), we remove the feature flags. Existing feature flags are listed in the `.metamaskrc.dist` file. To execute e2e tests with a particular feature flag enabled, it's necessary to first generate a test build with that feature flag activated. There are two ways to achieve this:
 
 - To enable a feature flag in your local configuration, you should first ensure you have a `.metamaskrc` file copied from `.metamaskrc.dist`. Then, within your local `.metamaskrc` file, you can set the desired feature flag to true. Following this, a test build with the feature flag enabled can be created by executing `yarn build:test`.
@@ -166,7 +183,7 @@ While developing new features, we often use feature flags. As we prepare to make
 - Alternatively, for enabling a feature flag directly during the test build creation, you can pass the parameter as true via the command line. For instance, activating the MULTICHAIN feature flag can be done by running `MULTICHAIN=1 yarn build:test` or `MULTICHAIN=1 yarn start:test` . This method allows for quick adjustments to feature flags without altering the `.metamaskrc` file.
 
 Once you've created a test build with the desired feature flag enabled, proceed to run your tests as usual. Your tests will now run against the version of the extension with the specific feature flag activated. For example:
-`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --debug --leave-running`
+`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome`
 
 This approach ensures that your e2e tests accurately reflect the user experience for the upcoming GA features.
 
@@ -175,17 +192,9 @@ This approach ensures that your e2e tests accurately reflect the user experience
 Different build types have different e2e tests sets. In order to run them look in the `package.json` file. You will find:
 
 ```console
-    "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
-    "test:e2e:chrome:mv3": "ENABLE_MV3=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
+    "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
 ```
-
-#### Note: Running MMI e2e tests
-
-When running e2e on an MMI build you need to know that there are 2 separated set of tests:
-
-- MMI runs a subset of MetaMask's e2e tests. To facilitate this, we have appended the `@no-mmi` tags to the names of those tests that are not applicable to this build type.
-- MMI runs another specific set of e2e legacy tests which are better documented [here](test/e2e/mmi/README.md)
 
 ### Changing dependencies
 
@@ -202,8 +211,8 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
   - If your PR is from a fork, you can ask a MetaMask team member to help with updating the policy files.
   - Manual update instructions: The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details:
     - There are two sets of LavaMoat policy files:
-      - The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:background:auto`. Add `--help` for usage.
-        - These should be regenerated whenever the production dependencies for the background change.
+      - The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:webapp:auto`. Add `--help` for usage.
+        - These should be regenerated whenever the production dependencies for the webapp change.
       - The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
         - This should be regenerated whenever the dependencies used by the build system itself change.
     - Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
@@ -213,6 +222,9 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
       - `rm -rf node_modules/ && yarn && yarn lavamoat:auto`
     - Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
       Refer to the LavaMoat documentation or ask for help if you run into any issues.
+- The Attributions file
+  - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-attributions` to ask the MetaMask bot to automatically update the attributions file for you.
+  - Manual update: run `yarn attributions:generate`.
 
 ## Architecture
 
@@ -229,6 +241,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [Developing on MetaMask](./development/README.md)
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
 - [How to add new confirmations](./docs/confirmations.md)
+- [Browser support guidelines](./docs/browser-support.md)
 
 ## Dapp Developer Resources
 

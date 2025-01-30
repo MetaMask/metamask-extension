@@ -3,12 +3,8 @@ import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
   BorderColor,
-  Color,
 } from '../../../helpers/constants/design-system';
-import {
-  getAddressConnectedSubjectMap,
-  getOriginOfCurrentTab,
-} from '../../../selectors';
+import { isAccountConnectedToCurrentTab } from '../../../selectors';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -22,6 +18,8 @@ export type ConnectedStatusProps = {
   isActive?: boolean;
 };
 export type AddressConnectedSubjectMap = {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [address: string]: any;
 };
 
@@ -30,14 +28,11 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   isActive,
 }): JSX.Element => {
   const t = useI18nContext();
-  const addressConnectedSubjectMap = useSelector(
-    getAddressConnectedSubjectMap,
-  ) as AddressConnectedSubjectMap;
-  const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
-  const selectedAddressSubjectMap = addressConnectedSubjectMap[address];
-  const currentTabIsConnectedToSelectedAddress = Boolean(
-    selectedAddressSubjectMap?.[originOfCurrentTab],
+  const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (isAccountConnectedToCurrentTab as any)(state, address),
   );
 
   let status = STATUS_NOT_CONNECTED;
@@ -47,11 +42,11 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
     status = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   }
 
-  let badgeBorderColor = BackgroundColor.backgroundDefault; // TODO: Replace it once border-color has this value.
-  let badgeBackgroundColor = Color.borderMuted; // //TODO: Replace it once Background color has this value.
+  let badgeBorderColor = BorderColor.backgroundDefault; // TODO: Replace it once border-color has this value.
+  let badgeBackgroundColor = BackgroundColor.iconAlternative;
   let tooltipText = t('statusNotConnected');
   if (status === STATUS_CONNECTED) {
-    badgeBorderColor = BackgroundColor.backgroundDefault;
+    badgeBorderColor = BorderColor.backgroundDefault;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: type 'string' can't be used to index type '{}'
     badgeBackgroundColor = BackgroundColor.successDefault;

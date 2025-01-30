@@ -8,16 +8,16 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getRandomKey } from '../../../helpers/utils/notification.util';
 
-export interface NotificationListItemTextItemProps {
+export type NotificationListItemTextItemProps = {
   text: string;
   highlighted?: boolean;
-}
+};
 
-export interface NotificationListItemTextProps {
+export type NotificationListItemTextProps = {
   items: NotificationListItemTextItemProps[];
   variant?: TextVariant;
   color?: TextColor;
-}
+};
 
 /**
  * A component to render a list of notification item titles

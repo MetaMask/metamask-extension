@@ -3,7 +3,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
-  DAPP_URL,
   DAPP_ONE_URL,
   unlockWallet,
   WINDOW_TITLES,
@@ -18,7 +17,7 @@ describe('Dapp interactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: generateGanacheOptions({
-          concurrent: { port: 8546, chainId: 1338 },
+          concurrent: [{ port: 8546, chainId: 1338 }],
         }),
         title: this.test.fullTitle(),
       },
@@ -32,7 +31,7 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await unlockWallet(driver);
         const notification = await driver.isElementPresent({
-          text: 'Allow this site to add a network?',
+          text: 'Add Localhost 8546',
           tag: 'h3',
         });
 
@@ -66,7 +65,6 @@ describe('Dapp interactions', function () {
           navigate: false,
         });
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.waitForSelector({
@@ -84,17 +82,15 @@ describe('Dapp interactions', function () {
           '[data-testid ="account-options-menu-button"]',
         );
 
-        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
-
+        await driver.clickElement({ text: 'All Permissions', tag: 'div' });
         const connectedDapp1 = await driver.isElementPresent({
-          text: DAPP_URL,
-          tag: 'bdi',
+          text: '127.0.0.1:8080',
+          tag: 'p',
         });
         const connectedDapp2 = await driver.isElementPresent({
-          text: DAPP_ONE_URL,
-          tag: 'bdi',
+          text: '127.0.0.1:8081',
+          tag: 'p',
         });
-
         assert.ok(connectedDapp1, 'Account not connected to Dapp1');
         assert.ok(connectedDapp2, 'Account not connected to Dapp2');
       },

@@ -71,6 +71,7 @@ describe('createMetaRPCHandler', () => {
     });
     streamTest.on('data', (data) => {
       expect(data.error.message).toStrictEqual('foo-error');
+      expect(data.error.data.cause.message).toStrictEqual('foo-error');
       streamTest.end();
     });
   });

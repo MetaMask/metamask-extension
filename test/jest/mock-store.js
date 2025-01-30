@@ -1,10 +1,14 @@
-import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { EthAccountType } from '@metamask/keyring-api';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../stub/networks';
+import { DEFAULT_BRIDGE_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge/constants';
+import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '../../app/scripts/controllers/bridge-status/constants';
+import { BRIDGE_PREFERRED_GAS_ESTIMATE } from '../../shared/constants/bridge';
+import { mockTokenData } from '../data/bridge/mock-token-data';
 
-const createGetSmartTransactionFeesApiResponse = () => {
+export const createGetSmartTransactionFeesApiResponse = () => {
   return {
     tradeTxFees: {
       // Approval tx.
@@ -135,21 +139,11 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
-      selectedNetworkClientId: NetworkType.mainnet,
-      networksMetadata: {
-        [NetworkType.mainnet]: {
-          EIPS: {
-            1559: false,
-          },
-          status: NetworkStatus.Available,
-        },
-      },
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-        ticker: 'ETH',
-      },
       preferences: {
         showFiatInTestnets: true,
+        smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
+        showMultiRpcModal: false,
       },
       transactions: [
         {
@@ -221,15 +215,25 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      currentCurrency: 'ETH',
+      currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 1,
         },
       },
-      contractExchangeRates: {
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
-        '0x1111111111111111111111111111111111111111': 0.1,
+      marketData: {
+        '0x1': {
+          '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+            price: 2,
+            contractPercentChange1d: 0.004,
+            priceChange1d: 0.00004,
+          },
+          '0x1111111111111111111111111111111111111111': {
+            price: 0.1,
+            contractPercentChange1d: 0.01,
+            priceChange1d: 0.001,
+          },
+        },
       },
       identities: {
         '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -261,7 +265,7 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -274,7 +278,7 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -287,7 +291,7 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -300,7 +304,7 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           '36eb02e0-7925-47f0-859f-076608f09b69': {
@@ -317,7 +321,7 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -361,7 +365,14 @@ export const createSwapsMockStore = () => {
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
-      networkConfigurations: {},
+      ...mockNetworkState({
+        chainId: CHAIN_IDS.MAINNET,
+        ticker: CURRENCY_SYMBOLS.ETH,
+        rpcUrl: 'https://mainnet.infura.io/v3/',
+        blockExplorerUrl: 'https://etherscan.io',
+        id: 'mainnet',
+      }),
+      selectedNetworkClientId: 'mainnet',
       tokens: [
         {
           erc20: true,
@@ -378,11 +389,16 @@ export const createSwapsMockStore = () => {
       ],
       swapsState: {
         swapsFeatureFlags: {
-          smartTransactions: {
-            mobileActive: true,
+          ethereum: {
             extensionActive: true,
+            mobileActive: false,
+            smartTransactions: {
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              extensionReturnTxHashAsap: false,
+            },
           },
-          swapRedesign: {
+          smartTransactions: {
             mobileActive: true,
             extensionActive: true,
           },
@@ -454,6 +470,23 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
           TEST_AGG_2: {
             trade: {
@@ -488,6 +521,36 @@ export const createSwapsMockStore = () => {
               decimals: 18,
             },
             fee: 1,
+            isGasIncludedTrade: false,
+            approvalTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                { maxFeePerGas: 2310003200, maxPriorityFeePerGas: 513154852 },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
+            tradeTxFees: {
+              feeEstimate: 42000000000000,
+              fees: [
+                {
+                  maxFeePerGas: 2310003200,
+                  maxPriorityFeePerGas: 513154852,
+                  tokenFees: [
+                    {
+                      token: {
+                        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+                        symbol: 'DAI',
+                        decimals: 18,
+                      },
+                      balanceNeededToken: '0x426dc933c2e5a',
+                    },
+                  ],
+                },
+              ],
+              gasLimit: 21000,
+              gasUsed: 21000,
+            },
           },
         },
         fetchParams: {
@@ -622,6 +685,7 @@ export const createSwapsMockStore = () => {
           ],
         },
       },
+      balances: {},
     },
     appState: {
       modal: {
@@ -635,6 +699,84 @@ export const createSwapsMockStore = () => {
         },
       },
       gasLoadingAnimationIsShowing: false,
+    },
+  };
+};
+
+export const createBridgeMockStore = (
+  {
+    featureFlagOverrides = {},
+    bridgeSliceOverrides = {},
+    bridgeStateOverrides = {},
+    bridgeStatusStateOverrides = {},
+    metamaskStateOverrides = {},
+  } = {
+    featureFlagOverrides: {},
+    bridgeSliceOverrides: {},
+    bridgeStateOverrides: {},
+    bridgeStatusStateOverrides: {},
+    metamaskStateOverrides: {},
+  },
+) => {
+  const swapsStore = createSwapsMockStore();
+  return {
+    ...swapsStore,
+    // For initial state of dest asset picker
+    swaps: {
+      ...swapsStore.swaps,
+      topAssets: [],
+    },
+    bridge: {
+      toChainId: null,
+      sortOrder: 'cost_ascending',
+      ...bridgeSliceOverrides,
+    },
+    metamask: {
+      ...swapsStore.metamask,
+      ...mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.LINEA_MAINNET },
+      ),
+      gasFeeEstimates: {
+        estimatedBaseFee: '0.00010456',
+        [BRIDGE_PREFERRED_GAS_ESTIMATE]: {
+          suggestedMaxFeePerGas: '0.00018456',
+          suggestedMaxPriorityFeePerGas: '0.0001',
+        },
+      },
+      currencyRates: {
+        ETH: { conversionRate: 2524.25 },
+        usd: { conversionRate: 1 },
+      },
+      marketData: {
+        '0x1': {
+          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+            currency: 'usd',
+            price: 2.3,
+          },
+        },
+      },
+      ...mockTokenData,
+      ...metamaskStateOverrides,
+      bridgeState: {
+        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
+        bridgeFeatureFlags: {
+          ...featureFlagOverrides,
+          extensionConfig: {
+            support: false,
+            chains: {},
+            ...featureFlagOverrides.extensionConfig,
+          },
+        },
+        ...bridgeStateOverrides,
+      },
+      bridgeStatusState: {
+        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
+        ...bridgeStatusStateOverrides,
+      },
+    },
+    send: {
+      swapsBlockedTokens: [],
     },
   };
 };

@@ -18,6 +18,8 @@ export default function init() {
       msg: {
         target: string;
         action: TrezorAction;
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         params: any;
       },
       _sender,
@@ -38,14 +40,17 @@ export default function init() {
               chrome.runtime.sendMessage({
                 target: OffscreenCommunicationTarget.extension,
                 event: OffscreenCommunicationEvents.trezorDeviceConnect,
-                payload: event.payload.features.model,
+                payload: {
+                  model: event.payload.features.model,
+                  minorVersion: event.payload.features.minor_version,
+                },
               });
             }
           });
 
           TrezorConnectSDK.init({
             ...msg.params,
-            env: 'web',
+            env: 'webextension',
           }).then(() => {
             sendResponse();
           });

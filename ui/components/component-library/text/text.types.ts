@@ -75,6 +75,8 @@ export type ValidTagType =
   | 'a'
   | 'button';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface TextStyleUtilityProps extends StyleUtilityProps {
   /**
    * Additional className to assign the Text component
@@ -132,6 +134,11 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
    * Used for long strings that can be cut off...
    */
   ellipsis?: boolean;
+  /**
+   * Enable Brand Evolution Typography
+   * Do not use unless you are working on the brand evolution
+   */
+  isBrandEvolution?: boolean;
 }
 
 export type TextProps<C extends React.ElementType> =

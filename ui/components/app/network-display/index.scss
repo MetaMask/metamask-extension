@@ -1,36 +1,5 @@
 .network-display {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0 10px;
-  border-radius: 4px;
-  min-height: 25px;
-  user-select: none;
-
-  &--disabled {
-    cursor: not-allowed;
-  }
-
-  &.chip {
-    margin: 0;
-    max-width: 100%;
-  }
-
-  & .chip__label {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  & .chip__left-icon {
-    margin-left: 4px;
-  }
-
-  & .chip__right-icon {
-    margin-right: 4px;
-  }
-
-  &--clickable {
-    cursor: pointer;
+  &:not([disabled]):active {
+    background-color: transparent;
   }
 }

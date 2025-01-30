@@ -12,7 +12,7 @@ exports[`Badge Status should render correctly 1`] = `
         class=""
         data-original-title="Not Connected"
         data-tooltipped=""
-        style="display: inline;"
+        style="display: flex;"
         tabindex="0"
       >
         <div

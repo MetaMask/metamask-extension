@@ -8,13 +8,15 @@ import {
   FlexDirection,
   JustifyContent,
   TextVariant,
+  TextAlign,
+  OverflowWrap,
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 
-export interface NotificationDetailTitleProps {
+export type NotificationDetailTitleProps = {
   title: string;
   date?: string;
-}
+};
 
 /**
  * NotificationDetailTitle component.
@@ -36,8 +38,16 @@ export const NotificationDetailTitle: FC<NotificationDetailTitleProps> = ({
       alignItems={AlignItems.center}
       width={BlockSize.Full}
       flexDirection={FlexDirection.Column}
+      paddingInlineStart={8}
+      paddingInlineEnd={8}
     >
-      <Text variant={TextVariant.headingSm}>{title}</Text>
+      <Text
+        variant={TextVariant.headingSm}
+        textAlign={TextAlign.Center}
+        overflowWrap={OverflowWrap.BreakWord}
+      >
+        {title}
+      </Text>
       <Text variant={TextVariant.bodyXs}>{date}</Text>
     </Box>
   );

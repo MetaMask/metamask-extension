@@ -1,14 +1,20 @@
 import { isHexString } from 'ethereumjs-util';
 import { Interface } from '@ethersproject/abi';
-import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
-import type EthQuery from '@metamask/eth-query';
+import {
+  abiERC721,
+  abiERC20,
+  abiERC1155,
+  abiFiatTokenV2,
+} from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { TransactionParams } from '@metamask/transaction-controller/dist/types';
+import type { TransactionParams } from '@metamask/transaction-controller';
+import type { Provider } from '@metamask/network-controller';
 
+import { Hex } from '@metamask/utils';
 import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
@@ -18,6 +24,7 @@ const INFERRABLE_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.tokenMethodSetApprovalForAll,
   TransactionType.tokenMethodTransfer,
   TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodIncreaseAllowance,
   TransactionType.contractInteraction,
   TransactionType.simpleSend,
 ];
@@ -32,6 +39,7 @@ type InferTransactionTypeResult = {
 const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
+const USDCInterface = new Interface(abiFiatTokenV2);
 
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
@@ -116,6 +124,12 @@ export function parseStandardTokenTransactionData(data: string) {
     // ignore and return undefined
   }
 
+  try {
+    return USDCInterface.parseTransaction({ data });
+  } catch {
+    // ignore and return undefined
+  }
+
   return undefined;
 }
 
@@ -127,12 +141,12 @@ export function parseStandardTokenTransactionData(data: string) {
  * at transaction creation.
  *
  * @param txParams - Parameters for the transaction
- * @param query - EthQuery instance
+ * @param provider - Provider instance
  * @returns InferTransactionTypeResult
  */
 export async function determineTransactionType(
   txParams: TransactionParams,
-  query: EthQuery,
+  provider: Provider,
 ): Promise<InferTransactionTypeResult> {
   const { data, to } = txParams;
   let contractCode: string | null | undefined;
@@ -145,7 +159,7 @@ export async function determineTransactionType(
   }
   if (to) {
     const { contractCode: resultCode, isContractAddress } =
-      await readAddressAsContract(query, to);
+      await readAddressAsContract(provider, to);
 
     contractCode = resultCode;
 
@@ -169,6 +183,7 @@ export async function determineTransactionType(
         TransactionType.tokenMethodSetApprovalForAll,
         TransactionType.tokenMethodTransfer,
         TransactionType.tokenMethodTransferFrom,
+        TransactionType.tokenMethodIncreaseAllowance,
         TransactionType.tokenMethodSafeTransferFrom,
       ].find((methodName) => isEqualCaseInsensitive(methodName, name));
       return {
@@ -184,25 +199,25 @@ export async function determineTransactionType(
   return { type: TransactionType.simpleSend, getCodeResponse: contractCode };
 }
 
-type GetTokenStandardAndDetails = (to: string | undefined) => {
+type GetTokenStandardAndDetails = (to: string | undefined) => Promise<{
   decimals?: string;
   balance?: string;
   symbol?: string;
   standard?: TokenStandard;
-};
+}>;
 /**
  * Given a transaction meta object, determine the asset type that the
  * transaction is dealing with, as well as the standard for the token if it
  * is a token transaction.
  *
  * @param txMeta - transaction meta object
- * @param query - EthQuery instance
+ * @param provider - Provider instance
  * @param getTokenStandardAndDetails - function to get token standards and details.
  * @returns assetType: AssetType, tokenStandard: TokenStandard
  */
 export async function determineTransactionAssetType(
   txMeta: TransactionMeta,
-  query: EthQuery,
+  provider: Provider,
   getTokenStandardAndDetails: GetTokenStandardAndDetails,
 ): Promise<{
   assetType: AssetType;
@@ -215,7 +230,7 @@ export async function determineTransactionAssetType(
     // Because we will deal with all types of transactions (including swaps)
     // we want to get an inferrable type of transaction that isn't special cased
     // that way we can narrow the number of logic gates required.
-    const result = await determineTransactionType(txMeta.txParams, query);
+    const result = await determineTransactionType(txMeta.txParams, provider);
     inferrableType = result.type;
   }
 
@@ -227,6 +242,7 @@ export async function determineTransactionAssetType(
     TransactionType.tokenMethodSetApprovalForAll,
     TransactionType.tokenMethodTransfer,
     TransactionType.tokenMethodTransferFrom,
+    TransactionType.tokenMethodIncreaseAllowance,
   ].find((methodName) => methodName === inferrableType);
 
   if (
@@ -239,7 +255,7 @@ export async function determineTransactionAssetType(
     try {
       // We don't need a balance check, so the second parameter to
       // getTokenStandardAndDetails is omitted.
-      const details = getTokenStandardAndDetails(txMeta.txParams.to);
+      const details = await getTokenStandardAndDetails(txMeta.txParams.to);
       if (details.standard) {
         return {
           assetType:
@@ -265,4 +281,48 @@ export async function determineTransactionAssetType(
     };
   }
   return { assetType: AssetType.native, tokenStandard: TokenStandard.none };
+}
+
+const REGEX_MESSAGE_VALUE_LARGE =
+  /"message"\s*:\s*\{[^}]*"value"\s*:\s*(\d{15,})/u;
+
+function extractLargeMessageValue(dataToParse: string): string | undefined {
+  if (typeof dataToParse !== 'string') {
+    return undefined;
+  }
+  return dataToParse.match(REGEX_MESSAGE_VALUE_LARGE)?.[1];
+}
+
+/**
+ * JSON.parse has a limitation which coerces values to scientific notation if numbers are greater than
+ * Number.MAX_SAFE_INTEGER. This can cause a loss in precision.
+ *
+ * Aside from precision concerns, if the value returned was a large number greater than 15 digits,
+ * e.g. 3.000123123123121e+26, passing the value to BigNumber will throw the error:
+ * Error: new BigNumber() number type has more than 15 significant digits
+ *
+ * Note that using JSON.parse reviver cannot help since the value will be coerced by the time it
+ * reaches the reviver function.
+ *
+ * This function has a workaround to extract the large value from the message and replace
+ * the message value with the string value.
+ *
+ * @param dataToParse
+ * @returns
+ */
+export const parseTypedDataMessage = (dataToParse: string) => {
+  const result = JSON.parse(dataToParse);
+
+  const messageValue = extractLargeMessageValue(dataToParse);
+  if (result.message?.value) {
+    result.message.value = messageValue || String(result.message.value);
+  }
+
+  return result;
+};
+
+export function hasTransactionData(transactionData?: Hex): boolean {
+  return Boolean(
+    transactionData?.length && transactionData?.toLowerCase?.() !== '0x',
+  );
 }

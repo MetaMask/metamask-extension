@@ -2,6 +2,8 @@ import type {
   ResultComponent,
   ErrorResult,
 } from '@metamask/approval-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../../ui/components/component-library/icon';
 import { SnapKeyringBuilderMessenger } from '../types';
 
@@ -42,6 +44,8 @@ export const showError = (
   controllerMessenger: SnapKeyringBuilderMessenger,
   snapId: string,
   opts: ResultComponentOptions,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: Record<string, any>,
 ): Promise<ErrorResult> => {
   return controllerMessenger.call('ApprovalController:showError', {
@@ -70,6 +74,8 @@ export const showSuccess = (
   controllerMessenger: SnapKeyringBuilderMessenger,
   snapId: string,
   opts: ResultComponentOptions,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: Record<string, any>,
 ): Promise<ErrorResult> => {
   return controllerMessenger.call('ApprovalController:showSuccess', {

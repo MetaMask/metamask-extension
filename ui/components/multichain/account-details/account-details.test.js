@@ -1,8 +1,9 @@
 import { LavaDomeDebug } from '@lavamoat/lavadome-core';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { showPrivateKey } from '../../../../app/_locales/en/messages.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
@@ -14,6 +15,7 @@ import {
   setAccountDetailsAddress,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AccountDetailsKey } from './account-details-key';
 import { AccountDetails } from '.';
 

@@ -1,13 +1,11 @@
-import { TransactionParams } from '@metamask/transaction-controller';
 import {
   withFixtures,
   unlockWallet,
-  openDapp,
   switchToNotificationWindow,
-  DAPP_URL,
   WINDOW_TITLES,
   sendTransaction,
   convertETHToHexGwei,
+  createDappTransaction,
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import {
@@ -24,6 +22,9 @@ import {
 import { buildQuote, reviewQuote } from '../tests/swaps/shared';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
+import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
+import { Mockttp } from '../mock-e2e';
+import TestDapp from '../page-objects/pages/test-dapp';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -33,17 +34,19 @@ enum TransactionDetailRowIndex {
 async function installExampleSnap(driver: Driver) {
   await driver.openNewPage(ERC_4337_ACCOUNT_SNAP_URL);
   await driver.clickElement('#connectButton');
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
-  await driver.findElement({ text: 'Installation request', tag: 'h2' });
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+  await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
+  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
+  await driver.waitForSelector({ text: 'Confirm' });
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
+  await driver.waitForSelector({ text: 'OK' });
   await driver.clickElement({
     text: 'OK',
     tag: 'button',
@@ -62,6 +65,7 @@ async function createSnapAccount(
   await driver.clickElement({ text: 'Create Account', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Create', tag: 'button' });
+  await driver.clickElement({ text: 'Add account', tag: 'button' });
   await driver.clickElement({ text: 'Ok', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
 }
@@ -73,37 +77,38 @@ async function setSnapConfig(
     entrypoint,
     simpleAccountFactory,
     paymaster,
+    paymasterSK,
   }: {
     bundlerUrl: string;
     entrypoint: string;
     simpleAccountFactory: string;
     paymaster?: string;
+    paymasterSK?: string;
   },
 ) {
-  const data = JSON.stringify({
-    bundlerUrl,
-    entryPoint: entrypoint,
-    simpleAccountFactory,
-    customVerifyingPaymasterAddress: paymaster,
-  });
-
   await driver.switchToWindowWithTitle('Account Abstraction Snap');
-  await driver.clickElement({ text: 'Set Chain Config' });
-  await driver.fill('#set-chain-config-chain-config-object', data);
-  await driver.clickElement({ text: 'Set Chain Configs', tag: 'button' });
-}
-
-async function createDappTransaction(
-  driver: Driver,
-  transaction: TransactionParams,
-) {
-  await openDapp(
-    driver,
-    null,
-    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
-      transaction,
-    ])}`,
+  await driver.clickElement('[data-testid="chain-select"]');
+  await driver.clickElement('[data-testid="chain-id-1337"]');
+  await driver.fill('[data-testid="bundlerUrl"]', bundlerUrl);
+  await driver.fill('[data-testid="entryPoint"]', entrypoint);
+  await driver.fill(
+    '[data-testid="simpleAccountFactory"]',
+    simpleAccountFactory,
   );
+  if (paymaster) {
+    await driver.fill(
+      '[data-testid="customVerifyingPaymasterAddress"]',
+      paymaster,
+    );
+  }
+  if (paymasterSK) {
+    await driver.fill(
+      '[data-testid="customVerifyingPaymasterSK"]',
+      paymasterSK,
+    );
+  }
+
+  await driver.clickElement({ text: 'Set Chain Config', tag: 'button' });
 }
 
 async function createSwap(driver: Driver) {
@@ -117,6 +122,7 @@ async function createSwap(driver: Driver) {
     swapFrom: 'TESTETH',
     swapTo: 'USDC',
   });
+
   await driver.clickElement({ text: 'Swap', tag: 'button' });
   await driver.clickElement({ text: 'Close', tag: 'button' });
 }
@@ -128,7 +134,7 @@ async function confirmTransaction(driver: Driver) {
 
 async function openConfirmedTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement('[data-testid="home__activity-tab"]');
+  await driver.clickElement('[data-testid="account-overview__activity-tab"]');
 
   await driver.clickElement({
     css: '[data-testid="activity-list-item"]',
@@ -182,15 +188,24 @@ async function expectTransactionDetailsMatchReceipt(
   );
 }
 
+async function mockSwapsTransactionQuote(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: SWAP_TEST_ETH_USDC_TRADES_MOCK,
+      })),
+  ];
+}
+
 async function withAccountSnap(
   { title, paymaster }: { title?: string; paymaster?: string },
   test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToTestDapp()
-        .build(),
+      fixtures: new FixtureBuilder().build(),
       title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),
@@ -198,6 +213,7 @@ async function withAccountSnap(
       ganacheOptions: {
         hardfork: 'london',
       },
+      testSpecificMock: mockSwapsTransactionQuote,
     },
     async ({
       driver,
@@ -222,7 +238,10 @@ async function withAccountSnap(
         ERC_4337_ACCOUNT_SALT,
       );
 
-      await driver.closeWindow();
+      const testDapp = new TestDapp(driver);
+      await testDapp.openTestDappPage();
+      await testDapp.connectAccount({ publicAddress: ERC_4337_ACCOUNT });
+
       await driver.switchToWindowWithTitle(
         WINDOW_TITLES.ExtensionInFullScreenView,
       );
@@ -239,7 +258,8 @@ describe('User Operations', function () {
         from: ERC_4337_ACCOUNT,
         to: GANACHE_ACCOUNT,
         value: convertETHToHexGwei(1),
-        data: '0x',
+        maxFeePerGas: '0x0',
+        maxPriorityFeePerGas: '0x0',
       });
 
       await confirmTransaction(driver);
@@ -247,10 +267,6 @@ describe('User Operations', function () {
   });
 
   it('from send transaction', async function (this: Mocha.Context) {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
@@ -281,7 +297,8 @@ describe('User Operations', function () {
           from: ERC_4337_ACCOUNT,
           to: GANACHE_ACCOUNT,
           value: convertETHToHexGwei(1),
-          data: '0x',
+          maxFeePerGas: '0x0',
+          maxPriorityFeePerGas: '0x0',
         });
 
         await confirmTransaction(driver);

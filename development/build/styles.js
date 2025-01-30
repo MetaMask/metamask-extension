@@ -5,8 +5,9 @@ const gulpStylelint = require('gulp-stylelint');
 const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
+const discardFonts = require('postcss-discard-font-face');
 const postcss = require('gulp-postcss');
-const pump = pify(require('pump'));
+const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
 const { TASKS } = require('./constants');
@@ -64,7 +65,7 @@ function createStyleTasks({ livereload }) {
 }
 
 async function buildScssPipeline(src, dest, devMode) {
-  await pump(
+  await pipeline(
     ...[
       // pre-process
       gulp.src(src),
@@ -83,7 +84,7 @@ async function buildScssPipeline(src, dest, devMode) {
           '-mm-fa-path()': () => new sass.SassString('./fonts/fontawesome'),
         },
       }).on('error', gulpSass.logError),
-      postcss([autoprefixer(), rtlcss()]),
+      postcss([autoprefixer(), rtlcss(), discardFonts(['woff2'])]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),
     ].filter(Boolean),

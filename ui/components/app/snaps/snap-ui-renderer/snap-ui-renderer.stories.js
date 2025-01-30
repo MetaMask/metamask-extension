@@ -18,10 +18,3 @@ export const DefaultStory = () => (
     interfaceId="test-interface"
   />
 );
-
-export const ErrorStory = () => (
-  <SnapUIRenderer
-    snapId="local:http://localhost:8080/"
-    interfaceId="error-interface"
-  />
-);

@@ -4,15 +4,15 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
     metamask: {
-      providerConfig: { chainId: '0x0' },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
+      ...mockNetworkState({ chainId: '0x0' }),
+      preferences: {},
+      currencyRates: {},
     },
   });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
@@ -356,20 +356,5 @@ describe('ConfirmApproveContent Component', () => {
     });
 
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
-  });
-
-  it('should render token contract address when isSetApproveForAll and isApprovalOrRejection are true', () => {
-    const { getByText } = renderComponent({
-      ...props,
-      isSetApproveForAll: true,
-      isApprovalOrRejection: true,
-      tokenAddress: '0x',
-    });
-
-    const showViewTxDetails = getByText('View full transaction details');
-
-    fireEvent.click(showViewTxDetails);
-
-    expect(getByText(/Token contract address: 0x/u)).toBeInTheDocument();
   });
 });

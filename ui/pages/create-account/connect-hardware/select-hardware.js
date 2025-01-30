@@ -14,6 +14,7 @@ import {
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
+import LogoOnekey from '../../../components/ui/logo/logo-onekey';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
 
 import {
@@ -36,6 +37,17 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+// Not all browsers have usb support. In particular, Firefox does
+// not support usb. More information on that can be found here:
+// https://mozilla.github.io/standards-positions/#webusb
+//
+// The below `&& window.navigator.usb` condition ensures that we
+// only attempt to connect Trezor via usb if we are in a browser
+// that supports usb. If not, the connection of the hardware wallet
+// to the browser will be handled by the Trezor connect screen. In
+// the case of Firefox, this will depend on the Trezor bridge software
+const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
+
 export default class SelectHardware extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -51,11 +63,38 @@ export default class SelectHardware extends Component {
 
   state = {
     selectedDevice: null,
+    trezorRequestDevicePending: false,
   };
 
-  connect = () => {
-    if (this.state.selectedDevice) {
-      this.props.connectToHardwareWallet(this.state.selectedDevice);
+  connect = async () => {
+    const { selectedDevice } = this.state;
+    if (selectedDevice) {
+      if (
+        (selectedDevice === HardwareDeviceNames.trezor ||
+          selectedDevice === HardwareDeviceNames.oneKey) &&
+        isUSBSupported
+      ) {
+        this.setState({
+          trezorRequestDevicePending: true,
+        });
+        try {
+          await window.navigator.usb.requestDevice({
+            filters: [
+              { vendorId: 0x534c, productId: 0x0001 },
+              { vendorId: 0x1209, productId: 0x53c0 },
+              { vendorId: 0x1209, productId: 0x53c1 },
+            ],
+          });
+        } catch (e) {
+          if (!e.message.match('No device selected')) {
+            throw e;
+          }
+        } finally {
+          this.setState({ trezorRequestDevicePending: false });
+        }
+      }
+
+      this.props.connectToHardwareWallet(selectedDevice);
     }
     return null;
   };
@@ -63,6 +102,7 @@ export default class SelectHardware extends Component {
   renderConnectToTrezorButton() {
     return (
       <button
+        data-testid="connect-trezor-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.trezor,
         })}
@@ -75,9 +115,26 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToOnekeyButton() {
+    return (
+      <button
+        data-testid="connect-onekey-btn"
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === HardwareDeviceNames.oneKey,
+        })}
+        onClick={(_) =>
+          this.setState({ selectedDevice: HardwareDeviceNames.oneKey })
+        }
+      >
+        <LogoOnekey className="hw-connect__btn__img" ariaLabel="OneKey" />
+      </button>
+    );
+  }
+
   renderConnectToLatticeButton() {
     return (
       <button
+        data-testid="connect-lattice-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.lattice,
         })}
@@ -93,6 +150,7 @@ export default class SelectHardware extends Component {
   renderConnectToLedgerButton() {
     return (
       <button
+        data-testid="connect-ledger-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.ledger,
         })}
@@ -108,6 +166,7 @@ export default class SelectHardware extends Component {
   renderConnectToQRButton() {
     return (
       <button
+        data-testid="connect-qr-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.qr,
         })}
@@ -126,12 +185,13 @@ export default class SelectHardware extends Component {
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
+          {this.renderConnectToLatticeButton()}
         </div>
         <div
           className="hw-connect__btn-wrapper"
           style={{ margin: '10px 0 0 0' }}
         >
-          {this.renderConnectToLatticeButton()}
+          {this.renderConnectToOnekeyButton()}
           {this.renderConnectToQRButton()}
         </div>
       </>
@@ -145,7 +205,9 @@ export default class SelectHardware extends Component {
         size={BUTTON_SIZES.LG}
         className="hw-connect__connect-btn"
         onClick={this.connect}
-        disabled={!this.state.selectedDevice}
+        disabled={
+          !this.state.selectedDevice || this.state.trezorRequestDevicePending
+        }
       >
         {this.context.t('continue')}
       </Button>
@@ -270,6 +332,8 @@ export default class SelectHardware extends Component {
         return this.renderLedgerTutorialSteps();
       case HardwareDeviceNames.trezor:
         return this.renderTrezorTutorialSteps();
+      case HardwareDeviceNames.oneKey:
+        return this.renderOneKeyTutorialSteps();
       case HardwareDeviceNames.lattice:
         return this.renderLatticeTutorialSteps();
       case HardwareDeviceNames.qr:
@@ -537,6 +601,86 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderOneKeyTutorialSteps() {
+    const steps = [
+      {
+        asset: 'plug-in-wallet',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1OneKeyWallet'),
+        message: this.context.t('step1OneKeyWalletMsg', [
+          <a
+            className="hw-connect__msg-link"
+            href={ZENDESK_URLS.HARDWARE_CONNECTION}
+            rel="noopener noreferrer"
+            target="_blank"
+            key="onekey-support-link"
+          >
+            {this.context.t('hardwareWalletSupportLinkConversion')}
+          </a>,
+        ]),
+      },
+    ];
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            className="hw-connect"
+            key={index}
+          >
+            <h3 className="hw-connect__title">{step.title}</h3>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.center}
+              marginBottom={2}
+            >
+              <Button
+                className="hw-connect__external-btn-first"
+                variant={BUTTON_VARIANT.SECONDARY}
+                onClick={() => {
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: 'Clicked OneKey Buy Now',
+                  });
+                  openWindow(HardwareAffiliateLinks.onekey);
+                }}
+              >
+                {this.context.t('buyNow')}
+              </Button>
+              <Button
+                className="hw-connect__external-btn"
+                variant={BUTTON_VARIANT.SECONDARY}
+                onClick={() => {
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: 'Clicked OneKey Tutorial',
+                  });
+                  openWindow(HardwareAffiliateTutorialLinks.onekey);
+                }}
+              >
+                {this.context.t('tutorial')}
+              </Button>
+            </Box>
+
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </Box>
+        ))}
+      </div>
+    );
+  }
+
   renderQRHardwareWalletSteps() {
     const steps = [];
     steps.push(
@@ -718,11 +862,76 @@ export default class SelectHardware extends Component {
         ),
       },
       {
-        message: this.context.t('QRHardwareWalletSteps2Description'),
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('onekey')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked OneKey Learn More',
+                });
+                openWindow(HardwareAffiliateLinks.onekey);
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked OneKey Tutorial',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.onekey);
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
+          </>
+        ),
       },
       {
-        asset: 'qrcode-wallet-demo',
-        dimensions: { width: '225px', height: '75px' },
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('QRHardwareWalletSteps2Description')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked Ngrave Buy Now',
+                });
+                openWindow(HardwareAffiliateLinks.ngrave);
+              }}
+              data-testid="ngrave-brand-buy-now-btn"
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked Ngrave Learn more',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.ngrave);
+              }}
+              data-testid="ngrave-brand-learn-more-btn"
+            >
+              {this.context.t('learnMoreUpperCase')}
+            </Button>
+          </>
+        ),
       },
     );
     return (

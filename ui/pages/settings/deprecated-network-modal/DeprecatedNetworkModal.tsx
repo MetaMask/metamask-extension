@@ -20,9 +20,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
-interface DeprecatedNetworkModalProps {
+type DeprecatedNetworkModalProps = {
   onClose: () => void;
-}
+};
 
 export const DeprecatedNetworkModal = ({
   onClose,

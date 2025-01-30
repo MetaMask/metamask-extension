@@ -10,14 +10,20 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
-const { retry } = require('../../../development/lib/retry');
+const { debounce } = require('lodash');
+const { quoteXPathText } = require('../../helpers/quoteXPathText');
+const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
+const { WindowHandles } = require('../background-socket/window-handles');
 
 const PAGES = {
   BACKGROUND: 'background',
   HOME: 'home',
   NOTIFICATION: 'notification',
+  OFFSCREEN: 'offscreen',
   POPUP: 'popup',
 };
+
+const artifactDir = (title) => `./test-artifacts/${this.browser}/${title}`;
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
@@ -57,15 +63,11 @@ function wrapElementWithAPI(element, driver) {
         return await driver.wait(until.stalenessOf(element), timeout);
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
+      case 'disabled':
+        return await driver.wait(until.elementIsDisabled(element), timeout);
       default:
         throw new Error(`Provided state: '${state}' is not supported`);
     }
-  };
-
-  element.nestedFindElement = async (rawLocator) => {
-    const locator = driver.buildLocator(rawLocator);
-    const newElement = await element.findElement(locator);
-    return wrapElementWithAPI(newElement, driver);
   };
 
   // We need to hold a pointer to the original click() method so that we can call it in the replaced click() method
@@ -79,13 +81,13 @@ function wrapElementWithAPI(element, driver) {
       await element.originalClick();
     } catch (e) {
       if (e.name === 'ElementClickInterceptedError') {
-        if (e.message.includes('<div class="mm-box loading-overlay">')) {
+        if (e.message.includes('<div class="mm-box loading-overlay"')) {
           // Wait for the loading overlay to disappear and try again
           await driver.wait(
             until.elementIsNotPresent(By.css('.loading-overlay')),
           );
         }
-        if (e.message.includes('<div class="modal__backdrop">')) {
+        if (e.message.includes('<div class="modal__backdrop"')) {
           // Wait for the modal to disappear and try again
           await driver.wait(
             until.elementIsNotPresent(By.css('.modal__backdrop')),
@@ -109,6 +111,14 @@ until.elementIsNotPresent = function elementIsNotPresent(locator) {
   });
 };
 
+until.foundElementCountIs = function foundElementCountIs(locator, n) {
+  return new Condition(`Element count is ${n}`, function (driver) {
+    return driver.findElements(locator).then(function (elements) {
+      return elements.length === n;
+    });
+  });
+};
+
 /**
  * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
@@ -118,8 +128,8 @@ class Driver {
   /**
    * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
    * @param {string} browser - The type of browser this driver is controlling
-   * @param extensionUrl
-   * @param {number} timeout
+   * @param {string} extensionUrl
+   * @param {number} timeout - Defaults to 10000 milliseconds (10 seconds)
    */
   constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
     this.driver = driver;
@@ -128,6 +138,9 @@ class Driver {
     this.timeout = timeout;
     this.exceptions = [];
     this.errors = [];
+    this.eventProcessingStack = [];
+    this.windowHandles = new WindowHandles(this.driver);
+
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
     // These should be replaced with string constants 'Enter' etc for playwright.
@@ -149,6 +162,35 @@ class Driver {
     return this.driver.executeScript(script, args);
   }
 
+  /**
+   * In web automation testing, locators are crucial commands that guide the framework to identify
+   * and select HTML elements on a webpage for interaction. They play a vital role in executing various
+   * actions such as clicking buttons, filling text, or retrieving data from web pages.
+   *
+   * buildLocator function enhances element matching capabilities by introducing support for inline locators,
+   * offering an alternative to the traditional use of Selenium's By abstraction.
+   *
+   * @param {string | object} locator - this could be 'css' or 'xpath' and value to use with the locator strategy.
+   * @returns {object} By object that can be used to locate elements.
+   * @throws {Error} Will throw an error if an invalid locator strategy is provided.
+   *
+   * To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
+   * @example <caption>Example to locate the amount text box using its class on the send transaction screen</caption>
+   *        await driver.findElement('.unit-input__input’);
+   *
+   * To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).
+   * @example <caption>Example to locate the password text box using its ID on the login screen</caption>
+   *        await driver.findElement('#password');
+   *
+   * To target an element based on its attribute using a CSS selector,
+   * use square brackets ([]) to specify the attribute name and its value.
+   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute testId and its value on the overview screen</caption>
+   *        await driver.findElement({testId: 'eth-overview-buy'});
+   *
+   * To locate an element by XPath locator strategy
+   * @example <caption>Example to locate 'Confirm' button on the send transaction page</caption>
+   *        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
+   */
   buildLocator(locator) {
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
@@ -162,6 +204,11 @@ class Driver {
       // xpath locator.
       return By.xpath(locator.xpath);
     } else if (locator.text) {
+      // If a testId prop was provided along with text, convert that to a css prop and continue
+      if (locator.testId) {
+        locator.css = `[data-testid="${locator.testId}"]`;
+      }
+
       // Providing a text prop, and optionally a tag or css prop, will use
       // xpath to look for an element with the tag that has matching text.
       if (locator.css) {
@@ -186,22 +233,49 @@ class Driver {
           .toXPath();
         return By.xpath(xpath);
       }
+
+      const quoted = quoteXPathText(locator.text);
       // The tag prop is optional and further refines which elements match
-      return By.xpath(
-        `//${locator.tag ?? '*'}[contains(text(), '${locator.text}')]`,
-      );
+      return By.xpath(`//${locator.tag ?? '*'}[contains(text(), ${quoted})]`);
+    } else if (locator.testId) {
+      // Providing a testId prop will use css to look for an element with the
+      // data-testid attribute that matches the testId provided.
+      return By.css(`[data-testid="${locator.testId}"]`);
     }
+
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
     );
   }
 
+  /**
+   * Fills the given web element with the provided value.
+   * This method is particularly useful for automating interactions with text fields,
+   * such as username or password inputs, search boxes, or any editable text areas.
+   *
+   * @param {string | object} rawLocator - element locator
+   * @param {string} input - The value to fill the element with.
+   * @returns {Promise<WebElement>} Promise resolving to the filled element
+   * @example <caption>Example to fill address in the send transaction screen</caption>
+   *          await driver.fill(
+   *                'input[data-testid="ens-input"]',
+   *                '0xc427D562164062a23a5cFf596A4a3208e72Acd28');
+   */
   async fill(rawLocator, input) {
     const element = await this.findElement(rawLocator);
     await element.fill(input);
     return element;
   }
 
+  /**
+   * Simulates a key press event on the given web element.
+   * This can include typing characters into a text field,
+   * activating keyboard shortcuts, or any other keyboard-related interactions
+   *
+   * @param {string | object} rawLocator - element locator
+   * @param {string} keys - The key to press.
+   * @returns {Promise<WebElement>} promise resolving to the filled element
+   */
   async press(rawLocator, keys) {
     const element = await this.findElement(rawLocator);
     await element.press(keys);
@@ -212,6 +286,39 @@ class Driver {
     await new Promise((resolve) => setTimeout(resolve, time));
   }
 
+  async delayFirefox(time) {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      await new Promise((resolve) => setTimeout(resolve, time));
+    }
+  }
+
+  /**
+   * Function to wait for a specific condition to be met within a given timeout period,
+   * with an option to catch and handle any errors that occur during the wait.
+   *
+   * @param {Function} condition - condition or function the method awaits to become true
+   * @param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.
+   * @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
+   * @returns {Promise}  promise resolving with a delay
+   * @throws {Error} Will throw an error if the condition is not met within the timeout period.
+   * @example <caption>Example wait until a condition occurs</caption>
+   *            await driver.wait(async () => {
+   *              let info = await getBackupJson();
+   *              return info !== null;
+   *            }, 10000);
+   * @example <caption>Example wait until the condition for finding the elements is met and ensuring that the length validation is also satisfied</caption>
+   *            await driver.wait(async () => {
+   *              const confirmedTxes = await driver.findElements(
+   *              '.transaction-list__completed-transactions .transaction-list-item',
+   *              );
+   *            return confirmedTxes.length === 1;
+   *            }, 10000);
+   * @example <caption>Example wait until a mock condition occurs</caption>
+   *           await driver.wait(async () => {
+   *              const isPending = await mockedEndpoint.isPending();
+   *              return isPending === false;
+   *           }, 3000);
+   */
   async wait(condition, timeout = this.timeout, catchError = false) {
     try {
       await this.driver.wait(condition, timeout);
@@ -224,6 +331,21 @@ class Driver {
     }
   }
 
+  /**
+   * Waits for an element that matches the given locator to reach the specified state within the timeout period.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {object} [options] - parameter object
+   * @param {number} [options.timeout] - specifies the maximum amount of time (in milliseconds)
+   * to wait for the condition to be met and desired state of the element to wait for.
+   * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
+   * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+   * @param {string} [options.state] - specifies the state of the element to wait for.
+   * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
+   * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+   * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
+   * @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
+   */
   async waitForSelector(
     rawLocator,
     { timeout = this.timeout, state = 'visible' } = {},
@@ -233,7 +355,7 @@ class Driver {
     // bucket that can include the state attribute to wait for elements that
     // match the selector to be removed from the DOM.
     let element;
-    if (!['visible', 'detached'].includes(state)) {
+    if (!['visible', 'detached', 'enabled'].includes(state)) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
@@ -246,16 +368,73 @@ class Driver {
         until.stalenessOf(await this.findElement(rawLocator)),
         timeout,
       );
+    } else if (state === 'enabled') {
+      element = await this.driver.wait(
+        until.elementIsEnabled(await this.findElement(rawLocator)),
+        timeout,
+      );
     }
+
     return wrapElementWithAPI(element, this);
   }
 
+  /**
+   * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
+   *
+   * @param {Array<string | object>} rawLocators - Array of element locators
+   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
+   * to wait for the condition to be met and desired state of the elements to wait for.
+   * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
+   * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
+   * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.
+   * @throws {Error} Will throw an error if any of the elements do not reach the specified state within the timeout period.
+   */
+  async waitForMultipleSelectors(
+    rawLocators,
+    { timeout = this.timeout, state = 'visible' } = {},
+  ) {
+    const promises = rawLocators.map((rawLocator) =>
+      this.waitForSelector(rawLocator, { timeout, state }),
+    );
+    return Promise.all(promises);
+  }
+
+  /**
+   * Waits for an element that matches the given locator to become non-empty within the timeout period.
+   * This is particularly useful for waiting for elements that are dynamically populated with content.
+   *
+   * @param {string | object} element - Element locator
+   * @returns {Promise}  promise resolving once the element fills or timeout hits
+   * @throws {Error} throws an error if the element does not become non-empty within the timeout period.
+   */
   async waitForNonEmptyElement(element) {
     await this.driver.wait(async () => {
       const elemText = await element.getText();
       const empty = elemText === '';
       return !empty;
     }, this.timeout);
+  }
+
+  /**
+   * Waits until the expected number of tokens to be rendered
+   *
+   * @param {string | object} rawLocator - element locator
+   * @param {number} n - The expected number of elements.
+   * @param timeout
+   * @returns {Promise} promise resolving when the count of elements is matched.
+   */
+  async elementCountBecomesN(rawLocator, n, timeout = this.timeout) {
+    const locator = this.buildLocator(rawLocator);
+    try {
+      await this.driver.wait(until.foundElementCountIs(locator, n), timeout);
+      return true;
+    } catch (e) {
+      const elements = await this.findElements(locator);
+      console.error(
+        `Waiting for count of ${locator} elements to be ${n}, but it is ${elements.length}`,
+      );
+      return false;
+    }
   }
 
   /**
@@ -271,11 +450,13 @@ class Driver {
    *
    * The second choice for the guard is to use the waitAtLeastGuard parameter.
    *
-   * @param {string | object} rawLocator
+   * @param {string | object} rawLocator - element locator
    * @param {object} guards
-   * @param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard
-   * @param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing
-   * @param {number} [guards.timeout] - The maximum milliseconds to wait before failing
+   * @param {string | object} [guards.findElementGuard] - rawLocator to perform a findElement and act as a guard
+   * @param {number} [guards.waitAtLeastGuard] - minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout]  - maximum milliseconds to wait before failing
+   * @returns {Promise<void>}  promise resolving after the element is not present
+   * @throws {Error}  throws an error if the element is present
    */
   async assertElementNotPresent(
     rawLocator,
@@ -310,40 +491,81 @@ class Driver {
     }
   }
 
+  /**
+   * Quits the browser session, closing all windows and tabs.
+   *
+   * @returns {Promise} promise resolving after quitting
+   */
   async quit() {
     await this.driver.quit();
   }
 
-  // Element interactions
-
   /**
-   * @param {*} rawLocator
-   * @returns {WebElement}
+   * Finds an element on the page using the given locator
+   * and returns a reference to the first matching element.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
+   * @returns {Promise<WebElement>} A promise that resolves to the found element.
    */
-  async findElement(rawLocator) {
+  async findElement(rawLocator, timeout = this.timeout) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.driver.wait(
       until.elementLocated(locator),
-      this.timeout,
+      timeout,
     );
     return wrapElementWithAPI(element, this);
   }
 
+  /**
+   * Finds a nested element within a parent element using the given locator.
+   * This is useful when the parent element is already known and you want to find an element within it.
+   *
+   * @param {WebElement} element - Parent element
+   * @param {string | object} nestedLocator - Nested element locator
+   * @returns {Promise<WebElement>} A promise that resolves to the found nested element.
+   */
+  async findNestedElement(element, nestedLocator) {
+    const locator = this.buildLocator(nestedLocator);
+    const nestedElement = await element.findElement(locator);
+    return wrapElementWithAPI(nestedElement, this);
+  }
+
+  /**
+   * Finds a visible element on the page using the given locator.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<WebElement>} A promise that resolves to the found visible element.
+   */
   async findVisibleElement(rawLocator) {
     const element = await this.findElement(rawLocator);
     await this.driver.wait(until.elementIsVisible(element), this.timeout);
     return wrapElementWithAPI(element, this);
   }
 
-  async findClickableElement(rawLocator) {
-    const element = await this.findElement(rawLocator);
+  /**
+   * Finds a clickable element on the page using the given locator.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - Timeout in milliseconds
+   * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
+   */
+  async findClickableElement(rawLocator, timeout = this.timeout) {
+    const element = await this.findElement(rawLocator, timeout);
     await Promise.all([
-      this.driver.wait(until.elementIsVisible(element), this.timeout),
-      this.driver.wait(until.elementIsEnabled(element), this.timeout),
+      this.driver.wait(until.elementIsVisible(element), timeout),
+      this.driver.wait(until.elementIsEnabled(element), timeout),
     ]);
     return wrapElementWithAPI(element, this);
   }
 
+  /**
+   * Finds all elements on the page that match the given locator.
+   * If there are no matches, an empty list is returned.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<Array<WebElement>>} A promise that resolves to an array of found elements.
+   */
   async findElements(rawLocator) {
     const locator = this.buildLocator(rawLocator);
     const elements = await this.driver.wait(
@@ -353,6 +575,12 @@ class Driver {
     return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
+  /**
+   * Finds all clickable elements on the page that match the given locator.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<Array<WebElement>>} A promise that resolves to an array of found clickable elements.
+   */
   async findClickableElements(rawLocator) {
     const elements = await this.findElements(rawLocator);
     await Promise.all(
@@ -367,28 +595,127 @@ class Driver {
     return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
-  async clickElement(rawLocator) {
-    const element = await this.findClickableElement(rawLocator);
-    await element.click();
+  /**
+   * Function that aims to simulate a click action on a specified web element within a web page
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} [retries] - The number of times to retry the click action if it fails
+   * @returns {Promise} promise that resolves to the WebElement
+   */
+  async clickElement(rawLocator, retries = 3) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const element = await this.findClickableElement(rawLocator);
+        await element.click();
+        return;
+      } catch (error) {
+        const retryableErrors = [
+          'StaleElementReferenceError',
+          'ElementClickInterceptedError',
+          'ElementNotInteractableError',
+        ];
+
+        if (retryableErrors.includes(error.name) && attempt < retries - 1) {
+          console.warn(
+            `Retrying click (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
+            }`,
+          );
+          await this.delay(1000);
+        } else {
+          throw error;
+        }
+      }
+    }
   }
 
   /**
-   * for instances where an element such as a scroll button does not
+   * Checks if an element is moving by comparing its position at two different times.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @returns {Promise<boolean>} Promise that resolves to a boolean indicating if the element is moving.
+   */
+  async isElementMoving(rawLocator) {
+    const element = await this.findElement(rawLocator);
+    const initialPosition = await element.getRect();
+
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for a short period
+
+    const newPosition = await element.getRect();
+
+    return (
+      initialPosition.x !== newPosition.x || initialPosition.y !== newPosition.y
+    );
+  }
+
+  /**
+   * Waits until an element stops moving within a specified timeout period.
+   *
+   * @param {string | object} rawLocator - Element locator.
+   * @param {number} timeout - The maximum time to wait for the element to stop moving.
+   * @returns {Promise<void>} Promise that resolves when the element stops moving.
+   * @throws {Error} Throws an error if the element does not stop moving within the timeout period.
+   */
+  async waitForElementToStopMoving(rawLocator, timeout = 5000) {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      if (!(await this.isElementMoving(rawLocator))) {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Check every 500ms
+    }
+
+    throw new Error('Element did not stop moving within the timeout period');
+  }
+
+  /** @param {string} title - The title of the window or tab the screenshot is being taken in */
+  async takeScreenshot(title) {
+    const filepathBase = `${artifactDir(title)}/test-screenshot`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
+
+    const screenshot = await this.driver.takeScreenshot();
+    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+      encoding: 'base64',
+    });
+  }
+
+  /**
+   * Clicks on an element identified by the provided locator and waits for it to disappear.
+   * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
+   * The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
+   *
+   * @param rawLocator - The locator used to identify the element to be clicked
+   * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
+   */
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
+    const element = await this.findClickableElement(rawLocator);
+    await element.click();
+    await element.waitForElementState('hidden', timeout);
+  }
+
+  /**
+   * Clicks on an element if it's present. If the element is not found,
+   * catch the exception, log the failure to the console, but do not cause the test to fail.
+   * For scenario where an element such as a scroll button does not
    * show up because of render differences, proceed to the next step
    * without causing a test failure, but provide a console log of why.
    *
-   * @param rawLocator
-   * @param timeout
+   * @param rawLocator - Element locator
+   * @param timeout - The maximum time in ms to wait for the element
    */
   async clickElementSafe(rawLocator, timeout = 1000) {
     try {
       const locator = this.buildLocator(rawLocator);
-
       const elements = await this.driver.wait(
         until.elementsLocated(locator),
         timeout,
       );
 
+      await Promise.all([
+        this.driver.wait(until.elementIsVisible(elements[0]), timeout),
+        this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
+      ]);
       await elements[0].click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
@@ -410,6 +737,14 @@ class Driver {
       .perform();
   }
 
+  /**
+   * Simulates a click at the given x and y coordinates.
+   *
+   * @param rawLocator - Element locator
+   * @param {number} x  - coordinate to click at x
+   * @param {number} y - coordinate to click at y
+   * @returns {Promise<void>} promise resolving after a click
+   */
   async clickPoint(rawLocator, x, y) {
     const element = await this.findElement(rawLocator);
     await this.driver
@@ -419,6 +754,13 @@ class Driver {
       .perform();
   }
 
+  /**
+   * Simulates holding the mouse button down on the given web element.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} ms - number of milliseconds to hold the mouse button down
+   * @returns {Promise<void>} promise resolving after mouse down completed
+   */
   async holdMouseDownOnElement(rawLocator, ms) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.findClickableElement(locator);
@@ -431,6 +773,22 @@ class Driver {
       .perform();
   }
 
+  /**
+   * Move the mouse to the given element to test hover behaviour.
+   *
+   * @param element - Previously located element
+   * @returns {Promise<void>} promise resolving after mouse move completed
+   */
+  async hoverElement(element) {
+    await this.driver.actions().move({ origin: element, x: 1, y: 1 }).perform();
+  }
+
+  /**
+   * Scrolls the page until the given web element is in view.
+   *
+   * @param {string | object} element - Element locator
+   * @returns {Promise<void>} promise resolving after scrolling
+   */
   async scrollToElement(element) {
     await this.driver.executeScript(
       'arguments[0].scrollIntoView(true)',
@@ -438,6 +796,35 @@ class Driver {
     );
   }
 
+  /**
+   * Waits for a condition to be met within a given timeout period.
+   *
+   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {object} options - Options for the wait.
+   * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
+   * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
+   * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
+   * @throws {Error} Throws an error if the condition is not met within the timeout period.
+   */
+  async waitUntil(condition, options) {
+    const { timeout, interval } = options;
+    const endTime = Date.now() + timeout;
+
+    while (Date.now() < endTime) {
+      if (await condition()) {
+        return true;
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+    throw new Error('Condition not met within timeout');
+  }
+
+  /**
+   * Checks if an element that matches the given locator is present on the page.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present.
+   */
   async isElementPresent(rawLocator) {
     try {
       await this.findElement(rawLocator);
@@ -447,6 +834,12 @@ class Driver {
     }
   }
 
+  /**
+   * Checks if an element that matches the given locator is present and visible on the page.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present and visible.
+   */
   async isElementPresentAndVisible(rawLocator) {
     try {
       await this.findVisibleElement(rawLocator);
@@ -459,35 +852,69 @@ class Driver {
   /**
    * Paste a string into a field.
    *
-   * @param {string} rawLocator - The element locator.
-   * @param {string} contentToPaste - The content to paste.
+   * @param {string} rawLocator  - Element locator
+   * @param {string} contentToPaste - content to paste
+   * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
   async pasteIntoField(rawLocator, contentToPaste) {
-    // Throw if double-quote is present in content to paste
-    // so that we don't have to worry about escaping double-quotes
-    if (contentToPaste.includes('"')) {
-      throw new Error('Cannot paste content with double-quote');
-    }
     // Click to focus the field
     await this.clickElement(rawLocator);
     await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste}")`,
+      `navigator.clipboard.writeText("${contentToPaste.replace(
+        /"/gu,
+        '\\"',
+      )}")`,
     );
+    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+  }
+
+  async pasteFromClipboardIntoField(rawLocator) {
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 
   // Navigation
 
-  async navigate(page = PAGES.HOME) {
+  /**
+   * Navigates to the specified page within a browser session.
+   *
+   * @param {string} [page] - its optional parameter to specify the page you want to navigate.
+   * Defaults to home if no other page is specified.
+   * @param {object} [options] - optional parameter to specify additional options.
+   * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
+   * Defaults to true.
+   * @returns {Promise} promise resolves when the page has finished loading
+   * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
+   */
+  async navigate(page = PAGES.HOME, { waitForControllers = true } = {}) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
-    await this.driver.wait(
-      until.elementLocated(this.buildLocator('.metamask-loaded')),
-      10 * 1000,
-    );
+    if (waitForControllers) {
+      await this.waitForControllersLoaded();
+    }
     return response;
   }
 
+  /**
+   * Waits for the controllers to be loaded on the page.
+   *
+   * This function waits until an element with the class 'controller-loaded' is located,
+   * indicating that the controllers have finished loading.
+   *
+   * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
+   * @throws {Error} Will throw an error if the element is not located within the timeout period.
+   */
+  async waitForControllersLoaded() {
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.controller-loaded')),
+      10 * 1000,
+    );
+  }
+
+  /**
+   * Retrieves the current URL of the browser session.
+   *
+   * @returns {Promise<string>} promise resolves upon retrieving the URL text.
+   */
   async getCurrentUrl() {
     return await this.driver.getCurrentUrl();
   }
@@ -499,41 +926,139 @@ class Driver {
   }
 
   // Window management
+
+  /**
+   * Opens a new URL in the browser window controlled by the driver
+   *
+   * @param {string} url - Any URL
+   * @returns {Promise<void>} promise resolves when the URL page has finished loading
+   */
   async openNewURL(url) {
     await this.driver.get(url);
   }
 
+  /**
+   * Opens a new window or tab in the browser session and navigates to the given URL.
+   *
+   * @param {string} url - The URL to navigate to in the new window tab.
+   * @returns {Promise<string>} The handle of the new window or tab.
+   * This handle can be used later to switch between different tabs in window during the test.
+   */
   async openNewPage(url) {
-    const newHandle = await this.driver.switchTo().newWindow();
+    await this.driver.switchTo().newWindow();
     await this.openNewURL(url);
+    const newHandle = await this.driver.getWindowHandle();
     return newHandle;
   }
 
+  /**
+   * Refreshes the current page in the browser session.
+   *
+   * @returns {Promise<void>} promise resolves page is loaded
+   */
   async refresh() {
     await this.driver.navigate().refresh();
   }
 
+  /**
+   * Switches the context of the browser session to the window or tab with the given handle.
+   *
+   * @param {int} handle - unique identifier (window handle) of the browser window or tab to which you want to switch.
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   */
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
+    await this.windowHandles.getCurrentWindowProperties(null, handle);
   }
 
+  /**
+   * Opens a new browser window and switch the WebDriver's context to this new window.
+   *
+   * @returns {Promise<void>} A promise resolves after switching to the new window.
+   */
   async switchToNewWindow() {
     await this.driver.switchTo().newWindow('window');
   }
 
+  /**
+   * Switches the WebDriver's context to a specified iframe or frame within a web page.
+   *
+   * @param {string} element - The iframe or frame element to switch to.
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   */
   async switchToFrame(element) {
     await this.driver.switchTo().frame(element);
   }
 
+  /**
+   * Retrieves the handles of all open window tabs in the browser session.
+   *
+   * @returns {Promise<Array<string>>} A promise that will
+   *     be resolved with an array of window handles.
+   */
   async getAllWindowHandles() {
-    return await this.driver.getAllWindowHandles();
+    return await this.windowHandles.getAllWindowHandles();
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
+  /**
+   * Function that aims to simulate a click action on a specified web element
+   * within a web page and waits for the current window to close.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} [retries] - The number of times to retry the click action if it fails
+   * @returns {Promise<void>} promise that resolves to the WebElement
+   */
+  async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
+    const handle = await this.driver.getWindowHandle();
+    await this.clickElement(rawLocator, retries);
+    await this.waitForWindowToClose(handle);
+  }
+
+  /**
+   * Waits for the specified window handle to close before returning.
+   *
+   * @param {string} handle - The handle of the window or tab we'll wait for.
+   * @param {number} [timeout] - The amount of time in milliseconds to wait
+   * before timing out. Defaults to `this.timeout`.
+   * @throws {Error} throws an error if the window handle doesn't close within
+   * the timeout.
+   */
+  async waitForWindowToClose(handle, timeout = this.timeout) {
+    const start = Date.now();
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const handles = await this.getAllWindowHandles();
+      if (!handles.includes(handle)) {
+        return;
+      }
+
+      const timeElapsed = Date.now() - start;
+      if (timeElapsed > timeout) {
+        throw new Error(
+          `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
+        );
+      }
+    }
+  }
+
+  /**
+   * Waits until the specified number of window handles are present.
+   *
+   * @param {number} _x - The number of window handles to wait for
+   * @param delayStep - defaults to 1000 milliseconds
+   * @param {number} [timeout] - The amount of time in milliseconds to wait before timing out.
+   * @returns {Promise} promise resolving when the target window handle count is met
+   * @throws {Error} throws an error if the target number of window handles isn't met by the timeout.
+   */
+  async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
+    // In the MV3 build, there is an extra windowHandle with a title of "MetaMask Offscreen Page"
+    // So we add 1 to the expected number of window handles
+    const x = isManifestV3 ? _x + 1 : _x;
+
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
-      windowHandles = await this.driver.getAllWindowHandles();
+      windowHandles = await this.getAllWindowHandles();
 
       if (windowHandles.length === x) {
         return windowHandles;
@@ -541,98 +1066,130 @@ class Driver {
       await this.delay(delayStep);
       timeElapsed += delayStep;
     }
-    throw new Error('waitUntilXWindowHandles timed out polling window handles');
+
+    throw new Error(
+      `waitUntilXWindowHandles timed out polling window handles. Expected: ${x}, Actual: ${windowHandles.length}`,
+    );
   }
 
-  async getWindowTitleByHandlerId(handlerId) {
-    await this.driver.switchTo().window(handlerId);
-    return await this.driver.getTitle();
-  }
+  /**
+   * Switches to a specific window tab using its ID and waits for the title to match the expectedTitle.
+   *
+   * @param {int} handleId - unique ID for the tab whose title is needed.
+   * @param {string} expectedTitle - the title we are expecting.
+   * @returns nothing on success.
+   * @throws {Error} Throws an error if the window title is incorrect.
+   */
+  async switchToHandleAndWaitForTitleToBe(handleId, expectedTitle) {
+    await this.driver.switchTo().window(handleId);
 
-  async switchToWindowWithTitle(
-    title,
-    initialWindowHandles,
-    delayStep = 1000,
-    timeout = this.timeout,
-    { retries = 8, retryDelay = 2500 } = {},
-  ) {
-    let windowHandles =
-      initialWindowHandles || (await this.driver.getAllWindowHandles());
-    let timeElapsed = 0;
+    let currentTitle = await this.driver.getTitle();
 
-    while (timeElapsed <= timeout) {
-      for (const handle of windowHandles) {
-        const handleTitle = await retry(
-          {
-            retries,
-            delay: retryDelay,
-          },
-          async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getTitle();
-          },
-        );
-
-        if (handleTitle === title) {
-          return handle;
-        }
-      }
-      await this.delay(delayStep);
-      timeElapsed += delayStep;
-      // refresh the window handles
-      windowHandles = await this.driver.getAllWindowHandles();
+    // Wait 25 x 200ms = 5 seconds for the title to be set properly
+    for (let i = 0; i < 25 && currentTitle !== expectedTitle; i++) {
+      await this.driver.sleep(200);
+      currentTitle = await this.driver.getTitle();
     }
 
-    throw new Error(`No window with title: ${title}`);
-  }
-
-  async switchToWindowWithUrl(
-    url,
-    initialWindowHandles,
-    delayStep = 1000,
-    timeout = this.timeout,
-    { retries = 8, retryDelay = 2500 } = {},
-  ) {
-    let windowHandles =
-      initialWindowHandles || (await this.driver.getAllWindowHandles());
-    let timeElapsed = 0;
-
-    while (timeElapsed <= timeout) {
-      for (const handle of windowHandles) {
-        const handleUrl = await retry(
-          {
-            retries,
-            delay: retryDelay,
-          },
-          async () => {
-            await this.driver.switchTo().window(handle);
-            return await this.driver.getCurrentUrl();
-          },
-        );
-
-        if (handleUrl === `${url}/`) {
-          return handle;
-        }
-      }
-      await this.delay(delayStep);
-      timeElapsed += delayStep;
-      // refresh the window handles
-      windowHandles = await this.driver.getAllWindowHandles();
+    if (currentTitle !== expectedTitle) {
+      throw new Error(
+        `switchToHandleAndWaitForTitleToBe got title ${currentTitle} instead of ${expectedTitle}`,
+      );
     }
-
-    throw new Error(`No window with url: ${url}`);
   }
 
+  /**
+   * Switches the context of the browser session to the window tab with the given title.
+   * This functionality is especially valuable in complex testing scenarios involving multiple window tabs,
+   * allowing for interaction with a particular window or tab based on its title
+   *
+   * @param {string} title - The title of the window or tab to switch to.
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   * @throws {Error} throws an error if no window with the specified title is found
+   */
+  async switchToWindowWithTitle(title) {
+    return await this.windowHandles.switchToWindowWithProperty('title', title);
+  }
+
+  /**
+   * Waits for the specified number of window handles to be present and then switches to the window
+   * tab with the given title.
+   *
+   * @param {number} handles - The number window handles to wait for
+   * @param {string} title - The title of the window to switch to
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   */
+  async waitAndSwitchToWindowWithTitle(handles, title) {
+    await this.waitUntilXWindowHandles(handles);
+    await this.switchToWindowWithTitle(title);
+  }
+
+  /**
+   * Switches the context of the browser session to the window tab with the given URL.
+   *
+   * @param {string} url - Window URL to find
+   * @returns {Promise<void>}  promise that resolves once the switch is complete
+   * @throws {Error} throws an error if no window with the specified URL is found
+   */
+  async switchToWindowWithUrl(url) {
+    return await this.windowHandles.switchToWindowWithProperty(
+      'url',
+      new URL(url).toString(), // Make sure the URL has a trailing slash
+    );
+  }
+
+  /**
+   * If we already know this window, switch to it
+   * Otherwise, return null
+   * This is used in helpers.switchToOrOpenDapp() and when there's an alert open
+   *
+   * @param {string} title - The title of the window we want to switch to
+   * @returns {Promise<void>}  promise that resolves once the switch is complete
+   * @throws {Error} throws an error if no window with the specified URL is found
+   */
+  async switchToWindowIfKnown(title) {
+    return await this.windowHandles.switchToWindowIfKnown(title);
+  }
+
+  /**
+   * Waits until the current URL matches the specified URL.
+   *
+   * @param {object} options - Parameters for the function.
+   * @param {string} options.url - URL to wait for.
+   * @param {int} options.timeout - optional timeout period, defaults to this.timeout.
+   * @returns {Promise<void>} Promise that resolves once the URL matches.
+   * @throws {Error} Throws an error if the URL does not match within the timeout period.
+   */
+  async waitForUrl({ url, timeout = this.timeout }) {
+    return await this.driver.wait(until.urlIs(url), timeout);
+  }
+
+  /**
+   * Closes the current window tab in the browser session
+   *
+   *  @returns {Promise<void>} promise resolving after closing the current window
+   */
   async closeWindow() {
     await this.driver.close();
   }
 
+  /**
+   * Closes specific window tab identified by its window handle.
+   *
+   * @param {string} windowHandle - representing the unique identifier of the browser window to be closed.
+   * @returns {Promise<void>} promise resolving after closing the specified window
+   */
   async closeWindowHandle(windowHandle) {
     await this.driver.switchTo().window(windowHandle);
     await this.driver.close();
   }
 
   // Close Alert Popup
+  /**
+   * Close the alert popup that is currently open in the browser session.
+   *
+   * @returns {Promise} promise resolving when the alert is closed
+   */
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
   }
@@ -668,31 +1225,69 @@ class Driver {
     );
     console.error(`${error}\n`);
 
-    const artifactDir = `./test-artifacts/${this.browser}/${title}`;
-    const filepathBase = `${artifactDir}/test-failure`;
-    await fs.mkdir(artifactDir, { recursive: true });
+    const filepathBase = `${artifactDir(title)}/test-failure`;
+    await fs.mkdir(artifactDir(title), { recursive: true });
+
+    const windowHandles = await this.driver.getAllWindowHandles();
     // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {
-      const screenshot = await this.driver.takeScreenshot();
-      await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
-        encoding: 'base64',
-      });
+      // If there's more than one tab open, we want to iterate through all of them and take a screenshot with a unique name
+      for (const handle of windowHandles) {
+        await this.driver.switchTo().window(handle);
+        const windowTitle = await this.driver.getTitle();
+        if (windowTitle !== 'MetaMask Offscreen Page') {
+          const screenshot = await this.driver.takeScreenshot();
+          await fs.writeFile(
+            `${filepathBase}-screenshot-${
+              windowHandles.indexOf(handle) + 1
+            }.png`,
+            screenshot,
+            {
+              encoding: 'base64',
+            },
+          );
+        }
+      }
     } catch (e) {
       console.error('Failed to take screenshot', e);
     }
-    const htmlSource = await this.driver.getPageSource();
-    await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
-    const uiState = await this.driver.executeScript(
-      () =>
-        window.stateHooks?.getCleanAppState &&
-        window.stateHooks.getCleanAppState(),
-    );
-    await fs.writeFile(
-      `${filepathBase}-state.json`,
-      JSON.stringify(uiState, null, 2),
-    );
+
+    try {
+      for (const handle of windowHandles) {
+        const windowNumber = windowHandles.indexOf(handle) + 1;
+        await this.driver.switchTo().window(handle);
+
+        const htmlSource = await this.driver.getPageSource();
+        await fs.writeFile(
+          `${filepathBase}-dom-${windowNumber}.html`,
+          htmlSource,
+        );
+      }
+    } catch (e) {
+      console.error('Failed to capture DOM snapshot', e);
+    }
+
+    // We want to take a state snapshot of the app if possible, this is useful for debugging
+    try {
+      for (const handle of windowHandles) {
+        await this.driver.switchTo().window(handle);
+        const uiState = await this.driver.executeScript(
+          () =>
+            window.stateHooks?.getCleanAppState &&
+            window.stateHooks.getCleanAppState(),
+        );
+        if (uiState) {
+          await fs.writeFile(
+            `${filepathBase}-state-${windowHandles.indexOf(handle) + 1}.json`,
+            JSON.stringify(uiState, null, 2),
+          );
+        }
+      }
+    } catch (e) {
+      console.error('Failed to take state', e);
+    }
   }
 
   async checkBrowserForLavamoatLogs() {
@@ -730,46 +1325,74 @@ class Driver {
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
+      // Sentry error that is not actually a problem
+      'Event fragment with id transaction-added-',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
 
+    // Flush the event processing stack 50ms after the last event is added
+    const debounceEventProcessingStack = debounce(
+      this.#flushEventProcessingStack.bind(this),
+      50,
+    );
+
     this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
-        const eventDescriptions = event.args.filter(
-          (err) => err.description !== undefined,
-        );
+        if (event.args.length !== 0) {
+          event.ignoredConsoleErrors = ignoredConsoleErrors;
 
-        if (eventDescriptions.length !== 0) {
-          // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
-          // Update: as of January 2024, this code path may never happen
-          const [eventDescription] = eventDescriptions;
-          const ignored = logBrowserError(
-            ignoredConsoleErrors,
-            eventDescription?.description,
-          );
+          this.eventProcessingStack.push(event);
 
-          if (!ignored) {
-            this.errors.push(eventDescription?.description);
-          }
-        } else if (event.args.length !== 0) {
-          const newError = this.#getErrorFromEvent(event);
-
-          const ignored = logBrowserError(ignoredConsoleErrors, newError);
-
-          if (!ignored) {
-            this.errors.push(newError);
-          }
+          debounceEventProcessingStack();
         }
       }
     });
   }
 
+  #flushEventProcessingStack() {
+    let completeErrorText = '';
+
+    // Combine all events together that have arrived in the last 50ms, because they are actually just one error
+    this.eventProcessingStack.forEach((event) => {
+      completeErrorText += `${this.#getErrorFromEvent(event)}\n`;
+    });
+    completeErrorText = completeErrorText.trim();
+
+    const { ignoredConsoleErrors } = this.eventProcessingStack[0];
+
+    const ignored = logBrowserError(ignoredConsoleErrors, completeErrorText);
+
+    const ignoreAllErrors = ignoredConsoleErrors.includes('ignore-all');
+
+    if (!ignored && !ignoreAllErrors) {
+      this.errors.push(completeErrorText);
+    }
+
+    this.eventProcessingStack = [];
+  }
+
   #getErrorFromEvent(event) {
     // Extract the values from the array
-    const values = event.args.map((a) => a.value);
+    const values = event.args.map((a) => {
+      // Handle snaps error type
+      if (a && a.preview && Array.isArray(a.preview.properties)) {
+        return a.preview.properties
+          .filter((prop) => prop.value !== 'Object')
+          .map((prop) => prop.value)
+          .join(', ');
+      } else if (a.description) {
+        // Handle RPC error type
+        return a.description;
+      } else if (a.value) {
+        // Handle generic error types
+        return a.value;
+      }
+      // Fallback for other error structures
+      return JSON.stringify(a, null, 2);
+    });
 
-    if (values[0].includes('%s')) {
+    if (values[0]?.includes('%s')) {
       // The values are in the "printf" form of [message, ...substitutions]
       // so use sprintf to parse
       return sprintf(...values);
@@ -829,7 +1452,10 @@ function collectMetrics() {
       });
     });
 
-  return results;
+  return {
+    ...results,
+    ...window.stateHooks.getCustomTraces(),
+  };
 }
 
 module.exports = { Driver, PAGES };

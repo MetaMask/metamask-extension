@@ -75,9 +75,6 @@
   "asset": {
     "message": "Vara"
   },
-  "attemptingConnect": {
-    "message": "Plokiahelaga ühenduse loomise katse."
-  },
   "attributions": {
     "message": "Omistamised"
   },
@@ -208,9 +205,6 @@
   "delete": {
     "message": "Kustuta"
   },
-  "deleteNetwork": {
-    "message": "Võrk kustutada?"
-  },
   "details": {
     "message": "Üksikasjad"
   },
@@ -231,9 +225,6 @@
   },
   "editContact": {
     "message": "Muuda kontakti"
-  },
-  "ensRegistrationError": {
-    "message": "Tõrge ENS-i nime registreerimisel"
   },
   "enterPasswordContinue": {
     "message": "Jätkamiseks sisestage parool"
@@ -353,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "Saaja aadress on vale"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Kehtetu ETH-võrk, kasutage väiketähti"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Vale Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Vale RPC URL"
   },
@@ -395,9 +380,6 @@
   },
   "loading": {
     "message": "Laadimine..."
-  },
-  "loadingTokens": {
-    "message": "Lubade laadimine..."
   },
   "lock": {
     "message": "Logi välja"
@@ -452,14 +434,8 @@
   "next": {
     "message": "Edasi"
   },
-  "noAddressForName": {
-    "message": "Sellele nimele pole registreeritud ühtegi aadressi."
-  },
   "noConversionRateAvailable": {
     "message": "Ühtegi vahetuskurssi pole saadaval"
-  },
-  "noTransactions": {
-    "message": "Teil ei ole tehinguid"
   },
   "noWebcamFound": {
     "message": "Teie arvuti veebikaamerat ei leitud. Proovige uuesti."
@@ -516,12 +492,6 @@
   "prev": {
     "message": "Eelm"
   },
-  "primaryCurrencySetting": {
-    "message": "Põhivaluuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Valige omavääring, et prioriseerida vääringu kuvamist ahela omavääringus (nt ETH). Valige Fiat, et prioriseerida vääringu kuvamist valitud fiat-vääringus."
-  },
   "privacyMsg": {
     "message": "privaatsuspoliitika"
   },
@@ -537,9 +507,6 @@
   },
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Otsing, avalik aadress (0x) või ENS"
   },
   "reject": {
     "message": "Lükka tagasi"
@@ -619,9 +586,6 @@
   },
   "send": {
     "message": "Saada"
-  },
-  "sendTokens": {
-    "message": "Saada lube"
   },
   "settings": {
     "message": "Seaded"
@@ -778,9 +742,6 @@
   },
   "unlockMessage": {
     "message": "Detsentraliseeritud veeb ootab"
-  },
-  "updatedWithDate": {
-    "message": "Värskendatud $1"
   },
   "urlErrorMsg": {
     "message": "URI-d nõuavad sobivat HTTP/HTTPS-i prefiksit."

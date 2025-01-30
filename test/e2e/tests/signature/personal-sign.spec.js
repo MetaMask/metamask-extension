@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -10,43 +11,6 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Personal sign', function () {
-  it('can initiate and confirm a personal sign', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver, ganacheServer }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses[0];
-        await unlockWallet(driver);
-
-        await openDapp(driver);
-        await driver.clickElement('#personalSign');
-
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-
-        const personalMessageRow = await driver.findElement(
-          '.request-signature__row-value',
-        );
-        const personalMessage = await personalMessageRow.getText();
-        assert.equal(personalMessage, 'Example `personal_sign` message');
-
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
-
-        await verifyAndAssertPersonalMessage(driver, publicAddress);
-      },
-    );
-  });
   it('can queue multiple personal signs and confirm', async function () {
     await withFixtures(
       {
@@ -80,22 +44,25 @@ describe('Personal sign', function () {
           windowHandles,
         );
 
+        await driver.waitForSelector(
+          By.xpath("//p[normalize-space(.)='1 of 2']"),
+        );
+
         await driver.waitForSelector({
-          text: 'Reject 2 requests',
+          text: 'Reject all',
           tag: 'button',
         });
 
-        const personalMessageRow = await driver.findElement(
-          '.request-signature__row-value',
-        );
-        const personalMessage = await personalMessageRow.getText();
-        assert.equal(personalMessage, 'Example `personal_sign` message');
+        await driver.findElement({
+          css: 'p',
+          text: 'Example `personal_sign` message',
+        });
 
         // Confirm first personal sign
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.clickElement('[data-testid="confirm-footer-button"]');
         await driver.delay(regularDelayMs);
         // Confirm second personal sign
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await verifyAndAssertPersonalMessage(driver, publicAddress);
       },

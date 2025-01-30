@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { uniqBy, isEqual } from 'lodash';
+import { uniqBy, isEqual, isEmpty } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -14,7 +14,11 @@ import {
 } from '../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
-import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
+import {
+  getTokens,
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import Box from '../../../components/ui/box';
 import {
   DISPLAY,
@@ -41,54 +45,51 @@ import {
   setFromTokenError,
   setMaxSlippage,
   setReviewSwapClickedTimestamp,
-  getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getFromTokenError,
   getMaxSlippage,
   getIsFeatureFlagLoaded,
-  getCurrentSmartTransactionsError,
   getFetchingQuotes,
   getSwapsErrorKey,
   getAggregatorMetadata,
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
+  getUsedQuote,
 } from '../../../ducks/swaps/swaps';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
-  getCurrentCurrency,
-  getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
   getIsBridgeChain,
-  getMetaMetricsId,
+  getIsBridgeEnabled,
 } from '../../../selectors';
+import {
+  getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
+} from '../../../../shared/modules/selectors';
 import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import { getURLHostName } from '../../../helpers/utils/util';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
-import {
-  isSwapsDefaultTokenAddress,
-  isSwapsDefaultTokenSymbol,
-} from '../../../../shared/modules/swaps.utils';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   TokenBucketPriority,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -96,11 +97,14 @@ import {
   MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
 import {
+  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
+} from '../../../../shared/constants/common';
+import {
   resetSwapsPostFetchState,
   ignoreTokens,
   clearSwapsQuotes,
   stopPollingForQuotes,
-  setSmartTransactionsOptInStatus,
   clearSmartTransactionFees,
   setSwapsErrorKey,
   setBackgroundSwapRouteState,
@@ -138,7 +142,9 @@ import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
-import SmartTransactionsPopover from './smart-transactions-popover';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import useBridging from '../../../hooks/bridge/useBridging';
+import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -153,6 +159,7 @@ export default function PrepareSwapPage({
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const { openBridgeExperience } = useBridging();
 
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
     useState(undefined);
@@ -172,6 +179,7 @@ export default function PrepareSwapPage({
   const [prefetchingQuotes, setPrefetchingQuotes] = useState(false);
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
+  const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams, isEqual);
@@ -189,9 +197,10 @@ export default function PrepareSwapPage({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
+  const usedQuote = useSelector(getUsedQuote, isEqual);
   const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const numberOfQuotes = Object.keys(quotes).length;
-  const areQuotesPresent = numberOfQuotes > 0;
+  const areQuotesPresent = numberOfQuotes > 0 && usedQuote;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
   const transactionSettingsOpened = useSelector(
@@ -202,45 +211,27 @@ export default function PrepareSwapPage({
     ? Object.keys(aggregatorMetadata).length
     : 0;
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const metaMetricsId = useSelector(getMetaMetricsId);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
   const isSmartTransaction =
-    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
-  const smartTransactionsOptInPopoverDisplayed =
-    smartTransactionsOptInStatus !== undefined;
-  const currentSmartTransactionsError = useSelector(
-    getCurrentSmartTransactionsError,
-  );
+    useSelector(getSmartTransactionsPreferenceEnabled) &&
+    currentSmartTransactionsEnabled;
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
 
-  const showSmartTransactionsOptInPopover =
-    smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
-
-  const onManageStxInSettings = (e) => {
-    e?.preventDefault();
-    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
-    dispatch(setTransactionSettingsOpened(true));
-  };
-
-  const onStartSwapping = () => {
-    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
-  };
-
-  const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
-    sourceTokenInfo?.symbol,
+  const fetchParamsFromToken = isSwapsDefaultTokenAddress(
+    sourceTokenInfo?.address,
     chainId,
   )
     ? defaultSwapsToken
@@ -252,7 +243,8 @@ export default function PrepareSwapPage({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    !isSwapsDefaultTokenSymbol(fromToken?.symbol, chainId) && fromToken?.balance
+    !isSwapsDefaultTokenAddress(fromToken?.address, chainId) &&
+    fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -321,7 +313,10 @@ export default function PrepareSwapPage({
     { showFiat: true },
     true,
   );
-  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)
+  const swapFromFiatValue = isSwapsDefaultTokenAddress(
+    fromTokenAddress,
+    chainId,
+  )
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
@@ -446,19 +441,27 @@ export default function PrepareSwapPage({
     onInputChange(fromTokenInputValue, token.string, token.decimals);
   };
 
-  const blockExplorerTokenLink = getTokenTrackerLink(
-    selectedToToken.address,
-    chainId,
-    null, // no networkId
-    null, // no holderAddress
-    {
-      blockExplorerUrl:
-        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
-    },
-  );
+  const blockExplorerTokenLink =
+    chainId === CHAIN_IDS.ZKSYNC_ERA
+      ? // Use getAccountLink because zksync explorer uses a /address URL scheme instead of /token
+        getAccountLink(selectedToToken.address, chainId, {
+          blockExplorerUrl:
+            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+        })
+      : getTokenTrackerLink(
+          selectedToToken.address,
+          chainId,
+          null, // no networkId
+          null, // no holderAddress
+          {
+            blockExplorerUrl:
+              CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+          },
+        );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? getURLHostName(blockExplorerTokenLink)
+    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
+      t('etherscan')
     : t('etherscan');
 
   const { address: toAddress } = toToken || {};
@@ -790,6 +793,24 @@ export default function PrepareSwapPage({
       'prepare-swap-page__receive-amount',
     );
   }
+
+  const toTokenBalance =
+    usedQuote?.destinationAmount &&
+    calcTokenAmount(
+      usedQuote?.destinationAmount || '0',
+      selectedToToken.decimals || 18,
+    );
+
+  const swapToTokenFiatValue = useTokenFiatAmount(
+    selectedToToken.address,
+    toTokenBalance || 0,
+    selectedToToken.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+  );
+
   if (fromTokenInputValue) {
     fromTokenAmountClassName = getClassNameForCharLength(
       fromTokenInputValue,
@@ -797,10 +818,22 @@ export default function PrepareSwapPage({
     );
   }
 
+  const isNonDefaultFromToken = !isSwapsDefaultTokenAddress(
+    fromTokenAddress,
+    chainId,
+  );
+  const hasPositiveFromTokenBalance = rawFromTokenBalance > 0;
+  const isTokenEligibleForMaxBalance =
+    isSmartTransaction || (!isSmartTransaction && isNonDefaultFromToken);
   const showMaxBalanceLink =
     fromTokenSymbol &&
-    !isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) &&
-    rawFromTokenBalance > 0;
+    isTokenEligibleForMaxBalance &&
+    hasPositiveFromTokenBalance;
+
+  const isNonDefaultToToken = !isSwapsDefaultTokenAddress(
+    selectedToToken.address,
+    chainId,
+  );
 
   return (
     <div className="prepare-swap-page">
@@ -808,6 +841,9 @@ export default function PrepareSwapPage({
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken isOpen {...importTokenProps} />
         )}
+        <Box>
+          <SmartTransactionsBannerAlert marginType="onlyTop" />
+        </Box>
         <Modal
           onClose={onSwapToClose}
           isOpen={isSwapToOpen}
@@ -877,17 +913,12 @@ export default function PrepareSwapPage({
           </ModalContent>
         </Modal>
 
-        <SmartTransactionsPopover
-          onStartSwapping={onStartSwapping}
-          onManageStxInSettings={onManageStxInSettings}
-          isOpen={showSmartTransactionsOptInPopover}
-        />
-
         <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
+            gap={4}
           >
             <SelectedToken
               onClick={onSwapFromOpen}
@@ -1033,11 +1064,40 @@ export default function PrepareSwapPage({
             <div className="prepare-swap-page__balance-message">
               {selectedToToken?.string && yourTokenToBalance}
             </div>
+            {receiveToAmountFormatted && swapToTokenFiatValue && (
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.flexEnd}
+                alignItems={AlignItems.flexEnd}
+              >
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {swapToTokenFiatValue}
+                </Text>
+              </Box>
+            )}
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
+          >
+            <div className="prepare-swap-page__balance-message">
+              {selectedToToken &&
+                !isEmpty(selectedToToken) &&
+                isNonDefaultToToken &&
+                t('swapTokenVerifiedSources', [
+                  occurrences,
+                  <BlockExplorerLink key="block-explorer-link" />,
+                ])}
+            </div>
           </Box>
         </div>
         {showCrossChainSwapsLink && (
           <ButtonLink
-            endIconName={IconName.Export}
+            endIconName={isBridgeSupported ? undefined : IconName.Export}
             endIconProps={{
               size: IconSize.Xs,
             }}
@@ -1045,31 +1105,14 @@ export default function PrepareSwapPage({
             marginTop={2}
             fontWeight={FontWeight.Normal}
             onClick={() => {
-              const portfolioUrl = getPortfolioUrl(
-                'bridge',
-                'ext_bridge_button',
-                metaMetricsId,
-              );
-
-              global.platform.openTab({
-                url: `${portfolioUrl}&token=${fromTokenAddress}`,
-              });
-
-              trackEvent({
-                category: MetaMetricsEventCategory.Swaps,
-                event: MetaMetricsEventName.BridgeLinkClicked,
-                properties: {
-                  location: 'Swaps',
-                  text: 'Swap across networks with MetaMask Portfolio',
-                  chain_id: chainId,
-                  token_symbol: fromTokenSymbol,
-                },
-              });
+              openBridgeExperience('Swaps', selectedFromToken);
             }}
             target="_blank"
             data-testid="prepare-swap-page-cross-chain-swaps-link"
           >
-            {t('crossChainSwapsLink')}
+            {isBridgeSupported
+              ? t('crossChainSwapsLinkNative')
+              : t('crossChainSwapsLink')}
           </ButtonLink>
         )}
         {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (
@@ -1130,25 +1173,19 @@ export default function PrepareSwapPage({
             />
           </Box>
         )}
-        {transactionSettingsOpened &&
-          (smartTransactionsEnabled ||
-            (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
-            <TransactionSettings
-              onSelect={(newSlippage) => {
-                dispatch(setMaxSlippage(newSlippage));
-              }}
-              maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
-              currentSlippage={maxSlippage}
-              smartTransactionsEnabled={smartTransactionsEnabled}
-              smartTransactionsOptInStatus={smartTransactionsOptInStatus}
-              setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
-              currentSmartTransactionsError={currentSmartTransactionsError}
-              isDirectWrappingEnabled={isDirectWrappingEnabled}
-              onModalClose={() => {
-                dispatch(setTransactionSettingsOpened(false));
-              }}
-            />
-          )}
+        {transactionSettingsOpened && !isDirectWrappingEnabled && (
+          <TransactionSettings
+            onSelect={(newSlippage) => {
+              dispatch(setMaxSlippage(newSlippage));
+            }}
+            maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+            currentSlippage={maxSlippage}
+            isDirectWrappingEnabled={isDirectWrappingEnabled}
+            onModalClose={() => {
+              dispatch(setTransactionSettingsOpened(false));
+            }}
+          />
+        )}
         {showQuotesLoadingAnimation && (
           <QuotesLoadingAnimation
             quoteCount={quoteCount}

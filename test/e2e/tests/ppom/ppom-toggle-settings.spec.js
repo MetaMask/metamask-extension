@@ -8,7 +8,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-describe('PPOM Settings @no-mmi', function () {
+describe('PPOM Settings', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
@@ -61,7 +61,6 @@ describe('PPOM Settings @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await openDapp(driver);

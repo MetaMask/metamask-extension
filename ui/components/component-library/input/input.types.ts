@@ -13,6 +13,8 @@ export enum InputType {
   Search = 'search',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface InputStyleProps extends StyleUtilityProps {
   /**
    * Autocomplete allows the browser to predict the value based on earlier typed values

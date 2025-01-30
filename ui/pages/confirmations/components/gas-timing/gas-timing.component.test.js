@@ -39,7 +39,7 @@ describe('Gas timing', () => {
     const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
 
     await waitFor(() => {
-      expect(screen.queryByText('Market')).toBeInTheDocument();
+      expect(screen.queryByText('🦊 Market')).toBeInTheDocument();
       expect(screen.getByTestId('gas-timing-time')).toBeInTheDocument();
     });
   });

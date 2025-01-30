@@ -12,13 +12,13 @@ import {
   TextAlign,
 } from '../../../helpers/constants/design-system';
 
-export interface NotificationDetailProps {
+export type NotificationDetailProps = {
   icon: JSX.Element;
   primaryTextLeft: JSX.Element;
   primaryTextRight?: JSX.Element;
   secondaryTextLeft: JSX.Element;
   secondaryTextRight?: JSX.Element;
-}
+};
 
 /**
  * `NotificationDetail` is a component that displays a single notification item.
@@ -43,7 +43,6 @@ export const NotificationDetail: FC<NotificationDetailProps> = ({
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexStart}
-      as="button"
       width={BlockSize.Full}
       paddingBottom={2}
       paddingRight={4}

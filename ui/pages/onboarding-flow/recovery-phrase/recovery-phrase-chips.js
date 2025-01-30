@@ -3,11 +3,11 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Chip from '../../../components/ui/chip';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
+import { Text } from '../../../components/component-library';
 import { ChipWithInput } from '../../../components/ui/chip/chip-with-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  TypographyVariant,
+  TextVariant,
   BorderStyle,
   Size,
   DISPLAY,
@@ -88,13 +88,13 @@ export default function RecoveryPhraseChips({
           {!hiddenPhrase && (
             <>
               <i className="far fa-eye" color="white" />
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.bodySm}
                 color={Color.overlayInverse}
                 className="recovery-phrase__secret-blocker--text"
               >
                 {t('makeSureNoOneWatching')}
-              </Typography>
+              </Text>
             </>
           )}
         </div>

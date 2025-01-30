@@ -7,6 +7,8 @@ import {
   LedgerTransportTypes,
   HardwareDeviceNames,
 } from '../../../../shared/constants/hardware-wallets';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ConnectHardwareForm from '.';
 
 const mockConnectHardware = jest.fn();
@@ -19,6 +21,7 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../selectors', () => ({
   getCurrentChainId: () => '0x1',
+  getSelectedAddress: () => '0xselectedAddress',
   getRpcPrefsForCurrentProvider: () => {
     return {};
   },
@@ -26,6 +29,10 @@ jest.mock('../../../selectors', () => ({
   getMetaMaskAccounts: () => {
     return {};
   },
+}));
+
+jest.mock('../../../ducks/bridge/selectors', () => ({
+  getAllBridgeableNetworks: () => [],
 }));
 
 const MOCK_RECENT_PAGE = '/home';
@@ -53,9 +60,7 @@ const mockProps = {
 
 const mockState = {
   metamask: {
-    providerConfig: {
-      chainId: '0x1',
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
   },
   appState: {
     networkDropdownOpen: false,
@@ -79,6 +84,7 @@ const mockState = {
     defaultHdPaths: {
       [HardwareDeviceNames.lattice]: "m/44'/60'/0'/0",
       [HardwareDeviceNames.ledger]: "m/44'/60'/0'/0",
+      [HardwareDeviceNames.oneKey]: "m/44'/60'/0'/0",
       [HardwareDeviceNames.trezor]: "m/44'/60'/0'/0",
     },
     mostRecentOverviewPage: '',
@@ -190,7 +196,34 @@ describe('ConnectHardwareForm', () => {
         expect(getByText('CoolWallet')).toBeInTheDocument();
         expect(getByText("D'Cent")).toBeInTheDocument();
         expect(getByText('imToken')).toBeInTheDocument();
+        expect(getByText('OneKey')).toBeInTheDocument();
+        expect(getByText('Ngrave Zero')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('Select Hardware', () => {
+    it('should check link buttons for Ngrave Zero brand', async () => {
+      window.open = jest.fn();
+
+      const { getByLabelText, getByTestId } = renderWithProvider(
+        <ConnectHardwareForm {...mockProps} />,
+        mockStore,
+      );
+
+      const qrButton = getByLabelText('QRCode');
+
+      fireEvent.click(qrButton);
+
+      const buyNowButton = getByTestId('ngrave-brand-buy-now-btn');
+      expect(buyNowButton).toBeInTheDocument();
+      fireEvent.click(buyNowButton);
+      expect(window.open).toHaveBeenCalled();
+
+      const learnMoreButton = getByTestId('ngrave-brand-learn-more-btn');
+      expect(learnMoreButton).toBeInTheDocument();
+      fireEvent.click(learnMoreButton);
+      expect(window.open).toHaveBeenCalled();
     });
   });
 });

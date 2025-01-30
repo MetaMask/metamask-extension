@@ -39,9 +39,6 @@
   "approved": {
     "message": "Schváleno"
   },
-  "attemptingConnect": {
-    "message": "Pokouším se připojit k blockchainu."
-  },
   "attributions": {
     "message": "Zásluhy"
   },
@@ -108,10 +105,6 @@
   "failed": {
     "message": "Neúspěšné"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Import souboru nefunguje? Klikněte sem!",
     "description": "Helps user import their account from a JSON file"
@@ -160,9 +153,6 @@
   "invalidAddressRecipient": {
     "message": "Adresa příjemce je neplatná"
   },
-  "invalidBlockExplorerURL": {
-    "message": "Neplatné Block Explorer URI"
-  },
   "invalidRPC": {
     "message": "Neplatné RPC URI"
   },
@@ -184,9 +174,6 @@
   },
   "loading": {
     "message": "Načítám..."
-  },
-  "loadingTokens": {
-    "message": "Načítám tokeny..."
   },
   "lock": {
     "message": "Odhlásit"
@@ -222,12 +209,6 @@
   },
   "next": {
     "message": "Další"
-  },
-  "noAddressForName": {
-    "message": "Pro toto jméno nebyla nastavena žádná adresa."
-  },
-  "noTransactions": {
-    "message": "Žádné transakce"
   },
   "passwordNotLongEnough": {
     "message": "Heslo není dost dlouhé"
@@ -288,9 +269,6 @@
   },
   "send": {
     "message": "Odeslat"
-  },
-  "sendTokens": {
-    "message": "Odeslat tokeny"
   },
   "settings": {
     "message": "Nastavení"

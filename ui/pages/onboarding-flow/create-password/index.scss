@@ -6,11 +6,11 @@
   }
 
   &__average {
-    color: var(--color-warning-alternative);
+    color: var(--color-warning-default);
   }
 
   &__strong {
-    color: var(--color-success-alternative);
+    color: var(--color-success-default);
   }
 
   &__wrapper {
@@ -39,8 +39,9 @@
       }
     }
 
-    &__terms-label {
-      display: flex;
+    // override Checkbox
+    .mm-checkbox__input-wrapper {
+      margin-top: 2px;
     }
 
     .form-field__input {

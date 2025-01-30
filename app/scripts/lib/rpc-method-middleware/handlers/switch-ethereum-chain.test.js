@@ -1,140 +1,177 @@
+import { providerErrors } from '@metamask/rpc-errors';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import switchEthereumChain from './switch-ethereum-chain';
+import EthChainUtils from './ethereum-chain-utils';
+
+jest.mock('./ethereum-chain-utils', () => ({
+  ...jest.requireActual('./ethereum-chain-utils'),
+  validateSwitchEthereumChainParams: jest.fn(),
+  switchChain: jest.fn(),
+}));
 
 const NON_INFURA_CHAIN_ID = '0x123456789';
 
-const mockRequestUserApproval = ({ requestData }) => {
-  return Promise.resolve(requestData.toNetworkConfiguration);
-};
-
-const MOCK_MAINNET_CONFIGURATION = {
-  id: 123,
+const createMockMainnetConfiguration = () => ({
   chainId: CHAIN_IDS.MAINNET,
-  type: NETWORK_TYPES.MAINNET,
-};
-const MOCK_LINEA_MAINNET_CONFIGURATION = {
-  id: 123,
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: NETWORK_TYPES.MAINNET,
+    },
+  ],
+});
+
+const createMockLineaMainnetConfiguration = () => ({
   chainId: CHAIN_IDS.LINEA_MAINNET,
-  type: NETWORK_TYPES.LINEA_MAINNET,
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: NETWORK_TYPES.LINEA_MAINNET,
+    },
+  ],
+});
+
+const createMockedHandler = () => {
+  const next = jest.fn();
+  const end = jest.fn();
+  const mocks = {
+    getNetworkConfigurationByChainId: jest
+      .fn()
+      .mockReturnValue(createMockMainnetConfiguration()),
+    setActiveNetwork: jest.fn(),
+    getCaveat: jest.fn(),
+    getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
+    requestPermittedChainsPermissionForOrigin: jest.fn(),
+    requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+  };
+  const response = {};
+  const handler = (request) =>
+    switchEthereumChain.implementation(request, response, next, end, mocks);
+
+  return {
+    mocks,
+    response,
+    next,
+    end,
+    handler,
+  };
 };
 
 describe('switchEthereumChainHandler', () => {
-  it('should call setProviderType when switching to a built in infura network', async () => {
-    const mockSetProviderType = jest.fn();
-    const mockSetActiveNetwork = jest.fn();
-    const switchEthereumChainHandler = switchEthereumChain.implementation;
-    await switchEthereumChainHandler(
-      {
-        origin: 'example.com',
-        params: [{ chainId: CHAIN_IDS.MAINNET }],
+  beforeEach(() => {
+    EthChainUtils.validateSwitchEthereumChainParams.mockImplementation(
+      (request) => {
+        return request.params[0].chainId;
       },
-      {},
-      jest.fn(),
-      jest.fn(),
-      {
-        getCurrentChainId: () => NON_INFURA_CHAIN_ID,
-        findNetworkClientIdByChainId: () => 123,
-        setNetworkClientIdForDomain: jest.fn(),
-        getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
-        findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
-        setProviderType: mockSetProviderType,
-        setActiveNetwork: mockSetActiveNetwork,
-        requestUserApproval: mockRequestUserApproval,
-      },
-    );
-    expect(mockSetProviderType).toHaveBeenCalledTimes(1);
-    expect(mockSetProviderType).toHaveBeenCalledWith(
-      MOCK_MAINNET_CONFIGURATION.type,
     );
   });
 
-  it('should call setProviderType when switching to a built in infura network, when chainId from request is lower case', async () => {
-    const mockSetProviderType = jest.fn();
-    const mockSetActiveNetwork = jest.fn();
-    const switchEthereumChainHandler = switchEthereumChain.implementation;
-    await switchEthereumChainHandler(
-      {
-        origin: 'example.com',
-        params: [{ chainId: CHAIN_IDS.LINEA_MAINNET.toLowerCase() }],
-      },
-      {},
-      jest.fn(),
-      jest.fn(),
-      {
-        getCurrentChainId: () => NON_INFURA_CHAIN_ID,
-        getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
-        setNetworkClientIdForDomain: jest.fn(),
-        findNetworkClientIdByChainId: () => 123,
-        findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
-        setProviderType: mockSetProviderType,
-        setActiveNetwork: mockSetActiveNetwork,
-        requestUserApproval: mockRequestUserApproval,
-      },
-    );
-    expect(mockSetProviderType).toHaveBeenCalledTimes(1);
-    expect(mockSetProviderType).toHaveBeenCalledWith(
-      MOCK_LINEA_MAINNET_CONFIGURATION.type,
-    );
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should call setProviderType when switching to a built in infura network, when chainId from request is upper case', async () => {
-    const mockSetProviderType = jest.fn();
-    const mockSetActiveNetwork = jest.fn();
-    const switchEthereumChainHandler = switchEthereumChain.implementation;
-    await switchEthereumChainHandler(
-      {
-        origin: 'example.com',
-        params: [{ chainId: CHAIN_IDS.LINEA_MAINNET.toUpperCase() }],
-      },
-      {},
-      jest.fn(),
-      jest.fn(),
-      {
-        getCurrentChainId: () => NON_INFURA_CHAIN_ID,
-        findNetworkClientIdByChainId: () => 123,
-        setNetworkClientIdForDomain: jest.fn(),
-        getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
-        findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
-        setProviderType: mockSetProviderType,
-        setActiveNetwork: mockSetActiveNetwork,
-        requestUserApproval: mockRequestUserApproval,
-      },
-    );
-    expect(mockSetProviderType).toHaveBeenCalledTimes(1);
-    expect(mockSetProviderType).toHaveBeenCalledWith(
-      MOCK_LINEA_MAINNET_CONFIGURATION.type,
-    );
+  it('should validate the request params', async () => {
+    const { handler } = createMockedHandler();
+
+    const request = {
+      origin: 'example.com',
+      params: [
+        {
+          foo: true,
+        },
+      ],
+    };
+
+    await handler(request);
+
+    expect(
+      EthChainUtils.validateSwitchEthereumChainParams,
+    ).toHaveBeenCalledWith(request);
   });
 
-  it('should call setActiveNetwork when switching to a custom network', async () => {
-    const mockSetProviderType = jest.fn();
-    const mockSetActiveNetwork = jest.fn();
-    const switchEthereumChainHandler = switchEthereumChain.implementation;
-    await switchEthereumChainHandler(
-      {
-        origin: 'example.com',
-        params: [{ chainId: NON_INFURA_CHAIN_ID }],
-      },
-      {},
-      jest.fn(),
-      jest.fn(),
-      {
-        getCurrentChainId: () => CHAIN_IDS.MAINNET,
-        findNetworkClientIdByChainId: () => 123,
-        setNetworkClientIdForDomain: jest.fn(),
-        getProviderConfig: () => ({ chainId: CHAIN_IDS.MAINNET }),
-        findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
-        setProviderType: mockSetProviderType,
-        setActiveNetwork: mockSetActiveNetwork,
-        requestUserApproval: mockRequestUserApproval,
-      },
+  it('should return an error if request params validation fails', async () => {
+    const { end, handler } = createMockedHandler();
+    EthChainUtils.validateSwitchEthereumChainParams.mockImplementation(() => {
+      throw new Error('failed to validate params');
+    });
+
+    await handler({
+      origin: 'example.com',
+      params: [{}],
+    });
+
+    expect(end).toHaveBeenCalledWith(new Error('failed to validate params'));
+  });
+
+  it('returns null and does not try to switch the network if the current chain id for the domain matches the chainId in the params', async () => {
+    const { end, response, handler } = createMockedHandler();
+    await handler({
+      origin: 'example.com',
+      params: [
+        {
+          chainId: NON_INFURA_CHAIN_ID,
+        },
+      ],
+    });
+
+    expect(response.result).toStrictEqual(null);
+    expect(end).toHaveBeenCalled();
+    expect(EthChainUtils.switchChain).not.toHaveBeenCalled();
+  });
+
+  it('throws an error and does not try to switch the network if unable to find a network matching the chainId in the params', async () => {
+    const { mocks, end, handler } = createMockedHandler();
+    mocks.getCurrentChainIdForDomain.mockReturnValue('0x1');
+    mocks.getNetworkConfigurationByChainId.mockReturnValue(undefined);
+
+    await handler({
+      origin: 'example.com',
+      params: [
+        {
+          chainId: NON_INFURA_CHAIN_ID,
+        },
+      ],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      providerErrors.custom({
+        code: 4902,
+        message: `Unrecognized chain ID "${NON_INFURA_CHAIN_ID}". Try adding the chain using wallet_addEthereumChain first.`,
+      }),
     );
-    expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
-    expect(mockSetActiveNetwork).toHaveBeenCalledWith(
-      MOCK_MAINNET_CONFIGURATION.id,
+    expect(EthChainUtils.switchChain).not.toHaveBeenCalled();
+  });
+
+  it('tries to switch the network', async () => {
+    const { mocks, end, handler } = createMockedHandler();
+    mocks.getNetworkConfigurationByChainId
+      .mockReturnValueOnce(createMockMainnetConfiguration())
+      .mockReturnValueOnce(createMockLineaMainnetConfiguration());
+    await handler({
+      origin: 'example.com',
+      params: [
+        {
+          chainId: '0xdeadbeef',
+        },
+      ],
+    });
+
+    expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
+      {},
+      end,
+      '0xdeadbeef',
+      'mainnet',
+      {
+        setActiveNetwork: mocks.setActiveNetwork,
+        getCaveat: mocks.getCaveat,
+        requestPermittedChainsPermissionForOrigin:
+          mocks.requestPermittedChainsPermissionForOrigin,
+        requestPermittedChainsPermissionIncrementalForOrigin:
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+      },
     );
   });
 });

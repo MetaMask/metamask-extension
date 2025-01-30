@@ -10,11 +10,11 @@
       "512": "images/icon-512.png"
     },
     "default_title": "MetaMask",
-    "default_popup": "popup.html"
+    "default_popup": "popup-init.html"
   },
   "author": "https://metamask.io",
   "background": {
-    "service_worker": "app-init.js"
+    "service_worker": "scripts/app-init.js"
   },
   "commands": {
     "_execute_browser_action": {
@@ -30,17 +30,17 @@
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
-        "disable-console.js",
-        "lockdown-install.js",
-        "lockdown-run.js",
-        "lockdown-more.js",
-        "contentscript.js"
+        "scripts/disable-console.js",
+        "scripts/lockdown-install.js",
+        "scripts/lockdown-run.js",
+        "scripts/lockdown-more.js",
+        "scripts/contentscript.js"
       ],
       "run_at": "document_start",
       "all_frames": true
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
@@ -50,7 +50,9 @@
     "http://localhost:8545/",
     "file://*/*",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "ws://*/*",
+    "wss://*/*"
   ],
   "icons": {
     "16": "images/icon-16.png",
@@ -75,5 +77,8 @@
     "webRequest",
     "offscreen"
   ],
+  "sandbox": {
+    "pages": ["snaps/index.html"]
+  },
   "short_name": "__MSG_appName__"
 }

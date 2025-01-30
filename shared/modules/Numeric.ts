@@ -348,7 +348,7 @@ export class Numeric {
    * the predecessor to Numeric, 'conversionUtil', were programmed into this
    * method:
    * 1. You may supply a denomination that is undefined, which will result in
-   * nothing happening. Coincidently this is also useful due to the nature of
+   * nothing happening. Coincidentally this is also useful due to the nature of
    * chaining operations on Numeric. You may pass an undefined value in this
    * method without breaking the chain to conditionally apply an operator.
    * 2. If the numeric that .toDenomination is called on does not have a
@@ -530,6 +530,21 @@ export class Numeric {
       this.base,
       this.denomination,
     );
+  }
+
+  /**
+   * Returns a numeric representing the absolute value of the current numeric,
+   * carrying over the base and denomination from the current Numeric.
+   */
+  abs() {
+    return new Numeric(this.value.abs(), this.base, this.denomination);
+  }
+
+  /**
+   * Checks if the Numeric value is zero.
+   */
+  isZero() {
+    return this.value.isZero();
   }
 
   greaterThan(

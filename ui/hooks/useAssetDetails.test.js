@@ -1,12 +1,15 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 
 import { useAssetDetails } from '../pages/confirmations/hooks/useAssetDetails';
 import configureStore from '../store/store';
 import * as Actions from '../store/actions';
 import { TokenStandard } from '../../shared/constants/transaction';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../shared/constants/network';
+import { mockNetworkState } from '../../test/stub/networks';
 
 const renderUseAssetDetails = ({
   tokenAddress,
@@ -15,10 +18,7 @@ const renderUseAssetDetails = ({
 }) => {
   const mockState = {
     metamask: {
-      providerConfig: {
-        type: 'test',
-        chainId: '0x5',
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
       tokenList: {},
       tokens: [],
       internalAccounts: {
@@ -33,7 +33,7 @@ const renderUseAssetDetails = ({
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },

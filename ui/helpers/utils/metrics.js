@@ -1,10 +1,10 @@
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
 import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IF
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
 export function getMethodName(camelCase) {
   if (!camelCase || typeof camelCase !== 'string') {
@@ -25,7 +25,16 @@ export function formatAccountType(accountType) {
   return accountType;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+/**
+ * Generates a unique identifier utilizing the original request id for signature event fragments
+ *
+ * @param {number} requestId
+ * @returns {string}
+ */
+export function generateSignatureUniqueId(requestId) {
+  return `signature-${requestId}`;
+}
+
 /**
  * Returns the ui_customization string value based on the result type
  *
@@ -61,6 +70,7 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
     reason,
     result_type: resultType,
     description,
+    source,
   } = securityAlertResponse;
 
   const uiCustomization = getBlockaidMetricUiCustomization(resultType);
@@ -79,6 +89,8 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
   params.security_alert_response =
     resultType ?? BlockaidResultType.NotApplicable;
 
+  params.security_alert_source = source;
+
   // add counts of each RPC call
   if (providerRequestsCount) {
     Object.keys(providerRequestsCount).forEach((key) => {
@@ -89,4 +101,42 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
 
   return params;
 };
-///: END:ONLY_INCLUDE_IF
+
+export const getSwapAndSendMetricsProps = (transactionMeta) => {
+  if (transactionMeta.type !== TransactionType.swapAndSend) {
+    return {};
+  }
+
+  const {
+    chainId,
+    sourceTokenAmount,
+    sourceTokenDecimals,
+    destinationTokenAmount,
+    destinationTokenDecimals,
+    sourceTokenSymbol,
+    destinationTokenAddress,
+    destinationTokenSymbol,
+    sourceTokenAddress,
+  } = transactionMeta;
+
+  const params = {
+    chain_id: chainId,
+    token_amount_source:
+      sourceTokenAmount && sourceTokenDecimals
+        ? calcTokenAmount(sourceTokenAmount, sourceTokenDecimals).toString()
+        : undefined,
+    token_amount_dest_estimate:
+      destinationTokenAmount && destinationTokenDecimals
+        ? calcTokenAmount(
+            destinationTokenAmount,
+            destinationTokenDecimals,
+          ).toString()
+        : undefined,
+    token_symbol_source: sourceTokenSymbol,
+    token_symbol_destination: destinationTokenSymbol,
+    token_address_source: sourceTokenAddress,
+    token_address_destination: destinationTokenAddress,
+  };
+
+  return params;
+};

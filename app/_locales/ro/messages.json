@@ -75,9 +75,6 @@
   "asset": {
     "message": "Activ"
   },
-  "attemptingConnect": {
-    "message": "Se încearcă conectarea la blockchain."
-  },
   "attributions": {
     "message": "Atribuții"
   },
@@ -208,9 +205,6 @@
   "delete": {
     "message": "Șterge"
   },
-  "deleteNetwork": {
-    "message": "Ștergeți rețeaua?"
-  },
   "details": {
     "message": "Detalii"
   },
@@ -231,9 +225,6 @@
   },
   "editContact": {
     "message": "Editați contact"
-  },
-  "ensRegistrationError": {
-    "message": "Eroare la înregistrarea numelui ENS"
   },
   "enterPasswordContinue": {
     "message": "Introduceți parola pentru a continua"
@@ -347,12 +338,6 @@
   "invalidAddressRecipient": {
     "message": "Adresa destinatarului nu este validă"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nu este rețea ETH, setați pe minuscule"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer nevalid"
-  },
   "invalidRPC": {
     "message": "URL RPC nevalid"
   },
@@ -389,9 +374,6 @@
   },
   "loading": {
     "message": "Se încarcă…"
-  },
-  "loadingTokens": {
-    "message": "Se încarcă token-urile..."
   },
   "lock": {
     "message": "Deconectați-vă"
@@ -449,14 +431,8 @@
   "next": {
     "message": "Înainte"
   },
-  "noAddressForName": {
-    "message": "Nu a fost configurată nicio adresă pentru acest nume."
-  },
   "noConversionRateAvailable": {
     "message": "Nici o rată de conversie disponibilă"
-  },
-  "noTransactions": {
-    "message": "Nu aveți tranzacții"
   },
   "noWebcamFound": {
     "message": "Webcam-ul computerului dvs. nu a fost găsit. Vă rugăm să încercați din nou."
@@ -513,12 +489,6 @@
   "prev": {
     "message": "Ant"
   },
-  "primaryCurrencySetting": {
-    "message": "Moneda principală"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selectați nativ pentru a prioritiza valorile afișate în moneda nativă a lanțului (ex. ETH). Selectați Fiat pentru a prioritiza valorile afișate în moneda selectată fiat."
-  },
   "privacyMsg": {
     "message": "Politica de Confidențialitate"
   },
@@ -534,9 +504,6 @@
   },
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Căutare, adresa publică (0x) sau ENS"
   },
   "reject": {
     "message": "Respingeți"
@@ -616,9 +583,6 @@
   },
   "send": {
     "message": "Trimite"
-  },
-  "sendTokens": {
-    "message": "Trimiteți indicative"
   },
   "settings": {
     "message": "Setări"
@@ -769,9 +733,6 @@
   },
   "unlockMessage": {
     "message": "Web-ul descentralizat așteaptă"
-  },
-  "updatedWithDate": {
-    "message": "Actualizat $1"
   },
   "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."

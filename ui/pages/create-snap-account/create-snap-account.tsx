@@ -22,12 +22,17 @@ import {
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
-export interface CreateSnapAccountProps {
+export type CreateSnapAccountProps = {
   snapId: string;
   snapName: string;
-}
+  onCancel: () => void;
+};
 
-const CreateSnapAccount = ({ snapId, snapName }: CreateSnapAccountProps) => {
+const CreateSnapAccount = ({
+  snapId,
+  snapName,
+  onCancel,
+}: CreateSnapAccountProps) => {
   const t = useI18nContext();
   return (
     <Box
@@ -40,7 +45,7 @@ const CreateSnapAccount = ({ snapId, snapName }: CreateSnapAccountProps) => {
       alignItems={AlignItems.center}
       marginBottom={0}
     >
-      <SnapAuthorshipHeader snapId={snapId} />
+      <SnapAuthorshipHeader snapId={snapId} onCancel={onCancel} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

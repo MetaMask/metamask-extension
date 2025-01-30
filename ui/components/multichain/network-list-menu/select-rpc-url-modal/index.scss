@@ -1,0 +1,23 @@
+.select-rpc-url {
+  &__item {
+    position: relative;
+  }
+
+  &__item:hover {
+    cursor: pointer;
+    background-color: var(--color-background-default-hover);
+  }
+
+  &__item--selected,
+  &__item--selected:hover {
+    background-color: var(--color-primary-muted);
+  }
+
+  &__item-selected-pill {
+    width: 4px;
+    height: calc(100% - 8px);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+}

@@ -8,7 +8,7 @@ exports[`Json should match snapshot 1`] = `
     Used by a variety of different clients
     <a
       class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-      href="https://metamask.zendesk.com/hc/en-us/articles/360015289932"
+      href="https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/"
       rel="noopener noreferrer"
       target="_blank"
     >
@@ -50,6 +50,7 @@ exports[`Json should match snapshot 1`] = `
     <button
       class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
       data-testid="import-account-confirm-button"
+      data-theme="light"
       disabled=""
     >
       Import

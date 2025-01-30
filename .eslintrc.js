@@ -18,6 +18,40 @@ module.exports = {
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
   // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
   parser: '@babel/eslint-parser',
+  plugins: ['@metamask/design-tokens'],
+  rules: {
+    '@metamask/design-tokens/color-no-hex': 'warn',
+    'import/no-restricted-paths': [
+      'error',
+      {
+        basePath: './',
+        zones: [
+          {
+            target: './app',
+            from: './ui',
+            message:
+              'Should not import from UI in background, use shared directory instead',
+          },
+          {
+            target: './ui',
+            from: './app',
+            message:
+              'Should not import from background in UI, use shared directory instead',
+          },
+          {
+            target: './shared',
+            from: './app',
+            message: 'Should not import from background in shared',
+          },
+          {
+            target: './shared',
+            from: './ui',
+            message: 'Should not import from UI in shared',
+          },
+        ],
+      },
+    ],
+  },
   overrides: [
     /**
      * == Modules ==
@@ -42,9 +76,7 @@ module.exports = {
         'development/**/*.js',
         'test/e2e/**/*.js',
         'test/helpers/*.js',
-        'test/lib/wait-until-called.js',
         'test/run-unit-tests.js',
-        'test/merge-coverage.js',
       ],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
@@ -90,8 +122,6 @@ module.exports = {
         'test/stub/**/*.js',
         'test/unit-global/**/*.js',
       ],
-      // TODO: Convert these files to modern JS
-      excludedFiles: ['test/lib/wait-until-called.js'],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
         path.resolve(__dirname, '.eslintrc.node.js'),
@@ -135,6 +165,7 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       rules: {
+        '@typescript-eslint/no-explicit-any': 'error',
         // this rule is new, but we didn't use it before, so it's off now
         '@typescript-eslint/no-duplicate-enum-values': 'off',
         '@typescript-eslint/no-shadow': [
@@ -162,9 +193,9 @@ module.exports = {
         'import/namespace': 'off',
         'import/default': 'off',
         'import/no-named-as-default-member': 'off',
-        // Disabled due to incompatibility with Record<string, unknown>.
+        // Set to ban interfaces due to their incompatibility with Record<string, unknown>.
         // See: <https://github.com/Microsoft/TypeScript/issues/15300#issuecomment-702872440>
-        '@typescript-eslint/consistent-type-definitions': 'off',
+        '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
         // Modified to include the 'ignoreRestSiblings' option.
         // TODO: Migrate this rule change back into `@metamask/eslint-config`
         '@typescript-eslint/no-unused-vars': [
@@ -256,27 +287,7 @@ module.exports = {
      * Mocha library.
      */
     {
-      files: [
-        '**/*.test.js',
-        'test/lib/wait-until-called.js',
-        'test/e2e/**/*.spec.js',
-      ],
-      excludedFiles: [
-        'app/scripts/controllers/app-state.test.js',
-        'app/scripts/controllers/mmi-controller.test.ts',
-        'app/scripts/controllers/detect-tokens.test.js',
-        'app/scripts/controllers/permissions/**/*.test.js',
-        'app/scripts/controllers/preferences.test.js',
-        'app/scripts/lib/**/*.test.js',
-        'app/scripts/metamask-controller.test.js',
-        'app/scripts/migrations/*.test.js',
-        'app/scripts/platforms/*.test.js',
-        'development/**/*.test.js',
-        'shared/**/*.test.js',
-        'ui/**/*.test.js',
-        'ui/__mocks__/*.js',
-        'test/e2e/helpers.test.js',
-      ],
+      files: ['test/e2e/**/*.spec.js'],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         // In Mocha tests, it is common to use `this` to store values or do
@@ -289,17 +300,25 @@ module.exports = {
      * Jest tests
      *
      * These are files that make use of globals and syntax introduced by the
-     * Jest library. The files in this section should match the Mocha excludedFiles section.
+     * Jest library.
+     * TODO: This list of files is incomplete, and should be replaced with globs that match the
+     * Jest config.
      */
     {
       files: [
         '**/__snapshots__/*.snap',
-        'app/scripts/controllers/app-state.test.js',
-        'app/scripts/controllers/mmi-controller.test.ts',
+        'app/scripts/controllers/app-state-controller.test.ts',
+        'app/scripts/controllers/alert-controller.test.ts',
+        'app/scripts/metamask-controller.actions.test.js',
+        'app/scripts/detect-multiple-instances.test.js',
+        'app/scripts/controllers/bridge.test.ts',
+        'app/scripts/controllers/swaps/**/*.test.js',
+        'app/scripts/controllers/swaps/**/*.test.ts',
+        'app/scripts/controllers/metametrics.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
-        'app/scripts/controllers/preferences.test.js',
+        'app/scripts/controllers/preferences-controller.test.ts',
+        'app/scripts/controllers/account-tracker-controller.test.ts',
         'app/scripts/lib/**/*.test.js',
-        'app/scripts/controllers/detect-tokens.test.js',
         'app/scripts/metamask-controller.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
@@ -311,6 +330,7 @@ module.exports = {
         'test/jest/*.js',
         'test/lib/timer-helpers.js',
         'test/e2e/helpers.test.js',
+        'test/unit-global/*.test.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
         'shared/lib/error-utils.test.js',
@@ -379,8 +399,6 @@ module.exports = {
         'development/**/*.js',
         'test/e2e/benchmark.js',
         'test/helpers/setup-helper.js',
-        'test/run-unit-tests.js',
-        'test/merge-coverage.js',
       ],
       rules: {
         'node/no-process-exit': 'off',
@@ -436,6 +454,44 @@ module.exports = {
             ignoreMemberSort: true,
             memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
             allowSeparatedGroups: false,
+          },
+        ],
+      },
+    },
+    /**
+     * Don't check for static hex values in .test, .spec or .stories files
+     */
+    {
+      files: [
+        '**/*.test.{js,ts,tsx}',
+        '**/*.spec.{js,ts,tsx}',
+        '**/*.stories.{js,ts,tsx}',
+      ],
+      rules: {
+        '@metamask/design-tokens/color-no-hex': 'off',
+      },
+    },
+    {
+      files: ['ui/pages/confirmations/**/*.{js,ts,tsx}'],
+      rules: {
+        'no-restricted-syntax': [
+          'error',
+          {
+            selector: `ImportSpecifier[imported.name=/${[
+              'getConversionRate',
+              'getCurrentChainId',
+              'getNativeCurrency',
+              'getNetworkIdentifier',
+              'getNftContracts',
+              'getNfts',
+              'getProviderConfig',
+              'getRpcPrefsForCurrentProvider',
+              'getUSDConversionRate',
+              'isCurrentProviderCustom',
+            ]
+              .map((method) => `(${method})`)
+              .join('|')}/]`,
+            message: 'Avoid using global network selectors in confirmations',
           },
         ],
       },

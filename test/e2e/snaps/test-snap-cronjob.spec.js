@@ -3,6 +3,7 @@ const {
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
+  largeDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -27,42 +28,48 @@ describe('Test Snap Cronjob', function () {
           tag: 'h2',
         });
 
+        // scroll to and connect to cronjobs snap
         const snapButton = await driver.findElement('#connectcronjobs');
         await driver.scrollToElement(snapButton);
-        await driver.delay(500);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectcronjobs');
         await driver.clickElement('#connectcronjobs');
 
-        // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // wait for and click confirm
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
 
         // click send inputs on test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -70,21 +77,19 @@ describe('Test Snap Cronjob', function () {
           text: 'Reconnect to Cronjobs Snap',
         });
 
-        // switch to dialog popup, wait for a maximum of 65 seconds
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 65000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // Switching to dialog popup takes time, hence this wait is needed
+        await driver.delay(largeDelayMs);
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // look for the dialog popup to verify cronjob fired
         await driver.waitForSelector({
-          css: '.snap-delineator__content',
+          css: '.snap-ui-renderer__content',
           text: 'This dialog was triggered by a cronjob',
         });
 
-        // try to click on the Ok button and pass test if it works
-        await driver.clickElement({
+        // try to click on the Ok button and pass test if window closes
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });

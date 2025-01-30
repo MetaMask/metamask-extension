@@ -1,10 +1,10 @@
 import React from 'react';
 
-export interface FocusableElement {
+export type FocusableElement = {
   focus(options?: FocusOptions): void;
-}
+};
 
-export interface ModalFocusProps {
+export type ModalFocusProps = {
   /**
    * The `ref` of the element to receive focus initially
    */
@@ -32,4 +32,4 @@ export interface ModalFocusProps {
    * @default false
    */
   autoFocus?: boolean;
-}
+};

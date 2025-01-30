@@ -5,6 +5,7 @@ const {
   regularDelayMs,
   unlockWallet,
   generateGanacheOptions,
+  WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -25,32 +26,22 @@ describe('Multiple transactions', function () {
         // initiates a transaction from the dapp
         await openDapp(driver);
         // creates first transaction
-        await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
-          tag: 'button',
-        });
+        await createDappTransaction(driver);
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extensionTab = windowHandles[0];
-        const dApp = windowHandles[1];
-        const confirmation = windowHandles[2];
 
-        await driver.switchToWindow(dApp);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // creates second transaction
-        await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
-          tag: 'button',
-        });
-        await driver.switchToWindow(confirmation);
+        await createDappTransaction(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // confirms second transaction
         await driver.waitForSelector({
-          text: 'Reject 2 transactions',
-          tag: 'a',
+          text: 'Reject all',
+          tag: 'button',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.switchToWindow(confirmation);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for the "Reject 2 transactions" to disappear
         await driver.assertElementNotPresent(
@@ -61,9 +52,13 @@ describe('Multiple transactions', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extensionTab);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(2)',
         );
@@ -93,42 +88,33 @@ describe('Multiple transactions', function () {
         // initiates a transaction from the dapp
         await openDapp(driver);
         // creates first transaction
-        await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
-          tag: 'button',
-        });
+        await createDappTransaction(driver);
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        const confirmation = windowHandles[2];
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // creates second transaction
-        await driver.clickElement({
-          text: 'Send EIP 1559 Transaction',
-          tag: 'button',
-        });
-        await driver.switchToWindow(confirmation);
+        await createDappTransaction(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // rejects second transaction
         await driver.waitForSelector({
-          text: 'Reject 2 transactions',
-          tag: 'a',
+          text: 'Reject all',
+          tag: 'button',
         });
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
         await driver.assertElementNotPresent('.loading-overlay__spinner');
         // rejects first transaction
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
-        await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
-
-        const isTransactionListEmpty = await driver.isElementPresentAndVisible(
-          '.transaction-list__empty-text',
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        assert.equal(isTransactionListEmpty, true);
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
 
         // The previous isTransactionListEmpty wait already serves as the guard here for the assertElementNotPresent
         await driver.assertElementNotPresent(
@@ -138,3 +124,10 @@ describe('Multiple transactions', function () {
     );
   });
 });
+
+async function createDappTransaction(driver) {
+  await driver.clickElement({
+    text: 'Send EIP 1559 Without Gas',
+    tag: 'button',
+  });
+}

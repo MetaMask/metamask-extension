@@ -20,6 +20,8 @@ export enum TextFieldType {
   Search = 'search',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface TextFieldStyleUtilityProps
   extends Omit<StyleUtilityProps, 'type'> {
   /**

@@ -18,9 +18,9 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       children,
       badge,
       badgeContainerProps,
-      position = BadgeWrapperPosition.topRight,
+      position = BadgeWrapperPosition.bottomRight,
       positionObj,
-      anchorElementShape = BadgeWrapperAnchorElementShape.circular,
+      anchorElementShape = BadgeWrapperAnchorElementShape.rectangular,
       className = '',
       ...props
     }: BadgeWrapperProps<C>,
@@ -35,12 +35,16 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       {/* Generally the AvatarAccount or AvatarToken */}
       {children}
       <Box
-        className={classnames('mm-badge-wrapper__badge-container', {
-          [`mm-badge-wrapper__badge-container--${anchorElementShape}-${position}`]:
-            !positionObj,
-        })}
-        style={{ ...positionObj }}
         {...badgeContainerProps}
+        className={classnames(
+          'mm-badge-wrapper__badge-container',
+          {
+            [`mm-badge-wrapper__badge-container--${anchorElementShape}-${position}`]:
+              !positionObj,
+          },
+          badgeContainerProps?.className || '',
+        )}
+        style={{ ...positionObj }}
       >
         {/* Generally the AvatarNetwork at SIZES.XS */}
         {badge}

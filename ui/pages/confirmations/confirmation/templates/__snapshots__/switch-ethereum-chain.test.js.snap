@@ -6,34 +6,9 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-4"
+      style="overflow-y: auto;"
     >
-      <div
-        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
-      >
-        <div
-          class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
-          data-testid="network-display"
-        >
-          <div
-            class="chip__left-icon"
-          >
-            <div
-              class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-xs"
-              data-testid="color-icon-icon-muted"
-            >
-              <span
-                class="color-indicator__inner-circle"
-              />
-            </div>
-          </div>
-          <span
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
-          >
-            Test initial state
-          </span>
-        </div>
-      </div>
       <h3
         class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
       >
@@ -54,7 +29,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
               T
             </div>
@@ -79,7 +54,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
               T
             </div>
@@ -117,42 +92,15 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
 </div>
 `;
 
-exports[`switch-ethereum-chain confirmation should match snapshot 2`] = `<div />`;
-
 exports[`switch-ethereum-chain confirmation should show alert if there are pending txs 1`] = `
 <div>
   <div
     class="confirmation-page"
   >
     <div
-      class="confirmation-page__content"
+      class="mm-box confirmation-page__content mm-box--padding-4"
+      style="overflow-y: auto;"
     >
-      <div
-        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
-      >
-        <div
-          class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
-          data-testid="network-display"
-        >
-          <div
-            class="chip__left-icon"
-          >
-            <div
-              class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-xs"
-              data-testid="color-icon-icon-muted"
-            >
-              <span
-                class="color-indicator__inner-circle"
-              />
-            </div>
-          </div>
-          <span
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
-          >
-            Test initial state
-          </span>
-        </div>
-      </div>
       <h3
         class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
       >
@@ -173,7 +121,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
               T
             </div>
@@ -198,7 +146,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
               T
             </div>

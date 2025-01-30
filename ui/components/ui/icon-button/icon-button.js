@@ -6,28 +6,38 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
 
 const defaultRender = (inner) => inner;
-export default function IconButton({
-  onClick,
-  Icon,
-  disabled,
-  label,
-  tooltipRender,
-  className,
-  ...props
-}) {
+export default function IconButton(props) {
+  // Do not use destructuring in the parameter itself, otherwise ts will complain
+  // that optional props (like tooltipRender, disabled) must be passed!
+  const {
+    onClick,
+    Icon,
+    disabled,
+    label,
+    tooltipRender,
+    className,
+    iconButtonClassName = '',
+    ...otherProps
+  } = props;
   const renderWrapper = tooltipRender ?? defaultRender;
+
   return (
     <button
       className={classNames('icon-button', className, {
         'icon-button--disabled': disabled,
       })}
-      data-testid={props['data-testid'] ?? undefined}
+      data-testid={otherProps['data-testid'] ?? undefined}
       onClick={onClick}
       disabled={disabled}
     >
       {renderWrapper(
         <>
-          <div className="icon-button__circle">{Icon}</div>
+          <div
+            data-theme="light"
+            className={classNames('icon-button__circle', iconButtonClassName)}
+          >
+            {Icon}
+          </div>
           {label.length > 10 ? (
             <Tooltip title={label} position="bottom">
               <Text
@@ -60,5 +70,6 @@ IconButton.propTypes = {
   label: PropTypes.string.isRequired,
   tooltipRender: PropTypes.func,
   className: PropTypes.string,
+  iconButtonClassName: PropTypes.string,
   'data-testid': PropTypes.string,
 };

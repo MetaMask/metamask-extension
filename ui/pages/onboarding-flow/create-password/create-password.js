@@ -13,17 +13,12 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ONBOARDING_PIN_EXTENSION_ROUTE,
-  MMI_ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
-import CheckBox from '../../../components/ui/check-box';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   ThreeStepProgressBar,
@@ -39,7 +34,6 @@ import {
   getCurrentKeyring,
   getMetaMetricsId,
 } from '../../../selectors';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -48,10 +42,12 @@ import {
 import {
   Box,
   ButtonLink,
+  Checkbox,
   Icon,
   IconName,
   Text,
 } from '../../../components/component-library';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function CreatePassword({
   createNewAccount,
@@ -67,6 +63,8 @@ export default function CreatePassword({
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [termsChecked, setTermsChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
+    useState(false);
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
@@ -91,26 +89,23 @@ export default function CreatePassword({
   )}`;
 
   useEffect(() => {
-    if (currentKeyring) {
-      if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+    if (currentKeyring && !newAccountCreationInProgress) {
+      if (firstTimeFlowType === FirstTimeFlowType.import) {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_COMPLETION_ROUTE);
-        ///: END:ONLY_INCLUDE_IF
-
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        history.replace(ONBOARDING_PIN_EXTENSION_ROUTE);
         ///: END:ONLY_INCLUDE_IF
       } else {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
         ///: END:ONLY_INCLUDE_IF
-
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        history.replace(MMI_ONBOARDING_COMPLETION_ROUTE);
-        ///: END:ONLY_INCLUDE_IF
       }
     }
-  }, [currentKeyring, history, firstTimeFlowType]);
+  }, [
+    currentKeyring,
+    history,
+    firstTimeFlowType,
+    newAccountCreationInProgress,
+  ]);
 
   const isValid = useMemo(() => {
     if (!password || !confirmPassword || password !== confirmPassword) {
@@ -205,28 +200,21 @@ export default function CreatePassword({
     // If secretRecoveryPhrase is defined we are in import wallet flow
     if (
       secretRecoveryPhrase &&
-      firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+      firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       history.push(ONBOARDING_COMPLETION_ROUTE);
       ///: END:ONLY_INCLUDE_IF
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-      ///: END:ONLY_INCLUDE_IF
     } else {
       // Otherwise we are in create new wallet flow
       try {
         if (createNewAccount) {
+          setNewAccountCreationInProgress(true);
           await createNewAccount(password);
         }
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
-        ///: END:ONLY_INCLUDE_IF
-
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
         ///: END:ONLY_INCLUDE_IF
       } catch (error) {
         setPasswordError(error.message);
@@ -253,7 +241,7 @@ export default function CreatePassword({
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         secretRecoveryPhrase &&
-        firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
+        firstTimeFlowType === FirstTimeFlowType.import ? (
           <TwoStepProgressBar
             stage={twoStepStages.PASSWORD_CREATE}
             marginBottom={4}
@@ -281,11 +269,6 @@ export default function CreatePassword({
           t('passwordSetupDetails')
           ///: END:ONLY_INCLUDE_IF
         }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          t('mmiPasswordSetupDetails')
-          ///: END:ONLY_INCLUDE_IF
-        }
       </Text>
       <Box justifyContent={JustifyContent.center} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
@@ -308,6 +291,10 @@ export default function CreatePassword({
                   setShowPassword(!showPassword);
                 }}
                 marginBottom={1}
+                // This type="button" prop is needed for <button> to prevent the implicit submit
+                // behavior. Without this and within this form, entering the "Enter" key while
+                // one of the inputs is focused will trigger this button.
+                type="button"
               >
                 {showPassword ? t('hide') : t('show')}
               </ButtonLink>
@@ -335,46 +322,33 @@ export default function CreatePassword({
             marginTop={4}
             marginBottom={4}
           >
-            <label className="create-password__form__terms-label">
-              <CheckBox
-                dataTestId="create-password-terms"
-                onClick={() => setTermsChecked(!termsChecked)}
-                checked={termsChecked}
-              />
-              <Text variant={TextVariant.bodyMd} marginLeft={3}>
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                  t('passwordTermsWarning', [createPasswordLink])
-                  ///: END:ONLY_INCLUDE_IF
-                }
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                  t('passwordMmiTermsWarning', [createPasswordLink])
-                  ///: END:ONLY_INCLUDE_IF
-                }
-              </Text>
-            </label>
+            <Checkbox
+              className="create-password__form__terms-checkbox"
+              inputProps={{ 'data-testid': 'create-password-terms' }}
+              alignItems={AlignItems.flexStart}
+              isChecked={termsChecked}
+              onChange={(e) => {
+                e.preventDefault();
+                setTermsChecked(!termsChecked);
+              }}
+              label={
+                <Text variant={TextVariant.bodyMd} marginLeft={2}>
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                    t('passwordTermsWarning', [createPasswordLink])
+                    ///: END:ONLY_INCLUDE_IF
+                  }
+                </Text>
+              }
+            />
           </Box>
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            <Button
-              type="primary"
-              large
-              className="create-password__form--submit-button"
-              disabled={!isValid || !termsChecked}
-              onClick={handleCreate}
-            >
-              {t('continue')}
-            </Button>
-            ///: END:ONLY_INCLUDE_IF
-          }
 
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <Button
               data-testid={
                 secretRecoveryPhrase &&
-                firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+                firstTimeFlowType === FirstTimeFlowType.import
                   ? 'create-password-import'
                   : 'create-password-wallet'
               }
@@ -385,7 +359,7 @@ export default function CreatePassword({
               onClick={handleCreate}
             >
               {secretRecoveryPhrase &&
-              firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+              firstTimeFlowType === FirstTimeFlowType.import
                 ? t('importMyWallet')
                 : t('createNewWallet')}
             </Button>

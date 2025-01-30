@@ -27,89 +27,86 @@ describe('Test Snap TxInsights', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the transaction-insights test and connect
+        // find and scroll to the transaction-insights test snap
         const snapButton1 = await driver.findElement(
           '#connecttransaction-insights',
         );
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connecttransaction-insights');
         await driver.clickElement('#connecttransaction-insights');
 
-        // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          2,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
-
+        // wait for and click confirm
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
 
         // switch to test-snaps page and get accounts
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        // click get accounts
         await driver.clickElement('#getAccounts');
 
-        // switch back to MetaMask window and deal with dialogs
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
+        // switch back to MetaMask window
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click next and wait for window to close
         await driver.waitForSelector({
           text: 'Connect',
           tag: 'button',
         });
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
 
-        // switch to test-snaps page and send tx
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        // switch to test-snaps page
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        // click send tx
         await driver.clickElement('#sendInsights');
 
-        // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        // delay added for rendering (deflake)
+        await driver.delay(2000);
+
+        // switch back to MetaMask window
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and switch to insight snap pane
         await driver.waitForSelector({
           text: 'Insights Example Snap',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Insights Example Snap',
-          tag: 'button',
+          tag: 'span',
         });
 
         // check that txinsightstest tab contains the right info
         await driver.waitForSelector({
-          css: '.snap-ui-renderer__content',
+          css: 'p',
           text: 'ERC-20',
         });
       },

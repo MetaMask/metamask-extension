@@ -1,10 +1,15 @@
 import { BigNumber } from 'bignumber.js';
-import { Json } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  FeeMarketGasFeeEstimates,
+  TransactionParams,
+} from '@metamask/transaction-controller';
 import {
   ALLOWED_CONTRACT_ADDRESSES,
   ARBITRUM,
   AVALANCHE,
+  BASE,
   BSC,
   ETHEREUM,
   GOERLI,
@@ -38,24 +43,27 @@ import {
   validateData,
 } from '../../../shared/lib/swaps-utils';
 import {
+  addHexes,
+  decGWEIToHexWEI,
   decimalToHex,
   getValueFromWeiHex,
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { estimateGasFee } from '../../store/actions';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
 
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
-interface Validator {
+type Validator = {
   property: string;
   type: string;
   validator: (a: string) => boolean;
-}
+};
 
-const TOKEN_VALIDATORS: Validator[] = [
+export const TOKEN_VALIDATORS: Validator[] = [
   {
     property: 'address',
     type: 'string',
@@ -93,6 +101,8 @@ const AGGREGATOR_METADATA_VALIDATORS: Validator[] = [
   },
 ];
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isValidDecimalNumber = (string: any): boolean =>
   !isNaN(string) && string.match(/^[.0-9]+$/u) && !isNaN(parseFloat(string));
 
@@ -116,6 +126,8 @@ const SWAP_GAS_PRICE_VALIDATOR: Validator[] = [
 
 export async function fetchToken(
   contractAddress: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: any,
 ): Promise<Json> {
   const tokenUrl = getBaseApi('token', chainId);
@@ -124,6 +136,19 @@ export async function fetchToken(
     fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     functionName: 'fetchToken',
+  });
+}
+
+export async function fetchBlockedTokens(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  chainId: any,
+): Promise<string[]> {
+  const blockedTokensUrl = getBaseApi('blockedTokens', chainId);
+  return await fetchWithCache({
+    url: `${blockedTokensUrl}`,
+    fetchOptions: { method: 'GET', headers: clientIdHeader },
+    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+    functionName: 'fetchBlockedTokens',
   });
 }
 
@@ -154,6 +179,8 @@ export async function fetchTokens(
   ];
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
   const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
   const aggregators = await fetchWithCache({
@@ -162,6 +189,8 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
     cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     functionName: 'fetchAggregatorMetadata',
   });
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filteredAggregators = {} as any;
   for (const aggKey in aggregators) {
     if (
@@ -177,7 +206,9 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
   return filteredAggregators;
 }
 
-export async function fetchTopAssets(chainId: any): Promise<object> {
+export async function fetchTopAssetsList(
+  chainId: string,
+): Promise<{ address: string }[]> {
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
     (await fetchWithCache({
@@ -186,18 +217,27 @@ export async function fetchTopAssets(chainId: any): Promise<object> {
       fetchOptions: { method: 'GET', headers: clientIdHeader },
       cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     })) || [];
+  const topAssetsList = response.filter((asset: { address: string }) =>
+    validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl),
+  );
+  return topAssetsList;
+}
+
+export async function fetchTopAssets(
+  chainId: string,
+): Promise<Record<string, { index: string }>> {
+  const response = await fetchTopAssetsList(chainId);
   const topAssetsMap = response.reduce(
-    (_topAssetsMap: any, asset: { address: string }, index: number) => {
-      if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
-        return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
-      }
-      return _topAssetsMap;
+    (_topAssetsMap, asset: { address: string }, index: number) => {
+      return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
     },
     {},
   );
   return topAssetsMap;
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchSwapsFeatureFlags(): Promise<any> {
   const v2ApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
     ? SWAPS_DEV_API_V2_BASE_URL
@@ -212,11 +252,13 @@ export async function fetchSwapsFeatureFlags(): Promise<any> {
 
 export async function fetchTokenPrice(
   tokenContractAddress: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
 
   const prices = await fetchWithCache({
-    url: `https://price-api.metafi.codefi.network/v2/chains/1/${query}`,
+    url: `https://price.api.cx.metamask.io/v2/chains/1/${query}`,
     fetchOptions: {
       method: 'GET',
     },
@@ -226,7 +268,11 @@ export async function fetchTokenPrice(
   return prices?.[tokenContractAddress]?.eth;
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchSwapsGasPrices(chainId: any): Promise<
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | any
   | {
       safeLow: string;
@@ -316,7 +362,8 @@ export const getFeeForSmartTransaction = ({
 export function getRenderableNetworkFeesForQuote({
   tradeGas,
   approveGas,
-  gasPrice,
+  gasPriceTrade,
+  gasPriceApprove,
   currentCurrency,
   conversionRate,
   USDConversionRate,
@@ -329,7 +376,8 @@ export function getRenderableNetworkFeesForQuote({
 }: {
   tradeGas: string;
   approveGas: string;
-  gasPrice: string;
+  gasPriceTrade: string;
+  gasPriceApprove: string;
   currentCurrency: string;
   conversionRate: number;
   USDConversionRate?: number;
@@ -347,16 +395,17 @@ export function getRenderableNetworkFeesForQuote({
   feeInEth: string;
   nonGasFee: string;
 } {
-  const totalGasLimitForCalculation = new BigNumber(tradeGas || '0x0', 16)
-    .plus(approveGas || '0x0', 16)
-    .toString(16);
-  let gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice);
-  if (multiLayerL1FeeTotal !== null) {
-    gasTotalInWeiHex = sumHexes(
-      gasTotalInWeiHex || '0x0',
-      multiLayerL1FeeTotal || '0x0',
-    );
-  }
+  const tradeGasFeeTotalHex = calcGasTotal(tradeGas, gasPriceTrade);
+
+  const approveGasFeeTotalHex = approveGas
+    ? calcGasTotal(approveGas, gasPriceApprove)
+    : '0x0';
+
+  const gasTotalInWeiHex = sumHexes(
+    tradeGasFeeTotalHex,
+    approveGasFeeTotalHex,
+    multiLayerL1FeeTotal || '0x0',
+  );
 
   const nonGasFee = new BigNumber(tradeValue, 16)
     .minus(
@@ -408,7 +457,8 @@ export function getRenderableNetworkFeesForQuote({
 
 export function quotesToRenderableData({
   quotes,
-  gasPrice,
+  gasPriceTrade,
+  gasPriceApprove,
   conversionRate,
   currentCurrency,
   approveGas,
@@ -419,15 +469,20 @@ export function quotesToRenderableData({
   multiLayerL1ApprovalFeeTotal,
 }: {
   quotes: object;
-  gasPrice: string;
+  gasPriceTrade: string;
+  gasPriceApprove: string;
   conversionRate: number;
   currentCurrency: string;
   approveGas: string;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenConversionRates: Record<string, any>;
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   smartTransactionEstimatedGas: IndividualTxFees;
   nativeCurrencySymbol: string;
   multiLayerL1ApprovalFeeTotal: string | null;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): Record<string, any> {
   return Object.values(quotes).map((quote) => {
     const {
@@ -474,7 +529,8 @@ export function quotesToRenderableData({
       getRenderableNetworkFeesForQuote({
         tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
         approveGas,
-        gasPrice,
+        gasPriceTrade,
+        gasPriceApprove,
         currentCurrency,
         conversionRate,
         tradeValue: trade.value,
@@ -637,6 +693,8 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return ZKSYNC_ERA;
     case CHAIN_IDS.LINEA_MAINNET:
       return LINEA;
+    case CHAIN_IDS.BASE:
+      return BASE;
     default:
       return '';
   }
@@ -650,7 +708,11 @@ export const getNetworkNameByChainId = (chainId: string): string => {
  * @returns object with 2 items: "swapsFeatureIsLive"
  */
 export const getSwapsLivenessForNetwork = (
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: any,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   swapsFeatureFlags: any = {},
 ) => {
   const networkName = getNetworkNameByChainId(chainId);
@@ -682,6 +744,8 @@ export const getSwapsLivenessForNetwork = (
  * @param value
  * @returns number
  */
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const countDecimals = (value: any): number => {
   if (!value || Math.floor(value) === value) {
     return 0;
@@ -690,6 +754,8 @@ export const countDecimals = (value: any): number => {
 };
 
 export const showRemainingTimeInMinAndSec = (
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   remainingTimeInSec: any,
 ): string => {
   if (!Number.isInteger(remainingTimeInSec)) {
@@ -708,6 +774,8 @@ export enum StxErrorTypes {
 
 export const getTranslatedStxErrorMessage = (
   errorType: StxErrorTypes,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: (...args: any[]) => string,
 ): string => {
   switch (errorType) {
@@ -725,3 +793,60 @@ export const parseSmartTransactionsError = (errorMessage: string): string => {
   const errorJson = errorMessage.slice(12);
   return JSON.parse(errorJson.trim());
 };
+
+export const getSwap1559GasFeeEstimates = async (
+  tradeTxParams: TransactionParams,
+  approveTxParams: TransactionParams | undefined,
+  estimatedBaseFeeGwei: string,
+  chainId: Hex,
+) => {
+  const estimatedBaseFee = decGWEIToHexWEI(estimatedBaseFeeGwei) as Hex;
+
+  const tradeGasFeeEstimates = await getTransaction1559GasFeeEstimates(
+    tradeTxParams,
+    estimatedBaseFee,
+    chainId,
+  );
+
+  const approveGasFeeEstimates = approveTxParams
+    ? await getTransaction1559GasFeeEstimates(
+        approveTxParams,
+        estimatedBaseFee,
+        chainId,
+      )
+    : undefined;
+
+  return {
+    tradeGasFeeEstimates,
+    approveGasFeeEstimates,
+    estimatedBaseFee,
+  };
+};
+
+export async function getTransaction1559GasFeeEstimates(
+  transactionParams: TransactionParams,
+  estimatedBaseFee: Hex,
+  chainId: Hex,
+) {
+  const transactionGasFeeResponse = await estimateGasFee({
+    transactionParams,
+    chainId,
+  });
+
+  const transactionGasFeeEstimates = transactionGasFeeResponse?.estimates as
+    | FeeMarketGasFeeEstimates
+    | undefined;
+
+  const { maxFeePerGas } = transactionGasFeeEstimates?.high ?? {};
+  const { maxPriorityFeePerGas } = transactionGasFeeEstimates?.high ?? {};
+
+  const baseAndPriorityFeePerGas = maxPriorityFeePerGas
+    ? (addHexes(estimatedBaseFee, maxPriorityFeePerGas) as Hex)
+    : undefined;
+
+  return {
+    baseAndPriorityFeePerGas,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  };
+}

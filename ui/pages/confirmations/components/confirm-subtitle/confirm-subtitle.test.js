@@ -1,10 +1,15 @@
 import React from 'react';
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import ConfirmSubTitle from './confirm-subtitle';
+
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
 
 describe('ConfirmSubTitle', () => {
   let store;
@@ -45,8 +50,8 @@ describe('ConfirmSubTitle', () => {
   it('should not return null if it is NFT Transfer', async () => {
     mockState.metamask.preferences.showFiatInTestnets = false;
     mockState.metamask.allNftContracts = {
-      [mockState.metamask.selectedAddress]: {
-        [mockState.metamask.providerConfig.chainId]: [{ address: '0x9' }],
+      [mockSelectedInternalAccount.address]: {
+        [CHAIN_IDS.GOERLI]: [{ address: '0x9' }],
       },
     };
     store = configureStore(mockState);
@@ -54,6 +59,7 @@ describe('ConfirmSubTitle', () => {
     const { findByText } = renderWithProvider(
       <ConfirmSubTitle
         txData={{
+          chainId: CHAIN_IDS.GOERLI,
           txParams: {
             to: '0x9',
           },

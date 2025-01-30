@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
+const { promisify } = require('util');
 const { promises: fs } = require('fs');
+const execFile = promisify(require('child_process').execFile);
 const path = require('path');
 // Fetch is part of node js in future versions, thus triggering no-shadow
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
-const glob = require('fast-glob');
 const VERSION = require('../package.json').version;
-const { getHighlights } = require('./highlights');
 
 start().catch(console.error);
 
@@ -38,92 +38,109 @@ function getPercentageChange(from, to) {
   return parseFloat(((to - from) / Math.abs(from)) * 100).toFixed(2);
 }
 
+/**
+ * Check whether an artifact exists,
+ *
+ * @param {string} url - The URL of the artifact to check.
+ * @returns True if the artifact exists, false if it doesn't
+ */
+async function artifactExists(url) {
+  // Using a regular GET request here rather than HEAD because for some reason CircleCI always
+  // returns 404 for HEAD requests.
+  const response = await fetch(url);
+  return response.ok;
+}
+
 async function start() {
   const {
-    GITHUB_COMMENT_TOKEN,
-    CIRCLE_PULL_REQUEST,
-    CIRCLE_SHA1,
+    PR_COMMENT_TOKEN,
+    PR_NUMBER,
+    HEAD_COMMIT_HASH,
+    MERGE_BASE_COMMIT_HASH,
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
-    PARENT_COMMIT,
+    HOST_URL,
   } = process.env;
 
-  console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST);
-  console.log('CIRCLE_SHA1', CIRCLE_SHA1);
-  console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
-  console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
-  console.log('PARENT_COMMIT', PARENT_COMMIT);
-
-  if (!CIRCLE_PULL_REQUEST) {
-    console.warn(`No pull request detected for commit "${CIRCLE_SHA1}"`);
+  if (!PR_NUMBER) {
+    console.warn(`No pull request detected for commit "${HEAD_COMMIT_HASH}"`);
     return;
   }
 
-  const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop();
-  const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7);
+  const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
-  // build the github comment content
 
   // links to extension builds
-  const platforms = ['chrome', 'firefox'];
-  const buildLinks = platforms
-    .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`;
+  const buildMap = {
+    builds: {
+      chrome: `${BUILD_LINK_BASE}/builds/metamask-chrome-${VERSION}.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-mv2/metamask-firefox-${VERSION}.zip`,
+    },
+    'builds (flask)': {
+      chrome: `${BUILD_LINK_BASE}/builds-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+    },
+    'builds (MMI)': {
+      chrome: `${BUILD_LINK_BASE}/builds-mmi/metamask-mmi-chrome-${VERSION}-mmi.0.zip`,
+    },
+    'builds (test)': {
+      chrome: `${BUILD_LINK_BASE}/builds-test/metamask-chrome-${VERSION}.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-test-mv2/metamask-firefox-${VERSION}.zip`,
+    },
+    'builds (test-flask)': {
+      chrome: `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+    },
+  };
+
+  const commitMessage = (
+    await execFile('git', ['show', '-s', '--format=%s', HEAD_COMMIT_HASH])
+  ).stdout.trim();
+  const betaVersionRegex = /Version v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+/u;
+  const betaMatch = commitMessage.match(betaVersionRegex);
+
+  // only include beta build link if a beta version is detected in the commit message
+  if (betaMatch) {
+    const betaVersion = betaMatch[0].split('-beta.')[1];
+    console.log(`Beta version ${betaVersion} detected, adding beta build link`);
+    buildMap['builds (beta)'] = {
+      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}-beta.${betaVersion}.zip`,
+    };
+  }
+
+  const buildContentRows = Object.entries(buildMap).map(([label, builds]) => {
+    const buildLinks = Object.entries(builds).map(([platform, url]) => {
       return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
-  const betaBuildLinks = `<a href="${BUILD_LINK_BASE}/builds-beta/metamask-beta-chrome-${VERSION}.zip">chrome</a>`;
-  const flaskBuildLinks = platforms
-    .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
-  const mmiBuildLinks = platforms
-    .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-mmi/metamask-mmi-${platform}-${VERSION}-mmi.0.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
-  const testBuildLinks = platforms
-    .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-test/metamask-${platform}-${VERSION}.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
-  const testFlaskBuildLinks = platforms
-    .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
+    });
+    return `${label}: ${buildLinks.join(', ')}`;
+  });
 
   // links to bundle browser builds
   const bundles = {};
-  const fileType = '.html';
   const sourceMapRoot = '/build-artifacts/source-map-explorer/';
-  const bundleFiles = await glob(`.${sourceMapRoot}*${fileType}`);
+  const fileRoots = [
+    'background',
+    'common',
+    'ui',
+    'content-script',
+    'offscreen',
+  ];
 
-  bundleFiles.forEach((bundleFile) => {
-    const fileName = bundleFile.split(sourceMapRoot)[1];
-    const bundleName = fileName.split(fileType)[0];
-    const url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileName}`;
-    let fileRoot = bundleName;
-    let fileIndex = bundleName.match(/-[0-9]{1,}$/u)?.index;
-
-    if (fileIndex) {
-      fileRoot = bundleName.slice(0, fileIndex);
-      fileIndex = bundleName.slice(fileIndex + 1, bundleName.length);
-    }
-
-    const link = `<a href="${url}">${fileIndex || fileRoot}</a>`;
-
-    if (fileRoot in bundles) {
+  for (const fileRoot of fileRoots) {
+    bundles[fileRoot] = [];
+    let fileIndex = 0;
+    let url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
+    console.log(`Verifying ${url}`);
+    while (await artifactExists(url)) {
+      const link = `<a href="${url}">${fileIndex}</a>`;
       bundles[fileRoot].push(link);
-    } else {
-      bundles[fileRoot] = [link];
+
+      fileIndex += 1;
+      url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
+      console.log(`Verifying ${url}`);
     }
-  });
+    console.log(`Not found: ${url}`);
+  }
 
   const bundleMarkup = `<ul>${Object.keys(bundles)
     .map((key) => `<li>${key}: ${bundles[key].join(', ')}</li>`)
@@ -132,10 +149,7 @@ async function start() {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
-  const coverageLink = `<a href="${coverageUrl}">Report</a>`;
-
-  const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
+  const storybookUrl = `${HOST_URL}/storybook-build/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
   const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
@@ -144,13 +158,7 @@ async function start() {
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
-  const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/background/index.html`;
-  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
-  const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
-  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
-  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
-  const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
-  const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
+  const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
   const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
@@ -159,19 +167,10 @@ async function start() {
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
 
   const contentRows = [
-    `builds: ${buildLinks}`,
-    `builds (beta): ${betaBuildLinks}`,
-    `builds (flask): ${flaskBuildLinks}`,
-    `builds (MMI): ${mmiBuildLinks}`,
-    `builds (test): ${testBuildLinks}`,
-    `builds (test-flask): ${testFlaskBuildLinks}`,
+    ...buildContentRows,
     `build viz: ${depVizLink}`,
-    `mv3: ${moduleInitStatsBackgroundLink}`,
-    `mv3: ${moduleInitStatsUILink}`,
-    `mv3: ${moduleLoadStatsLink}`,
     `mv3: ${bundleSizeStatsLink}`,
     `mv2: ${userActionsStatsLink}`,
-    `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
@@ -186,8 +185,9 @@ async function start() {
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
 
+  const benchmarkPlatforms = ['chrome'];
   const benchmarkResults = {};
-  for (const platform of platforms) {
+  for (const platform of benchmarkPlatforms) {
     const benchmarkPath = path.resolve(
       __dirname,
       '..',
@@ -297,7 +297,7 @@ async function start() {
         path.resolve(
           __dirname,
           '..',
-          path.join('test-artifacts', 'chrome', 'mv3', 'bundle_size.json'),
+          path.join('test-artifacts', 'chrome', 'bundle_size.json'),
         ),
         'utf-8',
       ),
@@ -316,7 +316,7 @@ async function start() {
     };
 
     const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
-      sizes[part] = devBundleSizeStats[PARENT_COMMIT][part] || 0;
+      sizes[part] = devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
       return sizes;
     }, {});
 
@@ -356,18 +356,8 @@ async function start() {
     console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
-  try {
-    const highlights = await getHighlights({ artifactBase: BUILD_LINK_BASE });
-    if (highlights) {
-      const highlightsBody = `### highlights:\n${highlights}\n`;
-      commentBody += highlightsBody;
-    }
-  } catch (error) {
-    console.error(`Error constructing highlight results: '${error}'`);
-  }
-
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
-  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${CIRCLE_PR_NUMBER}/comments`;
+  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${PR_NUMBER}/comments`;
   console.log(`Announcement:\n${commentBody}`);
   console.log(`Posting to: ${POST_COMMENT_URI}`);
 
@@ -376,7 +366,7 @@ async function start() {
     body: JSON_PAYLOAD,
     headers: {
       'User-Agent': 'metamaskbot',
-      Authorization: `token ${GITHUB_COMMENT_TOKEN}`,
+      Authorization: `token ${PR_COMMENT_TOKEN}`,
     },
   });
   if (!response.ok) {

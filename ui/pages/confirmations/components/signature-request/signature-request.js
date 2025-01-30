@@ -1,14 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
-import {
-  useDispatch,
-  useSelector,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shallowEqual,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { memoize } from 'lodash';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import {
   resolvePendingApproval,
   completedTx,
@@ -18,26 +12,12 @@ import {
   doesAddressRequireLedgerHidConnection,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  accountsWithSendEtherInfoSelector,
-  getSelectedAccount,
-  getAccountType,
-  ///: END:ONLY_INCLUDE_IF
+  selectNetworkConfigurationByChainId,
 } from '../../../../selectors';
-import {
-  getProviderConfig,
-  isAddressLedger,
-} from '../../../../ducks/metamask/metamask';
-import {
-  sanitizeMessage,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getAccountByAddress,
-  shortenAddress,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../helpers/utils/util';
+import { isAddressLedger } from '../../../../ducks/metamask/metamask';
+import { sanitizeMessage } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRejectTransactionModal } from '../../hooks/useRejectTransactionModal';
-
 import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import SignatureRequestHeader from '../signature-request-header/signature-request-header';
 import SecurityProviderBannerMessage from '../security-provider-banner-message';
@@ -49,18 +29,11 @@ import {
   BlockaidResultType,
   SECURITY_PROVIDER_MESSAGE_SEVERITY,
 } from '../../../../../shared/constants/security-provider';
-
 import {
   TextAlign,
   TextColor,
   TextVariant,
   Size,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  IconColor,
-  BackgroundColor,
-  Display,
-  BlockSize,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonVariant,
@@ -68,32 +41,16 @@ import {
   ButtonLink,
   TagUrl,
   Text,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  Icon,
-  IconName,
-  Box,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMessage';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
-
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
-///: END:ONLY_INCLUDE_IF
+import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
+import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
-const SignatureRequest = ({
-  txData,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  warnings,
-  ///: END:ONLY_INCLUDE_IF
-}) => {
+const SignatureRequest = ({ txData, warnings }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -106,6 +63,7 @@ const SignatureRequest = ({
   const {
     id,
     type,
+    chainId,
     msgParams: { from, data, origin, version },
   } = txData;
 
@@ -113,29 +71,19 @@ const SignatureRequest = ({
   const hardwareWalletRequiresConnection = useSelector((state) =>
     doesAddressRequireLedgerHidConnection(state, from),
   );
-  const { chainId, rpcPrefs } = useSelector(getProviderConfig);
+
+  const { blockExplorerUrls } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  const blockExplorerUrl = blockExplorerUrls?.[0];
   const unapprovedMessagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
   const { handleCancelAll } = useRejectTransactionModal();
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  // Used to show a warning if the signing account is not the selected account
-  // Largely relevant for contract wallet custodians
-  const selectedAccount = useSelector(getSelectedAccount);
-  const accountType = useSelector(getAccountType);
-  const allAccounts = useSelector(
-    accountsWithSendEtherInfoSelector,
-    shallowEqual,
-  );
-  const { address } = getAccountByAddress(allAccounts, from) || {};
-  const { custodySignFn } = useMMICustodySignMessage();
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
     useState(false);
-  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     setMessageIsScrollable(
@@ -162,12 +110,6 @@ const SignatureRequest = ({
       : 'primary';
 
   const onSign = async () => {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (accountType === 'custody') {
-      await custodySignFn(txData);
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     await dispatch(resolvePendingApproval(id));
     completedTx(id);
 
@@ -187,7 +129,7 @@ const SignatureRequest = ({
     await dispatch(
       rejectPendingApproval(
         id,
-        serializeError(ethErrors.provider.userRejectedRequest()),
+        serializeError(providerErrors.userRejectedRequest()),
       ),
     );
     trackEvent({
@@ -219,16 +161,13 @@ const SignatureRequest = ({
           <SignatureRequestHeader txData={txData} />
         </div>
         <div className="signature-request-content">
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-            <BlockaidBannerAlert
-              txData={txData}
-              marginLeft={4}
-              marginRight={4}
-              marginBottom={4}
-            />
-            ///: END:ONLY_INCLUDE_IF
-          }
+          <BlockaidBannerAlert
+            txData={txData}
+            marginLeft={4}
+            marginRight={4}
+            marginBottom={4}
+          />
+          <QueuedRequestsBannerAlert />
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
@@ -238,36 +177,6 @@ const SignatureRequest = ({
               securityProviderResponse={txData.securityProviderResponse}
             />
           ) : null}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            selectedAccount.address === address ? null : (
-              <Box
-                className="request-signature__mismatch-info"
-                display={Display.Flex}
-                width={BlockSize.Full}
-                padding={4}
-                marginBottom={4}
-                backgroundColor={BackgroundColor.primaryMuted}
-              >
-                <Icon
-                  name={IconName.Info}
-                  color={IconColor.infoDefault}
-                  marginRight={2}
-                />
-                <Text
-                  variant={TextVariant.bodyXs}
-                  color={TextColor.textDefault}
-                  as="h6"
-                >
-                  {t('mismatchAccount', [
-                    shortenAddress(selectedAccount.address),
-                    shortenAddress(address),
-                  ])}
-                </Text>
-              </Box>
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
           <div className="signature-request__origin">
             <TagUrl
               label={origin}
@@ -327,21 +236,18 @@ const SignatureRequest = ({
           messageRootRef={messageRootRef}
           messageIsScrollable={messageIsScrollable}
           primaryType={primaryType}
+          chainId={chainId}
         />
         <Footer
           cancelAction={onCancel}
           signAction={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
             if (warnings?.length >= 1) {
               return setIsShowingSigInsightWarnings(true);
             }
-            ///: END:ONLY_INCLUDE_IF
+
             return onSign();
           }}
           disabled={
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            Boolean(txData?.custodyId) ||
-            ///: END:ONLY_INCLUDE_IF
             hardwareWalletRequiresConnection ||
             (messageIsScrollable && !hasScrolledMessage)
           }
@@ -351,7 +257,7 @@ const SignatureRequest = ({
           <ContractDetailsModal
             toAddress={verifyingContract}
             chainId={chainId}
-            rpcPrefs={rpcPrefs}
+            blockExplorerUrl={blockExplorerUrl}
             onClose={() => setShowContractDetails(false)}
             isContractRequestingSignature
           />
@@ -367,9 +273,6 @@ const SignatureRequest = ({
           </ButtonLink>
         ) : null}
       </div>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      }
       {isShowingSigInsightWarnings && (
         <InsightWarnings
           warnings={warnings}
@@ -382,18 +285,14 @@ const SignatureRequest = ({
           }}
         />
       )}
-      {
-        ///: END:ONLY_INCLUDE_IF
-      }
+      <NetworkChangeToastLegacy confirmation={txData} />
     </>
   );
 };
 
 SignatureRequest.propTypes = {
   txData: PropTypes.object,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   warnings: PropTypes.array,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export default SignatureRequest;

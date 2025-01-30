@@ -91,7 +91,7 @@ function transformState(state: Record<string, unknown>) {
         // Adding the snap name to the wallet_snap permission's caveat value
         const snapId = permissionName.slice(snapPrefix.length);
         const caveat = (
-          (updatedPermissions.wallet_snap as Record<string, any>)
+          (updatedPermissions.wallet_snap as Record<string, unknown>)
             .caveats as unknown[]
         )[0];
 

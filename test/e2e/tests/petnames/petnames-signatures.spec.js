@@ -4,15 +4,16 @@ const {
   withFixtures,
   unlockWallet,
   defaultGanacheOptions,
+  WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../../snaps/enums');
 const {
   expectName,
   focusTestDapp,
-  rejectSignatureOrTransactionRequest,
   saveName,
   clickName,
+  rejectRedesignedSignatureOrTransactionRequest,
 } = require('./petnames-helpers');
 
 const SIGNATURE_TYPE = {
@@ -45,7 +46,7 @@ async function installNameLookupSnap(driver) {
 
   // Confirm Install Modal
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
 
@@ -62,16 +63,6 @@ async function createSignatureRequest(driver, type) {
 
   await driver.clickElement(buttonId);
   await driver.delay(3000);
-}
-
-async function showThirdPartyDetails(driver) {
-  await driver.clickElement(
-    '.signature-request-content__verify-contract-details',
-  );
-}
-
-async function closeThirdPartyDetails(driver) {
-  await driver.clickElement({ text: 'Got it', tag: 'button' });
 }
 
 async function expectProposedNames(driver, value, options) {
@@ -91,7 +82,7 @@ async function expectProposedNames(driver, value, options) {
   }
 }
 
-describe('Petnames - Signatures', function () {
+describe('Petnames - Signatures', function () {
   it('can save names for addresses in type 3 signatures', async function () {
     await withFixtures(
       {
@@ -107,22 +98,19 @@ describe('Petnames - Signatures', function () {
         await unlockWallet(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectName(driver, '0xCD2a3...DD826', false);
         await expectName(driver, '0xbBbBB...bBBbB', false);
         await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
         await saveName(driver, '0xbBbBB...bBBbB', undefined, 'test2.lens');
-        await showThirdPartyDetails(driver);
         await expectName(driver, '0xCcCCc...ccccC', false);
         await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
-        await closeThirdPartyDetails(driver);
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectName(driver, 'test.lens', true);
         await expectName(driver, 'test2.lens', true);
-        await showThirdPartyDetails(driver);
         await expectName(driver, 'Custom Name', true);
       },
     );
@@ -143,7 +131,7 @@ describe('Petnames - Signatures', function () {
         await unlockWallet(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectName(driver, '0xCD2a3...DD826', false);
         await expectName(driver, '0xDeaDb...DbeeF', false);
         await expectName(driver, '0xbBbBB...bBBbB', false);
@@ -151,25 +139,20 @@ describe('Petnames - Signatures', function () {
         await expectName(driver, '0xB0B0b...00000', false);
         await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
         await saveName(driver, '0xB0Bda...bEa57', undefined, 'Test Token 2');
-        await showThirdPartyDetails(driver);
         await expectName(driver, '0xCcCCc...ccccC', false);
         await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
-        await closeThirdPartyDetails(driver);
-        await rejectSignatureOrTransactionRequest(driver);
+        await rejectRedesignedSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
-        await switchToNotificationWindow(driver, 3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectName(driver, 'test.lens', true);
-        await expectName(driver, 'Test Token 2', true);
-        await showThirdPartyDetails(driver);
+        await expectName(driver, 'Test Toke...', true);
         await expectName(driver, 'Custom Name', true);
       },
     );
   });
 
-  // TODO(dbrans): Re-enable this test when name-lookup endowment is in stable.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can propose names using installed snaps', async function () {
+  it('can propose names using installed snaps', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -187,7 +170,7 @@ describe('Petnames - Signatures', function () {
         await installNameLookupSnap(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectProposedNames(driver, '0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
           ['cd2.1337.test.domain', 'Name Lookup Example Snap'],

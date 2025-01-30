@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const spawn = require('cross-spawn');
+const { spawn } = require('node:child_process');
 
 const tasks = {};
 const taskEvents = new EventEmitter();
@@ -51,7 +51,14 @@ function createTask(taskName, taskFn) {
 
 function runInChildProcess(
   task,
-  { applyLavaMoat, buildType, isLavaMoat, policyOnly, shouldLintFenceFiles },
+  {
+    shouldIncludeSnow,
+    applyLavaMoat,
+    buildType,
+    isLavaMoat,
+    policyOnly,
+    shouldLintFenceFiles,
+  },
 ) {
   const taskName = typeof task === 'string' ? task : task.taskName;
   if (!taskName) {
@@ -68,6 +75,7 @@ function runInChildProcess(
         // LavaMoat if the parent process also ran in LavaMoat.
         isLavaMoat ? 'build' : 'build:dev',
         taskName,
+        `--snow=${shouldIncludeSnow ? 'true' : 'false'}`,
         `--apply-lavamoat=${applyLavaMoat ? 'true' : 'false'}`,
         `--build-type=${buildType}`,
         `--lint-fence-files=${shouldLintFenceFiles ? 'true' : 'false'}`,
@@ -76,6 +84,7 @@ function runInChildProcess(
       ],
       {
         env: process.env,
+        shell: true,
       },
     );
 

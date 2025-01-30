@@ -1,3 +1,6 @@
+.yalc
+yalc.lock
+
 npm-debug.log
 yarn-error.log
 node_modules
@@ -55,18 +58,27 @@ test-results/
 # This file is used to authenticate with the GitHub Package registry, to
 # enable the use of @metamask preview builds.
 .npmrc
-#yarn
+
+# Yarn
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
-!.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+development/generate-attributions/.yarn/*
 
-# MMI Playwright
+# Playwright
 public/playwright
-test/e2e/mmi/.env
-test/e2e/mmi/playwright.config.ts
-test/e2e/mmi/specs/**/*-darwin.png
-test/e2e/mmi/dist/
+lavamoat/**/policy-debug.json
 
+# Attributions
+licenseInfos.json
+
+# API Spec tests
+html-report/
+
+/app/images/branding
+/changed-files
+
+# UI Integration tests
+test/integration/config/assets

@@ -42,11 +42,19 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.POLYGON:
     case CHAIN_IDS.AVALANCHE:
     case CHAIN_IDS.LINEA_GOERLI:
+    case CHAIN_IDS.LINEA_SEPOLIA:
     case CHAIN_IDS.LINEA_MAINNET:
     case CHAIN_IDS.ARBITRUM:
     case CHAIN_IDS.OPTIMISM:
     case CHAIN_IDS.BASE:
     case CHAIN_IDS.ZKSYNC_ERA:
+    case CHAIN_IDS.CRONOS:
+    case CHAIN_IDS.CELO:
+    case CHAIN_IDS.GNOSIS:
+    case CHAIN_IDS.FANTOM:
+    case CHAIN_IDS.POLYGON_ZKEVM:
+    case CHAIN_IDS.MOONBEAM:
+    case CHAIN_IDS.MOONRIVER:
       return true;
     default:
       return false;
@@ -64,26 +72,22 @@ function isSafeInteger(value: unknown): value is number {
   return Number.isSafeInteger(value);
 }
 
-export function shouldShowLineaMainnet(): boolean {
-  return new Date().getTime() > Date.UTC(2023, 6, 11, 18);
-}
-
 /**
  * TODO: Delete when ready to remove `networkVersion` from provider object
  * Convert the given value into a valid network ID. The ID is accepted
  * as either a number, a decimal string, or a 0x-prefixed hex string.
  *
  * @param value - The network ID to convert, in an unknown format.
- * @returns A valid network ID (as a decimal string)
- * @throws If the given value cannot be safely parsed.
+ * @returns A valid network ID (as a decimal string) or null if
+ * the given value cannot be parsed.
  */
-export function convertNetworkId(value: unknown): string {
-  if (typeof value === 'number' && !Number.isNaN(value)) {
+export function convertNetworkId(value: unknown): string | null {
+  if (typeof value === 'number' && Number.isInteger(value) && value >= 0) {
     return `${value}`;
   } else if (isStrictHexString(value)) {
     return `${convertHexToDecimal(value)}`;
   } else if (typeof value === 'string' && /^\d+$/u.test(value)) {
     return value;
   }
-  throw new Error(`Cannot parse as a valid network ID: '${value}'`);
+  return null;
 }

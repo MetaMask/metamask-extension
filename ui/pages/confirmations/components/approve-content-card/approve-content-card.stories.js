@@ -36,7 +36,7 @@ export default {
     renderDataContent: {
       control: 'boolean',
     },
-    isMultiLayerFeeNetwork: {
+    hasLayer1GasFee: {
       control: 'boolean',
     },
     ethTransactionTotal: {
@@ -80,7 +80,7 @@ export default {
     supportsEIP1559: false,
     renderTransactionDetailsContent: true,
     renderDataContent: false,
-    isMultiLayerFeeNetwork: false,
+    hasLayer1GasFee: false,
     ethTransactionTotal: '0.0012',
     nativeCurrency: 'GoerliETH',
     hexTransactionTotal: '0x44364c5bb0000',

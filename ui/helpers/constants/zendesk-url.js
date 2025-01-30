@@ -1,50 +1,54 @@
 const ZENDESK_URLS = {
   ADD_CUSTOM_TOKENS:
-    'https://metamask.zendesk.com/hc/en-us/articles/360015489031',
+    'https://support.metamask.io/managing-my-tokens/custom-tokens/how-to-display-tokens-in-metamask/',
   ADD_MISSING_ACCOUNTS:
-    'https://metamask.zendesk.com/hc/en-us/articles/360015489271',
+    'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-missing-accounts-after-restoring-with-secret-recovery-phrase/',
   BASIC_SAFETY:
-    'https://metamask.zendesk.com/hc/en-us/articles/360015489591-Basic-Safety-Tips',
+    'https://support.metamask.io/privacy-and-security/basic-safety-and-security-tips-for-metamask/',
   CUSTOMIZE_NONCE:
-    'https://metamask.zendesk.com/hc/en-us/articles/7417499333531-How-to-customize-a-transaction-nonce',
+    'https://support.metamask.io/transactions-and-gas/transactions/how-to-customize-a-transaction-nonce/',
+  GAS_FEES: 'https://support.metamask.io/transactions-and-gas/gas-fees/',
+  SWAPS_GAS_FEES:
+    'https://support.metamask.io/token-swaps/user-guide-swaps/#gas-fees',
   HARDWARE_CONNECTION:
-    'https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet',
+    'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/',
   IMPORT_ACCOUNTS:
-    'https://metamask.zendesk.com/hc/en-us/articles/360015489331',
+    'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-import-an-account/',
   IMPORTED_ACCOUNTS:
-    'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
+    'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/',
   INFURA_BLOCKAGE:
-    'https://metamask.zendesk.com/hc/en-us/articles/360059386712',
+    'https://support.metamask.io/troubleshooting/why-infura-cannot-serve-certain-areas/',
   LEDGER_FIREFOX_U2F_GUIDE:
     'https://support.ledger.com/hc/en-us/articles/10371387758493-MetaMask-Firefox-Ledger-Integration-Issue?support=true',
-  LEGACY_WEB3: 'https://metamask.zendesk.com/hc/en-us/articles/360053147012',
+  LEGACY_WEB3:
+    'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/',
   NFT_TOKENS:
-    'https://metamask.zendesk.com/hc/en-us/articles/360058238591-NFT-tokens-in-MetaMask-wallet',
+    'https://support.metamask.io/nfts/nft-tokens-in-your-metamask-wallet/',
   PASSWORD_AND_SRP_ARTICLE:
-    'https://metamask.zendesk.com/hc/en-us/articles/4404722782107',
+    'https://support.metamask.io/getting-started/user-guide-secret-recovery-phrase-password-and-private-keys/',
   SECRET_RECOVERY_PHRASE:
-    'https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure',
+    'https://support.metamask.io/privacy-and-security/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/',
   NON_CUSTODIAL_WALLET:
-    'https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet',
+    'https://support.metamask.io/getting-started/metamask-is-a-self-custodial-wallet/',
   SPEEDUP_CANCEL:
-    'https://metamask.zendesk.com/hc/en-us/articles/360015489251-How-to-speed-up-or-cancel-a-pending-transaction',
-  SUPPORT_URL: 'https://support.metamask.io/hc/en-us',
+    'https://support.metamask.io/transactions-and-gas/transactions/how-to-speed-up-or-cancel-a-pending-transaction/',
+  SUPPORT_URL: 'https://support.metamask.io',
   TOKEN_ALLOWANCE_WITH_SPENDING_CAP:
-    'https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap',
+    'https://support.metamask.io/privacy-and-security/how-to-customize-token-approvals-with-a-spending-cap/',
   TOKEN_SAFETY_PRACTICES:
-    'https://metamask.zendesk.com/hc/en-us/articles/4403988839451',
+    'https://support.metamask.io/managing-my-tokens/token-safety-practices/',
   UNKNOWN_NETWORK:
-    'https://metamask.zendesk.com/hc/en-us/articles/4417500466971',
+    'https://support.metamask.io/networks-and-sidechains/managing-networks/the-risks-of-connecting-to-an-unknown-network/',
   USER_GUIDE_CUSTOM_NETWORKS:
-    'https://metamask.zendesk.com/hc/en-us/articles/4404424659995',
+    'https://support.metamask.io/networks-and-sidechains/managing-networks/user-guide-custom-networks-and-sidechains/',
   USER_GUIDE_DAPPS:
-    'https://metamask.zendesk.com/hc/en-us/articles/4405506066331-User-guide-Dapps',
+    'https://support.metamask.io/third-party-platforms-and-dapps/user-guide-dapps/',
   USER_GUIDE_GAS:
-    'https://metamask.zendesk.com/hc/en-us/articles/4404600179227-User-Guide-Gas',
+    'https://support.metamask.io/transactions-and-gas/gas-fees/user-guide-gas/',
   VERIFY_CUSTOM_NETWORK:
-    'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
+    'https://support.metamask.io/networks-and-sidechains/managing-networks/verifying-custom-network-information/',
   NETWORK_DEPRECATED:
-    'https://support.metamask.io/hc/en-us/articles/360059213492-ETH-on-Sepolia-and-Goerli-networks-testnets',
+    'https://support.metamask.io/networks-and-sidechains/eth-on-testnets/',
 };
 
 export default ZENDESK_URLS;

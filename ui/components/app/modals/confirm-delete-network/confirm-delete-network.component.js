@@ -5,10 +5,10 @@ import Modal, { ModalContent } from '../../modal';
 export default class ConfirmDeleteNetwork extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    removeNetworkConfiguration: PropTypes.func.isRequired,
+    removeNetwork: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
-    target: PropTypes.string.isRequired,
     networkNickname: PropTypes.string.isRequired,
+    chainId: PropTypes.string.isRequired,
   };
 
   static contextTypes = {
@@ -16,7 +16,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   };
 
   handleDelete = async () => {
-    await this.props.removeNetworkConfiguration(this.props.target);
+    await this.props.removeNetwork(this.props.chainId);
     this.props.onConfirm();
     this.props.hideModal();
   };

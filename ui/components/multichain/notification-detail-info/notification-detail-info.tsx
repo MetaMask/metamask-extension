@@ -10,18 +10,18 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-interface IconProps {
+type IconProps = {
   iconName: IconName;
   color: TextColor;
   backgroundColor: BackgroundColor;
-}
+};
 
-export interface NotificationDetailInfoProps {
+export type NotificationDetailInfoProps = {
   icon: IconProps;
   label: string;
   detail: string;
   action?: JSX.Element;
-}
+};
 
 /**
  * A component to display a notification detail with an icon, a label, a detail, and an action.

@@ -37,11 +37,11 @@ exports[`Signature Request Component render should match snapshot when we are us
         <div
           class="confirm-page-container-navigation__navtext"
         >
-          0
+          1
            
           of
            
-          0
+          1
         </div>
         <div
           class="confirm-page-container-navigation__longtext"
@@ -130,6 +130,7 @@ exports[`Signature Request Component render should match snapshot when we are us
             </div>
             <div
               class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+              style="height: 16px; width: 16px;"
             >
               <span
                 class="icon-with-fallback__fallback"
@@ -143,6 +144,7 @@ exports[`Signature Request Component render should match snapshot when we are us
           >
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="signature-request-network-display"
             >
               Localhost 8545
             </h6>
@@ -808,11 +810,11 @@ exports[`Signature Request Component render should match snapshot when we want t
         <div
           class="confirm-page-container-navigation__navtext"
         >
-          0
+          1
            
           of
            
-          0
+          1
         </div>
         <div
           class="confirm-page-container-navigation__longtext"
@@ -901,6 +903,7 @@ exports[`Signature Request Component render should match snapshot when we want t
             </div>
             <div
               class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+              style="height: 16px; width: 16px;"
             >
               <span
                 class="icon-with-fallback__fallback"
@@ -914,6 +917,7 @@ exports[`Signature Request Component render should match snapshot when we want t
           >
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="signature-request-network-display"
             >
               Localhost 8545
             </h6>
@@ -938,7 +942,6 @@ exports[`Signature Request Component render should match snapshot when we want t
           >
             0
              
-            ETH
           </h6>
         </div>
       </div>

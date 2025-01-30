@@ -9,6 +9,8 @@ import { TransactionMeta } from '@metamask/transaction-controller';
  */
 export function afterTransactionSign(
   txMeta: TransactionMeta,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signedEthTx: any,
   addTransactionToWatchList: (
     custodianTransactionId: string | undefined,
@@ -49,18 +51,6 @@ export function getAdditionalSignArguments(
   txMeta: TransactionMeta,
 ): (TransactionMeta | undefined)[] {
   return [txMeta.custodyStatus ? txMeta : undefined];
-}
-
-/**
- * Whether or not should run the logic before approve the transaction when transaction controller is rebooted.
- *
- * @param txMeta - The transaction meta.
- */
-
-export function beforeTransactionApproveOnInit(
-  txMeta: TransactionMeta,
-): boolean {
-  return !txMeta?.custodyStatus;
 }
 
 /**

@@ -1,55 +1,24 @@
-import { ethErrors } from 'eth-rpc-errors';
-import { omit } from 'lodash';
-import { ApprovalType } from '@metamask/controller-utils';
+import { providerErrors } from '@metamask/rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  CHAIN_ID_TO_TYPE_MAP,
-  NETWORK_TO_NAME_MAP,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  CURRENCY_SYMBOLS,
-  BUILT_IN_INFURA_NETWORKS,
-} from '../../../../../shared/constants/network';
-import {
-  isPrefixedFormattedHexString,
-  isSafeChainId,
-} from '../../../../../shared/modules/network.utils';
+  validateSwitchEthereumChainParams,
+  switchChain,
+} from './ethereum-chain-utils';
 
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
   hookNames: {
-    getCurrentChainId: true,
-    findNetworkConfigurationBy: true,
-    findNetworkClientIdByChainId: true,
-    setNetworkClientIdForDomain: true,
-    setProviderType: true,
+    getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
-    requestUserApproval: true,
-    getNetworkConfigurations: true,
-    getProviderConfig: true,
-    hasPermissions: true,
+    getCaveat: true,
+    getCurrentChainIdForDomain: true,
+    requestPermittedChainsPermissionForOrigin: true,
+    requestPermittedChainsPermissionIncrementalForOrigin: true,
   },
 };
 
 export default switchEthereumChain;
-
-function findExistingNetwork(chainId, findNetworkConfigurationBy) {
-  if (
-    Object.values(BUILT_IN_INFURA_NETWORKS)
-      .map(({ chainId: id }) => id)
-      .includes(chainId)
-  ) {
-    return {
-      chainId,
-      ticker: CURRENCY_SYMBOLS.ETH,
-      nickname: NETWORK_TO_NAME_MAP[chainId],
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
-      type: CHAIN_ID_TO_TYPE_MAP[chainId],
-    };
-  }
-
-  return findNetworkConfigurationBy({ chainId });
-}
 
 async function switchEthereumChainHandler(
   req,
@@ -57,112 +26,48 @@ async function switchEthereumChainHandler(
   _next,
   end,
   {
-    getCurrentChainId,
-    findNetworkConfigurationBy,
-    findNetworkClientIdByChainId,
-    setNetworkClientIdForDomain,
-    setProviderType,
+    getNetworkConfigurationByChainId,
     setActiveNetwork,
-    requestUserApproval,
-    getProviderConfig,
-    hasPermissions,
+    getCaveat,
+    getCurrentChainIdForDomain,
+    requestPermittedChainsPermissionForOrigin,
+    requestPermittedChainsPermissionIncrementalForOrigin,
   },
 ) {
-  if (!req.params?.[0] || typeof req.params[0] !== 'object') {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected single, object parameter. Received:\n${JSON.stringify(
-          req.params,
-        )}`,
-      }),
-    );
+  let chainId;
+  try {
+    chainId = validateSwitchEthereumChainParams(req);
+  } catch (error) {
+    return end(error);
   }
 
   const { origin } = req;
-
-  const { chainId } = req.params[0];
-
-  const otherKeys = Object.keys(omit(req.params[0], ['chainId']));
-
-  if (otherKeys.length > 0) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
-      }),
-    );
-  }
-
-  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
-
-  if (!isPrefixedFormattedHexString(_chainId)) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
-      }),
-    );
-  }
-
-  if (!isSafeChainId(parseInt(_chainId, 16))) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
-      }),
-    );
-  }
-
-  const requestData = {
-    toNetworkConfiguration: findExistingNetwork(
-      _chainId,
-      findNetworkConfigurationBy,
-    ),
-  };
-
-  requestData.fromNetworkConfiguration = getProviderConfig();
-
-  if (requestData.toNetworkConfiguration) {
-    const currentChainId = getCurrentChainId();
-
-    // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
-
-    const networkClientId = findNetworkClientIdByChainId(_chainId);
-
-    if (currentChainId === _chainId) {
-      if (hasPermissions(req.origin)) {
-        setNetworkClientIdForDomain(req.origin, networkClientId);
-      }
-      res.result = null;
-      return end();
-    }
-
-    try {
-      const approvedRequestData = await requestUserApproval({
-        origin,
-        type: ApprovalType.SwitchEthereumChain,
-        requestData,
-      });
-      if (
-        Object.values(BUILT_IN_INFURA_NETWORKS)
-          .map(({ chainId: id }) => id)
-          .includes(_chainId)
-      ) {
-        await setProviderType(approvedRequestData.type);
-      } else {
-        await setActiveNetwork(approvedRequestData.id);
-      }
-      if (hasPermissions(req.origin)) {
-        setNetworkClientIdForDomain(req.origin, networkClientId);
-      }
-      res.result = null;
-    } catch (error) {
-      return end(error);
-    }
+  const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
+  if (currentChainIdForOrigin === chainId) {
+    res.result = null;
     return end();
   }
 
-  return end(
-    ethErrors.provider.custom({
-      code: 4902, // To-be-standardized "unrecognized chain ID" error
-      message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
-    }),
-  );
+  const networkConfigurationForRequestedChainId =
+    getNetworkConfigurationByChainId(chainId);
+  const networkClientIdToSwitchTo =
+    networkConfigurationForRequestedChainId?.rpcEndpoints[
+      networkConfigurationForRequestedChainId.defaultRpcEndpointIndex
+    ].networkClientId;
+
+  if (!networkClientIdToSwitchTo) {
+    return end(
+      providerErrors.custom({
+        code: 4902,
+        message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
+      }),
+    );
+  }
+
+  return switchChain(res, end, chainId, networkClientIdToSwitchTo, {
+    setActiveNetwork,
+    getCaveat,
+    requestPermittedChainsPermissionForOrigin,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+  });
 }

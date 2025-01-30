@@ -23,15 +23,17 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { SnapAccountCard } from './snap-account-card';
 
-export interface RemoveSnapAccountProps {
+export type RemoveSnapAccountProps = {
   snapId: string;
   snapName: string;
   publicAddress: string;
-}
+  onCancel: () => void;
+};
 
 const RemoveSnapAccount = ({
   snapId,
   publicAddress,
+  onCancel,
 }: RemoveSnapAccountProps) => {
   const t = useI18nContext();
   return (
@@ -45,7 +47,7 @@ const RemoveSnapAccount = ({
       alignItems={AlignItems.center}
       marginBottom={0}
     >
-      <SnapAuthorshipHeader snapId={snapId} />
+      <SnapAuthorshipHeader snapId={snapId} onCancel={onCancel} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

@@ -40,7 +40,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           <div
             class="confirm-page-container-navigation__navtext"
           >
-            0
+            1
              
             of
              
@@ -54,7 +54,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
         </div>
         <div
           class="confirm-page-container-navigation__container"
-          style="visibility: initial;"
+          style="visibility: hidden;"
         >
           <button
             class="confirm-page-container-navigation__arrow"
@@ -133,6 +133,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
             </div>
             <div
               class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+              style="height: 16px; width: 16px;"
             >
               <span
                 class="icon-with-fallback__fallback"
@@ -146,8 +147,9 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           >
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              data-testid="signature-request-network-display"
             >
-              goerli
+              Goerli
             </h6>
             <h6
               class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
@@ -193,6 +195,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
             >
               <div
                 class=""
+                style="height: 24px; width: 24px;"
               >
                 <span
                   class="icon-with-fallback__fallback"
@@ -200,7 +203,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
               </div>
             </div>
             <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+              class="mm-box mm-text chip__label mm-text--body-sm mm-box--color-text-alternative"
             >
               https://happydapp.website/governance?futarchy=true
             </span>
@@ -236,7 +239,21 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           <div
             class="request-signature__row-value"
           >
-            {"domain":{"name":"happydapp.website"},"message":{"string":"haay wuurl","number":42},"primaryType":"Mail","types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Group":[{"name":"name","type":"string"},{"name":"members","type":"Person[]"}],"Mail":[{"name":"from","type":"Person"},{"name":"to","type":"Person[]"},{"name":"contents","type":"string"}],"Person":[{"name":"name","type":"string"},{"name":"wallets","type":"address[]"}]}}
+            Hi, Alice!
+          </div>
+        </div>
+        <div
+          class="request-signature__row"
+        >
+          <div
+            class="request-signature__row-title"
+          >
+            A number:
+          </div>
+          <div
+            class="request-signature__row-value"
+          >
+            1337
           </div>
         </div>
       </div>

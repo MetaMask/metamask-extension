@@ -26,10 +26,8 @@ import { PageContainerFooter } from '../../../components/ui/page-container';
 import ContractDetailsModal from '../components/contract-details-modal/contract-details-modal';
 import {
   getCustomTokenAmount,
-  getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
-  getRpcPrefsForCurrentProvider,
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
@@ -61,11 +59,7 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
-
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IF
-
 import { ConfirmPageContainerNavigation } from '../components/confirm-page-container';
 import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../components/simulation-error-message';
@@ -76,6 +70,12 @@ import { ConfirmPageContainerWarning } from '../components/confirm-page-containe
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+import { QueuedRequestsBannerAlert } from '../confirmation/components/queued-requests-banner-alert/queued-requests-banner-alert';
+
+import {
+  selectNetworkConfigurationByChainId,
+  selectNetworkIdentifierByChainId,
+} from '../../../selectors/selectors';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -91,7 +91,6 @@ export default function TokenAllowance({
   hexTransactionTotal,
   hexMinimumTransactionFee,
   txData,
-  isMultiLayerFeeNetwork,
   supportsEIP1559,
   userAddress,
   tokenAddress,
@@ -133,8 +132,19 @@ export default function TokenAllowance({
   const fromAccount = useSelector((state) =>
     getTargetAccountWithSendEtherInfo(state, userAddress),
   );
-  const networkIdentifier = useSelector(getNetworkIdentifier);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+
+  const { chainId } = txData;
+
+  const networkIdentifier = useSelector((state) =>
+    selectNetworkIdentifierByChainId(state, chainId),
+  );
+
+  const { blockExplorerUrls } =
+    useSelector((state) =>
+      selectNetworkConfigurationByChainId(state, chainId),
+    ) ?? {};
+
+  const blockExplorerUrl = blockExplorerUrls?.[0];
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
@@ -197,7 +207,9 @@ export default function TokenAllowance({
   }
 
   const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
-  const methodData = useSelector((state) => getKnownMethodData(state, data));
+  const methodData = useSelector(
+    (state) => getKnownMethodData(state, data) ?? {},
+  );
 
   const { balanceError } = useGasFeeContext();
 
@@ -256,10 +268,12 @@ export default function TokenAllowance({
 
     dispatch(updateCustomNonce(''));
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
       dispatch(clearConfirmTransaction());
       history.push(mostRecentOverviewPage);
     });
+    ///: END:ONLY_INCLUDE_IF
   };
 
   const handleNextClick = () => {
@@ -287,12 +301,12 @@ export default function TokenAllowance({
   };
 
   const handleNextNonce = useCallback(() => {
-    dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+    dispatch(getNextNonce(txData.txParams.from));
+  }, [dispatch, txData.txParams.from]);
 
   useEffect(() => {
-    dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+    dispatch(getNextNonce(txData.txParams.from));
+  }, [dispatch, txData.txParams.from]);
 
   const handleUpdateCustomNonce = (value) => {
     dispatch(updateCustomNonce(value));
@@ -327,7 +341,7 @@ export default function TokenAllowance({
         tokenName={tokenSymbol}
         address={tokenAddress}
         chainId={fullTxData.chainId}
-        rpcPrefs={rpcPrefs}
+        blockExplorerUrl={blockExplorerUrl}
       />
     </Box>
   );
@@ -336,6 +350,7 @@ export default function TokenAllowance({
     txData.securityAlertResponse?.result_type === BlockaidResultType.Malicious
       ? 'danger-primary'
       : 'primary';
+
   return (
     <Box className="token-allowance-container page-container">
       <Box>
@@ -382,11 +397,13 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert txData={txData} margin={4} />
-        ///: END:ONLY_INCLUDE_IF
-      }
+      <BlockaidBannerAlert
+        txData={txData}
+        marginTop={4}
+        marginLeft={4}
+        marginRight={4}
+      />
+      <QueuedRequestsBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
@@ -525,7 +542,6 @@ export default function TokenAllowance({
             renderTransactionDetailsContent
             noBorder={useNonceField || !showFullTxDetails}
             supportsEIP1559={supportsEIP1559}
-            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             ethTransactionTotal={ethTransactionTotal}
             nativeCurrency={nativeCurrency}
             fullTxData={fullTxData}
@@ -648,7 +664,7 @@ export default function TokenAllowance({
           tokenAddress={tokenAddress}
           toAddress={toAddress}
           chainId={fullTxData.chainId}
-          rpcPrefs={rpcPrefs}
+          blockExplorerUrl={blockExplorerUrl}
         />
       )}
     </Box>
@@ -700,10 +716,6 @@ TokenAllowance.propTypes = {
    * Current transaction
    */
   txData: PropTypes.object,
-  /**
-   * Is multi-layer fee network or not
-   */
-  isMultiLayerFeeNetwork: PropTypes.bool,
   /**
    * Is the enhanced gas fee enabled or not
    */

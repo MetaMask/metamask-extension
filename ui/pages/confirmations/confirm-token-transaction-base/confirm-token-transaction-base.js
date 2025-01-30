@@ -15,16 +15,12 @@ import {
 import { PRIMARY } from '../../../helpers/constants/common';
 import {
   contractExchangeRateSelector,
-  getCurrentChainId,
-  getCurrentCurrency,
-  getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
+  selectConversionRateByChainId,
+  selectNetworkConfigurationByChainId,
+  selectNftContractsByChainId,
 } from '../../../selectors';
-import {
-  getConversionRate,
-  getNativeCurrency,
-  getNftContracts,
-} from '../../../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import {
   getWeiHexFromDecimalValue,
@@ -32,6 +28,7 @@ import {
 } from '../../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import { ETH_DEFAULT_DECIMALS } from '../../../constants';
 
 export default function ConfirmTokenTransactionBase({
   image = '',
@@ -46,24 +43,36 @@ export default function ConfirmTokenTransactionBase({
   ethTransactionTotal,
   fiatTransactionTotal,
   hexMaximumTransactionFee,
+  transaction,
 }) {
   const t = useContext(I18nContext);
   const contractExchangeRate = useSelector(contractExchangeRateSelector);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const { chainId } = transaction;
+
+  const { blockExplorerUrls, nativeCurrency } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  const blockExplorerUrl = blockExplorerUrls?.[0];
   const currentCurrency = useSelector(getCurrentCurrency);
-  const conversionRate = useSelector(getConversionRate);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const chainId = useSelector(getCurrentChainId);
+
+  const conversionRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
+  );
+
   const { address: userAddress } = useSelector(getSelectedInternalAccount);
-  const nftCollections = useSelector(getNftContracts);
+
+  const nftCollections = useSelector((state) =>
+    selectNftContractsByChainId(state, chainId),
+  );
 
   const ethTransactionTotalMaxAmount = Number(
     hexWEIToDecETH(hexMaximumTransactionFee),
-  );
+  ).toFixed(ETH_DEFAULT_DECIMALS);
 
   const getTitleTokenDescription = (renderType) => {
     const useBlockExplorer =
-      rpcPrefs?.blockExplorerUrl ||
+      blockExplorerUrl ||
       [...TEST_CHAINS, CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
         chainId,
       );
@@ -86,7 +95,7 @@ export default function ConfirmTokenTransactionBase({
         null,
         userAddress,
         {
-          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+          blockExplorerUrl: blockExplorerUrl ?? null,
         },
       );
       const blockExplorerElement = (
@@ -218,4 +227,5 @@ ConfirmTokenTransactionBase.propTypes = {
   ethTransactionTotal: PropTypes.string,
   fiatTransactionTotal: PropTypes.string,
   hexMaximumTransactionFee: PropTypes.string,
+  transaction: PropTypes.string,
 };

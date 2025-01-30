@@ -21,6 +21,8 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type BoxChildren = React.ReactNode | ((...args: any[]) => any);
 
 export type FlexDirectionArray = [
@@ -186,6 +188,8 @@ export type BackgroundColorArray = [
  *
  * Help to migrate this component by submitting a PR
  */
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * The content of the Box component.

@@ -6,9 +6,87 @@ exports[`Security Tab should match snapshot 1`] = `
     class="settings-page__body"
   >
     <div
-      class="settings-tab__error"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-show-testnet-conversion"
     >
-      warning
+      <div
+        class="settings-page__content-item"
+      >
+        <div
+          class="mm-box mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+        >
+          <h4
+            class="mm-box mm-text mm-text--heading-sm mm-box--color-text-default"
+          >
+            Basic functionality
+          </h4>
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-2 mm-box--color-text-alternative"
+        >
+          <span>
+             
+            MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our 
+            <a
+              href="https://consensys.io/privacy-policy"
+              rel="noreferrer noopener"
+              target="_blank"
+            >
+              Privacy policy
+            </a>
+            .
+             
+          </span>
+        </p>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      />
     </div>
     <span
       class="settings-page__security-tab-sub-header__bold"
@@ -26,194 +104,95 @@ exports[`Security Tab should match snapshot 1`] = `
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         data-testid="reveal-seed-words"
+        data-theme="light"
         type="danger"
       >
         Reveal Secret Recovery Phrase
       </button>
     </div>
-    <div
-      class="settings-page__security-tab-sub-header"
-    >
-      <span />
+    <div>
       <span
-        class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
+        class="settings-page__security-tab-sub-header"
       >
         Security alerts
       </span>
+    </div>
+    <div
+      class="settings-page__content-padded"
+    >
       <div
-        class="settings-page__content-padded"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
-        >
-          This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use.
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-top-4 mm-box--color-text-alternative"
-        >
-          Select your preferred provider
-        </p>
         <div
-          class="mm-box mm-box--margin-top-3 mm-box--margin-bottom-3 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-          data-testid="settings-toggle-security-alert-blockaid"
+          class="settings-page__content-item"
         >
-          <div>
-            <div
-              class="mm-box mm-box--display-flex"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-              >
-                Blockaid
-              </p>
-              <div
-                class="mm-box mm-tag mm-box--margin-left-2 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
-                >
-                  Recommended
-                </p>
-              </div>
-            </div>
-            <h6
-              class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
-            >
-              Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia.
-            </h6>
-          </div>
           <div
-            data-testid="securityAlert"
+            class="settings-page__content-description"
           >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
-            >
-              <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            <span>
+               
+              This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. 
+              <a
+                href="https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/"
+                rel="noreferrer"
+                target="_blank"
               >
-                <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
-                <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
-                />
-              </div>
-              <div
-                class="toggle-button__status"
-              >
-                <span
-                  class="toggle-button__label-off"
-                />
-                <span
-                  class="toggle-button__label-on"
-                />
-              </div>
-            </label>
+                Learn more
+              </a>
+              
+               
+            </span>
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-top-3 mm-box--margin-bottom-3 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+          class="settings-page__content-item-col"
+          data-testid="securityAlert"
         >
-          <div>
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
             <div
-              class="mm-box mm-box--display-flex"
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-              >
-                OpenSea + Blockaid
-              </p>
               <div
-                class="mm-box mm-tag mm-box--margin-left-2 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
-                >
-                  Beta
-                </p>
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
               </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
             </div>
             <div
-              class="settings-page__content-description"
-              data-testid="termsOfUse"
+              class="toggle-button__status"
             >
-              <span>
-                 
-                Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. 
-                <a
-                  href="https://opensea.io/securityproviderterms"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Terms of use
-                </a>
-                
-                 
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
               </span>
             </div>
-          </div>
-          <div
-            data-testid="transactionSecurityCheck"
-          >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
-            >
-              <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-              >
-                <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
-                <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
-                />
-              </div>
-              <div
-                class="toggle-button__status"
-              >
-                <span
-                  class="toggle-button__label-off"
-                />
-                <span
-                  class="toggle-button__label-on"
-                />
-              </div>
-            </label>
-          </div>
+          </label>
         </div>
       </div>
     </div>
@@ -222,6 +201,96 @@ exports[`Security Tab should match snapshot 1`] = `
     >
       Privacy
     </span>
+    <div
+      class="settings-page__content-padded"
+    >
+      <div
+        class="mm-box"
+      >
+        <div
+          class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+          data-testid="profileSyncToggle"
+        >
+          <div
+            class="settings-page__content-item"
+            id="profileSyncLabel"
+          >
+            <span>
+              Profile Sync
+            </span>
+            <div
+              class="settings-page__content-description"
+              data-testid="profileSyncDescription"
+            >
+              <span>
+                 
+                Creates a profile that MetaMask uses to sync some settings among your devices. This is required to get notifications. 
+                <a
+                  data-testid="privacyPolicyLink"
+                  href="https://support.metamask.io/privacy-and-security/profile-privacy"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Learn how we protect your privacy
+                </a>
+                .
+                 
+              </span>
+            </div>
+          </div>
+          <div
+            class="settings-page__content-item-col"
+          >
+            <label
+              class="toggle-button toggle-button--off toggle-button--disabled"
+              tabindex="0"
+            >
+              <div
+                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+              >
+                <div
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                >
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                  />
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                  />
+                </div>
+                <div
+                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                >
+                  <div
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                  />
+                </div>
+                <input
+                  data-testid="toggleButton"
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                  type="checkbox"
+                  value="false"
+                />
+              </div>
+              <div
+                class="toggle-button__status"
+              >
+                <span
+                  class="toggle-button__label-off"
+                >
+                  Off
+                </span>
+                <span
+                  class="toggle-button__label-on"
+                >
+                  On
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
     <div>
       <span
         class="settings-page__security-tab-sub-header"
@@ -259,7 +328,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -272,7 +341,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -321,7 +390,7 @@ exports[`Security Tab should match snapshot 1`] = `
           <div
             class="settings-page__content-description"
           >
-            To improve user experience, we customize the activity tab with messages based on the smart contracts you interact with. MetaMask uses a service called 4byte.directory to decode data and show you a version of a smart contract that's easier to read. This helps reduce your chances of approving malicious smart contract actions, but can result in your IP address being shared.
+            We use 4byte.directory and Sourcify services to decode and display more readable transaction data. This helps you understand the outcome of pending and past transactions, but can result in your IP address being shared.
           </div>
         </div>
         <div
@@ -336,7 +405,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -349,7 +418,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -439,7 +508,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -452,7 +521,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -482,7 +551,7 @@ exports[`Security Tab should match snapshot 1`] = `
         class="mm-box mm-incoming-transaction-toggle"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
         >
           Show incoming transactions
         </p>
@@ -499,7 +568,7 @@ exports[`Security Tab should match snapshot 1`] = `
             class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--gap-4 mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
               <img
                 alt="Custom Mainnet RPC logo"
@@ -539,7 +608,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -552,100 +621,13 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                   />
                 </div>
                 <input
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="true"
-                />
-              </div>
-              <div
-                class="toggle-button__status"
-              >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
-              </div>
-            </label>
-          </div>
-        </div>
-        <div
-          class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-          data-testid="network-toggle-0xe708"
-        >
-          <div
-            class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--gap-4 mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
-          >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-            >
-              <img
-                alt="Linea Mainnet logo"
-                class="mm-avatar-network__network-image"
-                src="./images/linea-logo-mainnet.svg"
-              />
-            </div>
-            <div
-              class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--flex-direction-column"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-              >
-                Linea Mainnet
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-primary-default mm-box--background-color-transparent"
-              >
-                <a
-                  href="https://lineascan.build"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Lineascan.build
-                </a>
-              </p>
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--margin-left-auto"
-          >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
-            >
-              <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-              >
-                <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
-                <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
                 />
               </div>
               <div
@@ -673,9 +655,9 @@ exports[`Security Tab should match snapshot 1`] = `
             class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--gap-4 mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
             >
-              C
+              G
             </div>
             <div
               class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--flex-direction-column"
@@ -683,7 +665,7 @@ exports[`Security Tab should match snapshot 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
               >
-                Chain 5
+                Goerli
               </p>
               <p
                 class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-primary-default mm-box--background-color-transparent"
@@ -709,7 +691,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -722,7 +704,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                   />
                 </div>
                 <input
@@ -748,175 +730,83 @@ exports[`Security Tab should match snapshot 1`] = `
             </label>
           </div>
         </div>
+      </div>
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      >
         <div
-          class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-          data-testid="network-toggle-0xaa36a7"
+          class="settings-page__content-item"
         >
+          <span>
+            Estimate balance changes
+          </span>
           <div
-            class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--gap-4 mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+            class="settings-page__content-description"
           >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-            >
-              S
-            </div>
-            <div
-              class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--flex-direction-column"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+            <span>
+               
+              Turn this on to estimate balance changes of transactions and signatures before you confirm them. This doesn't guarantee their final outcome. 
+              <a
+                href="https://support.metamask.io/transactions-and-gas/transactions/simulations/"
+                rel="noreferrer"
+                target="_blank"
               >
-                Sepolia
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-primary-default mm-box--background-color-transparent"
-              >
-                <a
-                  href="https://etherscan.io"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Etherscan.io
-                </a>
-              </p>
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--margin-left-auto"
-          >
-            <label
-              class="toggle-button toggle-button--on"
-              tabindex="0"
-            >
-              <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-              >
-                <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
-                  />
-                </div>
-                <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="true"
-                />
-              </div>
-              <div
-                class="toggle-button__status"
-              >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
-              </div>
-            </label>
+                Learn more
+              </a>
+              
+               
+            </span>
           </div>
         </div>
         <div
-          class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-          data-testid="network-toggle-0xe704"
+          class="settings-page__content-item-col"
+          data-testid="useTransactionSimulations"
         >
-          <div
-            class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--gap-4 mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
           >
             <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-            >
-              <img
-                alt="Linea Goerli logo"
-                class="mm-avatar-network__network-image"
-                src="./images/linea-logo-testnet.png"
-              />
-            </div>
-            <div
-              class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--flex-direction-column"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-              >
-                Linea Goerli
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-primary-default mm-box--background-color-transparent"
-              >
-                <a
-                  href="https://lineascan.build"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Lineascan.build
-                </a>
-              </p>
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--margin-left-auto"
-          >
-            <label
-              class="toggle-button toggle-button--on"
-              tabindex="0"
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
-                  />
-                </div>
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
                 <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="true"
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
                 />
               </div>
               <div
-                class="toggle-button__status"
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
               </div>
-            </label>
-          </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
     </div>
@@ -961,6 +851,7 @@ exports[`Security Tab should match snapshot 1`] = `
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md settings-page__button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-theme="light"
             type="secondary"
           >
             Add custom network
@@ -1006,7 +897,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1019,7 +910,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                   />
                 </div>
                 <input
@@ -1077,7 +968,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1090,7 +981,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                   />
                 </div>
                 <input
@@ -1191,7 +1082,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1204,7 +1095,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                   />
                 </div>
                 <input
@@ -1281,7 +1172,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1294,7 +1185,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -1347,7 +1238,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1360,7 +1251,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                 />
               </div>
               <input
@@ -1414,7 +1305,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1427,7 +1318,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -1465,7 +1356,7 @@ exports[`Security Tab should match snapshot 1`] = `
           <div
             class="settings-page__content-description"
           >
-            Let MetaMask add NFTs you own using third-party services (like OpenSea). Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk.
+            Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk.
           </div>
         </div>
         <div
@@ -1480,7 +1371,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(67, 174, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1493,7 +1384,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -1529,25 +1420,99 @@ exports[`Security Tab should match snapshot 1`] = `
       class="settings-page__content-padded"
     >
       <div
+        class="mm-box"
+      >
+        <div
+          class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+          data-testid="profileSyncToggle"
+        >
+          <div
+            class="settings-page__content-item"
+            id="profileSyncLabel"
+          >
+            <span>
+              Participate in MetaMetrics
+            </span>
+            <div
+              class="settings-page__content-description"
+              data-testid="profileSyncDescription"
+            >
+              Participate in MetaMetrics to help us make MetaMask better
+            </div>
+          </div>
+          <div
+            class="settings-page__content-item-col"
+            data-testid="participateInMetaMetrics"
+          >
+            <label
+              class="toggle-button toggle-button--off"
+              tabindex="0"
+            >
+              <div
+                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+              >
+                <div
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
+                >
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                  />
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                  />
+                </div>
+                <div
+                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                >
+                  <div
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                  />
+                </div>
+                <input
+                  data-testid="toggleButton"
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                  type="checkbox"
+                  value="false"
+                />
+              </div>
+              <div
+                class="toggle-button__status"
+              >
+                <span
+                  class="toggle-button__label-off"
+                >
+                  Off
+                </span>
+                <span
+                  class="toggle-button__label-on"
+                >
+                  On
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div
         class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
         <div
           class="settings-page__content-item"
         >
           <span>
-            Participate in MetaMetrics
+            Data collection for marketing
           </span>
           <div
             class="settings-page__content-description"
           >
             <span>
-              Participate in MetaMetrics to help us make MetaMask better
+              We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials).
             </span>
           </div>
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
+          data-testid="dataCollectionForMarketing"
         >
           <label
             class="toggle-button toggle-button--off"
@@ -1557,7 +1522,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(106, 115, 125);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1570,7 +1535,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                 />
               </div>
               <input
@@ -1594,6 +1559,59 @@ exports[`Security Tab should match snapshot 1`] = `
               </span>
             </div>
           </label>
+        </div>
+      </div>
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+      >
+        <div
+          class="settings-page__content-item"
+        >
+          <span>
+            Delete MetaMetrics data
+          </span>
+          <div
+            class="settings-page__content-description"
+          >
+            <span>
+               
+              This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our 
+              <a
+                href="https://consensys.io/privacy-policy/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Privacy policy
+              </a>
+              .
+               
+            </span>
+          </div>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+        >
+          <div
+            class="mm-box mm-box--display-inline-flex"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/info.svg');"
+            />
+            <p
+              class="mm-box mm-text mm-text--body-xs mm-box--margin-bottom-2 mm-box--margin-left-1 mm-box--color-text-default"
+            >
+              Since you've never opted into MetaMetrics, there's no data to delete here.
+            </p>
+          </div>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled settings-page__button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-testid="delete-metametrics-data-button"
+            data-theme="light"
+            disabled=""
+          >
+            Delete MetaMetrics data
+          </button>
         </div>
       </div>
     </div>

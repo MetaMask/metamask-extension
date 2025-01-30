@@ -17,23 +17,23 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-interface BadgeProps {
+type BadgeProps = {
   src: string;
   position?: BadgeWrapperPosition;
-}
+};
 
-interface IconProps {
+type IconProps = {
   src: string;
   badge?: BadgeProps;
-}
+};
 
-export interface NotificationDetailAssetProps {
+export type NotificationDetailAssetProps = {
   icon: IconProps;
   label: string;
   detail: string;
   fiatValue?: string;
   value?: string;
-}
+};
 
 const createTextComponent = (
   variant: TextVariant,
@@ -80,10 +80,18 @@ export const NotificationDetailAsset: FC<NotificationDetailAssetProps> = ({
       position={icon.badge.position || BadgeWrapperPosition.topRight}
       badge={badgeIcon}
     >
-      <AvatarToken src={icon.src} />
+      <AvatarToken
+        src={icon.src}
+        borderColor={BorderColor.borderMuted}
+        className="notification-detail-asset__icon"
+      />
     </BadgeWrapper>
   ) : (
-    <AvatarToken src={icon.src} />
+    <AvatarToken
+      src={icon.src}
+      borderColor={BorderColor.borderMuted}
+      className="notification-detail-asset__icon"
+    />
   );
 
   const primaryTextLeft = createTextComponent(

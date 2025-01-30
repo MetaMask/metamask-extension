@@ -43,9 +43,7 @@ const mockState = {
 
 setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
-  disconnectGasFeeEstimatePoller: jest.fn(),
   getContractMethodData: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
   setDefaultHomeActiveTabName: jest.fn(),
 });
@@ -270,27 +268,6 @@ describe('Confirmation Transaction Page', () => {
 
         renderWithProvider(<ConfirmTransaction />, mockStore);
         expect(replaceSpy).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('when no unapproved transactions and no sendTo recipient exist', () => {
-      it('should call history.replace(mostRecentOverviewPage)', () => {
-        const mockStore = configureMockStore(middleware)({
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            transactions: [],
-          },
-        });
-        const replaceSpy = jest.fn();
-        jest.spyOn(ReactRouterDOM, 'useHistory').mockImplementation(() => {
-          return {
-            replace: replaceSpy,
-          };
-        });
-
-        renderWithProvider(<ConfirmTransaction />, mockStore, '/asdfb');
-        expect(replaceSpy).toHaveBeenCalled();
       });
     });
   });

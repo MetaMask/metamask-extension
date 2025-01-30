@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - 'codespaces**'
-      - 'develop'
+      - 'main'
     paths:
       - '**/yarn.lock'
 
@@ -15,13 +15,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1 # This retrieves only the latest commit.
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-
-      - run: yarn --immutable
+      - name: Setup environment
+        uses: metamask/github-tools/.github/actions/setup-environment@main

@@ -19,6 +19,7 @@ import {
 } from '../../component-library';
 import { getUseBlockie } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
+
 import { BadgeStatusProps } from './badge-status.types';
 
 export const BadgeStatus: React.FC<BadgeStatusProps> = ({
@@ -44,6 +45,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
       {...(props as BoxProps<'div'>)}
     >
       <Tooltip
+        style={{ display: 'flex' }}
         title={text}
         data-testid="multichain-badge-status__tooltip"
         position="bottom"
@@ -63,21 +65,25 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
               backgroundColor={badgeBackgroundColor}
               borderRadius={BorderRadius.full}
               borderColor={badgeBorderColor}
-              borderWidth={isConnectedAndNotActive ? 2 : 4}
+              borderWidth={2}
             />
           }
         >
-          <AvatarAccount
-            borderColor={BorderColor.transparent}
-            size={AvatarAccountSize.Md}
-            address={address}
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            marginInlineEnd={2}
-          />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            <AvatarAccount
+              borderColor={BorderColor.transparent}
+              size={AvatarAccountSize.Md}
+              address={address}
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              marginInlineEnd={2}
+            />
+            ///: END:ONLY_INCLUDE_IF
+          }
         </BadgeWrapper>
       </Tooltip>
     </Box>

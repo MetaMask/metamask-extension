@@ -17,17 +17,17 @@ const { exitWithError } = require('../../../development/lib/exit-with-error');
  */
 
 const backgroundFiles = [
-  'runtime-lavamoat.js',
-  'lockdown-more.js',
-  'sentry-install.js',
-  'policy-load.js',
+  'scripts/runtime-lavamoat.js',
+  'scripts/lockdown-more.js',
+  'scripts/sentry-install.js',
+  'scripts/policy-load.js',
 ];
 
 const uiFiles = [
-  'sentry-install.js',
-  'runtime-lavamoat.js',
-  'lockdown-more.js',
-  'policy-load.js',
+  'scripts/sentry-install.js',
+  'scripts/runtime-lavamoat.js',
+  'scripts/lockdown-more.js',
+  'scripts/policy-load.js',
 ];
 
 const BackgroundFileRegex = /background-[0-9]*.js/u;
@@ -37,7 +37,7 @@ const UIFileRegex = /ui-[0-9]*.js/u;
 async function main() {
   const { argv } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
-    'Run a page load benchmark',
+    'Capture bundle size stats',
     (_yargs) =>
       _yargs.option('out', {
         description:

@@ -1,29 +1,22 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import {
-  MAINNET_DISPLAY_NAME,
-  NETWORK_TYPES,
-  CHAIN_IDS,
-} from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import UserPreferencedCurrencyDisplay from '.';
 
 describe('UserPreferencedCurrencyDisplay Component', () => {
   describe('rendering', () => {
-    const mockState = {
+    const defaultState = {
       metamask: {
-        providerConfig: {
-          chainId: CHAIN_IDS.MAINNET,
-          nickname: MAINNET_DISPLAY_NAME,
-          type: NETWORK_TYPES.MAINNET,
-        },
+        ...mockState.metamask,
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         currencyRates: {},
-        preferences: {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        },
+        preferences: {},
       },
     };
-    const mockStore = configureMockStore()(mockState);
+    const mockStore = configureMockStore()(defaultState);
     it('should match snapshot', () => {
       const { container } = renderWithProvider(
         <UserPreferencedCurrencyDisplay />,

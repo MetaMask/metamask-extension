@@ -37,6 +37,7 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
+    snaps: {},
   },
 };
 
@@ -50,9 +51,6 @@ describe('success template', () => {
             ...mockApproval,
             type: ApprovalType.ResultSuccess,
           },
-        },
-        providerConfig: {
-          chainId: '0x1',
         },
         transactions: [],
       },

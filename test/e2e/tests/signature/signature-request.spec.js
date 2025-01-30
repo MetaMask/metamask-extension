@@ -1,9 +1,9 @@
 const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const {
   withFixtures,
   regularDelayMs,
   openDapp,
-  DAPP_URL,
   defaultGanacheOptions,
   unlockWallet,
   WINDOW_TITLES,
@@ -28,6 +28,8 @@ const testData = [
       originClass: '.request-signature__origin',
       messageClass: '.request-signature__row-value',
     },
+    verifyRejectionResultId: '#signTypedDataResult',
+    rejectSignatureMessage: 'Error: User rejected the request.',
   },
   {
     type: signatureRequestType.signTypedDataV3,
@@ -40,6 +42,8 @@ const testData = [
       originClass: '.signature-request__origin',
       messageClass: '.signature-request-data__node__value',
     },
+    verifyRejectionResultId: '#signTypedDataV3Result',
+    rejectSignatureMessage: 'Error: User rejected the request.',
   },
   {
     type: signatureRequestType.signTypedDataV4,
@@ -52,69 +56,12 @@ const testData = [
       originClass: '.signature-request__origin',
       messageClass: '.signature-request-data__node__value',
     },
+    verifyRejectionResultId: '#signTypedDataV4Result',
+    rejectSignatureMessage: 'Error: User rejected the request.',
   },
 ];
 
 describe('Sign Typed Data Signature Request', function () {
-  testData.forEach((data) => {
-    it(`can initiate and confirm a Signature Request of ${data.type}`, async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
-          ganacheOptions: defaultGanacheOptions,
-          title: this.test.fullTitle(),
-        },
-        async ({ driver, ganacheServer }) => {
-          const addresses = await ganacheServer.getAccounts();
-          const publicAddress = addresses[0];
-          await unlockWallet(driver);
-
-          await openDapp(driver);
-
-          // creates a sign typed data signature request
-          await driver.clickElement(data.buttonId);
-
-          await driver.waitUntilXWindowHandles(3);
-          let windowHandles = await driver.getAllWindowHandles();
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.Dialog,
-            windowHandles,
-          );
-
-          await verifyAndAssertSignTypedData(
-            driver,
-            data.type,
-            data.verifyAndAssertMessage.titleClass,
-            data.verifyAndAssertMessage.originClass,
-            data.verifyAndAssertMessage.messageClass,
-            data.expectedMessage,
-          );
-
-          // Approve signing typed data
-          await approveSignatureRequest(
-            driver,
-            data.type,
-            '[data-testid="signature-request-scroll-button"]',
-          );
-          await driver.waitUntilXWindowHandles(2);
-          windowHandles = await driver.getAllWindowHandles();
-
-          // switch to the Dapp and verify the signed address
-          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-          await driver.clickElement(data.verifyId);
-          const recoveredAddress = await driver.findElement(
-            data.verifyResultId,
-          );
-
-          assert.equal(await recoveredAddress.getText(), publicAddress);
-        },
-      );
-    });
-  });
-
   testData.forEach((data) => {
     it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
       await withFixtures(
@@ -148,33 +95,33 @@ describe('Sign Typed Data Signature Request', function () {
             windowHandles,
           );
 
+          await driver.waitForSelector(
+            By.xpath("//div[normalize-space(.)='1 of 2']"),
+          );
+
           await driver.waitForSelector({
-            text: 'Reject 2 requests',
+            text: 'Reject all',
             tag: 'button',
           });
 
-          await verifyAndAssertSignTypedData(
+          await verifyAndAssertRedesignedSignTypedData(
             driver,
-            data.type,
-            data.verifyAndAssertMessage.titleClass,
-            data.verifyAndAssertMessage.originClass,
-            data.verifyAndAssertMessage.messageClass,
             data.expectedMessage,
           );
 
-          // approve first signature request
-          await approveSignatureRequest(
+          // Approve signing typed data
+          await finalizeSignatureRequest(
             driver,
-            data.type,
-            '[data-testid="signature-request-scroll-button"]',
+            '.confirm-scroll-to-bottom__button',
+            'Confirm',
           );
           await driver.waitUntilXWindowHandles(3);
 
-          // approve second signature request
-          await approveSignatureRequest(
+          // Approve signing typed data
+          await finalizeSignatureRequest(
             driver,
-            data.type,
-            '[data-testid="signature-request-scroll-button"]',
+            '.confirm-scroll-to-bottom__button',
+            'Confirm',
           );
           await driver.waitUntilXWindowHandles(2);
 
@@ -189,41 +136,153 @@ describe('Sign Typed Data Signature Request', function () {
       );
     });
   });
+
+  testData.forEach((data) => {
+    it(`can initiate and reject a Signature Request of ${data.type}`, async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver }) => {
+          await unlockWallet(driver);
+
+          await openDapp(driver);
+
+          // creates a sign typed data signature request
+          await driver.clickElement(data.buttonId);
+
+          await driver.waitUntilXWindowHandles(3);
+          let windowHandles = await driver.getAllWindowHandles();
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Dialog,
+            windowHandles,
+          );
+
+          // Reject signing typed data
+          await finalizeSignatureRequest(
+            driver,
+            '.confirm-scroll-to-bottom__button',
+            'Cancel',
+          );
+          await driver.waitUntilXWindowHandles(2);
+          windowHandles = await driver.getAllWindowHandles();
+
+          // switch to the Dapp and verify the rejection was successful
+          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+          await driver.waitForSelector(data.verifyRejectionResultId);
+          const rejectionResult = await driver.findElement(
+            data.verifyRejectionResultId,
+          );
+
+          assert.equal(
+            await rejectionResult.getText(),
+            data.rejectSignatureMessage,
+          );
+        },
+      );
+    });
+  });
+
+  testData.forEach((data) => {
+    it(`can queue multiple Signature Requests of ${data.type} and reject`, async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver }) => {
+          await unlockWallet(driver);
+
+          await openDapp(driver);
+
+          // creates multiple sign typed data signature requests
+          await driver.clickElement(data.buttonId);
+
+          await driver.waitUntilXWindowHandles(3);
+          const windowHandles = await driver.getAllWindowHandles();
+          // switches to Dapp
+          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+          // creates second sign typed data signature request
+          await driver.clickElement(data.buttonId);
+
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Dialog,
+            windowHandles,
+          );
+
+          await driver.waitForSelector(
+            By.xpath("//div[normalize-space(.)='1 of 2']"),
+          );
+
+          await driver.waitForSelector({
+            text: 'Reject all',
+            tag: 'button',
+          });
+
+          // reject first signature request
+          await finalizeSignatureRequest(
+            driver,
+            '.confirm-scroll-to-bottom__button',
+            'Cancel',
+          );
+          await driver.waitUntilXWindowHandles(3);
+
+          // reject second signature request
+          await finalizeSignatureRequest(
+            driver,
+            '.confirm-scroll-to-bottom__button',
+            'Cancel',
+          );
+          await driver.waitUntilXWindowHandles(2);
+
+          // switch to the Dapp and verify the rejection was successful
+          await driver.switchToWindowWithTitle('E2E Test Dapp');
+
+          await driver.waitForSelector(data.verifyRejectionResultId);
+          const rejectionResult = await driver.findElement(
+            data.verifyRejectionResultId,
+          );
+          assert.equal(
+            await rejectionResult.getText(),
+            data.rejectSignatureMessage,
+          );
+        },
+      );
+    });
+  });
 });
 
-async function verifyAndAssertSignTypedData(
-  driver,
-  type,
-  titleClass,
-  originClass,
-  messageClass,
-  expectedMessage,
-) {
-  const title = await driver.findElement(titleClass);
-  const origin = await driver.findElement(originClass);
+async function verifyAndAssertRedesignedSignTypedData(driver, expectedMessage) {
+  await driver.findElement({
+    css: 'h2',
+    text: 'Signature request',
+  });
 
-  assert.equal(await title.getText(), 'Signature request');
-  assert.equal(await origin.getText(), DAPP_URL);
+  await driver.findElement({
+    css: 'p',
+    text: '127.0.0.1:8080',
+  });
 
-  const messages = await driver.findElements(messageClass);
-  if (type !== signatureRequestType.signTypedData) {
-    const verifyContractDetailsButton = await driver.findElement(
-      '.signature-request-content__verify-contract-details',
-    );
-    verifyContractDetailsButton.click();
-    await driver.findElement({ text: 'Third-party details', tag: 'h5' });
-    await driver.findElement('[data-testid="recipient"]');
-    await driver.clickElement({ text: 'Got it', tag: 'button' });
-  }
-  const messageNumber = type === signatureRequestType.signTypedDataV3 ? 4 : 0;
-  assert.equal(await messages[messageNumber].getText(), expectedMessage);
+  await driver.findElement({
+    css: 'p',
+    text: expectedMessage,
+  });
 }
 
-async function approveSignatureRequest(driver, type, buttonElementId) {
-  if (type !== signatureRequestType.signTypedData) {
-    await driver.delay(regularDelayMs);
-    await driver.clickElement(buttonElementId);
-  }
+async function finalizeSignatureRequest(driver, buttonElementId, action) {
   await driver.delay(regularDelayMs);
-  await driver.clickElement({ text: 'Sign', tag: 'button' });
+  await driver.clickElementSafe(buttonElementId);
+
+  await driver.delay(regularDelayMs);
+  await driver.clickElement({ text: action, tag: 'button' });
 }

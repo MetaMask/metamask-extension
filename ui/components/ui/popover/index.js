@@ -1,3 +1,1 @@
-import Item from './popover.component';
-
-export default Item;
+export { default } from './popover.component';

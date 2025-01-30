@@ -18,6 +18,8 @@ export enum BadgeWrapperAnchorElementShape {
   circular = 'circular',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface BadgeWrapperStyleUtilityProps extends StyleUtilityProps {
   /**
    * The element to be wrapped by the BadgeWrapper and for the badge to be positioned on top of

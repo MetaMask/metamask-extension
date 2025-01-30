@@ -1,9 +1,19 @@
-import { LedgerBridge } from '@metamask/eth-ledger-bridge-keyring';
+import {
+  LedgerBridge,
+  LedgerSignTypedDataParams,
+  LedgerSignTypedDataResponse,
+} from '@metamask/eth-ledger-bridge-keyring';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
+
+/**
+ * The options for the LedgerOffscreenBridge are empty because the bridge
+ * doesn't require any options to be passed in.
+ */
+type LedgerOffscreenBridgeOptions = Record<never, never>;
 
 /**
  * This class is used as a custom bridge for the Ledger connection. Every
@@ -16,7 +26,9 @@ import {
  * ledger device via the ledger keyring iframe. The ledger keyring iframe is
  * added to the offscreen.html file directly.
  */
-export class LedgerOffscreenBridge implements LedgerBridge {
+export class LedgerOffscreenBridge
+  implements LedgerBridge<LedgerOffscreenBridgeOptions>
+{
   isDeviceConnected = false;
 
   init() {
@@ -34,6 +46,14 @@ export class LedgerOffscreenBridge implements LedgerBridge {
 
   destroy() {
     // TODO: remove listener
+    return Promise.resolve();
+  }
+
+  getOptions() {
+    return Promise.resolve({});
+  }
+
+  setOptions() {
     return Promise.resolve();
   }
 
@@ -131,7 +151,7 @@ export class LedgerOffscreenBridge implements LedgerBridge {
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.signMessage,
+          action: LedgerAction.signPersonalMessage,
           params,
         },
         (response) => {
@@ -145,11 +165,9 @@ export class LedgerOffscreenBridge implements LedgerBridge {
     });
   }
 
-  deviceSignTypedData(params: {
-    hdPath: string;
-    domainSeparatorHex: string;
-    hashStructMessageHex: string;
-  }) {
+  deviceSignTypedData(
+    params: LedgerSignTypedDataParams,
+  ): Promise<LedgerSignTypedDataResponse> {
     return new Promise<{
       v: number;
       s: string;

@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-const { mockServerJsonRpc } = require('../../mock-server-json-rpc');
 
 const {
   WINDOW_TITLES,
@@ -9,6 +8,7 @@ const {
   unlockWallet,
   withFixtures,
 } = require('../../helpers');
+const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 
@@ -209,7 +209,7 @@ async function mockInfura(mockServer) {
     });
 }
 
-describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
+describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show banner alert', async function () {
     await withFixtures(

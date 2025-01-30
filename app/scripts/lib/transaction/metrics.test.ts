@@ -17,14 +17,15 @@ import {
 import {
   MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
+  MetaMetricsEventUiCustomization,
+  MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IF(blockaid)
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -62,14 +63,21 @@ const mockTransactionMetricsRequest = {
   updateEventFragment: jest.fn(),
   getAccountType: jest.fn(),
   getDeviceModel: jest.fn(),
+  getHardwareTypeForMetric: jest.fn(),
   getEIP1559GasFeeEstimates: jest.fn(),
   getSelectedAddress: jest.fn(),
   getParticipateInMetrics: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
   provider: provider as Provider,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
+  getIsSmartTransaction: jest.fn(),
+  getSmartTransactionByMinedTxHash: jest.fn(),
+  getMethodData: jest.fn(),
+  getIsConfirmationAdvancedDetailsOpen: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -77,9 +85,17 @@ describe('Transaction metrics', () => {
     mockChainId,
     mockNetworkId,
     mockTransactionMeta: TransactionMeta,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockTransactionMetaWithBlockaid: any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectedProperties: any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectedSensitiveProperties: any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockActionId: any;
 
   beforeEach(() => {
@@ -100,6 +116,7 @@ describe('Transaction metrics', () => {
       type: TransactionType.simpleSend,
       origin: ORIGIN_METAMASK,
       chainId: mockChainId,
+      networkClientId: 'testNetworkClientId',
       time: 1624408066355,
       defaultGasEstimates: {
         gas: '0x7b0d',
@@ -133,6 +150,7 @@ describe('Transaction metrics', () => {
       eip_1559_version: '0',
       gas_edit_attempted: 'none',
       gas_estimation_failed: false,
+      is_smart_transaction: undefined,
       gas_edit_type: 'none',
       network: mockNetworkId,
       referrer: ORIGIN_METAMASK,
@@ -141,16 +159,20 @@ describe('Transaction metrics', () => {
       token_standard: TokenStandard.none,
       transaction_speed_up: false,
       transaction_type: TransactionType.simpleSend,
-      ui_customizations: null,
+      ui_customizations: ['redesigned_confirmation'],
+      transaction_advanced_view: undefined,
+      transaction_contract_method: undefined,
+      transaction_internal_id: '1',
     };
 
     expectedSensitiveProperties = {
+      default_estimate: MetaMetricsEventTransactionEstimateType.DefaultEstimate,
       default_gas: '0.000031501',
       default_gas_price: '2',
       first_seen: 1624408066355,
       gas_limit: '0x7b0d',
       gas_price: '2',
-      transaction_contract_method: undefined,
+      transaction_contract_address: undefined,
       transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
       transaction_replaced: undefined,
     };
@@ -160,6 +182,8 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionAdded', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionAdded(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -168,6 +192,8 @@ describe('Transaction metrics', () => {
 
     it('should create event fragment', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });
@@ -195,6 +221,8 @@ describe('Transaction metrics', () => {
       };
 
       await handleTransactionAdded(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });
@@ -212,7 +240,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['gas_estimation_failed'],
+          ui_customizations: [
+            'gas_estimation_failed',
+            'redesigned_confirmation',
+          ],
           gas_estimation_failed: true,
         },
         sensitiveProperties: expectedSensitiveProperties,
@@ -221,6 +252,8 @@ describe('Transaction metrics', () => {
 
     it('should create event fragment with blockaid', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
       });
@@ -240,7 +273,10 @@ describe('Transaction metrics', () => {
           ...expectedProperties,
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
         },
@@ -251,6 +287,8 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionApproved', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionApproved(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -265,6 +303,8 @@ describe('Transaction metrics', () => {
 
     it('should create, update, finalize event fragment', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });
@@ -306,6 +346,8 @@ describe('Transaction metrics', () => {
 
     it('should create, update, finalize event fragment with blockaid', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
       });
@@ -324,7 +366,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -341,7 +386,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -362,6 +410,8 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionFailed', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionFailed(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -386,6 +436,8 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
         error: mockErrorMessage,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -440,6 +492,8 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
         error: mockErrorMessage,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -455,7 +509,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -475,7 +532,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -503,6 +563,8 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
         error: mockErrorMessage,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -550,6 +612,8 @@ describe('Transaction metrics', () => {
     it('should return if transaction meta is not defined', async () => {
       await handleTransactionConfirmed(
         mockTransactionMetricsRequest,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as any,
       );
       expect(
@@ -571,8 +635,10 @@ describe('Transaction metrics', () => {
       mockTransactionMeta.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
+        ...mockTransactionMeta,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -627,8 +693,10 @@ describe('Transaction metrics', () => {
       mockTransactionMetaWithBlockaid.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMetaWithBlockaid,
+        ...mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -644,7 +712,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -666,7 +737,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -688,10 +762,139 @@ describe('Transaction metrics', () => {
         mockTransactionMetricsRequest.finalizeEventFragment,
       ).toBeCalledWith(expectedUniqueId);
     });
+
+    it('should create, update, finalize event fragment with transaction_contract_address', async () => {
+      mockTransactionMeta.txReceipt = {
+        gasUsed: '0x123',
+        status: '0x0',
+      };
+      mockTransactionMeta.submittedTime = 123;
+      mockTransactionMeta.status = TransactionStatus.confirmed;
+      mockTransactionMeta.type = TransactionType.contractInteraction;
+      const expectedUniqueId = 'transaction-submitted-1';
+      const properties = {
+        ...expectedProperties,
+        status: TransactionStatus.confirmed,
+        transaction_type: TransactionType.contractInteraction,
+        asset_type: AssetType.unknown,
+        ui_customizations: [
+          MetaMetricsEventUiCustomization.RedesignedConfirmation,
+        ],
+        is_smart_transaction: undefined,
+        transaction_advanced_view: undefined,
+      };
+      const sensitiveProperties = {
+        ...expectedSensitiveProperties,
+        transaction_contract_address:
+          '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        completion_time: expect.any(String),
+        gas_used: '0.000000291',
+        status: METRICS_STATUS_FAILED,
+      };
+
+      await handleTransactionConfirmed(mockTransactionMetricsRequest, {
+        ...mockTransactionMeta,
+        actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+        actionId: mockActionId,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.finalized,
+        uniqueIdentifier: expectedUniqueId,
+        persist: true,
+        properties,
+        sensitiveProperties,
+      });
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
+        expectedUniqueId,
+        {
+          properties,
+          sensitiveProperties,
+        },
+      );
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toHaveBeenCalledWith(expectedUniqueId);
+    });
+
+    it('should create, update, finalize event fragment with completion_time_onchain', async () => {
+      mockTransactionMeta.txReceipt = {
+        gasUsed: '0x123',
+        status: '0x0',
+      };
+      mockTransactionMeta.blockTimestamp = decimalToHex(124);
+      mockTransactionMeta.submittedTime = 123123;
+
+      await handleTransactionConfirmed(mockTransactionMetricsRequest, {
+        ...mockTransactionMeta,
+        actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const expectedUniqueId = 'transaction-submitted-1';
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+        actionId: mockActionId,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.finalized,
+        uniqueIdentifier: expectedUniqueId,
+        persist: true,
+        properties: expectedProperties,
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          completion_time: expect.any(String),
+          completion_time_onchain: '0.88',
+          gas_used: '0.000000291',
+          status: METRICS_STATUS_FAILED,
+        },
+      });
+
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
+        expectedUniqueId,
+        {
+          properties: expectedProperties,
+          sensitiveProperties: {
+            ...expectedSensitiveProperties,
+            completion_time: expect.any(String),
+            completion_time_onchain: '0.88',
+            gas_used: '0.000000291',
+            status: METRICS_STATUS_FAILED,
+          },
+        },
+      );
+
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId);
+    });
   });
 
   describe('handleTransactionDropped', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionDropped(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -708,6 +911,8 @@ describe('Transaction metrics', () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -756,6 +961,8 @@ describe('Transaction metrics', () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -771,7 +978,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -792,7 +1002,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -817,6 +1030,8 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionRejected', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionRejected(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -833,6 +1048,8 @@ describe('Transaction metrics', () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-added-1';
@@ -876,6 +1093,8 @@ describe('Transaction metrics', () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-added-1';
@@ -892,7 +1111,10 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: ['flagged_as_malicious'],
+          ui_customizations: [
+            'flagged_as_malicious',
+            'redesigned_confirmation',
+          ],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -909,7 +1131,10 @@ describe('Transaction metrics', () => {
         {
           properties: {
             ...expectedProperties,
-            ui_customizations: ['flagged_as_malicious'],
+            ui_customizations: [
+              'flagged_as_malicious',
+              'redesigned_confirmation',
+            ],
             security_alert_reason: BlockaidReason.maliciousDomain,
             security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
@@ -934,6 +1159,8 @@ describe('Transaction metrics', () => {
     it('should return if transaction meta is not defined', async () => {
       await handleTransactionSubmitted(
         mockTransactionMetricsRequest,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as any,
       );
       expect(
@@ -943,6 +1170,8 @@ describe('Transaction metrics', () => {
 
     it('should only create event fragment', async () => {
       await handleTransactionSubmitted(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });

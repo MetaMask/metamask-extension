@@ -3,69 +3,148 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { SignatureController } from '@metamask/signature-controller';
-import { NetworkController } from '@metamask/network-controller';
-import { PreferencesController } from '../../app/scripts/controllers/preferences';
-import AppStateController from '../../app/scripts/controllers/app-state';
-import AccountTracker from '../../app/scripts/lib/account-tracker';
-import MetaMetricsController from '../../app/scripts/controllers/metametrics';
+import {
+  NetworkController,
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+  NetworkControllerSetActiveNetworkAction,
+} from '@metamask/network-controller';
+import {
+  AccountsControllerGetAccountByAddressAction,
+  AccountsControllerSetAccountNameAction,
+  AccountsControllerListAccountsAction,
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerSetSelectedAccountAction,
+} from '@metamask/accounts-controller';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { AppStateController } from '../../app/scripts/controllers/app-state-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import AccountTrackerController from '../../app/scripts/controllers/account-tracker-controller';
+import MetaMetricsController, {
+  MetaMetricsControllerGetStateAction,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../app/scripts/controllers/metametrics-controller';
 
-export interface MMIControllerOptions {
+// Unique name for the controller
+const controllerName = 'MMIController';
+
+type NetworkControllerGetNetworkConfigurationByChainId = {
+  type: `NetworkController:getNetworkConfigurationByChainId`;
+  handler: NetworkController['getNetworkConfigurationByChainId'];
+};
+
+/**
+ * Actions that this controller is allowed to call.
+ */
+export type AllowedActions =
+  | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerSetAccountNameAction
+  | AccountsControllerListAccountsAction
+  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerSetSelectedAccountAction
+  | NetworkControllerGetStateAction
+  | NetworkControllerSetActiveNetworkAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkConfigurationByChainId
+  | MetaMetricsControllerGetStateAction;
+
+/**
+ * Messenger type for the {@link MMIController}.
+ */
+export type MMIControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  AllowedActions,
+  never,
+  AllowedActions['type'],
+  never
+>;
+
+export type MMIControllerOptions = {
   mmiConfigurationController: MmiConfigurationController;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   keyringController: any;
-  preferencesController: PreferencesController;
   appStateController: AppStateController;
   transactionUpdateController: TransactionUpdateController;
   custodyController: CustodyController;
-  messenger: any;
+  messenger: MMIControllerMessenger;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getPendingNonce: (address: string) => Promise<any>;
-  accountTracker: AccountTracker;
+  accountTrackerController: AccountTrackerController;
   metaMetricsController: MetaMetricsController;
   networkController: NetworkController;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissionController: any;
   signatureController: SignatureController;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   platform: any;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extension: any;
   updateTransactionHash: (txId: string, txHash: string) => void;
   trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) => void;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
   setTxStatusSigned: (txId: string) => void;
   setTxStatusSubmitted: (txId: string) => void;
   setTxStatusFailed: (txId: string) => void;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateTransaction: (txMeta: any) => void;
-}
+  setChannelId: (channelId: string) => void;
+  setConnectionRequest: (payload: ConnectionRequest | null) => void;
+};
 
-export interface ISignedEvent {
+export type ISignedEvent = {
   signature: Signature;
   messageId: string;
-}
+};
 
-export interface IInteractiveRefreshTokenChangeEvent {
+export type IInteractiveRefreshTokenChangeEvent = {
   url: string;
   oldRefreshToken: string;
-}
+};
 
-export interface IConnectCustodyAddresses {
+export type IConnectCustodyAddresses = {
   custodianType: string;
   custodianName: string;
   accounts: string[];
-}
+};
 
-export interface Label {
+export type Label = {
   key: string;
   value: string;
-}
+};
 
-export interface Signature {
+export type Signature = {
   custodian_transactionId?: string;
   from: string;
-}
+};
 
-export interface NetworkConfiguration {
+export type NetworkConfiguration = {
   id: string;
   chainId: string;
   setActiveNetwork: (chainId: string) => void;
-}
+};
+
+export type ConnectionRequest = {
+  payload: string;
+  traceId: string;
+  channelId: string;
+};

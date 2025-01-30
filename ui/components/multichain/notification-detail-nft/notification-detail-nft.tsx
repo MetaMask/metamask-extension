@@ -7,13 +7,13 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-export interface NotificationDetailNftProps {
+export type NotificationDetailNftProps = {
   networkName: string;
   networkSrc: string;
   tokenName: string;
   tokenId: string;
   tokenSrc: string;
-}
+};
 
 /**
  * A component that renders a notification detail for an NFT.
@@ -34,6 +34,7 @@ export const NotificationDetailNft: FC<NotificationDetailNftProps> = ({
   networkName,
 }) => (
   <Box
+    paddingTop={1}
     paddingBottom={4}
     display={Display.Flex}
     alignItems={AlignItems.center}

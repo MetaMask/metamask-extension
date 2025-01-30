@@ -6,13 +6,10 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
+const { filterE2eChangedFiles } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
-const FLASK_ONLY_TESTS = [
-  'test-snap-txinsights-v2.spec.js',
-  'test-snap-namelookup.spec.js',
-  'test-snap-siginsights.spec.js',
-];
+const FLASK_ONLY_TESTS = [];
 
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.promises.readdir(testDir, {
@@ -34,9 +31,47 @@ const getTestPathsForTestDir = async (testDir) => {
   return testPaths;
 };
 
+// Quality Gate Retries
+const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 4;
+
+/**
+ * Runs the quality gate logic to filter and append changed or new tests if present.
+ *
+ * @param {string} fullTestList - List of test paths to be considered.
+ * @param {string[]} changedOrNewTests - List of changed or new test paths.
+ * @returns {string} The updated full test list.
+ */
+function applyQualityGate(fullTestList, changedOrNewTests) {
+  let qualityGatedList = fullTestList;
+
+  if (changedOrNewTests.length > 0) {
+    // Filter to include only the paths present in fullTestList
+    const filteredTests = changedOrNewTests.filter((test) =>
+      fullTestList.includes(test),
+    );
+
+    // If there are any filtered tests, append them to fullTestList
+    if (filteredTests.length > 0) {
+      const filteredTestsString = filteredTests.join('\n');
+      for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {
+        qualityGatedList += `\n${filteredTestsString}`;
+      }
+    }
+  }
+
+  return qualityGatedList;
+}
+
 // For running E2Es in parallel in CI
 function runningOnCircleCI(testPaths) {
-  const fullTestList = testPaths.join('\n');
+  const changedOrNewTests = filterE2eChangedFiles();
+  console.log('Changed or new test list:', changedOrNewTests);
+
+  const fullTestList = applyQualityGate(
+    testPaths.join('\n'),
+    changedOrNewTests,
+  );
+
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
 
@@ -44,13 +79,13 @@ function runningOnCircleCI(testPaths) {
   // 1. split the test files into chunks based on how long they take to run
   // 2. support "Rerun failed tests" on CircleCI
   const result = execSync(
-    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
+    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=50s < test/test-results/fullTestList.txt',
   ).toString('utf8');
 
   // Report if no tests found, exit gracefully
   if (result.indexOf('There were no tests found') !== -1) {
     console.log(`run-all.js info: Skipping this node because "${result}"`);
-    return [];
+    return { fullTestList: [] };
   }
 
   // If there's no text file, it means this node has no tests, so exit gracefully
@@ -58,13 +93,15 @@ function runningOnCircleCI(testPaths) {
     console.log(
       'run-all.js info: Skipping this node because there is no myTestList.txt',
     );
-    return [];
+    return { fullTestList: [] };
   }
 
   // take the space-delimited result and split into an array
-  return fs
+  const myTestList = fs
     .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
     .split(' ');
+
+  return { fullTestList: myTestList, changedOrNewTests };
 }
 
 async function main() {
@@ -80,13 +117,9 @@ async function main() {
             choices: ['chrome', 'firefox'],
           })
           .option('debug', {
-            default: process.env.E2E_DEBUG === 'true',
+            default: true,
             description:
               'Run tests in debug mode, logging each driver interaction',
-            type: 'boolean',
-          })
-          .option('mmi', {
-            description: `Run only mmi related tests`,
             type: 'boolean',
           })
           .option('rpc', {
@@ -127,7 +160,6 @@ async function main() {
     browser,
     debug,
     retries,
-    mmi,
     rpc,
     buildType,
     updateSnapshot,
@@ -169,9 +201,6 @@ async function main() {
 
     const testDir = path.join(__dirname, 'multi-injected-provider');
     testPaths = await getTestPathsForTestDir(testDir);
-  } else if (buildType === 'mmi') {
-    const testDir = path.join(__dirname, 'tests');
-    testPaths = [...(await getTestPathsForTestDir(testDir))];
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -192,8 +221,8 @@ async function main() {
   if (retries) {
     args.push('--retries', retries);
   }
-  if (debug) {
-    args.push('--debug');
+  if (!debug) {
+    args.push('--debug=false');
   }
   if (updateSnapshot) {
     args.push('--update-snapshot');
@@ -201,15 +230,14 @@ async function main() {
   if (updatePrivacySnapshot) {
     args.push('--update-privacy-snapshot');
   }
-  if (mmi) {
-    args.push('--mmi');
-  }
 
   await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
   let myTestList;
+  let changedOrNewTests;
   if (process.env.CIRCLECI) {
-    myTestList = runningOnCircleCI(testPaths);
+    ({ fullTestList: myTestList, changedOrNewTests = [] } =
+      runningOnCircleCI(testPaths));
   } else {
     myTestList = testPaths;
   }
@@ -221,7 +249,12 @@ async function main() {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
       console.log(`\nExecuting testPath: ${testPath}\n`);
-      await runInShell('node', [...args, testPath]);
+
+      const isTestChangedOrNew = changedOrNewTests?.includes(testPath);
+      const qualityGateArg = isTestChangedOrNew
+        ? ['--stop-after-one-failure']
+        : [];
+      await runInShell('node', [...args, ...qualityGateArg, testPath]);
     }
   }
 }

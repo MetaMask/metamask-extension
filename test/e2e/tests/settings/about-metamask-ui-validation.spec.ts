@@ -33,7 +33,7 @@ async function switchToAboutView(driver: Driver) {
 }
 
 // Test case to validate the view in the "About" - MetaMask.
-describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
+describe('Setting - About MetaMask :', function (this: Suite) {
   it('validate the view', async function () {
     await withFixtures(
       {
@@ -68,16 +68,11 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
         );
 
         // verify the version number of the MetaMask
-        const metaMaskVersion = await driver.findElement(
-          selectors.metaMaskVersion,
-        );
-        const getVersionNumber = await metaMaskVersion.getText();
         const { version } = packageJson;
-        assert.equal(
-          getVersionNumber,
-          version,
-          'Meta Mask version is incorrect in the about view section',
-        );
+        await driver.waitForSelector({
+          css: selectors.metaMaskVersion,
+          text: version,
+        });
 
         // Validating the header text
         const isHeaderTextPresent = await driver.isElementPresent(

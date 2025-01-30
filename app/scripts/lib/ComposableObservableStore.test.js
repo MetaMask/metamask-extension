@@ -25,10 +25,12 @@ class OldExampleController extends BaseControllerV1 {
 class ExampleController extends BaseController {
   static defaultState = {
     bar: 'bar',
+    baz: 'baz',
   };
 
   static metadata = {
     bar: { persist: true, anonymous: true },
+    baz: { persist: false, anonymous: true },
   };
 
   constructor({ messenger }) {
@@ -41,8 +43,8 @@ class ExampleController extends BaseController {
   }
 
   updateBar(contents) {
-    this.update(() => {
-      return { bar: contents };
+    this.update((state) => {
+      state.bar = contents;
     });
   }
 }
@@ -94,7 +96,9 @@ describe('ComposableObservableStore', () => {
     const store = new ComposableObservableStore({ controllerMessenger });
     store.updateStructure({ Example: exampleController });
     exampleController.updateBar('state');
-    expect(store.getState()).toStrictEqual({ Example: { bar: 'state' } });
+    expect(store.getState()).toStrictEqual({
+      Example: { bar: 'state', baz: 'baz' },
+    });
   });
 
   it('should update structure with all three types of stores', () => {
@@ -114,7 +118,7 @@ describe('ComposableObservableStore', () => {
     exampleController.updateBar('state');
     oldExampleController.updateBaz('state');
     expect(store.getState()).toStrictEqual({
-      Example: { bar: 'state' },
+      Example: { bar: 'state', baz: 'baz' },
       OldExample: { baz: 'state' },
       Store: 'state',
     });
@@ -139,7 +143,7 @@ describe('ComposableObservableStore', () => {
     });
 
     expect(store.getState()).toStrictEqual({
-      Example: { bar: 'state' },
+      Example: { bar: 'state', baz: 'baz' },
       OldExample: { baz: 'state' },
       Store: 'state',
     });
@@ -157,6 +161,34 @@ describe('ComposableObservableStore', () => {
 
     expect(store.getState()).toStrictEqual({
       Example: false,
+    });
+  });
+
+  it('should strip non-persisted state from initial state with all three types of stores', () => {
+    const controllerMessenger = new ControllerMessenger();
+    const exampleStore = new ObservableStore();
+    const exampleController = new ExampleController({
+      messenger: controllerMessenger,
+    });
+    const oldExampleController = new OldExampleController();
+    exampleStore.putState('state');
+    exampleController.updateBar('state');
+    oldExampleController.updateBaz('state');
+    const store = new ComposableObservableStore({
+      controllerMessenger,
+      persist: true,
+    });
+
+    store.updateStructure({
+      Example: exampleController,
+      OldExample: oldExampleController,
+      Store: exampleStore,
+    });
+
+    expect(store.getState()).toStrictEqual({
+      Example: { bar: 'state' },
+      OldExample: { baz: 'state' },
+      Store: 'state',
     });
   });
 

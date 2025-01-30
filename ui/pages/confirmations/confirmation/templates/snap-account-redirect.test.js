@@ -34,6 +34,7 @@ const mockBaseStore = {
     approvalFlows: [],
     subjectMetadata: {},
     providerConfig,
+    snaps: {},
   },
 };
 

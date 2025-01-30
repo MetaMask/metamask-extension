@@ -7,7 +7,9 @@ describe('InfoTab', () => {
     let getByText: (text: string) => HTMLElement;
 
     beforeEach(() => {
-      const renderResult = renderWithProvider(<InfoTab />);
+      const renderResult = renderWithProvider(
+        <InfoTab remoteFeatureFlags={{}} />,
+      );
       getByText = renderResult.getByText;
     });
 
@@ -31,7 +33,7 @@ describe('InfoTab', () => {
       const attributionsLink = getByText('Attributions');
       expect(attributionsLink).toHaveAttribute(
         'href',
-        'https://metamask.io/attributions.html',
+        `https://raw.githubusercontent.com/MetaMask/metamask-extension/vMOCK_VERSION/attribution.txt`,
       );
     });
 
@@ -52,7 +54,7 @@ describe('InfoTab', () => {
       const contactUsLink = getByText('Contact us');
       expect(contactUsLink).toHaveAttribute(
         'href',
-        'https://metamask.zendesk.com/hc/en-us',
+        'https://support.metamask.io',
       );
     });
   });

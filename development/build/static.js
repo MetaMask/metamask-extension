@@ -5,6 +5,7 @@ const glob = require('fast-glob');
 
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
+const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getPathInsideNodeModules } = require('./utils');
@@ -29,7 +30,6 @@ module.exports = function createStaticAssetTasks({
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
-      activeFeatures,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -108,11 +108,7 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(
-  shouldIncludeLockdown,
-  shouldIncludeSnow,
-  activeFeatures,
-) {
+function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -147,70 +143,76 @@ function getCopyTargets(
       pattern: `*.css`,
       dest: ``,
     },
-    {
-      src: `./app/loading.html`,
-      dest: `loading.html`,
-    },
-    {
-      src: shouldIncludeSnow
-        ? `./node_modules/@lavamoat/snow/snow.prod.js`
-        : EMPTY_JS_FILE,
-      dest: `snow.js`,
-    },
-    {
-      src: shouldIncludeSnow ? `./app/scripts/use-snow.js` : EMPTY_JS_FILE,
-      dest: `use-snow.js`,
-    },
+    ...(shouldIncludeSnow
+      ? [
+          {
+            src: `./node_modules/@lavamoat/snow/snow.prod.js`,
+            dest: `scripts/snow.js`,
+          },
+          {
+            src: `./app/scripts/use-snow.js`,
+            dest: `scripts/use-snow.js`,
+          },
+        ]
+      : []),
     {
       src: shouldIncludeLockdown
         ? getPathInsideNodeModules('ses', 'dist/lockdown.umd.min.js')
         : EMPTY_JS_FILE,
-      dest: `lockdown-install.js`,
+      dest: `scripts/lockdown-install.js`,
     },
     {
       src: './app/scripts/init-globals.js',
-      dest: 'init-globals.js',
-    },
-    {
-      src: './app/scripts/load-app.js',
-      dest: 'load-app.js',
+      dest: 'scripts/init-globals.js',
     },
     {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-run.js`
         : EMPTY_JS_FILE,
-      dest: `lockdown-run.js`,
+      dest: `scripts/lockdown-run.js`,
     },
     {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-more.js`
         : EMPTY_JS_FILE,
-      dest: `lockdown-more.js`,
+      dest: `scripts/lockdown-more.js`,
     },
     {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime-cjs.js'),
-      dest: `runtime-cjs.js`,
+      dest: `scripts/runtime-cjs.js`,
       pattern: '',
     },
     {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime.js'),
-      dest: `runtime-lavamoat.js`,
+      dest: `scripts/runtime-lavamoat.js`,
       pattern: '',
     },
     {
-      src: `./offscreen/`,
-      pattern: `*.html`,
-      dest: '',
-    },
-  ];
-
-  if (activeFeatures.includes('blockaid')) {
-    allCopyTargets.push({
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
-      dest: '',
-    });
-  }
+      dest: isManifestV3 ? 'scripts/' : '',
+    },
+    ...(isManifestV3
+      ? [
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/snaps-execution-environments',
+              'dist/browserify/iframe/index.html',
+            ),
+            dest: `snaps/index.html`,
+            pattern: '',
+          },
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/snaps-execution-environments',
+              'dist/browserify/iframe/bundle.js',
+            ),
+            dest: `snaps/bundle.js`,
+            pattern: '',
+          },
+        ]
+      : []),
+  ];
 
   const copyTargetsDev = [
     ...allCopyTargets,

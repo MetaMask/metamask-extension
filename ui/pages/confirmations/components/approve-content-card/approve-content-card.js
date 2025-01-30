@@ -19,6 +19,7 @@ import {
 import { I18nContext } from '../../../../contexts/i18n';
 import { ConfirmGasDisplay } from '../confirm-gas-display';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
 
 export default function ApproveContentCard({
   showHeader = true,
@@ -44,6 +45,11 @@ export default function ApproveContentCard({
   useCurrencyRateCheck,
 }) {
   const t = useContext(I18nContext);
+
+  const tokenData = parseStandardTokenTransactionData(data);
+  const functionName = tokenData?.name;
+  const capitalizedFnName =
+    functionName?.charAt(0).toUpperCase() + functionName?.slice(1);
 
   return (
     <Box
@@ -77,7 +83,11 @@ export default function ApproveContentCard({
           )}
           {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
             <Box width={BlockSize.OneSixth}>
-              <Button type="link" onClick={() => onEditClick()}>
+              <Button
+                type="link"
+                data-testid="edit-gas-fee-btn"
+                onClick={() => onEditClick()}
+              >
                 <Text
                   variant={TextVariant.bodySm}
                   color={TextColor.primaryDefault}
@@ -154,9 +164,7 @@ export default function ApproveContentCard({
                 color={TextColor.textAlternative}
                 as="h6"
               >
-                {isSetApproveForAll
-                  ? t('functionSetApprovalForAll')
-                  : t('functionApprove')}
+                {`${t('function', [capitalizedFnName])}`}
               </Text>
             </Box>
             {isSetApproveForAll && isApprovalOrRejection !== undefined ? (

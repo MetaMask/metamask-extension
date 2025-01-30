@@ -1,6 +1,8 @@
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { TextStyleUtilityProps } from '../text';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface LabelStyleUtilityProps extends TextStyleUtilityProps {
   /**
    * The id of the input associated with the label

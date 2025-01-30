@@ -8,6 +8,8 @@ import { IconProps } from '../icon';
 import { TextProps } from '../text';
 import { ButtonLinkProps } from '../button-link';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface TagUrlStyleUtilityProps extends StyleUtilityProps {
   /**
    * The src accepts the string of the image to be rendered

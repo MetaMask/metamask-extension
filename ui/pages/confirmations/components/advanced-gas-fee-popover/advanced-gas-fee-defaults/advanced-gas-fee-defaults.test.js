@@ -16,9 +16,12 @@ import configureStore from '../../../../../store/store';
 
 import AdvancedGasFeeInputs from '../advanced-gas-fee-inputs';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 
 const TEXT_SELECTOR = 'Save these values as my default for the Goerli network.';
+const CHAIN_ID_MOCK = CHAIN_IDS.GOERLI;
 
 jest.mock('../../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -33,14 +36,18 @@ jest.mock('../../../../../store/actions', () => ({
   createTransactionEventFragment: jest.fn(),
 }));
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 const render = async (defaultGasParams, contextParams) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
       ...defaultGasParams,
+      ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [mockSelectedInternalAccount.address]: {
+          address: mockSelectedInternalAccount.address,
           balance: '0x1F4',
         },
       },
@@ -65,6 +72,7 @@ const render = async (defaultGasParams, contextParams) => {
       (result = renderWithProvider(
         <GasFeeContextProvider
           transaction={{
+            chainId: CHAIN_ID_MOCK,
             userFeeLevel: 'medium',
           }}
           {...contextParams}

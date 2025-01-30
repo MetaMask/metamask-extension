@@ -11,8 +11,12 @@
 export class CallbackProcessor {
   currentMessageId = 0;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   messageCallbacks = new Map<number, (response?: any) => void>();
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   registerCallback(callback: (response?: any) => void) {
     this.currentMessageId += 1;
     this.messageCallbacks.set(this.currentMessageId, callback);

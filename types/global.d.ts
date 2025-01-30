@@ -1,6 +1,10 @@
+// Many of the state hooks return untyped raw state.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // In order for variables to be considered on the global scope they must be
 // declared using var and not const or let, which is why this rule is disabled
 /* eslint-disable no-var */
+
 import * as Sentry from '@sentry/browser';
 import {
   Success,
@@ -17,11 +21,15 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from 'shared/constants/offscreen-communication';
+import type { Provider } from '@metamask/network-controller';
+import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 
 declare class Platform {
   openTab: (opts: { url: string }) => void;
 
   closeCurrentWindow: () => void;
+
+  openExtensionInBrowser?: (_1, _1?, condition?: boolean) => void;
 }
 
 declare class MessageSender {
@@ -38,12 +46,12 @@ declare class MessageSender {
   url?: string;
 }
 
-export interface LedgerIframeMissingResponse {
+export type LedgerIframeMissingResponse = {
   success: false;
   payload: {
     error: Error;
   };
-}
+};
 
 type ResponseType =
   | Unsuccessful
@@ -60,7 +68,7 @@ type ResponseType =
  * input values so that the correct type can be inferred in the callback
  * method
  */
-interface sendMessage {
+type sendMessage = {
   (
     extensionId: string,
     message: Record<string, unknown>,
@@ -68,6 +76,8 @@ interface sendMessage {
     callback?: (response: Record<string, unknown>) => void,
   ): void;
   (
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     message: any,
     options?: Record<string, unknown>,
     callback?: (response: Record<string, unknown>) => void,
@@ -190,18 +200,22 @@ interface sendMessage {
         url: string;
       };
     },
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (response: { result: any; error?: Error }) => void,
   );
   (
     message: Record<string, unknown>,
     callback?: (response: ResponseType) => void,
   ): void;
-}
+};
 
 declare class Runtime {
   onMessage: {
     addListener: (
       callback: (
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         message: any,
         sender: MessageSender,
         sendResponse: (response?: ResponseType) => void,
@@ -217,16 +231,25 @@ declare class Chrome {
 }
 
 type SentryObject = Sentry & {
-  // Verifies that the user has opted into metrics and then updates the sentry
-  // instance to track sessions and begins the session.
-  startSession: () => void;
+  getMetaMetricsEnabled: () => Promise<boolean>;
+};
 
-  // Verifies that the user has opted out of metrics and then updates the
-  // sentry instance to NOT track sessions and ends the current session.
-  endSession: () => void;
-
-  // Calls either startSession or endSession based on optin status
-  toggleSession: () => void;
+type StateHooks = {
+  getCustomTraces?: () => { [name: string]: number };
+  getCleanAppState?: () => Promise<any>;
+  getLogs?: () => any[];
+  getMostRecentPersistedState?: () => any;
+  getPersistedState: () => Promise<any>;
+  getSentryAppState?: () => any;
+  getSentryState: () => {
+    browser: string;
+    version: string;
+    state?: any;
+    persistedState?: any;
+  };
+  metamaskGetState?: () => Promise<any>;
+  throwTestBackgroundError?: (msg?: string) => Promise<void>;
+  throwTestError?: (msg?: string) => void;
 };
 
 export declare global {
@@ -236,10 +259,23 @@ export declare global {
 
   var chrome: Chrome;
 
+  var ethereumProvider: Provider;
+
+  var stateHooks: StateHooks;
+
   namespace jest {
+    // The interface is being used for declaration merging, which is an acceptable exception to this rule.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface Matchers<R> {
       toBeFulfilled(): Promise<R>;
       toNeverResolve(): Promise<R>;
     }
   }
+
+  /**
+   * Unions T with U; U's properties will override T's properties
+   */
+  type OverridingUnion<T, U> = Omit<T, keyof U> & U;
+
+  function setPreference(key: keyof Preferences, value: boolean);
 }

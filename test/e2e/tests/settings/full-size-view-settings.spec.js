@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   withFixtures,
   unlockWallet,
@@ -17,7 +16,7 @@ const toggleFullSizeViewSetting = async (driver) => {
   );
 };
 
-describe('Full-size View Setting @no-mmi', function () {
+describe('Full-size View Setting', function () {
   it('opens the extension in popup view when opened from a dapp after enabling it in Advanced Settings', async function () {
     await withFixtures(
       {
@@ -33,28 +32,25 @@ describe('Full-size View Setting @no-mmi', function () {
         await unlockWallet(driver);
         await toggleFullSizeViewSetting(driver);
         await openDapp(driver);
+        const windowHandlesPreClick = await driver.waitUntilXWindowHandles(
+          2,
+          1000,
+          10000,
+        );
         await driver.clickElement('#maliciousPermit'); // Opens the extension in popup view.
-        const windowHandles = await driver.waitUntilXWindowHandles(
+        const windowHandlesPostClick = await driver.waitUntilXWindowHandles(
           3,
           1000,
           10000,
         );
-        const fullScreenWindowTitle = await driver.getWindowTitleByHandlerId(
-          windowHandles[0],
-        );
-        const dappWindowTitle = await driver.getWindowTitleByHandlerId(
-          windowHandles[1],
-        );
-        const popUpWindowTitle = await driver.getWindowTitleByHandlerId(
-          windowHandles[2],
+        const [newWindowHandle] = windowHandlesPostClick.filter(
+          (handleId) => !windowHandlesPreClick.includes(handleId),
         );
 
-        assert.equal(
-          fullScreenWindowTitle,
-          WINDOW_TITLES.ExtensionInFullScreenView,
+        await driver.switchToHandleAndWaitForTitleToBe(
+          newWindowHandle,
+          WINDOW_TITLES.Dialog,
         );
-        assert.equal(dappWindowTitle, WINDOW_TITLES.TestDApp);
-        assert.equal(popUpWindowTitle, WINDOW_TITLES.Dialog);
       },
     );
   });
