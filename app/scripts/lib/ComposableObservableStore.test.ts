@@ -1,4 +1,3 @@
-import { ObservableStore } from '@metamask/obs-store';
 import {
   BaseController,
   ControllerMessenger,

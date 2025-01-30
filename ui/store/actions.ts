@@ -120,10 +120,7 @@ import {
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
-import {
-  BackgroundStateProxy,
-  FlattenedBackgroundStateProxy,
-} from '../../shared/types/background';
+import { FlattenedBackgroundStateProxy } from '../../shared/types/background';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';

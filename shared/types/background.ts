@@ -109,9 +109,6 @@ import {
 import SmartTransactionsController, {
   SmartTransactionsControllerState,
 } from '@metamask/smart-transactions-controller';
-import { CustodyController } from '@metamask-institutional/custody-controller';
-import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
-import { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
 
 import AccountTrackerController, {
   AccountTrackerControllerState,
@@ -172,11 +169,6 @@ import {
   BridgeStatusControllerState,
   BridgeStatusControllerState as BridgeStatusState,
 } from './bridge-status';
-import {
-  CustodyControllerState,
-  InstitutionalFeaturesControllerState,
-  MmiConfigurationControllerState,
-} from './institutional';
 
 export type ResetOnRestartStores = {
   AccountTracker: AccountTrackerController;
