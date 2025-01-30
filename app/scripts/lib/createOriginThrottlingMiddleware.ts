@@ -30,6 +30,15 @@ export const BLOCKABLE_METHODS: Set<string> = new Set([
   MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
 ]);
 
+const testOrigins = [
+  'http://127.0.0.1:8080',
+  'http://127.0.0.1:8081',
+  'http://127.0.0.1:8082',
+  'http://localhost:8080',
+  'http://localhost:8081',
+  'http://localhost:8082',
+];
+
 export type ExtendedJSONRPCRequest = JsonRpcRequest & { origin: string };
 
 export const SPAM_FILTER_ACTIVATED_ERROR = providerErrors.unauthorized(
@@ -74,7 +83,8 @@ export default function createOriginThrottlingMiddleware({
     const { method, origin } = req;
     const isBlockableRPCMethod = BLOCKABLE_METHODS.has(method);
 
-    if (!isBlockableRPCMethod) {
+    // We don't want to throttle requests in e2e tests
+    if (!isBlockableRPCMethod || testOrigins.includes(origin)) {
       next();
       return;
     }
