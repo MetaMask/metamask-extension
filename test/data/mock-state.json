@@ -44,7 +44,8 @@
         "gas": "0x153e2",
         "value": "0x0"
       }
-    }
+    },
+    "maxValueMode": {}
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
