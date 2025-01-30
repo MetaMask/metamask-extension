@@ -19,7 +19,7 @@ jobs:
     with:
       platform: extension
       base-branch: rls-alignment
-      semver-version: 12.10.110
+      semver-version: 12.10.111
       previous-version-tag: v12.10.2
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
