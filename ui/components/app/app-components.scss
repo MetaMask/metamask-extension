@@ -76,10 +76,4 @@
 @import 'name/index';
 @import 'name/name-details/index';
 @import 'confirm/info/row/index';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-@import '../institutional/interactive-replacement-token-notification/index';
-@import '../institutional/confirm-remove-jwt-modal/index';
-@import '../institutional/custody-confirm-link-modal/index';
-@import '../institutional/transaction-failed-modal/index';
-///: END:ONLY_INCLUDE_IF
 @import 'snaps/snap-insight/index';

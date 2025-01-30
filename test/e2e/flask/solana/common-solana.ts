@@ -23,6 +23,8 @@ export enum SendFlowPlaceHolders {
 export const commonSolanaAddress =
   'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 
+export const SIMPLEHASH_URL = 'https://api.simplehash.com';
+
 export const SOL_BALANCE = 50000000000;
 
 export const SOL_TO_USD_RATE = 225.88;
@@ -70,6 +72,61 @@ export async function mockSolanaBalanceQuote(mockServer: Mockttp) {
       return response;
     });
 }
+
+export async function mockFungibleAssets(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`${SIMPLEHASH_URL}/api/v0/fungibles/assets`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          fungible_id: 'solana.2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+          name: 'PUMPKIN',
+          symbol: 'PKIN',
+          decimals: 6,
+          chain: 'solana',
+          previews: {
+            image_small_url: '',
+            image_medium_url: '',
+            image_large_url: '',
+            image_opengraph_url: '',
+            blurhash: 'U=Io~ufQ9_jtJTfQsTfQ0*fQ$$fQ#nfQX7fQ',
+            predominant_color: '#fb9f18',
+          },
+          image_url: '',
+          image_properties: {
+            width: 1024,
+            height: 1024,
+            size: 338371,
+            mime_type: 'image/png',
+            exif_orientation: null,
+          },
+          created_date: '2025-01-28T17:40:25Z',
+          created_by: '85c4VNwMhWtj5ygDgRjs2scmYRGetFeSf7RYNjtPErq1',
+          supply: '1000011299680610',
+          holder_count: 21675,
+          extra_metadata: {
+            twitter: '',
+            telegram: '',
+            is_mutable: true,
+            creators: [
+              {
+                address: '85c4VNwMhWtj5ygDgRjs2scmYRGetFeSf7RYNjtPErq1',
+                verified: true,
+                share: 100,
+              },
+            ],
+            token_program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+            extensions: [],
+            image_original_url: '',
+            animation_original_url: null,
+            metadata_original_url: '',
+          },
+        },
+      };
+    });
+}
+
 export async function simulateSolanaTransaction(mockServer: Mockttp) {
   console.log('AQUI ENTRA EN SIMULATE');
   const response = {
@@ -503,6 +560,10 @@ export async function withSolanaAccountSnap(
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList = [];
+
+        // Default Solana mocks
+        mockList.push(await mockFungibleAssets(mockServer));
+
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),

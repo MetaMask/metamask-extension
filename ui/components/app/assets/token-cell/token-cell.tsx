@@ -98,10 +98,7 @@ export default function TokenCell({
     new BigNumber(Number(string) || '0', 10),
   );
 
-  let isStakeable = isMainnet && isEvm && isNative;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isStakeable = false;
-  ///: END:ONLY_INCLUDE_IF
+  const isStakeable = isMainnet && isEvm && isNative;
 
   function handleOnClick() {
     if (!onClick || !chainId) {
