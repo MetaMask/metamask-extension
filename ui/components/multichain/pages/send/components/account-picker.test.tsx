@@ -16,8 +16,15 @@ import { shortenAddress } from '../../../../../helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multichain/address';
 import { SendPageAccountPicker } from '.';
 
+type State = {
+  metamask: Pick<
+    CombinedBackgroundAndReduxState['metamask'],
+    'internalAccounts' | 'keyrings'
+  >;
+};
+
 const render = (
-  state: Partial<CombinedBackgroundAndReduxState> = {},
+  state: Partial<State> = {},
   props = {},
   sendStage = SEND_STAGES.ADD_RECIPIENT,
 ) => {
@@ -33,7 +40,7 @@ const render = (
     history: { mostRecentOverviewPage: 'activity' },
     metamask: {
       ...mockState.metamask,
-      ...state.metamask,
+      ...state,
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {
@@ -133,7 +140,7 @@ describe('SendPageAccountPicker', () => {
             },
           ],
         },
-      } as CombinedBackgroundAndReduxState);
+      });
 
       expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
 
