@@ -290,9 +290,6 @@
   "addNewSolanaAccount": {
     "message": "Yeni bir Solana hesabı ekle (Beta)"
   },
-  "addNewToken": {
-    "message": "Yeni token ekleyin"
-  },
   "addNft": {
     "message": "NFT ekleyin"
   },
@@ -395,9 +392,6 @@
   "alert": {
     "message": "Uyarı"
   },
-  "alertActionBuy": {
-    "message": "ETH Al"
-  },
   "alertActionUpdateGas": {
     "message": "Gaz limitini güncelle"
   },
@@ -424,9 +418,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Bu işlemle devam etmek için gaz limitini 21000 veya üzeri olacak şekilde artırmanız gerekecek."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "Hesabınızda ağ ücretlerini ödemek için yeterli ETH yok."
   },
   "alertMessageNetworkBusy": {
     "message": "Gaz fiyatları yüksektir ve tahmin daha az kesindir."
@@ -485,12 +476,6 @@
   "all": {
     "message": "Tümü"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "Zaten tüm saklayıcı kurum hesaplarını bağladınız ya da MetaMask Institutional'a bağlayabileceğiniz hesap yok."
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "Bağlayabilecek hesap yok"
-  },
   "allOfYour": {
     "message": "Sahip olduğunuz tüm $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -507,12 +492,6 @@
   "allYourNFTsOf": {
     "message": "Tüm $1 NFT'leriniz",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "İzin Ver"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "MMI'nin hesaplarınızı içe aktarmak için $1 ile bağlantı kurmasına izin verir."
   },
   "allowNotifications": {
     "message": "Bildirimlere izin ver"
@@ -655,9 +634,6 @@
   "average": {
     "message": "Ortalama"
   },
-  "awaitingApproval": {
-    "message": "Onay bekliyor..."
-  },
   "back": {
     "message": "Geri"
   },
@@ -722,9 +698,6 @@
   "betaHeaderText": {
     "message": "Bu bir beta sürümdür. Lütfen hataları bildirin $1",
     "description": "$1 represents the word 'here' in a hyperlink"
-  },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional Beta Sürümü"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Sürümü"
@@ -982,15 +955,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Uyarıyı kabul ediyor ve yine de ilerlemek istiyorum"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "Devam et düğmesine tıkladığınızda sizi şuraya yönlendireceğiz: $1."
-  },
-  "confirmConnectCustodianText": {
-    "message": "Hesaplarınızı bağlamak için $1 hesabınızda oturum açın ve 'MMI'ye bağlan' düğmesine tıklayın."
-  },
-  "confirmConnectionTitle": {
-    "message": "$1 ile bağlantıyı onayla"
-  },
   "confirmFieldPaymaster": {
     "message": "Ücreti ödeyen taraf"
   },
@@ -1071,18 +1035,6 @@
   },
   "connectAccounts": {
     "message": "Hesapları bağla"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "Saklayıcı Kurum Hesabı Bağla"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "Token eklemek veya bir tokeni yenilemek için lütfen bağlamak istediğiniz saklayıcı kurumu seçin."
-  },
-  "connectCustodialAccountTitle": {
-    "message": "Saklayıcı Kurum Hesapları"
-  },
-  "connectCustodianAccounts": {
-    "message": "$1 hesaplarını bağla"
   },
   "connectManually": {
     "message": "Mevcut siteye manuel olarak bağlan"
@@ -1205,12 +1157,6 @@
   },
   "continue": {
     "message": "Devam et"
-  },
-  "continueMmiOnboarding": {
-    "message": "MetaMask Institutional katılım programına devam et"
-  },
-  "continueToWallet": {
-    "message": "Cüzdana devam et"
   },
   "contract": {
     "message": "Sözleşme"
@@ -1344,60 +1290,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "Piyasa gaz tahmini grafiği"
-  },
-  "custodian": {
-    "message": "Saklayıcı Kurum"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "Artık hesaplarınızı MetaMask Institutional'da kullanabilirsiniz."
-  },
-  "custodianAccountAddedTitle": {
-    "message": "Seçili $1 hesapları ekledi."
-  },
-  "custodianQRCodeScan": {
-    "message": "$1 mobil uygulamanızla QR kodunu tarayın"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "Veya $1 hesabınızda oturum açın ve \"MMI'ye Bağlan\" düğmesine tıklayın"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "Hesaplarınızı tekrar MMI'ya bağlamak için lütfen $1 bölümüne gidin ve kullanıcı arayüzünde 'MMI'ya bağla' düğmesine tıklayın."
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "Artık saklayıcı kurumlardaki hesaplarınızı MetaMask Institutional'da kullanabilirsiniz."
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "Saklayıcı kurum tokeniniz yenilendi"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "Bu işlem aşağıdaki adres için saklayıcı kurum tokenini değiştirir:"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "Saklayıcı kurum tokenini değiştir"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "İşlemi $1 uygulamasında onaylayın. Gerekli tüm saklayıcı kurum onayları gerçekleştikten sonra işlem tamamlanacaktır. Durum için $1 kontrolünüzü yapın."
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "Hesaplarınızı tekrar MMI'ya bağlamak için lütfen $1 bölümüne gidin ve kullanıcı arayüzünde 'MMI'ya bağla' düğmesine tıklayın."
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "Saklayıcı kurum MetaMask Institutional uzantısını doğrulayan bir token düzenleyerek hesaplarınızı bağlayabilmenize olanak sağlar."
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "Güvenlik nedenleriyle belirli bir dönemden sonra bu tokenin süresi dolar. Bunun için MMI'ya tekrar bağlamanız gerekir."
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "Bunu neden görüyorum?"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Saklayıcı kurum oturumu sona erdi"
-  },
-  "custodySessionExpired": {
-    "message": "Saklayıcı kurum oturumu sona erdi."
-  },
-  "custodyWrongChain": {
-    "message": "Bu hesap $1 ile kullanılmak için ayarlanmamış"
   },
   "custom": {
     "message": "Gelişmiş"
@@ -1861,9 +1753,6 @@
   "enterChainId": {
     "message": "Zincir kimliği girin"
   },
-  "enterCustodianToken": {
-    "message": "$1 tokeninizi girin veya yeni bir token ekleyin"
-  },
   "enterMaxSpendLimit": {
     "message": "Maks. harcama limiti gir"
   },
@@ -1999,12 +1888,6 @@
   "extendWalletWithSnaps": {
     "message": "web3 deneyiminizi kişiselleştirmek için topluluk tarafından oluşturulmuş Snapleri keşfedin",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
-  },
-  "extensionInsallCompleteDescription": {
-    "message": "Saklayıcı kurum veya emanete dayalı olmayan hesaplarınızı bağlamak için MetaMask Institutional ürün katılım programına geri dön."
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "Uzantı yükleme işlemi tamamlandı"
   },
   "externalExtension": {
     "message": "Harici uzantı"
@@ -2466,12 +2349,6 @@
   "install": {
     "message": "Yükle"
   },
-  "installExtension": {
-    "message": "Uzantıyı yükle"
-  },
-  "installExtensionDescription": {
-    "message": "Dünyanın lider web3 cüzdanı, MetaMask'in kurumsal uyumlu sürümü."
-  },
   "installOrigin": {
     "message": "Kökeni yükle"
   },
@@ -2864,9 +2741,6 @@
     "message": "$1 npm'de barındırılmaktadır ve $2 bu Snap'in eşsiz tanımlayıcısıdır.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional Sürümü"
-  },
   "metamaskNotificationsAreOff": {
     "message": "Cüzdan bildirimleri şu anda aktif değil."
   },
@@ -2891,9 +2765,6 @@
   "millionAbbreviation": {
     "message": "MN",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "Seçili hesap ($1) imza atmaya çalışan hesaptan ($2) farklı"
   },
   "mismatchedChainLinkText": {
     "message": "ağ bilgilerini doğrula",
@@ -2920,15 +2791,6 @@
   },
   "missingSettingRequest": {
     "message": "Buradan talep et"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional dünya çapında tasarlanmış ve yapılmıştır."
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "MetaMask Institutional'ın otomatik olarak cüzdanınızdaki NFT'leri algılayıp göstermesine izin verin."
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "Bu şifre sadece MetaMask Institutional uzantınızın kilidini açacaktır."
   },
   "more": {
     "message": "daha fazla"
@@ -3304,9 +3166,6 @@
   "noWebcamFoundTitle": {
     "message": "Web kamerası bulunamadı"
   },
-  "nonCustodialAccounts": {
-    "message": "MetaMask Institutional, gözetimsiz hesapları kullanabilmenize olanak sağlar, bu hesapları kullanmayı planlıyorsanız Gizli Kurtarma İfadenizi yedekleyin."
-  },
   "nonce": {
     "message": "Nonce"
   },
@@ -3333,12 +3192,6 @@
   },
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
-  },
-  "note": {
-    "message": "Not"
-  },
-  "notePlaceholder": {
-    "message": "Onaylayan taraf saklayıcı kurumda işlemi onaylarken bu notu görecektir."
   },
   "notificationDetail": {
     "message": "Ayrıntılar"
@@ -3674,9 +3527,6 @@
   "onboardingPinExtensionTitle": {
     "message": "MetaMask kurulumunuz tamamlandı!"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "MetaMask Institutional'ı sabitle"
-  },
   "oneDayAbbreviation": {
     "message": "1G",
     "description": "Shortened form of '1 day'"
@@ -3700,10 +3550,6 @@
     "message": "Sadece güvendiğiniz sitelere bağlayın. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "$1 uygulamasını aç",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Ledger'ınızı bağlamak için tam ekrana gidin.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3714,17 +3560,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "İşlem Başarısız Oldu"
-  },
   "optional": {
     "message": "İsteğe bağlı"
   },
   "options": {
     "message": "Seçenekler"
-  },
-  "or": {
-    "message": "veya"
   },
   "origin": {
     "message": "Köken"
@@ -3760,9 +3600,6 @@
   "password": {
     "message": "Şifre"
   },
-  "passwordMmiTermsWarning": {
-    "message": "MetaMask Institutional'ın benim için bu şifreyi kurtaramayacağını anlıyorum. $1"
-  },
   "passwordNotLongEnough": {
     "message": "Şifre yeterince uzun değil"
   },
@@ -3781,9 +3618,6 @@
   },
   "passwordsDontMatch": {
     "message": "Şifreler uyumlu değil"
-  },
-  "pasteJWTToken": {
-    "message": "Tokeninizi buraya yapıştırın veya bırakın:"
   },
   "pastePrivateKey": {
     "message": "Özel anahtar dizinizi buraya yapıştırın:",
@@ -4068,12 +3902,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "Bu, dilediğiniz adrese takma ad atamanıza olanak sağlar. Mümkün olduğunda etkileşimde bulunduğunuz adresler için ad önerilerinde bulunacağız."
   },
-  "pinExtensionDescription": {
-    "message": "Sorunsuz erişim için uzantı menüsüne gidin ve MetaMask Institutional'ı sabitleyin."
-  },
-  "pinExtensionTitle": {
-    "message": "Uzantıyı sabitle"
-  },
   "pinToTop": {
     "message": "Yukarıya sabitle"
   },
@@ -4094,9 +3922,6 @@
   },
   "portfolio": {
     "message": "Portföy"
-  },
-  "portfolioDashboard": {
-    "message": "Portföy Kontrol Paneli"
   },
   "preparingSwap": {
     "message": "Swap hazırlanıyor..."
@@ -4342,12 +4167,6 @@
   },
   "removeAccountDescription": {
     "message": "Bu hesap cüzdanınızdan kaldırılacaktır. Devam etmeden önce içe aktarılmış olan bu hesap için ilk olarak oluşturulan Gizli Kurtarma İfadesine ya da özel anahtara sahip olduğunuzdan lütfen emin olun. Hesap açılır menüsünden hesapları yeniden içe aktarabilir ya da hesap oluşturabilirsiniz. "
-  },
-  "removeJWT": {
-    "message": "Saklayıcı kurum tokenini kaldır"
-  },
-  "removeJWTDescription": {
-    "message": "Bu tokeni kaldırmak istediğinizden emin misiniz? Bu tokene atanan tüm hesaplar uzantıdan da kaldırılacaktır: "
   },
   "removeKeyringSnap": {
     "message": "Bu Snap kaldırıldığında bu hesaplar MetaMask'ten kaldırılır:"
@@ -4694,26 +4513,17 @@
   "selectAll": {
     "message": "Tümünü seç"
   },
-  "selectAllAccounts": {
-    "message": "Tüm hesapları seç"
-  },
   "selectAnAccount": {
     "message": "Hesap seç"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Bu hesap zaten MetaMask'e bağlanmış"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask Institutional'da kullanılacak saklayıcı kurum hesaplarını seçin."
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "NFT medyasını göster seçeneğini açın"
   },
   "selectHdPath": {
     "message": "HD yolunu seç"
-  },
-  "selectJWT": {
-    "message": "Token seç"
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT Otomatik Algılamayı etkinleştir"
@@ -6084,9 +5894,6 @@
   "transactionErrored": {
     "message": "İşlem bir hatayla karşılaştı."
   },
-  "transactionFailed": {
-    "message": "İşlem Başarısız Oldu"
-  },
   "transactionFee": {
     "message": "İşlem ücreti"
   },
@@ -6113,9 +5920,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Toplam gaz ücreti"
-  },
-  "transactionNote": {
-    "message": "İşlem notu"
   },
   "transactionResubmitted": {
     "message": "İşlem, $2 itibariyle $1 olarak artırılan tahmini gaz ücreti ile yeniden gönderildi"
@@ -6394,9 +6198,6 @@
   },
   "viewTransaction": {
     "message": "İşlemi görüntüle"
-  },
-  "viewinCustodianApp": {
-    "message": "Saklayıcı kurum uygulamasında görüntüle"
   },
   "viewinExplorer": {
     "message": "Explorer'da $1 görüntüle",

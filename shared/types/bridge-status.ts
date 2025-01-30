@@ -1,4 +1,12 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionControllerState,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import {
+  NetworkState,
+  ProviderConfigState,
+} from '../modules/selectors/networks';
+import { SmartTransactionsMetaMaskState } from '../modules/selectors';
 import type { ChainId, Quote, QuoteMetadata, QuoteResponse } from './bridge';
 
 // All fields need to be types not interfaces, same with their children fields
@@ -46,7 +54,14 @@ export type Asset = {
 
 export type SrcChainStatus = {
   chainId: ChainId;
-  txHash?: string; // might be undefined if this is a smart transaction (STX)
+  /**
+   * The txHash of the transaction on the source chain.
+   * This might be undefined for smart transactions (STX)
+   */
+  txHash?: string;
+  /**
+   * The atomic amount of the token sent minus fees on the source chain
+   */
   amount?: string;
   token?: Record<string, never> | Asset;
 };
@@ -54,6 +69,9 @@ export type SrcChainStatus = {
 export type DestChainStatus = {
   chainId: ChainId;
   txHash?: string;
+  /**
+   * The atomic amount of the token received on the destination chain
+   */
   amount?: string;
   token?: Record<string, never> | Asset;
 };
@@ -125,19 +143,22 @@ export type BridgeHistoryItem = {
   startTime?: number; // timestamp in ms
   estimatedProcessingTimeInSeconds: number;
   slippagePercentage: number;
-  completionTime?: number;
+  completionTime?: number; // timestamp in ms
   pricingData?: {
-    amountSent: string; // This is from QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
-
-    quotedGasInUsd?: string;
-    quotedReturnInUsd?: string;
+    /**
+     * From QuoteMetadata.sentAmount.amount, the actual amount sent by user in non-atomic decimal form
+     */
+    amountSent: string;
     amountSentInUsd?: string;
+    quotedGasInUsd?: string; // from QuoteMetadata.gasFee.usd
+    quotedReturnInUsd?: string; // from QuoteMetadata.toTokenAmount.usd
     quotedRefuelSrcAmountInUsd?: string;
     quotedRefuelDestAmountInUsd?: string;
   };
   initialDestAssetBalance?: string;
   targetContractAddress?: string;
   account: string;
+  hasApprovalTx: boolean;
 };
 
 export enum BridgeStatusAction {
@@ -146,8 +167,41 @@ export enum BridgeStatusAction {
   GET_STATE = 'getState',
 }
 
+export type TokenAmountValuesSerialized = {
+  amount: string;
+  valueInCurrency: string | null;
+  usd: string | null;
+};
+
 export type QuoteMetadataSerialized = {
-  sentAmount: { amount: string; valueInCurrency: string | null };
+  gasFee: TokenAmountValuesSerialized;
+  /**
+   * The total network fee for the bridge transaction
+   * estimatedGasFees + relayerFees
+   */
+  totalNetworkFee: TokenAmountValuesSerialized;
+  /**
+   * The total max network fee for the bridge transaction
+   * maxGasFees + relayerFees
+   */
+  totalMaxNetworkFee: TokenAmountValuesSerialized;
+  toTokenAmount: TokenAmountValuesSerialized;
+  /**
+   * The adjusted return for the bridge transaction
+   * destTokenAmount - totalNetworkFee
+   */
+  adjustedReturn: Omit<TokenAmountValuesSerialized, 'amount'>;
+  /**
+   * The actual amount sent by user in non-atomic decimal form
+   * srcTokenAmount + metabridgeFee
+   */
+  sentAmount: TokenAmountValuesSerialized;
+  swapRate: string; // destTokenAmount / sentAmount
+  /**
+   * The cost of the bridge transaction
+   * sentAmount - adjustedReturn
+   */
+  cost: Omit<TokenAmountValuesSerialized, 'amount'>;
 };
 
 export type StartPollingForBridgeTxStatusArgs = {
@@ -177,3 +231,12 @@ export type SourceChainTxMetaId = string;
 export type BridgeStatusControllerState = {
   txHistory: Record<SourceChainTxMetaId, BridgeHistoryItem>;
 };
+export type BridgeStatusAppState = ProviderConfigState & {
+  metamask: {
+    bridgeStatusState: BridgeStatusControllerState;
+  };
+};
+export type MetricsBackgroundState = BridgeStatusAppState['metamask'] &
+  SmartTransactionsMetaMaskState['metamask'] &
+  NetworkState['metamask'] &
+  TransactionControllerState;
