@@ -185,9 +185,9 @@ async function walletCreateSessionHandler(
 
     const approvedCaip25Permission =
       approvedPermissions[Caip25EndowmentPermissionName];
-    const approvedCaip25CaveatValue = approvedCaip25Permission?.caveats.find(
+    const approvedCaip25CaveatValue = approvedCaip25Permission?.caveats?.find(
       (caveat) => caveat.type === Caip25CaveatType,
-    ).value as Caip25CaveatValue;
+    )?.value as Caip25CaveatValue;
     if (!approvedCaip25CaveatValue) {
       throw rpcErrors.internal();
     }
