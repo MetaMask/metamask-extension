@@ -1,31 +1,45 @@
 import { ObservableStore } from '@metamask/obs-store';
 import {
   ActionConstraint,
+  BaseControllerInstance,
   ControllerMessenger,
   EventConstraint,
   getPersistentState,
   isBaseController,
-  isBaseControllerV1,
+  StateConstraint,
+  StateMetadata,
 } from '@metamask/base-controller';
 import { getKnownPropertyNames } from '@metamask/utils';
 import {
   MemStoreControllers,
-  MemStoreControllersComposedState,
+  StoreControllers,
 } from '../../../shared/types/background';
+
+type Controllers = MemStoreControllers &
+  Partial<Pick<StoreControllers, 'PhishingController'>>;
 
 /**
  * An ObservableStore that can compose the state objects of its child stores and controllers
  */
-export default class ComposableObservableStore extends ObservableStore<
-  Partial<MemStoreControllersComposedState>
-> {
+export default class ComposableObservableStore<
+  Config extends Record<
+    string,
+    Omit<BaseControllerInstance, 'metadata'> & {
+      state: StateConstraint;
+      metadata: StateMetadata<Config[keyof Config]['state']>;
+    }
+  > = Controllers,
+  ComposedState extends Record<keyof Config, StateConstraint> = {
+    [ControllerName in keyof Config]: Config[ControllerName]['state'];
+  },
+> extends ObservableStore<ComposedState> {
   /**
    * Describes which stores are being composed. The key is the name of the
    * store, and the value is either an ObservableStore, or a controller that
    * extends one of the two base controllers in the `@metamask/base-controller`
    * package.
    */
-  config: Partial<MemStoreControllers> = {};
+  config: Partial<Config> = {};
 
   controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
 
@@ -46,12 +60,12 @@ export default class ComposableObservableStore extends ObservableStore<
     state = {},
     persist = false,
   }: {
-    config?: MemStoreControllers;
+    config?: Config;
     controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
-    state?: Partial<MemStoreControllersComposedState>;
+    state?: Partial<ComposedState>;
     persist?: boolean;
   }) {
-    super(state);
+    super(state as ComposedState);
     this.persist = persist;
     this.controllerMessenger = controllerMessenger;
     if (config) {
@@ -67,53 +81,33 @@ export default class ComposableObservableStore extends ObservableStore<
    * with an `ObservableStore`-type `store` propeety, or a controller that extends one of the two base
    * controllers in the `@metamask/base-controller` package.
    */
-  updateStructure(config: MemStoreControllers) {
+  updateStructure<NewConfig extends Partial<Config>>(config: NewConfig) {
     this.config = config;
     this.removeAllListeners();
-    const initialState = getKnownPropertyNames(
-      config,
-    ).reduce<MemStoreControllersComposedState>(
+    const initialState = getKnownPropertyNames(config).reduce<ComposedState>(
       (composedState, controllerKey) => {
         const controller = config[controllerKey];
         if (!controller) {
-          throw new Error(`Undefined '${controllerKey}'`);
+          throw new Error(`Undefined '${String(controllerKey)}'`);
         }
 
-        if ('store' in controller && Boolean(controller.store?.subscribe)) {
-          const { store } = controller;
-          store.subscribe(
-            (state: MemStoreControllersComposedState[typeof controllerKey]) => {
-              this.#onStateChange(controllerKey, state);
-            },
-          );
-          // @ts-expect-error TODO: Widen `isBaseControllerV1` input type to `unknown`
-        } else if (isBaseControllerV1(controller)) {
-          controller.subscribe((state) => {
-            // @ts-expect-error V2 controller state excluded by type guard
-            this.#onStateChange(controllerKey, state);
-          });
-        }
-        // @ts-expect-error TODO: Widen `isBaseController{,V1}` input types to `unknown`
-        if (isBaseController(controller) || isBaseControllerV1(controller)) {
+        if (isBaseController(controller)) {
           try {
             this.controllerMessenger.subscribe<`${typeof controller.name}:stateChange`>(
               `${controller.name}:stateChange`,
               // @ts-expect-error TODO: Fix `handler` being typed as `never` by defining `Global{Actions,Events}` types and supplying them to `MetamaskController['controllerMessenger']`
-              (
-                state: MemStoreControllersComposedState[typeof controllerKey],
-              ) => {
-                let updatedState: Partial<
-                  MemStoreControllersComposedState[typeof controllerKey]
-                > = state;
+              (state: ComposedState[typeof controllerKey]) => {
+                let updatedState: Partial<ComposedState[typeof controllerKey]> =
+                  state;
                 if (this.persist && 'metadata' in controller) {
-                  updatedState = getPersistentState(
-                    // @ts-expect-error No state object can be passed into this parameter because its type is wider than all V2 state objects.
-                    // TODO: Fix this parameter's type to be the widest subtype of V2 controller state types instead of their supertype/constraint.
+                  updatedState = getPersistentState<
+                    ComposedState[typeof controllerKey]
+                  >(
                     state,
-                    controller.metadata,
-                  ) as Partial<
-                    MemStoreControllersComposedState[typeof controllerKey]
-                  >;
+                    controller.metadata as StateMetadata<
+                      ComposedState[typeof controllerKey]
+                    >,
+                  ) as Partial<ComposedState[typeof controllerKey]>;
                 }
                 this.#onStateChange(controllerKey, updatedState);
               },
@@ -125,17 +119,15 @@ export default class ComposableObservableStore extends ObservableStore<
           }
         }
 
-        let controllerState;
-        if ('store' in controller && 'subscribe' in controller.store) {
-          controllerState = controller.store.getState?.();
-        } else if ('state' in controller) {
-          controllerState = controller.state;
-        }
-
         composedState[controllerKey] =
-          this.persist && 'metadata' in controller && controller.metadata
-            ? getPersistentState(controllerState, controller.metadata)
-            : controllerState;
+          this.persist && controller.metadata
+            ? (getPersistentState<ComposedState[typeof controllerKey]>(
+                controller.state as ComposedState[typeof controllerKey],
+                controller.metadata as StateMetadata<
+                  ComposedState[typeof controllerKey]
+                >,
+              ) as ComposedState[typeof controllerKey])
+            : (controller.state as ComposedState[typeof controllerKey]);
         return composedState;
       },
       {} as never,
@@ -144,12 +136,12 @@ export default class ComposableObservableStore extends ObservableStore<
   }
 
   #onStateChange(
-    controllerKey: keyof MemStoreControllers,
-    newState: Partial<MemStoreControllersComposedState[typeof controllerKey]>,
+    controllerKey: keyof Config,
+    newState: Partial<ComposedState[typeof controllerKey]>,
   ) {
     const oldState = this.getState()[controllerKey];
 
-    this.updateState({ [controllerKey]: newState });
+    this.updateState({ [controllerKey]: newState } as Partial<ComposedState>);
 
     this.emit('stateChange', { oldState, newState, controllerKey });
   }
