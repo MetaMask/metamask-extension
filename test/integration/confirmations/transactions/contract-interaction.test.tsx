@@ -491,4 +491,52 @@ describe('Contract Interaction Confirmation', () => {
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();
   });
+
+  it('tracks external link clicked in transaction metrics', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState =
+      getMetaMaskStateWithMaliciousUnapprovedContractInteraction(
+        account.address,
+      );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('disclosure'));
+    expect(
+      await screen.findByTestId('alert-provider-report-link'),
+    ).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByTestId('alert-provider-report-link'));
+
+    fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
+
+    let updateTransactionEventFragment;
+
+    await waitFor(() => {
+      updateTransactionEventFragment =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) =>
+            call[0] === 'updateEventFragment' &&
+            JSON.stringify(call[1]).includes(
+              JSON.stringify({
+                properties: {
+                  external_link_clicked: 'security_alert_support_link',
+                },
+              }),
+            ),
+        );
+
+      expect(updateTransactionEventFragment).toBeDefined();
+    });
+  });
 });

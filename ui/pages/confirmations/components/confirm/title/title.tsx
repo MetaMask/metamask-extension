@@ -24,11 +24,13 @@ import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { getIsRevokeDAIPermit } from '../utils';
 import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const { generalAlerts } = useAlerts(ownerId);
   const { updateSignatureEventFragment } = useSignatureEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   if (generalAlerts.length === 0) {
     return null;
@@ -41,6 +43,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
       },
     };
     updateSignatureEventFragment(properties);
+    updateTransactionEventFragment(properties);
   };
 
   return (

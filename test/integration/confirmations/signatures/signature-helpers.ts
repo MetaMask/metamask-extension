@@ -91,6 +91,51 @@ export const getMetaMaskStateWithUnapprovedPermitSign = (
   };
 };
 
+export const getMetamaskStateWithMaliciousPermit = (accountAddress: string) => {
+  const pendingPermitId = '48a75190-45ca-11ef-9001-f3886ec2397c';
+
+  const state = getMetaMaskStateWithUnapprovedPermitSign(
+    accountAddress,
+    'Permit',
+  );
+  const unapprovedTypedMessage = {
+    [pendingPermitId]: {
+      ...state.unapprovedTypedMessages[pendingPermitId],
+      securityAlertResponse: {
+        block: 7596565,
+        result_type: 'Malicious',
+        reason: 'permit_farming',
+        description:
+          'permit_farming to spender 0x1661f1b207629e4f385da89cff535c8e5eb23ee3, classification: A known malicious address is involved in the transaction',
+        features: ['A known malicious address is involved in the transaction'],
+        source: 'api',
+        securityAlertId: 'ba944b14-aa65-45b5-ae92-f305cdba64c1',
+      },
+    },
+  };
+
+  state.unapprovedTypedMessages = {
+    ...unapprovedTypedMessage,
+  };
+
+  console.log(state);
+  return {
+    ...state,
+    signatureSecurityAlertResponses: {
+      'ba944b14-aa65-45b5-ae92-f305cdba64c1': {
+        block: 7596565,
+        result_type: 'Malicious',
+        reason: 'permit_farming',
+        description:
+          'permit_farming to spender 0x1661f1b207629e4f385da89cff535c8e5eb23ee3, classification: A known malicious address is involved in the transaction',
+        features: ['A known malicious address is involved in the transaction'],
+        source: 'api',
+        securityAlertId: 'ba944b14-aa65-45b5-ae92-f305cdba64c1',
+      },
+    },
+  };
+};
+
 export const verifyDetails = (element: Element, expectedValues: string[]) => {
   expectedValues.forEach((value) => {
     expect(element).toHaveTextContent(value);
