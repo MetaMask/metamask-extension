@@ -1,4 +1,7 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  APPROVAL_TYPE_TRANSACTION_BATCH,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { useConfirmContext } from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
@@ -41,7 +44,7 @@ const Info = () => {
         SetApprovalForAllInfo,
       [TransactionType.tokenMethodTransfer]: () => TokenTransferInfo,
       [TransactionType.tokenMethodTransferFrom]: () => NFTTokenTransferInfo,
-      TransactionBatch: () => TransactionBatchInfo,
+      [APPROVAL_TYPE_TRANSACTION_BATCH]: () => TransactionBatchInfo,
     }),
     [currentConfirmation],
   );

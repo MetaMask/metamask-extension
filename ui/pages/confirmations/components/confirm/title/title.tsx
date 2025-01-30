@@ -1,4 +1,5 @@
 import {
+  APPROVAL_TYPE_TRANSACTION_BATCH,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -111,6 +112,8 @@ const getTitle = (
         return t('confirmTitleSetApprovalForAllRevokeTransaction');
       }
       return t('setApprovalForAllRedesignedTitle');
+    case APPROVAL_TYPE_TRANSACTION_BATCH as TransactionType:
+      return 'Transaction batch request';
     default:
       return '';
   }

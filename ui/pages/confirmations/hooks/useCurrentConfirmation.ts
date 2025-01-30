@@ -1,5 +1,8 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  APPROVAL_TYPE_TRANSACTION_BATCH,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -52,7 +55,7 @@ const useCurrentConfirmation = () => {
   );
 
   const transactionBatch = useMemo(() => {
-    return pendingApproval?.type === 'TransactionBatch'
+    return pendingApproval?.type === APPROVAL_TYPE_TRANSACTION_BATCH
       ? {
           ...pendingApproval.requestData,
           id: pendingApproval.id,

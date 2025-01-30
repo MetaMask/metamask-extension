@@ -5,6 +5,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
+import { APPROVAL_TYPE_TRANSACTION_BATCH } from '@metamask/transaction-controller';
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
@@ -109,7 +110,7 @@ export function navigateToConfirmation(
 
   if (
     type === ApprovalType.Transaction ||
-    type === ('TransactionBatch' as ApprovalType)
+    type === (APPROVAL_TYPE_TRANSACTION_BATCH as ApprovalType)
   ) {
     history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
     return;

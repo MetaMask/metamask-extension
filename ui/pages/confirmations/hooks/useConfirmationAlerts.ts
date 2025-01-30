@@ -18,6 +18,7 @@ import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOr
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
+import { use7702Alerts } from './alerts/transactions/use7702Alert';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -43,6 +44,7 @@ function useTransactionAlerts(): Alert[] {
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   ///: END:ONLY_INCLUDE_IF
   const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
+  const alert7702 = use7702Alerts();
 
   return useMemo(
     () => [
@@ -59,6 +61,7 @@ function useTransactionAlerts(): Alert[] {
       ...signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
       ...queuedConfirmationsAlerts,
+      ...alert7702,
     ],
     [
       gasEstimateFailedAlerts,

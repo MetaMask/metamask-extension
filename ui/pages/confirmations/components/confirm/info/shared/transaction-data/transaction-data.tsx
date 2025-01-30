@@ -31,11 +31,27 @@ import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transac
 import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 
-export const TransactionData = () => {
+export const TransactionData = ({
+  chainIdOverride,
+  dataOverride,
+  noPadding,
+  toOverride,
+}: {
+  chainIdOverride?: Hex;
+  dataOverride?: Hex;
+  noPadding?: boolean;
+  toOverride?: Hex;
+} = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const transactionData = currentConfirmation?.txParams?.data as Hex;
-  const decodeResponse = useDecodedTransactionData();
+  const transactionData =
+    dataOverride ?? (currentConfirmation?.txParams?.data as Hex);
+
+  const decodeResponse = useDecodedTransactionData({
+    chainIdOverride,
+    dataOverride: transactionData,
+    toOverride,
+  });
 
   const { value, pending } = decodeResponse;
 
@@ -60,7 +76,7 @@ export const TransactionData = () => {
   const { chainId } = currentConfirmation;
 
   return (
-    <Container transactionData={transactionData}>
+    <Container transactionData={transactionData} noPadding={noPadding}>
       <>
         {data.map((method, index) => (
           <React.Fragment key={index}>
@@ -81,17 +97,22 @@ export const TransactionData = () => {
 export function Container({
   children,
   isLoading,
+  noPadding,
   transactionData,
 }: {
   children?: React.ReactNode;
   isLoading?: boolean;
+  noPadding?: boolean;
   transactionData?: string;
 }) {
   const t = useI18nContext();
 
   return (
     <>
-      <ConfirmInfoSection data-testid="advanced-details-data-section">
+      <ConfirmInfoSection
+        data-testid="advanced-details-data-section"
+        noPadding={noPadding}
+      >
         <ConfirmInfoRow
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}
