@@ -392,9 +392,6 @@
   "alert": {
     "message": "경고"
   },
-  "alertActionBuy": {
-    "message": "ETH 매수"
-  },
   "alertActionUpdateGas": {
     "message": "가스 한도 업데이트"
   },
@@ -421,9 +418,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "이 트랜잭션을 계속 진행하려면, 가스 한도를 21000 이상으로 늘려야 합니다."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "계정에 네트워크 수수료로 지불할 ETH가 부족합니다."
   },
   "alertMessageNetworkBusy": {
     "message": "가스비가 높고 견적의 정확도도 떨어집니다."

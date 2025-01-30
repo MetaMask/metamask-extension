@@ -392,9 +392,6 @@
   "alert": {
     "message": "Uyarı"
   },
-  "alertActionBuy": {
-    "message": "ETH Al"
-  },
   "alertActionUpdateGas": {
     "message": "Gaz limitini güncelle"
   },
@@ -421,9 +418,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Bu işlemle devam etmek için gaz limitini 21000 veya üzeri olacak şekilde artırmanız gerekecek."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "Hesabınızda ağ ücretlerini ödemek için yeterli ETH yok."
   },
   "alertMessageNetworkBusy": {
     "message": "Gaz fiyatları yüksektir ve tahmin daha az kesindir."
