@@ -10,7 +10,7 @@ import {
 } from './foundryup';
 import { isCodedError } from './utils';
 import { parseArgs } from './options';
-import type { Checksums } from './types';
+import type { Binary, Checksums } from './types';
 import { Architecture, Platform } from './types';
 
 type OperationDetails = {
@@ -210,7 +210,7 @@ describe('foundryup', () => {
 
   describe('checkAndDownloadBinaries', () => {
     const mockUrl = new URL('https://example.com/binaries');
-    const mockBinaries = ['forge'];
+    const mockBinaries = ['forge'] as Binary[];
     const mockCachePath = './test-cache-path';
 
     beforeEach(() => {
