@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.11.0]
+### Uncategorized
+- chore: merge master (v12.10.3) into Version-v12.11.0 ([#30007](https://github.com/MetaMask/metamask-extension/pull/30007))
+- fix changelog.md
+- Merge remote-tracking branch 'origin/master' into merge-master-to-v12.11.0
+- chore: cherry pick `29960` ([#29998](https://github.com/MetaMask/metamask-extension/pull/29998))
+- cherry-pick: fix: Update STX Banner Alert, include `chainSupportsSmartTransactions` ([#29947](https://github.com/MetaMask/metamask-extension/pull/29947))
+- fix: reapply the fix for seeing you received when bridge tx not finis… ([#29950](https://github.com/MetaMask/metamask-extension/pull/29950))
+- Merge master into v12.11.0 ([#29928](https://github.com/MetaMask/metamask-extension/pull/29928))
+- really lint fix CHANGELOG
+- fix changelog and package.json linting.
+- Merge remote-tracking branch 'origin/master' into cp-merge-master-v12.11.0
+- feat: cherry-pick: Conditionally disable nonce editing when smart transactions are… ([#29897](https://github.com/MetaMask/metamask-extension/pull/29897))
+- Update Attributions
+- feat: upgrade ledger keyring to fix EIP-712 issues ([#29874](https://github.com/MetaMask/metamask-extension/pull/29874))
+- fix: (cherry-pick 29832) routing to bridge from swaps after reopening popup ([#29854](https://github.com/MetaMask/metamask-extension/pull/29854))
+- Cherry-pick fix: not routing to home page after bridge tx submitted  ([#29853](https://github.com/MetaMask/metamask-extension/pull/29853))
+- chore: Bump `@metamask/snaps-rpc-methods` from `^11.9.0` to `^11.9.1` ([#29822](https://github.com/MetaMask/metamask-extension/pull/29822))
+- Update Attributions
+- chore: cherry-pick skip failing tests from 16ac0894b3 ([#29781](https://github.com/MetaMask/metamask-extension/pull/29781))
+- add fix for lint error on v12.11.0 ([#29770](https://github.com/MetaMask/metamask-extension/pull/29770))
+- Version v12.11.0
+- Merge origin/main into master-sync
+- Merge origin/main into master-sync
+
 ### Fixed
 - feat: add Lisk network logos ([#29762](https://github.com/MetaMask/metamask-extension/pull/29762))
 - test: fix flaky erc1155 set approval for all tests ([#29467](https://github.com/MetaMask/metamask-extension/pull/29467))
