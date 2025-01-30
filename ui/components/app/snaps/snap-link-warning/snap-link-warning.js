@@ -35,8 +35,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 export default function SnapLinkWarning({ isOpen, onClose, url }) {
   const t = useI18nContext();
 
-  const parsedUrl = url && new URL(url);
-  const urlParts = parsedUrl && url.split(parsedUrl.host);
+  const parsedUrl = new URL(url);
+  const isHTTPS = parsedUrl.protocol === 'https:';
+  const urlParts = url.split(parsedUrl.host);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -85,17 +87,21 @@ export default function SnapLinkWarning({ isOpen, onClose, url }) {
             paddingLeft={4}
             width={BlockSize.Full}
           >
-            {parsedUrl && (
-              <Text
-                ellipsis
-                style={{ overflow: 'hidden' }}
-                color={TextColor.primaryDefault}
-              >
-                {urlParts[0]}
-                <b>{parsedUrl.host}</b>
-                {urlParts[1]}
-              </Text>
-            )}
+            <Text
+              ellipsis
+              style={{ overflow: 'hidden' }}
+              color={TextColor.primaryDefault}
+            >
+              {isHTTPS ? (
+                <>
+                  {urlParts[0]}
+                  <b>{parsedUrl.host}</b>
+                  {urlParts[1]}
+                </>
+              ) : (
+                url
+              )}
+            </Text>
             <Icon
               name={IconName.Export}
               color={IconColor.iconAlternative}
