@@ -290,9 +290,6 @@
   "addNewSolanaAccount": {
     "message": "新しいSolanaアカウントの追加 (ベータ版)"
   },
-  "addNewToken": {
-    "message": "新しいトークンを追加"
-  },
   "addNft": {
     "message": "NFTを追加"
   },
@@ -395,9 +392,6 @@
   "alert": {
     "message": "アラート"
   },
-  "alertActionBuy": {
-    "message": "ETHを購入"
-  },
   "alertActionUpdateGas": {
     "message": "ガスリミットを更新"
   },
@@ -424,9 +418,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "このトランザクションを続行するには、ガスリミットを21000以上に上げる必要があります。"
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "アカウントにネットワーク手数料を支払うのに十分なETHがありません。"
   },
   "alertMessageNetworkBusy": {
     "message": "ガス価格が高く、見積もりはあまり正確ではありません。"
@@ -485,12 +476,6 @@
   "all": {
     "message": "すべて"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "すでにすべてのカストディアンアカウントを接続したか、MetaMask Institutionalに接続するアカウントがありません。"
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "接続できるアカウントがありません"
-  },
   "allOfYour": {
     "message": "すべての$1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -507,12 +492,6 @@
   "allYourNFTsOf": {
     "message": "$1のすべてのNFT",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "許可する"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "これにより、MMIが$1に接続してアカウントをインポートできるようになります。"
   },
   "allowNotifications": {
     "message": "通知を許可する"
@@ -655,9 +634,6 @@
   "average": {
     "message": "平均"
   },
-  "awaitingApproval": {
-    "message": "承認待ちです..."
-  },
   "back": {
     "message": "戻る"
   },
@@ -722,9 +698,6 @@
   "betaHeaderText": {
     "message": "これはベータ版です。バグは報告してください $1",
     "description": "$1 represents the word 'here' in a hyperlink"
-  },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "MetaMask Institutionalベータ版"
   },
   "betaMetamaskVersion": {
     "message": "MetaMaskベータ版"
@@ -982,15 +955,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "アラートを確認したうえで続行します"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "「続行」をクリックすると、$1にリダイレクトされます。"
-  },
-  "confirmConnectCustodianText": {
-    "message": "アカウントを接続するには、$1アカウントにログインして「MMIに接続」ボタンをクリックしてください。"
-  },
-  "confirmConnectionTitle": {
-    "message": "$1への接続の確定"
-  },
   "confirmFieldPaymaster": {
     "message": "手数料の支払元"
   },
@@ -1071,18 +1035,6 @@
   },
   "connectAccounts": {
     "message": "アカウントを接続"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "カストディアルアカウントを接続"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "トークンを追加または更新するには、接続するカストディアンを選択してください。"
-  },
-  "connectCustodialAccountTitle": {
-    "message": "カストディアルアカウント"
-  },
-  "connectCustodianAccounts": {
-    "message": "$1アカウントの接続"
   },
   "connectManually": {
     "message": "現在のサイトに手動で接続"
@@ -1205,12 +1157,6 @@
   },
   "continue": {
     "message": "続行"
-  },
-  "continueMmiOnboarding": {
-    "message": "MetaMask Institutionalのオンボーディングを続ける"
-  },
-  "continueToWallet": {
-    "message": "ウォレットに進む"
   },
   "contract": {
     "message": "コントラクト"
@@ -1344,60 +1290,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "市場のガス代見積もりグラフ"
-  },
-  "custodian": {
-    "message": "カストディアン"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "MetaMask Institutionalでアカウントが使えるようになりました。"
-  },
-  "custodianAccountAddedTitle": {
-    "message": "選択された$1個のアカウントが追加されました。"
-  },
-  "custodianQRCodeScan": {
-    "message": "$1モバイルアプリでQRコードをスキャンします"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "または、$1アカウントにログインして「MMIに接続」ボタンをクリックしてください"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "$1に移動して、ユーザーインターフェースの「MMIに接続」ボタンをクリックし、アカウントをMMIに再接続します。"
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "カストディアンアカウントをMetaMask Institutionalで使えるようになりました。"
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "カストディアントークンが更新されました"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "これにより、次のアドレスのカストディアントークンが置き換えられます:"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "カストディアントークンを置き換える"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "$1アプリでトランザクションを承認してください。必要なカストディ承認がすべて行われると、トランザクションが完了します。ステータスは$1アプリで確認できます。"
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "$1に移動して、ユーザーインターフェースの「MMIに接続」ボタンをクリックし、アカウントをMMIに再接続します。"
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "カストディアンがMetaMask Institutional拡張機能を認証するトークンを発行し、アカウントを接続できるようになります。"
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "このトークンはセキュリティ上の理由により、一定期間後に失効します。その場合、MMIへの再接続が必要になります。"
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "このメッセージが表示される理由"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "カストディアンセッションが期限切れになりました"
-  },
-  "custodySessionExpired": {
-    "message": "カストディアンセッションが期限切れになりました。"
-  },
-  "custodyWrongChain": {
-    "message": "このアカウントは$1で使用できるように設定されていません"
   },
   "custom": {
     "message": "高度な設定"
@@ -1861,9 +1753,6 @@
   "enterChainId": {
     "message": "チェーンIDを入力してください"
   },
-  "enterCustodianToken": {
-    "message": "$1トークンを入力するか、新しいトークンを追加してください"
-  },
   "enterMaxSpendLimit": {
     "message": "使用限度額の最大値を入力してください"
   },
@@ -1999,12 +1888,6 @@
   "extendWalletWithSnaps": {
     "message": "Web3のエクスペリエンスをカスタマイズする、コミュニティが開発したSnapをご覧ください",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
-  },
-  "extensionInsallCompleteDescription": {
-    "message": "MetaMask Institutionalの製品オンボーディングに戻って、カストディアルまたはセルフカストディアルアカウントを接続します。"
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "拡張機能のインストールが完了しました"
   },
   "externalExtension": {
     "message": "外部拡張機能"
@@ -2466,12 +2349,6 @@
   "install": {
     "message": "インストール"
   },
-  "installExtension": {
-    "message": "拡張機能をインストール"
-  },
-  "installExtensionDescription": {
-    "message": "世界をリードするWeb3ウォレット、MetaMaskの企業対応版です。"
-  },
   "installOrigin": {
     "message": "インストール元"
   },
@@ -2864,9 +2741,6 @@
     "message": "$1はnpmでホストされていて、$2はこのSnapの一意のIDです。",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "MetaMask Institutionalバージョン"
-  },
   "metamaskNotificationsAreOff": {
     "message": "ウォレットの通知は現在無効になっています"
   },
@@ -2891,9 +2765,6 @@
   "millionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "選択されたアカウント ($1) は署名しようとしているアカウント ($2) と異なります"
   },
   "mismatchedChainLinkText": {
     "message": "ネットワークの詳細の確認",
@@ -2920,15 +2791,6 @@
   },
   "missingSettingRequest": {
     "message": "ここからリクエスト"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMaskは、世界中でデザイン・開発されています。"
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "MetaMask Institutionalによるウォレット内のNFTの自動検出と表示を許可します。"
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "このパスワードはMetaMask Institutional拡張機能のロックしか解除しません。"
   },
   "more": {
     "message": "他"
@@ -3304,9 +3166,6 @@
   "noWebcamFoundTitle": {
     "message": "Webカメラが見つかりません"
   },
-  "nonCustodialAccounts": {
-    "message": "MetaMask Institutionalでは、非カストディアルアカウントを使用できます。これらのアカウントを使用する場合は、シークレットリカバリーフレーズをバックアップしてください。"
-  },
   "nonce": {
     "message": "ナンス"
   },
@@ -3333,12 +3192,6 @@
   },
   "notEnoughGas": {
     "message": "ガスが不足しています"
-  },
-  "note": {
-    "message": "備考"
-  },
-  "notePlaceholder": {
-    "message": "承認者がカストディアンでトランザクションを承認する際に、この備考が表示されます。"
   },
   "notificationDetail": {
     "message": "詳細"
@@ -3674,9 +3527,6 @@
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました！"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "MetaMask Institutionalをピン留めする"
-  },
   "oneDayAbbreviation": {
     "message": "1日",
     "description": "Shortened form of '1 day'"
@@ -3700,10 +3550,6 @@
     "message": "信頼するサイトにのみ接続してください。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "$1アプリを開く",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "全画面モードにしてLedgerを接続します。",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3714,17 +3560,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "操作に失敗しました"
-  },
   "optional": {
     "message": "オプション"
   },
   "options": {
     "message": "オプション"
-  },
-  "or": {
-    "message": "または"
   },
   "origin": {
     "message": "起点"
@@ -3760,9 +3600,6 @@
   "password": {
     "message": "パスワード"
   },
-  "passwordMmiTermsWarning": {
-    "message": "私は、MetaMask Institutionalがこのパスワードを復元できないことを理解しています。$1"
-  },
   "passwordNotLongEnough": {
     "message": "パスワードの長さが足りません"
   },
@@ -3781,9 +3618,6 @@
   },
   "passwordsDontMatch": {
     "message": "パスワードが一致しません"
-  },
-  "pasteJWTToken": {
-    "message": "ここにトークンを貼り付けるかドロップしてください:"
   },
   "pastePrivateKey": {
     "message": "秘密鍵の文字列をここに貼り付けます:",
@@ -4068,12 +3902,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "これにより、すべてのアドレスにニックネームを割り当てられるようになります。可能な場合、やり取りがあるアドレスの名前が提案されます。"
   },
-  "pinExtensionDescription": {
-    "message": "拡張機能のメニューに移動し、MetaMask Institutionalをピン留めすると、スムーズにアクセスできます。"
-  },
-  "pinExtensionTitle": {
-    "message": "拡張機能をピン留めする"
-  },
   "pinToTop": {
     "message": "最上部にピン留め"
   },
@@ -4094,9 +3922,6 @@
   },
   "portfolio": {
     "message": "Portfolio"
-  },
-  "portfolioDashboard": {
-    "message": "Portfolioダッシュボード"
   },
   "preparingSwap": {
     "message": "スワップを準備しています..."
@@ -4342,12 +4167,6 @@
   },
   "removeAccountDescription": {
     "message": "このアカウントはウォレットから削除されます。続行する前に、インポートしたアカウントの元のシークレットリカバリーフレーズまたは秘密鍵を持っていることを確認してください。アカウントはアカウントドロップダウンから再度インポートまたは作成できます。"
-  },
-  "removeJWT": {
-    "message": "カストディアントークンを削除"
-  },
-  "removeJWTDescription": {
-    "message": "このトークンを削除してよろしいですか？このトークンに割り当てられているすべてのアカウントが、同時に拡張機能から削除されます: "
   },
   "removeKeyringSnap": {
     "message": "このSnapを削除すると、これらのアカウントがMetaMaskから削除されます:"
@@ -4694,26 +4513,17 @@
   "selectAll": {
     "message": "すべて選択"
   },
-  "selectAllAccounts": {
-    "message": "すべてのアカウントを選択"
-  },
   "selectAnAccount": {
     "message": "アカウントを選択してください"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "このアカウントはすでにMetaMaskに接続されています"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask Institutionalで使用するカストディアンアカウントを選択します。"
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "NFTメディアの表示をオンにする"
   },
   "selectHdPath": {
     "message": "HDパスを選択"
-  },
-  "selectJWT": {
-    "message": "トークンを選択"
   },
   "selectNFTPrivacyPreference": {
     "message": "NFTの自動検出を有効にする"
@@ -6084,9 +5894,6 @@
   "transactionErrored": {
     "message": "トランザクションでエラーが発生しました。"
   },
-  "transactionFailed": {
-    "message": "トランザクションに失敗しました"
-  },
   "transactionFee": {
     "message": "トランザクション手数料"
   },
@@ -6113,9 +5920,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "ガス代合計"
-  },
-  "transactionNote": {
-    "message": "トランザクション備考"
   },
   "transactionResubmitted": {
     "message": "推定のガス代を$2で$1に増加し、トランザクションを再送信しました"
@@ -6394,9 +6198,6 @@
   },
   "viewTransaction": {
     "message": "トランザクションを表示"
-  },
-  "viewinCustodianApp": {
-    "message": "カストディアンアプリで表示"
   },
   "viewinExplorer": {
     "message": "$1をエクスプローラーで表示",
