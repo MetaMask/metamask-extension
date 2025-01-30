@@ -1,5 +1,5 @@
 import { ControllerMessenger } from '@metamask/base-controller';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
@@ -40,7 +40,7 @@ const mockAccount = {
   id: '3afa663e-0600-4d93-868a-61c2e553013b',
   address,
   methods: [],
-  scopes: ['eip155'],
+  scopes: [EthScope.Eoa],
   options: {},
 };
 const mockInternalAccount = {
