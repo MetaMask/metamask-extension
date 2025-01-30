@@ -19,6 +19,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
+import { COMPONENT_MAPPING } from './components';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
@@ -74,6 +75,7 @@ const SnapUIRendererComponent = ({
         promptLegacyProps,
         t,
         contentBackgroundColor: backgroundColor,
+        componentMap: COMPONENT_MAPPING,
       }),
     [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
   );
