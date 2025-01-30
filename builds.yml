@@ -326,3 +326,8 @@ env:
   # Use smart transactions to publish transaction batches
   ###
   - PUBLISH_BATCH_HOOK: false
+
+  ###
+  # Private key used for EIP-7702 authorization
+  ###
+  - PRIVATE_KEY: null
