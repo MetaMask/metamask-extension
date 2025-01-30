@@ -181,12 +181,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: increase gas limit validation threshold ([#29264](https://github.com/MetaMask/metamask-extension/pull/29264))
 - test: [POM] Privacy Mode spec ([#29263](https://github.com/MetaMask/metamask-extension/pull/29263))
 
+## [12.10.3]
+### Fixed
+- fix: ensure recipient address is shown on when sending erc 1155 tokens ([#29775](https://github.com/MetaMask/metamask-extension/pull/29775))
+
 ## [12.10.2]
 ### Fixed
 - Updated permissions header to be consistent (#29880) ([#29880](https://github.com/MetaMask/metamask-extension/pull/29880))
 - Fixed Route to bridge page from swaps ([#29883](https://github.com/MetaMask/metamask-extension/pull/29883))
 - Re-added missing smart transaction status confirmation (#29860) ([#29860](https://github.com/MetaMask/metamask-extension/pull/29860))
-
 
 ## [12.10.1]
 ### Changed
@@ -5740,7 +5743,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...HEAD
-[12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.2...v12.11.0
+[12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.3...v12.11.0
+[12.10.3]: https://github.com/MetaMask/metamask-extension/compare/v12.10.2...v12.10.3
 [12.10.2]: https://github.com/MetaMask/metamask-extension/compare/v12.10.1...v12.10.2
 [12.10.1]: https://github.com/MetaMask/metamask-extension/compare/v12.10.0...v12.10.1
 [12.10.0]: https://github.com/MetaMask/metamask-extension/compare/v12.9.3...v12.10.0

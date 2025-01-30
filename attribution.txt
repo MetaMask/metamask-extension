@@ -29509,7 +29509,7 @@ authors: Alex Potsides <alex@achingbrain.net>
 ******************************
 
 undici
-5.28.4 <https://github.com/nodejs/undici>
+5.28.5 <https://github.com/nodejs/undici>
 MIT License
 
 Copyright (c) Matteo Collina and Undici contributors
