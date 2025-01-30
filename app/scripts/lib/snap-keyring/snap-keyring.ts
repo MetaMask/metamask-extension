@@ -1,5 +1,4 @@
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
-import type { SnapController } from '@metamask/snaps-controllers';
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
 import {
@@ -98,7 +97,6 @@ export async function showAccountNameSuggestionDialog(
  * Constructs a SnapKeyring builder with specified handlers for managing snap accounts.
  *
  * @param controllerMessenger - The controller messenger instance.
- * @param getSnapController - A function that retrieves the Snap Controller instance.
  * @param persistKeyringHelper - A function that persists all keyrings in the vault.
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @param trackEvent - A function to track MetaMetrics events.
