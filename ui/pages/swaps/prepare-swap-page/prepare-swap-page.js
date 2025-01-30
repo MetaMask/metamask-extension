@@ -542,8 +542,6 @@ export default function PrepareSwapPage({
       dispatch(setSwapsFromToken(defaultSwapsToken));
     }
 
-    console.log('topAssets', topAssets);
-
     // Find first top asset that isn't the from token
     const topAssetAddresses = Object.keys(topAssets);
     const firstDifferentTopAssetAddress = topAssetAddresses.find(
