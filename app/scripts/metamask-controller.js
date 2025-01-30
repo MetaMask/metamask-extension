@@ -3480,7 +3480,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async getProviderState(origin) {
     const providerNetworkState = await this.getProviderNetworkState(origin);
-    console.log(providerNetworkState);
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     const { chrome } = globalThis;
     ///: END:ONLY_INCLUDE_IF
