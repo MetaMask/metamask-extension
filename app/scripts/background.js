@@ -1302,14 +1302,22 @@ const addAppInstalledEvent = () => {
   }, 500);
 };
 
+async function awaitFirstTimeInstall() {
+  const sessionData = await browser.storage.session.get([
+    'isFirstTimeInstall',
+  ]);
+  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
+  return isFirstTimeInstall !== undefined
+    ? isFirstTimeInstall
+    : awaitFirstTimeInstall();
+}
+
 // On first install, open a new tab with MetaMask
 async function onInstall() {
-  const storeAlreadyExisted = Boolean(await localStore.get());
-  // If the store doesn't exist, then this is the first time running this script,
-  // and is therefore an install
+  const isFirstTimeInstall = await awaitFirstTimeInstall();
   if (process.env.IN_TEST) {
     addAppInstalledEvent();
-  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
