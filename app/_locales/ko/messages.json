@@ -290,9 +290,6 @@
   "addNewSolanaAccount": {
     "message": "새 솔라나 계정 추가(베타)"
   },
-  "addNewToken": {
-    "message": "신규 토큰 추가"
-  },
   "addNft": {
     "message": "NFT 추가"
   },
@@ -485,12 +482,6 @@
   "all": {
     "message": "모두"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "현재 모든 수탁 계정이 연결되어 있거나 MetaMask Institutional에 연결할 계정이 없습니다."
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "연결할 계정 없음"
-  },
   "allOfYour": {
     "message": "내 모든 $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -507,12 +498,6 @@
   "allYourNFTsOf": {
     "message": "$1의 모든 내 NFT",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "허용"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "허용할 경우, MMI가 $1에 연결하여 계정을 가져올 수 있습니다."
   },
   "allowNotifications": {
     "message": "알림 허용"
@@ -655,9 +640,6 @@
   "average": {
     "message": "평균"
   },
-  "awaitingApproval": {
-    "message": "승인 대기 중..."
-  },
   "back": {
     "message": "뒤로"
   },
@@ -723,9 +705,6 @@
     "message": "베타 버전입니다. 버그는 $1로 보고하세요",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional 베타 버전"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask 베타 버전"
   },
@@ -735,9 +714,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinActivityNotSupported": {
-    "message": "비트코인 활동이 지원되지 않습니다."
   },
   "bitcoinSupportSectionTitle": {
     "message": "비트코인"
@@ -985,15 +961,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "경고를 인지했으며, 계속 진행합니다"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "계속을 클릭하면 $1(으)로 리디렉션됩니다."
-  },
-  "confirmConnectCustodianText": {
-    "message": "계정을 연결하려면 $1에 로그인하여 'MMI에 연결' 버튼을 클릭하세요."
-  },
-  "confirmConnectionTitle": {
-    "message": "$1에 연결 확인"
-  },
   "confirmFieldPaymaster": {
     "message": "수수료 지불:"
   },
@@ -1074,18 +1041,6 @@
   },
   "connectAccounts": {
     "message": "계정 연결"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "수탁 계정 연결"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "연결을 원하는 수탁 계정을 선택하여 토큰을 추가하거나 새로고침하세요."
-  },
-  "connectCustodialAccountTitle": {
-    "message": "수탁 계정"
-  },
-  "connectCustodianAccounts": {
-    "message": "$1 계정 연결"
   },
   "connectManually": {
     "message": "현재 사이트에 직접 연결"
@@ -1208,12 +1163,6 @@
   },
   "continue": {
     "message": "계속"
-  },
-  "continueMmiOnboarding": {
-    "message": "MetaMask Institutional 온보딩 계속"
-  },
-  "continueToWallet": {
-    "message": "지갑으로 계속"
   },
   "contract": {
     "message": "계약"
@@ -1347,60 +1296,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "시장 가스 추정치 그래프"
-  },
-  "custodian": {
-    "message": "수탁자"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "이제 MetaMask Institutional에서 계정을 사용할 수 있습니다."
-  },
-  "custodianAccountAddedTitle": {
-    "message": "선택한 $1 계정을 추가했습니다."
-  },
-  "custodianQRCodeScan": {
-    "message": "$1 모바일 앱으로 QR 코드를 스캔하세요"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "또는 $1 계정에 로그인하여 'MMI에 연결' 버튼을 클릭하세요"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "계정을 MMI에 다시 연결하려면 $1에서 해당 사용자 인터페이스를 찾아 'MMI로 연결' 버튼을 클릭하면 됩니다."
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "이제 MetaMask Institutional에서 수탁 계정을 사용할 수 있습니다."
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "수탁 토큰이 새로고침되었습니다"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "이렇게 하면 수탁 토큰이 다음 주소로 대체됩니다:"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "수탁 토큰 대체"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "$1 앱에서 트랜잭션을 승인하세요. 필요한 수탁자 승인이 모두 완료되면 트랜잭션이 완료됩니다. $1 앱 상태를 확인하세요."
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "계정을 MMI에 다시 연결하려면 $1에서 해당 사용자 인터페이스를 찾아 'MMI로 연결' 버튼을 클릭하면 됩니다."
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "수탁자가 MetaMask Institutional 확장을 인증하는 토큰을 발행하면 계정을 연결할 수 있습니다."
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "이 토큰은 보안상의 이유로 일정 기간이 지나면 만료됩니다. 그러면 MMI에 다시 연결해야 합니다."
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "이것은 무엇인가요?"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "수탁자 세션이 만료되었습니다"
-  },
-  "custodySessionExpired": {
-    "message": "수탁자 세션이 만료되었습니다."
-  },
-  "custodyWrongChain": {
-    "message": "이 계정은 $1 사용으로 설정되어 있지 않습니다"
   },
   "custom": {
     "message": "고급"
@@ -1864,9 +1759,6 @@
   "enterChainId": {
     "message": "체인 ID 입력"
   },
-  "enterCustodianToken": {
-    "message": "$1 토큰을 입력하거나 새로운 토큰을 추가하세요"
-  },
   "enterMaxSpendLimit": {
     "message": "최대 지출 한도 입력"
   },
@@ -2002,12 +1894,6 @@
   "extendWalletWithSnaps": {
     "message": "커뮤니티에서 만들어진 Snap을 알아보고 웹3 경험을 개인 맞춤하세요.",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
-  },
-  "extensionInsallCompleteDescription": {
-    "message": "MetaMask Institutional 제품 온보딩으로 돌아가 수탁 또는 자기 수탁 계정을 연결합니다."
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "확장 설치 완료"
   },
   "externalExtension": {
     "message": "외부 확장"
@@ -2469,12 +2355,6 @@
   "install": {
     "message": "설치"
   },
-  "installExtension": {
-    "message": "확장 설치"
-  },
-  "installExtensionDescription": {
-    "message": "기관의 규정을 준수하는 세계 최고의 웹3 지갑, MetaMask입니다."
-  },
   "installOrigin": {
     "message": "출처 설치"
   },
@@ -2867,9 +2747,6 @@
     "message": "$1 스냅은 npm이 호스팅합니다. 이 Snap의 고유 식별자는 $2 입니다.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional 버전"
-  },
   "metamaskNotificationsAreOff": {
     "message": "현재 지갑 알림이 꺼져 있습니다."
   },
@@ -2894,9 +2771,6 @@
   "millionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "선택한 계정($1)이 서명하려는 계정($2)과 다릅니다"
   },
   "mismatchedChainLinkText": {
     "message": "네트워크 세부 정보 검증",
@@ -2923,15 +2797,6 @@
   },
   "missingSettingRequest": {
     "message": "여기에서 요청하세요"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional은 전 세계적으로 설계 및 구축되었습니다."
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "MetaMask Institutional을 통해 자동으로 NFT를 감지하여 지갑에 표시할 수 있습니다."
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "이 비밀번호는 MetaMask Institutional 확장만 잠금 해제합니다."
   },
   "more": {
     "message": "그 외"
@@ -3307,9 +3172,6 @@
   "noWebcamFoundTitle": {
     "message": "웹캠을 찾을 수 없음"
   },
-  "nonCustodialAccounts": {
-    "message": "이러한 계정을 비밀복구구문 백업에 사용하려는 경우 MetaMask Institutional은 비수탁형 계정을 사용할 수 있도록 허용합니다."
-  },
   "nonce": {
     "message": "논스"
   },
@@ -3336,12 +3198,6 @@
   },
   "notEnoughGas": {
     "message": "가스 부족"
-  },
-  "note": {
-    "message": "메모"
-  },
-  "notePlaceholder": {
-    "message": "수탁 기관에서 트랜잭션이 승인되면 승인자가 이 참고 사항을 보게 됩니다."
   },
   "notificationDetail": {
     "message": "세부 정보"
@@ -3677,9 +3533,6 @@
   "onboardingPinExtensionTitle": {
     "message": "MetaMask 설치가 완료되었습니다!"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "MetaMask Institutional 고정"
-  },
   "oneDayAbbreviation": {
     "message": "1일",
     "description": "Shortened form of '1 day'"
@@ -3703,10 +3556,6 @@
     "message": "신뢰하는 사이트만 연결하세요. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "$1 앱 열기",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "전체 화면으로 이동하여 Ledger를 연결하세요.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3717,17 +3566,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "작업에 실패했습니다"
-  },
   "optional": {
     "message": "옵션"
   },
   "options": {
     "message": "옵션"
-  },
-  "or": {
-    "message": "또는"
   },
   "origin": {
     "message": "원본"
@@ -3763,9 +3606,6 @@
   "password": {
     "message": "비밀번호"
   },
-  "passwordMmiTermsWarning": {
-    "message": "MetaMask Institutional이 이 비밀번호를 복구할 수 없음을 이해합니다. $1"
-  },
   "passwordNotLongEnough": {
     "message": "비밀번호가 짧습니다."
   },
@@ -3784,9 +3624,6 @@
   },
   "passwordsDontMatch": {
     "message": "비밀번호가 일치하지 않습니다."
-  },
-  "pasteJWTToken": {
-    "message": "토큰을 여기 드롭하거나 붙여 넣으세요:"
   },
   "pastePrivateKey": {
     "message": "여기에 비공개 키 문자열을 붙여넣으세요.",
@@ -4071,12 +3908,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "이 기능을 사용하면 모든 주소에 닉네임을 지정할 수 있습니다. 가능한 경우 상호 작용하는 주소에 닉네임을 추천합니다."
   },
-  "pinExtensionDescription": {
-    "message": "확장 메뉴로 이동 후 MetaMask Institutional을 고정하여 원활하게 액세스하세요."
-  },
-  "pinExtensionTitle": {
-    "message": "확장 고정"
-  },
   "pinToTop": {
     "message": "맨 위에 고정"
   },
@@ -4097,9 +3928,6 @@
   },
   "portfolio": {
     "message": "포트폴리오"
-  },
-  "portfolioDashboard": {
-    "message": "포트폴리오 대시보드"
   },
   "preparingSwap": {
     "message": "스왑 준비 중..."
@@ -4307,12 +4135,6 @@
   "recoveryPhraseReminderTitle": {
     "message": "자신의 자금을 지키세요"
   },
-  "redesignedConfirmationsEnabledToggle": {
-    "message": "개선된 서명 요청"
-  },
-  "redesignedConfirmationsToggleDescription": {
-    "message": "이 기능을 켜면 개선된 형식의 서명 요청을 확인할 수 있습니다."
-  },
   "refreshList": {
     "message": "새로 고침 목록"
   },
@@ -4351,12 +4173,6 @@
   },
   "removeAccountDescription": {
     "message": "이 계정이 지갑에서 제거됩니다. 계속하기 전에 가져온 이 계정에 대한 원본 비밀복구구문이나 비공개 키가 있는지 확인하세요. 계정 드롭다운에서 계정을 가져오거나 다시 만들 수 있습니다. "
-  },
-  "removeJWT": {
-    "message": "수탁 토큰 제거"
-  },
-  "removeJWTDescription": {
-    "message": "정말 이 토큰을 삭제하시겠습니까? 이 토큰에 할당된 모든 계정이 확장 프로그램에서도 제거됩니다."
   },
   "removeKeyringSnap": {
     "message": "이 Snap을 제거하면 이 계정들이 MetaMask에서 제거됩니다:"
@@ -4703,26 +4519,17 @@
   "selectAll": {
     "message": "모두 선택"
   },
-  "selectAllAccounts": {
-    "message": "모든 계정 선택"
-  },
   "selectAnAccount": {
     "message": "계정 선택"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "이 계정은 이미 MetaMask와 연결되어 있습니다."
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask Institutional에서 사용할 수탁 계정을 선택하세요."
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "NFT 미디어 표시 켜기"
   },
   "selectHdPath": {
     "message": "HD 경로 선택"
-  },
-  "selectJWT": {
-    "message": "토큰 선택"
   },
   "selectNFTPrivacyPreference": {
     "message": "NFT 자동 감기 지능 켜기"
@@ -6093,9 +5900,6 @@
   "transactionErrored": {
     "message": "트랜잭션에 오류가 발생했습니다."
   },
-  "transactionFailed": {
-    "message": "트랜잭션 실패"
-  },
   "transactionFee": {
     "message": "트랜잭션 수수료"
   },
@@ -6122,9 +5926,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "총 가스비"
-  },
-  "transactionNote": {
-    "message": "트랜잭션 메모"
   },
   "transactionResubmitted": {
     "message": "$2에서 가스비를 $1(으)로 올린 트랜잭션이 다시 제출되었습니다."
@@ -6403,9 +6204,6 @@
   },
   "viewTransaction": {
     "message": "트랜잭션 보기"
-  },
-  "viewinCustodianApp": {
-    "message": "수탁 앱에서 보기"
   },
   "viewinExplorer": {
     "message": "Explorer에서 $1 보기",

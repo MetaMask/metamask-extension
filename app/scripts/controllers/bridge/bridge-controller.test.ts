@@ -10,10 +10,7 @@ import * as balanceUtils from '../../../../shared/modules/bridge-utils/balance';
 import mockBridgeQuotesErc20Native from '../../../../test/data/bridge/mock-quotes-erc20-native.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import mockBridgeQuotesNativeErc20Eth from '../../../../test/data/bridge/mock-quotes-native-erc20-eth.json';
-import {
-  RequestStatus,
-  type QuoteResponse,
-} from '../../../../shared/types/bridge';
+import { type QuoteResponse } from '../../../../shared/types/bridge';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import BridgeController from './bridge-controller';
 import { BridgeControllerMessenger } from './types';
@@ -166,36 +163,6 @@ describe('BridgeController', function () {
           DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
       }),
     );
-  });
-
-  it('selectDestNetwork should set the bridge dest tokens and top assets', async function () {
-    await bridgeController.selectDestNetwork('0xa');
-    expect(bridgeController.state.bridgeState.destTokens).toStrictEqual({
-      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'ABC',
-        decimals: 16,
-        aggregators: ['lifl', 'socket'],
-      },
-      '0x0000000000000000000000000000000000000000': {
-        address: '0x0000000000000000000000000000000000000000',
-        decimals: 18,
-        iconUrl: './images/eth_logo.svg',
-        name: 'Ether',
-        symbol: 'ETH',
-      },
-    });
-    expect(
-      bridgeController.state.bridgeState.destTokensLoadingStatus,
-    ).toStrictEqual(RequestStatus.FETCHED);
-    expect(bridgeController.state.bridgeState.destTopAssets).toStrictEqual([
-      { address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984', symbol: 'ABC' },
-    ]);
-    expect(bridgeController.state.bridgeState.quoteRequest).toStrictEqual({
-      slippage: 0.5,
-      srcTokenAddress: '0x0000000000000000000000000000000000000000',
-      walletAddress: undefined,
-    });
   });
 
   it('updateBridgeQuoteRequestParams should update the quoteRequest state', function () {
