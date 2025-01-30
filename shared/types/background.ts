@@ -15,6 +15,8 @@ import {
   NftControllerState,
   RatesControllerState,
   TokenRatesControllerState,
+  MultichainBalancesController,
+  MultichainBalancesControllerState,
 } from '@metamask/assets-controllers';
 import {
   KeyringController,
@@ -114,10 +116,6 @@ import AccountTrackerController, {
   AccountTrackerControllerState,
 } from '../../app/scripts/controllers/account-tracker-controller';
 import {
-  BalancesController,
-  BalancesControllerState,
-} from '../../app/scripts/lib/accounts/BalancesController';
-import {
   NetworkOrderController,
   NetworkOrderControllerState,
 } from '../../app/scripts/controllers/network-order';
@@ -209,7 +207,7 @@ export type StoreControllers = ResetOnRestartStores &
     AccountsController: AccountsController;
     AppStateController: AppStateController;
     AppMetadataController: AppMetadataController;
-    MultichainBalancesController: BalancesController;
+    MultichainBalancesController: MultichainBalancesController;
     TransactionController: TransactionController;
     KeyringController: KeyringController;
     PreferencesController: PreferencesController;
@@ -259,7 +257,7 @@ export type StoreControllersComposedState = ResetOnRestartStoresComposedState &
     AccountsController: AccountsControllerState;
     AppStateController: AppStateControllerState;
     AppMetadataController: AppMetadataControllerState;
-    MultichainBalancesController: BalancesControllerState;
+    MultichainBalancesController: MultichainBalancesControllerState;
     KeyringController: KeyringControllerState;
     PreferencesController: PreferencesControllerState;
     MetaMetricsController: MetaMetricsControllerState;
@@ -379,7 +377,7 @@ export type FlattenedBackgroundStateProxy = {
   trezorModel: AppStateControllerState['trezorModel'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
-  balances: BalancesControllerState['balances'];
+  balances: MultichainBalancesControllerState['balances'];
   bridgeState: BridgeControllerState;
   bridgeStatusState: BridgeStatusControllerState;
   jobs: CronjobControllerState['jobs'];

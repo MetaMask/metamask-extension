@@ -105,7 +105,7 @@ export class PatchStore<
       if (oldData !== newData) {
         patches.push({
           op: 'replace' as const,
-          path: [controllerKey, key],
+          path: [controllerKey, String(key)],
           value: newData,
         });
       }

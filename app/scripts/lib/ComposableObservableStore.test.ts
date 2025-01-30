@@ -163,6 +163,7 @@ describe('ComposableObservableStore', () => {
     });
     expect(
       () =>
+        // @ts-expect-error Intentionally passing in invalid input for testing
         new ComposableObservableStore({
           config: {
             Example: exampleController,
@@ -183,7 +184,7 @@ describe('ComposableObservableStore', () => {
         allowedEvents: [],
       }),
     });
-    // @ts-expect-error Intentionally passing in invalid input for testing// @ts-expect-error Intentionally passing in invalid input for testing
+    // @ts-expect-error Intentionally passing in invalid input for testing
     const store = new ComposableObservableStore({});
     // @ts-expect-error Intentionally passing in mock value for testing
     expect(() => store.updateStructure({ Example: exampleController })).toThrow(

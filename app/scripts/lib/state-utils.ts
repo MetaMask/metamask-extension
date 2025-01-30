@@ -26,7 +26,11 @@ export function sanitizeUIState<
     ];
     keys.forEach((key) => {
       if (key in controllerState) {
-        delete controllerState[key as keyof typeof controllerState];
+        try {
+          delete controllerState[key as keyof typeof controllerState];
+        } catch (e) {
+          console.log(`${key} property not found in ${controllerState} object`);
+        }
       }
     });
   });
@@ -45,12 +49,16 @@ function sanitizeSnapData(
     return;
   }
   const snapsData = state.SnapController.snaps;
-  state.SnapController.snaps = Object.values(snapsData).reduce<
-    SnapControllerState['snaps']
-  >((acc, snap) => {
-    acc[snap.id] = stripLargeSnapData(snap) as Snap;
-    return acc;
-  }, {});
+  state.SnapController = {
+    ...state.SnapController,
+    snaps: Object.values(snapsData).reduce<SnapControllerState['snaps']>(
+      (acc, snap) => {
+        acc[snap.id] = stripLargeSnapData(snap) as Snap;
+        return acc;
+      },
+      {},
+    ),
+  };
 }
 
 function stripLargeSnapData(snapData: Snap): Partial<Snap> {
