@@ -14,7 +14,7 @@ import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { getHideSnapBranding } from '../../../../selectors';
 
-export const SnapUILink = ({ href, children }) => {
+export const SnapUILink = ({ href, children, onCancel }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const isMetaMaskUrl = href.startsWith('metamask:');
@@ -26,6 +26,9 @@ export const SnapUILink = ({ href, children }) => {
   );
 
   const handleMetaMaskLinkClick = () => {
+    if (onCancel) {
+      onCancel();
+    }
     navigate(href);
   };
 
@@ -102,4 +105,5 @@ export const SnapUILink = ({ href, children }) => {
 SnapUILink.propTypes = {
   children: PropTypes.string,
   href: PropTypes.string,
+  onCancel: PropTypes.func,
 };
