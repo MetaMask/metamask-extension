@@ -349,7 +349,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
           <Box className="nft-details__nft-item">
             <NftItem
               src={nftItemSrc as string | undefined}
-              alt={image ? nftImageAlt : ''}
+              alt={nftImageAlt}
               networkName={currentChain.nickname ?? ''}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
               isIpfsURL={isIpfsURL}
