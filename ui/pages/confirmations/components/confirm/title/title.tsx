@@ -43,7 +43,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
       },
     };
     updateSignatureEventFragment(properties);
-    updateTransactionEventFragment(properties);
+    updateTransactionEventFragment(properties, ownerId);
   };
 
   return (
