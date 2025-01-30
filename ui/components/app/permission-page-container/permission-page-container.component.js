@@ -145,6 +145,7 @@ export default class PermissionPageContainer extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       selectedAccounts,
+      requestedChainIds,
     } = this.props;
 
     const approvedAccounts = selectedAccounts.map(
@@ -154,9 +155,6 @@ export default class PermissionPageContainer extends Component {
     const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
       _request.permission,
     );
-    const approvedChainIds = getPermittedEthChainIds(
-      requestedCaip25CaveatValue,
-    );
 
     const request = {
       ..._request,
@@ -165,7 +163,7 @@ export default class PermissionPageContainer extends Component {
         ...getCaip25PermissionsResponse(
           requestedCaip25CaveatValue,
           approvedAccounts,
-          approvedChainIds,
+          requestedChainIds,
         ),
       },
     };

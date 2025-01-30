@@ -142,7 +142,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       permissions: {
         ...request.permissions,
         ...getCaip25PermissionsResponse(
-          getRequestedCaip25CaveatValue(request.permissions),
+          requestedCaip25CaveatValue,
           selectedAccountAddresses as Hex[],
           selectedChainIds,
         ),

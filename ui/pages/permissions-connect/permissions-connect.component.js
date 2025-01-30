@@ -26,8 +26,8 @@ import { getRequestedCaip25CaveatValue } from './connect-page/utils';
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissions) {
-  const requestedSessionsScopes = getRequestedCaip25CaveatValue(permissions);
-  const requestedAccounts = getEthAccounts(requestedSessionsScopes);
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(permissions);
+  const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
 
   if (requestedAccounts.length > 0) {
     return new Set(
@@ -43,8 +43,8 @@ function getDefaultSelectedAccounts(currentAddress, permissions) {
 }
 
 function getRequestedChainIds(permissions) {
-  const requestedSessionsScopes = getRequestedCaip25CaveatValue(permissions);
-  return getPermittedEthChainIds(requestedSessionsScopes);
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(permissions);
+  return getPermittedEthChainIds(requestedCaip25CaveatValue);
 }
 
 export default class PermissionConnect extends Component {
