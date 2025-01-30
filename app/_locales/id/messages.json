@@ -290,9 +290,6 @@
   "addNewSolanaAccount": {
     "message": "Tambahkan akun Solana baru (Beta)"
   },
-  "addNewToken": {
-    "message": "Tambahkan token baru"
-  },
   "addNft": {
     "message": "Tambahkan NFT"
   },
@@ -485,12 +482,6 @@
   "all": {
     "message": "Semua"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "Anda telah menghubungkan semua akun kustodian atau tidak memiliki akun untuk terhubung ke MetaMask Institutional."
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "Tidak ada akun yang tersedia untuk dihubungkan"
-  },
   "allOfYour": {
     "message": "Seluruh $1 Anda",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -507,12 +498,6 @@
   "allYourNFTsOf": {
     "message": "Seluruh NFT Anda dari $1 ",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "Izinkan"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "Ini akan memungkinkan MMI terhubung ke $1 untuk mengimpor akun Anda."
   },
   "allowNotifications": {
     "message": "Izinkan notifikasi"
@@ -655,9 +640,6 @@
   "average": {
     "message": "Rata-rata"
   },
-  "awaitingApproval": {
-    "message": "Menunggu persetujuan..."
-  },
   "back": {
     "message": "Kembali"
   },
@@ -722,9 +704,6 @@
   "betaHeaderText": {
     "message": "Ini merupakan versi beta. Harap laporkan bug $1",
     "description": "$1 represents the word 'here' in a hyperlink"
-  },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "Versi Beta MetaMask Institutional"
   },
   "betaMetamaskVersion": {
     "message": "Versi MetaMask Beta"
@@ -982,15 +961,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Saya telah mengetahui peringatannya dan tetap ingin melanjutkan"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "Kami akan mengarahkan Anda ke $1 setelah mengeklik lanjutkan."
-  },
-  "confirmConnectCustodianText": {
-    "message": "Untuk menghubungkan akun, masuk ke akun $1 dan klik tombol 'hubungkan ke MMI'."
-  },
-  "confirmConnectionTitle": {
-    "message": "Konfirmasikan koneksi ke $1"
-  },
   "confirmFieldPaymaster": {
     "message": "Biaya dibayar oleh"
   },
@@ -1071,18 +1041,6 @@
   },
   "connectAccounts": {
     "message": "Hubungkan akun"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "Hubungkan Akun Kustodian"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "Pilih kustodian yang ingin Anda hubungkan untuk menambah atau menyegarkan token."
-  },
-  "connectCustodialAccountTitle": {
-    "message": "Akun Kustodian"
-  },
-  "connectCustodianAccounts": {
-    "message": "Hubungkan akun $1"
   },
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
@@ -1205,12 +1163,6 @@
   },
   "continue": {
     "message": "Lanjutkan"
-  },
-  "continueMmiOnboarding": {
-    "message": "Lanjutkan orientasi MetaMask Institutional"
-  },
-  "continueToWallet": {
-    "message": "Lanjutkan ke dompet"
   },
   "contract": {
     "message": "Kontrak"
@@ -1344,60 +1296,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "Grafik estimasi gas pasar"
-  },
-  "custodian": {
-    "message": "Kustodian"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "Kini Anda dapat menggunakan akun Anda di MetaMask Institutional."
-  },
-  "custodianAccountAddedTitle": {
-    "message": "Akun $1 terpilih telah ditambahkan."
-  },
-  "custodianQRCodeScan": {
-    "message": "Pindai kode QR dengan aplikasi seluler $1"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "Atau masuk ke akun $1 dan klik tombol 'Hubungkan ke MMI'"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "Buka $1 dan klik tombol 'Hubungkan ke MMI' di antarmuka pengguna untuk menghubungkan kembali akun Anda ke MMI."
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "Saat ini Anda dapat menggunakan akun kustodian di MetaMask Institutional."
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "Token kustodian Anda telah disegarkan"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "Ini akan menggantikan token kustodian untuk alamat berikut:"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "Ganti token kustodian"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "Setujui transaksi di aplikasi $1. Setelah semua persetujuan kustodian yang diperlukan telah dilakukan, transaksi akan selesai. Periksa status aplikasi $1 Anda."
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "Buka $1 dan klik tombol 'Hubungkan ke MMI' di antarmuka pengguna untuk menghubungkan kembali akun Anda ke MMI."
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "Kustodian Anda mengeluarkan token yang mengautentikasi ekstensi MetaMask Institutional yang memungkinkan untuk menghubungkan akun Anda."
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "Token ini kedaluwarsa setelah jangka waktu tertentu karena alasan keamanan. Anda harus menghubungkannya kembali ke MMI."
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "Mengapa saya melihat hal ini?"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Sesi kustodian Anda telah berakhir"
-  },
-  "custodySessionExpired": {
-    "message": "Sesi kustodian berakhir."
-  },
-  "custodyWrongChain": {
-    "message": "Akun ini tidak diatur untuk digunakan bersama $1"
   },
   "custom": {
     "message": "Lanjutan"
@@ -1861,9 +1759,6 @@
   "enterChainId": {
     "message": "Masukkan ID Chain"
   },
-  "enterCustodianToken": {
-    "message": "Masukkan token $1 atau tambahkan token baru"
-  },
   "enterMaxSpendLimit": {
     "message": "Masukkan batas penggunaan maksimum"
   },
@@ -1999,12 +1894,6 @@
   "extendWalletWithSnaps": {
     "message": "Jelajahi Snap yang dibuat oleh komunitas untuk menyesuaikan pengalaman web3 Anda",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
-  },
-  "extensionInsallCompleteDescription": {
-    "message": "Kembali ke orientasi produk MetaMask Institutional untuk menghubungkan akun kustodian atau kustodian mandiri milik Anda."
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "Penginstalan ekstensi selesai"
   },
   "externalExtension": {
     "message": "Ekstensi eksternal"
@@ -2466,12 +2355,6 @@
   "install": {
     "message": "Instal"
   },
-  "installExtension": {
-    "message": "Instal ekstensi"
-  },
-  "installExtensionDescription": {
-    "message": "Versi dompet web3 terkemuka di dunia yang sesuai dengan institusi, MetaMask."
-  },
   "installOrigin": {
     "message": "Instal asal"
   },
@@ -2864,9 +2747,6 @@
     "message": "$1 dihosting pada npm dan $2 merupakan pengenal unik Snap ini.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "Versi MetaMask Institutional"
-  },
   "metamaskNotificationsAreOff": {
     "message": "Saat ini notifikasi dompet tidak aktif."
   },
@@ -2891,9 +2771,6 @@
   "millionAbbreviation": {
     "message": "Jt",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "Akun yang Anda pilih ($1) berbeda dengan akun yang mencoba ditandatangani ($2)"
   },
   "mismatchedChainLinkText": {
     "message": "verifikasi detail jaringan",
@@ -2920,15 +2797,6 @@
   },
   "missingSettingRequest": {
     "message": "Minta di sini"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional dirancang dan dibangun di seluruh dunia."
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "Izinkan MetaMask Institutional mendeteksi dan menampilkan NFT di dompet secara otomatis."
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "Kata sandi ini hanya akan membuka ekstensi MetaMask Institutional."
   },
   "more": {
     "message": "selengkapnya"
@@ -3304,9 +3172,6 @@
   "noWebcamFoundTitle": {
     "message": "Webcam tidak ditemukan"
   },
-  "nonCustodialAccounts": {
-    "message": "MetaMask Institutional memungkinkan Anda untuk menggunakan akun non-kustodian, apabila berencana menggunakan akun ini untuk mencadangkan Frasa Pemulihan Rahasia."
-  },
   "nonce": {
     "message": "Nonce"
   },
@@ -3333,12 +3198,6 @@
   },
   "notEnoughGas": {
     "message": "Gas tidak cukup"
-  },
-  "note": {
-    "message": "Catatan"
-  },
-  "notePlaceholder": {
-    "message": "Pemberi persetujuan akan melihat catatan ini saat menyetujui transaksi di kustodian."
   },
   "notificationDetail": {
     "message": "Detail"
@@ -3674,9 +3533,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Pemasangan MetaMask Anda selesai!"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "Sematkan MetaMask Institutional"
-  },
   "oneDayAbbreviation": {
     "message": "1H",
     "description": "Shortened form of '1 day'"
@@ -3700,10 +3556,6 @@
     "message": "Hanya hubungkan ke situs yang Anda percayai. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "Buka aplikasi $1",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Buka layar penuh untuk menghubungkan Ledger Anda.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3714,17 +3566,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "Pengoperasian Gagal"
-  },
   "optional": {
     "message": "Opsional"
   },
   "options": {
     "message": "Opsi"
-  },
-  "or": {
-    "message": "atau"
   },
   "origin": {
     "message": "Asal"
@@ -3760,9 +3606,6 @@
   "password": {
     "message": "Kata sandi"
   },
-  "passwordMmiTermsWarning": {
-    "message": "Saya memahami bahwa MetaMask Institutional tidak dapat memulihkan kata sandi ini untuk saya. $1"
-  },
   "passwordNotLongEnough": {
     "message": "Kata sandi kurang panjang"
   },
@@ -3781,9 +3624,6 @@
   },
   "passwordsDontMatch": {
     "message": "Kata sandi tidak cocok"
-  },
-  "pasteJWTToken": {
-    "message": "Tempel atau taruh token di sini:"
   },
   "pastePrivateKey": {
     "message": "Tempel string kunci pribadi Anda di sini:",
@@ -4068,12 +3908,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "Ini memungkinkan Anda untuk menetapkan nama panggilan ke alamat mana pun. Kami akan menyarankan nama untuk alamat tempat Anda berinteraksi, jika memungkinkan."
   },
-  "pinExtensionDescription": {
-    "message": "Navigasikan ke menu ekstensi dan sematkan MetaMask Institutional untuk akses tanpa batas."
-  },
-  "pinExtensionTitle": {
-    "message": "Sematkan ekstensi"
-  },
   "pinToTop": {
     "message": "Sematkan ke atas"
   },
@@ -4094,9 +3928,6 @@
   },
   "portfolio": {
     "message": "Portofolio"
-  },
-  "portfolioDashboard": {
-    "message": "Dasbor Portofolio"
   },
   "preparingSwap": {
     "message": "Mempersiapkan pertukaran..."
@@ -4342,12 +4173,6 @@
   },
   "removeAccountDescription": {
     "message": "Akun ini akan dihapus dari dompet Anda. Pastikan Anda memiliki Frasa Pemulihan Rahasia asli atau kunci pribadi untuk akun impor ini sebelum melanjutkan. Anda dapat mengimpor atau membuat akun lagi dari menu gulir bawah akun. "
-  },
-  "removeJWT": {
-    "message": "Hapus token kustodian"
-  },
-  "removeJWTDescription": {
-    "message": "Yakin ingin menghapus token ini? Semua akun yang ditetapkan ke token ini juga akan dihapus dari ekstensi:"
   },
   "removeKeyringSnap": {
     "message": "Akun berikut akan dihapus dari MetaMask saat menghapus Snap ini:"
@@ -4694,26 +4519,17 @@
   "selectAll": {
     "message": "Pilih semua"
   },
-  "selectAllAccounts": {
-    "message": "Pilih semua akun"
-  },
   "selectAnAccount": {
     "message": "Pilih akun"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Akun ini sudah terhubung ke MetaMask."
   },
-  "selectAnAccountHelp": {
-    "message": "Pilih akun kustodian untuk digunakan di MetaMask Institutional."
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Aktifkan Tampilkan Media NFT"
   },
   "selectHdPath": {
     "message": "Pilih path HD"
-  },
-  "selectJWT": {
-    "message": "Pilih token"
   },
   "selectNFTPrivacyPreference": {
     "message": "Aktifkan Autodeteksi NFT"
@@ -6084,9 +5900,6 @@
   "transactionErrored": {
     "message": "Transaksi mengalami kesalahan."
   },
-  "transactionFailed": {
-    "message": "Transaksi Gagal"
-  },
   "transactionFee": {
     "message": "Biaya transaksi"
   },
@@ -6113,9 +5926,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total biaya gas"
-  },
-  "transactionNote": {
-    "message": "Catatan transaksi"
   },
   "transactionResubmitted": {
     "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
@@ -6394,9 +6204,6 @@
   },
   "viewTransaction": {
     "message": "Lihat transaksi"
-  },
-  "viewinCustodianApp": {
-    "message": "Lihat di aplikasi kustodian"
   },
   "viewinExplorer": {
     "message": "Lihat $1 di explorer",
