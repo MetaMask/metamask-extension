@@ -21,12 +21,6 @@ export type TemporaryMessageDataType = {
     metamaskId: string;
     data: string;
   };
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  metadata?: {
-    custodyId?: string;
-  };
-  status?: string;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export type MessagesIndexedById = {
