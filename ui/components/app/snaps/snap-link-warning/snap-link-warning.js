@@ -32,12 +32,36 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export default function SnapLinkWarning({ isOpen, onClose, url }) {
-  const t = useI18nContext();
-
+const SnapLinkDisplay = ({ url }) => {
   const parsedUrl = new URL(url);
   const isHTTPS = parsedUrl.protocol === 'https:';
-  const urlParts = url.split(parsedUrl.host);
+
+  // If the link is HTTPS we split on the host to highlight it
+  if (isHTTPS) {
+    const urlParts = url.split(parsedUrl.host);
+
+    return (
+      <>
+        {urlParts[0]}
+        <b>{parsedUrl.host}</b>
+        {urlParts[1]}
+      </>
+    );
+  }
+
+  // Otherwise highlight anything beyond the protocol
+  const urlParts = url.split(parsedUrl.protocol);
+
+  return (
+    <>
+      {parsedUrl.protocol}
+      <b>{urlParts[1]}</b>
+    </>
+  );
+};
+
+export default function SnapLinkWarning({ isOpen, onClose, url }) {
+  const t = useI18nContext();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -92,15 +116,7 @@ export default function SnapLinkWarning({ isOpen, onClose, url }) {
               style={{ overflow: 'hidden' }}
               color={TextColor.primaryDefault}
             >
-              {isHTTPS ? (
-                <>
-                  {urlParts[0]}
-                  <b>{parsedUrl.host}</b>
-                  {urlParts[1]}
-                </>
-              ) : (
-                url
-              )}
+              <SnapLinkDisplay url={url} />
             </Text>
             <Icon
               name={IconName.Export}
