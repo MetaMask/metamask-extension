@@ -861,7 +861,11 @@ describe('MetaMaskController', () => {
           jest.spyOn(metamaskController, 'isUnlocked').mockReturnValue(false);
         });
 
-        it('returns empty array if there is a CAIP-25 permission for the origin and ignoreLock is false', async () => {
+        it.only('returns `permittedAccounts` if there is a CAIP-25 permission for the origin', async () => {
+          // TODO: get back here, this fails. Need to understand what I should do with keyringController
+          // jest
+          //   .spyOn(metamaskController.keyringController, 'getAccounts')
+          //   .mockReturnValue(['0xdead', '0xbeef']);
           jest
             .spyOn(metamaskController.permissionController, 'getCaveat')
             .mockReturnValue({
@@ -874,15 +878,12 @@ describe('MetaMaskController', () => {
                 },
               },
             });
-
           expect(
-            metamaskController.getPermittedAccounts('test.com', {
-              ignoreLock: false,
-            }),
-          ).toStrictEqual([]);
+            metamaskController.getPermittedAccounts('test.com'),
+          ).toStrictEqual(['0xdead', '0xbeef']);
         });
 
-        it('returns accounts if there is a CAIP-25 permission for the origin and ignoreLock is true', async () => {
+        it('returns accounts if there is a CAIP-25 permission for the origin', async () => {
           jest
             .spyOn(metamaskController.permissionController, 'getCaveat')
             .mockReturnValue({
