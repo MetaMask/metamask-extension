@@ -1,34 +1,56 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
+import { getKnownPropertyNames } from '@metamask/utils';
+import { MemStoreControllersComposedState } from '../../../shared/types/background';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FlattenedUIState = Record<string, any>;
+const REMOVE_PATHS = {
+  SnapController: ['snapStates', 'unencryptedSnapStates'],
+  KeyringController: ['vault'],
+} as const;
 
-const REMOVE_KEYS = ['snapStates', 'unencryptedSnapStates', 'vault'];
-
-export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
+export function sanitizeUIState<
+  ControllerKey extends keyof MemStoreControllersComposedState = keyof MemStoreControllersComposedState,
+>(state: Pick<MemStoreControllersComposedState, ControllerKey>) {
   const newState = { ...state };
 
-  for (const key of REMOVE_KEYS) {
-    delete newState[key];
-  }
+  getKnownPropertyNames(REMOVE_PATHS).forEach((controllerName) => {
+    if (
+      !(controllerName in newState) ||
+      !newState[controllerName as keyof typeof newState]
+    ) {
+      return;
+    }
+    const [controllerState, keys] = [
+      newState[controllerName as keyof typeof newState],
+      REMOVE_PATHS[controllerName],
+    ];
+    keys.forEach((key) => {
+      if (key in controllerState) {
+        delete controllerState[key as keyof typeof controllerState];
+      }
+    });
+  });
 
   sanitizeSnapData(newState);
 
   return newState;
 }
 
-function sanitizeSnapData(state: FlattenedUIState) {
-  const snapsData = state.snaps as SnapControllerState['snaps'] | undefined;
-
-  if (!snapsData) {
+function sanitizeSnapData(
+  state:
+    | Pick<MemStoreControllersComposedState, 'SnapController'>
+    | Partial<Omit<MemStoreControllersComposedState, 'SnapController'>>,
+) {
+  if (!('SnapController' in state) || !state.SnapController?.snaps) {
     return;
   }
-
-  state.snaps = Object.values(snapsData).reduce((acc, snap) => {
+  const snapsData = state.SnapController.snaps;
+  state.SnapController.snaps = Object.values(snapsData).reduce<
+    SnapControllerState['snaps']
+  >((acc, snap) => {
     acc[snap.id] = stripLargeSnapData(snap) as Snap;
     return acc;
-  }, {} as SnapControllerState['snaps']);
+  }, {});
 }
 
 function stripLargeSnapData(snapData: Snap): Partial<Snap> {
