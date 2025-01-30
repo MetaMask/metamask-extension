@@ -40,7 +40,7 @@ const render = (
     history: { mostRecentOverviewPage: 'activity' },
     metamask: {
       ...mockState.metamask,
-      ...state,
+      ...state.metamask,
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {
