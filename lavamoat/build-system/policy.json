@@ -2654,7 +2654,7 @@
         "nyc>glob": true,
         "del>is-glob": true,
         "depcheck>resolve": true,
-        "eslint-import-resolver-typescript>tsconfig-paths": true
+        "eslint-plugin-import>tsconfig-paths": true
       }
     },
     "eslint-plugin-import>eslint-module-utils": {
@@ -4174,11 +4174,6 @@
       }
     },
     "depcheck>json5": {
-      "globals": {
-        "console.warn": true
-      }
-    },
-    "eslint-import-resolver-typescript>tsconfig-paths>json5": {
       "globals": {
         "console.warn": true
       }
@@ -8677,7 +8672,7 @@
         "ts-node>yn": true
       }
     },
-    "eslint-import-resolver-typescript>tsconfig-paths": {
+    "eslint-plugin-import>tsconfig-paths": {
       "builtin": {
         "fs.existsSync": true,
         "fs.lstatSync": true,
@@ -8699,23 +8694,8 @@
         "process.env": true
       },
       "packages": {
-        "eslint-import-resolver-typescript>tsconfig-paths>json5": true,
-        "wait-on>minimist": true,
-        "eslint-import-resolver-typescript>tsconfig-paths>strip-bom": true
-      }
-    },
-    "eslint-plugin-import>tsconfig-paths": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.lstatSync": true,
-        "fs.readFileSync": true,
-        "fs.statSync": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "packages": {
         "eslint-plugin-import>tsconfig-paths>json5": true,
+        "wait-on>minimist": true,
         "eslint-plugin-import>tsconfig-paths>strip-bom": true
       }
     },
