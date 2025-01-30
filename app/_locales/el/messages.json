@@ -290,9 +290,6 @@
   "addNewSolanaAccount": {
     "message": "Προσθήκη νέου λογαριασμού Solana (Beta)"
   },
-  "addNewToken": {
-    "message": "Προσθήκη νέου token"
-  },
   "addNft": {
     "message": "Προσθήκη του NFT"
   },
@@ -395,9 +392,6 @@
   "alert": {
     "message": "Ειδοποίηση"
   },
-  "alertActionBuy": {
-    "message": "Αγορά ETH"
-  },
   "alertActionUpdateGas": {
     "message": "Ενημέρωση ορίου των τελών συναλλαγών"
   },
@@ -424,9 +418,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Για να συνεχίσετε με αυτή τη συναλλαγή, θα πρέπει να αυξήσετε το όριο των τελών συναλλαγών σε 21000 ή περισσότερο."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "Δεν έχετε αρκετά ETH στον λογαριασμό σας για να πληρώσετε τα τέλη δικτύου."
   },
   "alertMessageNetworkBusy": {
     "message": "Οι τιμές των τελών συναλλαγών είναι υψηλές και οι εκτιμήσεις είναι λιγότερο ακριβείς."
@@ -485,12 +476,6 @@
   "all": {
     "message": "Όλες"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "Είτε έχετε ήδη συνδέσει όλους τους λογαριασμούς θεματοφύλακα είτε δεν έχετε κανέναν λογαριασμό να συνδέσετε με το MetaMask Institutional."
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "Δεν υπάρχουν διαθέσιμοι λογαριασμοί για σύνδεση"
-  },
   "allOfYour": {
     "message": "Όλα σας τα $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -507,12 +492,6 @@
   "allYourNFTsOf": {
     "message": "Όλα τα NFT σας από το $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "Να επιτρέπεται"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "Αυτό θα επιτρέψει στο MMI να συνδεθεί στο $1 για να εισαγάγει τους λογαριασμούς σας."
   },
   "allowNotifications": {
     "message": "Να επιτρέπονται οι ειδοποιήσεις"
@@ -655,9 +634,6 @@
   "average": {
     "message": "Μέσος Όρος"
   },
-  "awaitingApproval": {
-    "message": "Σε αναμονή έγκρισης..."
-  },
   "back": {
     "message": "Πίσω"
   },
@@ -722,9 +698,6 @@
   "betaHeaderText": {
     "message": "Αυτή είναι μια δοκιμαστική έκδοση. Παρακαλώ αναφέρετε σφάλματα $1",
     "description": "$1 represents the word 'here' in a hyperlink"
-  },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "Δοκιμαστική Έκδοση του MetaMask Institutional"
   },
   "betaMetamaskVersion": {
     "message": "Δοκιμαστική έκδοση MetaMask"
@@ -982,15 +955,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Έχω ενημερωθεί για την ειδοποίηση και εξακολουθώ να θέλω να συνεχίσω"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "Θα σας ανακατευθύνουμε στο $1 όταν κάνετε κλικ για να συνεχίσετε."
-  },
-  "confirmConnectCustodianText": {
-    "message": "Για να συνδέσετε τους λογαριασμούς σας εισέλθετε στον λογαριασμό σας στο $1 και κάντε κλικ στο κουμπί «σύνδεση με το MMI»."
-  },
-  "confirmConnectionTitle": {
-    "message": "Επιβεβαίωση σύνδεσης με το $1"
-  },
   "confirmFieldPaymaster": {
     "message": "Τα τέλη καταβλήθηκαν από"
   },
@@ -1071,18 +1035,6 @@
   },
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "Σύνδεση λογαριασμού θεματοφύλακα"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "Επιλέξτε τον θεματοφύλακα που θέλετε να συνδέσετε για να προσθέσετε ή να ανανεώσετε ένα token."
-  },
-  "connectCustodialAccountTitle": {
-    "message": "Λογαριασμοί θεματοφύλακα"
-  },
-  "connectCustodianAccounts": {
-    "message": "Σύνδεση των $1 λογαριασμών"
   },
   "connectManually": {
     "message": "Χειροκίνητη σύνδεση στον τρέχοντα ιστότοπο"
@@ -1205,12 +1157,6 @@
   },
   "continue": {
     "message": "Συνέχεια"
-  },
-  "continueMmiOnboarding": {
-    "message": "Συνεχίστε στο περιβάλλον του MetaMask Institutional"
-  },
-  "continueToWallet": {
-    "message": "Συνεχίστε στο πορτοφόλι"
   },
   "contract": {
     "message": "Συμβόλαιο"
@@ -1344,60 +1290,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "Γράφημα εκτιμώμενων τελών συναλλαγής αγοράς"
-  },
-  "custodian": {
-    "message": "Θεματοφύλακας"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "Μπορείτε τώρα να χρησιμοποιήσετε τους λογαριασμούς θεματοφύλακά σας στο MetaMask Institutional."
-  },
-  "custodianAccountAddedTitle": {
-    "message": "Έχουν προστεθεί επιλεγμένοι λογαριασμοί θεματοφύλακα."
-  },
-  "custodianQRCodeScan": {
-    "message": "Σαρώστε τον κωδικό QR με την εφαρμογή $1 για κινητά"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "Ή συνδεθείτε στον λογαριασμό σας $1 και κάντε κλικ στο κουμπί 'Σύνδεση στο MMI'"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "Παρακαλούμε μεταβείτε στο $1 και κάντε κλικ στο κουμπί «Σύνδεση με το MMI» στο περιβάλλον εργασίας χρήστη για να συνδέσετε ξανά τους λογαριασμούς σας με το MMI."
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "Τώρα μπορείτε να χρησιμοποιήσετε τους λογαριασμούς θεματοφύλακα στο MetaMask Institutional."
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "Το token θεματοφύλακα ανανεώθηκε"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "Αυτό θα αντικαταστήσει το token θεματοφύλακα για την ακόλουθη διεύθυνση:"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "Αντικατάσταση token θεματοφύλακα"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "Εγκρίνετε τη συναλλαγή στην εφαρμογή $1. Μόλις πραγματοποιηθούν όλες οι απαιτούμενες εγκρίσεις σχετικά με τον θεματοφύλακα, η συναλλαγή θα ολοκληρωθεί. Ελέγξτε την κατάσταση στην εφαρμογή $1."
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "Παρακαλούμε μεταβείτε στο $1 και κάντε κλικ στο κουμπί \"Σύνδεση με το MMI\" στο περιβάλλον εργασίας χρήστη για να συνδέσετε ξανά τους λογαριασμούς σας με το MMI."
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "Ο θεματοφύλακάς σας εκδίδει ένα token που πιστοποιεί την επέκταση του MetaMask Institutional, επιτρέποντάς σας να συνδέσετε τους λογαριασμούς σας."
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "Αυτό το token λήγει μετά από ένα ορισμένο χρονικό διάστημα για λόγους ασφαλείας. Αυτό απαιτεί την επανασύνδεσή σας στο MMI."
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "Γιατί το βλέπω αυτό;"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Η συνεδρία σας ως θεματοφύλακας έληξε"
-  },
-  "custodySessionExpired": {
-    "message": "Η συνεδρία θεματοφύλακα έληξε."
-  },
-  "custodyWrongChain": {
-    "message": "Αυτός ο λογαριασμός δεν έχει ρυθμιστεί για χρήση με $1"
   },
   "custom": {
     "message": "Σύνθετες"
@@ -1861,9 +1753,6 @@
   "enterChainId": {
     "message": "Εισαγάγετε το αναγνωριστικό αλυσίδας"
   },
-  "enterCustodianToken": {
-    "message": "Πληκτρολογήστε το token $1 ή προσθέστε ένα νέο token"
-  },
   "enterMaxSpendLimit": {
     "message": "Εισάγετε το μέγιστο όριο δαπανών"
   },
@@ -1999,12 +1888,6 @@
   "extendWalletWithSnaps": {
     "message": "Προσαρμόστε την εμπειρία του πορτοφολιού σας.",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
-  },
-  "extensionInsallCompleteDescription": {
-    "message": "Επιστρέψτε στο περιβάλλον προϊόντος του MetaMask Institutional για να συνδέσετε τους λογαριασμούς θεματοφύλακα ή αυτο-θεματοφύλακά σας."
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "Η εγκατάσταση της επέκτασης ολοκληρώθηκε"
   },
   "externalExtension": {
     "message": "Εξωτερική επέκταση"
@@ -2466,12 +2349,6 @@
   "install": {
     "message": "Εγκατάσταση"
   },
-  "installExtension": {
-    "message": "Εγκατάσταση επέκτασης"
-  },
-  "installExtensionDescription": {
-    "message": "Η συμβατή με την θεσμική έκδοση του κορυφαίου web3 πορτοφολιού στον κόσμο, MetaMask."
-  },
   "installOrigin": {
     "message": "Προέλευση εγκατάστασης"
   },
@@ -2864,9 +2741,6 @@
     "message": "Το $1 φιλοξενείται στο npm και το $2 είναι το μοναδικό αναγνωριστικό αυτού του Snap.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "Έκδοση του MetaMask Institutional"
-  },
   "metamaskNotificationsAreOff": {
     "message": "Οι ειδοποιήσεις του πορτοφολιού δεν είναι προς το παρόν ενεργές."
   },
@@ -2891,9 +2765,6 @@
   "millionAbbreviation": {
     "message": "Ε",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "Ο λογαριασμός ($1) που επιλέξατε είναι διαφορετικός από τον λογαριασμό που προσπαθείτε να υπογράψετε ($2)"
   },
   "mismatchedChainLinkText": {
     "message": "επαλήθευση των στοιχείων του δικτύου",
@@ -2920,15 +2791,6 @@
   },
   "missingSettingRequest": {
     "message": "Υποβάλετε αίτημα εδώ"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "Το MetaMask Institutional έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "Επιτρέψτε στο MetaMask Institutional να ανιχνεύει και να εμφανίζει αυτόματα τα NFT στο πορτοφόλι σας."
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "Αυτός ο κωδικός πρόσβασης θα ξεκλειδώσει μόνο την επέκταση του MetaMask Institutional."
   },
   "more": {
     "message": "περισσότερα"
@@ -3304,9 +3166,6 @@
   "noWebcamFoundTitle": {
     "message": "Η διαδικτυακή κάμερα δεν βρέθηκε"
   },
-  "nonCustodialAccounts": {
-    "message": "Το MetaMask Institutional σάς επιτρέπει να χρησιμοποιείτε λογαριασμούς μη θεματοφυλακής, αν σκοπεύετε να χρησιμοποιήσετε αυτούς τους λογαριασμούς για την δημιουργία αντιγράφων ασφαλείας μέσω της Μυστικής Φράσης Ανάκτησης."
-  },
   "nonce": {
     "message": "Αριθμολέξημα"
   },
@@ -3333,12 +3192,6 @@
   },
   "notEnoughGas": {
     "message": "Δεν υπάρχει αρκετό τέλος συναλλαγής"
-  },
-  "note": {
-    "message": "Σημείωση"
-  },
-  "notePlaceholder": {
-    "message": "Ο υπεύθυνος έγκρισης θα δει αυτήν τη σημείωση όταν εγκρίνει τη συναλλαγή ως θεματοφύλακας."
   },
   "notificationDetail": {
     "message": "Λεπτομέρειες"
@@ -3674,9 +3527,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Η εγκατάσταση του MetaMask ολοκληρώθηκε!"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "Καρφιτσώστε το MetaMask Institutional"
-  },
   "oneDayAbbreviation": {
     "message": "1Η",
     "description": "Shortened form of '1 day'"
@@ -3700,10 +3550,6 @@
     "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "Ανοίξτε την εφαρμογή $1",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Μεταβείτε σε πλήρη οθόνη για να συνδέσετε το Ledger σας.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3714,17 +3560,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "Η λειτουργία απέτυχε"
-  },
   "optional": {
     "message": "Προαιρετικά"
   },
   "options": {
     "message": "Επιλογές"
-  },
-  "or": {
-    "message": "ή"
   },
   "origin": {
     "message": "Προέλευση"
@@ -3760,9 +3600,6 @@
   "password": {
     "message": "Κωδικός πρόσβασης"
   },
-  "passwordMmiTermsWarning": {
-    "message": "Κατανοώ ότι το MetaMask Institutional δεν μπορεί να ανακτήσει αυτόν τον κωδικό πρόσβασης για μένα. $1"
-  },
   "passwordNotLongEnough": {
     "message": "Ο κωδικός πρόσβασης δεν είναι αρκετά μεγάλος"
   },
@@ -3781,9 +3618,6 @@
   },
   "passwordsDontMatch": {
     "message": "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
-  },
-  "pasteJWTToken": {
-    "message": "Επικολλήστε ή αφήστε το token σας εδώ:"
   },
   "pastePrivateKey": {
     "message": "Εισάγετε τη συμβολοσειρά του ιδιωτικού σας κλειδιού εδώ:",
@@ -4068,12 +3902,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "Αυτό σας επιτρέπει να εκχωρήσετε ένα ψευδώνυμο σε οποιαδήποτε διεύθυνση. Θα σας προτείνουμε ονόματα για διευθύνσεις με τις οποίες αλληλεπιδράτε, όπου είναι δυνατόν."
   },
-  "pinExtensionDescription": {
-    "message": "Περιηγηθείτε στο μενού επέκτασης και καρφιτσώστε το MetaMask Institutional για απρόσκοπτη πρόσβαση."
-  },
-  "pinExtensionTitle": {
-    "message": "Καρφιτσώστε την επέκταση"
-  },
   "pinToTop": {
     "message": "Καρφίτσωμα στην κορυφή"
   },
@@ -4094,9 +3922,6 @@
   },
   "portfolio": {
     "message": "Χαρτοφυλάκιο"
-  },
-  "portfolioDashboard": {
-    "message": "Πίνακας ελέγχου χαρτοφυλακίου"
   },
   "preparingSwap": {
     "message": "Προετοιμασία ανταλλαγής..."
@@ -4342,12 +4167,6 @@
   },
   "removeAccountDescription": {
     "message": "Αυτός ο λογαριασμός θα αφαιρεθεί από το πορτοφόλι σας. Βεβαιωθείτε ότι έχετε την αρχική Μυστική Φράση Ανάκτησης ή το ιδιωτικό κλειδί για αυτόν τον λογαριασμό που έχετε εισαγάγει πριν συνεχίσετε. Μπορείτε να εισαγάγετε ή να δημιουργήσετε ξανά λογαριασμούς από το αναπτυσσόμενο μενού λογαριασμών."
-  },
-  "removeJWT": {
-    "message": "Αφαίρεση του token θεματοφύλακα"
-  },
-  "removeJWTDescription": {
-    "message": "Είστε σίγουροι ότι θέλετε να αφαιρέσετε αυτό το token; Όλοι οι λογαριασμοί που αντιστοιχούν σε αυτό το token θα αφαιρεθούν και από την επέκταση: "
   },
   "removeKeyringSnap": {
     "message": "Η αφαίρεση αυτού του Snap αφαιρεί αυτούς τους λογαριασμούς από το MetaMask:"
@@ -4694,26 +4513,17 @@
   "selectAll": {
     "message": "Επιλογή όλων"
   },
-  "selectAllAccounts": {
-    "message": "Επιλέξτε όλους τους λογαριασμούς"
-  },
   "selectAnAccount": {
     "message": "Επιλέξτε έναν λογαριασμό"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Αυτός ο λογαριασμός έχει ήδη συνδεθεί με το MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Επιλέξτε τους λογαριασμούς θεματοφύλακα που θα χρησιμοποιηθούν στο MetaMask Institutional."
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Ενεργοποίηση της \"Προβολής μέσων NFT\""
   },
   "selectHdPath": {
     "message": "Επιλέξτε τη διαδρομή HD"
-  },
-  "selectJWT": {
-    "message": "Επιλέξτε token"
   },
   "selectNFTPrivacyPreference": {
     "message": "Ενεργοποιήστε την ανίχνευση των NFT"
@@ -6084,9 +5894,6 @@
   "transactionErrored": {
     "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
   },
-  "transactionFailed": {
-    "message": "Η συναλλαγή απέτυχε"
-  },
   "transactionFee": {
     "message": "Χρέωση συναλλαγής"
   },
@@ -6113,9 +5920,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Σύνολο τέλους συναλλαγής"
-  },
-  "transactionNote": {
-    "message": "Σημείωση συναλλαγής"
   },
   "transactionResubmitted": {
     "message": "Η συναλλαγή υποβλήθηκε ξανά με το εκτιμώμενο τέλος συναλλαγής να έχει αυξηθεί στα $1 στις $2"
@@ -6394,9 +6198,6 @@
   },
   "viewTransaction": {
     "message": "Προβολή συναλλαγών"
-  },
-  "viewinCustodianApp": {
-    "message": "Προβολή στην εφαρμογή θεματοφύλακα"
   },
   "viewinExplorer": {
     "message": "Προβολή $1 στον explorer",

@@ -157,6 +157,12 @@ describe('BridgeStatusController', () => {
     it('stops polling when the status response is complete', async () => {
       // Setup
       jest.useFakeTimers();
+      jest
+        .spyOn(Date, 'now')
+        .mockImplementation(
+          () =>
+            MockTxHistory.getComplete().bridgeTxMetaId1.completionTime ?? 10,
+        );
       const bridgeStatusController = new BridgeStatusController({
         messenger: getMessengerMock(),
       });
@@ -184,6 +190,8 @@ describe('BridgeStatusController', () => {
       expect(bridgeStatusController.state.bridgeStatusState.txHistory).toEqual(
         MockTxHistory.getComplete(),
       );
+
+      jest.restoreAllMocks();
     });
   });
   describe('resetState', () => {

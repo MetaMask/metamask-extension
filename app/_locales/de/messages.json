@@ -290,9 +290,6 @@
   "addNewSolanaAccount": {
     "message": "Ein neues Solana-Konto hinzufügen (Beta)"
   },
-  "addNewToken": {
-    "message": "Neues Token hinzufügen"
-  },
   "addNft": {
     "message": "NFT hinzufügen"
   },
@@ -395,9 +392,6 @@
   "alert": {
     "message": "Warnhinweis"
   },
-  "alertActionBuy": {
-    "message": "EHT kaufen"
-  },
   "alertActionUpdateGas": {
     "message": "Gas-Limit aktualisieren"
   },
@@ -424,9 +418,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 21.000 oder mehr erhöhen."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "Sie haben nicht genug ETH auf Ihrem Konto, um die Netzwerk-Gebühren zu bezahlen."
   },
   "alertMessageNetworkBusy": {
     "message": "Die Gas-Preise sind hoch und die Schätzungen sind weniger genau."
@@ -485,12 +476,6 @@
   "all": {
     "message": "Alle"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "Sie haben entweder bereits alle Ihre Verwahrungskonten verbunden oder haben kein Konto, dass Sie mit MetaMask Institutional verbinden könnten."
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "Keine verbindbaren Konten verfügbar"
-  },
   "allOfYour": {
     "message": "Alle Ihre $1.",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -507,12 +492,6 @@
   "allYourNFTsOf": {
     "message": "Alle Ihre NFTs von $1.",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "Genehmigen"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "Dadurch kann MMI sich zum Importieren Ihrer Konten mit $1 verbinden."
   },
   "allowNotifications": {
     "message": "Benachrichtigungen erlauben"
@@ -655,9 +634,6 @@
   "average": {
     "message": "Durchschnitt"
   },
-  "awaitingApproval": {
-    "message": "Warten auf Genehmigung ..."
-  },
   "back": {
     "message": "Zurück"
   },
@@ -722,9 +698,6 @@
   "betaHeaderText": {
     "message": "Dies ist eine BETA-Version. Bitte melden Sie Fehler $1.",
     "description": "$1 represents the word 'here' in a hyperlink"
-  },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "Beta-Version von MetaMask Institutional"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask-Version"
@@ -982,15 +955,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Ich habe die Benachrichtigung zur Kenntnis genommen und möchte trotzdem fortfahren"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "Sobald Sie auf „Weiter“ klicken, leiten wir Sie weiter zu $1."
-  },
-  "confirmConnectCustodianText": {
-    "message": "Zum Verbinden Ihrer Konten melden Sie sich bitte bei Ihrem $1-Konto an und klicken dann auf die Schaltfläche „Mit MMI verbinden“."
-  },
-  "confirmConnectionTitle": {
-    "message": "Verbindung mit $1 bestätigen"
-  },
   "confirmFieldPaymaster": {
     "message": "Gebühr bezahlt von"
   },
@@ -1071,18 +1035,6 @@
   },
   "connectAccounts": {
     "message": "Konten verbinden"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "Verwahrungskonto verbinden"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "Bitte wählen Sie den Verwahrer aus, den Sie verwenden möchten, um ein Token hinzuzufügen oder zu aktualisieren."
-  },
-  "connectCustodialAccountTitle": {
-    "message": "Verwahrungskonten"
-  },
-  "connectCustodianAccounts": {
-    "message": "$1 Konten verbinden"
   },
   "connectManually": {
     "message": "Manuelle Verbindung zur aktuellen Seite"
@@ -1205,12 +1157,6 @@
   },
   "continue": {
     "message": "Weiter"
-  },
-  "continueMmiOnboarding": {
-    "message": "Mit Einführung in MetaMask Institutional fortfahren"
-  },
-  "continueToWallet": {
-    "message": "Weiter zur Wallet"
   },
   "contract": {
     "message": "Contract"
@@ -1344,60 +1290,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "Markt-Gas-Schätzungsdiagramm"
-  },
-  "custodian": {
-    "message": "Verwahrer"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "Sie können jetzt Ihre Konten in MetaMask Institutional verwenden."
-  },
-  "custodianAccountAddedTitle": {
-    "message": "Ausgewählte $1-Konten wurden hinzugefügt."
-  },
-  "custodianQRCodeScan": {
-    "message": "QR-Code mit Ihrer $1-Mobilapp scannen"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "Oder melden Sie sich bei Ihrem $1-Konto an und klicken Sie auf die Schaltfläche „Mit MMI verbinden“."
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "Bitte gehen Sie zu $1 und klicken Sie in der Benutzeroberfläche auf die Schaltfläche „Mit MMI verbinden“, um Ihre Konten erneut mit MMI zu verbinden."
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "Sie können jetzt Verwahrkonten in MetaMask Institutional verwenden."
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "Ihr Verwahrungstoken wurde aktualisiert."
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "Dies ersetzt das Verwahrungstoken für die folgende Adresse:"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "Verwahrungstoken ersetzen"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "Genehmigen Sie die Transaktion in der $1-App. Wenn alle benötigten Verwahrungsgenehmigungen erteilt wurden, wir die Transaktion abgeschlossen. Überprüfen Sie Ihre $1-App für den Status."
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "Bitte gehen Sie zu $1 und klicken Sie in der Benutzeroberfläche auf die Schaltfläche „Mit MMI verbinden“, um Ihre Konten erneut mit MMI zu verbinden."
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "Ihr Verwahrer stellt ein Token aus, dass die MetaMask Institutional-Erweiterung automatisch beglaubigt, was die Verbindung zu Ihren Konten ermöglicht."
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "Dieses Token läuft aus Sicherheitsgründen nach einer gewissen Zeit ab. In diesem Fall müssen Sie erneut eine Verbindung mit MMI herstellen."
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "Warum sehe ich das?"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Ihre Verwahrungssitzung ist abgelaufen."
-  },
-  "custodySessionExpired": {
-    "message": "Verwahrungssitzung ist abgelaufen."
-  },
-  "custodyWrongChain": {
-    "message": "Dieses Konto ist nicht für die Nutzung mit $1 konfiguriert."
   },
   "custom": {
     "message": "Erweitert"
@@ -1861,9 +1753,6 @@
   "enterChainId": {
     "message": "Chain-ID eingeben"
   },
-  "enterCustodianToken": {
-    "message": "$1-Token eingeben oder neues Token hinzufügen"
-  },
   "enterMaxSpendLimit": {
     "message": "Max. Ausgabenlimit eingeben"
   },
@@ -1999,12 +1888,6 @@
   "extendWalletWithSnaps": {
     "message": "Erkunden Sie die von der Community erstellten Snaps, um Ihr web3-Erlebnis individuell zu gestalten.",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
-  },
-  "extensionInsallCompleteDescription": {
-    "message": "Kehren Sie zur Produkteinführung von MetaMask Institutional zurück, um Ihre Verwahrungs- oder Selbstverwahrungskonten zu verbinden."
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "Installation der Erweiterung abgeschlossen"
   },
   "externalExtension": {
     "message": "Externe Erweiterung"
@@ -2466,12 +2349,6 @@
   "install": {
     "message": "Installieren"
   },
-  "installExtension": {
-    "message": "Erweiterung installieren"
-  },
-  "installExtensionDescription": {
-    "message": "Die Institution-kompatible Version der weltweit führenden Web3-Wallet, MetaMask."
-  },
   "installOrigin": {
     "message": "Origin installieren"
   },
@@ -2864,9 +2741,6 @@
     "message": "$1 wird auf npm gehostet und $2 ist die einzige Kennung dieses Snaps.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional-Version"
-  },
   "metamaskNotificationsAreOff": {
     "message": "Wallet-Benachrichtigungen sind momentan nicht aktiv."
   },
@@ -2891,9 +2765,6 @@
   "millionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "Ihr ausgewähltes Konto ($1) unterscheidet sich von dem Konto, das versucht, zu unterzeichnen ($2)."
   },
   "mismatchedChainLinkText": {
     "message": "verifizieren Sie die Netzwerkdetails",
@@ -2920,15 +2791,6 @@
   },
   "missingSettingRequest": {
     "message": "Hier anfragen"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional ist weltweit konzipiert und aufgebaut."
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "Lassen Sie zu, dass MetaMask Institutional NFTs automatisch erkennt und anzeigt."
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "Dieses Passwort entsperrt nur Ihre MetaMask Institutional-Erweiterung."
   },
   "more": {
     "message": "mehr"
@@ -3304,9 +3166,6 @@
   "noWebcamFoundTitle": {
     "message": "Webcam nicht gefunden"
   },
-  "nonCustodialAccounts": {
-    "message": "MetaMask Institutional erlaubt Ihnen die Verwendung von Konten ohne Verwaltung, wenn Sie vorhaben, diese Konten als Backup für die geheime Wiederherstellungsphrase zu verwenden."
-  },
   "nonce": {
     "message": "Unbekannt"
   },
@@ -3333,12 +3192,6 @@
   },
   "notEnoughGas": {
     "message": "Nicht genügend Gas"
-  },
-  "note": {
-    "message": "Notiz"
-  },
-  "notePlaceholder": {
-    "message": "Der Genehmiger sieht diese Notiz, wenn die Transaktion beim Verwahrer genehmigt wird."
   },
   "notificationDetail": {
     "message": "Details"
@@ -3674,9 +3527,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Ihre MetaMask Installation ist abgeschlossen!"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "MetaMask Institutional pinnen"
-  },
   "oneDayAbbreviation": {
     "message": "1 T",
     "description": "Shortened form of '1 day'"
@@ -3700,10 +3550,6 @@
     "message": "Verbinden Sie sich nur mit Websites, denen Sie vertrauen. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "$1 App öffnen",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren Ledger über WebHID zu verbinden.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3714,17 +3560,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "Vorgang fehlgeschlagen"
-  },
   "optional": {
     "message": "Optional"
   },
   "options": {
     "message": "Optionen"
-  },
-  "or": {
-    "message": "oder"
   },
   "origin": {
     "message": "Ursprung"
@@ -3760,9 +3600,6 @@
   "password": {
     "message": "Passwort"
   },
-  "passwordMmiTermsWarning": {
-    "message": "Ich verstehe, dass MetaMask Institutional dieses Passwort für mich nicht wiederherstellen kann. $1"
-  },
   "passwordNotLongEnough": {
     "message": "Passwort nicht lang genug"
   },
@@ -3781,9 +3618,6 @@
   },
   "passwordsDontMatch": {
     "message": "Passwörter stimmen nicht überein."
-  },
-  "pasteJWTToken": {
-    "message": "Token hier einfügen oder ablegen:"
   },
   "pastePrivateKey": {
     "message": "Geben Sie hier die Zeichenfolge Ihres privaten Schlüssels ein:",
@@ -4068,12 +3902,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "Damit können Sie jeder Adresse einen Spitznamen zuweisen. Nach Möglichkeit werden wir Namen für Adressen vorschlagen, mit denen Sie interagieren."
   },
-  "pinExtensionDescription": {
-    "message": "Gehen Sie zum Erweiterungsmenü und heften Sie MetaMask Institutional für nahtlosen Zugriff an."
-  },
-  "pinExtensionTitle": {
-    "message": "Erweiterung anheften"
-  },
   "pinToTop": {
     "message": "Pin nach oben"
   },
@@ -4094,9 +3922,6 @@
   },
   "portfolio": {
     "message": "Portfolio"
-  },
-  "portfolioDashboard": {
-    "message": "Portfolio-Dashboard"
   },
   "preparingSwap": {
     "message": "Swap wird vorbereitet ..."
@@ -4342,12 +4167,6 @@
   },
   "removeAccountDescription": {
     "message": "Dieses Konto wird aus Ihrer Wallet entfernt. Bitte stellen Sie sicher, dass Sie die ursprüngliche geheime Wiederherstellungsphrase oder den privaten Schlüssel für dieses importierte Konto haben, bevor Sie fortfahren. Sie können Konten über das Dropdown-Menü „Konto“ erneut importieren oder erstellen."
-  },
-  "removeJWT": {
-    "message": "Verwahrungstoken entfernen"
-  },
-  "removeJWTDescription": {
-    "message": "Sind Sie sicher, dass Sie dieses Token entfernen möchten? Alle diesem Token zugewiesenen Konten werden ebenfalls von der Erweiterung entfernt: "
   },
   "removeKeyringSnap": {
     "message": "Das Entfernen dieses Snaps entfernt folgende Konten aus MetaMask:"
@@ -4694,26 +4513,17 @@
   "selectAll": {
     "message": "\nAlle auswählen"
   },
-  "selectAllAccounts": {
-    "message": "Alle Konten auswählen"
-  },
   "selectAnAccount": {
     "message": "Ein Konto auswählen"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Dieses Konto wurde bereits mit MetaMask verbunden."
   },
-  "selectAnAccountHelp": {
-    "message": "Wählen Sie die Verwahrungskonten zur Nutzung in MetaMask Institutional aus."
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "NFT-Medien anzeigen einschalten"
   },
   "selectHdPath": {
     "message": "HD-Pfad auswählen"
-  },
-  "selectJWT": {
-    "message": "Token auswählen"
   },
   "selectNFTPrivacyPreference": {
     "message": "Automatische NFT-Erkennung aktivieren"
@@ -6084,9 +5894,6 @@
   "transactionErrored": {
     "message": "Bei der Transaktion ist ein Fehler aufgetreten."
   },
-  "transactionFailed": {
-    "message": "Transaktion fehlgeschlagen"
-  },
   "transactionFee": {
     "message": "Transaktionsgebühr"
   },
@@ -6113,9 +5920,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Gesamte Gas-Gebühr"
-  },
-  "transactionNote": {
-    "message": "Transaktionsnotiz"
   },
   "transactionResubmitted": {
     "message": "Erneutes Absenden der Transaktion mit Erhöhung der geschätzten Gas-Gebühr auf $1 zu $2."
@@ -6394,9 +6198,6 @@
   },
   "viewTransaction": {
     "message": "Transaktion einsehen"
-  },
-  "viewinCustodianApp": {
-    "message": "In Verwahrungs-App anzeigen"
   },
   "viewinExplorer": {
     "message": "$1 im Explorer anzeigen",
