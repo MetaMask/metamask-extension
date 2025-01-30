@@ -254,7 +254,10 @@
     "tslib@npm:^2.3.1": "~2.6.0",
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
-    "undici@npm:5.28.4": "5.28.5"
+    "undici@npm:5.28.4": "5.28.5",
+    "@metamask/eth-trezor-keyring": "file:/Users/sebastienvaneyck/Documents/consensys/metamask/accounts/packages/keyring-eth-trezor",
+    "@metamask/keyring-controller": "file:/Users/sebastienvaneyck/Documents/consensys/metamask/core/packages/keyring-controller",
+    "@metamask/accounts-controller": "file:/Users/sebastienvaneyck/Documents/consensys/metamask/core/packages/accounts-controller"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -764,7 +767,11 @@
       "level>classic-level": false,
       "jest-preview": false,
       "@metamask/solana-wallet-snap>@solana/web3.js>bigint-buffer": false,
-      "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
+      "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false,
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs": false,
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>rpc-websockets>bufferutil": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>rpc-websockets>utf-8-validate": false
     }
   },
   "packageManager": "yarn@4.5.1"
