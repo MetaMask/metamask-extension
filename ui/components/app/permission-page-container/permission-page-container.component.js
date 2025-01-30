@@ -24,7 +24,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
 import {
-  getRequestedSessionScopes,
+  getRequestedCaip25CaveatValue,
   getCaip25PermissionsResponse,
 } from '../../../pages/permissions-connect/connect-page/utils';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
@@ -151,16 +151,22 @@ export default class PermissionPageContainer extends Component {
       (selectedAccount) => selectedAccount.address,
     );
 
-    const requestedSessionsScopes = getRequestedSessionScopes(
+    const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
       _request.permission,
     );
-    const approvedChainIds = getPermittedEthChainIds(requestedSessionsScopes);
+    const approvedChainIds = getPermittedEthChainIds(
+      requestedCaip25CaveatValue,
+    );
 
     const request = {
       ..._request,
       permissions: {
         ..._request.permissions,
-        ...getCaip25PermissionsResponse(approvedAccounts, approvedChainIds),
+        ...getCaip25PermissionsResponse(
+          requestedCaip25CaveatValue,
+          approvedAccounts,
+          approvedChainIds,
+        ),
       },
     };
 

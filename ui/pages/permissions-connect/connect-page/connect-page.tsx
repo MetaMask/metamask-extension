@@ -37,9 +37,9 @@ import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import {
-  getRequestedSessionScopes,
   getCaip25PermissionsResponse,
   PermissionsRequest,
+  getRequestedCaip25CaveatValue,
 } from './utils';
 
 export type ConnectPageRequest = {
@@ -64,11 +64,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
 
-  const requestedSessionsScopes = getRequestedSessionScopes(
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,
   );
-  const requestedAccounts = getEthAccounts(requestedSessionsScopes);
-  const requestedChainIds = getPermittedEthChainIds(requestedSessionsScopes);
+  const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
+  const requestedChainIds = getPermittedEthChainIds(requestedCaip25CaveatValue);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -140,6 +140,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       permissions: {
         ...request.permissions,
         ...getCaip25PermissionsResponse(
+          getRequestedCaip25CaveatValue(request.permissions),
           selectedAccountAddresses as Hex[],
           selectedChainIds,
         ),

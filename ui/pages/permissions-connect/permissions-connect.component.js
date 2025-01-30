@@ -21,12 +21,12 @@ import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 import { ConnectPage } from './connect-page/connect-page';
-import { getRequestedSessionScopes } from './connect-page/utils';
+import { getRequestedCaip25CaveatValue } from './connect-page/utils';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissions) {
-  const requestedSessionsScopes = getRequestedSessionScopes(permissions);
+  const requestedSessionsScopes = getRequestedCaip25CaveatValue(permissions);
   const requestedAccounts = getEthAccounts(requestedSessionsScopes);
 
   if (requestedAccounts.length > 0) {
@@ -43,7 +43,7 @@ function getDefaultSelectedAccounts(currentAddress, permissions) {
 }
 
 function getRequestedChainIds(permissions) {
-  const requestedSessionsScopes = getRequestedSessionScopes(permissions);
+  const requestedSessionsScopes = getRequestedCaip25CaveatValue(permissions);
   return getPermittedEthChainIds(requestedSessionsScopes);
 }
 

@@ -33,7 +33,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
-import { getRequestedSessionScopes } from '../../pages/permissions-connect/connect-page/utils';
+import { getRequestedCaip25CaveatValue } from '../../pages/permissions-connect/connect-page/utils';
 import { getURLHost } from './util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
@@ -57,8 +57,8 @@ function getSnapNameComponent(snapName) {
 const PERMISSION_DESCRIPTIONS = deepFreeze({
   // "endowment:caip25" entry is needed for the Snaps Permissions Review UI
   [Caip25EndowmentPermissionName]: ({ t, permissionValue }) => {
-    const caveatValue = getRequestedSessionScopes({
-      permissions: permissionValue,
+    const caveatValue = getRequestedCaip25CaveatValue({
+      [Caip25EndowmentPermissionName]: permissionValue,
     });
     const requestedAccounts = getEthAccounts(caveatValue);
     const isLegacySwitchChain = requestedAccounts.length === 0;
