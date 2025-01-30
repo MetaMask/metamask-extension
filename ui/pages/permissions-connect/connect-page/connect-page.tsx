@@ -98,7 +98,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     ? [...nonTestNetworks, selectedTestNetwork].map(({ chainId }) => chainId)
     : nonTestNetworks.map(({ chainId }) => chainId);
 
-  const allNetworksList = [...nonTestNetworks, ...testNetworks].map(({ chainId }) => chainId)
+  const allNetworksList = [...nonTestNetworks, ...testNetworks].map(
+    ({ chainId }) => chainId,
+  );
 
   const supportedRequestedChainIds = requestedChainIds.filter((chainId) =>
     allNetworksList.includes(chainId),
