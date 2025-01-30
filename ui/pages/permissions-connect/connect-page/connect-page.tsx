@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
+import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
@@ -34,18 +36,15 @@ import {
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import {
-  CaveatTypes,
-  EndowmentTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+  getRequestedSessionScopes,
+  getCaip25PermissionsResponse,
+  PermissionsRequest,
+} from './utils';
 
 export type ConnectPageRequest = {
   id: string;
   origin: string;
-  permissions?: Record<
-    string,
-    { caveats?: { type: string; value: string[] }[] }
-  >;
+  permissions?: PermissionsRequest;
 };
 
 export type ConnectPageProps = {
@@ -64,19 +63,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
 
-  const ethAccountsPermission =
-    request?.permissions?.[RestrictedMethods.eth_accounts];
-  const requestedAccounts =
-    ethAccountsPermission?.caveats?.find(
-      (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-    )?.value || [];
-
-  const permittedChainsPermission =
-    request?.permissions?.[EndowmentTypes.permittedChains];
-  const requestedChainIds =
-    permittedChainsPermission?.caveats?.find(
-      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-    )?.value || [];
+  const requestedSessionsScopes = getRequestedSessionScopes(
+    request.permissions,
+  );
+  const requestedAccounts = getEthAccounts(requestedSessionsScopes);
+  const requestedChainIds = getPermittedEthChainIds(requestedSessionsScopes);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -96,7 +87,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
   const currentlySelectedNetworkChainId =
     currentlySelectedNetwork.network.chainId;
-  // If globally selected network is a test network, include that in the default selcted networks for connection request
+  // If globally selected network is a test network, include that in the default selected networks for connection request
   const selectedTestNetwork = testNetworks.find(
     (network: { chainId: string }) =>
       network.chainId === currentlySelectedNetworkChainId,
@@ -133,8 +124,13 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = () => {
     const _request = {
       ...request,
-      approvedAccounts: selectedAccountAddresses,
-      approvedChainIds: selectedChainIds,
+      permissions: {
+        ...request.permissions,
+        ...getCaip25PermissionsResponse(
+          selectedAccountAddresses as Hex[],
+          selectedChainIds,
+        ),
+      },
     };
     approveConnection(_request);
   };

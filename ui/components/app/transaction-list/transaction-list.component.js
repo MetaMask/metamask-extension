@@ -24,6 +24,8 @@ import {
   getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   isSelectedInternalAccountSolana,
   getMultichainNetwork,
   getSelectedAccountMultichainTransactions,
