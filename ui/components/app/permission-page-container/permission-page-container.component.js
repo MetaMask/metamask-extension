@@ -153,7 +153,7 @@ export default class PermissionPageContainer extends Component {
     );
 
     const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
-      _request.permission,
+      _request.permissions,
     );
 
     const request = {
