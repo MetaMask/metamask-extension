@@ -24,10 +24,10 @@ import {
   getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
-  ///: END:ONLY_INCLUDE_IF
   isSelectedInternalAccountSolana,
   getMultichainNetwork,
   getSelectedAccountMultichainTransactions,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
