@@ -7,9 +7,7 @@ import {
 } from '@metamask/multichain';
 import * as Multichain from '@metamask/multichain';
 import { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
-import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import * as Util from '../../../util';
-import { PermissionNames } from '../../../../controllers/permissions';
 import { walletCreateSession } from './handler';
 
 jest.mock('../../../util', () => ({
@@ -57,8 +55,29 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const requestPermissionApprovalForOrigin = jest.fn().mockResolvedValue({
-    approvedAccounts: ['0x1', '0x2', '0x3', '0x4'],
-    approvedChainIds: ['0x1', '0x5'],
+    permissions: {
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {},
+              optionalScopes: {
+                'wallet:eip155': {
+                  accounts: [
+                    'wallet:eip155:0x1',
+                    'wallet:eip155:0x2',
+                    'wallet:eip155:0x3',
+                    'wallet:eip155:0x4',
+                  ],
+                },
+              },
+              isMultichainOrigin: true,
+            },
+          },
+        ],
+      },
+    },
   });
   const grantPermissions = jest.fn().mockResolvedValue(undefined);
   const findNetworkClientIdByChainId = jest.fn().mockReturnValue('mainnet');
@@ -331,19 +350,23 @@ describe('wallet_createSession', () => {
     await handler(baseRequest);
 
     expect(requestPermissionApprovalForOrigin).toHaveBeenCalledWith({
-      [PermissionNames.eth_accounts]: {
+      [Caip25EndowmentPermissionName]: {
         caveats: [
           {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: ['0x1', '0x3'],
-          },
-        ],
-      },
-      [PermissionNames.permittedChains]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: ['0x539', '0x64'],
+            type: Caip25CaveatType,
+            value: {
+              requiredScopes: {
+                'eip155:1337': {
+                  accounts: ['eip155:1337:0x1', 'eip155:1337:0x3'],
+                },
+              },
+              optionalScopes: {
+                'eip155:100': {
+                  accounts: ['eip155:100:0x1', 'eip155:100:0x3'],
+                },
+              },
+              isMultichainOrigin: true,
+            },
           },
         ],
       },
@@ -389,8 +412,31 @@ describe('wallet_createSession', () => {
         unsupportableScopes: {},
       });
     requestPermissionApprovalForOrigin.mockResolvedValue({
-      approvedAccounts: ['0x1', '0x2'],
-      approvedChainIds: ['0x5', '0x64', '0x539'], // 5, 100, 1337
+      permissions: {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {
+                  'eip155:5': {
+                    accounts: ['eip155:5:0x1', 'eip155:5:0x2'],
+                  },
+                },
+                optionalScopes: {
+                  'eip155:100': {
+                    accounts: ['eip155:100:0x1', 'eip155:100:0x2'],
+                  },
+                  'eip155:1337': {
+                    accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
+                  },
+                },
+                isMultichainOrigin: true,
+              },
+            },
+          ],
+        },
+      },
     });
     await handler(baseRequest);
 

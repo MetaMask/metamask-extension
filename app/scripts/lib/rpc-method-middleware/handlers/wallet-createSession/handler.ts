@@ -1,11 +1,9 @@
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
   setEthAccounts,
-  getPermittedEthChainIds,
-  setPermittedEthChainIds,
   bucketScopes,
   validateAndNormalizeScopes,
   Caip25Authorization,
@@ -13,14 +11,12 @@ import {
   getSessionScopes,
   NormalizedScopesObject,
   getSupportedScopeObjects,
-  mergeScopes,
   Caip25CaveatValue,
 } from '@metamask/multichain';
 import {
   Caveat,
   CaveatSpecificationConstraint,
   invalidParams,
-  PermissionConstraint,
   PermissionController,
   PermissionSpecificationConstraint,
   RequestedPermissions,
@@ -38,7 +34,6 @@ import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import { PermissionNames } from '../../../../controllers/permissions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -46,7 +41,6 @@ import {
   MetaMetricsEventPayload,
 } from '../../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../../util';
-import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 type AbstractPermissionController = PermissionController<
@@ -89,6 +83,7 @@ async function walletCreateSessionHandler(
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   hooks: {
+    listAccounts: () => { address: string }[];
     findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
     requestPermissionApprovalForOrigin: (
       requestedPermissions: RequestedPermissions,
@@ -128,26 +123,73 @@ async function walletCreateSessionHandler(
       normalizedOptionalScopes,
     );
 
-    const {permissions: approvedPermissions} = await hooks.requestPermissionApprovalForOrigin({
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: {
-              requiredScopes: supportedRequiredScopesObjects,
-              optionalScopes: supportedOptionalScopesObjects,
-              isMultichainOrigin: true
-            },
-          },
-        ],
+    const existsNetworkClientForChainId = (chainId: Hex) => {
+      try {
+        hooks.findNetworkClientIdByChainId(chainId);
+        return true;
+      } catch (err) {
+        return false;
+      }
+    };
+
+    const { supportedScopes: supportedRequiredScopes } = bucketScopes(
+      supportedRequiredScopesObjects,
+      {
+        isChainIdSupported: existsNetworkClientForChainId,
+        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
       },
-    });
+    );
 
-    const approvedCaip25Permission = approvedPermissions[Caip25EndowmentPermissionName]
-    const approvedCaip25CaveatValue = approvedCaip25Permission?.caveats.find((caveat) => caveat.type === Caip25CaveatType).value as Caip25CaveatValue
+    const { supportedScopes: supportedOptionalScopes } = bucketScopes(
+      supportedOptionalScopesObjects,
+      {
+        isChainIdSupported: existsNetworkClientForChainId,
+        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+      },
+    );
 
+    // Fetch EVM accounts from native wallet keyring
+    // These addresses are lowercased already
+    const existingEvmAddresses = hooks
+      .listAccounts()
+      .map((account) => account.address);
+    const supportedEthAccounts = getEthAccounts({
+      requiredScopes: supportedRequiredScopes,
+      optionalScopes: supportedOptionalScopes,
+    })
+      .map((address) => address.toLowerCase() as Hex)
+      .filter((address) => existingEvmAddresses.includes(address));
+
+    const requestedCaip25CaveatValue = {
+      requiredScopes: getInternalScopesObject(supportedRequiredScopes),
+      optionalScopes: getInternalScopesObject(supportedOptionalScopes),
+      isMultichainOrigin: true,
+    };
+
+    const requestedCaip25CaveatValueWithSupportedEthAccounts = setEthAccounts(
+      requestedCaip25CaveatValue,
+      supportedEthAccounts,
+    );
+
+    const { permissions: approvedPermissions } =
+      await hooks.requestPermissionApprovalForOrigin({
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: requestedCaip25CaveatValueWithSupportedEthAccounts,
+            },
+          ],
+        },
+      });
+
+    const approvedCaip25Permission =
+      approvedPermissions[Caip25EndowmentPermissionName];
+    const approvedCaip25CaveatValue = approvedCaip25Permission?.caveats.find(
+      (caveat) => caveat.type === Caip25CaveatType,
+    ).value as Caip25CaveatValue;
     if (!approvedCaip25CaveatValue) {
-      throw new Error('should not be possible')
+      throw rpcErrors.internal();
     }
 
     const sessionScopes = getSessionScopes(approvedCaip25CaveatValue);
@@ -156,7 +198,7 @@ async function walletCreateSessionHandler(
       subject: {
         origin,
       },
-      approvedPermissions
+      approvedPermissions,
     });
 
     // TODO: Contact analytics team for how they would prefer to track this
@@ -168,7 +210,7 @@ async function walletCreateSessionHandler(
         hooks.metamaskState.permissionHistory,
       ).includes(origin);
 
-      const approvedEthAccounts = getEthAccounts(approvedCaip25CaveatValue)
+      const approvedEthAccounts = getEthAccounts(approvedCaip25CaveatValue);
 
       hooks.sendMetrics({
         event: MetaMetricsEventName.DappViewed,
@@ -199,6 +241,7 @@ export const walletCreateSession = {
   implementation: walletCreateSessionHandler,
   hookNames: {
     findNetworkClientIdByChainId: true,
+    listAccounts: true,
     requestPermissionApprovalForOrigin: true,
     grantPermissions: true,
     sendMetrics: true,
