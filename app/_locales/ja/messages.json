@@ -392,9 +392,6 @@
   "alert": {
     "message": "アラート"
   },
-  "alertActionBuy": {
-    "message": "ETHを購入"
-  },
   "alertActionUpdateGas": {
     "message": "ガスリミットを更新"
   },
@@ -421,9 +418,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "このトランザクションを続行するには、ガスリミットを21000以上に上げる必要があります。"
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "アカウントにネットワーク手数料を支払うのに十分なETHがありません。"
   },
   "alertMessageNetworkBusy": {
     "message": "ガス価格が高く、見積もりはあまり正確ではありません。"

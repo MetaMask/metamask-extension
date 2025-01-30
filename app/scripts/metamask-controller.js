@@ -495,7 +495,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // instance of a class that wraps the extension's storage local API.
-    this.localStoreApiWrapper = opts.localStore;
+    this.localStoreApiWrapper = opts.persistanceManager;
 
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
@@ -5486,8 +5486,9 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param origin - The origin to request approval for.
    * @param permissions - The permissions to request approval for.
+   * @param [options] - Optional. Additional properties to define on the requestData object
    */
-  async requestPermissionApproval(origin, permissions) {
+  async requestPermissionApproval(origin, permissions, options = {}) {
     const id = nanoid();
     return this.approvalController.addAndShowApprovalRequest({
       id,
@@ -5498,6 +5499,7 @@ export default class MetamaskController extends EventEmitter {
           origin,
         },
         permissions,
+        ...options,
       },
       type: MethodNames.RequestPermissions,
     });
@@ -5510,16 +5512,31 @@ export default class MetamaskController extends EventEmitter {
    * @param {Hex} chainId - The chainId to add incrementally.
    */
   async requestApprovalPermittedChainsPermission(origin, chainId) {
-    await this.requestPermissionApproval(origin, {
-      [PermissionNames.permittedChains]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: [chainId],
-          },
-        ],
+    const caveatValueWithChains = setPermittedEthChainIds(
+      {
+        requiredScopes: {},
+        optionalScopes: {},
+        isMultichainOrigin: false,
       },
-    });
+      [chainId],
+    );
+
+    await this.requestPermissionApproval(
+      origin,
+      {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValueWithChains,
+            },
+          ],
+        },
+      },
+      {
+        isLegacySwitchEthereumChain: true,
+      },
+    );
   }
 
   /**
@@ -5648,10 +5665,15 @@ export default class MetamaskController extends EventEmitter {
       delete permissions[PermissionNames.permittedChains];
     }
 
-    const legacyApproval = await this.requestPermissionApproval(
-      origin,
-      permissions,
-    );
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
+
+    const requestedAccounts =
+      permissions[PermissionNames.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -5665,26 +5687,31 @@ export default class MetamaskController extends EventEmitter {
 
     const caveatValueWithChains = setPermittedEthChainIds(
       newCaveatValue,
-      isSnapId(origin) ? [] : legacyApproval.approvedChainIds,
+      isSnapId(origin) ? [] : requestedChains,
     );
 
-    const caveatValueWithAccounts = setEthAccounts(
+    const caveatValueWithAccountsAndChains = setEthAccounts(
       caveatValueWithChains,
-      legacyApproval.approvedAccounts,
+      requestedAccounts,
     );
 
-    return {
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: caveatValueWithAccounts,
+    const { permissions: approvedPermissions } =
+      await this.requestPermissionApproval(
+        origin,
+{
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: caveatValueWithAccountsAndChains,
+                },
+              ],
+            },
           },
-        ],
-      },
-    };
-  }
+      );
 
+    return approvedPermissions;
+  }
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
