@@ -1,8 +1,12 @@
 import fs from 'fs';
 
 // Set OWNER and REPOSITORY based on the environment
-const OWNER = process.env.CIRCLE_PROJECT_USERNAME || process.env.OWNER;
-const REPOSITORY = process.env.CIRCLE_PROJECT_REPONAME || process.env.REPOSITORY;
+const OWNER =
+  process.env.CIRCLE_PROJECT_USERNAME || process.env.OWNER || 'MetaMask';
+const REPOSITORY =
+  process.env.CIRCLE_PROJECT_REPONAME ||
+  process.env.REPOSITORY ||
+  'metamask-extension';
 const CIRCLE_BASE_URL = 'https://circleci.com/api/v2';
 
 /**
