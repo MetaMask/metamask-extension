@@ -5696,19 +5696,16 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const { permissions: approvedPermissions } =
-      await this.requestPermissionApproval(
-        origin,
-{
-            [Caip25EndowmentPermissionName]: {
-              caveats: [
-                {
-                  type: Caip25CaveatType,
-                  value: caveatValueWithAccountsAndChains,
-                },
-              ],
+      await this.requestPermissionApproval(origin, {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValueWithAccountsAndChains,
             },
-          },
-      );
+          ],
+        },
+      });
 
     return approvedPermissions;
   }
