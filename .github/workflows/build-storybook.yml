@@ -2,6 +2,9 @@ name: Build storybook
 
 on:
   workflow_call:
+    secrets:
+      STORYBOOK_TOKEN:
+        required: true
 
 jobs:
   build-storybook:
@@ -30,5 +33,5 @@ jobs:
         # For a `push` event, the branch is `github.ref_name`.
         if: ${{ (github.head_ref || github.ref_name) == 'main' }}
         run: |
-          git remote add storybook git@github.com:MetaMask/metamask-storybook.git
+          git remote add storybook https://${{ secrets.STORYBOOK_TOKEN }}@github.com/MetaMask/metamask-storybook.git
           yarn storybook:deploy
