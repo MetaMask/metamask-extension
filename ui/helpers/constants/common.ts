@@ -4,11 +4,6 @@ export const SECONDARY = 'SECONDARY';
 const _contractAddressLink =
   'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-const _mmiWebSite = 'https://metamask.io/institutions/';
-export const MMI_WEB_SITE = _mmiWebSite;
-///: END:ONLY_INCLUDE_IF
-
 // eslint-disable-next-line prefer-destructuring
 export const METAMETRICS_SETTINGS_LINK =
   'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings';
