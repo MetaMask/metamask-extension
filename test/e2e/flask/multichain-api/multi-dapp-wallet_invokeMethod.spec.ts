@@ -80,11 +80,6 @@ describe('Multichain API', function () {
                 dapp,
                 true,
               );
-              await initCreateSessionScopes(driver, [SCOPE], ACCOUNTS);
-              await addAccountInWalletAndAuthorize(driver);
-              await driver.clickElement({ text: 'Connect', tag: 'button' });
-              await driver.delay(largeDelayMs);
-              await driver.switchToWindowWithUrl(dapp);
             }
 
             const TEST_METHODS = {
@@ -140,7 +135,6 @@ describe('Multichain API', function () {
             driver: Driver;
             extensionId: string;
           }) => {
-            // Arrange
             await unlockWallet(driver);
             for (const dapp of DAPP_URLS) {
               await openMultichainDappAndConnectWalletWithExternallyConnectable(
@@ -154,7 +148,6 @@ describe('Multichain API', function () {
               await driver.clickElement({ text: 'Connect', tag: 'button' });
             }
 
-            // Act
             for (const [i, dapp] of DAPP_URLS.entries()) {
               await driver.switchToWindowWithUrl(dapp);
               await driver.delay(veryLargeDelayMs);
@@ -174,7 +167,6 @@ describe('Multichain API', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            // Assert
             for (const [i, dapp] of DAPP_URLS.entries()) {
               const accountWebElement = await driver.findElement(
                 '[data-testid="sender-address"]',
