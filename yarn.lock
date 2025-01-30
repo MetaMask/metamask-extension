@@ -4905,9 +4905,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@21.0.2-preview-a7846907":
-  version: 21.0.2-preview-a7846907
-  resolution: "@metamask-previews/accounts-controller@npm:21.0.2-preview-a7846907"
+"@metamask/accounts-controller@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@metamask/accounts-controller@npm:22.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/base-controller": "npm:^7.1.1"
@@ -4915,7 +4915,7 @@ __metadata:
     "@metamask/keyring-api": "npm:^16.1.0"
     "@metamask/keyring-internal-api": "npm:^4.0.1"
     "@metamask/snaps-sdk": "npm:^6.7.0"
-    "@metamask/snaps-utils": "npm:^8.3.0"
+    "@metamask/snaps-utils": "npm:^8.9.0"
     "@metamask/utils": "npm:^11.0.1"
     deepmerge: "npm:^4.2.2"
     ethereum-cryptography: "npm:^2.1.2"
@@ -4926,7 +4926,7 @@ __metadata:
     "@metamask/providers": ^18.1.0
     "@metamask/snaps-controllers": ^9.7.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/f0087c53c61a14198784b046e471cfeb385c4513d75892cfe28c31c4a3e1443ba5ea8ce86d3de74a38dcb5c33ba83a610557672c0aa135feddd024176fcca162
+  checksum: 10/5002d57e07ed009c106490965e1e8655b54b20d5ac0689ce3d38ad131dab421cab83667979ff5cea3fbdf663b375ff7ebc70eaf6e5c8c4bdf72f21d10057f2af
   languageName: node
   linkType: hard
 
@@ -6578,24 +6578,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^11.0.1":
-  version: 11.0.1
-  resolution: "@metamask/utils@npm:11.0.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@noble/hashes": "npm:^1.3.1"
-    "@scure/base": "npm:^1.1.3"
-    "@types/debug": "npm:^4.1.7"
-    debug: "npm:^4.3.4"
-    pony-cause: "npm:^2.1.10"
-    semver: "npm:^7.5.4"
-    uuid: "npm:^9.0.1"
-  checksum: 10/3949d16c8021bfb5f70e3b1c99f097ffaf43158116734197b039b32be6aabecb12178deb62c0b182e45295b0865618636324020059821c5b053029d8bdc90d70
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^11.1.0":
+"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0":
   version: 11.1.0
   resolution: "@metamask/utils@npm:11.1.0"
   dependencies:
@@ -26710,7 +26693,7 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.2.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
-    "@metamask/accounts-controller": "npm:^21.0.2"
+    "@metamask/accounts-controller": "npm:^22.0.0"
     "@metamask/address-book-controller": "npm:^6.0.0"
     "@metamask/announcement-controller": "npm:^7.0.0"
     "@metamask/api-specs": "npm:^0.9.3"

@@ -1458,6 +1458,14 @@
         "@metamask/keyring-api>bech32": true
       }
     },
+    "@metamask/profile-sync-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": true,
+        "@metamask/keyring-api>bech32": true
+      }
+    },
     "@metamask/keyring-controller": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -1491,6 +1499,16 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/keyring-utils": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": true,
         "bitcoin-address-validation": true
       }
     },
@@ -1729,7 +1747,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
+        "@metamask/profile-sync-controller>@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/network-controller": true,
         "@metamask/profile-sync-controller>@noble/ciphers": true,
@@ -2352,6 +2370,21 @@
         "semver": true
       }
     },
+    "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
     "@metamask/keyring-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -2382,7 +2415,7 @@
         "semver": true
       }
     },
-    "@metamask/multichain>@metamask/utils": {
+    "@metamask/message-manager>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2397,7 +2430,7 @@
         "semver": true
       }
     },
-    "@metamask/message-manager>@metamask/utils": {
+    "@metamask/multichain>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true

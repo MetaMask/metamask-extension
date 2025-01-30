@@ -254,9 +254,7 @@
     "tslib@npm:^2.3.1": "~2.6.0",
     "tslib@npm:^2.4.0": "~2.6.0",
     "tslib@npm:^2.6.2": "~2.6.0",
-    "undici@npm:5.28.4": "5.28.5",
-    "@metamask/accounts-controller@npm:21.0.2": "npm:@metamask-previews/accounts-controller@21.0.2-preview-a7846907",
-    "@metamask/accounts-controller@npm:^21.0.2": "npm:@metamask-previews/accounts-controller@21.0.2-preview-a7846907"
+    "undici@npm:5.28.4": "5.28.5"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -288,7 +286,7 @@
     "@metamask-institutional/types": "^1.2.0",
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/account-watcher": "^4.1.2",
-    "@metamask/accounts-controller": "^21.0.2",
+    "@metamask/accounts-controller": "^22.0.0",
     "@metamask/address-book-controller": "^6.0.0",
     "@metamask/announcement-controller": "^7.0.0",
     "@metamask/approval-controller": "^7.0.0",
