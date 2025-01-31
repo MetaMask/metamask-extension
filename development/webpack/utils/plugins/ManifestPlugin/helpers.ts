@@ -42,7 +42,7 @@ export function transformManifest(
    * @param browserManifest - The Chrome extension manifest object to modify
    */
   function addManifestFlags(browserManifest: chrome.runtime.Manifest) {
-    let manifestFlags = undefined;
+    let manifestFlags;
 
     if (manifestOverridesPath) {
       try {
@@ -67,7 +67,7 @@ export function transformManifest(
       }
     }
 
-    if(manifestFlags) {
+    if (manifestFlags) {
       browserManifest._flags = manifestFlags;
     }
   }
