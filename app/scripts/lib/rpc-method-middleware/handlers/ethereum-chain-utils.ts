@@ -1,12 +1,6 @@
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
-import type {
-  Hex,
-  Json,
-  JsonRpcParams,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from '@metamask/utils';
+import type { Hex, Json, JsonRpcResponse } from '@metamask/utils';
 import { isJsonRpcError } from '@metamask/utils';
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { OriginString } from '@metamask/permission-controller';
@@ -79,13 +73,9 @@ export function validateChainId(chainId: Hex): Hex {
   return _chainId;
 }
 
-export function validateSwitchEthereumChainParams<
-  Params extends JsonRpcParams = JsonRpcParams,
->(
-  req: JsonRpcRequest<Params> & {
-    params: [{ chainId: Hex } & Record<string, Json>];
-  },
-) {
+export function validateSwitchEthereumChainParams(req: {
+  params: [{ chainId: Hex }];
+}) {
   if (req.params === undefined) {
     throw rpcErrors.invalidParams({
       message: `Expected params object or array. Received:\n${JSON.stringify(
