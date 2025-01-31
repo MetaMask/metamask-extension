@@ -71,7 +71,7 @@ type AbstractPermissionController = PermissionController<
  * @param hooks.metamaskState - The wallet state.
  * @param hooks.metamaskState.metaMetricsId - The analytics id.
  * @param hooks.metamaskState.permissionHistory - The permission history object keyed by origin.
- * @param hooks.metamaskState.accounts - The accounts object keyed by address .
+ * @param hooks.metamaskState.accounts - The accounts object keyed by address.
  * @param hooks.grantPermissions - The hook that grants permission for the origin.
  */
 async function walletCreateSessionHandler(
