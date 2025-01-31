@@ -496,7 +496,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // instance of a class that wraps the extension's storage local API.
-    this.localStoreApiWrapper = opts.localStore;
+    this.localStoreApiWrapper = opts.persistanceManager;
 
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
@@ -678,6 +678,9 @@ export default class MetamaskController extends EventEmitter {
         'SnapController:stateChange',
         'KeyringController:accountRemoved',
         'KeyringController:stateChange',
+        'SnapKeyring:accountAssetListUpdated',
+        'SnapKeyring:accountBalancesUpdated',
+        'SnapKeyring:accountTransactionsUpdated',
       ],
       allowedActions: [
         'KeyringController:getAccounts',
@@ -1198,7 +1201,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
-      name: 'SnapKeyringBuilder',
+      name: 'SnapKeyring',
       allowedActions: [
         'ApprovalController:addRequest',
         'ApprovalController:acceptRequest',
@@ -1213,10 +1216,10 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:setSelectedAccount',
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
+        'SnapController:handleRequest',
+        'SnapController:get',
       ],
     });
-
-    const getSnapController = () => this.snapController;
 
     // Necessary to persist the keyrings and update the accounts both within the keyring controller and accounts controller
     const persistAndUpdateAccounts = async () => {
@@ -1256,7 +1259,6 @@ export default class MetamaskController extends EventEmitter {
     additionalKeyrings.push(
       snapKeyringBuilder(
         snapKeyringBuildMessenger,
-        getSnapController,
         persistAndUpdateAccounts,
         (address) => this.removeAccount(address),
         this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
@@ -1617,9 +1619,12 @@ export default class MetamaskController extends EventEmitter {
     this.multichainRouter = new MultichainRouter({
       messenger: multichainRouterMessenger,
       // Binding the call to provide the selector only giving the controller the option to pass the operation
-      withSnapKeyring: this.keyringController.withKeyring.bind(this.keyringController, {
-        type: 'snap',
-      }),
+      withSnapKeyring: this.keyringController.withKeyring.bind(
+        this.keyringController,
+        {
+          type: 'snap',
+        },
+      ),
     });
 
     // Notification Controllers
@@ -3129,7 +3134,10 @@ export default class MetamaskController extends EventEmitter {
 
         // remove any existing notification subscriptions for removed authorizations
         for (const [origin, authorization] of removedAuthorizations.entries()) {
-          const sessionScopes = getSessionScopes(authorization, {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this)});
+          const sessionScopes = getSessionScopes(authorization, {
+            getNonEvmSupportedMethods:
+              this.getNonEvmSupportedMethods.bind(this),
+          });
           // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
           // then remove middleware and unsubscribe
           Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
@@ -3151,7 +3159,10 @@ export default class MetamaskController extends EventEmitter {
 
         // add new notification subscriptions for changed authorizations
         for (const [origin, authorization] of changedAuthorizations.entries()) {
-          const sessionScopes = getSessionScopes(authorization, {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this)});
+          const sessionScopes = getSessionScopes(authorization, {
+            getNonEvmSupportedMethods:
+              this.getNonEvmSupportedMethods.bind(this),
+          });
 
           // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
           // then get the subscriptionManager going for that scope
@@ -3192,7 +3203,10 @@ export default class MetamaskController extends EventEmitter {
           if (previousAuthorization) {
             const previousSessionScopes = getSessionScopes(
               previousAuthorization,
-              {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this)}
+              {
+                getNonEvmSupportedMethods:
+                  this.getNonEvmSupportedMethods.bind(this),
+              },
             );
 
             Object.entries(previousSessionScopes).forEach(
@@ -3631,9 +3645,6 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController,
       ),
       setUseBlockie: preferencesController.setUseBlockie.bind(
-        preferencesController,
-      ),
-      setUseNonceField: preferencesController.setUseNonceField.bind(
         preferencesController,
       ),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
@@ -5510,8 +5521,9 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param origin - The origin to request approval for.
    * @param permissions - The permissions to request approval for.
+   * @param [options] - Optional. Additional properties to define on the requestData object
    */
-  async requestPermissionApproval(origin, permissions) {
+  async requestPermissionApproval(origin, permissions, options = {}) {
     const id = nanoid();
     return this.approvalController.addAndShowApprovalRequest({
       id,
@@ -5522,6 +5534,7 @@ export default class MetamaskController extends EventEmitter {
           origin,
         },
         permissions,
+        ...options,
       },
       type: MethodNames.RequestPermissions,
     });
@@ -5534,16 +5547,31 @@ export default class MetamaskController extends EventEmitter {
    * @param {Hex} chainId - The chainId to add incrementally.
    */
   async requestApprovalPermittedChainsPermission(origin, chainId) {
-    await this.requestPermissionApproval(origin, {
-      [PermissionNames.permittedChains]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: [chainId],
-          },
-        ],
+    const caveatValueWithChains = setPermittedEthChainIds(
+      {
+        requiredScopes: {},
+        optionalScopes: {},
+        isMultichainOrigin: false,
       },
-    });
+      [chainId],
+    );
+
+    await this.requestPermissionApproval(
+      origin,
+      {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValueWithChains,
+            },
+          ],
+        },
+      },
+      {
+        isLegacySwitchEthereumChain: true,
+      },
+    );
   }
 
   /**
@@ -5672,10 +5700,15 @@ export default class MetamaskController extends EventEmitter {
       delete permissions[PermissionNames.permittedChains];
     }
 
-    const legacyApproval = await this.requestPermissionApproval(
-      origin,
-      permissions,
-    );
+    const requestedChains =
+      permissions[PermissionNames.permittedChains]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+      )?.value ?? [];
+
+    const requestedAccounts =
+      permissions[PermissionNames.eth_accounts]?.caveats?.find(
+        (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+      )?.value ?? [];
 
     const newCaveatValue = {
       requiredScopes: {},
@@ -5689,31 +5722,33 @@ export default class MetamaskController extends EventEmitter {
 
     const caveatValueWithChains = setPermittedEthChainIds(
       newCaveatValue,
-      isSnapId(origin) ? [] : legacyApproval.approvedChainIds,
+      isSnapId(origin) ? [] : requestedChains,
     );
 
-    const caveatValueWithAccounts = setEthAccounts(
+    const caveatValueWithAccountsAndChains = setEthAccounts(
       caveatValueWithChains,
-      legacyApproval.approvedAccounts,
+      requestedAccounts,
     );
 
-    return {
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: caveatValueWithAccounts,
-          },
-        ],
-      },
-    };
+    const { permissions: approvedPermissions } =
+      await this.requestPermissionApproval(origin, {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: caveatValueWithAccountsAndChains,
+            },
+          ],
+        },
+      });
+    return approvedPermissions;
   }
 
   getNonEvmSupportedMethods(scope) {
     return this.controllerMessenger.call(
       'MultichainRouter:getSupportedMethods',
-      scope
-    )
+      scope,
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -6992,7 +7027,9 @@ export default class MetamaskController extends EventEmitter {
       );
 
       // add new notification subscriptions for changed authorizations
-      const sessionScopes = getSessionScopes(caip25Caveat.value, {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this)});
+      const sessionScopes = getSessionScopes(caip25Caveat.value, {
+        getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+      });
 
       // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
       // then get the subscriptionManager going for that scope
@@ -7853,7 +7890,10 @@ export default class MetamaskController extends EventEmitter {
         {
           method: NOTIFICATION_NAMES.sessionChanged,
           params: {
-            sessionScopes: getSessionScopes(newAuthorization, {getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this)}),
+            sessionScopes: getSessionScopes(newAuthorization, {
+              getNonEvmSupportedMethods:
+                this.getNonEvmSupportedMethods.bind(this),
+            }),
           },
         },
         API_TYPE.CAIP_MULTICHAIN,

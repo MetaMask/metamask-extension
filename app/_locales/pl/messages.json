@@ -695,9 +695,6 @@
   "transactionErrored": {
     "message": "Wystąpił błąd podczas wykonywania transakcji."
   },
-  "transactionFee": {
-    "message": "Opłata transakcyjna"
-  },
   "transactionResubmitted": {
     "message": "Transakcja wysłana ponownie z opłatą za gaz podwyższoną do $1 – $2"
   },

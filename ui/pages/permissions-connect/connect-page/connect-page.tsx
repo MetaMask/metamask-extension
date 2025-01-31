@@ -3,6 +3,9 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
+import { Hex } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectedInternalAccount,
@@ -32,20 +35,17 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
-import {
-  CaveatTypes,
-  EndowmentTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
 import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getCaip25PermissionsResponse,
+  PermissionsRequest,
+  getRequestedCaip25CaveatValue,
+} from './utils';
 
 export type ConnectPageRequest = {
   id: string;
   origin: string;
-  permissions?: Record<
-    string,
-    { caveats?: { type: string; value: string[] }[] }
-  >;
+  permissions?: PermissionsRequest;
 };
 
 export type ConnectPageProps = {
@@ -64,19 +64,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
 
-  const ethAccountsPermission =
-    request?.permissions?.[RestrictedMethods.eth_accounts];
-  const requestedAccounts =
-    ethAccountsPermission?.caveats?.find(
-      (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-    )?.value || [];
-
-  const permittedChainsPermission =
-    request?.permissions?.[EndowmentTypes.permittedChains];
-  const requestedChainIds =
-    permittedChainsPermission?.caveats?.find(
-      (caveat) => caveat.type === CaveatTypes.restrictNetworkSwitching,
-    )?.value || [];
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
+    request.permissions,
+  );
+  const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
+  const requestedChainIds = getPermittedEthChainIds(requestedCaip25CaveatValue);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -96,19 +88,29 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
   const currentlySelectedNetworkChainId =
     currentlySelectedNetwork.network.chainId;
-  // If globally selected network is a test network, include that in the default selcted networks for connection request
+  // If globally selected network is a test network, include that in the default selected networks for connection request
   const selectedTestNetwork = testNetworks.find(
     (network: { chainId: string }) =>
       network.chainId === currentlySelectedNetworkChainId,
   );
 
   const selectedNetworksList = selectedTestNetwork
-    ? [...nonTestNetworks, selectedTestNetwork]
-    : nonTestNetworks;
+    ? [...nonTestNetworks, selectedTestNetwork].map(({ chainId }) => chainId)
+    : nonTestNetworks.map(({ chainId }) => chainId);
+
+  const allNetworksList = [...nonTestNetworks, ...testNetworks].map(
+    ({ chainId }) => chainId,
+  );
+
+  const supportedRequestedChainIds = requestedChainIds.filter((chainId) =>
+    allNetworksList.includes(chainId),
+  );
+
   const defaultSelectedChainIds =
-    requestedChainIds.length > 0
-      ? requestedChainIds
-      : selectedNetworksList.map(({ chainId }) => chainId);
+    supportedRequestedChainIds.length > 0
+      ? supportedRequestedChainIds
+      : selectedNetworksList;
+
   const [selectedChainIds, setSelectedChainIds] = useState(
     defaultSelectedChainIds,
   );
@@ -120,12 +122,18 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     );
   }, [accounts]);
 
+  const supportedRequestedAccounts = requestedAccounts.filter((account) =>
+    evmAccounts.find(({ address }) => isEqualCaseInsensitive(address, account)),
+  );
+
   const currentAccount = useSelector(getSelectedInternalAccount);
   const currentAccountAddress = isEvmAccountType(currentAccount.type)
     ? [currentAccount.address]
     : []; // We do not support non-EVM accounts connections
   const defaultAccountsAddresses =
-    requestedAccounts.length > 0 ? requestedAccounts : currentAccountAddress;
+    supportedRequestedAccounts.length > 0
+      ? supportedRequestedAccounts
+      : currentAccountAddress;
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultAccountsAddresses,
   );
@@ -133,8 +141,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const onConfirm = () => {
     const _request = {
       ...request,
-      approvedAccounts: selectedAccountAddresses,
-      approvedChainIds: selectedChainIds,
+      permissions: {
+        ...request.permissions,
+        ...getCaip25PermissionsResponse(
+          requestedCaip25CaveatValue,
+          selectedAccountAddresses as Hex[],
+          selectedChainIds,
+        ),
+      },
     };
     approveConnection(_request);
   };

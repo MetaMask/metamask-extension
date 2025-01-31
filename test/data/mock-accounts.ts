@@ -4,8 +4,8 @@ import {
   EthAccountType,
   BtcMethod,
   BtcAccountType,
-  EthScopes,
-  BtcScopes,
+  EthScope,
+  BtcScope,
 } from '@metamask/keyring-api';
 import {
   ETH_EOA_METHODS,
@@ -17,7 +17,7 @@ export const MOCK_ACCOUNT_EOA: InternalAccount = {
   address: '0x123',
   options: {},
   methods: ETH_EOA_METHODS,
-  scopes: [EthScopes.Namespace],
+  scopes: [EthScope.Eoa],
   type: EthAccountType.Eoa,
   metadata: {
     name: 'Account 1',
@@ -33,7 +33,7 @@ export const MOCK_ACCOUNT_ERC4337: InternalAccount = {
   options: {},
   methods: ETH_EOA_METHODS.concat(ETH_4337_METHODS),
   // Smart accounts might not be available on every EVM chains, but that's ok for mock purposes.
-  scopes: [EthScopes.Namespace],
+  scopes: [EthScope.Testnet],
   type: EthAccountType.Erc4337,
   metadata: {
     name: 'Account 2',
@@ -48,7 +48,7 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH: InternalAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   options: {},
   methods: [BtcMethod.SendBitcoin],
-  scopes: [BtcScopes.Mainnet],
+  scopes: [BtcScope.Mainnet],
   type: BtcAccountType.P2wpkh,
   metadata: {
     name: 'Bitcoin Account',
@@ -63,7 +63,7 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET: InternalAccount = {
   address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
   options: {},
   methods: [BtcMethod.SendBitcoin],
-  scopes: [BtcScopes.Testnet],
+  scopes: [BtcScope.Testnet],
   type: BtcAccountType.P2wpkh,
   metadata: {
     name: 'Bitcoin Testnet Account',

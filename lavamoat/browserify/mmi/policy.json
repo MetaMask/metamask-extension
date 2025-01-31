@@ -556,9 +556,6 @@
     "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": {
       "globals": {
         "console": true
-      },
-      "packages": {
-        "tslib": true
       }
     },
     "@metamask/notification-services-controller>firebase>@firebase/messaging": {
@@ -573,6 +570,7 @@
         "addEventListener": true,
         "atob": true,
         "btoa": true,
+        "clearTimeout": true,
         "clients.matchAll": true,
         "clients.openWindow": true,
         "console.warn": true,
@@ -591,12 +589,12 @@
         "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
         "@metamask/notification-services-controller>firebase>@firebase/installations": true,
         "@metamask/notification-services-controller>firebase>@firebase/util": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true,
-        "tslib": true
+        "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
       }
     },
     "@metamask/notification-services-controller>firebase>@firebase/util": {
       "globals": {
+        "WorkerGlobalScope": true,
         "atob": true,
         "browser": true,
         "btoa": true,
@@ -606,7 +604,6 @@
         "indexedDB": true,
         "navigator": true,
         "process": true,
-        "self": true,
         "setTimeout": true
       },
       "packages": {
@@ -680,9 +677,14 @@
         "Document.prototype": true,
         "DocumentFragment.prototype": true,
         "Element.prototype": true,
+        "Event.prototype": true,
+        "EventTarget.prototype": true,
+        "NavigateEvent.prototype": true,
+        "NavigationDestination.prototype": true,
         "Node.prototype": true,
         "console.warn": true,
-        "document": true
+        "document": true,
+        "navigation": true
       },
       "packages": {
         "react": true
@@ -1461,6 +1463,14 @@
         "@metamask/keyring-api>bech32": true
       }
     },
+    "@metamask/profile-sync-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": true,
+        "@metamask/keyring-api>bech32": true
+      }
+    },
     "@metamask/keyring-controller": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -1494,6 +1504,16 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/keyring-api>@metamask/keyring-utils>@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/keyring-utils": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": true,
         "bitcoin-address-validation": true
       }
     },
@@ -1732,7 +1752,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
+        "@metamask/profile-sync-controller>@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/network-controller": true,
         "@metamask/profile-sync-controller>@noble/ciphers": true,
@@ -2355,6 +2375,21 @@
         "semver": true
       }
     },
+    "@metamask/profile-sync-controller>@metamask/keyring-api>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true,
+        "semver": true
+      }
+    },
     "@metamask/keyring-controller>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -2385,7 +2420,7 @@
         "semver": true
       }
     },
-    "@metamask/multichain>@metamask/utils": {
+    "@metamask/message-manager>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2400,7 +2435,7 @@
         "semver": true
       }
     },
-    "@metamask/message-manager>@metamask/utils": {
+    "@metamask/multichain>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true

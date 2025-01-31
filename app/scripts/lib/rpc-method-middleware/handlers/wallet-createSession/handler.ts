@@ -1,11 +1,9 @@
-import { JsonRpcError } from '@metamask/rpc-errors';
+import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
   setEthAccounts,
-  getPermittedEthChainIds,
-  setPermittedEthChainIds,
   bucketScopes,
   validateAndNormalizeScopes,
   Caip25Authorization,
@@ -13,6 +11,7 @@ import {
   getSessionScopes,
   NormalizedScopesObject,
   getSupportedScopeObjects,
+  Caip25CaveatValue,
 } from '@metamask/multichain';
 import {
   Caveat,
@@ -36,7 +35,6 @@ import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import { PermissionNames } from '../../../../controllers/permissions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -44,7 +42,6 @@ import {
   MetaMetricsEventPayload,
 } from '../../../../../../shared/constants/metametrics';
 import { shouldEmitDappViewedEvent } from '../../../util';
-import { CaveatTypes } from '../../../../../../shared/constants/permissions';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 type AbstractPermissionController = PermissionController<
@@ -75,8 +72,10 @@ type AbstractPermissionController = PermissionController<
  * @param hooks.metamaskState - The wallet state.
  * @param hooks.metamaskState.metaMetricsId - The analytics id.
  * @param hooks.metamaskState.permissionHistory - The permission history object keyed by origin.
- * @param hooks.metamaskState.accounts - The accounts object keyed by address .
+ * @param hooks.metamaskState.accounts - The accounts object keyed by address.
  * @param hooks.grantPermissions - The hook that grants permission for the origin.
+ * @param hooks.getNonEvmSupportedMethods
+ * @param hooks.isNonEvmScopeSupported
  */
 async function walletCreateSessionHandler(
   req: JsonRpcRequest<Caip25Authorization> & { origin: string },
@@ -91,7 +90,7 @@ async function walletCreateSessionHandler(
     findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
     requestPermissionApprovalForOrigin: (
       requestedPermissions: RequestedPermissions,
-    ) => Promise<{ approvedAccounts: Hex[]; approvedChainIds: Hex[] }>;
+    ) => Promise<{ permissions: RequestedPermissions }>;
     sendMetrics: (
       payload: MetaMetricsEventPayload,
       options?: MetaMetricsEventOptions,
@@ -169,65 +168,50 @@ async function walletCreateSessionHandler(
       requiredScopes: supportedRequiredScopes,
       optionalScopes: supportedOptionalScopes,
     })
-      .map((address) => address.toLowerCase())
+      .map((address) => address.toLowerCase() as Hex)
       .filter((address) => existingEvmAddresses.includes(address));
-    const supportedEthChainIds = getPermittedEthChainIds({
-      requiredScopes: supportedRequiredScopes,
-      optionalScopes: supportedOptionalScopes,
-    });
 
-    const legacyApproval = await hooks.requestPermissionApprovalForOrigin({
-      [PermissionNames.eth_accounts]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictReturnedAccounts,
-            value: supportedEthAccounts,
-          },
-        ],
-      },
-      [PermissionNames.permittedChains]: {
-        caveats: [
-          {
-            type: CaveatTypes.restrictNetworkSwitching,
-            value: supportedEthChainIds,
-          },
-        ],
-      },
-    });
-
-    let caip25CaveatValue = {
+    const requestedCaip25CaveatValue = {
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
       optionalScopes: getInternalScopesObject(supportedOptionalScopes),
       isMultichainOrigin: true,
-      // NOTE: We aren't persisting sessionProperties from the CAIP-25
-      // request because we don't do anything with it yet.
     };
 
-    caip25CaveatValue = setPermittedEthChainIds(
-      caip25CaveatValue,
-      legacyApproval.approvedChainIds,
-    );
-    caip25CaveatValue = setEthAccounts(
-      caip25CaveatValue,
-      legacyApproval.approvedAccounts,
+    const requestedCaip25CaveatValueWithSupportedEthAccounts = setEthAccounts(
+      requestedCaip25CaveatValue,
+      supportedEthAccounts,
     );
 
-    const sessionScopes = getSessionScopes(caip25CaveatValue, { getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods});
+    const { permissions: approvedPermissions } =
+      await hooks.requestPermissionApprovalForOrigin({
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: requestedCaip25CaveatValueWithSupportedEthAccounts,
+            },
+          ],
+        },
+      });
+
+    const approvedCaip25Permission =
+      approvedPermissions[Caip25EndowmentPermissionName];
+    const approvedCaip25CaveatValue = approvedCaip25Permission?.caveats?.find(
+      (caveat) => caveat.type === Caip25CaveatType,
+    )?.value as Caip25CaveatValue;
+    if (!approvedCaip25CaveatValue) {
+      throw rpcErrors.internal();
+    }
+
+    const sessionScopes = getSessionScopes(approvedCaip25CaveatValue, {
+      getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+    });
 
     hooks.grantPermissions({
       subject: {
         origin,
       },
-      approvedPermissions: {
-        [Caip25EndowmentPermissionName]: {
-          caveats: [
-            {
-              type: Caip25CaveatType,
-              value: caip25CaveatValue,
-            },
-          ],
-        },
-      },
+      approvedPermissions,
     });
 
     // TODO: Contact analytics team for how they would prefer to track this
@@ -239,6 +223,8 @@ async function walletCreateSessionHandler(
         hooks.metamaskState.permissionHistory,
       ).includes(origin);
 
+      const approvedEthAccounts = getEthAccounts(approvedCaip25CaveatValue);
+
       hooks.sendMetrics({
         event: MetaMetricsEventName.DappViewed,
         category: MetaMetricsEventCategory.InpageProvider,
@@ -248,7 +234,7 @@ async function walletCreateSessionHandler(
         properties: {
           is_first_visit: isFirstVisit,
           number_of_accounts: Object.keys(hooks.metamaskState.accounts).length,
-          number_of_accounts_connected: legacyApproval.approvedAccounts.length,
+          number_of_accounts_connected: approvedEthAccounts.length,
         },
       });
     }

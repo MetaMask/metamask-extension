@@ -94,6 +94,8 @@ async function requestEthereumAccountsHandler(
   // because the accounts will not be in order of lastSelected
   ethAccounts = getAccounts({ ignoreLock: true });
 
+  console.log('granted', ethAccounts);
+
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
   // we will leverage that to identify `is_first_visit` for metrics
