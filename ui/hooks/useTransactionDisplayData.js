@@ -397,6 +397,11 @@ export function useTransactionDisplayData(transactionGroup) {
       new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
     );
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
+  } else if (type === TransactionType.batch) {
+    category = TransactionGroupCategory.interaction;
+    title = 'Batch';
+    subtitle = origin;
+    subtitleContainsOrigin = true;
   } else {
     dispatch(
       captureSingleException(

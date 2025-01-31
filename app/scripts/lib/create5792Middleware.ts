@@ -1,6 +1,7 @@
 import { createAsyncMiddleware } from '@metamask/json-rpc-engine';
 import {
   TransactionBatchRequest,
+  TransactionBatchResult,
   TransactionController,
   TransactionMeta,
   TransactionStatus,
@@ -41,6 +42,11 @@ type GetCallsStatusResult = {
   }[];
 };
 
+type AddTransactionBatchHook = (
+  request: TransactionBatchRequest,
+  options?: { waitForSubmit?: boolean },
+) => Promise<TransactionBatchResult>;
+
 const METHOD_SEND_CALLS = 'wallet_sendCalls';
 const METHOD_GET_CALLS_STATUS = 'wallet_getCallsStatus';
 
@@ -50,7 +56,7 @@ export function create5792Middleware({
   addTransactionBatch,
   getTransactions,
 }: {
-  addTransactionBatch: TransactionController['addTransactionBatch'];
+  addTransactionBatch: AddTransactionBatchHook;
   getTransactions: () => Promise<TransactionMeta[]>;
 }) {
   return createAsyncMiddleware(async (req, res, next) => {
@@ -69,7 +75,7 @@ export function create5792Middleware({
 async function sendCalls(
   request: Record<string, any>,
   params: SendCallsParams,
-  addTransactionBatch: TransactionController['addTransactionBatch'],
+  addTransactionBatch: AddTransactionBatchHook,
 ): Promise<SendCallsResult> {
   const { networkClientId, origin } = request;
 
@@ -87,7 +93,10 @@ async function sendCalls(
     })),
   };
 
-  const result = await addTransactionBatch(batchRequest);
+  const result = await addTransactionBatch(batchRequest, {
+    waitForSubmit: true,
+  });
+
   const id = v4();
 
   const transactionIds = result.results.map(

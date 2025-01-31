@@ -7,6 +7,7 @@ import { Hex } from '@metamask/utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
+  ConfirmInfoRowTextTokenUnits,
 } from '../../../../../../components/app/confirm/info/row';
 
 export function NestedTransactions({
@@ -38,6 +39,12 @@ function TransactionBatchItem({
         <ConfirmInfoRowText text={`#${index + 1}`} />
       </ConfirmInfoRow>
       <RecipientRow override={item.to} />
+      <ConfirmInfoRow label="Value">
+        <ConfirmInfoRowTextTokenUnits
+          value={item.value as string}
+          decimals={18}
+        />
+      </ConfirmInfoRow>
       <TransactionData
         transactionData={item.data as Hex}
         transactionTo={item.to as Hex}

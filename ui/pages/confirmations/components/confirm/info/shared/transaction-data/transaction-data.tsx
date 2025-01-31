@@ -61,7 +61,7 @@ export const TransactionData = ({
 
   if (!value) {
     return (
-      <Container transactionData={transactionData}>
+      <Container transactionData={transactionData} noPadding={noPadding}>
         <RawDataRow transactionData={transactionData as string} />
       </Container>
     );
