@@ -32,25 +32,21 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 
 export const TransactionData = ({
-  chainIdOverride,
-  dataOverride,
+  transactionData,
   noPadding,
-  toOverride,
+  transactionTo,
 }: {
-  chainIdOverride?: Hex;
-  dataOverride?: Hex;
+  transactionData?: Hex;
   noPadding?: boolean;
-  toOverride?: Hex;
+  transactionTo?: Hex;
 } = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-
-  const transactionData =
-    dataOverride ?? (currentConfirmation?.txParams?.data as Hex);
+  const { chainId } = currentConfirmation;
 
   const decodeResponse = useDecodedTransactionData({
-    chainIdOverride,
-    dataOverride: transactionData,
-    toOverride,
+    chainId,
+    transactionData,
+    transactionTo,
   });
 
   const { value, pending } = decodeResponse;
@@ -66,14 +62,13 @@ export const TransactionData = ({
   if (!value) {
     return (
       <Container transactionData={transactionData}>
-        <RawDataRow transactionData={transactionData} />
+        <RawDataRow transactionData={transactionData as string} />
       </Container>
     );
   }
 
   const { data, source } = value;
   const isExpandable = data.length > 1;
-  const { chainId } = currentConfirmation;
 
   return (
     <Container transactionData={transactionData} noPadding={noPadding}>

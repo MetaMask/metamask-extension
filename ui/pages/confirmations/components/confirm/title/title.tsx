@@ -114,6 +114,8 @@ const getTitle = (
       return t('setApprovalForAllRedesignedTitle');
     case APPROVAL_TYPE_TRANSACTION_BATCH as TransactionType:
       return 'Transaction batch request';
+    case TransactionType.batch:
+      return 'Transaction batch request';
     default:
       return '';
   }

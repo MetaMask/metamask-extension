@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
+import { Hex } from '@metamask/utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
@@ -21,6 +25,7 @@ import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/
 import { useConfirmContext } from '../../../../../context/confirm';
 import { isSignatureTransactionType } from '../../../../../utils';
 import { TransactionData } from '../transaction-data/transaction-data';
+import { NestedTransactions } from '../../transaction-batch/transaction-batch-item';
 
 const NonceDetails = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -81,6 +86,10 @@ export const AdvancedDetails = ({
     selectConfirmationAdvancedDetailsOpen,
   );
 
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { nestedTransactions, txParams, type } = currentConfirmation || {};
+  const isBatch = type === TransactionType.batch;
+
   if (!overrideVisibility && !showAdvancedDetails) {
     return null;
   }
@@ -88,7 +97,15 @@ export const AdvancedDetails = ({
   return (
     <>
       <NonceDetails />
-      <TransactionData />
+      {!isBatch && (
+        <TransactionData
+          transactionData={txParams?.data as Hex}
+          transactionTo={txParams?.to as Hex}
+        />
+      )}
+      {isBatch && (
+        <NestedTransactions nestedTransactions={nestedTransactions} />
+      )}
     </>
   );
 };

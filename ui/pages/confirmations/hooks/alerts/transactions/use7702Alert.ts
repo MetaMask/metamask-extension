@@ -1,6 +1,7 @@
 import {
   APPROVAL_TYPE_TRANSACTION_BATCH,
   TransactionBatchApprovalData,
+  TransactionEnvelopeType,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -8,20 +9,14 @@ import { useMemo } from 'react';
 
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 
 export function use7702Alerts(): Alert[] {
-  const t = useI18nContext();
-
-  const { currentConfirmation } = useConfirmContext<
-    TransactionBatchApprovalData & { type: string }
-  >();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isBatchTransaction =
-    currentConfirmation.type ===
-      (APPROVAL_TYPE_TRANSACTION_BATCH as TransactionType) &&
-    currentConfirmation?.accountUpgradeRequired;
+    currentConfirmation?.type === TransactionType.batch &&
+    currentConfirmation?.txParams?.type === TransactionEnvelopeType.setCode;
 
   return useMemo(() => {
     if (!isBatchTransaction) {

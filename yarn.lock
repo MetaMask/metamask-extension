@@ -6463,7 +6463,7 @@ __metadata:
 
 "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller::locator=metamask-crx%40workspace%3A.":
   version: 43.0.0
-  resolution: "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller#.yalc/@metamask/transaction-controller::hash=53e115&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/transaction-controller@file:.yalc/@metamask/transaction-controller#.yalc/@metamask/transaction-controller::hash=d5cc2d&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/rlp": "npm:^5.0.2"
@@ -6493,7 +6493,7 @@ __metadata:
     "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
-  checksum: 10/770140aa3b088a742436bdb11b4563432e0c636c1b08886d7f5aa68cf83270a79023cd696ab0da5845c6c10da62006b6281362f2c2944cb824824ef9437b599e
+  checksum: 10/a418c19f3384f46618e6376cd7bb06cfeec453546cdbf82f67e0adb5e327c58de6fbab1ffa8595b4f38eef65aff00348ad0e36dc972860eb3691564e6e985497
   languageName: node
   linkType: hard
 
