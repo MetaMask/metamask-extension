@@ -76,7 +76,7 @@ describe('Queued Confirmations', function () {
       );
     });
 
-    it.only('Banner is shown on dApp 1, but not on dApp 2 after adding multiple transactions on dApp 1, and one on dApp 2', async function () {
+    it('Banner is shown on dApp 1, but not on dApp 2 after adding multiple transactions on dApp 1, and one on dApp 2', async function () {
       await withFixtures(
         {
           dapp: true,
