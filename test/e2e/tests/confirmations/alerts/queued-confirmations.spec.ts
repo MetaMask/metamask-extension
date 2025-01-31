@@ -317,13 +317,9 @@ describe('Queued Confirmations', function () {
           // create deposit transaction in dapp 1
           await createDepositTransaction(driver);
 
-          await driver.waitUntilXWindowHandles(4);
+          await driver.delay(5000);
 
-          // Switch to dapp two and trigger a typed signature
-          await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-
-          // signTypedData request
-          await driver.clickElement('#signTypedData');
+          await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
           const events = await getEventPayloads(
             driver,
