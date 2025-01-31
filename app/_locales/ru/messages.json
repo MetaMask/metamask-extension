@@ -44,65 +44,6 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
-  "SIWEAddressInvalid": {
-    "message": "Адрес в запросе на вход не соответствует адресу счета, который вы используете для входа."
-  },
-  "SIWEDomainInvalidText": {
-    "message": "Сайт, на который вы пытаетесь войти, не соответствует домену в запросе. Действуйте с осторожностью."
-  },
-  "SIWEDomainInvalidTitle": {
-    "message": "Запрос мошеннического сайта."
-  },
-  "SIWEDomainWarningBody": {
-    "message": "Веб-сайт ($1) просит вас войти в неправильный домен. Это может быть фишинговая атака.",
-    "description": "$1 represents the website domain"
-  },
-  "SIWEDomainWarningLabel": {
-    "message": "Небезопасно"
-  },
-  "SIWELabelChainID": {
-    "message": "ID блокчейна:"
-  },
-  "SIWELabelExpirationTime": {
-    "message": "Истекает в:"
-  },
-  "SIWELabelIssuedAt": {
-    "message": "Выпущено в:"
-  },
-  "SIWELabelMessage": {
-    "message": "Сообщение:"
-  },
-  "SIWELabelNonce": {
-    "message": "Одноразовый номер:"
-  },
-  "SIWELabelNotBefore": {
-    "message": "Не раньше:"
-  },
-  "SIWELabelRequestID": {
-    "message": "ID запроса:"
-  },
-  "SIWELabelResources": {
-    "message": "Ресурсы: $1",
-    "description": "$1 represents the number of resources"
-  },
-  "SIWELabelURI": {
-    "message": "URI:"
-  },
-  "SIWELabelVersion": {
-    "message": "Версии:"
-  },
-  "SIWESiteRequestSubtitle": {
-    "message": "Этот сайт запрашивает вход с помощью"
-  },
-  "SIWESiteRequestTitle": {
-    "message": "Запрос на вход"
-  },
-  "SIWEWarningSubtitle": {
-    "message": "Отметьте, чтобы подтвердить понимание:"
-  },
-  "SIWEWarningTitle": {
-    "message": "Вы уверены?"
-  },
   "about": {
     "message": "О MetaMask"
   },
@@ -651,9 +592,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Включить базовый функционал"
   },
-  "beCareful": {
-    "message": "Будьте осторожны"
-  },
   "beta": {
     "message": "Бета-версия"
   },
@@ -736,9 +674,6 @@
   "blockaidDescriptionTransferFarming": {
     "message": "Если вы одобрите этот запрос, третья сторона, известная мошенничеством, похитит все ваши активы."
   },
-  "blockaidDescriptionWarning": {
-    "message": "Это может быть обманный запрос. Продолжайте, только если вы доверяете каждому задействованному адресу."
-  },
   "blockaidMessage": {
     "message": "Сохранение конфиденциальности – никакие данные не передаются третьим сторонам. Доступно в Arbitrum, Avalanche, BNB Chain, Мейн-нете Ethereum, Linea, Optimism, Polygon, Base и Sepolia."
   },
@@ -793,10 +728,6 @@
   "buyAndSell": {
     "message": "Купить и продать"
   },
-  "buyAsset": {
-    "message": "Купить $1",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "buyMoreAsset": {
     "message": "Купить еще $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -815,9 +746,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Отменить транзакцию"
-  },
-  "cancelSpeedUp": {
-    "message": "отменить или ускорить транзакцию."
   },
   "cancelSpeedUpLabel": {
     "message": "Эта плата за газ составит $1 от первоначальной.",
@@ -1132,29 +1060,8 @@
   "contractDeployment": {
     "message": "Развертывание контракта"
   },
-  "contractDescription": {
-    "message": "Чтобы защитить себя от мошенников, найдите минутку, чтобы проверить данные третьей стороны."
-  },
   "contractInteraction": {
     "message": "Взаимодействие по контракту"
-  },
-  "contractNFT": {
-    "message": "NFT-контракт"
-  },
-  "contractRequestingAccess": {
-    "message": "Третья сторона запрашивает доступ"
-  },
-  "contractRequestingSignature": {
-    "message": "Третья сторона запрашивает подписание"
-  },
-  "contractRequestingSpendingCap": {
-    "message": "Третья сторона запрашивает ограничение расходов"
-  },
-  "contractTitle": {
-    "message": "Сведения о третьей стороне"
-  },
-  "contractToken": {
-    "message": "Контракт на токен"
   },
   "convertTokenToNFTDescription": {
     "message": "Мы обнаружили, что этот актив является NFT. MetaMask теперь имеет полную встроенную поддержку NFT. Хотите удалить его из списка токенов и добавить в качестве NFT?"
@@ -1176,9 +1083,6 @@
   },
   "copyPrivateKey": {
     "message": "Копировать закрытый ключ"
-  },
-  "copyRawTransactionData": {
-    "message": "Копировать необработанные данные транзакции"
   },
   "copyToClipboard": {
     "message": "Скопировать в буфер обмена"
@@ -1263,9 +1167,6 @@
   "customSpendLimit": {
     "message": "Пользовательский лимит расходов"
   },
-  "customSpendingCap": {
-    "message": "Пользовательское ограничение расходов"
-  },
   "customToken": {
     "message": "Пользовательский токен"
   },
@@ -1286,9 +1187,6 @@
   },
   "customizeYourNotificationsText": {
     "message": "Включите типы уведомлений, которые вы хотите получать:"
-  },
-  "dappRequestedSpendingCap": {
-    "message": "Сайт запросил лимит расходов"
   },
   "dappSuggested": {
     "message": "Рекомендовано сайтом"
@@ -1327,9 +1225,6 @@
   },
   "dataCollectionWarningPopoverDescription": {
     "message": "Вы отключили сбор данных для наших маркетинговых целей. Это касается только этого устройства. Если вы используете MetaMask на других устройствах, обязательно отключите его и там."
-  },
-  "dataHex": {
-    "message": "Шестнадцатиричные"
   },
   "dataUnavailable": {
     "message": "данные недоступны"
@@ -1702,9 +1597,6 @@
   "enterANameToIdentifyTheUrl": {
     "message": "Введите имя, чтобы идентифицировать URL"
   },
-  "enterANumber": {
-    "message": "Введите цифру"
-  },
   "enterChainId": {
     "message": "Введите ID блокчейна"
   },
@@ -1926,9 +1818,6 @@
   },
   "function": {
     "message": "Функция: $1"
-  },
-  "functionType": {
-    "message": "Тип функции"
   },
   "fundingMethod": {
     "message": "Способ пополнения"
@@ -2251,37 +2140,6 @@
   "initialTransactionConfirmed": {
     "message": "Ваша первоначальная транзакция подтверждена сетью. Нажмите ОК, чтобы вернуться."
   },
-  "inputLogicEmptyState": {
-    "message": "Введите только ту сумму, которую третья сторона, по вашему мнению, может тратить сейчас или в будущем. Вы всегда можете увеличить лимит расходов позже."
-  },
-  "inputLogicEqualOrSmallerNumber": {
-    "message": "Это позволяет третьей стороне потратить $1 с вашего текущего баланса.",
-    "description": "$1 is the current token balance in the account and the name of the current token"
-  },
-  "inputLogicHigherNumber": {
-    "message": "Это позволяет третьей стороне расходовать весь ваш баланс токенов до тех пор, пока не будет достигнут лимит расходов или вы не отмените его. Если вы не хотите такого развития событий, подумайте о снижении лимита расходов."
-  },
-  "insightWarning": {
-    "message": "предупреждение"
-  },
-  "insightWarningCheckboxMessage": {
-    "message": "$1 запрос $2",
-    "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
-  },
-  "insightWarningContentPlural": {
-    "message": "Просмотрите $1 предупреждения(-ий) перед $2. После того как вы сделаете это, $3 нельзя будет отменить.",
-    "description": "$1 the 'insightWarnings' message (2 warnings) representing warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningContentSingular": {
-    "message": "Просмотрите $1 перед $2. После того как вы сделаете это, $3 нельзя будет отменить.",
-    "description": "$1 is the 'insightWarning' message (1 warning), $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningHeader": {
-    "message": "Этот запрос может быть рискованным"
-  },
-  "insightWarnings": {
-    "message": "предупреждения"
-  },
   "insightsFromSnap": {
     "message": "Аналитика от $1",
     "description": "$1 represents the name of the snap"
@@ -2301,14 +2159,6 @@
   },
   "insufficientBalance": {
     "message": "Недостаточный баланс."
-  },
-  "insufficientCurrencyBuyOrDeposit": {
-    "message": "У вас недостаточно $1 для оплаты комиссий за транзакцию в сети $2. $3 или внесите депозит с другого счета.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyDeposit": {
-    "message": "У вас недостаточно $1 для оплаты комиссий за транзакцию в сети $2. Внесите депозит $1 с другого счета.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network"
   },
   "insufficientFunds": {
     "message": "Недостаточно средств."
@@ -2462,10 +2312,6 @@
   "layer2Fees": {
     "message": "Комиссии 2-го уровня"
   },
-  "learnCancelSpeeedup": {
-    "message": "Узнайте подробнее, как $1",
-    "description": "$1 is link to cancel or speed up transactions"
-  },
   "learnHow": {
     "message": "Узнайте как"
   },
@@ -2604,9 +2450,6 @@
   },
   "lowLowercase": {
     "message": "низкая"
-  },
-  "lowPriorityMessage": {
-    "message": "Последующие транзакции будут помещены в очередь после этой. Последний раз эту цену видели некоторое время назад."
   },
   "mainnet": {
     "message": "Мейн-нет Ethereum"
@@ -3477,9 +3320,6 @@
   "openInBlockExplorer": {
     "message": "Открыть в обозревателе блоков"
   },
-  "openSeaNew": {
-    "message": "OpenSea"
-  },
   "optional": {
     "message": "Необязательно"
   },
@@ -3507,9 +3347,6 @@
   },
   "padlock": {
     "message": "Замок"
-  },
-  "parameters": {
-    "message": "Параметры"
   },
   "participateInMetaMetrics": {
     "message": "Участие в MetaMetrics"
@@ -3543,22 +3380,8 @@
     "message": "Вставьте строку вашего закрытого ключа сюда:",
     "description": "For importing an account from a private key"
   },
-  "paymasterInUse": {
-    "message": "Газ за транзакцию будет оплачен на paymaster.",
-    "description": "Alert shown in transaction confirmation if paymaster in use."
-  },
   "pending": {
     "message": "Ожидающий"
-  },
-  "pendingTransactionInfo": {
-    "message": "Эта транзакция не будет обработана до ее завершения."
-  },
-  "pendingTransactionMultiple": {
-    "message": "У вас есть ($1) ожидающих транзакции(-ий)."
-  },
-  "pendingTransactionSingle": {
-    "message": "У вас есть (1) ожидающая транзакция.",
-    "description": "$1 is count of pending transactions"
   },
   "permissionDetails": {
     "message": "Сведения о разрешении"
@@ -4122,12 +3945,6 @@
   "reportIssue": {
     "message": "Сообщить о проблеме"
   },
-  "requestFlaggedAsMaliciousFallbackCopyReason": {
-    "message": "Поставщик услуг безопасности не поделился дополнительной информацией"
-  },
-  "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
-    "message": "Запрос помечен как вредоносный"
-  },
   "requestFrom": {
     "message": "Запрос от"
   },
@@ -4140,18 +3957,6 @@
   "requestFromTransactionDescription": {
     "message": "Это сайт, запрашивающий ваше подтверждение."
   },
-  "requestMayNotBeSafe": {
-    "message": "Запрос может быть небезопасным"
-  },
-  "requestMayNotBeSafeError": {
-    "message": "Поставщик услуг безопасности не обнаружил никакой известной вредоносной активности, но продолжать все равно может быть небезопасно."
-  },
-  "requestNotVerified": {
-    "message": "Запрос не подтвержден"
-  },
-  "requestNotVerifiedError": {
-    "message": "Из-за ошибки этот запрос не был подтвержден поставщиком услуг безопасности. Действуйте осторожно."
-  },
   "requestingFor": {
     "message": "Запрашивается для"
   },
@@ -4162,9 +3967,6 @@
   "requestingForNetwork": {
     "message": "Запрашивается для $1",
     "description": "Name of Network"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "запросы, ожидающие подтверждения"
   },
   "required": {
     "message": "Требуется"
@@ -4268,9 +4070,6 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "Вы удаляете чье-либо разрешение на трату токенов с вашего счета."
-  },
-  "revokeSpendingCapTooltipText": {
-    "message": "Эта третья сторона больше не сможет тратить ваши текущие или будущие токены."
   },
   "rpcNameOptional": {
     "message": "Имя RPC (необязательно)"
@@ -4484,9 +4283,6 @@
     "message": "Предупреждение: вы собираетесь отправить контракт на токены, что может привести к потере средств. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
-  "sendingZeroAmount": {
-    "message": "Вы отправляете 0 $1."
-  },
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
   },
@@ -4573,23 +4369,14 @@
   "showTestnetNetworksDescription": {
     "message": "Выберите эту опцию, чтобы показать тестовые сети в списке сетей"
   },
-  "sigRequest": {
-    "message": "Запрос подписи"
-  },
   "sign": {
     "message": "Подписать"
   },
   "signatureRequest": {
     "message": "Запрос подписи"
   },
-  "signatureRequestGuidance": {
-    "message": "Подписывайте это сообщение только в том случае, если вы полностью понимаете его содержание и доверяете запрашивающему сайту."
-  },
   "signed": {
     "message": "Подписано"
-  },
-  "signin": {
-    "message": "Войти"
   },
   "signing": {
     "message": "Подписание"
@@ -4946,13 +4733,6 @@
   },
   "spendingCap": {
     "message": "Лимит расходов"
-  },
-  "spendingCapError": {
-    "message": "Ошибка: вводите только цифры"
-  },
-  "spendingCapErrorDescription": {
-    "message": "Введите только то число в качестве лимита для $1, которое приемлемо для вас. Вы всегда можете увеличить лимит токенов позже.",
-    "description": "$1 is origin of the site requesting the token limit"
   },
   "spendingCapTooltipDesc": {
     "message": "Это количество токенов, к которым покупатель сможет получить доступ от вашего имени."
@@ -5906,9 +5686,6 @@
   "unknownCollection": {
     "message": "Безымянная коллекция"
   },
-  "unknownNetwork": {
-    "message": "Неизвестная частная сеть"
-  },
   "unknownNetworkForKeyEntropy": {
     "message": "Неизвестная сеть",
     "description": "Displayed on places like Snap install warning when regular name is not available."
@@ -5935,9 +5712,6 @@
   "unsendableAsset": {
     "message": "Отправка токенов NFT (ERC-721) сейчас не поддерживается",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
-  },
-  "unverifiedContractAddressMessage": {
-    "message": "Мы не можем проверить этот контракт. Убедитесь, что вы доверяете этому адресу."
   },
   "upArrow": {
     "message": "стрелка «вверх»"
@@ -6001,9 +5775,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSiteSuggestion": {
-    "message": "Использовать рекомендацию сайта"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Автоматическое отображение токенов, отправленных на ваш счет, требует обмена данными со сторонними серверами для получения изображений токенов. Эти серверы получат доступ к вашему IP-адресу."
   },
@@ -6015,9 +5786,6 @@
   },
   "userOpContractDeployError": {
     "message": "Развертывание контракта из счета смарт-контракта не поддерживается"
-  },
-  "verifyContractDetails": {
-    "message": "Проверьте информацию о третьей стороне"
   },
   "version": {
     "message": "Версия"
@@ -6090,10 +5858,6 @@
     "message": "Предупреждение от $1",
     "description": "$1 represents the name of the snap"
   },
-  "warningTooltipText": {
-    "message": "$1 Третья сторона может потратить весь ваш баланс токенов без дополнительного уведомления или согласия. Защитите себя, установив более низкий лимит расходов.",
-    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
-  },
   "watchEthereumAccountsDescription": {
     "message": "Включение этой опции даст вам возможность отслеживать счета Ethereum через публичный адрес или имя ENS. Чтобы оставить отзыв об этой бета-функции, заполните этот $1.",
     "description": "$1 is the link to a product feedback form"
@@ -6165,9 +5929,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Для использования этой функции вам необходимо предоставить доступ к камере."
-  },
-  "youSign": {
-    "message": "Вы подписываете"
   },
   "yourAccounts": {
     "message": "Ваши счета"
