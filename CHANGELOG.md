@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.12.0]
-### Uncategorized
+### Fixed
 - fix: bug when requested accounts/chainIds do not match wallet state ([#29988](https://github.com/MetaMask/metamask-extension/pull/29988))
 - chore: refactor and unify low return warning ([#29918](https://github.com/MetaMask/metamask-extension/pull/29918))
 - fix: update alt text on NFT images ([#29744](https://github.com/MetaMask/metamask-extension/pull/29744))
