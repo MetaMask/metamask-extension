@@ -6,7 +6,6 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import {
   Caip25EndowmentPermissionName,
-  getPermittedEthChainIds,
 } from '@metamask/multichain';
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
