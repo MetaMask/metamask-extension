@@ -11,10 +11,11 @@ import {
   TokensController,
   CodefiTokenPricesServiceV2,
   RatesController,
-  MultichainTokensRatesController,
+  MultiChainAssetsRatesController,
   fetchMultiExchangeRate,
   TokenBalancesController,
   MultichainBalancesController,
+  MultichainAssetsController,
 } from '@metamask/assets-controllers';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -996,14 +997,20 @@ export default class MetamaskController extends EventEmitter {
     const multichainBalancesControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'MultichainBalancesController',
+        allowedActions: [
+          'AccountsController:listMultichainAccounts',
+          'SnapController:handleRequest',
+          'CurrencyRateController:getState',
+          'MultichainAssetsController:getState',
+        ],
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',
           'AccountsController:accountBalancesUpdated',
-        ],
-        allowedActions: [
-          'AccountsController:listMultichainAccounts',
-          'SnapController:handleRequest',
+          'KeyringController:lock',
+          'KeyringController:unlock',
+          'CurrencyRateController:stateChange',
+          'MultichainAssetsController:stateChange',
         ],
       });
 
@@ -1023,16 +1030,50 @@ export default class MetamaskController extends EventEmitter {
       fetchMultiExchangeRate,
     });
 
-    console.log('HERE *****************************');
-    // const multichainTokensRatesControllerMessenger =
-    //   this.controllerMessenger.getRestricted({
-    //     name: 'MultichainTokensRatesController',
-    //   });
+    // TODO add multichain assets rates controller
+    const multichainAssetsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MultichainAssetsController',
+        allowedActions: [
+          'AccountsController:listMultichainAccounts',
+          'SnapController:handleRequest',
+          'SnapController:getAll',
+          'PermissionController:getPermissions',
+        ],
+        allowedEvents: [
+          'AccountsController:accountAdded',
+          'AccountsController:accountRemoved',
+          'AccountsController:accountAssetListUpdated',
+        ],
+      });
 
-    // this.multichainTokenRatesController = new MultichainTokensRatesController({
-    //   state: initState.MultichainRatesController,
-    //   messenger: multichainTokensRatesControllerMessenger,
-    // });
+    const multichainAssetsRatesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MultiChainAssetsRatesController',
+        allowedActions: [
+          'AccountsController:listMultichainAccounts',
+          'SnapController:handleRequest',
+          'CurrencyRateController:getState',
+          'MultichainAssetsController:getState',
+        ],
+        allowedEvents: [
+          'AccountsController:accountAdded',
+          'KeyringController:lock',
+          'KeyringController:unlock',
+          'CurrencyRateController:stateChange',
+          'MultichainAssetsController:stateChange',
+        ],
+      });
+
+    this.multichainAssetsController = new MultichainAssetsController({
+      state: initState.MultichainAssetsController,
+      messenger: multichainAssetsControllerMessenger,
+    });
+
+    this.multichainAssetsRatesController = new MultiChainAssetsRatesController({
+      state: initState.MultichainTokensRatesController,
+      messenger: multichainAssetsRatesControllerMessenger,
+    });
 
     const tokenRatesMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenRatesController',
@@ -2283,6 +2324,8 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       MultichainBalancesController: this.multichainBalancesController,
+      MultiChainAssetsRatesController: this.multichainAssetsRatesController,
+      MultichainAssetsController: this.multichainAssetsController,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       MultichainTransactionsController: this.multichainTransactionsController,
       ///: END:ONLY_INCLUDE_IF
@@ -2336,6 +2379,8 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainBalancesController: this.multichainBalancesController,
+        MultiChainAssetsRatesController: this.multichainAssetsRatesController,
+        MultichainAssetsController: this.multichainAssetsController,
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         MultichainTransactionsController: this.multichainTransactionsController,
         ///: END:ONLY_INCLUDE_IF
@@ -3040,6 +3085,11 @@ export default class MetamaskController extends EventEmitter {
         this.multichainRatesController.start();
       },
     );
+
+    this.multichainAssetsRatesController.startPolling();
+    this.multichainAssetsRatesController.updateAssetsRates();
+
+    // this.multichainAssetsController.state();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     this.multichainTransactionsController.start();
