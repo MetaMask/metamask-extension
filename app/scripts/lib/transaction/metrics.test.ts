@@ -26,6 +26,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -36,7 +37,6 @@ import {
   handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
 } from './metrics';
-import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 
 const providerResultStub = {
   eth_getCode: '0x123',
