@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { strict as assert } from 'assert';
 import { MockedEndpoint, MockttpServer } from 'mockttp';
+import { By } from 'selenium-webdriver';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getEventPayloads } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
@@ -222,7 +223,11 @@ describe('Queued Confirmations', function () {
           await switchChainToDappOne(driver);
 
           await switchToDAppAndCreateTransactionRequest(driver);
+          await driver.waitUntilXWindowHandles(4);
           await switchToDAppAndCreateTransactionRequest(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 2']"));
+
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
           const events = await getEventPayloads(
@@ -261,7 +266,7 @@ describe('Queued Confirmations', function () {
       );
     });
 
-    it.only('Metric is sent from the nav bar and the banner alert (redesigned confirmation flow)', async function () {
+    it('Metric is sent from the nav bar and the banner alert (redesigned confirmation flow)', async function () {
       const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
       await withFixtures(
@@ -316,10 +321,6 @@ describe('Queued Confirmations', function () {
 
           // Switch to dapp two and trigger a typed signature
           await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-          await driver.waitForSelector({
-            css: '[id="chainId"]',
-            text: '0x539',
-          });
 
           // signTypedData request
           await driver.clickElement('#signTypedData');
