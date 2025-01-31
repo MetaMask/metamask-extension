@@ -582,19 +582,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('useNonceField', () => {
-    it('defaults useNonceField to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useNonceField).toStrictEqual(false);
-    });
-
-    it('setUseNonceField to true', () => {
-      const { controller } = setupController({});
-      controller.setUseNonceField(true);
-      expect(controller.state.useNonceField).toStrictEqual(true);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});

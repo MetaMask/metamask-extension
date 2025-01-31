@@ -701,9 +701,6 @@
   "transactionErrored": {
     "message": "Tehingul ilmnes tõrge."
   },
-  "transactionFee": {
-    "message": "Tehingutasu"
-  },
   "transactionResubmitted": {
     "message": "Tehing uuesti edastatud, suurendatud gaasihinnaga $1 asukohas $2"
   },
