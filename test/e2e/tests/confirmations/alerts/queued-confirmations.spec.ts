@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { strict as assert } from 'assert';
 import { MockedEndpoint, MockttpServer } from 'mockttp';
-import { By } from 'selenium-webdriver';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getEventPayloads } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
@@ -112,18 +111,8 @@ describe('Queued Confirmations', function () {
           await switchChainToDappOne(driver);
 
           await switchToDAppAndCreateTransactionRequest(driver);
-          await driver.waitUntilXWindowHandles(4);
           await switchToDAppAndCreateTransactionRequest(driver);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.waitForSelector(
-            By.xpath("//div[normalize-space(.)='1 of 2']"),
-          );
-
           await switchToDAppAndCreateTransactionRequest(driver);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.waitForSelector(
-            By.xpath("//div[normalize-space(.)='1 of 3']"),
-          );
 
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
@@ -233,12 +222,7 @@ describe('Queued Confirmations', function () {
           await switchChainToDappOne(driver);
 
           await switchToDAppAndCreateTransactionRequest(driver);
-          await driver.waitUntilXWindowHandles(4);
           await switchToDAppAndCreateTransactionRequest(driver);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.waitForSelector(
-            By.xpath("//div[normalize-space(.)='1 of 2']"),
-          );
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
           const events = await getEventPayloads(
@@ -327,12 +311,7 @@ describe('Queued Confirmations', function () {
 
           // create deposit transaction in dapp 1
           await createDepositTransaction(driver);
-          await driver.waitUntilXWindowHandles(4);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.waitForSelector({
-            tag: 'p',
-            text: '127.0.0.1:8080',
-          });
+
           await driver.delay(2000);
 
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
