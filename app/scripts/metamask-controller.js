@@ -677,6 +677,9 @@ export default class MetamaskController extends EventEmitter {
         'SnapController:stateChange',
         'KeyringController:accountRemoved',
         'KeyringController:stateChange',
+        'SnapKeyring:accountAssetListUpdated',
+        'SnapKeyring:accountBalancesUpdated',
+        'SnapKeyring:accountTransactionsUpdated',
       ],
       allowedActions: [
         'KeyringController:getAccounts',
@@ -1197,7 +1200,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
-      name: 'SnapKeyringBuilder',
+      name: 'SnapKeyring',
       allowedActions: [
         'ApprovalController:addRequest',
         'ApprovalController:acceptRequest',
@@ -1212,10 +1215,10 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:setSelectedAccount',
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
+        'SnapController:handleRequest',
+        'SnapController:get',
       ],
     });
-
-    const getSnapController = () => this.snapController;
 
     // Necessary to persist the keyrings and update the accounts both within the keyring controller and accounts controller
     const persistAndUpdateAccounts = async () => {
@@ -1255,7 +1258,6 @@ export default class MetamaskController extends EventEmitter {
     additionalKeyrings.push(
       snapKeyringBuilder(
         snapKeyringBuildMessenger,
-        getSnapController,
         persistAndUpdateAccounts,
         (address) => this.removeAccount(address),
         this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
@@ -3606,9 +3608,6 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController,
       ),
       setUseBlockie: preferencesController.setUseBlockie.bind(
-        preferencesController,
-      ),
-      setUseNonceField: preferencesController.setUseNonceField.bind(
         preferencesController,
       ),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(

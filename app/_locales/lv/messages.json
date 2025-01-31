@@ -707,9 +707,6 @@
   "transactionErrored": {
     "message": "Darījumā radusies kļūda."
   },
-  "transactionFee": {
-    "message": "Darījuma nodeva"
-  },
   "transactionResubmitted": {
     "message": "Darījums atkārtoti iesniegts ar maksu par Gas, palielinātu līdz $1 pie $2"
   },

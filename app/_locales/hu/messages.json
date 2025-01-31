@@ -701,9 +701,6 @@
   "transactionErrored": {
     "message": "Hiba történt a tranzakció során."
   },
-  "transactionFee": {
-    "message": "Tranzakciós költség"
-  },
   "transactionResubmitted": {
     "message": "A tranzakció újra beküldve $1 / $2 emelt gázdíjjal."
   },

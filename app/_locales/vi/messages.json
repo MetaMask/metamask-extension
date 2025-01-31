@@ -113,10 +113,6 @@
     "message": "Tôi đã đọc và đồng ý với $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 có thể truy cập và chi tiêu tài sản này",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "Truy cập ví của bạn bằng Cụm từ khôi phục bí mật"
   },
@@ -476,10 +472,6 @@
   "all": {
     "message": "Tất cả"
   },
-  "allOfYour": {
-    "message": "Tất cả $1 của bạn",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "Tất cả các quyền"
   },
@@ -489,16 +481,8 @@
   "allTimeLow": {
     "message": "Thấp nhất lịch sử"
   },
-  "allYourNFTsOf": {
-    "message": "Tất cả NFT của bạn từ $1",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "allowNotifications": {
     "message": "Cho phép thông báo"
-  },
-  "allowSpendToken": {
-    "message": "Cấp quyền truy cập vào $1 của bạn?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "Cho phép $1 rút và chi tiêu tối đa số tiền sau đây:",
@@ -544,14 +528,6 @@
   "approve": {
     "message": "Chấp thuận hạn mức chi tiêu"
   },
-  "approveAllTokensTitle": {
-    "message": "Cho phép truy cập và chuyển tất cả $1 của bạn?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "Cho phép truy cập và chuyển tất cả NFT của bạn từ $1?",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "Chấp thuận"
   },
@@ -563,22 +539,8 @@
     "message": "Duyệt hạn mức chi tiêu $1",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "Điều này cho phép bên thứ ba được quyền truy cập và chuyển các NFT sau đây mà không cần thông báo thêm cho đến khi bạn thu hồi quyền truy cập của họ."
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "Điều này cho phép bên thứ ba truy cập và chuyển tất cả NFT của bạn từ $1 mà không cần thông báo thêm cho đến khi bạn thu hồi quyền truy cập của họ.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "Cho phép truy cập và chuyển $1 của bạn?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "Đã chấp thuận"
-  },
-  "approvedAsset": {
-    "message": "Tài sản được chấp thuận"
   },
   "approvedOn": {
     "message": "Đã chấp thuận vào $1",
@@ -1452,9 +1414,6 @@
     "message": "Xóa mạng $1?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Nạp"
-  },
   "depositCrypto": {
     "message": "Nạp tiền mã hóa từ tài khoản khác bằng địa chỉ ví hoặc mã QR."
   },
@@ -1643,10 +1602,6 @@
   },
   "editGasPriceTooltip": {
     "message": "Mạng này yêu cầu trường \"Giá gas\" khi gửi giao dịch. Giá gas là số tiền bạn sẽ trả cho mỗi đơn vị gas."
-  },
-  "editGasSubTextAmountLabel": {
-    "message": "Số tiền tối đa:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
     "message": "Phí tối đa:"
@@ -1910,9 +1865,6 @@
   "fast": {
     "message": "Nhanh"
   },
-  "feeAssociatedRequest": {
-    "message": "Yêu cầu này có kèm theo một khoản phí."
-  },
   "feeDetails": {
     "message": "Chi tiết phí"
   },
@@ -1974,12 +1926,6 @@
   },
   "function": {
     "message": "Chức năng: $1"
-  },
-  "functionApprove": {
-    "message": "Chức năng: Chấp thuận"
-  },
-  "functionSetApprovalForAll": {
-    "message": "Chức năng: SetApprovalForAll"
   },
   "functionType": {
     "message": "Loại chức năng"
@@ -2085,9 +2031,6 @@
   "gotIt": {
     "message": "Đã hiểu"
   },
-  "grantedToWithColon": {
-    "message": "Cấp cho:"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -2128,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "Ẩn tài khoản"
-  },
-  "hideFullTransactionDetails": {
-    "message": "Ẩn chi tiết giao dịch đầy đủ"
   },
   "hideSeedPhrase": {
     "message": "Ẩn cụm từ khôi phục bí mật"
@@ -2365,10 +2305,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí giao dịch trên mạng $2. $3 hoặc nạp từ một tài khoản khác.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí giao dịch trên mạng $2. $3 hoặc $4 từ một tài khoản khác.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí giao dịch trên mạng $2. Nạp $1 từ một tài khoản khác.",
@@ -2639,9 +2575,6 @@
   },
   "loading": {
     "message": "Đang tải..."
-  },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "Vui lòng hoàn tất giao dịch trên ví cứng."
   },
   "loadingScreenSnapMessage": {
     "message": "Vui lòng hoàn tất giao dịch trên Snap."
@@ -3084,10 +3017,6 @@
   "next": {
     "message": "Tiếp theo"
   },
-  "nextNonceWarning": {
-    "message": "Số nonce lớn hơn số nonce gợi ý là $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "Không thể thêm NFT vì thông tin quyền sở hữu không trùng khớp. Đảm bảo bạn đã nhập đúng thông tin."
   },
@@ -3168,15 +3097,6 @@
   },
   "nonce": {
     "message": "Số nonce"
-  },
-  "nonceField": {
-    "message": "Tùy chỉnh số nonce của giao dịch"
-  },
-  "nonceFieldDesc": {
-    "message": "Bật tính năng này để thay đổi số nonce (số giao dịch) khi gửi tài sản. Đây là một tính năng nâng cao, hãy sử dụng thận trọng."
-  },
-  "nonceFieldHeading": {
-    "message": "Số nonce tùy chỉnh"
   },
   "none": {
     "message": "Không có"
@@ -3648,9 +3568,6 @@
   },
   "permissionFrom": {
     "message": "Quyền từ"
-  },
-  "permissionRequest": {
-    "message": "Yêu cầu cấp quyền"
   },
   "permissionRequested": {
     "message": "Đã yêu cầu ngay"
@@ -4346,31 +4263,11 @@
   "reviewPermissions": {
     "message": "Xem lại quyền"
   },
-  "revokeAllTokensTitle": {
-    "message": "Thu hồi quyền truy cập và chuyển tất cả $1 của bạn?",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "Thu hồi quyền truy cập và chuyển tất cả NFT của bạn từ $1?",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "Hành động này sẽ thu hồi quyền cho phép bên thứ ba truy cập và chuyển tất cả $1 của bạn mà không cần thông báo thêm.",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "Hành động này sẽ thu hồi quyền cho phép bên thứ ba truy cập và chuyển tất cả NFT của bạn từ $1 mà không cần thông báo thêm.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "Thu hồi quyền"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Bạn đang xóa quyền chi tiêu token của người khác khỏi tài khoản của bạn."
-  },
-  "revokeSpendingCap": {
-    "message": "Thu hồi hạn mức chi tiêu cho $1 của bạn",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "Bên thứ ba này sẽ không thể chi tiêu thêm bất kỳ token hiện tại hoặc tương lai nào của bạn."
@@ -5057,9 +4954,6 @@
     "message": "Chỉ nhập số mà bạn cảm thấy thoải mái khi truy cập $1 ở hiện tại hoặc trong tương lai. Bạn luôn có thể tăng giới hạn token sau này.",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "Yêu cầu hạn mức chi tiêu cho $1 của bạn"
-  },
   "spendingCapTooltipDesc": {
     "message": "Đây là số lượng token mà người chi tiêu có thể truy cập thay mặt cho bạn."
   },
@@ -5738,9 +5632,6 @@
     "message": "Thông báo phần mềm của bên thứ ba",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "bộ sưu tập này"
-  },
   "threeMonthsAbbreviation": {
     "message": "3 Tháng",
     "description": "Shortened form of '3 months'"
@@ -5855,29 +5746,8 @@
   "transactionDataFunction": {
     "message": "Chức năng"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Trang web gợi ý"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Chỉnh sửa để sử dụng mức phí gas được đề xuất của MetaMask dựa trên khối mới nhất."
-  },
   "transactionDetailGasHeading": {
     "message": "Phí gas ước tính"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Tìm hiểu thêm về phí gas"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Phí gas do mạng thiết lập và sẽ dao động dựa trên lưu lượng mạng và độ phức tạp của giao dịch."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Phí gas được trả cho thợ đào tiền điện tử, họ là những người xử lý các giao dịch trên mạng $1. MetaMask không thu lợi nhuận từ phí gas."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Số lượng + phí gas"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Phí gas Lớp 2"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Số lượng + phí"
@@ -5893,9 +5763,6 @@
   },
   "transactionErrored": {
     "message": "Giao dịch đã gặp lỗi."
-  },
-  "transactionFee": {
-    "message": "Phí giao dịch"
   },
   "transactionFlowNetwork": {
     "message": "Mạng"
@@ -5974,9 +5841,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask đã gặp sự cố khi khởi động. Lỗi này có thể xảy ra không liên tục, vì vậy hãy thử khởi động lại tiện ích."
-  },
-  "trustSiteApprovePermission": {
-    "message": "Bằng cách cấp quyền, bạn cho phép $1 sau đây truy cập vào các khoản tiền của mình"
   },
   "tryAgain": {
     "message": "Thử lại"
@@ -6169,12 +6033,6 @@
   },
   "viewContact": {
     "message": "Xem địa chỉ liên hệ"
-  },
-  "viewDetails": {
-    "message": "Xem chi tiết"
-  },
-  "viewFullTransactionDetails": {
-    "message": "Xem chi tiết giao dịch đầy đủ"
   },
   "viewMore": {
     "message": "Xem thêm"
