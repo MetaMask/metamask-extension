@@ -245,9 +245,6 @@
   "from": {
     "message": "ከ"
   },
-  "functionType": {
-    "message": "የተግባር ዓይነት"
-  },
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
@@ -452,9 +449,6 @@
   "origin": {
     "message": "መነሻ"
   },
-  "parameters": {
-    "message": "መለኪያዎች"
-  },
   "participateInMetaMetrics": {
     "message": "በ MetaMetrics ውስጥ ይሳተፉ"
   },
@@ -523,9 +517,6 @@
   "removeAccountDescription": {
     "message": "ይህ መለያ ከቋትዎ ይወገዳል። እባክዎ ከመቀጠልዎ በፊት የዚህ የመጣ መለያ የመጀመሪያው የዘር ሐረግ ወይም የግል ቁልፍ እንዳለዎት ያረጋግጡ። መለያዎችን ከመለያ ተቆልቋይ ማስመጣት ወይም መፍጠር ይችላሉ።"
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ማረጋገጫ የሚጠባበቁ ጥያቄዎች"
-  },
   "required": {
     "message": "የሚያስፈልግ"
   },
@@ -592,9 +583,6 @@
   },
   "showHexDataDescription": {
     "message": "በመላኪያ ማያ ላይ የ hex ውሂብ መስክን ለማሳየት ይህን ይምረጡ"
-  },
-  "sigRequest": {
-    "message": "የፊርማ ጥያቄ"
   },
   "sign": {
     "message": "ፈርም"
@@ -719,9 +707,6 @@
   "unknown": {
     "message": "ያልታወቀ"
   },
-  "unknownNetwork": {
-    "message": "የማይታወቅ የግል አውታረ መረብ"
-  },
   "unknownQrCode": {
     "message": "ስህተት፡ ያን የ QR ኮድ መለየት አልቻልንም"
   },
@@ -751,9 +736,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ይህን ባህርይ ለመጠቀም የካሜራን መድረስ መፍቀድ አለብዎት።"
-  },
-  "youSign": {
-    "message": "እየፈረሙ ነው"
   },
   "yourPrivateSeedPhrase": {
     "message": "የግል ዘር ሐረግዎ"

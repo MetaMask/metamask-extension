@@ -44,65 +44,6 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
-  "SIWEAddressInvalid": {
-    "message": "Ang address sa kahilingan sa pag-sign in ay hindi tugma sa address ng account na ginagamit mo sa pag-sign in."
-  },
-  "SIWEDomainInvalidText": {
-    "message": "Ang site kung saan mo sinusubukang mag-sign in ay hindi tugma sa domain sa kahilingan. Magpatuloy nang may pag-iingat."
-  },
-  "SIWEDomainInvalidTitle": {
-    "message": "Kahilingan ng mapanlinlang na site."
-  },
-  "SIWEDomainWarningBody": {
-    "message": "Hinihiling sa iyo ng website ($1) na mag-sign in sa maling domain. Posibleng phishing na pag-atake ito.",
-    "description": "$1 represents the website domain"
-  },
-  "SIWEDomainWarningLabel": {
-    "message": "Hindi ligtas"
-  },
-  "SIWELabelChainID": {
-    "message": "ID ng Chain:"
-  },
-  "SIWELabelExpirationTime": {
-    "message": "Mag-e-expire sa:"
-  },
-  "SIWELabelIssuedAt": {
-    "message": "Inisyu Sa:"
-  },
-  "SIWELabelMessage": {
-    "message": "Mensahe:"
-  },
-  "SIWELabelNonce": {
-    "message": "Nonce:"
-  },
-  "SIWELabelNotBefore": {
-    "message": "Hindi Lalampas sa:"
-  },
-  "SIWELabelRequestID": {
-    "message": "ID ng Kahilingan:"
-  },
-  "SIWELabelResources": {
-    "message": "Resources: $1",
-    "description": "$1 represents the number of resources"
-  },
-  "SIWELabelURI": {
-    "message": "URl:"
-  },
-  "SIWELabelVersion": {
-    "message": "Bersyon:"
-  },
-  "SIWESiteRequestSubtitle": {
-    "message": "Hinihiling ng site na ito na mag-sign in gamit ang"
-  },
-  "SIWESiteRequestTitle": {
-    "message": "Kahilingan sa pag-sign in"
-  },
-  "SIWEWarningSubtitle": {
-    "message": "Para kumpirmahin na naiintindihan mo, lagyan ng tsek ang:"
-  },
-  "SIWEWarningTitle": {
-    "message": "Sigurado ka ba?"
-  },
   "about": {
     "message": "Tungkol Dito"
   },
@@ -651,9 +592,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "I-on ang batayang kapakinabangan"
   },
-  "beCareful": {
-    "message": "Mag-ingat"
-  },
   "beta": {
     "message": "Beta"
   },
@@ -736,9 +674,6 @@
   "blockaidDescriptionTransferFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, kukunin ng third party na kilala sa mga panloloko ang lahat ng asset mo."
   },
-  "blockaidDescriptionWarning": {
-    "message": "Maaaring ito ay isang mapanlinlang na hiling. Magpatuloy lang kung pinagkakatiwalaan mo ang bawat address na kaugnay."
-  },
   "blockaidMessage": {
     "message": "Pagpapanatili ng privacy - walang data na ibinabahagi sa mga third party. Available sa Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base at Sepolia."
   },
@@ -793,10 +728,6 @@
   "buyAndSell": {
     "message": "Bumili at Magbenta"
   },
-  "buyAsset": {
-    "message": "Bumili ng $1",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "buyMoreAsset": {
     "message": "Bumili pa ng $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -815,9 +746,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Kanselahin ang transaksyon"
-  },
-  "cancelSpeedUp": {
-    "message": "kanselahin o pabilisin ang transaksyon."
   },
   "cancelSpeedUpLabel": {
     "message": "$1 ng bayad sa gas na ito ang orihinal.",
@@ -1132,29 +1060,8 @@
   "contractDeployment": {
     "message": "Deployment ng kontrata"
   },
-  "contractDescription": {
-    "message": "Para protektahan ang iyong sarili laban sa mga manloloko, maglaan ng ilang sandali upang i-verify ang mga detalye ng third-party."
-  },
   "contractInteraction": {
     "message": "Interaksyon ng kontrata"
-  },
-  "contractNFT": {
-    "message": "Kontrata ng NFT"
-  },
-  "contractRequestingAccess": {
-    "message": "Third party na humihiling ng access"
-  },
-  "contractRequestingSignature": {
-    "message": "Third party na humihiling ng lagda"
-  },
-  "contractRequestingSpendingCap": {
-    "message": "Third party na humihiling ng limitasyon sa paggastos"
-  },
-  "contractTitle": {
-    "message": "Mga detalye ng third-party"
-  },
-  "contractToken": {
-    "message": "Kontrata ng token"
   },
   "convertTokenToNFTDescription": {
     "message": "Natukoy namin na ang asset na ito ay isang NFT. Ang MetaMask ay mayroon na ngayong ganap na native support para sa mga NFT. Gusto mo bang alisin ito sa iyong listahan ng token at idagdag ito bilang isang NFT?"
@@ -1176,9 +1083,6 @@
   },
   "copyPrivateKey": {
     "message": "Kopyahin ang pribadong key"
-  },
-  "copyRawTransactionData": {
-    "message": "Kopyahin ang raw na data ng transaksyon"
   },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
@@ -1263,9 +1167,6 @@
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
   },
-  "customSpendingCap": {
-    "message": "Custom na limitasyon sa paggastos"
-  },
   "customToken": {
     "message": "Custom na Token"
   },
@@ -1286,9 +1187,6 @@
   },
   "customizeYourNotificationsText": {
     "message": "I-on ang mga uri ng notipikasyon na nais mong matanggap:"
-  },
-  "dappRequestedSpendingCap": {
-    "message": "Humiling ang site ng limitasyon sa paggastos"
   },
   "dappSuggested": {
     "message": "Minungkahing site"
@@ -1327,9 +1225,6 @@
   },
   "dataCollectionWarningPopoverDescription": {
     "message": "In-off mo ang koleksyon ng data para sa layunin sa marketing. Ito ay inilalapat lamang sa device na ito. Kung gumagamit ka ng MetaMask sa ibang mga device, siguraduhing mag-opt out din doon."
-  },
-  "dataHex": {
-    "message": "Hex"
   },
   "dataUnavailable": {
     "message": "hindi available ang data"
@@ -1702,9 +1597,6 @@
   "enterANameToIdentifyTheUrl": {
     "message": "Lagyan ng pangalan para matukoy ang URL"
   },
-  "enterANumber": {
-    "message": "Maglagay ng numero"
-  },
   "enterChainId": {
     "message": "Ilagay ang ID ng Chain"
   },
@@ -1926,9 +1818,6 @@
   },
   "function": {
     "message": "Function: $1"
-  },
-  "functionType": {
-    "message": "Uri ng Function"
   },
   "fundingMethod": {
     "message": "Paraan ng pagpopondo"
@@ -2251,37 +2140,6 @@
   "initialTransactionConfirmed": {
     "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
   },
-  "inputLogicEmptyState": {
-    "message": "Maglagay lamang ng numero na komportable ka sa paggastos ng third party ngayon o sa hinaharap. Maaari mong palaging taasan ang limitasyon sa paggastos sa ibang pagkakataon."
-  },
-  "inputLogicEqualOrSmallerNumber": {
-    "message": "Nagbibigay-daan ito sa third party na gumastos ng $1 mula sa iyong kasalukuyang balanse.",
-    "description": "$1 is the current token balance in the account and the name of the current token"
-  },
-  "inputLogicHigherNumber": {
-    "message": "Pinapayagan nito ang third party na gastusin ang lahat ng balanse ng iyong token hanggang sa maabot nito ang limitasyon o bawiin mo ang limitasyon sa paggastos. Kung hindi ito nilayon, isaalang-alang ang pagtatakda ng mas mababang limitasyon sa paggastos."
-  },
-  "insightWarning": {
-    "message": "babala"
-  },
-  "insightWarningCheckboxMessage": {
-    "message": "$1 ang hiling ni $2",
-    "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
-  },
-  "insightWarningContentPlural": {
-    "message": "Suriin ang $1 bago ang $2. Kapag nagawa na, ang $3 ay hindi na mapapawalang-bisa.",
-    "description": "$1 the 'insightWarnings' message (2 warnings) representing warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningContentSingular": {
-    "message": "Suriin ang $1 bago ang $2. Kapag nagawa na, ang $3 ay hindi na mapapawalang-bisa.",
-    "description": "$1 is the 'insightWarning' message (1 warning), $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningHeader": {
-    "message": "Ang hiling na ito ay maaaring mapanganib"
-  },
-  "insightWarnings": {
-    "message": "mga babala"
-  },
   "insightsFromSnap": {
     "message": "Mga kaalaman mula sa $1",
     "description": "$1 represents the name of the snap"
@@ -2301,14 +2159,6 @@
   },
   "insufficientBalance": {
     "message": "Hindi sapat ang balanse."
-  },
-  "insufficientCurrencyBuyOrDeposit": {
-    "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga transaksyon sa $2 network. $3 o magdeposito mula sa ibang account.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyDeposit": {
-    "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga transaksyon sa $2 network. Magdeposito ng $1 mula sa ibang account.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network"
   },
   "insufficientFunds": {
     "message": "Hindi sapat ang pondo."
@@ -2462,10 +2312,6 @@
   "layer2Fees": {
     "message": "Layer 2 na bayad"
   },
-  "learnCancelSpeeedup": {
-    "message": "Alamin kung paano sa $1",
-    "description": "$1 is link to cancel or speed up transactions"
-  },
   "learnHow": {
     "message": "Alamin kung paano"
   },
@@ -2604,9 +2450,6 @@
   },
   "lowLowercase": {
     "message": "mababa"
-  },
-  "lowPriorityMessage": {
-    "message": "Ang mga transaksyon sa hinaharap ay pipila pagkatapos nito. Ang presyong ito ay huling nakita noong nakaraan."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -3477,9 +3320,6 @@
   "openInBlockExplorer": {
     "message": "Buksan sa block explorer"
   },
-  "openSeaNew": {
-    "message": "OpenSea"
-  },
   "optional": {
     "message": "Opsyonal"
   },
@@ -3507,9 +3347,6 @@
   },
   "padlock": {
     "message": "Padlock"
-  },
-  "parameters": {
-    "message": "Mga Parameter"
   },
   "participateInMetaMetrics": {
     "message": "Sumali sa MetaMetrics"
@@ -3543,22 +3380,8 @@
     "message": "I-paste ang string ng iyong pribadong key dito:",
     "description": "For importing an account from a private key"
   },
-  "paymasterInUse": {
-    "message": "Ang gas para sa transaksyon na ito ay babayaran ng isang paymaster.",
-    "description": "Alert shown in transaction confirmation if paymaster in use."
-  },
   "pending": {
     "message": "Nakabinbin"
-  },
-  "pendingTransactionInfo": {
-    "message": "Hindi mapoproseso ang transaksyon na ito hangga't hindi nakukumpleto ang isang iyon."
-  },
-  "pendingTransactionMultiple": {
-    "message": "Mayroon kang ($1) nakabinbin na mga transaksyon."
-  },
-  "pendingTransactionSingle": {
-    "message": "Mayroon kang ($1) nakabinbin na transaksyon.",
-    "description": "$1 is count of pending transactions"
   },
   "permissionDetails": {
     "message": "Mga detalye ng permiso"
@@ -4122,12 +3945,6 @@
   "reportIssue": {
     "message": "Mag-ulat ng isyu"
   },
-  "requestFlaggedAsMaliciousFallbackCopyReason": {
-    "message": "Ang tagapagbigay ng seguridad ay hindi nagbahagi ng mga karagdagang detalye"
-  },
-  "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
-    "message": "Na-flag ang kahilingan bilang mapaminsala"
-  },
   "requestFrom": {
     "message": "Hiling mula sa"
   },
@@ -4140,18 +3957,6 @@
   "requestFromTransactionDescription": {
     "message": "Ito ang site na humihiling ng iyong kumpirmasyon."
   },
-  "requestMayNotBeSafe": {
-    "message": "Maaaring hindi ligtas ang kahilingan"
-  },
-  "requestMayNotBeSafeError": {
-    "message": "Ang tagapagbigay ng seguridad ay walang nakitang anumang kilalang nakakahamak na aktibidad, ngunit maaaring hindi pa rin ito ligtas para magpatuloy."
-  },
-  "requestNotVerified": {
-    "message": "Hindi na-verify ang kahilingan"
-  },
-  "requestNotVerifiedError": {
-    "message": "Dahil sa isang error, ang kahilingang ito ay hindi na-verify ng tagapagbigay ng seguridad. Magpatuloy nang may pag-iingat."
-  },
   "requestingFor": {
     "message": "Hinihiling para sa"
   },
@@ -4162,9 +3967,6 @@
   "requestingForNetwork": {
     "message": "Humihiling ng $1",
     "description": "Name of Network"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "mga kahilingang hinihintay na tanggapin"
   },
   "required": {
     "message": "Kinakailangan"
@@ -4268,9 +4070,6 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "Aalisin mo ang pahintulot sa ibang tao na gumastos ng mga token mula sa account mo."
-  },
-  "revokeSpendingCapTooltipText": {
-    "message": "Ang third party na ito ay hindi na makakagastos pa sa iyong kasalukuyan o hinaharap na mga token."
   },
   "rpcNameOptional": {
     "message": "Pangalan ng RPC (Opsyonal)"
@@ -4484,9 +4283,6 @@
     "message": "Babala: magpapadala ka sa isang kontrata ng token na maaaring magresulta sa pagkawala ng mga pondo. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
-  "sendingZeroAmount": {
-    "message": "Ikaw ay nagpapadala ng 0 $1."
-  },
   "sepolia": {
     "message": "Sepolia test network"
   },
@@ -4573,23 +4369,14 @@
   "showTestnetNetworksDescription": {
     "message": "Piliin ito upang ipakita ang mga test network sa listahan ng network"
   },
-  "sigRequest": {
-    "message": "Kahilingan sa paglagda"
-  },
   "sign": {
     "message": "Pumirma"
   },
   "signatureRequest": {
     "message": "Kahilingan sa paglagda"
   },
-  "signatureRequestGuidance": {
-    "message": "Pirmahan lang ang mensaheng ito kung ganap mong nauunawaan ang nilalaman at nagtitiwala sa site na humihiling."
-  },
   "signed": {
     "message": "Napirmahan"
-  },
-  "signin": {
-    "message": "Mag-sign In"
   },
   "signing": {
     "message": "Pinipirmahan"
@@ -4946,13 +4733,6 @@
   },
   "spendingCap": {
     "message": "Limitasyon sa paggastos"
-  },
-  "spendingCapError": {
-    "message": "Error: Maglagay lamang ng mga numero"
-  },
-  "spendingCapErrorDescription": {
-    "message": "Maglagay lamang ng numero na komportable kang i-access ng $1 ngayon o sa hinaharap. Palagi mong madadagdagan ang limitasyon ng token sa ibang pagkakataon.",
-    "description": "$1 is origin of the site requesting the token limit"
   },
   "spendingCapTooltipDesc": {
     "message": "Ito ang halaga ng mga token na maa-access ng gumagastos sa ngalan mo."
@@ -5906,9 +5686,6 @@
   "unknownCollection": {
     "message": "Walang pangalang koleksyon"
   },
-  "unknownNetwork": {
-    "message": "Hindi kilalang pribadong network"
-  },
   "unknownNetworkForKeyEntropy": {
     "message": "Hindi kilalang network",
     "description": "Displayed on places like Snap install warning when regular name is not available."
@@ -5935,9 +5712,6 @@
   "unsendableAsset": {
     "message": "Ang pagpapadala ng mga token ng NFT (ERC-721) ay kasalukuyang hindi suportado",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
-  },
-  "unverifiedContractAddressMessage": {
-    "message": "Hindi namin ma-verify ang kontratang ito. Tiyaking pinagkakatiwalaan mo ang address na ito."
   },
   "upArrow": {
     "message": "arrow pataas"
@@ -6001,9 +5775,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSiteSuggestion": {
-    "message": "Gamitin ang mungkahi ng site"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
   },
@@ -6015,9 +5786,6 @@
   },
   "userOpContractDeployError": {
     "message": "Ang paglalabas ng kontrata mula sa isang account ng smart contract ay hindi suportado"
-  },
-  "verifyContractDetails": {
-    "message": "I-verify ang mga detalye ng third-party"
   },
   "version": {
     "message": "Bersyon"
@@ -6090,10 +5858,6 @@
     "message": "Babala mula sa $1",
     "description": "$1 represents the name of the snap"
   },
-  "warningTooltipText": {
-    "message": "$1 Maaaring gastusin ng third party ang iyong buong balanse ng token nang walang karagdagang abiso o pahintulot. Protektahan ang iyong sarili sa pamamagitan ng pag-customize ng mas mababang limitasyon sa paggastos.",
-    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
-  },
   "watchEthereumAccountsDescription": {
     "message": "Ang pag-on sa opsyon na ito ay magbibigay sa iyo ng kakayahan na panoorin ang mga account ng Ethereum sa pamamagitan ng isang pampublikong address o pangalan ng ENS. Para sa feedback sa Beta feature na ito, mangyaring sagutan ito $1.",
     "description": "$1 is the link to a product feedback form"
@@ -6165,9 +5929,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."
-  },
-  "youSign": {
-    "message": "Pinipirmahan mo ang"
   },
   "yourAccounts": {
     "message": "Mga account mo"

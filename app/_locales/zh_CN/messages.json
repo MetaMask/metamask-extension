@@ -44,65 +44,6 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
-  "SIWEAddressInvalid": {
-    "message": "登录请求中的地址与您用于登录的账户地址不匹配。"
-  },
-  "SIWEDomainInvalidText": {
-    "message": "您尝试登录的网站与请求中的域名不匹配。请谨慎操作。"
-  },
-  "SIWEDomainInvalidTitle": {
-    "message": "虚假网站请求。"
-  },
-  "SIWEDomainWarningBody": {
-    "message": "网站（$1）要求您登录到错误的域名。这可能是网络钓鱼攻击。",
-    "description": "$1 represents the website domain"
-  },
-  "SIWEDomainWarningLabel": {
-    "message": "不安全"
-  },
-  "SIWELabelChainID": {
-    "message": "链 ID："
-  },
-  "SIWELabelExpirationTime": {
-    "message": "到期时间："
-  },
-  "SIWELabelIssuedAt": {
-    "message": "发行于："
-  },
-  "SIWELabelMessage": {
-    "message": "消息："
-  },
-  "SIWELabelNonce": {
-    "message": "Nonce："
-  },
-  "SIWELabelNotBefore": {
-    "message": "不早于："
-  },
-  "SIWELabelRequestID": {
-    "message": "请求ID："
-  },
-  "SIWELabelResources": {
-    "message": "资源：$1",
-    "description": "$1 represents the number of resources"
-  },
-  "SIWELabelURI": {
-    "message": "URI："
-  },
-  "SIWELabelVersion": {
-    "message": "版本："
-  },
-  "SIWESiteRequestSubtitle": {
-    "message": "此网站正在请求使用以下登录方式："
-  },
-  "SIWESiteRequestTitle": {
-    "message": "登录请求"
-  },
-  "SIWEWarningSubtitle": {
-    "message": "为表明您确认理解，请勾选："
-  },
-  "SIWEWarningTitle": {
-    "message": "您确定吗？"
-  },
   "about": {
     "message": "关于"
   },
@@ -651,9 +592,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "开启基本功能"
   },
-  "beCareful": {
-    "message": "请小心"
-  },
   "beta": {
     "message": "测试版"
   },
@@ -736,9 +674,6 @@
   "blockaidDescriptionTransferFarming": {
     "message": "如果您批准此请求，以欺诈闻名的第三方将会拿走您的所有资产。"
   },
-  "blockaidDescriptionWarning": {
-    "message": "这可能是欺骗性请求。仅在您信任所涉及的每个地址时才能继续。"
-  },
   "blockaidMessage": {
     "message": "隐私保护 - 不会与第三方共享任何数据。适用于 Arbitrum、Avalanche、BNB Chain、以太坊主网、Linea、Optimism、Polygon、Base 和 Sepolia。"
   },
@@ -793,10 +728,6 @@
   "buyAndSell": {
     "message": "出入金"
   },
-  "buyAsset": {
-    "message": "购买$1",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "buyMoreAsset": {
     "message": "购买更多$1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -815,9 +746,6 @@
   },
   "cancelPopoverTitle": {
     "message": "取消交易"
-  },
-  "cancelSpeedUp": {
-    "message": "取消或加快交易。"
   },
   "cancelSpeedUpLabel": {
     "message": "这笔燃料费将$1原来的费用。",
@@ -1132,29 +1060,8 @@
   "contractDeployment": {
     "message": "合约部署"
   },
-  "contractDescription": {
-    "message": "为保护自己免受欺诈，请花点时间验证第三方详情。"
-  },
   "contractInteraction": {
     "message": "合约交互"
-  },
-  "contractNFT": {
-    "message": "NFT 合约"
-  },
-  "contractRequestingAccess": {
-    "message": "第三方请求访问"
-  },
-  "contractRequestingSignature": {
-    "message": "第三方请求签名"
-  },
-  "contractRequestingSpendingCap": {
-    "message": "第三方请求支出上限"
-  },
-  "contractTitle": {
-    "message": "第三方详情"
-  },
-  "contractToken": {
-    "message": "代币合约"
   },
   "convertTokenToNFTDescription": {
     "message": "我们检测到该资产是NFT。MetaMask现在完全原生支持NFT。您想将它从您的代币列表中删除并将它添加为NFT吗？"
@@ -1176,9 +1083,6 @@
   },
   "copyPrivateKey": {
     "message": "复制私钥"
-  },
-  "copyRawTransactionData": {
-    "message": "复制原始交易数据"
   },
   "copyToClipboard": {
     "message": "复制到剪贴板"
@@ -1263,9 +1167,6 @@
   "customSpendLimit": {
     "message": "自定义消费限额"
   },
-  "customSpendingCap": {
-    "message": "自定义支出上限"
-  },
   "customToken": {
     "message": "自定义代币"
   },
@@ -1286,9 +1187,6 @@
   },
   "customizeYourNotificationsText": {
     "message": "开启您想要接收的通知类型："
-  },
-  "dappRequestedSpendingCap": {
-    "message": "网站请求的支出上限"
   },
   "dappSuggested": {
     "message": "建议的网站"
@@ -1327,9 +1225,6 @@
   },
   "dataCollectionWarningPopoverDescription": {
     "message": "您关闭了我们用于营销目的的数据收集。此操作仅适用于此设备。如果您在其他设备上使用 MetaMask，请务必也在其他设备上选择关闭。"
-  },
-  "dataHex": {
-    "message": "十六进制"
   },
   "dataUnavailable": {
     "message": "数据不可用"
@@ -1702,9 +1597,6 @@
   "enterANameToIdentifyTheUrl": {
     "message": "输入名称以标识 URL"
   },
-  "enterANumber": {
-    "message": "输入一个数字"
-  },
   "enterChainId": {
     "message": "输入链 ID"
   },
@@ -1926,9 +1818,6 @@
   },
   "function": {
     "message": "功能：$1"
-  },
-  "functionType": {
-    "message": "功能类型"
   },
   "fundingMethod": {
     "message": "充值方法"
@@ -2251,37 +2140,6 @@
   "initialTransactionConfirmed": {
     "message": "您的初始交易已被网络确认。请点击“确定”返回。"
   },
-  "inputLogicEmptyState": {
-    "message": "仅需输入一个您觉得比较恰当的现在或将来第三方支出的数字。以后您可以随时提高支出上限。"
-  },
-  "inputLogicEqualOrSmallerNumber": {
-    "message": "此操作允许第三方从您的当前余额中支出 $1。",
-    "description": "$1 is the current token balance in the account and the name of the current token"
-  },
-  "inputLogicHigherNumber": {
-    "message": "此操作允许第三方支出您所有的代币余额，直到达到上限或您撤销支出上限为止。如果不是有意为之，请考虑设置较低的支出上限。"
-  },
-  "insightWarning": {
-    "message": "警告"
-  },
-  "insightWarningCheckboxMessage": {
-    "message": "$1 $2 的请求",
-    "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
-  },
-  "insightWarningContentPlural": {
-    "message": "在 $2 之前先查看 $1。操作后，$3 将不可逆转。",
-    "description": "$1 the 'insightWarnings' message (2 warnings) representing warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningContentSingular": {
-    "message": "在 $2 之前先查看 $1。操作后，$3 将不可逆转。",
-    "description": "$1 is the 'insightWarning' message (1 warning), $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarningHeader": {
-    "message": "此请求可能有危险"
-  },
-  "insightWarnings": {
-    "message": "警告"
-  },
   "insightsFromSnap": {
     "message": "来自$1的见解",
     "description": "$1 represents the name of the snap"
@@ -2301,14 +2159,6 @@
   },
   "insufficientBalance": {
     "message": "余额不足。"
-  },
-  "insufficientCurrencyBuyOrDeposit": {
-    "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。$3或从另一个账户存入保证金。",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyDeposit": {
-    "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。请从另一个账户存入保证金 $1。",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network"
   },
   "insufficientFunds": {
     "message": "资金不足."
@@ -2462,10 +2312,6 @@
   "layer2Fees": {
     "message": "二层公链费用"
   },
-  "learnCancelSpeeedup": {
-    "message": "学习如何 $1",
-    "description": "$1 is link to cancel or speed up transactions"
-  },
   "learnHow": {
     "message": "了解操作方法"
   },
@@ -2604,9 +2450,6 @@
   },
   "lowLowercase": {
     "message": "低"
-  },
-  "lowPriorityMessage": {
-    "message": "以后的交易将在这个时候之后排队。最后一次看到的价格是在一段时间之前。"
   },
   "mainnet": {
     "message": "以太坊主网"
@@ -3477,9 +3320,6 @@
   "openInBlockExplorer": {
     "message": "在区块浏览器上打开"
   },
-  "openSeaNew": {
-    "message": "OpenSea"
-  },
   "optional": {
     "message": "可选"
   },
@@ -3507,9 +3347,6 @@
   },
   "padlock": {
     "message": "挂锁"
-  },
-  "parameters": {
-    "message": "参数"
   },
   "participateInMetaMetrics": {
     "message": "参加 MetaMetrics"
@@ -3543,22 +3380,8 @@
     "message": "请粘贴您的私钥:",
     "description": "For importing an account from a private key"
   },
-  "paymasterInUse": {
-    "message": "这笔交易的燃料费将由代付者支付。",
-    "description": "Alert shown in transaction confirmation if paymaster in use."
-  },
   "pending": {
     "message": "待处理"
-  },
-  "pendingTransactionInfo": {
-    "message": "在那笔交易完成之前，这笔交易不会被处理。"
-  },
-  "pendingTransactionMultiple": {
-    "message": "您有 ($1) 笔待处理的交易"
-  },
-  "pendingTransactionSingle": {
-    "message": "您有 (1) 笔待处理的交易。",
-    "description": "$1 is count of pending transactions"
   },
   "permissionDetails": {
     "message": "许可详情"
@@ -4122,12 +3945,6 @@
   "reportIssue": {
     "message": "报告问题"
   },
-  "requestFlaggedAsMaliciousFallbackCopyReason": {
-    "message": "安全提供商没有分享其他详情"
-  },
-  "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
-    "message": "请求被标记为恶意"
-  },
   "requestFrom": {
     "message": "请求来自"
   },
@@ -4140,18 +3957,6 @@
   "requestFromTransactionDescription": {
     "message": "这是要求您确认的网站。"
   },
-  "requestMayNotBeSafe": {
-    "message": "请求可能不安全"
-  },
-  "requestMayNotBeSafeError": {
-    "message": "安全提供商没有检测到任何已知的恶意活动，但继续仍然可能是不安全的。"
-  },
-  "requestNotVerified": {
-    "message": "请求尚未验证"
-  },
-  "requestNotVerifiedError": {
-    "message": "由于出现错误，安全提供商没有验证此请求。请谨慎操作。"
-  },
   "requestingFor": {
     "message": "请求"
   },
@@ -4162,9 +3967,6 @@
   "requestingForNetwork": {
     "message": "请求 $1",
     "description": "Name of Network"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "待确认的请求"
   },
   "required": {
     "message": "必需"
@@ -4268,9 +4070,6 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "您正在从您的账户中删除某人使用代币的权限。"
-  },
-  "revokeSpendingCapTooltipText": {
-    "message": "第三方将无法再使用您当前或未来的任何代币。"
   },
   "rpcNameOptional": {
     "message": "RPC（远程过程调用）名称（可选）"
@@ -4484,9 +4283,6 @@
     "message": "警告：您将要发送到代币合约，这可能会导致资金损失。$1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
-  "sendingZeroAmount": {
-    "message": "您发送的是0 $1。"
-  },
   "sepolia": {
     "message": "Sepolia测试网络"
   },
@@ -4573,23 +4369,14 @@
   "showTestnetNetworksDescription": {
     "message": "选择此项以在网络列表中显示测试网络"
   },
-  "sigRequest": {
-    "message": "签名请求"
-  },
   "sign": {
     "message": "签名"
   },
   "signatureRequest": {
     "message": "签名请求"
   },
-  "signatureRequestGuidance": {
-    "message": "只有在您完全理解内容并信任请求网站的情况下，才能签署此消息。"
-  },
   "signed": {
     "message": "已签名"
-  },
-  "signin": {
-    "message": "登录"
   },
   "signing": {
     "message": "签名"
@@ -4946,13 +4733,6 @@
   },
   "spendingCap": {
     "message": "支出上限"
-  },
-  "spendingCapError": {
-    "message": "错误：仅输入数字"
-  },
-  "spendingCapErrorDescription": {
-    "message": "仅输入一个您觉得比较恰当的现在或将来存取 $1 的数字。您稍后可以随时增加代币限额。",
-    "description": "$1 is origin of the site requesting the token limit"
   },
   "spendingCapTooltipDesc": {
     "message": "他人可代表您访问该代币金额并进行消费。"
@@ -5906,9 +5686,6 @@
   "unknownCollection": {
     "message": "未命名的收藏"
   },
-  "unknownNetwork": {
-    "message": "未知的私有网络"
-  },
   "unknownNetworkForKeyEntropy": {
     "message": "未知网络",
     "description": "Displayed on places like Snap install warning when regular name is not available."
@@ -5935,9 +5712,6 @@
   "unsendableAsset": {
     "message": "当前不支持发送NFT (ERC-721)代币",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
-  },
-  "unverifiedContractAddressMessage": {
-    "message": "我们无法验证此合约。请确保此地址是可靠的。"
   },
   "upArrow": {
     "message": "向上箭头"
@@ -6001,9 +5775,6 @@
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
-  "useSiteSuggestion": {
-    "message": "使用网站建议"
-  },
   "useTokenDetectionPrivacyDesc": {
     "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将拥有您的IP地址的访问权限。"
   },
@@ -6015,9 +5786,6 @@
   },
   "userOpContractDeployError": {
     "message": "不支持从智能合约账户进行合约部署"
-  },
-  "verifyContractDetails": {
-    "message": "验证第三方详情"
   },
   "version": {
     "message": "版本"
@@ -6090,10 +5858,6 @@
     "message": "来自$1的警告",
     "description": "$1 represents the name of the snap"
   },
-  "warningTooltipText": {
-    "message": "$1 第三方可能会支出您的全部代币余额，无需进一步通知或同意。请自定义较低的支出上限以保护自己。",
-    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
-  },
   "watchEthereumAccountsDescription": {
     "message": "启用此选项后，您将能够通过公共地址或 ENS（Ethereum 域名服务）名称查看以太坊账户。如需有关此测试功能的反馈，请完成此 $1。",
     "description": "$1 is the link to a product feedback form"
@@ -6165,9 +5929,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要开启相机访问权限，才能使用该功能。"
-  },
-  "youSign": {
-    "message": "您正在签名"
   },
   "yourAccounts": {
     "message": "您的账户"
