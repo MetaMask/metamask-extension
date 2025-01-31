@@ -23,6 +23,14 @@ export type CronjobControllerMessenger = ReturnType<
   typeof getCronjobControllerMessenger
 >;
 
+/**
+ * Get a restricted controller messenger for the cronjob controller. This is
+ * scoped to the actions and events that the cronjob controller is allowed to
+ * handle.
+ *
+ * @param controllerMessenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
 export function getCronjobControllerMessenger(
   controllerMessenger: ControllerMessenger<Actions, Events>,
 ) {

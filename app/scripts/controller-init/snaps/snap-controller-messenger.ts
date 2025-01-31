@@ -76,6 +76,14 @@ export type SnapControllerMessenger = ReturnType<
   typeof getSnapControllerMessenger
 >;
 
+/**
+ * Get a restricted controller messenger for the Snap controller. This is
+ * scoped to the actions and events that the Snap controller is allowed to
+ * handle.
+ *
+ * @param controllerMessenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
 export function getSnapControllerMessenger(
   controllerMessenger: ControllerMessenger<Actions, Events>,
 ) {
@@ -125,6 +133,14 @@ export type SnapControllerInitMessenger = ReturnType<
   typeof getSnapControllerInitMessenger
 >;
 
+/**
+ * Get a restricted controller messenger for the Snap controller init. This is
+ * scoped to the actions and events that the Snap controller init is allowed to
+ * handle.
+ *
+ * @param controllerMessenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
 export function getSnapControllerInitMessenger(
   controllerMessenger: ControllerMessenger<InitActions, never>,
 ) {

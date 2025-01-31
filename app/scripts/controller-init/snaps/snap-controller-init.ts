@@ -12,18 +12,29 @@ import {
   SnapControllerMessenger,
 } from './snap-controller-messenger';
 
+/**
+ * Initialize the Snap controller.
+ *
+ * @param request - The request object.
+ * @param request.initMessenger - The init messenger. This has access to
+ * different functions than the controller messenger, and should be used for
+ * initialization purposes only.
+ * @param request.controllerMessenger - The controller messenger to use for the
+ * controller.
+ * @param request.persistedState - The persisted state of the extension.
+ * @param request.metaMaskController - The MetaMask controller.
+ * @returns The initialized controller.
+ */
 export const SnapControllerInit: ControllerInitFunction<
   SnapController,
   SnapControllerMessenger,
   SnapControllerInitMessenger
-> = (request) => {
-  const {
-    initMessenger,
-    controllerMessenger,
-    persistedState,
-    metaMaskController,
-  } = request;
-
+> = ({
+  initMessenger,
+  controllerMessenger,
+  persistedState,
+  metaMaskController,
+}) => {
   const allowLocalSnaps = Boolean(process.env.ALLOW_LOCAL_SNAPS);
   const requireAllowlist = Boolean(process.env.REQUIRE_SNAPS_ALLOWLIST);
   const rejectInvalidPlatformVersion = Boolean(

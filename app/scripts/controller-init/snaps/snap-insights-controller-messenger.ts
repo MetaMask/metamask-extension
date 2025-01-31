@@ -26,6 +26,14 @@ export type SnapInsightsControllerMessenger = ReturnType<
   typeof getSnapInsightsControllerMessenger
 >;
 
+/**
+ * Get a restricted controller messenger for the Snap insights controller. This
+ * is scoped to the actions and events that the Snap insights controller is
+ * allowed to handle.
+ *
+ * @param controllerMessenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
 export function getSnapInsightsControllerMessenger(
   controllerMessenger: ControllerMessenger<Actions, Events>,
 ) {
