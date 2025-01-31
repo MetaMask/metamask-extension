@@ -167,7 +167,7 @@ describe('Queued Confirmations', function () {
           // create deposit transaction in dapp 1
           await createDepositTransaction(driver);
 
-          await driver.delay(2000);
+          await driver.delay(5000);
 
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
@@ -312,7 +312,7 @@ describe('Queued Confirmations', function () {
           // create deposit transaction in dapp 1
           await createDepositTransaction(driver);
 
-          await driver.delay(2000);
+          await driver.delay(5000);
 
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
@@ -320,6 +320,8 @@ describe('Queued Confirmations', function () {
             driver,
             mockedEndpoints as MockedEndpoint[],
           );
+
+          console.log(events)
 
           assert.equal(events.length, 2);
 
