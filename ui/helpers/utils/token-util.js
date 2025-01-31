@@ -254,7 +254,7 @@ export function getTokenFiatAmount(
 
   currentTokenInFiat = currentTokenInFiat.round(2).toString();
   let result;
-  if (hideCurrencySymbol) {
+  if (hideCurrencySymbol && formatted) {
     result = formatCurrency(currentTokenInFiat, currentCurrency);
   } else if (formatted) {
     result = `${formatCurrency(
