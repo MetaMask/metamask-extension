@@ -3435,9 +3435,6 @@ export default class MetamaskController extends EventEmitter {
       setUseBlockie: preferencesController.setUseBlockie.bind(
         preferencesController,
       ),
-      setUseNonceField: preferencesController.setUseNonceField.bind(
-        preferencesController,
-      ),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),
