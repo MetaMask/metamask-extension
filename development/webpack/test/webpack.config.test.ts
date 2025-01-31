@@ -163,9 +163,6 @@ ${Object.entries(env)
         manifest_version: 3,
         name: 'name',
         version: '1.2.3',
-        _flags: {
-          remoteFeatureFlags: {},
-        },
         content_scripts: [
           {
             js: ['scripts/contentscript.js', 'scripts/inpage.js'],

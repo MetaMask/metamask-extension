@@ -1,4 +1,5 @@
 const { promises: fs } = require('fs');
+const { readFileSync } = require('node:fs');
 const path = require('path');
 const childProcess = require('child_process');
 const { mergeWith, cloneDeep } = require('lodash');
@@ -15,25 +16,34 @@ const { loadBuildTypesConfig } = require('../lib/build-type');
 const { TASKS, ENVIRONMENT } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getEnvironment, getBuildName } = require('./utils');
+const { fromIniFile } = require('./config');
 
 module.exports = createManifestTasks;
 
 async function loadManifestFlags() {
-  try {
-    return JSON.parse(
-      await fs.readFile(
-        path.join(__dirname, '../../.manifest-flags.json'),
-        'utf8',
-      ),
-    );
-  } catch (error) {
-    return { remoteFeatureFlags: {} };
+  const { definitions } = await fromIniFile(
+    path.resolve(__dirname, '..', '..', '.metamaskrc'),
+  );
+  const manifestOverridesPath = definitions.get('MANIFEST_OVERRIDES');
+  // default to undefined so that the manifest plugin can check if it was set
+  let manifestFlags;
+  if (manifestOverridesPath) {
+    try {
+      manifestFlags = await readJson(
+        path.resolve(process.cwd(), manifestOverridesPath),
+      );
+    } catch (error) {
+      // Only throw if error is not ENOENT (file not found) and manifestOverridesPath was provided
+      if (error.code === 'ENOENT') {
+        throw new Error(
+          `Manifest override file not found: ${manifestOverridesPath}`,
+        );
+      }
+    }
   }
+
+  return manifestFlags;
 }
-
-const manifestFlags = loadManifestFlags();
-
-module.exports = createManifestTasks;
 
 function createManifestTasks({
   browserPlatforms,
@@ -45,6 +55,8 @@ function createManifestTasks({
 }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
+    const manifestFlags = await loadManifestFlags();
+    console.log({ manifestFlags });
     return Promise.all(
       browserPlatforms.map(async (platform) => {
         const platformModifications = await readJson(
@@ -64,9 +76,8 @@ function createManifestTasks({
           browserVersionMap[platform],
           await getBuildModifications(buildType, platform),
           customArrayMerge,
-          {
-            _flags: manifestFlags,
-          },
+          // Only include _flags if manifestFlags has content
+          manifestFlags && { _flags: manifestFlags },
         );
         modifyNameAndDescForNonProd(result);
 
@@ -179,7 +190,7 @@ function createManifestTasks({
 
 // helper for reading and deserializing json from fs
 async function readJson(file) {
-  return JSON.parse(await fs.readFile(file, 'utf8'));
+  return JSON.parse(await readFileSync(file, 'utf8'));
 }
 
 // helper for serializing and writing json to fs

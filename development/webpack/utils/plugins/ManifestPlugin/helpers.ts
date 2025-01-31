@@ -10,6 +10,7 @@
  * @param args.lockdown
  * @param args.test
  * @param isDevelopment
+ * @param manifestOverridesPath
  * @returns a function that will transform the manifest JSON object
  * @throws an error if the manifest already contains the "tabs" permission and
  * `test` is `true`
@@ -17,6 +18,7 @@
 export function transformManifest(
   args: { lockdown: boolean; test: boolean },
   isDevelopment: boolean,
+  manifestOverridesPath?: string,
 ) {
   const transforms: ((manifest: chrome.runtime.Manifest) => void)[] = [];
 
@@ -40,27 +42,34 @@ export function transformManifest(
    * @param browserManifest - The Chrome extension manifest object to modify
    */
   function addManifestFlags(browserManifest: chrome.runtime.Manifest) {
-    let manifestFlags = { remoteFeatureFlags: {} };
+    let manifestFlags = undefined;
 
-    try {
-      const fs = require('fs');
-      const manifestFlagsContent = fs.readFileSync(
-        '.manifest-flags.json',
-        'utf8',
-      );
-      manifestFlags = JSON.parse(manifestFlagsContent);
-    } catch (error: unknown) {
-      // Only ignore the error if the file doesn't exist
-      if (
-        error instanceof Error &&
-        'code' in error &&
-        error.code !== 'ENOENT'
-      ) {
-        throw error;
+    if (manifestOverridesPath) {
+      try {
+        const fs = require('node:fs');
+        const path = require('node:path');
+        const manifestFlagsContent = fs.readFileSync(
+          path.resolve(process.cwd(), manifestOverridesPath),
+          'utf8',
+        );
+        manifestFlags = JSON.parse(manifestFlagsContent);
+      } catch (error: unknown) {
+        if (
+          error instanceof Error &&
+          'code' in error &&
+          error.code === 'ENOENT'
+        ) {
+          // Only throw if ENOENT and manifestOverridesPath was provided
+          throw new Error(
+            `Manifest override file not found: ${manifestOverridesPath}`,
+          );
+        }
       }
     }
 
-    browserManifest._flags = manifestFlags;
+    if(manifestFlags) {
+      browserManifest._flags = manifestFlags;
+    }
   }
 
   if (isDevelopment) {

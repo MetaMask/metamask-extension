@@ -302,6 +302,8 @@ env:
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
+  # Path to a JSON file that will be used to override the default manifest values.
+  - MANIFEST_OVERRIDES: null
 
   ###
   # Account Abstraction (EIP-4337)
