@@ -1021,10 +1021,12 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',
+          'MultichainAssetsController:stateChange',
         ],
         allowedActions: [
           'AccountsController:listMultichainAccounts',
           'SnapController:handleRequest',
+          'MultichainAssetsController:getState',
         ],
       });
 

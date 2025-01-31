@@ -19,6 +19,7 @@ import {
   getSelectedAccountNativeTokenCachedBalanceByChainId,
   getSelectedAccountNonEvmTokensForCurrentNetwork,
   getSelectedAccountTokensAcrossChains,
+  getSelectedInternalAccount,
   getShowFiatInTestnets,
   getTokenExchangeRates,
   getTokenNetworkFilter,
@@ -73,7 +74,7 @@ export type TokenMetadata = {
   fungible: true;
 
   // Base64 representation of the asset icon.
-  iconBase64: string;
+  iconUrl: string;
 
   // List of asset units.
   units: FungibleAssetUnit[]; // does this have to be an array
@@ -133,18 +134,19 @@ TokenListProps) {
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
+  const internalAccount = useSelector(getSelectedInternalAccount);
+  console.log('🚀 ~ internalAccount:', internalAccount);
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
     shallowEqual,
   );
   const newTokensImported = useSelector(getNewTokensImported);
-  console.log('=============2');
   // const selectedAccountTokensChains = useFilteredAccountTokens(currentNetwork);
 
   const selectedAccountTokens: CaipAssetType[] = useSelector(
     getSelectedAccountNonEvmTokensForCurrentNetwork,
   );
-  console.log('=============3');
+  console.log('🚀 ~ selectedAccountTokens:', selectedAccountTokens);
 
   const selectedAccountTokensMetadata = useSelector(getAllNonEvmMetadata);
   console.log(
@@ -172,6 +174,13 @@ TokenListProps) {
   const tokenBalancesNonEvm = useSelector(getMultichainBalances); //getMultichainBalances
   console.log('🚀 ~ tokenBalancesNonEvm:', tokenBalancesNonEvm);
 
+  const tokenBalancesForCurrentAccount =
+    tokenBalancesNonEvm[internalAccount.id];
+  console.log(
+    '🚀 ~ tokenBalancesForCurrentAccount:',
+    tokenBalancesForCurrentAccount,
+  );
+
   const isTestnet = useSelector(getIsTestnet);
 
   console.log('=============4');
@@ -187,6 +196,7 @@ TokenListProps) {
       if (isNative) {
         balance = nativeBalance;
       } else {
+        //  const assetBalance = tokenBalancesForCurrentAccount[asset];
         balance = '0';
       }
 
@@ -307,7 +317,7 @@ TokenListProps) {
           address={tokenData.asset}
           symbol={tokenData.symbol}
           tokenFiatAmount={showFiat ? tokenData.tokenFiatAmount : null}
-          image={tokenData?.iconBase64}
+          image={tokenData?.iconUrl}
           isNative={tokenData.isNative}
           string={tokenData.string}
           privacyMode={privacyMode}

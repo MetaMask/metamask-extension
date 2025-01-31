@@ -181,11 +181,12 @@ export function getMultichainNetwork(
   // on having a non-EVM account being selected!
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
-  // just for testing to return devnet
-  /*   const nonEvmNetwork = nonEvmNetworks.find((provider) => {
+
+  const nonEvmNetwork = nonEvmNetworks.find((provider) => {
     return provider.isAddressCompatible(selectedAccount.address);
-  }); */
-  const nonEvmNetwork = nonEvmNetworks[3];
+  });
+  // just for testing to return devnet
+  //const nonEvmNetwork = nonEvmNetworks[3];
   if (!nonEvmNetwork) {
     throw new Error(
       'Could not find non-EVM provider for the current configuration. This should never happen.',
@@ -413,13 +414,13 @@ function getNonEvmCachedBalance(
   // token for that network.
 
   //just for testing with devnet
-  const asset =
-    MULTICHAIN_NETWORK_TO_ASSET_TYPES[MultichainNetworks.SOLANA_DEVNET]?.[0];
-
   /*   const asset =
+    MULTICHAIN_NETWORK_TO_ASSET_TYPES[MultichainNetworks.SOLANA_DEVNET]?.[0]; */
+
+  const asset =
     MULTICHAIN_NETWORK_TO_ASSET_TYPES[
       network.chainId as MultichainNetworks
-    ]?.[0]; */
+    ]?.[0];
 
   if (!asset) {
     console.warn('Could not find asset type for network:', network);
