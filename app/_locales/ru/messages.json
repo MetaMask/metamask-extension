@@ -395,9 +395,6 @@
   "alert": {
     "message": "Оповещение"
   },
-  "alertActionBuy": {
-    "message": "Купить ETH"
-  },
   "alertActionUpdateGas": {
     "message": "Обновить лимит газа"
   },
@@ -424,9 +421,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Чтобы продолжить эту транзакцию, вам необходимо увеличить лимит газа до 21 000 или выше."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "У вас на счету недостаточно ETH для оплаты комиссий сети."
   },
   "alertMessageNetworkBusy": {
     "message": "Цены газа высоки, а оценки менее точны."
