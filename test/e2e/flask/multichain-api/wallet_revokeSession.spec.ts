@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { isObject, pick } from 'lodash';
+import { pick } from 'lodash';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
@@ -44,7 +44,10 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
          * We verify that scopes are not empty before calling `wallet_revokeSession`
          */
         const { sessionScopes } = await getSessionScopes(driver);
-        assert.ok(Object.keys(sessionScopes).length > 0, 'Should have non-empty session scopes value before calling `wallet_revokeSession`')
+        assert.ok(
+          Object.keys(sessionScopes).length > 0,
+          'Should have non-empty session scopes value before calling `wallet_revokeSession`',
+        );
 
         await driver.clickElement({
           text: 'wallet_revokeSession',
