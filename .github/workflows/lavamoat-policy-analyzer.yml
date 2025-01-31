@@ -1,12 +1,13 @@
 name: "LavaMoat Policy Diff Analyzer"
 
 on:
+  pull_request:
+    paths:
+      - "lavamoat/**/policy.json"
   push:
     paths:
       - "lavamoat/**/policy.json"
   workflow_dispatch:
-
-
 
 jobs:
   run-lavamoat-policy-analysis:
