@@ -35,8 +35,8 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
-  TransactionMetricsRequest,
 } from './metrics';
+import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 
 const providerResultStub = {
   eth_getCode: '0x123',
