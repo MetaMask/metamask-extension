@@ -334,15 +334,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('isRedesignedConfirmationsFeatureEnabled', () => {
-    const { controller } = setupController({});
-    it('isRedesignedConfirmationsFeatureEnabled should default to false', () => {
-      expect(
-        controller.state.preferences.isRedesignedConfirmationsDeveloperEnabled,
-      ).toStrictEqual(false);
-    });
-  });
-
   describe('setUseSafeChainsListValidation', function () {
     const { controller } = setupController({});
     it('should default to true', function () {
@@ -591,19 +582,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('useNonceField', () => {
-    it('defaults useNonceField to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useNonceField).toStrictEqual(false);
-    });
-
-    it('setUseNonceField to true', () => {
-      const { controller } = setupController({});
-      controller.setUseNonceField(true);
-      expect(controller.state.useNonceField).toStrictEqual(true);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -725,10 +703,8 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        redesignedConfirmationsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
@@ -755,10 +731,8 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         privacyMode: false,
-        redesignedConfirmationsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,

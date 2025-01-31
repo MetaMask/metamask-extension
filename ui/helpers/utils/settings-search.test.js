@@ -52,10 +52,6 @@ const t = (key) => {
       return 'Show test networks';
     case 'showTestnetNetworksDescription':
       return 'Select this to show test networks in network list';
-    case 'nonceField':
-      return 'Customize transaction nonce';
-    case 'nonceFieldDesc':
-      return 'Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously.';
     case 'autoLockTimeLimit':
       return 'Auto-lock timer (minutes)';
     case 'autoLockTimeLimitDescription':
@@ -167,7 +163,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(11);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(10);
     });
 
     it('returns "Contact" section count', () => {
@@ -186,7 +182,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        4,
+        3,
       );
     });
 

@@ -107,9 +107,6 @@ export const SENTRY_BACKGROUND_STATE = {
           chains: {},
         },
       },
-      destTokens: {},
-      destTopAssets: [],
-      destTokensLoadingStatus: true,
       quoteRequest: {
         walletAddress: false,
         srcTokenAddress: true,
@@ -245,8 +242,6 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
-      redesignedConfirmationsEnabled: true,
-      isRedesignedConfirmationsDeveloperEnabled: false,
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
@@ -268,7 +263,6 @@ export const SENTRY_BACKGROUND_STATE = {
     useCurrencyRateCheck: true,
     useMultiAccountBalanceChecker: true,
     useNftDetection: true,
-    useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,

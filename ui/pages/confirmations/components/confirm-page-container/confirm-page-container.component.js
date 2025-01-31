@@ -106,9 +106,6 @@ const ConfirmPageContainer = (props) => {
     assetStandard,
     isApprovalOrRejection,
     displayAccountBalanceHeader,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    noteComponent,
-    ///: END:ONLY_INCLUDE_IF
   } = props;
 
   const t = useI18nContext();
@@ -261,9 +258,6 @@ const ConfirmPageContainer = (props) => {
             isBuyableChain={isBuyableChain}
             openBuyCryptoInPdapp={openBuyCryptoInPdapp}
             txData={txData}
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            noteComponent={noteComponent}
-            ///: END:ONLY_INCLUDE_IF
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -432,9 +426,6 @@ ConfirmPageContainer.propTypes = {
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
   displayAccountBalanceHeader: PropTypes.bool,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  noteComponent: PropTypes.node,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export default ConfirmPageContainer;
