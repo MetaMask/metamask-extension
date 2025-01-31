@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented persistence of bridge state through ToS click ([#29366](https://github.com/MetaMask/metamask-extension/pull/29366))
 - Added network name to the asset details page ([#29211](https://github.com/MetaMask/metamask-extension/pull/29211))
 - Centered the backup warning toast for improved visual alignment ([#29200](https://github.com/MetaMask/metamask-extension/pull/29200))
+- Added conditional disabling of nonce editing when smart transactions are enabled ([#29897](https://github.com/MetaMask/metamask-extension/pull/29897))
+- Upgraded Ledger keyring to resolve EIP-712 signing issues ([#29874](https://github.com/MetaMask/metamask-extension/pull/29874))
 
 ### Changed
 - Refactored NFT display into a grid view for a cleaner and more organized layout, with privacy mode support and collection-based sorting ([#29445](https://github.com/MetaMask/metamask-extension/pull/29445))
@@ -80,6 +82,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed truncation issue for long help text in the send flow by limiting decimal values to 4 digits ([#29269](https://github.com/MetaMask/metamask-extension/pull/29269))
 - Fixed an issue where network/accounts toasts persisted after navigating to the Edit page in the Permissions modal ([#29239](https://github.com/MetaMask/metamask-extension/pull/29239))
 - Updated the onboarding screen message to include proper punctuation ([#29286](https://github.com/MetaMask/metamask-extension/pull/29286))
+- Fixed NFT list wrapping within the send modal ([#30039](https://github.com/MetaMask/metamask-extension/pull/30039))
+- Fixed explicit data addition to gas estimation parameters ([#30014](https://github.com/MetaMask/metamask-extension/pull/30014))
+- Fixed handling of null STX status containing pre-enabled state ([#30010](https://github.com/MetaMask/metamask-extension/pull/30010))
+- Fixed incorrect native token display in insufficient funds error messages ([#30009](https://github.com/MetaMask/metamask-extension/pull/30009))
+- Fixed transaction flow component issues for ERC-1155 tokens ([#29975](https://github.com/MetaMask/metamask-extension/pull/29975))
+- Updated STX banner alert to include chain support check ([#29947](https://github.com/MetaMask/metamask-extension/pull/29947))
+- Reapplied fix for premature display of "You Received" in bridge transactions ([#29950](https://github.com/MetaMask/metamask-extension/pull/29950))
+- Fixed ERC-1155 token send flow in transaction component ([#29973](https://github.com/MetaMask/metamask-extension/pull/29973))
+- Updated undici dependency to address security audit (5.28.4 → 5.28.5) ([#29976](https://github.com/MetaMask/metamask-extension/pull/29976))
 
 ## [12.10.1]
 ### Changed
