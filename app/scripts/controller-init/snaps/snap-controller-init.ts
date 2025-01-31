@@ -52,8 +52,6 @@ export const SnapControllerInit: ControllerInitFunction<
     return {
       // @ts-expect-error: `useExternalServices` is not defined in the
       // `PreferencesState` type.
-      // TODO: Verify if this is a bug in the type definitions, or if the
-      // property is not meant to be accessed in this way.
       disableSnaps: preferences.useExternalServices === false,
     };
   }
