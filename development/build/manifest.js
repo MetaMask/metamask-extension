@@ -56,7 +56,6 @@ function createManifestTasks({
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
     const manifestFlags = await loadManifestFlags();
-    console.log({ manifestFlags });
     return Promise.all(
       browserPlatforms.map(async (platform) => {
         const platformModifications = await readJson(
