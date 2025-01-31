@@ -201,7 +201,6 @@ import {
 import { KeyringType } from '../../shared/constants/keyring';
 import {
   RestrictedMethods,
-  EndowmentPermissions,
   ExcludedSnapPermissions,
   ExcludedSnapEndowments,
   CaveatTypes,
