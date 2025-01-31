@@ -18,7 +18,7 @@ jobs:
       security-events: write
     steps:
       - name: Analyze policy diff
-        uses: LavaMoat/LavaMoat/actions/lavamoat-policy-differ@b6d33b9973abe261761d7093431b1817a1bb7cf4
+        uses: ./.github/actions/lavamoat-policy-differ
         with:
           json_file_paths: |
             lavamoat/browserify/main/policy.json

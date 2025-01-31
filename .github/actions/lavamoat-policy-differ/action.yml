@@ -1,0 +1,12 @@
+name: 'LavaMoat Policy Diff Analyzer'
+description: 'Analyzes changes in the resources field of policies and explains the changes'
+inputs:
+  json_file_paths:
+    description: 'List of paths to policy.json files'
+    required: true
+  github_token:
+    description: 'GitHub token for posting comments'
+    required: true
+runs:
+  using: 'node20'
+  main: 'index.js'
