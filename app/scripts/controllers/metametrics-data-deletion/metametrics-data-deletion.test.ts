@@ -182,6 +182,6 @@ function setupController({
   return {
     controller,
     dataDeletionService: constructorOptions.dataDeletionService,
-    messenger: messenger,
+    messenger,
   };
 }
