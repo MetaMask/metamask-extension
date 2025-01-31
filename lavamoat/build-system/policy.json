@@ -2641,22 +2641,6 @@
         "depcheck>resolve": true
       }
     },
-    "eslint-import-resolver-typescript": {
-      "builtin": {
-        "path": true
-      },
-      "globals": {
-        "console.warn": true,
-        "process.cwd": true
-      },
-      "packages": {
-        "nock>debug": true,
-        "nyc>glob": true,
-        "del>is-glob": true,
-        "depcheck>resolve": true,
-        "eslint-plugin-import>tsconfig-paths": true
-      }
-    },
     "eslint-plugin-import>eslint-module-utils": {
       "builtin": {
         "crypto.createHash": true,
@@ -8646,26 +8630,14 @@
       "builtin": {
         "fs.existsSync": true,
         "fs.lstatSync": true,
-        "fs.readFile": true,
         "fs.readFileSync": true,
-        "fs.stat": true,
         "fs.statSync": true,
-        "module._resolveFilename": true,
-        "module.builtinModules": true,
         "path.dirname": true,
-        "path.isAbsolute": true,
         "path.join": true,
         "path.resolve": true
       },
-      "globals": {
-        "console.warn": true,
-        "process.argv.slice": true,
-        "process.cwd": true,
-        "process.env": true
-      },
       "packages": {
         "eslint-plugin-import>tsconfig-paths>json5": true,
-        "wait-on>minimist": true,
         "eslint-plugin-import>tsconfig-paths>strip-bom": true
       }
     },
