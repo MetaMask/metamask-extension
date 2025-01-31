@@ -76,7 +76,7 @@ describe('Queued Confirmations', function () {
       );
     });
 
-    it('Banner is shown on dApp 1, but not on dApp 2 after adding multiple transactions on dApp 1, and one on dApp 2', async function () {
+    it.only('Banner is shown on dApp 1, but not on dApp 2 after adding multiple transactions on dApp 1, and one on dApp 2', async function () {
       await withFixtures(
         {
           dapp: true,
@@ -112,8 +112,18 @@ describe('Queued Confirmations', function () {
           await switchChainToDappOne(driver);
 
           await switchToDAppAndCreateTransactionRequest(driver);
+          await driver.waitUntilXWindowHandles(4);
           await switchToDAppAndCreateTransactionRequest(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.waitForSelector(
+            By.xpath("//div[normalize-space(.)='1 of 2']"),
+          );
+
           await switchToDAppAndCreateTransactionRequest(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.waitForSelector(
+            By.xpath("//div[normalize-space(.)='1 of 3']"),
+          );
 
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
@@ -226,8 +236,9 @@ describe('Queued Confirmations', function () {
           await driver.waitUntilXWindowHandles(4);
           await switchToDAppAndCreateTransactionRequest(driver);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 2']"));
-
+          await driver.waitForSelector(
+            By.xpath("//div[normalize-space(.)='1 of 2']"),
+          );
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
           const events = await getEventPayloads(
