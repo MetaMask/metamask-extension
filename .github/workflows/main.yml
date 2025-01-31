@@ -82,6 +82,8 @@ jobs:
   build-storybook:
     name: Build storybook
     uses: ./.github/workflows/build-storybook.yml
+    secrets:
+      STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
     permissions:
       contents: read
       # id-token permission is required for uploading to s3

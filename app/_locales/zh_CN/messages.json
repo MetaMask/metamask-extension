@@ -113,10 +113,6 @@
     "message": "我已阅读并同意 $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1可以访问并使用此资产",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "使用账户私钥助记词访问钱包"
   },
@@ -392,9 +388,6 @@
   "alert": {
     "message": "提醒"
   },
-  "alertActionBuy": {
-    "message": "买入 ETH"
-  },
   "alertActionUpdateGas": {
     "message": "更新燃料限制"
   },
@@ -421,9 +414,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "要继续此交易，您需要将燃料限制提高到 21000 或更高。"
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "您的账户中没有足够的 ETH 来支付网络费用。"
   },
   "alertMessageNetworkBusy": {
     "message": "燃料价格很高，估算不太准确。"
@@ -482,10 +472,6 @@
   "all": {
     "message": "所有"
   },
-  "allOfYour": {
-    "message": "您的所有$1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "所有许可"
   },
@@ -495,16 +481,8 @@
   "allTimeLow": {
     "message": "有史以来新低"
   },
-  "allYourNFTsOf": {
-    "message": "您所有在$1的NFT",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "allowNotifications": {
     "message": "允许通知"
-  },
-  "allowSpendToken": {
-    "message": "授予访问您的 $1 的权限？",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "允许 $1 提取和消费最高以下金额：",
@@ -550,14 +528,6 @@
   "approve": {
     "message": "批准消费限额"
   },
-  "approveAllTokensTitle": {
-    "message": "是否允许访问并转账您所有的$1？",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "是否允许访问并转账您所有在$1的NFT？",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "批准"
   },
@@ -569,22 +539,8 @@
     "message": "批准 $1 支出上限",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "这允许第三方访问并转账以下 NFT，而无需另行通知，直到您撤销其访问权限。"
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "这会允许第三方访问并转账您所有在$1的NFT，而无需另行通知，直到您撤销其访问权限。",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "是否允许访问并转账您的 $1 ？",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "已批准"
-  },
-  "approvedAsset": {
-    "message": "已获批准的资产"
   },
   "approvedOn": {
     "message": "于$1获得批准",
@@ -1458,9 +1414,6 @@
     "message": "要删除$1网络吗？",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "保证金"
-  },
   "depositCrypto": {
     "message": "使用钱包地址或二维码从另一账户存入加密货币。"
   },
@@ -1649,10 +1602,6 @@
   },
   "editGasPriceTooltip": {
     "message": "此网络在提交交易时需要一个“燃料价格”字段。燃料价格是您支付的每单位燃料金额。"
-  },
-  "editGasSubTextAmountLabel": {
-    "message": "最大金额:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
     "message": "最大费用:"
@@ -1916,9 +1865,6 @@
   "fast": {
     "message": "快"
   },
-  "feeAssociatedRequest": {
-    "message": "此请求需要支付一定的费用。"
-  },
   "feeDetails": {
     "message": "费用详情"
   },
@@ -1980,12 +1926,6 @@
   },
   "function": {
     "message": "功能：$1"
-  },
-  "functionApprove": {
-    "message": "功能：批准"
-  },
-  "functionSetApprovalForAll": {
-    "message": "功能：SetApprovalForAll"
   },
   "functionType": {
     "message": "功能类型"
@@ -2091,9 +2031,6 @@
   "gotIt": {
     "message": "知道了"
   },
-  "grantedToWithColon": {
-    "message": "授予："
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -2134,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "隐藏账户"
-  },
-  "hideFullTransactionDetails": {
-    "message": "隐藏完整的交易细节"
   },
   "hideSeedPhrase": {
     "message": "隐藏助记词"
@@ -2371,10 +2305,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。$3或从另一个账户存入保证金。",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "您的账户中没有足够的 $1 可以用来支付 $2 网络的交易费用。请使用另一个账户的 $3 或 $4。",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。请从另一个账户存入保证金 $1。",
@@ -2645,9 +2575,6 @@
   },
   "loading": {
     "message": "正在加载..."
-  },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "请在硬件钱包上完成交易。"
   },
   "loadingScreenSnapMessage": {
     "message": "请在Snap上完成交易。"
@@ -3090,10 +3017,6 @@
   "next": {
     "message": "下一步"
   },
-  "nextNonceWarning": {
-    "message": "Nonce 高于所指出的 Nonce: $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "由于所有权信息不匹配，无法添加NFT。请确保所输入的信息正确无误。"
   },
@@ -3174,15 +3097,6 @@
   },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "自定义交易 nonce"
-  },
-  "nonceFieldDesc": {
-    "message": "启用此功能可更改发送资产时的唯一交易标识号（交易编号）。这是一个高级功能，请谨慎使用。"
-  },
-  "nonceFieldHeading": {
-    "message": "自定义 nonce"
   },
   "none": {
     "message": "无"
@@ -3654,9 +3568,6 @@
   },
   "permissionFrom": {
     "message": "权限来自"
-  },
-  "permissionRequest": {
-    "message": "权限请求"
   },
   "permissionRequested": {
     "message": "立即请求"
@@ -4352,31 +4263,11 @@
   "reviewPermissions": {
     "message": "查看许可"
   },
-  "revokeAllTokensTitle": {
-    "message": "撤销访问和转移您的所有 $1 的权限？",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "要撤销访问并转账您所有在$1的NFT的权限吗？",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "这将撤销第三方访问并转账您的所有 $1 的权限，而无需另行通知。",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "这会撤销第三方在无需另行通知的情况下访问并转账您所有在$1的NFT的权限。",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "撤销权限"
   },
   "revokeSimulationDetailsDesc": {
     "message": "您正在从您的账户中删除某人使用代币的权限。"
-  },
-  "revokeSpendingCap": {
-    "message": "撤销 $1 的支出上限",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "第三方将无法再使用您当前或未来的任何代币。"
@@ -5063,9 +4954,6 @@
     "message": "仅输入一个您觉得比较恰当的现在或将来存取 $1 的数字。您稍后可以随时增加代币限额。",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "$1的支出上限请求"
-  },
   "spendingCapTooltipDesc": {
     "message": "他人可代表您访问该代币金额并进行消费。"
   },
@@ -5744,9 +5632,6 @@
     "message": "第三方软件通告",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "这个收藏品"
-  },
   "threeMonthsAbbreviation": {
     "message": "3 个月",
     "description": "Shortened form of '3 months'"
@@ -5861,29 +5746,8 @@
   "transactionDataFunction": {
     "message": "功能"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "建议的网站"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "编辑以使用 MetaMask 建议的基于最新区块的燃料费用。"
-  },
   "transactionDetailGasHeading": {
     "message": "估算的燃料费"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "了解更多关于燃料费的信息"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "燃料费由网络设定，并根据网络流量和交易的复杂性而波动。"
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "燃料费用支付给在 $1 网络上处理交易的加密矿工。MetaMask 不会从燃料费用中获利。"
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "金额 + 燃料费"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "二层公链燃料费"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "金额 + 费用"
@@ -5899,9 +5763,6 @@
   },
   "transactionErrored": {
     "message": "交易出现错误。"
-  },
-  "transactionFee": {
-    "message": "交易费用"
   },
   "transactionFlowNetwork": {
     "message": "网络"
@@ -5980,9 +5841,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
-  },
-  "trustSiteApprovePermission": {
-    "message": "通过授予权限，您允许以下 $1 访问您的资金"
   },
   "tryAgain": {
     "message": "重试"
@@ -6175,12 +6033,6 @@
   },
   "viewContact": {
     "message": "查看联系人"
-  },
-  "viewDetails": {
-    "message": "查看详情"
-  },
-  "viewFullTransactionDetails": {
-    "message": "查看全部交易详情"
   },
   "viewMore": {
     "message": "查看更多"

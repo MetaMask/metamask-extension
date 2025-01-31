@@ -113,10 +113,6 @@
     "message": "$1 bölümünü okudum ve kabul ediyorum",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 bu varlığa erişebilir ve harcayabilir",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "Gizli Kurtarma İfadenizle cüzdanınıza erişin"
   },
@@ -392,9 +388,6 @@
   "alert": {
     "message": "Uyarı"
   },
-  "alertActionBuy": {
-    "message": "ETH Al"
-  },
   "alertActionUpdateGas": {
     "message": "Gaz limitini güncelle"
   },
@@ -421,9 +414,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Bu işlemle devam etmek için gaz limitini 21000 veya üzeri olacak şekilde artırmanız gerekecek."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "Hesabınızda ağ ücretlerini ödemek için yeterli ETH yok."
   },
   "alertMessageNetworkBusy": {
     "message": "Gaz fiyatları yüksektir ve tahmin daha az kesindir."
@@ -482,10 +472,6 @@
   "all": {
     "message": "Tümü"
   },
-  "allOfYour": {
-    "message": "Sahip olduğunuz tüm $1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "Tüm İzinler"
   },
@@ -495,16 +481,8 @@
   "allTimeLow": {
     "message": "Tüm zamanların en düşüğü"
   },
-  "allYourNFTsOf": {
-    "message": "Tüm $1 NFT'leriniz",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "allowNotifications": {
     "message": "Bildirimlere izin ver"
-  },
-  "allowSpendToken": {
-    "message": "$1 erişimine izin ver?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "$1 için şu tutara kadar para çekme ve harcama izni ver:",
@@ -550,14 +528,6 @@
   "approve": {
     "message": "Harcama limitini onayla"
   },
-  "approveAllTokensTitle": {
-    "message": "Sahip olduğun tüm $1 için erişim ve transfer izni verilsin mi?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "Tüm $1 NFT'lerinizin erişimine ve transferine izin verilsin mi?",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "Onayla"
   },
@@ -569,22 +539,8 @@
     "message": "$1 harcama üst limitini onayla",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "Üçüncü bir tarafın, siz bu erişimi iptal edene kadar başka bildirim yapılmaksızın aşağıdaki NFT'lere erişim sağlamasına ve onları transfer edebilmesine izin verir."
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "Üçüncü bir tarafın, siz bu erişimi geri çekene kadar başkaca bildiri olmaksızın tüm $1 NFT'lerinize erişim sağlamasına ve onları transfer edebilmesine izin verir.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "$1 için erişim ve transferine izin ver?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "Onaylandı"
-  },
-  "approvedAsset": {
-    "message": "Onaylanan varlık"
   },
   "approvedOn": {
     "message": "$1 üzerinde onaylandı",
@@ -1458,9 +1414,6 @@
     "message": "$1 ağını sil?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Para Yatır"
-  },
   "depositCrypto": {
     "message": "Cüzdan adresi veya QR kodu ile başka bir hesaptan kripto yatırın."
   },
@@ -1649,10 +1602,6 @@
   },
   "editGasPriceTooltip": {
     "message": "Bu ağ, bir işlem gönderirken bir \"Gaz fiyatı\" alanı gerektirir. Gaz fiyatı, gaz birimi başına ödeyeceğiniz miktardır."
-  },
-  "editGasSubTextAmountLabel": {
-    "message": "Maks. tutar:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
     "message": "Maks. ücret:"
@@ -1916,9 +1865,6 @@
   "fast": {
     "message": "Hızlı"
   },
-  "feeAssociatedRequest": {
-    "message": "Bu talep ile ilişkili bir ücret mevcuttur."
-  },
   "feeDetails": {
     "message": "Ücret bilgileri"
   },
@@ -1980,12 +1926,6 @@
   },
   "function": {
     "message": "İşlev: $1"
-  },
-  "functionApprove": {
-    "message": "İşlev: Onayla"
-  },
-  "functionSetApprovalForAll": {
-    "message": "İşlev: TümüİçinOnayVer"
   },
   "functionType": {
     "message": "İşlev türü"
@@ -2091,9 +2031,6 @@
   "gotIt": {
     "message": "Anladım"
   },
-  "grantedToWithColon": {
-    "message": "İzin verilen:"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -2134,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "Hesabı gizle"
-  },
-  "hideFullTransactionDetails": {
-    "message": "Tam işlem bilgilerini gizle"
   },
   "hideSeedPhrase": {
     "message": "Anahtar cümleyi gizle"
@@ -2371,10 +2305,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Hesabında $2 ağındaki işlem ücretlerini ödemek için yeterli $1 bulunmuyor. $3 veya başka bir hesaptan para yatır.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "Hesabınızda $2 ağındaki işlemleri ödemek için yeterli $1 yok. Başka bir hesaptan $3 veya $4.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Hesabında $2 ağındaki işlem ücretlerini ödemek için yeterli $1 bulunmuyor. Başka bir hesaptan $1 yatır.",
@@ -2645,9 +2575,6 @@
   },
   "loading": {
     "message": "Yükleniyor..."
-  },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "Lütfen işlemi donanım cüzdanında tamamlayın."
   },
   "loadingScreenSnapMessage": {
     "message": "Lütfen işlemi Snap üzerinde tamamlayın."
@@ -3090,10 +3017,6 @@
   "next": {
     "message": "Sonraki"
   },
-  "nextNonceWarning": {
-    "message": "Nonce, önerilen $1 nonce'undan büyük",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "Sahiplik bilgileri eşleşmediği için NFT eklenemiyor. Doğru bilgileri girdiğinizden emin olun."
   },
@@ -3174,15 +3097,6 @@
   },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "İşlem nonce'unu özelleştir"
-  },
-  "nonceFieldDesc": {
-    "message": "Varlık gönderirken nonce'u (işlem numarasını) değiştirmek için bunu açın. Bu gelişmiş bir özelliktir, dikkatli kullanın."
-  },
-  "nonceFieldHeading": {
-    "message": "Özel nonce"
   },
   "none": {
     "message": "Yok"
@@ -3654,9 +3568,6 @@
   },
   "permissionFrom": {
     "message": "Şuradan izin:"
-  },
-  "permissionRequest": {
-    "message": "İzin talebi"
   },
   "permissionRequested": {
     "message": "Şimdi talep edildi"
@@ -4352,31 +4263,11 @@
   "reviewPermissions": {
     "message": "İzinleri incele"
   },
-  "revokeAllTokensTitle": {
-    "message": "Tüm $1 için izin erişim ve transfer izni geri çekilsin mi?",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "Tüm $1 NFT'lerinize erişim ve transfer izni geri çekilsin mi?",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "Bu durumda üçüncü bir tarafın başkaca bildiride bulunmaksızın tüm $1 erişim ve transfer izni geri çekilir.",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "Üçüncü bir tarafın, başkaca bildiri olmaksızın tüm $1 NFT'lerinize erişim sağlama ve onları transfer etme iznini geri çeker.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "İzni geri al"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Birisinin sizin hesabınızdan token harcama iznini kaldırıyorsunuz."
-  },
-  "revokeSpendingCap": {
-    "message": "$1 için harcama üst limitini iptal et",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "Bu üçüncü taraf şimdiki ya da gelecekteki tokenlerinizi artık kullanamayacak."
@@ -5063,9 +4954,6 @@
     "message": "Sadece şu anda ya da gelecekte $1 erişimi konusunda rahat olduğunuz bir sayı girin. Token limitini daha sonra dilediğiniz zaman artırabilirsiniz.",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "$1 için harcama üst limiti talebi"
-  },
   "spendingCapTooltipDesc": {
     "message": "Bu, harcama yapan tarafın sizin adınıza erişim sağlayabileceği token miktarıdır."
   },
@@ -5744,9 +5632,6 @@
     "message": "Üçüncü taraf yazılım uyarısı",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "bu koleksiyon"
-  },
   "threeMonthsAbbreviation": {
     "message": "3A",
     "description": "Shortened form of '3 months'"
@@ -5861,29 +5746,8 @@
   "transactionDataFunction": {
     "message": "İşlev"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Site önerisi"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "En son bloka göre MetaMask'in önerilen gaz ücretini kullanmak için düzenleyin."
-  },
   "transactionDetailGasHeading": {
     "message": "Tahmini gaz ücreti"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Gaz ücretleri hakkında daha fazla bilgi edinin"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Gaz ücretleri ağ tarafından belirlenir ve ağ trafiği ve işlem karmaşıklığına göre dalgalanır."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Gaz ücretleri, $1 ağında işlemleri gerçekleştiren kripto madencilerine ödenir. MetaMask gaz ücretlerinden herhangi bir kazanç elde etmemektedir."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Tutar + gaz ücreti"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Katman 2 gaz ücreti"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Tutar + ücretler"
@@ -5899,9 +5763,6 @@
   },
   "transactionErrored": {
     "message": "İşlem bir hatayla karşılaştı."
-  },
-  "transactionFee": {
-    "message": "İşlem ücreti"
   },
   "transactionFlowNetwork": {
     "message": "Ağ"
@@ -5980,9 +5841,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
-  },
-  "trustSiteApprovePermission": {
-    "message": "İzin verdiğinizde paranıza aşağıdaki $1 erişimine izin verirsiniz"
   },
   "tryAgain": {
     "message": "Tekrar dene"
@@ -6175,12 +6033,6 @@
   },
   "viewContact": {
     "message": "Kişiyi görüntüle"
-  },
-  "viewDetails": {
-    "message": "Ayrıntıları görüntüle"
-  },
-  "viewFullTransactionDetails": {
-    "message": "Tüm işlem bilgilerini görüntüle"
   },
   "viewMore": {
     "message": "Daha fazlasını görüntüle"

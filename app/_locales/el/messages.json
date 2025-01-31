@@ -113,10 +113,6 @@
     "message": "Έχω διαβάσει και συμφωνώ με το $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "Το $1 ίσως αποκτήσει πρόσβαση και δαπανήσει αυτό το περιουσιακό στοιχείο",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "Αποκτήστε πρόσβαση στο πορτοφόλι σας με τη Μυστική σας Φράση Ανάκτησης"
   },
@@ -392,9 +388,6 @@
   "alert": {
     "message": "Ειδοποίηση"
   },
-  "alertActionBuy": {
-    "message": "Αγορά ETH"
-  },
   "alertActionUpdateGas": {
     "message": "Ενημέρωση ορίου των τελών συναλλαγών"
   },
@@ -421,9 +414,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Για να συνεχίσετε με αυτή τη συναλλαγή, θα πρέπει να αυξήσετε το όριο των τελών συναλλαγών σε 21000 ή περισσότερο."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "Δεν έχετε αρκετά ETH στον λογαριασμό σας για να πληρώσετε τα τέλη δικτύου."
   },
   "alertMessageNetworkBusy": {
     "message": "Οι τιμές των τελών συναλλαγών είναι υψηλές και οι εκτιμήσεις είναι λιγότερο ακριβείς."
@@ -482,10 +472,6 @@
   "all": {
     "message": "Όλες"
   },
-  "allOfYour": {
-    "message": "Όλα σας τα $1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "Όλες οι άδειες χρήσης"
   },
@@ -495,16 +481,8 @@
   "allTimeLow": {
     "message": "Χαμηλό όλων των εποχών"
   },
-  "allYourNFTsOf": {
-    "message": "Όλα τα NFT σας από το $1",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "allowNotifications": {
     "message": "Να επιτρέπονται οι ειδοποιήσεις"
-  },
-  "allowSpendToken": {
-    "message": "Δίνετε άδεια για να αποκτήσετε πρόσβαση στο $1;",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "Επιτρέψτε στο $1 να κάνει ανάληψη και να ξοδέψει μέχρι το ακόλουθο ποσό:",
@@ -550,14 +528,6 @@
   "approve": {
     "message": "Έγκριση ορίου δαπανών"
   },
-  "approveAllTokensTitle": {
-    "message": "Επιτρέπετε την πρόσβαση και τη μεταφορά όλων των $1;",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "Επιτρέπετε την πρόσβαση και τη μεταφορά όλων των NFT σας από το $1;",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "Έγκριση"
   },
@@ -569,22 +539,8 @@
     "message": "Έγκριση $1 ως ανώτατο όριο δαπανών",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "Αυτό επιτρέπει σε τρίτα μέρη να έχουν πρόσβαση και να μεταφέρουν τα ακόλουθα NFT χωρίς περαιτέρω ειδοποίηση μέχρι να ανακαλέσετε την πρόσβασή τους."
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "Αυτό επιτρέπει σε ένα τρίτο μέρος να έχει πρόσβαση και να μεταφέρει όλα τα NFT σας από το $1 χωρίς περαιτέρω ειδοποίηση μέχρι να ανακαλέσετε την πρόσβασή του.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "Επιτρέπετε την πρόσβαση και τη μεταφορά του $1;",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "Εγκρίθηκε"
-  },
-  "approvedAsset": {
-    "message": "Εγκεκριμένο περιουσιακό στοιχείο"
   },
   "approvedOn": {
     "message": "Εγκρίθηκε στις $1",
@@ -1458,9 +1414,6 @@
     "message": "Διαγραφή του δικτύου $1;",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Κατάθεση"
-  },
   "depositCrypto": {
     "message": "Κατάθεση κρυπτονομισμάτων από άλλο λογαριασμό με διεύθυνση πορτοφολιού ή κωδικό QR."
   },
@@ -1649,10 +1602,6 @@
   },
   "editGasPriceTooltip": {
     "message": "Αυτό το δίκτυο απαιτεί ένα πεδίο \"Τέλος συναλλαγής\" κατά την υποβολή μιας συναλλαγής. Η τιμή τέλους συναλλαγής είναι το ποσό που θα πληρώσετε ανά μονάδα τέλους συναλλαγής."
-  },
-  "editGasSubTextAmountLabel": {
-    "message": "Μέγιστο ποσό:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
     "message": "Μέγιστη χρέωση:"
@@ -1916,9 +1865,6 @@
   "fast": {
     "message": "Γρήγορα"
   },
-  "feeAssociatedRequest": {
-    "message": "Ένα τέλος σχετίζεται με αυτό το αίτημα."
-  },
   "feeDetails": {
     "message": "Λεπτομέρειες χρεώσεων"
   },
@@ -1980,12 +1926,6 @@
   },
   "function": {
     "message": "Λειτουργία: $1"
-  },
-  "functionApprove": {
-    "message": "Λειτουργία: Έγκριση"
-  },
-  "functionSetApprovalForAll": {
-    "message": "Λειτουργία: SetApprovalForAll"
   },
   "functionType": {
     "message": "Τύπος λειτουργίας"
@@ -2091,9 +2031,6 @@
   "gotIt": {
     "message": "Το κατάλαβα"
   },
-  "grantedToWithColon": {
-    "message": "Χορηγήθηκε στο:"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -2134,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "Απόκρυψη λογαριασμού"
-  },
-  "hideFullTransactionDetails": {
-    "message": "Απόκρυψη αναλυτικών στοιχείων συναλλαγών"
   },
   "hideSeedPhrase": {
     "message": "Απόκρυψη φράσης ανάκτησης"
@@ -2371,10 +2305,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη της συναλλαγής στο δίκτυο $2. $3 ή πραγματοποιήστε κατάθεση από άλλον λογαριασμό.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη της συναλλαγής στο δίκτυο $2. $3 ή $4 από άλλον λογαριασμό.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη της συναλλαγής στο δίκτυο $2. Καταθέστε $1 από άλλον λογαριασμό.",
@@ -2645,9 +2575,6 @@
   },
   "loading": {
     "message": "Φόρτωση..."
-  },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "Ολοκληρώστε τη συναλλαγή στο πορτοφόλι υλικού."
   },
   "loadingScreenSnapMessage": {
     "message": "Ολοκληρώστε τη συναλλαγή στο Snap."
@@ -3090,10 +3017,6 @@
   "next": {
     "message": "Επόμενο"
   },
-  "nextNonceWarning": {
-    "message": "Το Nonce είναι υψηλότερο από το προτεινόμενο nonce του $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "Το NFT δεν μπορεί να προστεθεί καθώς τα στοιχεία ιδιοκτησίας δεν ταιριάζουν. Βεβαιωθείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
   },
@@ -3174,15 +3097,6 @@
   },
   "nonce": {
     "message": "Αριθμολέξημα"
-  },
-  "nonceField": {
-    "message": "Προσαρμόστε τη συναλλαγή nonce"
-  },
-  "nonceFieldDesc": {
-    "message": "Ενεργοποιήστε την επιλογή αυτή για να αλλάξετε το nonce (αριθμός συναλλαγής) κατά την αποστολή περιουσιακών στοιχείων. Αυτή είναι μια προηγμένη λειτουργία, χρησιμοποιήστε τη με προσοχή."
-  },
-  "nonceFieldHeading": {
-    "message": "Προσαρμοσμένο Nonce"
   },
   "none": {
     "message": "Κανένα"
@@ -3654,9 +3568,6 @@
   },
   "permissionFrom": {
     "message": "Άδεια από"
-  },
-  "permissionRequest": {
-    "message": "Αίτημα άδειας"
   },
   "permissionRequested": {
     "message": "Ζητήθηκε τώρα"
@@ -4352,31 +4263,11 @@
   "reviewPermissions": {
     "message": "Έλεγχος αδειών"
   },
-  "revokeAllTokensTitle": {
-    "message": "Ανάκληση της άδειας πρόσβασης και μεταφοράς όλων των $1;",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "Ανάκληση της άδειας πρόσβασης και μεταφοράς όλων των NFT σας από το $1;",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "Αυτό ανακαλεί την άδεια για ένα τρίτο μέρος να έχει πρόσβαση και να μεταφέρει όλα τα $1 σας χωρίς περαιτέρω ειδοποίηση.",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "Αυτό ανακαλεί την άδεια για ένα τρίτο μέρος να έχει πρόσβαση και να μεταφέρει όλα τα NFT σας από το $1 χωρίς περαιτέρω ειδοποίηση.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "Ανάκληση άδειας"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Αφαιρείτε την άδεια κάποιου να ξοδεύει tokens από τον λογαριασμό σας."
-  },
-  "revokeSpendingCap": {
-    "message": "Ανάκληση του ανώτατου ορίου δαπανών για το $1",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "Αυτός ο τρίτος δεν θα μπορεί να ξοδέψει άλλα από τα τρέχοντα ή μελλοντικά σας tokens."
@@ -5063,9 +4954,6 @@
     "message": "Εισαγάγετε μόνο έναν αριθμό στον οποίο αισθάνεστε άνετα με το $1 να έχει πρόσβαση τώρα ή στο μέλλον. Μπορείτε πάντα να αυξήσετε το όριο του token αργότερα.",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "Αίτημα ανώτατου ορίου δαπανών για το $1"
-  },
   "spendingCapTooltipDesc": {
     "message": "Αυτό είναι το ποσό των tokens που θα μπορεί να έχει πρόσβαση ο διαθέτης για λογαριασμό σας."
   },
@@ -5744,9 +5632,6 @@
     "message": "Ειδοποίηση για λογισμικό τρίτων",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "αυτή η συλλογή"
-  },
   "threeMonthsAbbreviation": {
     "message": "3Μ",
     "description": "Shortened form of '3 months'"
@@ -5861,29 +5746,8 @@
   "transactionDataFunction": {
     "message": "Λειτουργία"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Προτεινόμενος ιστότοπος"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Επεξεργαστείτε για να χρησιμοποιήσετε το προτεινόμενο τέλος συναλλαγής του MetaMask με βάση το τελευταίο μπλοκ."
-  },
   "transactionDetailGasHeading": {
     "message": "Εκτιμώμενο τέλος συναλλαγής"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Μάθετε περισσότερα για τα τέλη συναλλαγών"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Τα τέλη συναλλαγών καθορίζονται από το δίκτυο και αυξομειώνονται ανάλογα με την κίνηση του δικτύου και την πολυπλοκότητα των συναλλαγών."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Τα τέλη συναλλαγών καταβάλλονται σε κρυπτονομίσματα στους αναλυτές που επεξεργάζονται συναλλαγές στο δίκτυο $1. Το MetaMask δεν επωφελείται από τα τέλη συναλλαγών."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Ποσό + τέλος συναλλαγής"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Τέλος συναλλαγής Επιπέδου 2"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Ποσά + τέλη"
@@ -5899,9 +5763,6 @@
   },
   "transactionErrored": {
     "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
-  },
-  "transactionFee": {
-    "message": "Χρέωση συναλλαγής"
   },
   "transactionFlowNetwork": {
     "message": "Δίκτυο"
@@ -5980,9 +5841,6 @@
   },
   "troubleStarting": {
     "message": "Το MetaMask αντιμετώπισε πρόβλημα κατά την εκκίνηση. Αυτό το σφάλμα μπορεί να είναι τυχαίο, γι' αυτό προσπαθήστε να επανεκκινήσετε την επέκταση."
-  },
-  "trustSiteApprovePermission": {
-    "message": "Χορηγώντας άδεια, επιτρέπετε στο ακόλουθο $1 να έχει πρόσβαση στα χρήματά σας"
   },
   "tryAgain": {
     "message": "Προσπαθήστε ξανά"
@@ -6175,12 +6033,6 @@
   },
   "viewContact": {
     "message": "Προβολή επαφής"
-  },
-  "viewDetails": {
-    "message": "Προβολή λεπτομερειών"
-  },
-  "viewFullTransactionDetails": {
-    "message": "Δείτε όλες τις λεπτομέρειες της συναλλαγής"
   },
   "viewMore": {
     "message": "Δείτε περισσότερα"

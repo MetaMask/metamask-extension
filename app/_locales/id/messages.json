@@ -113,10 +113,6 @@
     "message": "Saya telah membaca dan menyetujui $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 dapat mengakses dan membelanjakan aset ini",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "Akses dompet Anda dengan Frasa Pemulihan Rahasia"
   },
@@ -392,9 +388,6 @@
   "alert": {
     "message": "Peringatan"
   },
-  "alertActionBuy": {
-    "message": "Beli ETH"
-  },
   "alertActionUpdateGas": {
     "message": "Perbarui batas gas"
   },
@@ -421,9 +414,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Untuk melanjutkan transaksi ini, Anda perlu meningkatkan batas gas menjadi 21000 atau lebih tinggi."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "Anda tidak memiliki cukup ETH di akun untuk membayar biaya jaringan."
   },
   "alertMessageNetworkBusy": {
     "message": "Harga gas tinggi dan estimasinya kurang akurat."
@@ -482,10 +472,6 @@
   "all": {
     "message": "Semua"
   },
-  "allOfYour": {
-    "message": "Seluruh $1 Anda",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "Semua Izin"
   },
@@ -495,16 +481,8 @@
   "allTimeLow": {
     "message": "Terendah sepanjang waktu"
   },
-  "allYourNFTsOf": {
-    "message": "Seluruh NFT Anda dari $1 ",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "allowNotifications": {
     "message": "Izinkan notifikasi"
-  },
-  "allowSpendToken": {
-    "message": "Berikan izin untuk mengakses $1 Anda?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "Izinkan $1 untuk menarik dan menggunakan hingga jumlah berikut:",
@@ -550,14 +528,6 @@
   "approve": {
     "message": "Setujui batas penggunaan"
   },
-  "approveAllTokensTitle": {
-    "message": "Berikan izin untuk mengakses dan mentransfer seluruh $1 Anda?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "Berikan izin untuk mengakses dan mentransfer seluruh NFT Anda dari $1?",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "Setujui"
   },
@@ -569,22 +539,8 @@
     "message": "Setujui batas penggunaan $1",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "Hal ini memungkinkan pihak ketiga untuk mengakses dan mentransfer NFT berikut tanpa pemberitahuan lebih lanjut sampai Anda mencabut aksesnya."
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "Hal ini memungkinkan pihak ketiga untuk mengakses dan mentransfer seluruh NFT dari $1 Anda tanpa pemberitahuan lebih lanjut sampai Anda mencabut aksesnya.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "Berikan izin untuk mengakses dan mentransfer $1 Anda?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "Disetujui"
-  },
-  "approvedAsset": {
-    "message": "Aset yang disetujui"
   },
   "approvedOn": {
     "message": "Disetujui pada $1",
@@ -1458,9 +1414,6 @@
     "message": "Hapus jaringan $1?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Deposit"
-  },
   "depositCrypto": {
     "message": "Mendeposit kripto dari akun lain dengan alamat dompet atau kode QR."
   },
@@ -1649,10 +1602,6 @@
   },
   "editGasPriceTooltip": {
     "message": "Jaringan ini memerlukan kolom “Harga gas” saat mengirimkan transaksi. Harga gas merupakan jumlah yang akan Anda bayar per unit gas."
-  },
-  "editGasSubTextAmountLabel": {
-    "message": "Jumlah maks:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
     "message": "Biaya maks:"
@@ -1916,9 +1865,6 @@
   "fast": {
     "message": "Cepat"
   },
-  "feeAssociatedRequest": {
-    "message": "Biaya dikaitkan dengan permintaan ini."
-  },
   "feeDetails": {
     "message": "Detail biaya"
   },
@@ -1980,12 +1926,6 @@
   },
   "function": {
     "message": "Fungsi: $1"
-  },
-  "functionApprove": {
-    "message": "Fungsi: Setujui"
-  },
-  "functionSetApprovalForAll": {
-    "message": "Fungsi: SetApprovalForAll"
   },
   "functionType": {
     "message": "Jenis fungsi"
@@ -2091,9 +2031,6 @@
   "gotIt": {
     "message": "Mengerti"
   },
-  "grantedToWithColon": {
-    "message": "Diberikan kepada:"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -2134,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "Sembunyikan akun"
-  },
-  "hideFullTransactionDetails": {
-    "message": "Sembunyikan detail transaksi lengkap"
   },
   "hideSeedPhrase": {
     "message": "Sembunyikan frasa seed"
@@ -2371,10 +2305,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "$1 di akun Anda tidak cukup untuk membayar biaya transaksi di jaringan $2. $3 atau depositkan dari akun lain.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "$1 di akun Anda tidak cukup untuk membayar biaya transaksi di jaringan $2. $3 atau $4 dari akun lain.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "$1 di akun Anda tidak cukup untuk membayar biaya transaksi di jaringan $2. Depositkan $1 dari akun lain.",
@@ -2645,9 +2575,6 @@
   },
   "loading": {
     "message": "Memuat..."
-  },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "Selesaikan transaksi di dompet perangkat keras."
   },
   "loadingScreenSnapMessage": {
     "message": "Selesaikan transaksi di Snap."
@@ -3090,10 +3017,6 @@
   "next": {
     "message": "Berikutnya"
   },
-  "nextNonceWarning": {
-    "message": "Nonce lebih tinggi dari nonce $1 yang disarankan",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "NFT tidak dapat ditambahkan karena detail kepemilikan tidak cocok. Pastikan Anda telah memasukkan informasi yang benar."
   },
@@ -3174,15 +3097,6 @@
   },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "Sesuaikan nonce transaksi"
-  },
-  "nonceFieldDesc": {
-    "message": "Aktifkan ini untuk mengubah nonce (nomor transaksi) saat mengirim aset. Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
-  },
-  "nonceFieldHeading": {
-    "message": "Nonce kustom"
   },
   "none": {
     "message": "Tidak ada"
@@ -3654,9 +3568,6 @@
   },
   "permissionFrom": {
     "message": "Izin dari"
-  },
-  "permissionRequest": {
-    "message": "Permintaan izin"
   },
   "permissionRequested": {
     "message": "Diminta sekarang"
@@ -4352,31 +4263,11 @@
   "reviewPermissions": {
     "message": "Tinjau izin"
   },
-  "revokeAllTokensTitle": {
-    "message": "Cabut izin untuk mengakses dan mentransfer seluruh $1 Anda?",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "Cabut izin untuk mengakses dan mentransfer seluruh NFT dari $1 Anda?",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "Hal ini mencabut izin pihak ketiga untuk mengakses dan mentransfer seluruh $1 Anda tanpa pemberitahuan lebih lanjut.",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "Hal ini mencabut izin pihak ketiga untuk mengakses dan mentransfer seluruh NFT dari $1 Anda tanpa pemberitahuan lebih lanjut.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "Cabut izin"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Anda menghapus izin orang lain untuk menggunakan token dari akun Anda."
-  },
-  "revokeSpendingCap": {
-    "message": "Cabut batas penggunaan untuk $1 Anda",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "Pihak ketiga ini tidak akan dapat menggunakan token Anda saat ini atau di masa mendatang."
@@ -5063,9 +4954,6 @@
     "message": "Masukkan angka yang menurut Anda dapat diakses $1 sekarang atau di masa mendatang. Anda selalu dapat meningkatkan batas token nanti.",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "Permintaan batas penggunaan untuk $1 Anda"
-  },
   "spendingCapTooltipDesc": {
     "message": "Ini adalah jumlah token yang dapat diakses oleh pembeli atas nama Anda."
   },
@@ -5744,9 +5632,6 @@
     "message": "Pemberitahuan perangkat lunak pihak ketiga",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "koleksi ini"
-  },
   "threeMonthsAbbreviation": {
     "message": "3B",
     "description": "Shortened form of '3 months'"
@@ -5861,29 +5746,8 @@
   "transactionDataFunction": {
     "message": "Fungsi"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Situs yang disarankan"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Edit untuk menggunakan biaya gas yang direkomendasikan MetaMask berdasarkan blok terbaru."
-  },
   "transactionDetailGasHeading": {
     "message": "Estimasi biaya gas"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Pelajari selengkapnya seputar biaya gas"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Biaya gas ditetapkan oleh jaringan dan berfluktuasi berdasarkan lalu lintas jaringan dan kompleksitas transaksi."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Biaya gas dibayarkan kepada penambang kripto yang memproses transaksi di jaringan $1. MetaMask tidak mengambil keuntungan dari biaya gas."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Jumlah + biaya gas"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Biaya gas layer 2"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Jumlah + biaya"
@@ -5899,9 +5763,6 @@
   },
   "transactionErrored": {
     "message": "Transaksi mengalami kesalahan."
-  },
-  "transactionFee": {
-    "message": "Biaya transaksi"
   },
   "transactionFlowNetwork": {
     "message": "Jaringan"
@@ -5980,9 +5841,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
-  },
-  "trustSiteApprovePermission": {
-    "message": "Dengan memberikan izin, Anda mengizinkan $1 berikut untuk mengakses dana Anda"
   },
   "tryAgain": {
     "message": "Coba lagi"
@@ -6175,12 +6033,6 @@
   },
   "viewContact": {
     "message": "Lihat kontak"
-  },
-  "viewDetails": {
-    "message": "Lihat detail"
-  },
-  "viewFullTransactionDetails": {
-    "message": "Lihat detail transaksi lengkap"
   },
   "viewMore": {
     "message": "Lihat selengkapnya"
