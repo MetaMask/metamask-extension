@@ -283,6 +283,9 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainTokensRatesController: {
     rates: true,
   },
+  MultichainAssetsController: {
+    assets: false,
+  },
   QueuedRequestController: {
     queuedRequestCount: true,
   },
