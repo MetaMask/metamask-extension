@@ -85,7 +85,6 @@ async function requestEthereumAccountsHandler(
 
   try {
     const caip25Approval = await requestCaip25ApprovalForOrigin();
-    console.log({ caip25Approval });
     await grantPermissionsForOrigin(caip25Approval);
   } catch (error) {
     return end(error);
