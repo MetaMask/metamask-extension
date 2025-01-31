@@ -32,13 +32,13 @@ type BridgeStatusControllerActions =
   | BridgeStatusControllerAction<BridgeStatusAction.WIPE_BRIDGE_STATUS>
   | ControllerGetStateAction<
       typeof BRIDGE_STATUS_CONTROLLER_NAME,
-      { bridgeStatusState: BridgeStatusControllerState }
+      BridgeStatusControllerState
     >;
 
 // Events
 export type BridgeStatusControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
-  { bridgeStatusState: BridgeStatusControllerState }
+  BridgeStatusControllerState
 >;
 
 export type BridgeStatusControllerBridgeTransactionCompleteEvent = {
