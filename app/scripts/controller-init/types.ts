@@ -110,6 +110,16 @@ export type ControllerInitRequest<
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
   persistedState: ControllerPersistedState;
+
+  /**
+   * The `MetaMaskController` instance.
+   *
+   * This should only be used if the controller messenger cannot be used
+   * instead.
+   */
+  // `MetaMaskController` is untyped.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  metaMaskController: any;
 } & (InitMessengerType extends BaseRestrictedControllerMessenger
   ? {
       /**
