@@ -14,7 +14,7 @@ on:
         required: true
 jobs:
   create-release-pr:
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@v0.1.0
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@f8467f14f7d09c5b980565f15ebc8003b0272138
     with:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
