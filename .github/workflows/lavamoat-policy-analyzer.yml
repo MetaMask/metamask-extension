@@ -18,7 +18,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@latest
+        uses: actions/checkout@v4
       - name: Analyze policy diff
         uses: ./.github/actions/lavamoat-policy-differ
         with:
