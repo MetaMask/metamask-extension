@@ -1183,7 +1183,7 @@ describe('Bridge selectors', () => {
       ).toStrictEqual(false);
     });
 
-    it('should return isEstimatedReturnLow=true return value is 50% less than sent funds', () => {
+    it('should return isEstimatedReturnLow=true return value is less than 65% of sent funds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           extensionConfig: {
@@ -1239,7 +1239,7 @@ describe('Bridge selectors', () => {
       expect(result.isEstimatedReturnLow).toStrictEqual(true);
     });
 
-    it('should return isEstimatedReturnLow=false when return value is more than 50% of sent funds', () => {
+    it('should return isEstimatedReturnLow=false when return value is more than 65% of sent funds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           extensionConfig: {
@@ -1254,7 +1254,7 @@ describe('Bridge selectors', () => {
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 2524.25,
-          toTokenExchangeRate: 0.63,
+          toTokenExchangeRate: 0.95,
           fromTokenInputValue: 1,
         },
         bridgeStateOverrides: {
@@ -1292,7 +1292,7 @@ describe('Bridge selectors', () => {
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
           .valueInCurrency,
-      ).toStrictEqual(new BigNumber('12.87194306627291988'));
+      ).toStrictEqual(new BigNumber('20.69239170627291988'));
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
     });
 
