@@ -6,6 +6,11 @@ import { AccountsController } from '@metamask/accounts-controller';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import { Hex } from '@metamask/utils';
+import {
+  SnapKeyringAccountAssetListUpdatedEvent,
+  SnapKeyringAccountBalancesUpdatedEvent,
+  SnapKeyringAccountTransactionsUpdatedEvent,
+} from '@metamask/eth-snap-keyring';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -44,6 +49,9 @@ const setupController = ({
     | AllowedEvents
     | KeyringControllerStateChangeEvent
     | SnapControllerStateChangeEvent
+    | SnapKeyringAccountAssetListUpdatedEvent
+    | SnapKeyringAccountBalancesUpdatedEvent
+    | SnapKeyringAccountTransactionsUpdatedEvent
   >();
   const preferencesControllerMessenger: PreferencesControllerMessenger =
     controllerMessenger.getRestricted({
@@ -74,6 +82,9 @@ const setupController = ({
     allowedEvents: [
       'KeyringController:stateChange',
       'SnapController:stateChange',
+      'SnapKeyring:accountAssetListUpdated',
+      'SnapKeyring:accountBalancesUpdated',
+      'SnapKeyring:accountTransactionsUpdated',
     ],
     allowedActions: [],
   });
