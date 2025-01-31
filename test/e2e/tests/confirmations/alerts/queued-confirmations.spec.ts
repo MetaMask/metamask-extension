@@ -321,8 +321,6 @@ describe('Queued Confirmations', function () {
             mockedEndpoints as MockedEndpoint[],
           );
 
-          console.log(events)
-
           assert.equal(events.length, 2);
 
           assert.equal(
