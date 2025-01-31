@@ -277,7 +277,7 @@ describe('Queued Confirmations', function () {
       );
     });
 
-    it.only('Metric is sent from the nav bar and the banner alert (redesigned confirmation flow)', async function () {
+    it('Metric is sent from the nav bar and the banner alert (redesigned confirmation flow)', async function () {
       const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
       await withFixtures(
