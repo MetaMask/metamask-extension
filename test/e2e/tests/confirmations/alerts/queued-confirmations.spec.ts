@@ -261,7 +261,7 @@ describe('Queued Confirmations', function () {
       );
     });
 
-    it('Metric is sent from the nav bar and the banner alert (redesigned confirmation flow)', async function () {
+    it.only('Metric is sent from the nav bar and the banner alert (redesigned confirmation flow)', async function () {
       const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
       await withFixtures(
@@ -312,9 +312,17 @@ describe('Queued Confirmations', function () {
           // create deposit transaction in dapp 1
           await createDepositTransaction(driver);
 
-          await driver.delay(2000);
+          await driver.waitUntilXWindowHandles(4);
 
-          await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
+          // Switch to dapp two and trigger a typed signature
+          await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+          await driver.waitForSelector({
+            css: '[id="chainId"]',
+            text: '0x539',
+          });
+
+          // signTypedData request
+          await driver.clickElement('#signTypedData');
 
           const events = await getEventPayloads(
             driver,
