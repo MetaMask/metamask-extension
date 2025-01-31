@@ -1,7 +1,6 @@
 import type { Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
 import type { AssetType } from '../constants/transaction';
-import type { SwapsTokenObject } from '../constants/swaps';
 
 export type ChainConfiguration = {
   isActiveSrc: boolean;
@@ -13,16 +12,20 @@ export type L1GasFees = {
 };
 // Values derived from the quote response
 // valueInCurrency values are calculated based on the user's selected currency
-
+export type TokenAmountValues = {
+  amount: BigNumber;
+  valueInCurrency: BigNumber | null;
+  usd: BigNumber | null;
+};
 export type QuoteMetadata = {
-  gasFee: { amount: BigNumber; valueInCurrency: BigNumber | null };
-  totalNetworkFee: { amount: BigNumber; valueInCurrency: BigNumber | null }; // estimatedGasFees + relayerFees
-  totalMaxNetworkFee: { amount: BigNumber; valueInCurrency: BigNumber | null }; // maxGasFees + relayerFees
-  toTokenAmount: { amount: BigNumber; valueInCurrency: BigNumber | null };
-  adjustedReturn: { valueInCurrency: BigNumber | null }; // destTokenAmount - totalNetworkFee
-  sentAmount: { amount: BigNumber; valueInCurrency: BigNumber | null }; // srcTokenAmount + metabridgeFee
+  gasFee: TokenAmountValues;
+  totalNetworkFee: TokenAmountValues; // estimatedGasFees + relayerFees
+  totalMaxNetworkFee: TokenAmountValues; // maxGasFees + relayerFees
+  toTokenAmount: TokenAmountValues; // destTokenAmount
+  adjustedReturn: Omit<TokenAmountValues, 'amount'>; // destTokenAmount - totalNetworkFee
+  sentAmount: TokenAmountValues; // srcTokenAmount + metabridgeFee
   swapRate: BigNumber; // destTokenAmount / sentAmount
-  cost: { valueInCurrency: BigNumber | null }; // sentAmount - adjustedReturn
+  cost: Omit<TokenAmountValues, 'amount'>; // sentAmount - adjustedReturn
 };
 // Sort order set by the user
 
@@ -183,11 +186,8 @@ export enum BridgeBackgroundAction {
   RESET_STATE = 'resetState',
   GET_BRIDGE_ERC20_ALLOWANCE = 'getBridgeERC20Allowance',
 }
-export type BridgeControllerState = {
+export type BridgeState = {
   bridgeFeatureFlags: BridgeFeatureFlags;
-  destTokensLoadingStatus?: RequestStatus;
-  destTokens: Record<string, SwapsTokenObject>;
-  destTopAssets: { address: string }[];
   quoteRequest: Partial<QuoteRequest>;
   quotes: (QuoteResponse & L1GasFees)[];
   quotesInitialLoadTime?: number;
@@ -195,4 +195,8 @@ export type BridgeControllerState = {
   quotesLoadingStatus?: RequestStatus;
   quoteFetchError?: string;
   quotesRefreshCount: number;
+};
+
+export type BridgeControllerState = {
+  bridgeState: BridgeState;
 };

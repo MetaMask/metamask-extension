@@ -25,7 +25,7 @@ describe('Trezor Hardware Signatures', function (this: Suite) {
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.check_pageIsLoaded();
-        await testDappPage.signTypedDataV4(true);
+        await testDappPage.signTypedDataV4();
         await testDappPage.check_successSignTypedDataV4(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
         );

@@ -92,7 +92,7 @@ const mockMetamaskStore = {
     },
     selectedAccount: mockNonEvmAccount.id,
   },
-  // (Multichain) BalancesController
+  // MultichainBalancesController
   balances: {
     [mockNonEvmAccount.id]: {
       [MultichainNativeAssets.BITCOIN]: {
@@ -316,6 +316,8 @@ describe('NonEvmOverview', () => {
         location: 'Home',
         snap_id: mockNonEvmAccount.metadata.snap.id,
         text: 'Buy',
+        // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
+        token_symbol: expect.any(Object),
       },
     });
   });
