@@ -8,7 +8,6 @@ import {
 import {
   NetworkClientId,
   NetworkConfiguration,
-  ProviderConfig,
 } from '@metamask/network-controller';
 import type {
   CaveatSpecificationConstraint,
@@ -80,7 +79,7 @@ export type EndApprovalFlow = ({ id }: EndFlowOptions) => void;
 export type FindNetworkClientIdByChainId = (chainId: Hex) => NetworkClientId;
 export type FindNetworkConfigurationBy = (
   rpcInfo: Record<string, string>,
-) => ProviderConfig | null;
+) => NetworkConfiguration | null;
 export type HasPermission = (origin: OriginString) => boolean;
 export type GetAccounts = () => Promise<string[]>;
 export type GetCurrentChainId = () => Hex;
@@ -95,7 +94,7 @@ export type GetPermissionsForOrigin<
       ValidPermission<string, ExtractCaveats<ControllerCaveatSpecification>>
     >
   | undefined;
-export type GetProviderConfig = () => ProviderConfig;
+
 export type GetProviderState = (
   origin: OriginString,
 ) => Promise<ProviderStateHandlerResult>;
