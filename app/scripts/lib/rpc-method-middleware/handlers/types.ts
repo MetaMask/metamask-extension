@@ -2,6 +2,7 @@ import {
   AddApprovalOptions,
   EndFlowOptions,
 } from '@metamask/approval-controller';
+import { ProviderConfig } from '@metamask/network-controller';
 import { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import { MessageType } from '../../../../../shared/constants/app';
 
@@ -16,6 +17,10 @@ export type HandlerRequestType<Params extends JsonRpcParams = JsonRpcParams> =
   };
 
 export type EndApprovalFlow = ({ id }: EndFlowOptions) => void;
+
+export type FindNetworkConfigurationBy = (
+  rpcInfo: Record<string, string>,
+) => ProviderConfig | null;
 
 export type GetCaveat = (options: {
   target: string;

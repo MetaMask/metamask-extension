@@ -30,6 +30,7 @@ import { PermissionNames } from '../../../controllers/permissions';
 import { getValidUrl } from '../../util';
 import {
   EndApprovalFlow,
+  FindNetworkConfigurationBy,
   GetCaveat,
   GetChainPermissionsFeatureFlag,
   RequestPermittedChainsPermission,
@@ -39,7 +40,7 @@ import {
 
 export function findExistingNetwork(
   chainId: Hex,
-  findNetworkConfigurationBy: (options: { chainId: Hex }) => void,
+  findNetworkConfigurationBy: FindNetworkConfigurationBy,
 ) {
   if (
     Object.values(BUILT_IN_INFURA_NETWORKS)
