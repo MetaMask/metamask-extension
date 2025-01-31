@@ -113,10 +113,6 @@
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 एक्सेस कर सकता है और इस एसेट को खर्च कर सकता है",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "अपने सीक्रेट रिकवरी फ्रेज़ का इस्तेमाल कर अपने वॉलेट का एक्सेस पाएं"
   },
@@ -476,10 +472,6 @@
   "all": {
     "message": "सभी"
   },
-  "allOfYour": {
-    "message": "आपके सभी $1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "सभी अनुमतियां"
   },
@@ -489,16 +481,8 @@
   "allTimeLow": {
     "message": "अब तक के सबसे निचले स्तर पर"
   },
-  "allYourNFTsOf": {
-    "message": "आपके सभी NFTs $1 से शुरू",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "allowNotifications": {
     "message": "नोटिफिकेशंस की अनुमति दें"
-  },
-  "allowSpendToken": {
-    "message": "आपके $1 को एक्सेस करने की अनुमति दें?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "$1 को निम्नलिखित तक अमाउंट निकालने और खर्च करने की अनुमति दें:",
@@ -544,14 +528,6 @@
   "approve": {
     "message": "खर्च करने की लिमिट को एप्रूव करें"
   },
-  "approveAllTokensTitle": {
-    "message": "आपके सभी $1 को एक्सेस और ट्रांसफर करने के लिए अनुमति दें",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "अपने सभी NFT's को $1 से एक्सेस करने और ट्रांसफ़र करने की अनुमति दें?",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "एप्रूव करें"
   },
@@ -563,22 +539,8 @@
     "message": "खर्च करने की लिमिट $1 को एप्रूव करें",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "यह किसी थर्ड पार्टी को बिना किसी नोटिस के निम्नलिखित NFTs को ऐक्सेस करने और ट्रांसफ़र करने की अनुमति देता है जब तक कि आप इसकी ऐक्सेस को हटा नहीं देते।"
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "यह किसी थर्ड पार्टी को आपके सभी NFTs को $1 से बिना किसी और सूचना के तब तक एक्सेस और ट्रांसफ़र करने की अनुमति देता है जब तक कि आप इसकी ऐक्सेस को हटा नहीं देते।",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "अपने $1 को ऐक्सेस करने और ट्रांसफ़र की अनुमति दें?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "एप्रूव किया गया"
-  },
-  "approvedAsset": {
-    "message": "एप्रूव किया गया एसेट"
   },
   "approvedOn": {
     "message": "$1 पर एप्रूव किया गया",
@@ -1452,9 +1414,6 @@
     "message": "$1 नेटवर्क को हटाएं?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "डिपॉज़िट करें"
-  },
   "depositCrypto": {
     "message": "वॉलेट एड्रेस या QR कोड के साथ किसी अन्य अकाउंट से क्रिप्टो डिपॉज़िट करना।"
   },
@@ -1643,10 +1602,6 @@
   },
   "editGasPriceTooltip": {
     "message": "ट्रांसेक्शन सबमिट करते समय इस नेटवर्क को \"गैस प्राइस\" फील्ड की आवश्यकता होती है। गैस प्राइस वह अमाउंट है जो आप प्रति यूनिट गैस के लिए पेमेंट करेंगे।"
-  },
-  "editGasSubTextAmountLabel": {
-    "message": "अधिकतम अमाउंट:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
     "message": "अधिकतम फ़ीस:"
@@ -1910,9 +1865,6 @@
   "fast": {
     "message": "तेज़"
   },
-  "feeAssociatedRequest": {
-    "message": "इस रिक्वेस्ट के साथ एक फ़ीस जुड़ी हुई है।"
-  },
   "feeDetails": {
     "message": "फ़ीस का ब्यौरा"
   },
@@ -1974,12 +1926,6 @@
   },
   "function": {
     "message": "फंक्शन: $1"
-  },
-  "functionApprove": {
-    "message": "फंक्शन: एप्रूव करें"
-  },
-  "functionSetApprovalForAll": {
-    "message": "फंक्शन: SetApprovalForAll"
   },
   "functionType": {
     "message": "फ़ंक्शन का प्रकार"
@@ -2085,9 +2031,6 @@
   "gotIt": {
     "message": "समझ आ गया!"
   },
-  "grantedToWithColon": {
-    "message": "को प्रदान की गई:"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -2128,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "अकाउंट छिपाएं"
-  },
-  "hideFullTransactionDetails": {
-    "message": "ट्रांसेक्शन की पूरी जानकारी छिपा कर रखें"
   },
   "hideSeedPhrase": {
     "message": "सीड फ्रेज़ छुपा दें"
@@ -2365,10 +2305,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "$2 नेटवर्क पर ट्रांसेक्शन फ़ीस का पेमेंट करने के लिए आपके अकाउंट में $1 कम है। $3 या किसी अन्य अकाउंट से जमा करें।",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "आपके अकाउंट में $2 नेटवर्क पर ट्रांसेक्शन फ़ीस का पेमेंट करने के लिए $1 कम है। दूसरे अकाउंट से $3 या $4।",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "$2 नेटवर्क पर ट्रांसेक्शन फ़ीस का पेमेंट करने के लिए आपके अकाउंट में $1 कम हैं। अन्य अकाउंट से $1 जमा करें।",
@@ -2639,9 +2575,6 @@
   },
   "loading": {
     "message": "लोड हो रहा है..."
-  },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "कृपया hardware wallet पर ट्रांजेक्शन पूरा करें।"
   },
   "loadingScreenSnapMessage": {
     "message": "कृपया Snap पर ट्रांजेक्शन पूरा करें।"
@@ -3084,10 +3017,6 @@
   "next": {
     "message": "अगला"
   },
-  "nextNonceWarning": {
-    "message": "Nonce $1 के सुझाए गए Nonce से अधिक है",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "NFT जोड़ा नहीं जा सकता क्योंकि ओनरशिप की जानकारी मेल नहीं खा रही है। पक्का करें कि आपने सही जानकारी दर्ज की है।"
   },
@@ -3168,15 +3097,6 @@
   },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "ट्रांसेक्शन Nonce कस्टमाइज़ करें"
-  },
-  "nonceFieldDesc": {
-    "message": "एसेट भेजते समय Nonce (ट्रांसेक्शन संख्या) बदलने के लिए इसे चालू करें। यह एक एडवांस्ड सुविधा है, सावधानी से उपयोग करें।"
-  },
-  "nonceFieldHeading": {
-    "message": "कस्टम Nonce"
   },
   "none": {
     "message": "कुछ नहीं"
@@ -3648,9 +3568,6 @@
   },
   "permissionFrom": {
     "message": "से अनुमतियां"
-  },
-  "permissionRequest": {
-    "message": "अनुमति अनुरोध"
   },
   "permissionRequested": {
     "message": "अब रिक्वेस्ट किया गया"
@@ -4346,31 +4263,11 @@
   "reviewPermissions": {
     "message": "अनुमतियों की समीक्षा करें"
   },
-  "revokeAllTokensTitle": {
-    "message": "आपके सभी $1 को एक्सेस और ट्रांसफ़र करने की अनुमति निरस्त करें?",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "आपके सभी NFT's को $1 से एक्सेस और ट्रांसफ़र करने की अनुमति कैंसिल करें?",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "यह बिना किसी नोटिस के आपके सभी $1 तक पहुंचने और ट्रांसफ़र करने के लिए किसी थर्ड पार्टी की अनुमति को निरस्त करता है।",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "यह बिना किसी सूचना के आपके सभी NFT को $1 से एक्सेस और ट्रांसफ़र करने के लिए किसी थर्ड पार्टी की अनुमति को कैंसिल कर देता है।",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "अनुमति कैंसिल करने की"
   },
   "revokeSimulationDetailsDesc": {
     "message": "आप किसी अन्य को आपके अकाउंट से टोकन ख़र्च करने के लिए दी गई अनुमति हटा रहे हैं।"
-  },
-  "revokeSpendingCap": {
-    "message": "अपने $1 के लिए खर्च करने की लिमिट को हटा दें",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "यह थर्ड पार्टी आपके वर्तमान या भविष्य के और ज्यादा टोकन खर्च करने में असमर्थ होगा।"
@@ -5057,9 +4954,6 @@
     "message": "केवल वही संख्या डालें जिसे आप अभी या भविष्य में $1 तक ऐक्सेस करने में सहज महसूस करते हैं। आप टोकन सीमा को बाद में कभी भी बढ़ा सकते हैं।",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "आपके $1 के लिए खर्च करने की लिमिट का अनुरोध"
-  },
   "spendingCapTooltipDesc": {
     "message": "यह टोकन की वह राशि है जिसे खर्च करने वाला आपकी ओर से प्राप्त कर सकेगा।"
   },
@@ -5738,9 +5632,6 @@
     "message": "थर्ड-पार्टी सॉफ्टवेयर नोटिस",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "यह संग्रह"
-  },
   "threeMonthsAbbreviation": {
     "message": "3M",
     "description": "Shortened form of '3 months'"
@@ -5855,29 +5746,8 @@
   "transactionDataFunction": {
     "message": "फंक्शन"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "साइट का सुझाव दिया गया"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "लेटेस्ट ब्लॉक के आधार पर MetaMask द्वारा अनुशंसित गैस फ़ीस का इस्तेमाल करने के लिए बदलें।"
-  },
   "transactionDetailGasHeading": {
     "message": "अनुमानित गैस फ़ीस"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "गैस फ़ीस के बारे में और अधिक जानें"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "गैस फ़ीस नेटवर्क द्वारा निर्धारित किया जाता है और नेटवर्क ट्रैफिक और ट्रांसेक्शन की जटिलता के आधार पर उतार-चढ़ाव होता है।"
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "क्रिप्टो माइनरों को गैस फ़ीस का पेमेंट किया जाता है जो $1 नेटवर्क पर ट्रांसेक्शन की प्रक्रिया करते हैं। MetaMask को गैस फ़ीस से लाभ नहीं होता है।"
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "अमाउंट + गैस फ़ीस"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "लेयर 2 गैस फ़ीस"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "अमाउंट + फ़ीस"
@@ -5893,9 +5763,6 @@
   },
   "transactionErrored": {
     "message": "ट्रांसेक्शन में गड़बड़ी हुई।"
-  },
-  "transactionFee": {
-    "message": "ट्रांसेक्शन फ़ीस"
   },
   "transactionFlowNetwork": {
     "message": "नेटवर्क"
@@ -5974,9 +5841,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask को शुरू करने में परेशानी आई। यह गड़बड़ी रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को फिर से शुरू करके देखें।"
-  },
-  "trustSiteApprovePermission": {
-    "message": "अनुमति प्रदान करके, आप निम्नलिखित $1 को अपने फंड तक पहुंचने की इजाजत दे रहे हैं"
   },
   "tryAgain": {
     "message": "फिर से कोशिश करें"
@@ -6169,12 +6033,6 @@
   },
   "viewContact": {
     "message": "कॉन्टेक्ट देखें"
-  },
-  "viewDetails": {
-    "message": "विवरण देखें"
-  },
-  "viewFullTransactionDetails": {
-    "message": "ट्रांसेक्शन की पूरी जानकारी देखें"
   },
   "viewMore": {
     "message": "और देखें"
