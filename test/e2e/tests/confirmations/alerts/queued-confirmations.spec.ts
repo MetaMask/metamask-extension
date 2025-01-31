@@ -117,9 +117,15 @@ describe('Queued Confirmations', function () {
           await switchToDAppTwoAndCreateSignTypedDataRequest(driver);
 
           await assertBannerExistsOnConfirmation(driver);
+
+          const txDialogInstance = await driver.getAllWindowHandles();
           await rejectConfirmation(driver);
           await rejectConfirmation(driver);
           await rejectConfirmation(driver);
+
+          // The tx dialog instance is not the same as the signature dialog from the other dapp, so we should wait until that is closed and a new one re-opened
+          // Otherwise we get the error target window already closed in the next step
+          await driver.waitForWindowToClose(txDialogInstance[4]);
           await assertBannerDoesNotExistOnConfirmation(driver);
         },
       );
