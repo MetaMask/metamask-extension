@@ -9,7 +9,8 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import type { COMPONENT_MAPPING, UIComponent } from './components/types';
+import type { UIComponent } from './components/types';
+import type { COMPONENT_MAPPING } from './components';
 
 export type MapToTemplateParams = {
   map: Record<string, number>;
