@@ -1,9 +1,9 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcEngineCallbackError,
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-} from 'json-rpc-engine';
+} from '@metamask/json-rpc-engine';
 import {
   JsonRpcRequest,
   JsonRpcParams,
@@ -14,15 +14,20 @@ import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { HandlerWrapper } from './types';
 
 type HandleWatchAssetRequest = (
-  options: Record<string, string>,
+  options: Record<string, string | Record<string, string>>,
 ) => Promise<void>;
+
+type WatchAssetRequest<Params extends JsonRpcParams> = JsonRpcRequest<Params> &
+  Partial<{ origin: string; networkClientId: string }> & {
+    params: { options: { tokenId: string }; type: string };
+  };
 
 type WatchAssetOptions = {
   handleWatchAssetRequest: HandleWatchAssetRequest;
 };
 type WatchAssetConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
   implementation: (
-    req: JsonRpcRequest<Params>,
+    req: WatchAssetRequest<Params>,
     res: PendingJsonRpcResponse<true>,
     _next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,
@@ -49,7 +54,7 @@ export default watchAsset;
  * @param options.handleWatchAssetRequest - The wallet_watchAsset method implementation.
  */
 async function watchAssetHandler<Params extends JsonRpcParams = JsonRpcParams>(
-  req: JsonRpcRequest<Params>,
+  req: WatchAssetRequest<Params>,
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
@@ -70,13 +75,18 @@ async function watchAssetHandler<Params extends JsonRpcParams = JsonRpcParams>(
       typeof tokenId !== 'string'
     ) {
       return end(
-        ethErrors.rpc.invalidParams({
+        rpcErrors.invalidParams({
           message: `Expected parameter 'tokenId' to be type 'string'. Received type '${typeof tokenId}'`,
         }),
       );
     }
 
-    await handleWatchAssetRequest({ asset, type, origin, networkClientId });
+    await handleWatchAssetRequest({
+      asset,
+      type,
+      origin: origin ?? '',
+      networkClientId: networkClientId ?? '',
+    });
     res.result = true;
     return end();
   } catch (error: unknown) {
