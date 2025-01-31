@@ -1,12 +1,81 @@
 import { ethErrors } from 'eth-rpc-errors';
+import type {
+  JsonRpcEngineNextCallback,
+  JsonRpcEngineEndCallback,
+} from 'json-rpc-engine';
+import type {
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+  JsonRpcParams,
+  Hex,
+  Json,
+} from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
-
+import {
+  ApprovalFlowStartResult,
+  StartFlowOptions,
+} from '@metamask/approval-controller';
+import { Domain } from '@metamask/selected-network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   findExistingNetwork,
-  validateAddEthereumChainParams,
   switchChain,
+  validateAddEthereumChainParams,
 } from './ethereum-chain-utils';
+import {
+  HandlerWrapper,
+  EndApprovalFlow,
+  FindNetworkConfigurationBy,
+  GetCaveat,
+  GetChainPermissionsFeatureFlag,
+  RequestPermittedChainsPermission,
+  RequestUserApproval,
+  SetActiveNetwork,
+} from './types';
+
+export type UpsertNetworkConfigurationOptions = {
+  referrer: string;
+  source: string;
+  setActive?: boolean;
+};
+
+type GetCurrentChainIdForDomain = (domain: Domain) => Hex;
+type GetCurrentRpcUrl = () => string | undefined;
+type StartApprovalFlow = (
+  options?: StartFlowOptions,
+) => ApprovalFlowStartResult;
+type UpsertNetworkConfiguration = (
+  networkConfiguration: NetworkConfiguration,
+  options?: UpsertNetworkConfigurationOptions,
+) => Promise<string>;
+
+type AddEthereumChainOptions = {
+  upsertNetworkConfiguration: UpsertNetworkConfiguration;
+  getCurrentRpcUrl: GetCurrentRpcUrl;
+  findNetworkConfigurationBy: FindNetworkConfigurationBy;
+  setActiveNetwork: SetActiveNetwork;
+  requestUserApproval: RequestUserApproval;
+  startApprovalFlow: StartApprovalFlow;
+  endApprovalFlow: EndApprovalFlow;
+  getCurrentChainIdForDomain: GetCurrentChainIdForDomain;
+  getCaveat: GetCaveat;
+  requestPermittedChainsPermission: RequestPermittedChainsPermission;
+  getChainPermissionsFeatureFlag: GetChainPermissionsFeatureFlag;
+};
+
+type AddEthereumChainConstraint<
+  Params extends JsonRpcParams = JsonRpcParams,
+  Result extends Json = never,
+> = {
+  implementation: (
+    req: JsonRpcRequest<Params>,
+    res: PendingJsonRpcResponse<Result | null>,
+    _next: JsonRpcEngineNextCallback,
+    end: JsonRpcEngineEndCallback,
+    options: AddEthereumChainOptions,
+  ) => void;
+} & HandlerWrapper;
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -24,15 +93,17 @@ const addEthereumChain = {
     requestPermittedChainsPermission: true,
     getChainPermissionsFeatureFlag: true,
   },
-};
-
+} satisfies AddEthereumChainConstraint;
 export default addEthereumChain;
 
-async function addEthereumChainHandler(
-  req,
-  res,
-  _next,
-  end,
+async function addEthereumChainHandler<
+  Params extends JsonRpcParams = JsonRpcParams,
+  Result extends Json = never,
+>(
+  req: JsonRpcRequest<Params>,
+  res: PendingJsonRpcResponse<Result | null>,
+  _next: JsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
   {
     upsertNetworkConfiguration,
     getCurrentRpcUrl,
@@ -45,12 +116,14 @@ async function addEthereumChainHandler(
     getCaveat,
     requestPermittedChainsPermission,
     getChainPermissionsFeatureFlag,
-  },
-) {
+  }: AddEthereumChainOptions,
+): Promise<void> {
   let validParams;
   try {
-    validParams = validateAddEthereumChainParams(req.params[0], end);
-  } catch (error) {
+    validParams = validateAddEthereumChainParams(req.params[0]);
+  } catch (error: unknown) {
+    // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
+    // @ts-expect-error intentionally passing unhandled error of any type into `end`
     return end(error);
   }
 
@@ -88,12 +161,17 @@ async function addEthereumChainHandler(
 
   let networkClientId;
   let requestData;
-  let approvalFlowId;
+  const approvalFlowId = startApprovalFlow().id;
 
   if (!existingNetwork || existingNetwork.rpcUrl !== firstValidRPCUrl) {
-    ({ id: approvalFlowId } = await startApprovalFlow());
-
     try {
+      if (
+        firstValidBlockExplorerUrl === null ||
+        firstValidBlockExplorerUrl === undefined
+      ) {
+        throw new Error('firstValidBlockExplorerUrl is not found.');
+      }
+
       await requestUserApproval({
         origin,
         type: ApprovalType.AddEthereumChain,
@@ -116,8 +194,10 @@ async function addEthereumChainHandler(
         },
         { source: 'dapp', referrer: origin },
       );
-    } catch (error) {
+    } catch (error: unknown) {
       endApprovalFlow({ id: approvalFlowId });
+      // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
+      // @ts-expect-error intentionally passing unhandled error of any type into `end`
       return end(error);
     }
 
@@ -132,7 +212,10 @@ async function addEthereumChainHandler(
       fromNetworkConfiguration: currentNetworkConfiguration,
     };
   } else {
-    networkClientId = existingNetwork.id ?? existingNetwork.type;
+    networkClientId =
+      'id' in existingNetwork && existingNetwork.id
+        ? existingNetwork.id
+        : existingNetwork.type;
     const currentRpcUrl = getCurrentRpcUrl();
 
     if (
