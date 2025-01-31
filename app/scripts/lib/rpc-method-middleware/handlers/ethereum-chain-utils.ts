@@ -1,15 +1,15 @@
-import { errorCodes, ethErrors } from 'eth-rpc-errors';
+import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
-import {
+import type {
   Hex,
   Json,
   JsonRpcParams,
   JsonRpcRequest,
   JsonRpcResponse,
-  isJsonRpcError,
 } from '@metamask/utils';
-import { JsonRpcEngineEndCallback } from 'json-rpc-engine';
-import { OriginString } from '@metamask/permission-controller';
+import { isJsonRpcError } from '@metamask/utils';
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type { OriginString } from '@metamask/permission-controller';
 
 import {
   BUILT_IN_INFURA_NETWORKS,
@@ -26,7 +26,7 @@ import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
 import { PermissionNames } from '../../../controllers/permissions';
 import { getValidUrl } from '../../util';
-import {
+import type {
   EndApprovalFlow,
   FindNetworkConfigurationBy,
   GetCaveat,
@@ -65,13 +65,13 @@ export function validateChainId(chainId: Hex): Hex {
       _chainId,
     )
   ) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
   }
 
   if (!isSafeChainId(parseInt(_chainId, 16))) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
     });
   }
@@ -80,19 +80,40 @@ export function validateChainId(chainId: Hex): Hex {
 }
 
 export function validateSwitchEthereumChainParams<
-  Params extends JsonRpcParams = { chainId: Hex } & JsonRpcParams,
->(req: JsonRpcRequest<Params>) {
-  if (!req.params?.[0] || typeof req.params[0] !== 'object') {
-    throw ethErrors.rpc.invalidParams({
+  Params extends JsonRpcParams = JsonRpcParams,
+>(
+  req: JsonRpcRequest<Params> & {
+    params: [{ chainId: Hex } & Record<string, Json>];
+  },
+) {
+  if (req.params === undefined) {
+    throw rpcErrors.invalidParams({
+      message: `Expected params object or array. Received:\n${JSON.stringify(
+        req.params,
+      )}`,
+    });
+  }
+
+  if (!Array.isArray(req.params)) {
+    throw rpcErrors.invalidParams({
+      message: `Expected params array. Received:\n${JSON.stringify(
+        req.params,
+      )}`,
+    });
+  }
+
+  if (!req.params[0] || typeof req.params[0] !== 'object') {
+    throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
         req.params,
       )}`,
     });
   }
+
   const { chainId, ...otherParams } = req.params[0];
 
   if (Object.keys(otherParams).length > 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
         otherParams,
       )}`,
@@ -108,7 +129,7 @@ export function validateAddEthereumChainParams(
   } & Record<string, Json>,
 ) {
   if (!params || typeof params !== 'object') {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
         params,
       )}`,
@@ -130,14 +151,14 @@ export function validateAddEthereumChainParams(
   );
 
   if (otherKeys.length > 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
     });
   }
 
   const _chainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
@@ -166,19 +187,19 @@ export function validateAddEthereumChainParams(
       : null;
 
   if (!firstValidRPCUrl) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
 
   if (blockExplorerUrls !== null && !firstValidBlockExplorerUrl) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrls}`,
     });
   }
 
   if (typeof chainName !== 'string' || !chainName) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected non-empty string 'chainName'. Received:\n${chainName}`,
     });
   }
@@ -188,18 +209,18 @@ export function validateAddEthereumChainParams(
 
   if (nativeCurrency !== null) {
     if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
       });
     }
     if (nativeCurrency.decimals !== 18) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${nativeCurrency.decimals}`,
       });
     }
 
     if (!nativeCurrency.symbol || typeof nativeCurrency.symbol !== 'string') {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected a string 'nativeCurrency.symbol'. Received: ${nativeCurrency.symbol}`,
       });
     }
@@ -210,7 +231,7 @@ export function validateAddEthereumChainParams(
     ticker !== UNKNOWN_TICKER_SYMBOL &&
     (typeof ticker !== 'string' || ticker.length < 1 || ticker.length > 6)
   ) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected 1-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
     });
   }
@@ -234,7 +255,7 @@ type SwitchChainOptions = {
 };
 
 export async function switchChain<Result extends Json = never>(
-  res: JsonRpcResponse<Result | null>,
+  res: JsonRpcResponse<Result | null> & { result?: Result | null },
   end: JsonRpcEngineEndCallback,
   origin: OriginString,
   chainId: Hex,
@@ -285,8 +306,6 @@ export async function switchChain<Result extends Json = never>(
       res.result = null;
       return end();
     }
-    // TODO: Remove at `@metamask/json-rpc-engine@8.0.2`: `JsonRpcEngineEndCallback` (type of `end`), is redefined from `(error?: JsonRpcEngineCallbackError) => void` to `(error?: unknown) => void`.
-    // @ts-expect-error intentionally passing unhandled error of any type into `end`
     return end(error);
   } finally {
     if (approvalFlowId && endApprovalFlow) {
