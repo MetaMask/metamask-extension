@@ -45,8 +45,7 @@ const EXPECTED_ACCOUNT_NAMES = {
   ],
 };
 
-describe('Account syncing - User already has balances on multple accounts', function () {
-  this.timeout(200000); // This test is very long, so we need an unusually high timeout
+describe('Account syncing - User already has balances on multiple accounts', function () {
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
@@ -58,175 +57,188 @@ describe('Account syncing - User already has balances on multple accounts', func
      * Phase 2: Discovery of 2 more accounts after adding balances. We still expect to only see 6 even though we had 5 accounts synced in the previous test
      * Phase 3: Verification that any final changes to user storage are persisted and that we don't see any extra accounts created
      */
-    it('when a user has balances on more accounts than previously synced, it should be handled gracefully', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
-      let accountsToMock = [...INITIAL_ACCOUNTS];
+    describe('Phase 1: Accounts shown due to balance detection', function () {
+      it('should verify accounts are shown due to balance detection even though the user storage has less accounts', async function () {
+        const userStorageMockttpController = new UserStorageMockttpController();
+        let accountsToMock = [...INITIAL_ACCOUNTS];
 
-      // PHASE 1: Initial setup and account creation
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true })
-            .withNetworkControllerOnMainnet()
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
-            await mockInfuraAndAccountSync(
-              server,
-              userStorageMockttpController,
-              {
-                accountsSyncResponse: accountsSyncMockResponse,
-                accountsToMock,
-              },
-            );
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder({ onboarding: true })
+              .withNetworkControllerOnMainnet()
+              .build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (server: Mockttp) => {
+              await mockInfuraAndAccountSync(
+                server,
+                userStorageMockttpController,
+                {
+                  accountsSyncResponse: accountsSyncMockResponse,
+                  accountsToMock,
+                },
+              );
+            },
           },
-        },
-        async ({ driver }) => {
-          // Complete initial setup with provided seed phrase
-          await completeImportSRPOnboardingFlow({
-            driver,
-            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
-            password: IDENTITY_TEAM_PASSWORD,
-          });
+          async ({ driver }) => {
+            // Complete initial setup with provided seed phrase
+            await completeImportSRPOnboardingFlow({
+              driver,
+              seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+              password: IDENTITY_TEAM_PASSWORD,
+            });
 
-          // Verify initial state and balance
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed('1');
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+            // Verify initial state and balance
+            const homePage = new HomePage(driver);
+            await homePage.check_pageIsLoaded();
+            await homePage.check_expectedBalanceIsDisplayed('1');
+            await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
-          // Open account menu and verify initial accounts
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
+            // Open account menu and verify initial accounts
+            const header = new HeaderNavbar(driver);
+            await header.check_pageIsLoaded();
+            await header.openAccountMenu();
 
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(4);
+            const accountListPage = new AccountListPage(driver);
+            await accountListPage.check_pageIsLoaded();
+            await accountListPage.check_numberOfAvailableAccounts(4);
 
-          // Verify each initial account name
-          for (const accountName of EXPECTED_ACCOUNT_NAMES.INITIAL) {
+            // Verify each initial account name
+            for (const accountName of EXPECTED_ACCOUNT_NAMES.INITIAL) {
+              await accountListPage.check_accountDisplayedInAccountList(
+                accountName,
+              );
+            }
+
+            // Create new account and prepare for additional accounts
+            await accountListPage.addAccount({
+              accountType: ACCOUNT_TYPE.Ethereum,
+            });
+            accountsToMock = [...INITIAL_ACCOUNTS, ...ADDITIONAL_ACCOUNTS];
+          },
+        );
+      });
+    });
+
+    describe('Phase 2: Discovery of accounts after adding balances', function () {
+      it('should verify to only see 6 accounts even though we had 5 accounts synced in the previous test', async function () {
+        const userStorageMockttpController = new UserStorageMockttpController();
+        let accountsToMock = [...INITIAL_ACCOUNTS, ...ADDITIONAL_ACCOUNTS];
+
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder({ onboarding: true })
+              .withNetworkControllerOnMainnet()
+              .build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (server: Mockttp) => {
+              await mockInfuraAndAccountSync(
+                server,
+                userStorageMockttpController,
+                { accountsToMock },
+              );
+            },
+          },
+          async ({ driver }) => {
+            // Complete setup again for new session
+            await completeImportSRPOnboardingFlow({
+              driver,
+              seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+              password: IDENTITY_TEAM_PASSWORD,
+            });
+
+            const homePage = new HomePage(driver);
+            await homePage.check_pageIsLoaded();
+            await homePage.check_expectedBalanceIsDisplayed('1');
+            await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+
+            // Verify all accounts including newly discovered ones (which would have been synced / have balances)
+            const header = new HeaderNavbar(driver);
+            await header.check_pageIsLoaded();
+            await header.openAccountMenu();
+
+            const accountListPage = new AccountListPage(driver);
+            await accountListPage.check_pageIsLoaded();
+            await accountListPage.check_numberOfAvailableAccounts(6);
+
+            for (const accountName of EXPECTED_ACCOUNT_NAMES.WITH_NEW_ACCOUNTS) {
+              await accountListPage.check_accountDisplayedInAccountList(
+                accountName,
+              );
+            }
+
+            // Rename Account 6 to verify update to user storage
+            await accountListPage.switchToAccount('Account 6');
+            await header.check_accountLabel('Account 6');
+            await header.openAccountMenu();
+            await accountListPage.check_pageIsLoaded();
+            await accountListPage.openAccountDetailsModal('Account 6');
+            const accountDetailsModal = new AccountDetailsModal(driver);
+            await accountDetailsModal.check_pageIsLoaded();
+            await accountDetailsModal.changeAccountLabel('My Renamed Account 6');
+          },
+        );
+      });
+    });
+
+    describe('Phase 3: Verify user storage changes are persisted', function () {
+      it('should verify that any final changes to user storage are persisted and that we dont see any extra accounts created', async function () {
+        const userStorageMockttpController = new UserStorageMockttpController();
+        let accountsToMock = [...INITIAL_ACCOUNTS, ...ADDITIONAL_ACCOUNTS];
+
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder({ onboarding: true })
+              .withNetworkControllerOnMainnet()
+              .build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (server: Mockttp) => {
+              await mockInfuraAndAccountSync(
+                server,
+                userStorageMockttpController,
+                { accountsToMock },
+              );
+            },
+          },
+          async ({ driver }) => {
+            // Complete setup for final verification
+            await completeImportSRPOnboardingFlow({
+              driver,
+              seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+              password: IDENTITY_TEAM_PASSWORD,
+            });
+
+            const homePage = new HomePage(driver);
+            await homePage.check_pageIsLoaded();
+            await homePage.check_expectedBalanceIsDisplayed('1');
+            await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
+
+            // Verify renamed account persists
+            const header = new HeaderNavbar(driver);
+            await header.check_pageIsLoaded();
+            await header.openAccountMenu();
+
+            const accountListPage = new AccountListPage(driver);
+            await accountListPage.check_pageIsLoaded();
+            await accountListPage.check_numberOfAvailableAccounts(6);
             await accountListPage.check_accountDisplayedInAccountList(
-              accountName,
+              'My Renamed Account 6',
             );
-          }
+            await accountListPage.closeAccountModal();
 
-          // Create new account and prepare for additional accounts
-          await accountListPage.addAccount({
-            accountType: ACCOUNT_TYPE.Ethereum,
-          });
-          accountsToMock = [...INITIAL_ACCOUNTS, ...ADDITIONAL_ACCOUNTS];
-        },
-      );
+            // Lock and unlock wallet to ensure that number of preloaded accounts have not gone up
+            await homePage.headerNavbar.lockMetaMask();
+            await unlockWallet(driver, {
+              password: IDENTITY_TEAM_PASSWORD,
+              waitLoginSuccess: true,
+              navigate: true,
+            });
 
-      // PHASE 2: Verify discovery of new accounts with balances
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true })
-            .withNetworkControllerOnMainnet()
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
-            await mockInfuraAndAccountSync(
-              server,
-              userStorageMockttpController,
-              { accountsToMock },
-            );
+            await header.check_pageIsLoaded();
+            await header.openAccountMenu();
+            await accountListPage.check_numberOfAvailableAccounts(6);
           },
-        },
-        async ({ driver }) => {
-          // Complete setup again for new session
-          await completeImportSRPOnboardingFlow({
-            driver,
-            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
-            password: IDENTITY_TEAM_PASSWORD,
-          });
-
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed('1');
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
-
-          // Verify all accounts including newly discovered ones (which would have been synced / have balances)
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(6);
-
-          for (const accountName of EXPECTED_ACCOUNT_NAMES.WITH_NEW_ACCOUNTS) {
-            await accountListPage.check_accountDisplayedInAccountList(
-              accountName,
-            );
-          }
-
-          // Rename Account 6 to verify update to user storage
-          await accountListPage.switchToAccount('Account 6');
-          await header.check_accountLabel('Account 6');
-          await header.openAccountMenu();
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.openAccountDetailsModal('Account 6');
-          const accountDetailsModal = new AccountDetailsModal(driver);
-          await accountDetailsModal.check_pageIsLoaded();
-          await accountDetailsModal.changeAccountLabel('My Renamed Account 6');
-        },
-      );
-
-      // PHASE 3: Verify name persistence across sessions
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true })
-            .withNetworkControllerOnMainnet()
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
-            await mockInfuraAndAccountSync(
-              server,
-              userStorageMockttpController,
-              { accountsToMock },
-            );
-          },
-        },
-        async ({ driver }) => {
-          // Complete setup for final verification
-          await completeImportSRPOnboardingFlow({
-            driver,
-            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
-            password: IDENTITY_TEAM_PASSWORD,
-          });
-
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed('1');
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
-
-          // Verify renamed account persists
-          const header = new HeaderNavbar(driver);
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(6);
-          await accountListPage.check_accountDisplayedInAccountList(
-            'My Renamed Account 6',
-          );
-          await accountListPage.closeAccountModal();
-
-          // Lock and unlock wallet to ensure that number of preloaded accounts have not gone up
-          await homePage.headerNavbar.lockMetaMask();
-          await unlockWallet(driver, {
-            password: IDENTITY_TEAM_PASSWORD,
-            waitLoginSuccess: true,
-            navigate: true,
-          });
-
-          await header.check_pageIsLoaded();
-          await header.openAccountMenu();
-          await accountListPage.check_numberOfAvailableAccounts(6);
-        },
-      );
+        );
+      });
     });
   });
 });
