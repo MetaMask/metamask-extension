@@ -10,6 +10,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:page-settings': 'endowment:page-settings',
   'endowment:signature-insight': 'endowment:signature-insight',
   'endowment:name-lookup': 'endowment:name-lookup',
+  'endowment:assets': 'endowment:assets',
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   'endowment:keyring': 'endowment:keyring',
   ///: END:ONLY_INCLUDE_IF
