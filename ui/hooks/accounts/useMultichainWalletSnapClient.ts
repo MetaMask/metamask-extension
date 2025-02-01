@@ -41,6 +41,14 @@ export class MultichainWalletSnapSender implements Sender {
   };
 }
 
+export function useMultichainWalletSnapSender(snapId: SnapId) {
+  const client = useMemo(() => {
+    return new MultichainWalletSnapSender(snapId);
+  }, [snapId]);
+
+  return client;
+}
+
 export class MultichainWalletSnapClient {
   readonly #client: KeyringClient;
 
@@ -67,16 +75,17 @@ export class MultichainWalletSnapClient {
 
   async submitRequest(request: KeyringRequest) {
     // This will trigger the Snap account creation flow (+ account renaming)
-    const accounts = await this.#client.submitRequest({
-      origin: 'metamask',
-      handler: HandlerType.OnRpcRequest,
-      request,
-      params: {
-        scope: request.scope,
-        account: request.account,
-        id: request.id,
-      },
-    });
+    // const accounts = await this.#client.submitRequest({
+    //   origin: 'metamask',
+    //   handler: HandlerType.OnRpcRequest,
+    //   request,
+    //   params: {
+    //     scope: request.scope,
+    //     account: request.account,
+    //     id: request.id,
+    //   },
+    // });
+    const accounts = await this.#client.submitRequest(request);
     return accounts;
   }
 }

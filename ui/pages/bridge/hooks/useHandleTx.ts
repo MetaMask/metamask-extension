@@ -3,6 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
+import { KeyringRpcMethod } from '@metamask/keyring-api';
 import {
   forceUpdateMetamaskState,
   addTransaction,
@@ -25,6 +26,11 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { getMultichainCurrentChainId } from '../../../selectors/multichain';
+import {
+  useMultichainWalletSnapClient,
+  useMultichainWalletSnapSender,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 
 export default function useHandleTx() {
   const dispatch = useDispatch();
@@ -98,6 +104,7 @@ export default function useHandleTx() {
   const selectedAccount = useMultichainSelector(getSelectedInternalAccount);
   const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
 
+  const snapSender = useMultichainWalletSnapSender(SOLANA_WALLET_SNAP_ID);
   const handleSolanaTx = async ({
     txType,
     trade,
@@ -107,15 +114,29 @@ export default function useHandleTx() {
     trade: string;
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
   }) => {
-    const res = await bridgeMultichainTransaction(
-      selectedAccount.metadata.snap.id,
-      {
+    await snapSender.send({
+      id: crypto.randomUUID(),
+      jsonrpc: '2.0',
+      method: KeyringRpcMethod.SubmitRequest,
+      params: {
+        request: {
+          params: { base64EncodedTransactionMessage: trade },
+          method: 'sendAndConfirmTransaction',
+        },
+        id: crypto.randomUUID(),
         account: selectedAccount.id,
         scope: currentChainId,
-        base64EncodedTransactionMessage: trade,
       },
-    );
-    console.log('=======res', res);
+    });
+
+    // const res = await bridgeMultichainTransaction(
+    //   selectedAccount.metadata.snap.id,
+    //   {
+    //     account: selectedAccount.id,
+    //     scope: currentChainId,
+    //     base64EncodedTransactionMessage: trade,
+    //   },
+    // );
     // await dispatch(setDefaultHomeActiveTabName('activity'));
     await forceUpdateMetamaskState(dispatch);
 
