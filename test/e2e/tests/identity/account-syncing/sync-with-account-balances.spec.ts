@@ -46,6 +46,7 @@ const EXPECTED_ACCOUNT_NAMES = {
 };
 
 describe('Account syncing - User already has balances on multple accounts', function () {
+  this.timeout(200000); // This test is very long, so we need an unusually high timeout
   if (!IS_ACCOUNT_SYNCING_ENABLED) {
     return;
   }
