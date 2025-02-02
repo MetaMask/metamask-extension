@@ -1,3 +1,4 @@
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { migrate, version } from './142.1';
 
 describe(`Migration ${version}`, () => {
@@ -9,7 +10,7 @@ describe(`Migration ${version}`, () => {
     sentryCaptureExceptionMock = jest.fn();
     global.sentry = {
       captureException: sentryCaptureExceptionMock,
-    } as any;
+    };
   });
 
   afterAll(() => {
@@ -308,7 +309,7 @@ describe(`Migration ${version}`, () => {
 
     const tokensControllerState = result.data.TokensController as Record<
       string,
-      any
+      NetworkConfiguration
     >;
     expect(tokensControllerState.tokens).toEqual(originalTokens);
 

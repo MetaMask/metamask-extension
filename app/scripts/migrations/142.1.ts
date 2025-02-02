@@ -1,3 +1,4 @@
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
@@ -32,11 +33,6 @@ export async function migrate(
   return versionedData;
 }
 
-/**
- * Attempts to set `TokensController.tokens` to the correct array from
- * `allTokens[currentChainId][selectedAccount]`. If anything is wrong,
- * return the original state unmodified (logging an error).
- */
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
@@ -69,7 +65,7 @@ function transformState(
     return state;
   }
 
-  const internalAccounts = accountsControllerState.internalAccounts;
+  const { internalAccounts } = accountsControllerState;
   if (
     !hasProperty(internalAccounts, 'selectedAccount') ||
     typeof internalAccounts.selectedAccount !== 'string' ||
@@ -81,7 +77,7 @@ function transformState(
     return state;
   }
 
-  const selectedAccount = internalAccounts.selectedAccount;
+  const { selectedAccount } = internalAccounts;
 
   if (!hasProperty(state, 'NetworkController')) {
     global.sentry?.captureException?.(
@@ -113,8 +109,7 @@ function transformState(
     return state;
   }
 
-  const selectedNetworkClientId =
-    networkControllerState.selectedNetworkClientId;
+  const { selectedNetworkClientId } = networkControllerState;
 
   if (
     !hasProperty(networkControllerState, 'networkConfigurationsByChainId') ||
@@ -128,11 +123,10 @@ function transformState(
     return state;
   }
 
-  const networkConfigurationsByChainId =
-    networkControllerState.networkConfigurationsByChainId;
+  const { networkConfigurationsByChainId } = networkControllerState;
 
   const currentChainId = getChainIdForNetworkClientId(
-    networkConfigurationsByChainId as Record<string, any>,
+    networkConfigurationsByChainId as Record<string, NetworkConfiguration>,
     selectedNetworkClientId,
   );
 
@@ -174,7 +168,7 @@ function transformState(
     return state;
   }
 
-  const allTokens = tokensControllerState.allTokens;
+  const { allTokens } = tokensControllerState;
   const allTokensForChain = allTokens[currentChainId];
   if (!isObject(allTokensForChain)) {
     global.sentry?.captureException?.(
@@ -199,12 +193,8 @@ function transformState(
   return state;
 }
 
-/**
- * Helper function to find the chainId for a given networkClientId
- * by checking each network's rpcEndpoints.
- */
 function getChainIdForNetworkClientId(
-  networkConfigurationsByChainId: Record<string, any>,
+  networkConfigurationsByChainId: Record<string, NetworkConfiguration>,
   networkClientId: string,
 ): string | undefined {
   for (const [chainId, networkConfiguration] of Object.entries(
