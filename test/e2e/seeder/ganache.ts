@@ -17,12 +17,6 @@ const defaultOptions = {
   vmErrorsOnRPCResponse: false,
   hardfork: 'muirGlacier',
   quiet: true,
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(Number(DEFAULT_GANACHE_ETH_BALANCE_DEC)),
-    },
-  ],
 };
 
 export class Ganache {
@@ -32,11 +26,21 @@ export class Ganache {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async start(opts: any) {
     // Check if mnemonic is provided in options
-    const options = {
+    let options = {
       ...defaultOptions,
       ...opts,
-      accounts: opts.mnemonic ? undefined : defaultOptions.accounts,
     };
+    if(!options.mnemonic) {
+      options = {
+        ...defaultOptions,
+        accounts: [
+          {
+            secretKey: PRIVATE_KEY,
+            balance: convertETHToHexGwei(Number(DEFAULT_GANACHE_ETH_BALANCE_DEC)),
+          },
+        ],
+      }
+    }
 
     this.#server = server(options);
     await this.#server.listen(options.port);

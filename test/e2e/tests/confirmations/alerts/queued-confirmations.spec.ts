@@ -296,7 +296,11 @@ describe('Queued Confirmations', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: queueControllerMocks,
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          contractRegistry,
+          mockedEndpoint: mockedEndpoints,
+        }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           const contractAddress = await (
