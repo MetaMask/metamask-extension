@@ -13,10 +13,11 @@ import {
 import { isProduction } from '../environment';
 import { getCurrentChainId, NetworkState } from './networks';
 
-type SmartTransactionsMetaMaskState = {
+export type SmartTransactionsMetaMaskState = {
   metamask: {
     preferences: {
       smartTransactionsOptInStatus?: boolean;
+      smartTransactionsMigrationApplied?: boolean;
     };
     internalAccounts: {
       selectedAccount: string;
@@ -73,6 +74,25 @@ export const getSmartTransactionsOptInStatusInternal = createSelector(
 );
 
 /**
+ * Returns whether the smart transactions migration has been applied to the user's settings.
+ * This specifically tracks if Migration 135 has been run, which enables Smart Transactions
+ * by default for users who have never interacted with the feature or who previously opted out
+ * with no STX activity.
+ *
+ * This should only be used for internal checks of the migration status, and not
+ * for determining overall Smart Transactions availability.
+ *
+ * @param state - The state object.
+ * @returns true if the migration has been applied to the user's settings, false if not or if unset.
+ */
+export const getSmartTransactionsMigrationAppliedInternal = createSelector(
+  getPreferences,
+  (preferences: { smartTransactionsMigrationApplied?: boolean }): boolean => {
+    return preferences?.smartTransactionsMigrationApplied ?? false;
+  },
+);
+
+/**
  * Returns the user's explicit opt-in status for the smart transactions feature.
  * This should only be used for metrics collection, and not for determining if the
  * smart transactions user preference is enabled.
@@ -117,17 +137,19 @@ export const getCurrentChainSupportsSmartTransactions = (
 
 const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
   const chainId = getCurrentChainId(state);
+  // Allow in non-production or if chain ID is on skip list.
   if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
-    // Allow any STX RPC URL in development and testing environments or for specific chain IDs.
     return true;
   }
-  const currentNetwork = getCurrentNetwork(state);
-  if (!currentNetwork?.rpcUrl) {
+  const rpcUrl = getCurrentNetwork(state)?.rpcUrl;
+  if (!rpcUrl) {
     return false;
   }
-  const rpcUrl = new URL(currentNetwork.rpcUrl);
-  // Only allow STX in prod if an Infura RPC URL is being used.
-  return rpcUrl?.hostname?.endsWith('.infura.io');
+  const { hostname } = new URL(rpcUrl);
+  if (!hostname) {
+    return false;
+  }
+  return hostname.endsWith('.infura.io') || hostname.endsWith('.binance.org');
 };
 
 export const getSmartTransactionsEnabled = (

@@ -104,16 +104,14 @@ export type Preferences = {
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
   smartTransactionsOptInStatus: boolean;
+  smartTransactionsMigrationApplied: boolean;
   showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
-  redesignedConfirmationsEnabled: boolean;
-  redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
   privacyMode: boolean;
-  isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
   tokenSortConfig: {
     key: string;
@@ -129,19 +127,18 @@ export type PreferencesControllerState = Omit<
   PreferencesState,
   | 'showTestNetworks'
   | 'smartTransactionsOptInStatus'
+  | 'smartTransactionsMigrationApplied'
   | 'privacyMode'
   | 'tokenSortConfig'
   | 'useMultiRpcMigration'
 > & {
   useBlockie: boolean;
-  useNonceField: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
   overrideContentSecurityPolicyHeader: boolean;
   useMultiAccountBalanceChecker: boolean;
   use4ByteResolution: boolean;
   useCurrencyRateCheck: boolean;
-  useRequestQueue: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
@@ -176,7 +173,6 @@ export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
     selectedAddress: '',
     useBlockie: false,
-    useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
     overrideContentSecurityPolicyHeader: true,
@@ -188,7 +184,6 @@ export const getDefaultPreferencesControllerState =
     useNftDetection: true,
     use4ByteResolution: true,
     useCurrencyRateCheck: true,
-    useRequestQueue: true,
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
@@ -217,14 +212,12 @@ export const getDefaultPreferencesControllerState =
       showFiatInTestnets: false,
       showTestNetworks: false,
       smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: false,
       showNativeTokenAsMainBalance: false,
       useNativeCurrencyAsPrimaryCurrency: true,
       hideZeroBalanceTokens: false,
       petnamesEnabled: true,
-      redesignedConfirmationsEnabled: true,
-      redesignedTransactionsEnabled: true,
       featureNotificationsEnabled: false,
-      isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
       privacyMode: false,
@@ -299,10 +292,6 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
-  useNonceField: {
-    persist: true,
-    anonymous: true,
-  },
   usePhishDetect: {
     persist: true,
     anonymous: true,
@@ -336,10 +325,6 @@ const controllerMetadata = {
     anonymous: true,
   },
   useCurrencyRateCheck: {
-    persist: true,
-    anonymous: true,
-  },
-  useRequestQueue: {
     persist: true,
     anonymous: true,
   },
@@ -406,6 +391,16 @@ const controllerMetadata = {
   preferences: {
     persist: true,
     anonymous: true,
+    properties: {
+      smartTransactionsOptInStatus: {
+        persist: true,
+        anonymous: true,
+      },
+      smartTransactionsMigrationApplied: {
+        persist: true,
+        anonymous: true,
+      },
+    },
   },
   ipfsGateway: {
     persist: true,
@@ -530,17 +525,6 @@ export class PreferencesController extends BaseController<
   }
 
   /**
-   * Setter for the `useNonceField` property
-   *
-   * @param val - Whether or not the user prefers to set nonce
-   */
-  setUseNonceField(val: boolean): void {
-    this.update((state) => {
-      state.useNonceField = val;
-    });
-  }
-
-  /**
    * Setter for the `usePhishDetect` property
    *
    * @param val - Whether or not the user prefers phishing domain protection
@@ -626,17 +610,6 @@ export class PreferencesController extends BaseController<
   setUseCurrencyRateCheck(val: boolean): void {
     this.update((state) => {
       state.useCurrencyRateCheck = val;
-    });
-  }
-
-  /**
-   * Setter for the `useRequestQueue` property
-   *
-   * @param val - Whether or not the user wants to have requests queued if network change is required.
-   */
-  setUseRequestQueue(val: boolean): void {
-    this.update((state) => {
-      state.useRequestQueue = val;
     });
   }
 
@@ -850,15 +823,6 @@ export class PreferencesController extends BaseController<
     );
 
     return selectedAccount.address;
-  }
-
-  /**
-   * Getter for the `useRequestQueue` property
-   *
-   * @returns whether this option is on or off.
-   */
-  getUseRequestQueue(): boolean {
-    return this.state.useRequestQueue;
   }
 
   /**

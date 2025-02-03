@@ -10,12 +10,11 @@ import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
 import { BigNumber } from 'bignumber.js';
+import { type TokenListMap } from '@metamask/assets-controllers';
 import {
-  setFromChain,
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToChain,
   setToChainId,
   setToToken,
   updateQuoteRequestParams,
@@ -27,13 +26,11 @@ import {
   getFromChain,
   getFromChains,
   getFromToken,
-  getFromTokens,
   getQuoteRequest,
   getSlippage,
   getToChain,
   getToChains,
   getToToken,
-  getToTokens,
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
@@ -63,7 +60,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { setActiveNetwork } from '../../../store/actions';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import {
+  hexToDecimal,
+  decimalToPrefixedHex,
+} from '../../../../shared/modules/conversion.utils';
 import type { QuoteRequest } from '../../../../shared/types/bridge';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import { BridgeQuoteCard } from '../quotes/bridge-quote-card';
@@ -87,11 +87,11 @@ import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
-import { useBridgeTokens } from '../../../hooks/bridge/useBridgeTokens';
-import { getCurrentKeyring, getLocale } from '../../../selectors';
+import { getCurrentKeyring, getLocale, getTokenList } from '../../../selectors';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE } from '../../../../shared/constants/bridge';
+import { getMultichainIsSolana } from '../../../selectors/multichain';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 
@@ -101,18 +101,13 @@ const PrepareBridgePage = () => {
   const t = useI18nContext();
 
   const fromToken = useSelector(getFromToken);
-  const {
-    fromTokens,
-    fromTopAssets,
-    isLoading: isFromTokensLoading,
-  } = useSelector(getFromTokens);
+  const fromTokens = useSelector(getTokenList) as TokenListMap;
+  const isFromTokensLoading = useMemo(
+    () => Object.keys(fromTokens).length === 0,
+    [fromTokens],
+  );
 
   const toToken = useSelector(getToToken);
-  const {
-    toTokens,
-    toTopAssets,
-    isLoading: isToTokensLoading,
-  } = useSelector(getToTokens);
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
@@ -120,7 +115,7 @@ const PrepareBridgePage = () => {
   const toChain = useSelector(getToChain);
 
   const fromAmount = useSelector(getFromAmount);
-  const fromAmountInFiat = useSelector(getFromAmountInCurrency);
+  const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
   const providerConfig = useSelector(getProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -172,19 +167,10 @@ const PrepareBridgePage = () => {
     fromChain?.chainId,
   );
 
-  const tokenAddressAllowlistByChainId = useBridgeTokens();
-  const fromTokenListGenerator = useTokensWithFiltering(
-    fromTokens,
-    fromTopAssets,
-    tokenAddressAllowlistByChainId,
-    fromChain?.chainId,
-  );
-  const toTokenListGenerator = useTokensWithFiltering(
-    toTokens,
-    toTopAssets,
-    tokenAddressAllowlistByChainId,
-    toChain?.chainId,
-  );
+  const {
+    filteredTokenListGenerator: toTokenListGenerator,
+    isLoading: isToTokensLoading,
+  } = useTokensWithFiltering(toChain?.chainId);
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -214,8 +200,38 @@ const PrepareBridgePage = () => {
   }, [rotateSwitchTokens]);
 
   useEffect(() => {
-    // Reset controller and inputs on load
-    dispatch(resetBridgeState());
+    // If there's an active quote, assume that the user is returning to the page
+    if (activeQuote) {
+      // Get input data from active quote
+      const { srcAsset, destAsset, destChainId, srcChainId } =
+        activeQuote.quote;
+      const quoteDestChainId = decimalToPrefixedHex(destChainId);
+      const quoteSrcChainId = decimalToPrefixedHex(srcChainId);
+
+      if (srcAsset && destAsset && quoteDestChainId) {
+        // Set inputs to values from active quote
+        dispatch(setToChainId(quoteDestChainId));
+        dispatch(
+          setToToken({
+            ...destAsset,
+            chainId: quoteDestChainId,
+            image: destAsset.icon,
+            address: destAsset.address.toLowerCase(),
+          }),
+        );
+        dispatch(
+          setFromToken({
+            ...srcAsset,
+            chainId: quoteSrcChainId,
+            image: srcAsset.icon,
+            address: srcAsset.address.toLowerCase(),
+          }),
+        );
+      }
+    } else {
+      // Reset controller and inputs on load
+      dispatch(resetBridgeState());
+    }
   }, []);
 
   // Scroll to bottom of the page when banners are shown
@@ -303,7 +319,7 @@ const PrepareBridgePage = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (!fromChain?.chainId || Object.keys(fromTokens).length === 0) {
+    if (!fromChain?.chainId || isFromTokensLoading) {
       return;
     }
 
@@ -327,10 +343,14 @@ const PrepareBridgePage = () => {
         removeTokenFromUrl();
         break;
       case fromTokens[tokenAddressFromUrl]?.address?.toLowerCase(): {
-        // If there is a matching fromToken, set it as the fromToken
+        // If there is a match, set it as the fromToken
         const matchedToken = fromTokens[tokenAddressFromUrl];
         dispatch(
-          setFromToken({ ...matchedToken, image: matchedToken.iconUrl }),
+          setFromToken({
+            ...matchedToken,
+            image: matchedToken.iconUrl,
+            chainId: fromChain.chainId,
+          }),
         );
         removeTokenFromUrl();
         break;
@@ -340,7 +360,9 @@ const PrepareBridgePage = () => {
         removeTokenFromUrl();
         break;
     }
-  }, [fromChain, fromToken, fromTokens, search]);
+  }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
+
+  const isSolana = useSelector(getMultichainIsSolana);
 
   return (
     <Column className="prepare-bridge-page" gap={8}>
@@ -381,20 +403,16 @@ const PrepareBridgePage = () => {
                 ),
               );
             }
-            dispatch(setFromChain(networkConfig.chainId));
             dispatch(setFromToken(null));
             dispatch(setFromTokenInputValue(null));
           },
           header: t('yourNetworks'),
         }}
         isMultiselectEnabled
-        customTokenListGenerator={
-          fromTokens && fromTopAssets ? fromTokenListGenerator : undefined
-        }
         onMaxButtonClick={(value: string) => {
           dispatch(setFromTokenInputValue(value));
         }}
-        amountInFiat={fromAmountInFiat}
+        amountInFiat={fromAmountInCurrency.valueInCurrency}
         amountFieldProps={{
           testId: 'from-amount',
           autoFocus: true,
@@ -465,10 +483,7 @@ const PrepareBridgePage = () => {
                       .networkClientId
                   : undefined;
               toChainClientId && dispatch(setActiveNetwork(toChainClientId));
-              toChain && dispatch(setFromChain(toChain.chainId));
               dispatch(setFromToken(toToken));
-              dispatch(setFromTokenInputValue(null));
-              fromChain?.chainId && dispatch(setToChain(fromChain.chainId));
               fromChain?.chainId && dispatch(setToChainId(fromChain.chainId));
               dispatch(setToToken(fromToken));
             }}
@@ -496,18 +511,13 @@ const PrepareBridgePage = () => {
                   value: networkConfig.chainId,
                 });
               dispatch(setToChainId(networkConfig.chainId));
-              dispatch(setToChain(networkConfig.chainId));
               dispatch(setToToken(null));
             },
-            header: t('bridgeTo'),
+            header: isSolana ? t('swapSwapTo') : t('bridgeTo'),
             shouldDisableNetwork: ({ chainId }) =>
               chainId === fromChain?.chainId,
           }}
-          customTokenListGenerator={
-            toChain && toTokens && toTopAssets
-              ? toTokenListGenerator
-              : undefined
-          }
+          customTokenListGenerator={toChain ? toTokenListGenerator : undefined}
           amountInFiat={
             activeQuote?.toTokenAmount?.valueInCurrency || undefined
           }

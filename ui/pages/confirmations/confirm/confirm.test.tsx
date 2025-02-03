@@ -166,11 +166,11 @@ describe('Confirm', () => {
     });
 
     await act(async () => {
-      const { container, findAllByText } =
-        await renderWithConfirmContextProvider(<Confirm />, mockStore);
+      const { container } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
 
-      const valueElement = await findAllByText('14,615,016,373,...');
-      expect(valueElement[0]).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });
@@ -190,11 +190,51 @@ describe('Confirm', () => {
     });
 
     await act(async () => {
-      const { container, findAllByText } =
-        await renderWithConfirmContextProvider(<Confirm />, mockStore);
+      const { container } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
 
-      const valueElement = await findAllByText('14,615,016,373,...');
-      expect(valueElement[0]).toBeInTheDocument();
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('should render SmartTransactionsBannerAlert for transaction types but not signature types', async () => {
+    // Test with a transaction type
+    const mockStateTransaction = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        alertEnabledness: {
+          smartTransactionsMigration: true,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
+          smartTransactionsMigrationApplied: true,
+        },
+      },
+    };
+
+    const mockStoreTransaction =
+      configureMockStore(middleware)(mockStateTransaction);
+
+    await act(async () => {
+      const { container } = renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStoreTransaction,
+      );
+      expect(container).toMatchSnapshot();
+    });
+
+    // Test with a signature type (reuse existing mock)
+    const mockStateTypedSign = getMockTypedSignConfirmState();
+    const mockStoreSign = configureMockStore(middleware)(mockStateTypedSign);
+
+    await act(async () => {
+      const { container } = renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStoreSign,
+      );
       expect(container).toMatchSnapshot();
     });
   });

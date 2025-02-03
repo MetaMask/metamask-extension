@@ -1,27 +1,29 @@
+import { createTestProviderTools } from '../../test/stub/provider';
+
 const { readAddressAsContract } = require('./contract-utils');
 
 describe('Contract Utils', () => {
   it('checks is an address is a contract address or not', async () => {
-    let mockEthQuery = {
-      getCode: (_, cb) => {
-        cb(null, '0xa');
+    let mockProvider = createTestProviderTools({
+      scaffold: {
+        eth_getCode: '0xa',
       },
-    };
+    }).provider;
     const { isContractAddress } = await readAddressAsContract(
-      mockEthQuery,
+      mockProvider,
       '0x76B4aa9Fc4d351a0062c6af8d186DF959D564A84',
     );
     expect(isContractAddress).toStrictEqual(true);
 
-    mockEthQuery = {
-      getCode: (_, cb) => {
-        cb(null, '0x');
+    mockProvider = createTestProviderTools({
+      scaffold: {
+        eth_getCode: '0x',
       },
-    };
+    }).provider;
 
     const { isContractAddress: isNotContractAddress } =
       await readAddressAsContract(
-        mockEthQuery,
+        mockProvider,
         '0x76B4aa9Fc4d351a0062c6af8d186DF959D564A84',
       );
     expect(isNotContractAddress).toStrictEqual(false);

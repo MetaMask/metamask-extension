@@ -9,6 +9,10 @@ import {
 } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
 import {
+  Caip25EndowmentPermissionName,
+  getEthAccounts,
+} from '@metamask/multichain';
+import {
   RestrictedMethods,
   EndowmentPermissions,
   ConnectionPermission,
@@ -29,6 +33,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
+import { getRequestedSessionScopes } from '../../pages/permissions-connect/connect-page/utils';
 import { getURLHost } from './util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
@@ -49,7 +54,29 @@ function getSnapNameComponent(snapName) {
   );
 }
 
-export const PERMISSION_DESCRIPTIONS = deepFreeze({
+const PERMISSION_DESCRIPTIONS = deepFreeze({
+  // "endowment:caip25" entry is needed for the Snaps Permissions Review UI
+  [Caip25EndowmentPermissionName]: ({ t, permissionValue }) => {
+    const caveatValue = getRequestedSessionScopes({
+      permissions: permissionValue,
+    });
+    const requestedAccounts = getEthAccounts(caveatValue);
+    const isLegacySwitchChain = requestedAccounts.length === 0;
+
+    if (isLegacySwitchChain) {
+      return {
+        label: t('permission_walletSwitchEthereumChain'),
+        leftIcon: IconName.Wifi,
+        weight: PermissionWeight.permittedChains,
+      };
+    }
+    return {
+      label: t('permission_ethereumAccounts'),
+      leftIcon: IconName.Eye,
+      weight: PermissionWeight.eth_accounts,
+    };
+  },
+  // "eth_accounts" entry is needed for the Snaps Permissions Grant UI
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
     leftIcon: IconName.Eye,
@@ -514,6 +541,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     description: t('permission_nameLookupDescription'),
     leftIcon: IconName.Search,
     weight: PermissionWeight.endowment_nameLookup,
+  }),
+  [EndowmentPermissions['endowment:assets']]: ({ t, subjectName }) => ({
+    label: t('permission_assets'),
+    description: t('permission_assetsDescription', [
+      getSnapNameComponent(subjectName),
+    ]),
+    leftIcon: IconName.Coin,
+    weight: PermissionWeight.endowment_assets,
   }),
   [EndowmentPermissions['endowment:signature-insight']]: ({
     t,

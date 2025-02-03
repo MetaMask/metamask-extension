@@ -33,6 +33,7 @@ describe('useFeeCalculations', () => {
         "maxFeeFiat": "< $0.01",
         "maxFeeFiatWith18SignificantDigits": "0",
         "maxFeeNative": "0 ETH",
+        "preciseNativeFeeInHex": "0x0",
       }
     `);
   });
@@ -61,6 +62,39 @@ describe('useFeeCalculations', () => {
         "maxFeeFiat": "$0.07",
         "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeNative": "0.0001 ETH",
+        "preciseNativeFeeInHex": "0x3be226d2d900",
+      }
+    `);
+  });
+
+  it('picks up gasLimitNoBuffer for minimum network fee on estimations', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    // txParams.gas is 0xab77
+    transactionMeta.gasLimitNoBuffer = '0x9b77';
+
+    const { result } = renderHookWithProvider(
+      () => useFeeCalculations(transactionMeta),
+      mockState,
+    );
+
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "estimatedFeeFiat": "$0.03",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0001 ETH",
+        "l1FeeFiat": "",
+        "l1FeeFiatWith18SignificantDigits": "",
+        "l1FeeNative": "",
+        "l2FeeFiat": "",
+        "l2FeeFiatWith18SignificantDigits": "",
+        "l2FeeNative": "",
+        "maxFeeFiat": "$0.07",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeNative": "0.0001 ETH",
+        "preciseNativeFeeInHex": "0x364ba3e2d900",
       }
     `);
   });
@@ -91,6 +125,7 @@ describe('useFeeCalculations', () => {
         "maxFeeFiat": "$0.07",
         "maxFeeFiatWith18SignificantDigits": null,
         "maxFeeNative": "0.0001 ETH",
+        "preciseNativeFeeInHex": "0x103be226d2d900",
       }
     `);
   });
