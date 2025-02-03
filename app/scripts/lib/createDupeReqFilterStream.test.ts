@@ -3,7 +3,7 @@ import OurReadableStream from 'readable-stream';
 import ReadableStream2 from 'readable-stream-2';
 import ReadableStream3 from 'readable-stream-3';
 
-import type { JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcNotification, JsonRpcRequest } from '@metamask/utils';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
 } from './createDupeReqFilterStream';
@@ -26,7 +26,7 @@ function createTestStream(output: JsonRpcRequest[] = [], S = Transform) {
 }
 
 function runStreamTest(
-  requests: JsonRpcRequest[] = [],
+  requests: (JsonRpcRequest | JsonRpcNotification)[] = [],
   advanceTimersTime = 10,
   S = Transform,
 ) {
@@ -54,12 +54,12 @@ describe('createDupeReqFilterStream', () => {
     const requests = [
       { id: 1, method: 'foo' },
       { id: 2, method: 'bar' },
-    ];
+    ].map((request) => ({ ...request, jsonrpc: '2.0' as const }));
 
     const expectedOutput = [
       { id: 1, method: 'foo' },
       { id: 2, method: 'bar' },
-    ];
+    ].map((output) => ({ ...output, jsonrpc: '2.0' }));
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);
@@ -69,18 +69,25 @@ describe('createDupeReqFilterStream', () => {
     const requests = [
       { id: 1, method: 'foo' },
       { id: 1, method: 'foo' }, // duplicate
-    ];
+    ].map((request) => ({ ...request, jsonrpc: '2.0' as const }));
 
-    const expectedOutput = [{ id: 1, method: 'foo' }];
+    const expectedOutput = [{ id: 1, method: 'foo' }].map((output) => ({
+      ...output,
+      jsonrpc: '2.0',
+    }));
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);
   });
 
   it("lets through requests if they don't have an id", async () => {
-    const requests = [{ method: 'notify1' }, { method: 'notify2' }];
+    const requests = [{ method: 'notify1' }, { method: 'notify2' }].map(
+      (request) => ({ ...request, jsonrpc: '2.0' as const }),
+    );
 
-    const expectedOutput = [{ method: 'notify1' }, { method: 'notify2' }];
+    const expectedOutput = [{ method: 'notify1' }, { method: 'notify2' }].map(
+      (output) => ({ ...output, jsonrpc: '2.0' }),
+    );
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);
@@ -95,7 +102,7 @@ describe('createDupeReqFilterStream', () => {
       { method: 'notify2' },
       { id: 2, method: 'bar' },
       { id: 3, method: 'baz' },
-    ];
+    ].map((request) => ({ ...request, jsonrpc: '2.0' as const }));
 
     const expectedOutput = [
       { id: 1, method: 'foo' },
@@ -103,7 +110,7 @@ describe('createDupeReqFilterStream', () => {
       { id: 2, method: 'bar' },
       { method: 'notify2' },
       { id: 3, method: 'baz' },
-    ];
+    ].map((output) => ({ ...output, jsonrpc: '2.0' }));
 
     const output = await runStreamTest(requests);
     expect(output).toEqual(expectedOutput);

@@ -21,7 +21,7 @@ export class SwapSendPage {
 
   fillRecipientAddressInput = async (address: string) => {
     await this.driver.fill(
-      'input[placeholder="Enter public address (0x) or ENS name"]',
+      'input[placeholder="Enter public address (0x) or domain name"]',
       address,
     );
   };
@@ -266,9 +266,6 @@ export const getSwapSendFixtures = (
 ) => {
   const ETH_CONVERSION_RATE_USD = 3010;
   return {
-    driverOptions: {
-      openDevToolsForTabs: true,
-    },
     fixtures: new FixtureBuilder()
       .withPreferencesController({
         featureFlags: {},

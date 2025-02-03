@@ -9,7 +9,7 @@ const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 const { filterE2eChangedFiles } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
-const FLASK_ONLY_TESTS = ['test-snap-namelookup.spec.js'];
+const FLASK_ONLY_TESTS = [];
 
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.promises.readdir(testDir, {
@@ -32,7 +32,7 @@ const getTestPathsForTestDir = async (testDir) => {
 };
 
 // Quality Gate Retries
-const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
+const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 4;
 
 /**
  * Runs the quality gate logic to filter and append changed or new tests if present.
@@ -41,7 +41,7 @@ const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
  * @param {string[]} changedOrNewTests - List of changed or new test paths.
  * @returns {string} The updated full test list.
  */
-async function applyQualityGate(fullTestList, changedOrNewTests) {
+function applyQualityGate(fullTestList, changedOrNewTests) {
   let qualityGatedList = fullTestList;
 
   if (changedOrNewTests.length > 0) {
@@ -63,11 +63,11 @@ async function applyQualityGate(fullTestList, changedOrNewTests) {
 }
 
 // For running E2Es in parallel in CI
-async function runningOnCircleCI(testPaths) {
-  const changedOrNewTests = await filterE2eChangedFiles();
+function runningOnCircleCI(testPaths) {
+  const changedOrNewTests = filterE2eChangedFiles();
   console.log('Changed or new test list:', changedOrNewTests);
 
-  const fullTestList = await applyQualityGate(
+  const fullTestList = applyQualityGate(
     testPaths.join('\n'),
     changedOrNewTests,
   );
@@ -79,7 +79,7 @@ async function runningOnCircleCI(testPaths) {
   // 1. split the test files into chunks based on how long they take to run
   // 2. support "Rerun failed tests" on CircleCI
   const result = execSync(
-    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
+    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=50s < test/test-results/fullTestList.txt',
   ).toString('utf8');
 
   // Report if no tests found, exit gracefully
@@ -122,10 +122,6 @@ async function main() {
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
           })
-          .option('mmi', {
-            description: `Run only mmi related tests`,
-            type: 'boolean',
-          })
           .option('rpc', {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
@@ -164,7 +160,6 @@ async function main() {
     browser,
     debug,
     retries,
-    mmi,
     rpc,
     buildType,
     updateSnapshot,
@@ -206,9 +201,6 @@ async function main() {
 
     const testDir = path.join(__dirname, 'multi-injected-provider');
     testPaths = await getTestPathsForTestDir(testDir);
-  } else if (buildType === 'mmi') {
-    const testDir = path.join(__dirname, 'tests');
-    testPaths = [...(await getTestPathsForTestDir(testDir))];
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -238,9 +230,6 @@ async function main() {
   if (updatePrivacySnapshot) {
     args.push('--update-privacy-snapshot');
   }
-  if (mmi) {
-    args.push('--mmi');
-  }
 
   await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
@@ -248,7 +237,7 @@ async function main() {
   let changedOrNewTests;
   if (process.env.CIRCLECI) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
-      await runningOnCircleCI(testPaths));
+      runningOnCircleCI(testPaths));
   } else {
     myTestList = testPaths;
   }

@@ -1,8 +1,10 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
 import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 
 export function getMethodName(camelCase) {
   if (!camelCase || typeof camelCase !== 'string') {
@@ -21,6 +23,16 @@ export function formatAccountType(accountType) {
   }
 
   return accountType;
+}
+
+/**
+ * Generates a unique identifier utilizing the original request id for signature event fragments
+ *
+ * @param {number} requestId
+ * @returns {string}
+ */
+export function generateSignatureUniqueId(requestId) {
+  return `signature-${requestId}`;
 }
 
 /**
@@ -86,6 +98,45 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
       params[metricKey] = providerRequestsCount[key];
     });
   }
+
+  return params;
+};
+
+export const getSwapAndSendMetricsProps = (transactionMeta) => {
+  if (transactionMeta.type !== TransactionType.swapAndSend) {
+    return {};
+  }
+
+  const {
+    chainId,
+    sourceTokenAmount,
+    sourceTokenDecimals,
+    destinationTokenAmount,
+    destinationTokenDecimals,
+    sourceTokenSymbol,
+    destinationTokenAddress,
+    destinationTokenSymbol,
+    sourceTokenAddress,
+  } = transactionMeta;
+
+  const params = {
+    chain_id: chainId,
+    token_amount_source:
+      sourceTokenAmount && sourceTokenDecimals
+        ? calcTokenAmount(sourceTokenAmount, sourceTokenDecimals).toString()
+        : undefined,
+    token_amount_dest_estimate:
+      destinationTokenAmount && destinationTokenDecimals
+        ? calcTokenAmount(
+            destinationTokenAmount,
+            destinationTokenDecimals,
+          ).toString()
+        : undefined,
+    token_symbol_source: sourceTokenSymbol,
+    token_symbol_destination: destinationTokenSymbol,
+    token_address_source: sourceTokenAddress,
+    token_address_destination: destinationTokenAddress,
+  };
 
   return params;
 };

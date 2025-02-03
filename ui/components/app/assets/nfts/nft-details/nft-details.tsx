@@ -1,5 +1,4 @@
 import React, { useEffect, useContext } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
@@ -18,17 +17,10 @@ import {
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  getAssetImageURL,
-  shortenAddress,
-} from '../../../../../helpers/utils/util';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import {
-  getCurrentChainId,
-  getCurrentCurrency,
-  getCurrentNetwork,
-  getIpfsGateway,
-} from '../../../../../selectors';
+import { getCurrentChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
@@ -69,10 +61,16 @@ import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { Content, Footer, Page } from '../../../../multichain/pages/page';
 import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
 import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/swaps';
-import { getConversionRate } from '../../../../../ducks/metamask/metamask';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/common';
+import {
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
+import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
@@ -110,9 +108,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
 
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
-  const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
-  const isImageHosted = image?.startsWith('https:');
+  const isImageHosted =
+    image?.startsWith('https:') || image?.startsWith('http:');
+  const nftImageURL = useGetAssetImageUrl(
+    imageOriginal ?? image ?? undefined,
+    ipfsGateway,
+  );
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
@@ -165,6 +167,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
   };
 
   const { chainId } = currentChain;
+
   useEffect(() => {
     trackEvent({
       event: MetaMetricsEventName.NftDetailsOpened,
@@ -275,7 +278,7 @@ export default function NftDetails({ nft }: { nft: Nft }) {
       null as unknown as string, // no holderAddress
       {
         blockExplorerUrl:
-          SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+          CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
       },
     );
   };
@@ -309,6 +312,8 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     return `${text.slice(0, chars)}...${text.slice(-chars)}`;
   };
 
+  const nftItemSrc = isImageHosted ? image : nftImageURL;
+
   return (
     <Page>
       <Content className="nft-details__content">
@@ -325,11 +330,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
             data-testid="nft__back"
           />
           <NftOptions
-            onViewOnOpensea={
-              openSeaLink
-                ? () => global.platform.openTab({ url: openSeaLink })
-                : null
-            }
+            showOpenSeaLink={Boolean(openSeaLink)}
+            onViewOnOpensea={() => {
+              if (!openSeaLink) {
+                return null;
+              }
+              return global.platform.openTab({ url: openSeaLink });
+            }}
             onRemove={onRemove}
           />
         </Box>
@@ -341,14 +348,13 @@ export default function NftDetails({ nft }: { nft: Nft }) {
         >
           <Box className="nft-details__nft-item">
             <NftItem
-              src={isImageHosted ? image : nftImageURL}
-              alt={image ? nftImageAlt : ''}
-              name={name}
-              tokenId={tokenId}
+              src={nftItemSrc as string | undefined}
+              alt={nftImageAlt}
               networkName={currentChain.nickname ?? ''}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
               isIpfsURL={isIpfsURL}
               onClick={handleImageClick}
+              detailView
               clickable
             />
           </Box>
@@ -845,106 +851,3 @@ export default function NftDetails({ nft }: { nft: Nft }) {
     </Page>
   );
 }
-
-NftDetails.propTypes = {
-  nft: PropTypes.shape({
-    address: PropTypes.string.isRequired,
-    tokenId: PropTypes.string.isRequired,
-    isCurrentlyOwned: PropTypes.bool,
-    name: PropTypes.string,
-    description: PropTypes.string,
-    image: PropTypes.string,
-    standard: PropTypes.string,
-    imageThumbnail: PropTypes.string,
-    imagePreview: PropTypes.string,
-    imageOriginal: PropTypes.string,
-    rarityRank: PropTypes.string,
-
-    creator: PropTypes.shape({
-      address: PropTypes.string,
-      config: PropTypes.string,
-      profile_img_url: PropTypes.string,
-    }),
-    attributes: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string,
-        value: PropTypes.string,
-      }),
-    ),
-    lastSale: PropTypes.shape({
-      timestamp: PropTypes.string,
-      orderSource: PropTypes.string,
-      price: PropTypes.shape({
-        amount: PropTypes.shape({
-          native: PropTypes.string,
-          decimal: PropTypes.string,
-          usd: PropTypes.string,
-        }),
-        currency: PropTypes.shape({
-          symbol: PropTypes.string,
-        }),
-      }),
-    }),
-    topBid: PropTypes.shape({
-      source: PropTypes.shape({
-        id: PropTypes.string,
-        domain: PropTypes.string,
-        name: PropTypes.string,
-        icon: PropTypes.string,
-        url: PropTypes.string,
-      }),
-      price: PropTypes.shape({
-        amount: PropTypes.shape({
-          native: PropTypes.string,
-          decimal: PropTypes.string,
-          usd: PropTypes.string,
-        }),
-        currency: PropTypes.shape({
-          symbol: PropTypes.string,
-        }),
-      }),
-    }),
-    collection: PropTypes.shape({
-      openseaVerificationStatus: PropTypes.string,
-      tokenCount: PropTypes.string,
-      name: PropTypes.string,
-      ownerCount: PropTypes.string,
-      creator: PropTypes.string,
-      symbol: PropTypes.string,
-      contractDeployedAt: PropTypes.string,
-      floorAsk: PropTypes.shape({
-        sourceDomain: PropTypes.string,
-        source: PropTypes.shape({
-          id: PropTypes.string,
-          domain: PropTypes.string,
-          name: PropTypes.string,
-          icon: PropTypes.string,
-          url: PropTypes.string,
-        }),
-        price: PropTypes.shape({
-          amount: PropTypes.shape({
-            native: PropTypes.string,
-            decimal: PropTypes.string,
-            usd: PropTypes.string,
-          }),
-          currency: PropTypes.shape({
-            symbol: PropTypes.string,
-          }),
-        }),
-      }),
-      topBid: PropTypes.shape({
-        sourceDomain: PropTypes.string,
-        price: PropTypes.shape({
-          amount: PropTypes.shape({
-            native: PropTypes.string,
-            decimal: PropTypes.string,
-            usd: PropTypes.string,
-          }),
-          currency: PropTypes.shape({
-            symbol: PropTypes.string,
-          }),
-        }),
-      }),
-    }),
-  }),
-};

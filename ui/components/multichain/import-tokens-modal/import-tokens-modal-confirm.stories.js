@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const createStore = (
@@ -15,7 +16,7 @@ const createStore = (
     metamask: {
       ...testData.metamask,
       useTokenDetection,
-      providerConfig: { chainId },
+      ...mockNetworkState({ chainId }),
       pendingTokens: {
         '0x0000000de40dfa9b17854cbc7869d80f9f98d823': {
           address: '0x0000000de40dfa9b17854cbc7869d80f9f98d823',

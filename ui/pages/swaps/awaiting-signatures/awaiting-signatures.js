@@ -15,12 +15,12 @@ import {
   getHardwareWalletType,
 } from '../../../selectors/selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import {
   DEFAULT_ROUTE,
-  BUILD_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import Box from '../../../components/ui/box';
@@ -47,7 +47,7 @@ export default function AwaitingSignatures() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
@@ -150,7 +150,7 @@ export default function AwaitingSignatures() {
           // Go to the default route and then to the build quote route in order to clean up
           // the `inputValue` local state in `pages/swaps/index.js`
           history.push(DEFAULT_ROUTE);
-          history.push(BUILD_QUOTE_ROUTE);
+          history.push(PREPARE_SWAP_ROUTE);
         }}
         submitText={t('cancel')}
         hideCancel

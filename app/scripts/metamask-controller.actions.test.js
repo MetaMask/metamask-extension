@@ -70,7 +70,7 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   beforeAll(async function () {
-    await ganacheServer.start();
+    await ganacheServer.start({ port: 32545 });
   });
 
   beforeEach(function () {
@@ -88,10 +88,6 @@ describe('MetaMaskController', function () {
             allowlist: [],
             blocklist: ['127.0.0.1'],
             name: ListNames.MetaMask,
-          },
-          phishfort_hotlist: {
-            blocklist: [],
-            name: ListNames.Phishfort,
           },
         }),
       )

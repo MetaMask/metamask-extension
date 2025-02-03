@@ -1,0 +1,78 @@
+# This GitHub action will checkout and scan third party code.
+# Please ensure that any changes to this action do not perform
+# actions that may result in code from that branch being executed
+# such as installing dependencies or running build scripts.
+
+# For security reasons, this file always uses the latest version from the default branch.
+# Changes made in feature branches or forks will not take effect until they are merged.
+
+name: SonarCloud
+
+on:
+  workflow_run:
+    workflows:
+      - Main
+    types:
+      - completed
+
+permissions:
+  actions: read
+
+jobs:
+  sonarcloud:
+    # Only scan code from non-forked repositories that have completed successfully using the push and pull_request events
+    # This will skip scanning the code for forks, but will run for the main repository on PRs from forks
+    if: ${{ github.event.workflow_run.conclusion == 'success' && contains(fromJSON('["push", "pull_request"]'), github.event.workflow_run.event) && !github.event.workflow_run.repository.fork }}
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.workflow_run.head_repository.full_name }} # Use the repository that triggered the workflow
+          ref: ${{ github.event.workflow_run.head_branch }} # Use the branch that triggered the workflow
+          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: lcov.info
+          path: coverage
+          github-token: ${{ github.token }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ github.event.workflow_run.id }} # Use the workflow id that triggered the workflow
+
+      - name: Download sonar-project.properties
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: MetaMask/metamask-extension
+        run: |
+          sonar_project_properties=$(gh api -H "Accept: application/vnd.github.raw" "repos/$REPOSITORY/contents/sonar-project.properties")
+          if [ -z "$sonar_project_properties" ]; then
+            echo "::error::sonar-project.properties not found in $REPOSITORY. Please make sure this file exists on the default branch."
+            exit 1
+          fi
+          echo "$sonar_project_properties" > sonar-project.properties
+
+      - name: Update sonar-project.properties with branch information
+        env:
+          EVENT: ${{ github.event.workflow_run.event }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          BASE_BRANCH: ${{ github.event.workflow_run.pull_requests[0].base.ref || '' }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number || '' }}
+        run: |
+          if [ "$EVENT" == "pull_request" ]; then
+            {
+              echo "sonar.pullrequest.branch=$HEAD_BRANCH"
+              echo "sonar.pullrequest.base=$BASE_BRANCH"
+              echo "sonar.pullrequest.key=$PR_NUMBER"
+            } >> sonar-project.properties
+          else
+            echo "sonar.branch.name=$HEAD_BRANCH" >> sonar-project.properties
+          fi
+
+      - name: SonarCloud Scan
+        # This is SonarSource/sonarcloud-github-action@v2.0.0
+        uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

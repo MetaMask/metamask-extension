@@ -1,9 +1,9 @@
-import EthQuery from '@metamask/ethjs-query';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   determineTransactionType,
+  hasTransactionData,
   isEIP1559Transaction,
   isLegacyTransaction,
   parseStandardTokenTransactionData,
@@ -110,8 +110,7 @@ describe('Transaction.utils', function () {
   });
 
   describe('determineTransactionType', function () {
-    const genericProvider = createTestProviderTools().provider;
-    const query = new EthQuery(genericProvider);
+    const { provider: genericProvider } = createTestProviderTools();
 
     it('should return a simple send type when to is truthy and is not a contract address', async function () {
       const _providerResultStub = {
@@ -120,16 +119,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0x',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0xabcabcabcabcabcabcabcabcabcabcabcabcabca',
           data: '',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
@@ -144,16 +143,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xab',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.tokenMethodTransfer,
@@ -171,9 +170,9 @@ describe('Transaction.utils', function () {
           // by default, all accounts are external accounts (not contracts)
           eth_getCode: '0xab',
         };
-        const _provider = createTestProviderTools({
+        const { provider } = createTestProviderTools({
           scaffold: _providerResultStub,
-        }).provider;
+        });
 
         const resultWithEmptyValue = await determineTransactionType(
           {
@@ -181,7 +180,7 @@ describe('Transaction.utils', function () {
             to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
             data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
           },
-          new EthQuery(_provider),
+          provider,
         );
         expect(resultWithEmptyValue).toMatchObject({
           type: TransactionType.tokenMethodTransfer,
@@ -194,7 +193,7 @@ describe('Transaction.utils', function () {
             to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
             data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
           },
-          new EthQuery(_provider),
+          provider,
         );
 
         expect(resultWithEmptyValue2).toMatchObject({
@@ -208,7 +207,7 @@ describe('Transaction.utils', function () {
             to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
             data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
           },
-          new EthQuery(_provider),
+          provider,
         );
         expect(resultWithValue).toMatchObject({
           type: TransactionType.contractInteraction,
@@ -224,16 +223,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0x',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
@@ -248,16 +247,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xab',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.tokenMethodApprove,
@@ -271,7 +270,7 @@ describe('Transaction.utils', function () {
           to: '',
           data: '0xabd',
         },
-        query,
+        genericProvider,
       );
       expect(result).toMatchObject({
         type: TransactionType.deployContract,
@@ -285,7 +284,7 @@ describe('Transaction.utils', function () {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0xabd',
         },
-        query,
+        genericProvider,
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
@@ -300,16 +299,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: null,
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0xabd',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
@@ -324,16 +323,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xa',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: 'abd',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.contractInteraction,
@@ -348,16 +347,16 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xa',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
           to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.contractInteraction,
@@ -372,9 +371,9 @@ describe('Transaction.utils', function () {
         // by default, all accounts are external accounts (not contracts)
         eth_getCode: '0xa',
       };
-      const _provider = createTestProviderTools({
+      const { provider } = createTestProviderTools({
         scaffold: _providerResultStub,
-      }).provider;
+      });
 
       const result = await determineTransactionType(
         {
@@ -382,7 +381,7 @@ describe('Transaction.utils', function () {
           value: '0x5af3107a4000',
           data: '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
         },
-        new EthQuery(_provider),
+        provider,
       );
       expect(result).toMatchObject({
         type: TransactionType.contractInteraction,
@@ -416,5 +415,21 @@ describe('Transaction.utils', function () {
         }).toThrow(new Error('Unexpected end of JSON input'));
       });
     });
+  });
+
+  describe('hasTransactionData', () => {
+    it.each([
+      ['has prefix', '0x1234'],
+      ['has no prefix', '1234'],
+    ])('returns true if data %s', (_, data) => {
+      expect(hasTransactionData(data)).toBe(true);
+    });
+
+    it.each([undefined, null, '', '0x', '0X'])(
+      'returns false if data is %s',
+      (data) => {
+        expect(hasTransactionData(data)).toBe(false);
+      },
+    );
   });
 });

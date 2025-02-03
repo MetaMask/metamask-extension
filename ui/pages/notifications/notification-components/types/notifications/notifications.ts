@@ -1,5 +1,7 @@
 import type { FC } from 'react';
-import type { Notification } from '../../../../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
+
+export type Notification = NotificationServicesController.Types.INotification;
 
 /**
  * NotificationFC is the shared component interface for all notification components
@@ -9,8 +11,17 @@ type NotificationFC<N = Notification> = FC<{
   onClick?: () => void;
 }>;
 
+export enum NotificationComponentType {
+  AnnouncementBody = 'body_feature_announcement',
+  AnnouncementFooter = 'footer_feature_announcement',
+  OnChainBody = 'body_onchain_notification',
+  OnChainFooter = 'footer_onchain_notification',
+  SnapBody = 'body_snap_notification',
+  SnapFooter = 'footer_snap_notification',
+}
+
 type BodyOnChainNotification<N = Notification> = {
-  type: 'body_onchain_notification';
+  type: NotificationComponentType.OnChainBody;
   Image?: NotificationFC<N>;
   From?: NotificationFC<N>;
   To?: NotificationFC<N>;
@@ -25,19 +36,30 @@ type BodyOnChainNotification<N = Notification> = {
 };
 
 type BodyFeatureAnnouncement<N = Notification> = {
-  type: 'body_feature_announcement';
+  type: NotificationComponentType.AnnouncementBody;
   Image: NotificationFC<N>;
   Description: NotificationFC<N>;
 };
 
+type BodySnapNotification<N = Notification> = {
+  type: NotificationComponentType.SnapBody;
+  Content: NotificationFC<N>;
+};
+
 type FooterOnChainNotification<N = Notification> = {
-  type: 'footer_onchain_notification';
+  type: NotificationComponentType.OnChainFooter;
   ScanLink: NotificationFC<N>;
 };
 
 type FooterFeatureAnnouncement<N = Notification> = {
-  type: 'footer_feature_announcement';
+  type: NotificationComponentType.AnnouncementFooter;
   ExtensionLink: NotificationFC<N>;
+  ExternalLink: NotificationFC<N>;
+};
+
+type FooterSnapNotification<N = Notification> = {
+  type: NotificationComponentType.SnapFooter;
+  Link: NotificationFC<N>;
 };
 
 /**
@@ -49,7 +71,13 @@ export type NotificationComponent<N extends Notification = Notification> = {
   item: NotificationFC<N>;
   details: {
     title: NotificationFC<N>;
-    body: BodyFeatureAnnouncement<N> | BodyOnChainNotification<N>;
+    body:
+      | BodyFeatureAnnouncement<N>
+      | BodyOnChainNotification<N>
+      | BodySnapNotification<N>;
   };
-  footer: FooterFeatureAnnouncement<N> | FooterOnChainNotification<N>;
+  footer:
+    | FooterFeatureAnnouncement<N>
+    | FooterOnChainNotification<N>
+    | FooterSnapNotification<N>;
 };

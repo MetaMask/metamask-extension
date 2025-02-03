@@ -2,14 +2,20 @@ import { useSelector } from 'react-redux';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsFeatureAnnouncementsEnabled,
+  getFeatureAnnouncementsReadCount,
   getFeatureAnnouncementsUnreadCount,
+  getOnChainMetamaskNotificationsReadCount,
   getOnChainMetamaskNotificationsUnreadCount,
+  getSnapNotificationsReadCount,
+  getSnapNotificationsUnreadCount,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { getUnreadNotificationsCount } from '../../selectors';
 
-const useSnapNotificationCount = () => {
-  const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
-  return unreadNotificationsCount;
+const useSnapNotificationsCount = () => {
+  const unreadSnapNotificationsCount = useSelector(
+    getSnapNotificationsUnreadCount,
+  );
+  const readSnapNotificationsCount = useSelector(getSnapNotificationsReadCount);
+  return { unreadSnapNotificationsCount, readSnapNotificationsCount };
 };
 
 const useFeatureAnnouncementCount = () => {
@@ -21,7 +27,13 @@ const useFeatureAnnouncementCount = () => {
     getFeatureAnnouncementsUnreadCount,
   );
 
-  return isFeatureAnnouncementsEnabled ? featureAnnouncementsUnreadCount : 0;
+  const featureAnnouncementsReadCount = useSelector(
+    getFeatureAnnouncementsReadCount,
+  );
+
+  return isFeatureAnnouncementsEnabled
+    ? { featureAnnouncementsUnreadCount, featureAnnouncementsReadCount }
+    : { featureAnnouncementsUnreadCount: 0, featureAnnouncementsReadCount: 0 };
 };
 
 const useWalletNotificationCount = () => {
@@ -33,20 +45,49 @@ const useWalletNotificationCount = () => {
     getOnChainMetamaskNotificationsUnreadCount,
   );
 
+  const onChainMetamaskNotificationsReadCount = useSelector(
+    getOnChainMetamaskNotificationsReadCount,
+  );
+
   return isMetamaskNotificationsEnabled
-    ? onChainMetamaskNotificationsUnreadCount
-    : 0;
+    ? {
+        onChainMetamaskNotificationsUnreadCount,
+        onChainMetamaskNotificationsReadCount,
+      }
+    : {
+        onChainMetamaskNotificationsUnreadCount: 0,
+        onChainMetamaskNotificationsReadCount: 0,
+      };
 };
 
-export function useCounter() {
-  const snapNotificationCount = useSnapNotificationCount();
-  const featureAnnouncementCount = useFeatureAnnouncementCount();
-  const walletNotificationCount = useWalletNotificationCount();
+export function useUnreadNotificationsCounter() {
+  const { unreadSnapNotificationsCount } = useSnapNotificationsCount();
+  const { featureAnnouncementsUnreadCount } = useFeatureAnnouncementCount();
+  const { onChainMetamaskNotificationsUnreadCount } =
+    useWalletNotificationCount();
 
-  const notificationsCount =
-    snapNotificationCount + featureAnnouncementCount + walletNotificationCount;
+  const notificationsUnreadCount =
+    unreadSnapNotificationsCount +
+    featureAnnouncementsUnreadCount +
+    onChainMetamaskNotificationsUnreadCount;
 
   return {
-    notificationsCount,
+    notificationsUnreadCount,
+  };
+}
+
+export function useReadNotificationsCounter() {
+  const { readSnapNotificationsCount } = useSnapNotificationsCount();
+  const { featureAnnouncementsReadCount } = useFeatureAnnouncementCount();
+  const { onChainMetamaskNotificationsReadCount } =
+    useWalletNotificationCount();
+
+  const notificationsReadCount =
+    readSnapNotificationsCount +
+    featureAnnouncementsReadCount +
+    onChainMetamaskNotificationsReadCount;
+
+  return {
+    notificationsReadCount,
   };
 }

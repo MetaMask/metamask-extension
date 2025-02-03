@@ -4,10 +4,8 @@ import { Text } from '../../../component-library';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { Asset } from '../../../../ducks/send';
-import {
-  getCurrentCurrency,
-  getSelectedAccountCachedBalance,
-} from '../../../../selectors';
+import { getSelectedAccountCachedBalance } from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   TextColor,
@@ -20,7 +18,7 @@ import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getIsFiatPrimary } from '../utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { Token } from '../asset-picker-modal/types';
+import { TokenWithBalance } from '../asset-picker-modal/types';
 
 export type AssetBalanceTextProps = {
   asset: Asset;
@@ -38,7 +36,7 @@ export function AssetBalanceText({
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
 
-  const { tokensWithBalances }: { tokensWithBalances: Token[] } =
+  const { tokensWithBalances }: { tokensWithBalances: TokenWithBalance[] } =
     useTokenTracker({
       tokens:
         asset.details?.address && !asset.balance
@@ -49,6 +47,10 @@ export function AssetBalanceText({
 
   const balanceString =
     hexToDecimal(asset.balance) || tokensWithBalances[0]?.string;
+
+  const showFixedBalanceString = balanceString?.includes('.')
+    ? balanceString.slice(0, balanceString.indexOf('.') + 5) // Include 4 digits after the decimal
+    : balanceString;
 
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
 
@@ -84,16 +86,18 @@ export function AssetBalanceText({
       variant: TextVariant.bodySm,
     },
   };
-
   const errorText = error ? `. ${t(error)}` : '';
 
   if (asset.type === AssetType.NFT) {
     const numberOfTokens = hexToDecimal(asset.balance || '0x0');
     return (
-      <Text {...commonProps.textProps}>
-        {`${numberOfTokens} ${t(
-          numberOfTokens === '1' ? 'token' : 'tokens',
-        )?.toLowerCase()}${errorText}`}
+      <Text {...commonProps.textProps} data-testid="asset-balance-nft-display">
+        {`${t(
+          numberOfTokens === '1'
+            ? 'assetSingleNFTBalance'
+            : 'assetMultipleNFTsBalance',
+          [numberOfTokens],
+        )}${errorText}`}
       </Text>
     );
   }
@@ -135,7 +139,7 @@ export function AssetBalanceText({
     return (
       <UserPreferencedCurrencyDisplay
         {...commonProps}
-        displayValue={`${balanceString || ''}${errorText}`}
+        displayValue={`${showFixedBalanceString || ''}${errorText}`}
       />
     );
   }

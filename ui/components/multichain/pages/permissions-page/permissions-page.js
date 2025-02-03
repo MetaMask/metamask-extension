@@ -1,7 +1,7 @@
-import classnames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
 import {
   Box,
@@ -23,16 +23,10 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
-  CONNECTIONS,
   DEFAULT_ROUTE,
+  REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
-import {
-  getOnboardedInThisUISession,
-  getShowPermissionsTour,
-  getConnectedSitesListWithNetworkInfo,
-} from '../../../../selectors';
-import { ProductTour } from '../../product-tour-popover';
-import { hidePermissionsTour } from '../../../../store/actions';
+import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {
@@ -43,8 +37,6 @@ export const PermissionsPage = () => {
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
-  const showPermissionsTour = useSelector(getShowPermissionsTour);
-  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
 
   useEffect(() => {
     setTotalConnections(Object.keys(sitesConnectionsList).length);
@@ -53,12 +45,14 @@ export const PermissionsPage = () => {
   const handleConnectionClick = (connection) => {
     const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
-    history.push(`${CONNECTIONS}/${safeEncodedHost}`);
+
+    history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
   };
 
   const renderConnectionsList = (connectionList) =>
     Object.entries(connectionList).map(([itemKey, connection]) => {
-      return (
+      const isSnap = isSnapId(connection.origin);
+      return isSnap ? null : (
         <ConnectionListItem
           data-testid="connection-list-item"
           key={itemKey}
@@ -91,20 +85,6 @@ export const PermissionsPage = () => {
           {t('permissions')}
         </Text>
       </Header>
-      {showPermissionsTour && !onboardedInThisUISession ? (
-        <ProductTour
-          closeMenu={hidePermissionsTour}
-          className={classnames(
-            'multichain-product-tour-menu__permissions-page-tour',
-          )}
-          data-testid="permissions-page-product-tour"
-          anchorElement={headerRef.current}
-          title={t('permissionsPageTourTitle')}
-          description={t('permissionsPageTourDescription')}
-          onClick={hidePermissionsTour}
-          positionObj="44%"
-        />
-      ) : null}
       <Content padding={0}>
         <Box ref={headerRef}></Box>
         {totalConnections > 0 ? (
@@ -117,6 +97,7 @@ export const PermissionsPage = () => {
             justifyContent={JustifyContent.center}
             height={BlockSize.Full}
             gap={2}
+            padding={4}
           >
             <Text
               variant={TextVariant.bodyMdMedium}

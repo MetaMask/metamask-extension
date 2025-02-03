@@ -1,4 +1,4 @@
-import { FormState, InterfaceState } from '@metamask/snaps-sdk';
+import { FormState, InterfaceState, State } from '@metamask/snaps-sdk';
 
 /**
  * Merge a new input value in the interface state.
@@ -10,7 +10,7 @@ import { FormState, InterfaceState } from '@metamask/snaps-sdk';
  * Optional if the input is not contained in a form.
  * @returns The interface state with the new value merged in.
  */
-export const mergeValue = <Type>(
+export const mergeValue = <Type extends State>(
   state: InterfaceState,
   name: string,
   value: Type | null,

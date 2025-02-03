@@ -4,6 +4,8 @@ import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Dropdown from '../../../components/ui/dropdown';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { updateCurrentLocale } from '../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
 
 export default function OnboardingAppHeader() {

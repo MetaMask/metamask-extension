@@ -27,7 +27,7 @@
 
   &__content {
     @include design-system.screen-sm-max {
-      padding: 0 16px 16px 16px;
+      padding-top: 0;
     }
 
     &__permissions {

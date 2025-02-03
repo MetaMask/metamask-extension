@@ -95,7 +95,7 @@ Name.args = {
 
 export const Src: StoryFn<typeof AvatarNetwork> = (args) => (
   <Box display={Display.Flex} gap={1}>
-    <AvatarNetwork {...args} src="./images/matic-token.svg" />
+    <AvatarNetwork {...args} src="./images/pol-token.svg" />
     <AvatarNetwork {...args} src="./images/arbitrum.svg" />
     <AvatarNetwork {...args} src="./images/optimism.svg" />
     <AvatarNetwork {...args} src="./images/avax-token.svg" />

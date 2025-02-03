@@ -1,10 +1,15 @@
 import React from 'react';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
 
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
@@ -37,8 +42,11 @@ import {
   IconName,
 } from '../../../../components/component-library';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type ERC1155Notification = ExtractedNotification<
-  TRIGGER_TYPES.ERC1155_RECEIVED | TRIGGER_TYPES.ERC1155_SENT
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ERC1155_RECEIVED
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ERC1155_SENT
 >;
 const isERC1155Notification = isOfTypeNodeGuard([
   TRIGGER_TYPES.ERC1155_RECEIVED,
@@ -105,7 +113,7 @@ export const components: NotificationComponent<ERC1155Notification> = {
       );
     },
     body: {
-      type: 'body_onchain_notification',
+      type: NotificationComponentType.OnChainBody,
       Image: ({ notification }) => {
         const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencyName } =
@@ -184,7 +192,7 @@ export const components: NotificationComponent<ERC1155Notification> = {
     },
   },
   footer: {
-    type: 'footer_onchain_notification',
+    type: NotificationComponentType.OnChainFooter,
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton

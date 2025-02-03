@@ -13,9 +13,6 @@ import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
-import AutoDetectTokenModal from '../../components/app/assets/auto-detect-token/auto-detect-token-modal';
-import AutoDetectNftModal from '../../components/app/assets/auto-detect-nft/auto-detect-nft-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -52,24 +49,18 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import MultiRpcEditModal from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal';
+///: END:ONLY_INCLUDE_IF
 import {
   RESTORE_VAULT_ROUTE,
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
-  CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
-  BUILD_QUOTE_ROUTE,
-  VIEW_QUOTE_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CONFIRM_ADD_CUSTODIAN_TOKEN,
-  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -81,9 +72,7 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { AccountType } from '../../../shared/constants/custody';
-///: END:ONLY_INCLUDE_IF
+import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -96,26 +85,14 @@ function shouldCloseNotificationPopup({
   totalUnapprovedAndQueuedRequestCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  waitForConfirmDeepLinkDialog,
-  institutionalConnectRequests,
-  ///: END:ONLY_INCLUDE_IF
 }) {
   // we can't use totalUnapproved because there are also queued requests
 
-  let shouldClose =
+  const shouldClose =
     isNotification &&
     totalUnapprovedAndQueuedRequestCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shouldClose &&=
-    // MMI User must be shown a deeplink
-    !waitForConfirmDeepLinkDialog &&
-    // MMI User is connecting to custodian
-    institutionalConnectRequests.length === 0;
-  ///: END:ONLY_INCLUDE_IF
 
   return shouldClose;
 }
@@ -129,9 +106,6 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    hasTransactionPendingApprovals: PropTypes.bool.isRequired,
-    hasWatchTokenPendingApprovals: PropTypes.bool,
-    hasWatchNftPendingApprovals: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
@@ -155,13 +129,10 @@ export default class Home extends PureComponent {
     hideWhatsNewPopup: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
-    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
-    isShowTokenAutodetectModal: PropTypes.bool.isRequired,
-    isShowNftAutodetectModal: PropTypes.bool.isRequired,
+    showMultiRpcModal: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
-    firstPermissionsRequestId: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
@@ -170,6 +141,7 @@ export default class Home extends PureComponent {
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
+    haveBridgeQuotes: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
     swapsFetchParams: PropTypes.object,
@@ -178,10 +150,7 @@ export default class Home extends PureComponent {
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
-    pendingConfirmationsPrioritized: PropTypes.arrayOf(PropTypes.object)
-      .isRequired,
-    networkMenuRedesign: PropTypes.bool,
+    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
@@ -206,25 +175,9 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setTokenAutodetectModal: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setShowTokenAutodetectModalOnUpgrade: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setNftAutodetectModal: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
-    modalOpen: PropTypes.bool,
-    setWaitForConfirmDeepLinkDialog: PropTypes.func,
-    waitForConfirmDeepLinkDialog: PropTypes.bool,
-    showCustodianDeepLink: PropTypes.func,
-    cleanCustodianDeepLink: PropTypes.func,
-    custodianDeepLink: PropTypes.object,
-    accountType: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
     fetchBuyableChains: PropTypes.func.isRequired,
   };
 
@@ -239,14 +192,12 @@ export default class Home extends PureComponent {
 
     const {
       closeNotificationPopup,
-      firstPermissionsRequestId,
       haveSwapsQuotes,
+      haveBridgeQuotes,
       isNotification,
+      pendingApprovals,
       showAwaitingSwapScreen,
-      hasWatchTokenPendingApprovals,
-      hasWatchNftPendingApprovals,
       swapsFetchParams,
-      hasTransactionPendingApprovals,
       location,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
@@ -255,119 +206,51 @@ export default class Home extends PureComponent {
       this.state.notificationClosing = true;
       closeNotificationPopup();
     } else if (
-      firstPermissionsRequestId ||
-      hasTransactionPendingApprovals ||
-      hasWatchTokenPendingApprovals ||
-      hasWatchNftPendingApprovals ||
+      pendingApprovals.length ||
       (!isNotification &&
         !stayOnHomePage &&
-        (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
+        (showAwaitingSwapScreen ||
+          haveSwapsQuotes ||
+          swapsFetchParams ||
+          haveBridgeQuotes))
     ) {
       this.state.redirecting = true;
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  checkInstitutionalConnectRequest() {
-    const { history, institutionalConnectRequests } = this.props;
-    if (
-      institutionalConnectRequests &&
-      institutionalConnectRequests.length > 0 &&
-      institutionalConnectRequests[0].feature === 'custodian'
-    ) {
-      if (
-        institutionalConnectRequests[0].method ===
-        'metamaskinstitutional_reauthenticate'
-      ) {
-        history.push(INTERACTIVE_REPLACEMENT_TOKEN_PAGE);
-      } else if (
-        institutionalConnectRequests[0].method ===
-        'metamaskinstitutional_authenticate'
-      ) {
-        history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
-      }
-    }
-  }
-
-  shouldCloseCurrentWindow() {
-    const {
-      isNotification,
-      modalOpen,
-      totalUnapprovedCount,
-      institutionalConnectRequests,
-      waitForConfirmDeepLinkDialog,
-    } = this.props;
-
-    if (
-      isNotification &&
-      totalUnapprovedCount === 0 &&
-      institutionalConnectRequests.length === 0 &&
-      !waitForConfirmDeepLinkDialog &&
-      !modalOpen
-    ) {
-      global.platform.closeCurrentWindow();
-    }
-  }
-  ///: END:ONLY_INCLUDE_IF
-
   checkStatusAndNavigate() {
     const {
-      firstPermissionsRequestId,
       history,
       isNotification,
-      hasTransactionPendingApprovals,
-      hasWatchTokenPendingApprovals,
-      hasWatchNftPendingApprovals,
       haveSwapsQuotes,
+      haveBridgeQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
-      pendingConfirmations,
-      pendingConfirmationsPrioritized,
+      pendingApprovals,
       hasApprovalFlows,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.shouldCloseCurrentWindow();
-    ///: END:ONLY_INCLUDE_IF
-
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && haveSwapsQuotes) {
-      history.push(VIEW_QUOTE_ROUTE);
-    } else if (canRedirect && swapsFetchParams) {
-      history.push(BUILD_QUOTE_ROUTE);
-    } else if (firstPermissionsRequestId) {
-      history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
-    } else if (pendingConfirmationsPrioritized.length > 0) {
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
-    } else if (hasTransactionPendingApprovals) {
-      history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (hasWatchTokenPendingApprovals) {
-      history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
-    } else if (hasWatchNftPendingApprovals) {
-      history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
-    } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
-      history.push(CONFIRMATION_V_NEXT_ROUTE);
+    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
+      history.push(PREPARE_SWAP_ROUTE);
+    } else if (canRedirect && haveBridgeQuotes) {
+      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+    } else if (pendingApprovals.length || hasApprovalFlows) {
+      navigateToConfirmation(
+        pendingApprovals?.[0]?.id,
+        pendingApprovals,
+        hasApprovalFlows,
+        history,
+      );
     }
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.checkInstitutionalConnectRequest();
-    ///: END:ONLY_INCLUDE_IF
   }
 
   componentDidMount() {
     this.checkStatusAndNavigate();
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const { setWaitForConfirmDeepLinkDialog } = this.props;
-
-    window.addEventListener('beforeunload', () => {
-      // If user closes notification window manually, change waitForConfirmDeepLinkDialog to false
-      setWaitForConfirmDeepLinkDialog(false);
-    });
-    ///: END:ONLY_INCLUDE_IF
 
     this.props.fetchBuyableChains();
   }
@@ -384,16 +267,9 @@ export default class Home extends PureComponent {
       closeNotificationPopup,
       isNotification,
       hasAllowedPopupRedirectApprovals,
-      networkMenuRedesign,
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      custodianDeepLink,
-      showCustodianDeepLink,
-      cleanCustodianDeepLink,
-      accountType,
-      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     const {
@@ -402,8 +278,8 @@ export default class Home extends PureComponent {
     const { notificationClosing } = this.state;
 
     if (
-      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId &&
-      networkMenuRedesign
+      newNetworkAddedConfigurationId &&
+      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId
     ) {
       setActiveNetwork(newNetworkAddedConfigurationId);
       clearNewNetworkAdded();
@@ -414,30 +290,6 @@ export default class Home extends PureComponent {
     } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (
-      accountType === AccountType.CUSTODY &&
-      custodianDeepLink &&
-      Object.keys(custodianDeepLink).length
-    ) {
-      const { custodyId, fromAddress } = custodianDeepLink;
-
-      showCustodianDeepLink({
-        fromAddress,
-        custodyId,
-        isSignature: true,
-        isNotification,
-        onDeepLinkShown: () => {
-          this.context.trackEvent({
-            category: MetaMetricsEventCategory.MMI,
-            event: MetaMetricsEventName.SignatureDeeplinkDisplayed,
-          });
-          cleanCustodianDeepLink();
-        },
-      });
-    }
-    ///: END:ONLY_INCLUDE_IF
   }
 
   onRecoveryPhraseReminderClose = () => {
@@ -508,11 +360,8 @@ export default class Home extends PureComponent {
       newTokensImportedError,
       setNewTokensImported,
       setNewTokensImportedError,
-      newNetworkAddedConfigurationId,
-      networkMenuRedesign,
       clearNewNetworkAdded,
       clearEditedNetwork,
-      setActiveNetwork,
     } = this.props;
 
     const onAutoHide = () => {
@@ -637,7 +486,9 @@ export default class Home extends PureComponent {
               <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
-                  {t('newNetworkEdited', [editedNetwork.nickname])}
+                  {editedNetwork.newNetwork
+                    ? t('newNetworkAdded', [editedNetwork.nickname])
+                    : t('newNetworkEdited', [editedNetwork.nickname])}
                 </Text>
                 <ButtonIcon
                   iconName={IconName.Close}
@@ -784,52 +635,6 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {newNetworkAddedConfigurationId && !networkMenuRedesign && (
-          <Popover
-            className="home__new-network-added"
-            onClose={() => clearNewNetworkAdded()}
-          >
-            <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
-            <Text
-              variant={TextVariant.headingSm}
-              as="h4"
-              marginTop={5}
-              marginRight={9}
-              marginLeft={9}
-              marginBottom={0}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('networkAddedSuccessfully')}
-            </Text>
-            <Box marginTop={8} marginRight={8} marginLeft={8} marginBottom={5}>
-              <Button
-                type="primary"
-                className="home__new-network-added__switch-to-button"
-                onClick={() => {
-                  setActiveNetwork(newNetworkAddedConfigurationId);
-                  clearNewNetworkAdded();
-                }}
-              >
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.primaryInverse}
-                >
-                  {t('switchToNetwork', [newNetworkAddedName])}
-                </Text>
-              </Button>
-              <Button type="secondary" onClick={() => clearNewNetworkAdded()}>
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.primaryDefault}
-                >
-                  {t('dismiss')}
-                </Text>
-              </Button>
-            </Box>
-          </Popover>
-        )}
       </MultipleNotifications>
     );
   }
@@ -995,12 +800,7 @@ export default class Home extends PureComponent {
       announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
-      isSmartTransactionsOptInModalAvailable,
-      isShowTokenAutodetectModal,
-      setTokenAutodetectModal,
-      setShowTokenAutodetectModalOnUpgrade,
-      isShowNftAutodetectModal,
-      setNftAutodetectModal,
+      showMultiRpcModal,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -1018,27 +818,11 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    const showSmartTransactionsOptInModal =
-      canSeeModals && isSmartTransactionsOptInModalAvailable;
-
     const showWhatsNew =
-      canSeeModals &&
-      announcementsToShow &&
-      showWhatsNewPopup &&
-      !showSmartTransactionsOptInModal;
+      canSeeModals && announcementsToShow && showWhatsNewPopup;
 
-    const showAutoDetectionModal =
-      canSeeModals &&
-      isShowTokenAutodetectModal &&
-      !showSmartTransactionsOptInModal &&
-      !showWhatsNew;
-    // TODO show ths after token autodetect modal is merged
-    const showNftAutoDetectionModal =
-      canSeeModals &&
-      isShowNftAutodetectModal &&
-      !showAutoDetectionModal &&
-      !showSmartTransactionsOptInModal &&
-      !showWhatsNew;
+    const showMultiRpcEditModal =
+      canSeeModals && showMultiRpcModal && !showWhatsNew;
 
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
@@ -1060,23 +844,7 @@ export default class Home extends PureComponent {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
-          <SmartTransactionsOptInModal
-            isOpen={showSmartTransactionsOptInModal}
-            hideWhatsNewPopup={hideWhatsNewPopup}
-          />
-
-          <AutoDetectTokenModal
-            isOpen={showAutoDetectionModal}
-            onClose={setTokenAutodetectModal}
-            setShowTokenAutodetectModalOnUpgrade={
-              setShowTokenAutodetectModalOnUpgrade
-            }
-          />
-
-          <AutoDetectNftModal
-            isOpen={showNftAutoDetectionModal}
-            onClose={setNftAutodetectModal}
-          />
+          {showMultiRpcEditModal && <MultiRpcEditModal />}
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder

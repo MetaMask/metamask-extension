@@ -7,11 +7,12 @@ import BigNumber from 'bignumber.js';
 import { addHexPrefix, zeroAddress } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { providerErrors } from '@metamask/rpc-errors';
 import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ethErrors } from 'eth-rpc-errors';
+import { getErrorMessage } from '../../../shared/modules/error';
 import {
   decimalToHex,
   hexToDecimal,
@@ -25,7 +26,6 @@ import {
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
-  INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   RECIPIENT_TYPES,
   SWAPS_NO_QUOTES,
@@ -38,8 +38,12 @@ import {
   isTokenBalanceSufficient,
 } from '../../pages/confirmations/send/send.utils';
 import {
-  getAdvancedInlineGasShown,
   getCurrentChainId,
+  getSelectedNetworkClientId,
+  getProviderConfig,
+} from '../../../shared/modules/selectors/networks';
+import {
+  getAdvancedInlineGasShown,
   getGasPriceInHexWei,
   getIsMainnet,
   getTargetAccount,
@@ -53,7 +57,6 @@ import {
   getSelectedInternalAccount,
   getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
-  getSelectedNetworkClientId,
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../selectors';
@@ -95,22 +98,19 @@ import {
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
-  IS_FLASK,
   checkExistingAddresses,
-  isDefaultMetaMaskChain,
   isOriginContractAddress,
-  isValidDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
   getNativeCurrency,
-  getProviderConfig,
   getTokens,
 } from '../metamask/metamask';
 
 import { resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
+  isPossibleAddress,
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
@@ -1598,24 +1598,17 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const {
-            chainId,
-            tokens,
-            tokenAddressList,
-            isProbablyAnAssetContract,
-          } = action.payload;
+          const { tokens, tokenAddressList, isProbablyAnAssetContract } =
+            action.payload;
 
           if (
             isBurnAddress(state.recipientInput) ||
-            (!isValidHexAddress(state.recipientInput, {
-              mixedCaseUseChecksum: true,
-            }) &&
-              !IS_FLASK &&
-              !isValidDomainName(state.recipientInput))
+            (isPossibleAddress(state.recipientInput) &&
+              !isValidHexAddress(state.recipientInput, {
+                mixedCaseUseChecksum: true,
+              }))
           ) {
-            draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
-              ? INVALID_RECIPIENT_ADDRESS_ERROR
-              : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
+            draftTransaction.recipient.error = INVALID_RECIPIENT_ADDRESS_ERROR;
           } else if (
             isOriginContractAddress(
               state.recipientInput,
@@ -2624,7 +2617,12 @@ export function updateSendAsset(
 
       let missingProperty = STANDARD_TO_REQUIRED_PROPERTIES[
         providedDetails.standard
-      ]?.find((property) => providedDetails[property] === undefined);
+      ]?.find((property) => {
+        if (providedDetails.collection && property === 'symbol') {
+          return providedDetails.collection[property] === undefined;
+        }
+        return providedDetails[property] === undefined;
+      });
 
       let details;
 
@@ -2661,10 +2659,9 @@ export function updateSendAsset(
             providedDetails.address,
             sendingAddress,
             providedDetails.tokenId,
-          ).catch((error) => {
+          ).catch(() => {
             // prevent infinite stuck loading state
             dispatch(hideLoadingIndication());
-            throw error;
           })),
         };
       }
@@ -2679,7 +2676,7 @@ export function updateSendAsset(
 
       if (details.standard === TokenStandard.ERC20) {
         asset.balance =
-          details.balance && details.decimals
+          details.balance && details.decimals !== undefined
             ? addHexPrefix(
                 calcTokenAmount(details.balance, details.decimals).toString(16),
               )
@@ -2712,12 +2709,13 @@ export function updateSendAsset(
               details.tokenId,
             );
           } catch (err) {
-            if (err.message.includes('Unable to verify ownership.')) {
+            const message = getErrorMessage(err);
+            if (message.includes('Unable to verify ownership.')) {
               // this would indicate that either our attempts to verify ownership failed because of network issues,
               // or, somehow a token has been added to NFTs state with an incorrect chainId.
             } else {
               // Any other error is unexpected and should be surfaced.
-              dispatch(displayWarning(err.message));
+              dispatch(displayWarning(err));
             }
           }
 
@@ -2975,7 +2973,7 @@ export function signTransaction(history) {
             await dispatch(
               rejectPendingApproval(
                 unapprovedSendTx.id,
-                ethErrors.provider.userRejectedRequest().serialize(),
+                providerErrors.userRejectedRequest().serialize(),
               ),
             );
           }
@@ -3548,15 +3546,15 @@ export function getSwapsBlockedTokens(state) {
 }
 
 export const getIsSwapAndSendDisabledForNetwork = createSelector(
-  (state) => state.metamask.providerConfig,
+  (state) => getCurrentChainId(state),
   (state) => state[name]?.disabledSwapAndSendNetworks ?? [],
-  ({ chainId }, disabledSwapAndSendNetworks) => {
+  (chainId, disabledSwapAndSendNetworks) => {
     return disabledSwapAndSendNetworks.includes(chainId);
   },
 );
 
 export const getSendAnalyticProperties = createSelector(
-  (state) => state.metamask.providerConfig,
+  (state) => getProviderConfig(state),
   getCurrentDraftTransaction,
   getBestQuote,
   ({ chainId, ticker: nativeCurrencySymbol }, draftTransaction, bestQuote) => {

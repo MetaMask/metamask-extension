@@ -7,6 +7,13 @@ $text-variants: (
   body: ("xs", "xs-medium", "sm", "sm-medium", "sm-bold", "md", "md-medium", "md-bold", "lg-medium"),
 );
 
+// Brand evolution font families
+$brand-evolution-font-families: (
+  'display': 'MM Sans',
+  'heading': 'MM Sans',
+  'body': 'CentraNo1',
+);
+
 // Variable output mixin
 // screen size, type, size
 
@@ -23,6 +30,17 @@ $text-variants: (
     font-size: var(--typography-l-#{$type}-#{$size}-font-size);
     line-height: var(--typography-l-#{$type}-#{$size}-line-height);
     letter-spacing: var(--typography-l-#{$type}-#{$size}-letter-spacing);
+  }
+}
+
+// Brand evolution font mixin
+@mixin brand-evolution-font($type) {
+  $font-family: map-get($brand-evolution-font-families, $type);
+
+  font-family: $font-family, var(--font-family-sans);
+
+  @if $type == 'display' or $type == 'heading' {
+    font-weight: var(--font-weight-normal);
   }
 }
 
@@ -43,6 +61,10 @@ $text-variants: (
       @each $size in $size-options {
         &-#{$size} {
           @include textVariables($type, $size);
+          // Apply brand evolution font if the brand evolution modifier class is present
+          &-brand-evo {
+            @include brand-evolution-font($type);
+          }
         }
       }
     }

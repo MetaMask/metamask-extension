@@ -20,7 +20,7 @@ describe('Incremental Security', function () {
     ],
   };
 
-  it('Back up Secret Recovery Phrase from backup reminder @no-mmi', async function () {
+  it('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -73,17 +73,16 @@ describe('Incremental Security', function () {
         );
         await driver.clickElement('[data-testid="account-list-menu-details"');
 
-        // gets the current accounts address
-        const address = await driver.findElement(
-          '.qr-code .multichain-address-copy-button',
+        const outerSegment = await driver.findElement(
+          '.qr-code__address-segments',
         );
-        const publicAddress = await address.getText();
+        const publicAddress = await outerSegment.getText();
 
         // wait for account modal to be visible
         await driver.findVisibleElement(
           '[data-testid="account-details-modal"]',
         );
-        await driver.clickElement('button[aria-label="Close"]');
+        await driver.clickElement('header button[aria-label="Close"]');
 
         // wait for account modal to be removed from DOM
         await driver.assertElementNotPresent(

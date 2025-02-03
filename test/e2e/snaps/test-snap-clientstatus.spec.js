@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -28,28 +27,40 @@ describe('Test Snap Client Status', function () {
           tag: 'h2',
         });
 
+        // scroll to and click connect to client-status snap
         const snapButton = await driver.findElement('#connectclient-status');
         await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectclient-status');
         await driver.clickElement('#connectclient-status');
 
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -77,7 +88,7 @@ describe('Test Snap Client Status', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // click on the global action menu
+        // wait for and click on the global action menu
         await driver.waitForSelector(
           '[data-testid="account-options-menu-button"]',
         );

@@ -17,6 +17,8 @@ import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsC
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   ownerId: string;
+  /** Determines whether to display the row only when an alert is present. */
+  isShownWithAlertsOnly?: boolean;
 };
 
 function getAlertTextColors(
@@ -41,6 +43,7 @@ export const ConfirmInfoAlertRow = ({
   alertKey,
   ownerId,
   variant,
+  isShownWithAlertsOnly = false,
   ...rowProperties
 }: ConfirmInfoAlertRowProps) => {
   const { trackInlineAlertClicked } = useAlertMetrics();
@@ -68,6 +71,10 @@ export const ConfirmInfoAlertRow = ({
     variant,
   };
 
+  if (isShownWithAlertsOnly && !hasFieldAlert) {
+    return null;
+  }
+
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
       <InlineAlert
@@ -85,6 +92,8 @@ export const ConfirmInfoAlertRow = ({
           ownerId={ownerId}
           onFinalAcknowledgeClick={handleModalClose}
           onClose={handleModalClose}
+          showCloseIcon={false}
+          skipAlertNavigation={true}
         />
       )}
       <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />

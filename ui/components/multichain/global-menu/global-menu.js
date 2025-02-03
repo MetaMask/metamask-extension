@@ -2,7 +2,10 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCounter } from '../../../hooks/metamask-notifications/useCounter';
+import {
+  useUnreadNotificationsCounter,
+  useReadNotificationsCounter,
+} from '../../../hooks/metamask-notifications/useCounter';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
@@ -21,7 +24,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   Box,
   IconName,
@@ -30,6 +33,8 @@ import {
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
@@ -43,16 +48,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+
 import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IF(build-mmi)
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
@@ -80,7 +77,8 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const history = useHistory();
 
-  const { notificationsCount } = useCounter();
+  const { notificationsUnreadCount } = useUnreadNotificationsCounter();
+  const { notificationsReadCount } = useReadNotificationsCounter();
 
   const account = useSelector(getSelectedInternalAccount);
 
@@ -97,12 +95,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  ///: END:ONLY_INCLUDE_IF
 
   let hasNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
@@ -144,20 +136,28 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
     if (shouldShowEnableModal) {
       trackEvent({
-        category: MetaMetricsEventCategory.EnableNotifications,
-        event: MetaMetricsEventName.NotificationsEnablingFlowHandled,
+        category: MetaMetricsEventCategory.NotificationsActivationFlow,
+        event: MetaMetricsEventName.NotificationsActivated,
         properties: {
-          is_profile_syncing_enabled: isProfileSyncingEnabled,
-          is_notifications_enabled: isMetamaskNotificationsEnabled,
           action_type: 'started',
+          is_profile_syncing_enabled: isProfileSyncingEnabled,
         },
       });
       dispatch(showConfirmTurnOnMetamaskNotifications());
+
       closeMenu();
       return;
     }
 
     // Otherwise we can navigate to the notifications page
+    trackEvent({
+      category: MetaMetricsEventCategory.NotificationInteraction,
+      event: MetaMetricsEventName.NotificationsMenuOpened,
+      properties: {
+        unread_count: notificationsUnreadCount,
+        read_count: notificationsReadCount,
+      },
+    });
     history.push(NOTIFICATIONS_ROUTE);
     closeMenu();
   };
@@ -182,6 +182,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           <MenuItem
             iconName={IconName.Notification}
             onClick={() => handleNotificationsClick()}
+            data-testid="notifications-menu-item"
           >
             <Box
               display={Display.Flex}
@@ -190,7 +191,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
               justifyContent={JustifyContent.spaceBetween}
             >
               {t('notifications')}
-              {notificationsCount === 0 &&
+              {notificationsUnreadCount === 0 &&
                 !isMetamaskNotificationFeatureSeen && <NewFeatureTag />}
               <NotificationsTagCounter />
             </Box>
@@ -240,29 +241,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         {t('allPermissions')}
       </MenuItem>
 
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        mmiPortfolioEnabled && (
-          <MenuItem
-            iconName={IconName.Diagram}
-            onClick={() => {
-              trackEvent({
-                category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-              });
-              window.open(
-                `${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`,
-                '_blank',
-              );
-              closeMenu();
-            }}
-            data-testid="global-menu-mmi-portfolio"
-          >
-            {t('portfolioDashboard')}
-          </MenuItem>
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}

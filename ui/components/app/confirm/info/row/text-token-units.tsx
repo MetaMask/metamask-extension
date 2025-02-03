@@ -3,15 +3,15 @@ import { BigNumber } from 'bignumber.js';
 
 import { calcTokenAmount } from '../../../../../../shared/lib/transactions-controller-utils';
 import {
-  ellipsisAmountText,
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../pages/confirmations/components/simulation-details/formatAmount';
+import { shortenString } from '../../../../../helpers/utils/util';
 import { ConfirmInfoRowText } from './text';
 
 type ConfirmInfoRowTextTokenUnitsProps = {
   value: number | string | BigNumber;
-  decimals: number;
+  decimals?: number;
 };
 
 export const ConfirmInfoRowTextTokenUnits: React.FC<
@@ -24,7 +24,12 @@ export const ConfirmInfoRowTextTokenUnits: React.FC<
 
   return (
     <ConfirmInfoRowText
-      text={ellipsisAmountText(tokenText)}
+      text={shortenString(tokenText, {
+        truncatedCharLimit: 15,
+        truncatedStartChars: 15,
+        truncatedEndChars: 0,
+        skipCharacterInEnd: true,
+      })}
       tooltip={tokenTextMaxPrecision}
     />
   );

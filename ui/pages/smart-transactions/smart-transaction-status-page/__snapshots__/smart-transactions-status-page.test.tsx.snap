@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SmartTransactionStatusPage renders the "failed" STX status: smart-transaction-status-failed 1`] = `
+<div>
+  <div
+    class="mm-box smart-transaction-status-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
+  >
+    <div
+      class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+      style="flex-grow: 1;"
+    >
+      <div
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+      >
+        <div
+          data-status="reverted"
+          data-testid="mock-animation"
+        />
+        <h4
+          class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--color-text-default"
+        >
+          Your transaction failed
+        </h4>
+        <div
+          class="mm-box smart-transaction-status-page__description mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--color-text-alternative"
+          >
+            Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support.
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            type="link"
+          >
+            View transaction
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--margin-top-3 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        data-testid="smart-transaction-status-page-footer-close-button"
+      >
+        View activity
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SmartTransactionStatusPage renders the "pending" STX status: smart-transaction-status-pending 1`] = `
+<div>
+  <div
+    class="mm-box smart-transaction-status-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
+  >
+    <div
+      class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+      style="flex-grow: 1;"
+    >
+      <div
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+      >
+        <div
+          data-status="pending"
+          data-testid="mock-animation"
+        />
+        <h4
+          class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--color-text-default"
+        >
+          Your transaction was submitted
+        </h4>
+        <div
+          class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            type="link"
+          >
+            View transaction
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--margin-top-3 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        data-testid="smart-transaction-status-page-footer-close-button"
+      >
+        View activity
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SmartTransactionStatusPage renders the "success" STX status: smart-transaction-status-success 1`] = `
+<div>
+  <div
+    class="mm-box smart-transaction-status-page mm-box--margin-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
+  >
+    <div
+      class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+      style="flex-grow: 1;"
+    >
+      <div
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+      >
+        <div
+          data-status="success"
+          data-testid="mock-animation"
+        />
+        <h4
+          class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--color-text-default"
+        >
+          Your transaction is complete
+        </h4>
+        <div
+          class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            type="link"
+          >
+            View transaction
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--margin-top-3 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        data-testid="smart-transaction-status-page-footer-close-button"
+      >
+        View activity
+      </button>
+    </div>
+  </div>
+</div>
+`;

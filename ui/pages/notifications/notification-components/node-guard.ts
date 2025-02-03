@@ -1,4 +1,4 @@
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { type Notification } from './types/notifications/notifications';
 
 export type ExtractedNotification<NodeType> = Extract<
   Notification,

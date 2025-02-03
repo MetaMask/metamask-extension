@@ -1,16 +1,21 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { CaveatTypes } from '../../shared/constants/permissions';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getEthAccounts,
+  getPermittedEthChainIds,
+} from '@metamask/multichain';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { getApprovalRequestsByType } from './approvals';
-import { createDeepEqualSelector } from './util';
 import {
   getInternalAccount,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
-  getSelectedInternalAccount,
   getTargetSubjectMetadata,
-} from '.';
+} from './selectors';
+import { getSelectedInternalAccount } from './accounts';
 
 // selectors
 
@@ -56,7 +61,13 @@ export function getPermissionSubjects(state) {
  */
 export function getPermittedAccounts(state, origin) {
   return getAccountsFromPermission(
-    getAccountsPermissionFromSubject(subjectSelector(state, origin)),
+    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
+  );
+}
+
+export function getPermittedChains(state, origin) {
+  return getChainsFromPermission(
+    getCaip25PermissionFromSubject(subjectSelector(state, origin)),
   );
 }
 
@@ -75,6 +86,14 @@ export function getPermittedAccountsForSelectedTab(state, activeTab) {
   return getPermittedAccounts(state, activeTab);
 }
 
+export function getPermittedChainsForCurrentTab(state) {
+  return getPermittedAccounts(state, getOriginOfCurrentTab(state));
+}
+
+export function getPermittedChainsForSelectedTab(state, activeTab) {
+  return getPermittedChains(state, activeTab);
+}
+
 /**
  * Returns a map of permitted accounts by origin for all origins.
  *
@@ -87,6 +106,17 @@ export function getPermittedAccountsByOrigin(state) {
     const accounts = getAccountsFromSubject(subjects[subjectKey]);
     if (accounts.length > 0) {
       acc[subjectKey] = accounts;
+    }
+    return acc;
+  }, {});
+}
+
+export function getPermittedChainsByOrigin(state) {
+  const subjects = getPermissionSubjects(state);
+  return Object.keys(subjects).reduce((acc, subjectKey) => {
+    const chains = getChainsFromSubject(subjects[subjectKey]);
+    if (chains.length > 0) {
+      acc[subjectKey] = chains;
     }
     return acc;
   }, {});
@@ -247,29 +277,33 @@ export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
 );
 
 // selector helpers
+function getCaip25PermissionFromSubject(subject = {}) {
+  return subject.permissions?.[Caip25EndowmentPermissionName] || {};
+}
 
 function getAccountsFromSubject(subject) {
-  return getAccountsFromPermission(getAccountsPermissionFromSubject(subject));
+  return getAccountsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getAccountsPermissionFromSubject(subject = {}) {
-  return subject.permissions?.eth_accounts || {};
+function getChainsFromSubject(subject) {
+  return getChainsFromPermission(getCaip25PermissionFromSubject(subject));
 }
 
-function getAccountsFromPermission(accountsPermission) {
-  const accountsCaveat = getAccountsCaveatFromPermission(accountsPermission);
-  return accountsCaveat && Array.isArray(accountsCaveat.value)
-    ? accountsCaveat.value
-    : [];
-}
-
-function getAccountsCaveatFromPermission(accountsPermission = {}) {
+function getCaveatFromPermission(caip25Permission = {}) {
   return (
-    Array.isArray(accountsPermission.caveats) &&
-    accountsPermission.caveats.find(
-      (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
-    )
+    Array.isArray(caip25Permission.caveats) &&
+    caip25Permission.caveats.find((caveat) => caveat.type === Caip25CaveatType)
   );
+}
+
+function getAccountsFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
+}
+
+function getChainsFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  return caip25Caveat ? getPermittedEthChainIds(caip25Caveat.value) : [];
 }
 
 function subjectSelector(state, origin) {

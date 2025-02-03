@@ -1,24 +1,33 @@
 import log from 'loglevel';
+import {
+  getErrorMessage as _getErrorMessage,
+  hasProperty,
+  isObject,
+  isErrorWithMessage,
+} from '@metamask/utils';
+
+export { isErrorWithMessage } from '@metamask/utils';
 
 /**
- * Type guard for determining whether the given value is an error object with a
- * `message` property, such as an instance of Error.
+ * Attempts to obtain the message from a possible error object, defaulting to an
+ * empty string if it is impossible to do so.
  *
- * TODO: Remove once this becomes available at @metamask/utils
- *
- * @param error - The object to check.
- * @returns True or false, depending on the result.
+ * @param error - The possible error to get the message from.
+ * @returns The message if `error` is an object with a `message` property;
+ * the string version of `error` if it is not `undefined` or `null`; otherwise
+ * an empty string.
  */
-export function isErrorWithMessage(
-  error: unknown,
-): error is { message: string } {
-  return typeof error === 'object' && error !== null && 'message' in error;
+// TODO: Remove completely once changes implemented in @metamask/utils
+export function getErrorMessage(error: unknown): string {
+  return isErrorWithMessage(error) &&
+    hasProperty(error, 'cause') &&
+    isObject(error.cause) &&
+    hasProperty(error.cause, 'message') &&
+    typeof error.cause.message === 'string'
+    ? error.cause.message
+    : _getErrorMessage(error);
 }
 
 export function logErrorWithMessage(error: unknown) {
-  if (isErrorWithMessage(error)) {
-    log.error(error.message);
-  } else {
-    log.error(error);
-  }
+  log.error(isErrorWithMessage(error) ? getErrorMessage(error) : error);
 }

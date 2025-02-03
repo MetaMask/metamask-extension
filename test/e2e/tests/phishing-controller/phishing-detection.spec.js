@@ -1,12 +1,15 @@
 const { strict: assert } = require('assert');
 const { createServer } = require('node:http');
 const { createDeferredPromise } = require('@metamask/utils');
+const { until } = require('selenium-webdriver');
 
 const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
+  createWebSocketConnection,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -56,11 +59,16 @@ describe('Phishing Detection', function () {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-        await driver.clickElement({
-          text: 'continue to the site.',
+
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
+        // see more here https://github.com/MetaMask/phishing-warning/pull/173
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
         });
-        const header = await driver.findElement('h1');
-        assert.equal(await header.getText(), 'E2E Test Dapp');
+        await driver.clickElement({
+          text: 'Proceed anyway',
+        });
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       },
     );
   });
@@ -102,11 +110,16 @@ describe('Phishing Detection', function () {
         }
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-        await driver.clickElement({
-          text: 'continue to the site.',
+
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
+        // see more here https://github.com/MetaMask/phishing-warning/pull/173
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
         });
-        const header = await driver.findElement('h1');
-        assert.equal(await header.getText(), 'E2E Test Dapp');
+        await driver.clickElement({
+          text: 'Proceed anyway',
+        });
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
       };
     }
 
@@ -168,8 +181,14 @@ describe('Phishing Detection', function () {
           text: 'Open this warning in a new tab',
         });
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+
+        // we need to wait for this selector to mitigate a race condition on the phishing page site
+        // see more here https://github.com/MetaMask/phishing-warning/pull/173
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
+        });
         await driver.clickElement({
-          text: 'continue to the site.',
+          text: 'Proceed anyway',
         });
 
         // We don't really know what we're going to see at this blocked site, so a waitAtLeast guard of 1000ms is the best choice
@@ -207,10 +226,9 @@ describe('Phishing Detection', function () {
         await driver.findElement({
           text: `Empty page by ${BlockProvider.MetaMask}`,
         });
-        assert.equal(
-          await driver.getCurrentUrl(),
-          `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
-        );
+        await driver.waitForUrl({
+          url: `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
+        });
       },
     );
   });
@@ -253,40 +271,7 @@ describe('Phishing Detection', function () {
     );
   });
 
-  it('should navigate the user to PhishFort to dispute a Phishfort Block', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
-          return setupPhishingDetectionMocks(mockServer, {
-            blockProvider: BlockProvider.PhishFort,
-            blocklist: ['127.0.0.1'],
-          });
-        },
-        dapp: true,
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage('http://127.0.0.1:8080');
-
-        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-        await driver.clickElement({ text: 'report a detection problem.' });
-
-        // wait for page to load before checking URL.
-        await driver.findElement({
-          text: `Empty page by ${BlockProvider.PhishFort}`,
-        });
-        assert.equal(
-          await driver.getCurrentUrl(),
-          `https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
-        );
-      },
-    );
-  });
-
-  it('should open a new extension expanded view when clicking back to safety button', async function () {
+  it('should open MetaMask Portfolio when clicking back to safety button', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -323,11 +308,82 @@ describe('Phishing Detection', function () {
           text: 'Back to safety',
         });
 
-        // Ensure we're redirected to wallet home page
-        const homePage = await driver.findElement('.home__main-view');
-        const homePageDisplayed = await homePage.isDisplayed();
+        await driver.waitForUrl({
+          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+        });
+      },
+    );
+  });
 
-        assert.equal(homePageDisplayed, true);
+  it('should block a website that makes a websocket connection to a malicious command and control server', async function () {
+    const testPageURL = 'http://localhost:8080';
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockServer.forAnyWebSocket().thenEcho();
+          await setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+          });
+        },
+        dapp: true,
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.openNewPage(testPageURL);
+
+        await createWebSocketConnection(driver, 'malicious.localhost');
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Phishing Detection',
+          10000,
+        );
+
+        await driver.waitForSelector({
+          testId: 'unsafe-continue-loaded',
+        });
+
+        await driver.clickElement({
+          text: 'Back to safety',
+        });
+
+        await driver.waitForUrl({
+          url: `https://portfolio.metamask.io/?metamaskEntry=phishing_page_portfolio_button`,
+        });
+      },
+    );
+  });
+
+  it('should not block a website that makes a safe WebSocket connection', async function () {
+    const testPageURL = 'http://localhost:8080/';
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockServer.forAnyWebSocket().thenEcho();
+          await setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+          });
+        },
+        dapp: true,
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.openNewPage(testPageURL);
+
+        await createWebSocketConnection(driver, 'safe.localhost');
+
+        await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+
+        const currentUrl = await driver.getCurrentUrl();
+
+        assert.equal(currentUrl, testPageURL);
       },
     );
   });
@@ -477,11 +533,12 @@ describe('Phishing Detection', function () {
         await driver.openNewURL(blockedUrl);
         // check that the redirect was ultimately _not_ followed and instead
         // went to our "MetaMask Phishing Detection" site
-        assert.equal(
-          await driver.getCurrentUrl(),
-          // http://localhost:9999 is the Phishing Warning page
-          `http://localhost:9999/#hostname=${blocked}&href=http%3A%2F%2F${blocked}%3A${port}%2F`,
-        );
+
+        await driver.waitForUrl({
+          url:
+            // http://localhost:9999 is the Phishing Warning page
+            `http://localhost:9999/#hostname=${blocked}&href=http%3A%2F%2F${blocked}%3A${port}%2F`,
+        });
       });
     }
   });

@@ -1,0 +1,142 @@
+@use "design-system";
+
+.selected-token {
+  .selected-token-list {
+    background-color: var(--color-background-alternative);
+    border-radius: 100px;
+
+    &__close-area {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      width: 100%;
+      height: 100%;
+    }
+
+    &__select-default {
+      color: var(--color-text-default);
+    }
+
+    &__labels {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      flex: auto;
+      max-width: 110px;
+
+      &--with-icon {
+        max-width: 95px;
+      }
+    }
+
+    &__closed-primary-label {
+      @include design-system.H4;
+
+      color: var(--color-text-default);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    &__selector-closed-container {
+      display: flex;
+      position: relative;
+      align-items: center;
+      transition: 200ms ease-in-out;
+      box-shadow: none;
+      border: 0;
+      border-radius: 100px;
+      height: 32px;
+      max-height: 32px;
+      max-width: 165px;
+      width: auto;
+
+      &:hover {
+        background: var(--color-background-default-hover);
+      }
+    }
+
+    &__selector-closed-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+
+    &__selector-closed {
+      display: flex;
+      flex-flow: row nowrap;
+      padding: 16px 12px;
+      box-sizing: border-box;
+      cursor: pointer;
+      position: relative;
+      align-items: center;
+      flex: 1;
+      height: 32px;
+      max-width: 140px;
+
+      i {
+        font-size: 1.2em;
+      }
+
+      div {
+        display: flex;
+      }
+
+      &__item-labels {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+
+    &__item-labels {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-left: 8px;
+    }
+  }
+
+  .selected-token-input-pair {
+    height: 32px;
+    width: auto;
+
+    &__selector--closed {
+      height: 60px;
+      border-top-right-radius: 100px;
+      border-bottom-right-radius: 100px;
+    }
+
+    .searchable-item-list {
+      &__item--add-token {
+        display: none;
+      }
+    }
+
+    &__to {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .searchable-item-list {
+        &__item--add-token {
+          display: flex;
+        }
+      }
+    }
+
+    &__input {
+      div {
+        border: 0;
+      }
+    }
+
+    &__two-line-input {
+      input {
+        padding-bottom: 0;
+      }
+    }
+  }
+}

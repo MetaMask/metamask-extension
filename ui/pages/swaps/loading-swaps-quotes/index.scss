@@ -16,28 +16,6 @@
     max-height: 445px;
   }
 
-  &__quote-counter {
-    @include design-system.H7;
-
-    color: var(--color-text-alternative);
-    margin-top: 3px;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 4px;
-  }
-
-  &__quote-name-check {
-    @include design-system.H4;
-
-    font-weight: bold;
-    color: var(--color-text-default);
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    text-transform: capitalize;
-  }
-
   &__background-1,
   &__background-2 {
     width: 265.18px;

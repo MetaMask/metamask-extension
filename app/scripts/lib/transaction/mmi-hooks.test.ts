@@ -2,7 +2,6 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   afterTransactionSign,
   beforeCheckPendingTransaction,
-  beforeTransactionApproveOnInit,
   beforeTransactionPublish,
   getAdditionalSignArguments,
 } from './mmi-hooks';
@@ -82,24 +81,6 @@ describe('MMI hooks', () => {
       const txMeta = { to: toMocked } as any;
       const result = getAdditionalSignArguments(txMeta);
       expect(result).toEqual([]);
-    });
-  });
-
-  describe('beforeTransactionApproveOnInit', () => {
-    it('returns true if txMeta has custodyStatus', () => {
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const txMeta = { custodyStatus: TransactionStatus.approved } as any;
-      const result = beforeTransactionApproveOnInit(txMeta);
-      expect(result).toBe(false);
-    });
-
-    it('returns false if txMeta has no custodyStatus', () => {
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const txMeta = { to: toMocked } as any;
-      const result = beforeTransactionApproveOnInit(txMeta);
-      expect(result).toBe(true);
     });
   });
 

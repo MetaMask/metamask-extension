@@ -87,10 +87,6 @@
   "failed": {
     "message": "विफल"
   },
-  "fiat": {
-    "message": "FIAT एक्सचेंज टाइप",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "फ़ाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
@@ -143,9 +139,6 @@
   "invalidAddressRecipient": {
     "message": "प्राप्तकर्ता का पता अमान्य है"
   },
-  "invalidBlockExplorerURL": {
-    "message": "अमान्य Block Explorer कै URI"
-  },
   "invalidRPC": {
     "message": "अमान्य RPC कै URI"
   },
@@ -158,9 +151,6 @@
   },
   "loading": {
     "message": "लोड हो रहा है ....."
-  },
-  "loadingTokens": {
-    "message": "टोकन लोड हो रहा है ....."
   },
   "localhost": {
     "message": "स्थानीयहोस्ट 8545"
@@ -202,12 +192,6 @@
   },
   "next": {
     "message": "अगला"
-  },
-  "noAddressForName": {
-    "message": "इस नाम के लिए कोई पता सेट नहीं किया गया है।"
-  },
-  "noTransactions": {
-    "message": "कोई लेन-देन नहीं"
   },
   "pastePrivateKey": {
     "message": "यहां अपनी निजी कुंजी स्ट्रिंग चिपकाएं:",

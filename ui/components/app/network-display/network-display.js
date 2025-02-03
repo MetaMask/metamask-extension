@@ -10,6 +10,7 @@ import { PickerNetwork, AvatarNetworkSize } from '../../component-library';
 
 export default function NetworkDisplay() {
   const currentNetwork = useSelector(getCurrentNetwork);
+
   return (
     <PickerNetwork
       className="network-display"

@@ -3,13 +3,13 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, act } from '@testing-library/react';
 
-import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
@@ -38,19 +38,11 @@ const mockBaseStore = {
     },
     approvalFlows: [{ id: mockApprovalId, loadingText: null }],
     subjectMetadata: {},
-    providerConfig: {
-      type: 'rpc',
+    ...mockNetworkState({
       rpcUrl: 'http://example-custom-rpc.metamask.io',
       chainId: '0x9999',
       nickname: 'Test initial state',
-    },
-    selectedNetworkClientId: 'test-network-client-id',
-    networksMetadata: {
-      'test-network-client-id': {
-        EIPS: {},
-        status: NetworkStatus.Available,
-      },
-    },
+    }),
     snaps: {},
   },
 };
@@ -69,15 +61,8 @@ describe('add-ethereum-chain confirmation', () => {
       },
     };
     const store = configureMockStore(middleware)(testStore);
-    const { container, getByText } = renderWithProvider(
-      <Confirmation />,
-      store,
-    );
+    const { container } = renderWithProvider(<Confirmation />, store);
     await waitFor(() => {
-      expect(
-        getByText('MetaMask does not verify custom networks.'),
-      ).toBeInTheDocument();
-      expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });
   });
@@ -171,9 +156,10 @@ describe('add-ethereum-chain confirmation', () => {
     await waitFor(() => {
       expect(
         getByText(
-          "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: https://iոfura.io/gnosis",
+          "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: https://xn--ifura-dig.io/gnosis",
         ),
       ).toBeInTheDocument();
+      expect(getByText('https://iոfura.io/gnosis')).toBeInTheDocument();
     });
   });
 });

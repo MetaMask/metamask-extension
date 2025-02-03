@@ -1,16 +1,21 @@
-import React from 'react';
 import { NameType } from '@metamask/name-controller';
-import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { useDispatch } from 'react-redux';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { setName, updateProposedNames } from '../../../../store/actions';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useDispatch, useSelector } from 'react-redux';
+import configureStore from 'redux-mock-store';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getDomainResolutions } from '../../../../ducks/domains';
+import { getNames, getNameSources } from '../../../../selectors';
+import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
+import { setName, updateProposedNames } from '../../../../store/actions';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -21,6 +26,7 @@ jest.mock('../../../../store/actions', () => ({
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: jest.fn(),
+  useSelector: jest.fn(),
 }));
 
 jest.useFakeTimers();
@@ -35,12 +41,11 @@ const SOURCE_ID_MOCK = 'ens';
 const SOURCE_ID_2_MOCK = 'some_snap';
 const PROPOSED_NAME_MOCK = 'TestProposedName';
 const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
+const VARIATION_MOCK = CHAIN_ID_MOCK;
 
 const STATE_MOCK = {
   metamask: {
-    providerConfig: {
-      chainId: CHAIN_ID_MOCK,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     nameSources: {
       [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
     },
@@ -84,13 +89,17 @@ const STATE_MOCK = {
       },
     },
     useTokenDetection: true,
-    tokenList: {
-      '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
-        address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
-        symbol: 'IUSD',
-        name: 'iZUMi Bond USD',
-        iconUrl:
-          'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+    tokensChainsCache: {
+      [VARIATION_MOCK]: {
+        data: {
+          '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
+            address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
+            symbol: 'IUSD',
+            name: 'iZUMi Bond USD',
+            iconUrl:
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+          },
+        },
       },
     },
   },
@@ -145,17 +154,123 @@ describe('NameDetails', () => {
   const setNameMock = jest.mocked(setName);
   const updateProposedNamesMock = jest.mocked(updateProposedNames);
   const useDispatchMock = jest.mocked(useDispatch);
+  const useSelectorMock = jest.mocked(useSelector);
 
   beforeEach(() => {
     jest.resetAllMocks();
     useDispatchMock.mockReturnValue(jest.fn());
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getNames) {
+        return {
+          [NameType.ETHEREUM_ADDRESS]: {
+            [ADDRESS_SAVED_NAME_MOCK]: {
+              [VARIATION_MOCK]: {
+                name: SAVED_NAME_MOCK,
+                proposedNames: {
+                  [SOURCE_ID_MOCK]: {
+                    proposedNames: [PROPOSED_NAME_MOCK],
+                    lastRequestTime: null,
+                    retryDelay: null,
+                  },
+                  [SOURCE_ID_2_MOCK]: {
+                    proposedNames: [PROPOSED_NAME_2_MOCK],
+                    lastRequestTime: null,
+                    retryDelay: null,
+                  },
+                },
+              },
+            },
+            [ADDRESS_NO_NAME_MOCK]: {
+              [VARIATION_MOCK]: {
+                name: SAVED_NAME_MOCK,
+                proposedNames: {
+                  [SOURCE_ID_MOCK]: {
+                    proposedNames: [PROPOSED_NAME_MOCK],
+                    lastRequestTime: null,
+                    retryDelay: null,
+                  },
+                  [SOURCE_ID_2_MOCK]: {
+                    proposedNames: [PROPOSED_NAME_2_MOCK],
+                    lastRequestTime: null,
+                    retryDelay: null,
+                  },
+                },
+              },
+            },
+          },
+        };
+      } else if (selector === getNftContractsByAddressByChain) {
+        return {
+          [VARIATION_MOCK]: {
+            [ADDRESS_RECOGNIZED_MOCK]: {
+              name: 'iZUMi Bond USD',
+            },
+          },
+        };
+      } else if (selector === getDomainResolutions) {
+        return [
+          {
+            resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+            domainName: 'Domain name',
+          },
+        ];
+      } else if (selector === getNameSources) {
+        return {
+          [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+        };
+      }
+      return undefined;
+    });
+  });
+
+  it('renders when no address value is passed', () => {
+    const { baseElement } = renderWithProvider(
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={''}
+        variation={VARIATION_MOCK}
+        onClose={() => undefined}
+      />,
+      store,
+    );
+
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('renders with no saved name', () => {
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getNames) {
+        return {
+          [NameType.ETHEREUM_ADDRESS]: {},
+        };
+      } else if (selector === getNftContractsByAddressByChain) {
+        return {
+          [VARIATION_MOCK]: {
+            [ADDRESS_RECOGNIZED_MOCK]: {
+              name: 'iZUMi Bond USD',
+            },
+          },
+        };
+      } else if (selector === getDomainResolutions) {
+        return [
+          {
+            resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+          },
+        ];
+      } else if (selector === getNameSources) {
+        return {
+          [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+        };
+      }
+      return undefined;
+    });
+
     const { baseElement } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -169,6 +284,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -182,6 +298,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_RECOGNIZED_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -195,6 +312,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -215,6 +333,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -237,6 +356,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -259,6 +379,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -281,6 +402,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -303,6 +425,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -322,6 +445,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -359,6 +483,7 @@ describe('NameDetails', () => {
             <NameDetails
               type={NameType.ETHEREUM_ADDRESS}
               value={ADDRESS_SAVED_NAME_MOCK}
+              variation={VARIATION_MOCK}
               onClose={() => undefined}
             />
           </MetaMetricsContext.Provider>,
@@ -378,6 +503,50 @@ describe('NameDetails', () => {
     });
 
     it('sends created event', async () => {
+      useSelectorMock.mockImplementation((selector) => {
+        if (selector === getNames) {
+          return {
+            [NameType.ETHEREUM_ADDRESS]: {
+              [ADDRESS_NO_NAME_MOCK]: {
+                [VARIATION_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                },
+              },
+            },
+          };
+        } else if (selector === getNftContractsByAddressByChain) {
+          return {
+            [VARIATION_MOCK]: {
+              [ADDRESS_RECOGNIZED_MOCK]: {
+                name: 'iZUMi Bond USD',
+              },
+            },
+          };
+        } else if (selector === getDomainResolutions) {
+          return [
+            {
+              resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+            },
+          ];
+        } else if (selector === getNameSources) {
+          return {
+            [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+          };
+        }
+        return undefined;
+      });
+
       const trackEventMock = jest.fn();
 
       const component = renderWithProvider(
@@ -385,6 +554,7 @@ describe('NameDetails', () => {
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_NO_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
@@ -393,7 +563,7 @@ describe('NameDetails', () => {
 
       await saveNameUsingDropdown(component, PROPOSED_NAME_MOCK);
 
-      expect(trackEventMock).toHaveBeenCalledWith({
+      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
         event: MetaMetricsEventName.PetnameCreated,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
@@ -405,6 +575,69 @@ describe('NameDetails', () => {
     });
 
     it('sends updated event', async () => {
+      useSelectorMock.mockImplementation((selector) => {
+        if (selector === getNames) {
+          return {
+            [NameType.ETHEREUM_ADDRESS]: {
+              [ADDRESS_SAVED_NAME_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                  name: SAVED_NAME_MOCK,
+                  sourceId: SOURCE_ID_MOCK,
+                },
+              },
+              [ADDRESS_NO_NAME_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                  name: null,
+                },
+              },
+            },
+          };
+        } else if (selector === getNftContractsByAddressByChain) {
+          return {
+            [VARIATION_MOCK]: {
+              [ADDRESS_RECOGNIZED_MOCK]: {
+                name: 'iZUMi Bond USD',
+              },
+            },
+          };
+        } else if (selector === getDomainResolutions) {
+          return [
+            {
+              resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+            },
+          ];
+        } else if (selector === getNameSources) {
+          return {
+            [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+          };
+        }
+        return undefined;
+      });
+
       const trackEventMock = jest.fn();
 
       const component = renderWithProvider(
@@ -412,6 +645,7 @@ describe('NameDetails', () => {
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
@@ -420,7 +654,7 @@ describe('NameDetails', () => {
 
       await saveNameUsingDropdown(component, PROPOSED_NAME_2_MOCK);
 
-      expect(trackEventMock).toHaveBeenCalledWith({
+      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
         event: MetaMetricsEventName.PetnameUpdated,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
@@ -433,6 +667,69 @@ describe('NameDetails', () => {
     });
 
     it('sends deleted event', async () => {
+      useSelectorMock.mockImplementation((selector) => {
+        if (selector === getNames) {
+          return {
+            [NameType.ETHEREUM_ADDRESS]: {
+              [ADDRESS_SAVED_NAME_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                  name: SAVED_NAME_MOCK,
+                  sourceId: SOURCE_ID_MOCK,
+                },
+              },
+              [ADDRESS_NO_NAME_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                  name: null,
+                },
+              },
+            },
+          };
+        } else if (selector === getNftContractsByAddressByChain) {
+          return {
+            [VARIATION_MOCK]: {
+              [ADDRESS_RECOGNIZED_MOCK]: {
+                name: 'iZUMi Bond USD',
+              },
+            },
+          };
+        } else if (selector === getDomainResolutions) {
+          return [
+            {
+              resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+            },
+          ];
+        } else if (selector === getNameSources) {
+          return {
+            [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+          };
+        }
+        return undefined;
+      });
+
       const trackEventMock = jest.fn();
 
       const component = renderWithProvider(
@@ -440,6 +737,7 @@ describe('NameDetails', () => {
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
@@ -448,7 +746,7 @@ describe('NameDetails', () => {
 
       await saveNameUsingTextField(component, '');
 
-      expect(trackEventMock).toHaveBeenCalledWith({
+      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
         event: MetaMetricsEventName.PetnameDeleted,
         category: MetaMetricsEventCategory.Petnames,
         properties: {

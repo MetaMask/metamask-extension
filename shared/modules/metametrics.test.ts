@@ -4,6 +4,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { TransactionMetricsRequest } from '../../app/scripts/lib/transaction/metrics';
 import { CHAIN_IDS } from '../constants/network';
 import { getSmartTransactionMetricsProperties } from './metametrics';
@@ -27,6 +29,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     updateEventFragment: jest.fn(),
     getAccountType: jest.fn(),
     getDeviceModel: jest.fn(),
+    getHardwareTypeForMetric: jest.fn(),
     getEIP1559GasFeeEstimates: jest.fn(),
     getSelectedAddress: jest.fn(),
     getParticipateInMetrics: jest.fn(),
@@ -39,9 +42,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     trackEvent: jest.fn(),
     getIsSmartTransaction: jest.fn(),
     getSmartTransactionByMinedTxHash: jest.fn(),
-    getRedesignedTransactionsEnabled: jest.fn(),
     getMethodData: jest.fn(),
-    getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
@@ -70,6 +71,9 @@ const createTransactionMeta = () => {
     },
     hash: txHash,
     error: null,
+    swapMetaData: {
+      gas_included: true,
+    },
   };
 };
 
@@ -87,7 +91,6 @@ describe('getSmartTransactionMetricsProperties', () => {
             cancellationReason: 'not_cancelled',
             deadlineRatio: 0.6400288486480713,
             minedHash: txHash,
-            duplicated: true,
             timedOut: true,
             proxied: true,
             minedTx: 'success',
@@ -105,8 +108,8 @@ describe('getSmartTransactionMetricsProperties', () => {
     );
 
     expect(result).toStrictEqual({
+      gas_included: true,
       is_smart_transaction: true,
-      smart_transaction_duplicated: true,
       smart_transaction_proxied: true,
       smart_transaction_timed_out: true,
     });
@@ -130,7 +133,7 @@ describe('getSmartTransactionMetricsProperties', () => {
     });
   });
 
-  it('returns "is_smart_transaction: true" only if it is a smart transaction, but does not have statusMetadata', () => {
+  it('returns "is_smart_transaction" and "gas_included" params only if it is a smart transaction, but does not have statusMetadata', () => {
     const transactionMetricsRequest = createTransactionMetricsRequest({
       getIsSmartTransaction: () => true,
       getSmartTransactionByMinedTxHash: () => {
@@ -150,6 +153,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     expect(result).toStrictEqual({
       is_smart_transaction: true,
+      gas_included: true,
     });
   });
 });

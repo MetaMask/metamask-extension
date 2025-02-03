@@ -6,14 +6,17 @@ import {
   FlexWrap,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { formatUTCDate } from '../../../../../helpers/utils/util';
+import { formatUTCDateFromUnixTimestamp } from '../../../../../helpers/utils/util';
 import { Box, Text } from '../../../../component-library';
 
 export type ConfirmInfoRowDateProps = {
-  date: number;
+  /** timestamp as seconds since unix epoch e.g. Solidity block.timestamp (type uint256) value */
+  unixTimestamp: number;
 };
 
-export const ConfirmInfoRowDate = ({ date }: ConfirmInfoRowDateProps) => (
+export const ConfirmInfoRowDate = ({
+  unixTimestamp,
+}: ConfirmInfoRowDateProps) => (
   <Box
     display={Display.Flex}
     alignItems={AlignItems.center}
@@ -21,7 +24,7 @@ export const ConfirmInfoRowDate = ({ date }: ConfirmInfoRowDateProps) => (
     gap={2}
   >
     <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>
-      {formatUTCDate(date)}
+      {formatUTCDateFromUnixTimestamp(unixTimestamp)}
     </Text>
   </Box>
 );

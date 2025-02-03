@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
 import Box from '../box';
 import {
   BackgroundColor,
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { detectNfts } from '../../../store/actions';
 
 const Tabs = ({
   defaultActiveTabKey,
@@ -22,7 +20,6 @@ const Tabs = ({
   const _getValidChildren = () => {
     return React.Children.toArray(children).filter(Boolean);
   };
-  const dispatch = useDispatch();
 
   /**
    * Returns the index of the child with the given key
@@ -44,10 +41,6 @@ const Tabs = ({
       setActiveTabIndex(tabIndex);
       onTabClick?.(tabKey);
     }
-
-    if (tabKey === 'nfts') {
-      dispatch(detectNfts());
-    }
   };
 
   const renderTabs = () => {
@@ -55,12 +48,14 @@ const Tabs = ({
 
     return React.Children.map(_getValidChildren(), (child, index) => {
       const tabKey = child?.props.tabKey;
+      const isSingleTab = numberOfTabs === 1;
       return (
         child &&
         React.cloneElement(child, {
           onClick: (idx) => handleTabClick(idx, tabKey),
           tabIndex: index,
           isActive: numberOfTabs > 1 && index === activeTabIndex,
+          isSingleTab,
         })
       );
     });
@@ -88,7 +83,7 @@ const Tabs = ({
         justifyContent={JustifyContent.flexStart}
         backgroundColor={BackgroundColor.backgroundDefault}
         className={classnames('tabs__list', tabsClassName)}
-        gap={1}
+        gap={0}
       >
         {renderTabs()}
       </Box>

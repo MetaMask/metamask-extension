@@ -23,7 +23,7 @@ import { Box, Text } from '../../../../../components/component-library';
 import { usePetnamesEnabled } from '../../../../../hooks/usePetnamesEnabled';
 import Name from '../../../../../components/app/name/name';
 
-function SignatureRequestData({ data }) {
+function SignatureRequestData({ chainId, data }) {
   const internalAccounts = useSelector(getMemoizedMetaMaskInternalAccounts);
   const petnamesEnabled = usePetnamesEnabled();
 
@@ -51,7 +51,7 @@ function SignatureRequestData({ data }) {
             {sanitizeString(label.charAt(0).toUpperCase() + label.slice(1))}:{' '}
           </Text>
           {typeof value === 'object' && value !== null ? (
-            <SignatureRequestData data={value} />
+            <SignatureRequestData data={value} chainId={chainId} />
           ) : (
             <Text
               as="div"
@@ -70,7 +70,11 @@ function SignatureRequestData({ data }) {
                   className="signature-request-data__node__value__address"
                 >
                   {petnamesEnabled ? (
-                    <Name value={value} type={NameType.ETHEREUM_ADDRESS} />
+                    <Name
+                      value={value}
+                      type={NameType.ETHEREUM_ADDRESS}
+                      variation={chainId}
+                    />
                   ) : (
                     <Address
                       addressOnly
@@ -91,6 +95,7 @@ function SignatureRequestData({ data }) {
 }
 
 SignatureRequestData.propTypes = {
+  chainId: PropTypes.string,
   data: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 };
 

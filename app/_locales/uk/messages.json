@@ -205,9 +205,6 @@
   "delete": {
     "message": "Видалити"
   },
-  "deleteNetwork": {
-    "message": "Видалити мережу?"
-  },
   "details": {
     "message": "Деталі"
   },
@@ -229,9 +226,6 @@
   "editContact": {
     "message": "Редагувати контракт"
   },
-  "ensRegistrationError": {
-    "message": "Помилка у реєстрації ENS ім'я"
-  },
   "enterPasswordContinue": {
     "message": "Введіть пароль, щоб продовжити"
   },
@@ -249,10 +243,6 @@
   },
   "fast": {
     "message": "Швидка"
-  },
-  "fiat": {
-    "message": "Вказівка",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Не працює імпорт файлу? Натисніть тут!",
@@ -354,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "Недійсна адреса отримувача"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Не є мережею ETH, налаштуйте нижній регістр"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Недійсний Block Explorer URL"
-  },
   "invalidRPC": {
     "message": "Недійсний RPC URL"
   },
@@ -396,9 +380,6 @@
   },
   "loading": {
     "message": "Завантаження..."
-  },
-  "loadingTokens": {
-    "message": "Завантаження токенів…"
   },
   "localhost": {
     "message": "Локальний хост 8545"
@@ -459,14 +440,8 @@
   "next": {
     "message": "Далі"
   },
-  "noAddressForName": {
-    "message": "На це ім'я не встановлено адреси."
-  },
   "noConversionRateAvailable": {
     "message": "Немає доступного обмінного курсу"
-  },
-  "noTransactions": {
-    "message": "У вас немає транзакцій"
   },
   "noWebcamFound": {
     "message": "Веб-камеру комп’ютера не знайдено. Повторіть спробу."
@@ -523,12 +498,6 @@
   "prev": {
     "message": "Попередній"
   },
-  "primaryCurrencySetting": {
-    "message": "Первісна валюта"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Оберіть \"рідна\", щоб пріоритезувати показ сум у рідних валютах мережі (напр.ETH). \nОберіть \"фіатна\", щоб пріоритезувати показ сум у ваших обраних фіатних валютах."
-  },
   "privacyMsg": {
     "message": "Політика конфіденційності"
   },
@@ -544,9 +513,6 @@
   },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Пошук, публічна адреса (0x), або ENS"
   },
   "reject": {
     "message": "Відхилити"
@@ -741,9 +707,6 @@
   "transactionErrored": {
     "message": "Під час виконання транзакції сталася помилка."
   },
-  "transactionFee": {
-    "message": "Комісія за транзакцію"
-  },
   "transactionResubmitted": {
     "message": "Транзакція повторно подана з підвищеною платою за газ до $1 о $2"
   },
@@ -782,9 +745,6 @@
   },
   "unlockMessage": {
     "message": "Децентралізована мережа очікує"
-  },
-  "updatedWithDate": {
-    "message": "Оновлено $1"
   },
   "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."

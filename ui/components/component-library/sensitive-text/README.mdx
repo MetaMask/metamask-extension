@@ -1,0 +1,81 @@
+import { Controls, Canvas } from '@storybook/blocks';
+
+import * as SensitiveTextStories from './sensitive-text.stories';
+
+# SensitiveText
+
+SensitiveText is a component that extends the Text component to handle sensitive information. It provides the ability to hide or show the text content, replacing it with dots when hidden.
+
+<Canvas of={SensitiveTextStories.DefaultStory} />
+
+## Props
+
+The `SensitiveText` component extends the `Text` component. See the `Text` component for an extended list of props.
+
+<Controls of={SensitiveTextStories.DefaultStory} />
+
+### Children
+
+The text content to be displayed or hidden.
+
+<Canvas of={SensitiveTextStories.Children} />
+
+```jsx
+import { SensitiveText } from '../../component-library';
+
+<SensitiveText>
+  Sensitive Information
+</SensitiveText>
+```
+
+
+### IsHidden
+
+Use the `isHidden` prop to determine whether the text should be hidden or visible. When `isHidden` is `true`, the component will display dots instead of the actual text.
+
+<Canvas of={SensitiveTextStories.IsHidden} />
+
+```jsx
+import { SensitiveText } from '../../component-library';
+
+<SensitiveText isHidden>
+  Sensitive Information
+</SensitiveText>
+```
+
+### Length
+
+Use the `length` prop to determine the length of the hidden text (number of dots). Can be a predefined `SensitiveTextLength` or a custom string number.
+
+The following predefined length options are available:
+
+- `SensitiveTextLength.Short`: `6`
+- `SensitiveTextLength.Medium`: `9`
+- `SensitiveTextLength.Long`: `12`
+- `SensitiveTextLength.ExtraLong`: `20`
+
+- The number of dots displayed is determined by the `length` prop.
+- If an invalid `length` is provided, the component will fall back to `SensitiveTextLength.Short` and log a warning.
+- Custom length values can be provided as strings, e.g. `15`.
+
+<Canvas of={SensitiveTextStories.Length} />
+
+```jsx
+import { SensitiveText, SensitiveTextLength } from '../../component-library';
+
+<SensitiveText length={SensitiveTextLength.Short}>
+  Length "short" (6 characters)
+</SensitiveText>
+<SensitiveText length={SensitiveTextLength.Medium}>
+  Length "medium" (9 characters)
+</SensitiveText>
+<SensitiveText length={SensitiveTextLength.Long}>
+  Length "long" (12 characters)
+</SensitiveText>
+<SensitiveText length={SensitiveTextLength.ExtraLong}>
+  Length "extra long" (20 characters)
+</SensitiveText>
+<SensitiveText length="15">
+  Length "15" (15 characters)
+</SensitiveText>
+```

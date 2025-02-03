@@ -1,9 +1,5 @@
-import {
-  type Hex,
-  JsonRpcRequestStruct,
-  JsonRpcResponseStruct,
-} from '@metamask/utils';
-import * as ControllerUtils from '@metamask/controller-utils';
+import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
+import { detectSIWE, SIWEMessage } from '@metamask/controller-utils';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
@@ -11,8 +7,8 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { flushPromises } from '../../../../test/lib/timer-helpers';
-import { createPPOMMiddleware } from './ppom-middleware';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -22,6 +18,10 @@ import {
 import { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
+jest.mock('@metamask/controller-utils', () => ({
+  ...jest.requireActual('@metamask/controller-utils'),
+  detectSIWE: jest.fn(),
+}));
 
 const SECURITY_ALERT_ID_MOCK = '123';
 const INTERNAL_ACCOUNT_ADDRESS = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
@@ -32,9 +32,15 @@ const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   reason: BlockaidReason.permitFarming,
 };
 
+const REQUEST_MOCK = {
+  params: [],
+  id: '',
+  jsonrpc: '2.0' as const,
+};
+
 const createMiddleware = (
   options: {
-    chainId?: Hex;
+    chainId?: Hex | null;
     error?: Error;
     securityAlertsEnabled?: boolean;
     // TODO: Replace `any` with type
@@ -50,21 +56,24 @@ const createMiddleware = (
   const ppomController = {};
 
   const preferenceController = {
-    store: {
-      getState: () => ({
-        securityAlertsEnabled: securityAlertsEnabled ?? true,
-      }),
+    state: {
+      securityAlertsEnabled: securityAlertsEnabled ?? true,
     },
   };
 
   if (error) {
-    preferenceController.store.getState = () => {
-      throw error;
-    };
+    Object.defineProperty(preferenceController, 'state', {
+      get() {
+        throw error;
+      },
+    });
   }
 
   const networkController = {
-    state: { providerConfig: { chainId: chainId || CHAIN_IDS.MAINNET } },
+    state: {
+      ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
+      ...(chainId === null ? { providerConfig: {} } : undefined),
+    },
   };
 
   const appStateController = {
@@ -95,66 +104,51 @@ const createMiddleware = (
 };
 
 describe('PPOMMiddleware', () => {
-  const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
   const isChainSupportedMock = jest.mocked(isChainSupported);
+  const detectSIWEMock = jest.mocked(detectSIWE);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    validateRequestWithPPOMMock.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
     handlePPOMErrorMock.mockReturnValue(SECURITY_ALERT_RESPONSE_MOCK);
     isChainSupportedMock.mockResolvedValue(true);
+    detectSIWEMock.mockReturnValue({ isSIWEMessage: false } as SIWEMessage);
+
+    globalThis.sentry = {
+      withIsolationScope: jest
+        .fn()
+        .mockImplementation((fn) => fn({ setTags: jest.fn() })),
+      startSpan: jest.fn().mockImplementation((_, fn) => fn({})),
+      startSpanManual: jest.fn().mockImplementation((_, fn) => fn({})),
+    };
   });
 
-  it('updates alert response after validating request', async () => {
+  it('adds checking chain response to confirmation requests while validation is in progress', async () => {
     const updateSecurityAlertResponse = jest.fn();
 
     const middlewareFunction = createMiddleware({
       updateSecurityAlertResponse,
     });
 
-    const req = {
-      ...JsonRpcRequestStruct,
+    const req: PPOMMiddlewareRequest<(string | { to: string })[]> = {
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
-    await flushPromises();
-
-    expect(updateSecurityAlertResponse).toHaveBeenCalledTimes(1);
-    expect(updateSecurityAlertResponse).toHaveBeenCalledWith(
-      req.method,
-      SECURITY_ALERT_ID_MOCK,
-      SECURITY_ALERT_RESPONSE_MOCK,
+    expect(req.securityAlertResponse?.reason).toBe(
+      BlockaidReason.checkingChain,
     );
-  });
-
-  it('adds loading response to confirmation requests while validation is in progress', async () => {
-    const middlewareFunction = createMiddleware();
-
-    const req = {
-      ...JsonRpcRequestStruct,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
-    };
-
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct },
-      () => undefined,
-    );
-
-    expect(req.securityAlertResponse.reason).toBe(BlockaidReason.inProgress);
-    expect(req.securityAlertResponse.result_type).toBe(
+    expect(req.securityAlertResponse?.result_type).toBe(
       BlockaidResultType.Loading,
     );
   });
@@ -165,34 +159,13 @@ describe('PPOMMiddleware', () => {
     });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
 
+    // @ts-expect-error Passing in invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
-
-    expect(req.securityAlertResponse).toBeUndefined();
-    expect(validateRequestWithPPOM).not.toHaveBeenCalled();
-  });
-
-  it('does not do validation if user is not on a supported network', async () => {
-    isChainSupportedMock.mockResolvedValue(false);
-    const middlewareFunction = createMiddleware({
-      chainId: '0x2',
-    });
-
-    const req = {
-      ...JsonRpcRequestStruct,
-      method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
-    };
-
-    await middlewareFunction(
-      req,
-      { ...JsonRpcResponseStruct },
-      () => undefined,
-    );
 
     expect(req.securityAlertResponse).toBeUndefined();
     expect(validateRequestWithPPOM).not.toHaveBeenCalled();
@@ -202,14 +175,14 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware();
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_someRequest',
       securityAlertResponse: undefined,
     };
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -221,7 +194,7 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware();
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       params: [{ to: INTERNAL_ACCOUNT_ADDRESS }],
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
@@ -229,7 +202,7 @@ describe('PPOMMiddleware', () => {
 
     await middlewareFunction(
       req,
-      { ...JsonRpcResponseStruct },
+      { ...JsonRpcResponseStruct.TYPE },
       () => undefined,
     );
 
@@ -249,33 +222,16 @@ describe('PPOMMiddleware', () => {
         '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
         'Example password',
       ],
-      jsonrpc: '2.0',
+      jsonrpc: '2.0' as const,
       id: 2974202441,
       origin: 'https://metamask.github.io',
       networkClientId: 'mainnet',
       tabId: 1048745900,
       securityAlertResponse: undefined,
     };
-    jest.spyOn(ControllerUtils, 'detectSIWE').mockReturnValue({
-      isSIWEMessage: true,
-      parsedMessage: {
-        address: '0x935e73edb9ff52e23bac7f7e049a1ecd06d05477',
-        chainId: 1,
-        domain: 'metamask.github.io',
-        expirationTime: null,
-        issuedAt: '2021-09-30T16:25:24.000Z',
-        nonce: '32891757',
-        notBefore: '2022-03-17T12:45:13.610Z',
-        requestId: 'some_id',
-        scheme: null,
-        statement:
-          'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
-        uri: 'https://metamask.github.io',
-        version: '1',
-        resources: null,
-      },
-    });
+    detectSIWEMock.mockReturnValue({ isSIWEMessage: true } as SIWEMessage);
 
+    // @ts-expect-error Passing invalid input for testing purposes
     await middlewareFunction(req, undefined, () => undefined);
 
     expect(req.securityAlertResponse).toBeUndefined();
@@ -287,8 +243,8 @@ describe('PPOMMiddleware', () => {
     const nextMock = jest.fn();
 
     await middlewareFunction(
-      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
-      { ...JsonRpcResponseStruct },
+      { ...REQUEST_MOCK, method: 'eth_sendTransaction' },
+      { ...JsonRpcResponseStruct.TYPE },
       nextMock,
     );
 
@@ -304,12 +260,12 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleware({ error });
 
     const req = {
-      ...JsonRpcRequestStruct,
+      ...REQUEST_MOCK,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
 
-    await middlewareFunction(req, { ...JsonRpcResponseStruct }, nextMock);
+    await middlewareFunction(req, { ...JsonRpcResponseStruct.TYPE }, nextMock);
 
     expect(req.securityAlertResponse).toStrictEqual(
       SECURITY_ALERT_RESPONSE_MOCK,

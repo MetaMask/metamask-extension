@@ -1,542 +1,339 @@
-import { ethErrors } from 'eth-rpc-errors';
-import {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
+import { rpcErrors } from '@metamask/rpc-errors';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import addEthereumChain from './add-ethereum-chain';
+import EthChainUtils from './ethereum-chain-utils';
+
+jest.mock('./ethereum-chain-utils', () => ({
+  ...jest.requireActual('./ethereum-chain-utils'),
+  validateAddEthereumChainParams: jest.fn(),
+  switchChain: jest.fn(),
+}));
 
 const NON_INFURA_CHAIN_ID = '0x123456789';
 
 const createMockMainnetConfiguration = () => ({
   chainId: CHAIN_IDS.MAINNET,
-  nickname: 'Ethereum Mainnet',
-  rpcUrl: 'https://mainnet.infura.io/v3/',
-  type: NETWORK_TYPES.MAINNET,
-  ticker: 'ETH',
-  rpcPrefs: {
-    blockExplorerUrl: 'https://etherscan.io',
-  },
+  name: 'Ethereum Mainnet',
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: 'mainnet',
+      url: 'https://mainnet.infura.io/v3/',
+      type: 'infura',
+    },
+  ],
+  nativeCurrency: 'ETH',
+  blockExplorerUrls: ['https://etherscan.io'],
+  defaultBlockExplorerUrlIndex: 0,
 });
 
 const createMockOptimismConfiguration = () => ({
   chainId: CHAIN_IDS.OPTIMISM,
-  nickname: 'Optimism',
-  rpcUrl: 'https://optimism.llamarpc.com',
-  rpcPrefs: {
-    blockExplorerUrl: 'https://optimistic.etherscan.io',
-  },
-  ticker: 'ETH',
+  name: 'Optimism',
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: 'optimism-network-client-id',
+      url: 'https://optimism.llamarpc.com',
+      type: 'custom',
+    },
+  ],
+  nativeCurrency: 'ETH',
+  blockExplorerUrls: ['https://optimistic.etherscan.io'],
+  defaultBlockExplorerUrlIndex: 0,
 });
 
 const createMockNonInfuraConfiguration = () => ({
   chainId: NON_INFURA_CHAIN_ID,
-  rpcUrl: 'https://custom.network',
-  ticker: 'CUST',
-  nickname: 'Custom Network',
-  rpcPrefs: {
-    blockExplorerUrl: 'https://custom.blockexplorer',
-  },
+  name: 'Custom Network',
+  defaultRpcEndpointIndex: 0,
+  rpcEndpoints: [
+    {
+      name: 'Custom Network',
+      url: 'https://custom.network',
+      type: 'custom',
+    },
+  ],
+  nativeCurrency: 'CUST',
+  blockExplorerUrls: ['https://custom.blockexplorer'],
+  defaultBlockExplorerUrlIndex: 0,
 });
 
-describe('addEthereumChainHandler', () => {
-  const addEthereumChainHandler = addEthereumChain.implementation;
-
-  const makeMocks = ({
-    permissionedChainIds = [],
-    permissionsFeatureFlagIsActive,
-    overrides = {},
-  } = {}) => {
-    return {
-      getChainPermissionsFeatureFlag: () => permissionsFeatureFlagIsActive,
-      getCurrentChainIdForDomain: jest
-        .fn()
-        .mockReturnValue(NON_INFURA_CHAIN_ID),
-      setNetworkClientIdForDomain: jest.fn(),
-      findNetworkConfigurationBy: jest
-        .fn()
-        .mockReturnValue(createMockMainnetConfiguration()),
-      setActiveNetwork: jest.fn(),
-      getCurrentRpcUrl: jest
-        .fn()
-        .mockReturnValue(createMockMainnetConfiguration().rpcUrl),
-      requestUserApproval: jest.fn().mockResolvedValue(123),
-      requestPermittedChainsPermission: jest.fn(),
-      getCaveat: jest.fn().mockReturnValue({ value: permissionedChainIds }),
-      upsertNetworkConfiguration: jest.fn().mockResolvedValue(123),
-      startApprovalFlow: () => ({ id: 'approvalFlowId' }),
-      endApprovalFlow: jest.fn(),
-      ...overrides,
-    };
+const createMockedHandler = () => {
+  const next = jest.fn();
+  const end = jest.fn();
+  const mocks = {
+    getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
+    setNetworkClientIdForDomain: jest.fn(),
+    getNetworkConfigurationByChainId: jest.fn(),
+    setActiveNetwork: jest.fn(),
+    requestUserApproval: jest.fn().mockResolvedValue(123),
+    getCaveat: jest.fn(),
+    addNetwork: jest.fn().mockResolvedValue({
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [{ networkClientId: 123 }],
+    }),
+    updateNetwork: jest.fn().mockResolvedValue({
+      defaultRpcEndpointIndex: 0,
+      rpcEndpoints: [{ networkClientId: 123 }],
+    }),
+    requestPermittedChainsPermissionForOrigin: jest.fn(),
+    requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
   };
+  const response = {};
+  const handler = (request) =>
+    addEthereumChain.implementation(request, response, next, end, mocks);
+
+  return {
+    mocks,
+    response,
+    next,
+    end,
+    handler,
+  };
+};
+
+describe('addEthereumChainHandler', () => {
+  beforeEach(() => {
+    EthChainUtils.validateAddEthereumChainParams.mockImplementation(
+      (params) => {
+        const {
+          chainId,
+          chainName,
+          blockExplorerUrls,
+          rpcUrls,
+          nativeCurrency,
+        } = params;
+        return {
+          chainId,
+          chainName,
+          firstValidBlockExplorerUrl: blockExplorerUrls[0] ?? null,
+          firstValidRPCUrl: rpcUrls[0],
+          ticker: nativeCurrency.symbol,
+        };
+      },
+    );
+  });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('with permittedChains permissioning inactive', () => {
-    it('creates a new network configuration for the given chainid and switches to it if none exists', async () => {
-      const mocks = makeMocks({
-        permissionsFeatureFlagIsActive: false,
-      });
-      await addEthereumChainHandler(
+  it('should validate the request params', async () => {
+    const { handler } = createMockedHandler();
+
+    const request = {
+      origin: 'example.com',
+      params: [
         {
+          foo: true,
+        },
+      ],
+    };
+
+    await handler(request);
+
+    expect(EthChainUtils.validateAddEthereumChainParams).toHaveBeenCalledWith(
+      request.params[0],
+    );
+  });
+
+  it('should return an error if request params validation fails', async () => {
+    const { end, handler } = createMockedHandler();
+    EthChainUtils.validateAddEthereumChainParams.mockImplementation(() => {
+      throw new Error('failed to validate params');
+    });
+
+    await handler({
+      origin: 'example.com',
+      params: [{}],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams(new Error('failed to validate params')),
+    );
+  });
+
+  it('creates a new network configuration for the given chainid and switches to it if no networkConfigurations with the same chainId exist', async () => {
+    const nonInfuraConfiguration = createMockNonInfuraConfiguration();
+
+    const { mocks, end, handler } = createMockedHandler();
+    mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
+
+    await handler({
+      origin: 'example.com',
+      params: [
+        {
+          chainId: nonInfuraConfiguration.chainId,
+          chainName: nonInfuraConfiguration.name,
+          rpcUrls: nonInfuraConfiguration.rpcEndpoints.map((rpc) => rpc.url),
+          nativeCurrency: {
+            symbol: nonInfuraConfiguration.nativeCurrency,
+            decimals: 18,
+          },
+          blockExplorerUrls: nonInfuraConfiguration.blockExplorerUrls,
+        },
+      ],
+    });
+
+    expect(mocks.addNetwork).toHaveBeenCalledWith(nonInfuraConfiguration);
+    expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
+    expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
+      {},
+      end,
+      NON_INFURA_CHAIN_ID,
+      123,
+      {
+        autoApprove: true,
+        getCaveat: mocks.getCaveat,
+        setActiveNetwork: mocks.setActiveNetwork,
+        requestPermittedChainsPermissionForOrigin:
+          mocks.requestPermittedChainsPermissionForOrigin,
+        requestPermittedChainsPermissionIncrementalForOrigin:
+          mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+      },
+    );
+  });
+
+  describe('if a networkConfiguration for the given chainId already exists', () => {
+    describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
+      it('updates the network with a new networkConfiguration and switches to it', async () => {
+        const { mocks, end, handler } = createMockedHandler();
+        mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.SEPOLIA);
+        mocks.getNetworkConfigurationByChainId.mockReturnValue(
+          createMockMainnetConfiguration(),
+        );
+
+        await handler({
           origin: 'example.com',
           params: [
             {
-              chainId: CHAIN_IDS.OPTIMISM,
-              chainName: 'Optimism Mainnet',
-              rpcUrls: ['https://optimism.llamarpc.com'],
+              chainId: CHAIN_IDS.MAINNET,
+              chainName: 'Ethereum Mainnet',
+              rpcUrls: ['https://eth.llamarpc.com'],
               nativeCurrency: {
                 symbol: 'ETH',
                 decimals: 18,
               },
-              blockExplorerUrls: ['https://optimistic.etherscan.io'],
-              iconUrls: ['https://optimism.icon.com'],
+              blockExplorerUrls: ['https://etherscan.io'],
             },
           ],
-        },
-        {},
-        jest.fn(),
-        jest.fn(),
-        mocks,
-      );
-
-      // called twice, once for the add and once for the switch
-      expect(mocks.requestUserApproval).toHaveBeenCalledTimes(2);
-      expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledTimes(1);
-      expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledWith(
-        {
-          chainId: CHAIN_IDS.OPTIMISM,
-          nickname: 'Optimism Mainnet',
-          rpcUrl: 'https://optimism.llamarpc.com',
-          ticker: 'ETH',
-          rpcPrefs: {
-            blockExplorerUrl: 'https://optimistic.etherscan.io',
-          },
-        },
-        { referrer: 'example.com', source: 'dapp' },
-      );
-      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
-    });
-
-    describe('if a networkConfiguration for the given chainId already exists', () => {
-      it('creates a new network configuration for the given chainid and switches to it if proposed networkConfiguration has a different rpcUrl from all existing networkConfigurations', async () => {
-        const mocks = makeMocks({
-          permissionsFeatureFlagIsActive: false,
-          overrides: {
-            upsertNetworkConfiguration: jest.fn().mockResolvedValue(123456),
-          },
         });
-        await addEthereumChainHandler(
+
+        expect(mocks.updateNetwork).toHaveBeenCalledWith(
+          '0x1',
           {
-            origin: 'example.com',
-            params: [
+            blockExplorerUrls: ['https://etherscan.io'],
+            chainId: '0x1',
+            defaultBlockExplorerUrlIndex: 0,
+            defaultRpcEndpointIndex: 1,
+            name: 'Ethereum Mainnet',
+            nativeCurrency: 'ETH',
+            rpcEndpoints: [
               {
-                chainId: CHAIN_IDS.MAINNET,
-                chainName: 'Ethereum Mainnet',
-                rpcUrls: ['https://eth.llamarpc.com'],
-                nativeCurrency: {
-                  symbol: 'ETH',
-                  decimals: 18,
-                },
-                blockExplorerUrls: ['https://etherscan.io'],
+                networkClientId: 'mainnet',
+                type: 'infura',
+                url: 'https://mainnet.infura.io/v3/',
+              },
+              {
+                name: 'Ethereum Mainnet',
+                type: 'custom',
+                url: 'https://eth.llamarpc.com',
               },
             ],
           },
-          {},
-          jest.fn(),
-          jest.fn(),
-          mocks,
+          undefined,
         );
-
-        expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledTimes(1);
-        expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123456);
-      });
-
-      it('switches to the existing networkConfiguration if the proposed networkConfiguration has the same rpcUrl as an existing networkConfiguration and the currently selected network doesnt match the requested one', async () => {
-        const mocks = makeMocks({
-          permissionsFeatureFlagIsActive: false,
-          overrides: {
-            getCurrentRpcUrl: jest
-              .fn()
-              .mockReturnValue(createMockNonInfuraConfiguration().rpcUrl),
-            getCurrentChainIdForDomain: jest
-              .fn()
-              .mockReturnValue(createMockNonInfuraConfiguration().chainId),
-            findNetworkConfigurationBy: jest
-              .fn()
-              .mockImplementation(({ chainId }) => {
-                switch (chainId) {
-                  case createMockNonInfuraConfiguration().chainId:
-                    return createMockNonInfuraConfiguration();
-                  case createMockOptimismConfiguration().chainId:
-                    return createMockOptimismConfiguration();
-                  default:
-                    return undefined;
-                }
-              }),
-            upsertNetworkConfiguration: jest.fn().mockResolvedValue(123),
-          },
-        });
-
-        await addEthereumChainHandler(
+        expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
+        expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
+          {},
+          end,
+          '0x1',
+          123,
           {
-            origin: 'example.com',
-            params: [
-              {
-                chainId: createMockOptimismConfiguration().chainId,
-                chainName: createMockOptimismConfiguration().nickname,
-                rpcUrls: [createMockOptimismConfiguration().rpcUrl],
-                nativeCurrency: {
-                  symbol: createMockOptimismConfiguration().ticker,
-                  decimals: 18,
-                },
-                blockExplorerUrls: [
-                  createMockOptimismConfiguration().rpcPrefs.blockExplorerUrl,
-                ],
-              },
-            ],
+            autoApprove: true,
+            getCaveat: mocks.getCaveat,
+            setActiveNetwork: mocks.setActiveNetwork,
+            requestPermittedChainsPermissionForOrigin:
+              mocks.requestPermittedChainsPermissionForOrigin,
+            requestPermittedChainsPermissionIncrementalForOrigin:
+              mocks.requestPermittedChainsPermissionIncrementalForOrigin,
           },
-          {},
-          jest.fn(),
-          jest.fn(),
-          mocks,
-        );
-
-        expect(mocks.requestUserApproval).toHaveBeenCalledTimes(1);
-        expect(mocks.requestUserApproval).toHaveBeenCalledWith({
-          origin: 'example.com',
-          requestData: {
-            fromNetworkConfiguration: createMockNonInfuraConfiguration(),
-            toNetworkConfiguration: {
-              chainId: '0xa',
-              nickname: 'Optimism',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://optimistic.etherscan.io',
-              },
-              rpcUrl: 'https://optimism.llamarpc.com',
-              ticker: 'ETH',
-            },
-          },
-          type: 'wallet_switchEthereumChain',
-        });
-        expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-        expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-          createMockOptimismConfiguration().id,
-        );
-      });
-
-      it('should return error for invalid chainId', async () => {
-        const mocks = makeMocks({
-          permissionsFeatureFlagIsActive: false,
-        });
-        const mockEnd = jest.fn();
-
-        await addEthereumChainHandler(
-          {
-            origin: 'example.com',
-            params: [{ chainId: 'invalid_chain_id' }],
-          },
-          {},
-          jest.fn(),
-          mockEnd,
-          mocks,
-        );
-
-        expect(mockEnd).toHaveBeenCalledWith(
-          ethErrors.rpc.invalidParams({
-            message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\ninvalid_chain_id`,
-          }),
         );
       });
     });
-  });
 
-  describe('with permittedChains permissioning active', () => {
-    it('creates a new network configuration for the given chainid, requests permittedChains permission and switches to it if no networkConfigurations with the same chainId exist', async () => {
-      const mocks = makeMocks({
-        permissionedChainIds: [],
-        permissionsFeatureFlagIsActive: true,
-      });
-      await addEthereumChainHandler(
-        {
+    describe('if the proposed networkConfiguration does not have a different rpcUrl from the one already in state', () => {
+      it('should only switch to the existing networkConfiguration if one already exists for the given chain id without auto approving the chain permission', async () => {
+        const { mocks, end, handler } = createMockedHandler();
+        mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.MAINNET);
+        mocks.getNetworkConfigurationByChainId.mockReturnValue(
+          createMockOptimismConfiguration(),
+        );
+        await handler({
           origin: 'example.com',
           params: [
             {
-              chainId: createMockNonInfuraConfiguration().chainId,
-              chainName: createMockNonInfuraConfiguration().nickname,
-              rpcUrls: [createMockNonInfuraConfiguration().rpcUrl],
+              chainId: createMockOptimismConfiguration().chainId,
+              chainName: createMockOptimismConfiguration().name,
+              rpcUrls: createMockOptimismConfiguration().rpcEndpoints.map(
+                (rpc) => rpc.url,
+              ),
               nativeCurrency: {
-                symbol: createMockNonInfuraConfiguration().ticker,
+                symbol: createMockOptimismConfiguration().nativeCurrency,
                 decimals: 18,
               },
-              blockExplorerUrls: [
-                createMockNonInfuraConfiguration().rpcPrefs.blockExplorerUrl,
-              ],
+              blockExplorerUrls:
+                createMockOptimismConfiguration().blockExplorerUrls,
             },
           ],
-        },
-        {},
-        jest.fn(),
-        jest.fn(),
-        mocks,
-      );
-
-      expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledWith(
-        createMockNonInfuraConfiguration(),
-        { referrer: 'example.com', source: 'dapp' },
-      );
-      expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(1);
-      expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
-        createMockNonInfuraConfiguration().chainId,
-      ]);
-      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
-    });
-
-    describe('if a networkConfiguration for the given chainId already exists', () => {
-      describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
-        it('create a new networkConfiguration and switches to it without requesting permissions, if the requested chainId has permittedChains permission granted for requesting origin', async () => {
-          const mocks = makeMocks({
-            permissionedChainIds: [CHAIN_IDS.MAINNET],
-            permissionsFeatureFlagIsActive: true,
-          });
-
-          await addEthereumChainHandler(
-            {
-              origin: 'example.com',
-              params: [
-                {
-                  chainId: CHAIN_IDS.MAINNET,
-                  chainName: 'Ethereum Mainnet',
-                  rpcUrls: ['https://eth.llamarpc.com'],
-                  nativeCurrency: {
-                    symbol: 'ETH',
-                    decimals: 18,
-                  },
-                  blockExplorerUrls: ['https://etherscan.io'],
-                },
-              ],
-            },
-            {},
-            jest.fn(),
-            jest.fn(),
-            mocks,
-          );
-
-          expect(mocks.requestUserApproval).toHaveBeenCalledTimes(1);
-          expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
-          expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-          expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
         });
 
-        it('create a new networkConfiguration, requests permissions and switches to it, if the requested chainId does not have permittedChains permission granted for requesting origin', async () => {
-          const mocks = makeMocks({
-            permissionsFeatureFlagIsActive: true,
-            permissionedChainIds: [],
-            overrides: {
-              findNetworkConfigurationBy: jest
-                .fn()
-                .mockReturnValue(createMockNonInfuraConfiguration()),
-              getCurrentChainIdForDomain: jest
-                .fn()
-                .mockReturnValue(CHAIN_IDS.MAINNET),
-            },
-          });
-
-          await addEthereumChainHandler(
-            {
-              origin: 'example.com',
-              params: [
-                {
-                  chainId: NON_INFURA_CHAIN_ID,
-                  chainName: 'Custom Network',
-                  rpcUrls: ['https://new-custom.network'],
-                  nativeCurrency: {
-                    symbol: 'CUST',
-                    decimals: 18,
-                  },
-                  blockExplorerUrls: ['https://custom.blockexplorer'],
-                },
-              ],
-            },
-            {},
-            jest.fn(),
-            jest.fn(),
-            mocks,
-          );
-
-          expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledTimes(1);
-          expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(
-            1,
-          );
-          expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
-            NON_INFURA_CHAIN_ID,
-          ]);
-          expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-        });
-      });
-
-      it('should switch to the existing networkConfiguration if the proposed networkConfiguration has the same rpcUrl as the one already in state (and is not currently selected)', async () => {
-        const mocks = makeMocks({
-          permissionedChainIds: [createMockOptimismConfiguration().chainId],
-          permissionsFeatureFlagIsActive: true,
-          overrides: {
-            getCurrentRpcUrl: jest
-              .fn()
-              .mockReturnValue('https://eth.llamarpc.com'),
-            findNetworkConfigurationBy: jest
-              .fn()
-              .mockReturnValue(createMockOptimismConfiguration()),
-          },
-        });
-
-        await addEthereumChainHandler(
-          {
-            origin: 'example.com',
-            params: [
-              {
-                chainId: createMockOptimismConfiguration().chainId,
-                chainName: createMockOptimismConfiguration().nickname,
-                rpcUrls: [createMockOptimismConfiguration().rpcUrl],
-                nativeCurrency: {
-                  symbol: createMockOptimismConfiguration().ticker,
-                  decimals: 18,
-                },
-                blockExplorerUrls: [
-                  createMockOptimismConfiguration().rpcPrefs.blockExplorerUrl,
-                ],
-              },
-            ],
-          },
+        expect(mocks.addNetwork).not.toHaveBeenCalled();
+        expect(mocks.updateNetwork).not.toHaveBeenCalled();
+        expect(EthChainUtils.switchChain).toHaveBeenCalledTimes(1);
+        expect(EthChainUtils.switchChain).toHaveBeenCalledWith(
           {},
-          jest.fn(),
-          jest.fn(),
-          mocks,
-        );
-
-        expect(mocks.requestUserApproval).not.toHaveBeenCalled();
-        expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
-        expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
-        expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-          createMockOptimismConfiguration().id,
+          end,
+          '0xa',
+          createMockOptimismConfiguration().rpcEndpoints[0].networkClientId,
+          {
+            autoApprove: false,
+            getCaveat: mocks.getCaveat,
+            setActiveNetwork: mocks.setActiveNetwork,
+            requestPermittedChainsPermissionForOrigin:
+              mocks.requestPermittedChainsPermissionForOrigin,
+            requestPermittedChainsPermissionIncrementalForOrigin:
+              mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+          },
         );
       });
     });
-  });
-
-  it('should return an error if an unexpected parameter is provided', async () => {
-    const mocks = makeMocks({
-      permissionsFeatureFlagIsActive: false,
-    });
-    const mockEnd = jest.fn();
-
-    const unexpectedParam = 'unexpected';
-
-    await addEthereumChainHandler(
-      {
-        origin: 'example.com',
-        params: [
-          {
-            chainId: createMockNonInfuraConfiguration().chainId,
-            chainName: createMockNonInfuraConfiguration().nickname,
-            rpcUrls: [createMockNonInfuraConfiguration().rpcUrl],
-            nativeCurrency: {
-              symbol: createMockNonInfuraConfiguration().ticker,
-              decimals: 18,
-            },
-            blockExplorerUrls: [
-              createMockNonInfuraConfiguration().rpcPrefs.blockExplorerUrl,
-            ],
-            [unexpectedParam]: 'parameter',
-          },
-        ],
-      },
-      {},
-      jest.fn(),
-      mockEnd,
-      mocks,
-    );
-
-    expect(mockEnd).toHaveBeenCalledWith(
-      ethErrors.rpc.invalidParams({
-        message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
-      }),
-    );
-  });
-
-  it('should handle errors during the switch network permission request', async () => {
-    const mockError = new Error('Permission request failed');
-    const mocks = makeMocks({
-      permissionsFeatureFlagIsActive: true,
-      permissionedChainIds: [],
-      overrides: {
-        requestPermittedChainsPermission: jest
-          .fn()
-          .mockRejectedValue(mockError),
-      },
-    });
-    const mockEnd = jest.fn();
-
-    await addEthereumChainHandler(
-      {
-        origin: 'example.com',
-        params: [
-          {
-            chainId: CHAIN_IDS.MAINNET,
-            chainName: 'Ethereum Mainnet',
-            rpcUrls: ['https://mainnet.infura.io/v3/'],
-            nativeCurrency: {
-              symbol: 'ETH',
-              decimals: 18,
-            },
-            blockExplorerUrls: ['https://etherscan.io'],
-          },
-        ],
-      },
-      {},
-      jest.fn(),
-      mockEnd,
-      mocks,
-    );
-
-    expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(1);
-    expect(mockEnd).toHaveBeenCalledWith(mockError);
-    expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
   });
 
   it('should return an error if nativeCurrency.symbol does not match an existing network with the same chainId', async () => {
-    const mocks = makeMocks({
-      permissionedChainIds: [CHAIN_IDS.MAINNET],
-      permissionsFeatureFlagIsActive: true,
-    });
-    const mockEnd = jest.fn();
-
-    await addEthereumChainHandler(
-      {
-        origin: 'example.com',
-        params: [
-          {
-            chainId: CHAIN_IDS.MAINNET,
-            chainName: 'Ethereum Mainnet',
-            rpcUrls: ['https://mainnet.infura.io/v3/'],
-            nativeCurrency: {
-              symbol: 'WRONG',
-              decimals: 18,
-            },
-            blockExplorerUrls: ['https://etherscan.io'],
-          },
-        ],
-      },
-      {},
-      jest.fn(),
-      mockEnd,
-      mocks,
+    const { mocks, end, handler } = createMockedHandler();
+    mocks.getNetworkConfigurationByChainId.mockReturnValue(
+      createMockMainnetConfiguration(),
     );
+    await handler({
+      origin: 'example.com',
+      params: [
+        {
+          chainId: CHAIN_IDS.MAINNET,
+          chainName: 'Ethereum Mainnet',
+          rpcUrls: ['https://mainnet.infura.io/v3/'],
+          nativeCurrency: {
+            symbol: 'WRONG',
+            decimals: 18,
+          },
+          blockExplorerUrls: ['https://etherscan.io'],
+        },
+      ],
+    });
 
-    expect(mockEnd).toHaveBeenCalledWith(
-      ethErrors.rpc.invalidParams({
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
         message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\nWRONG`,
       }),
     );

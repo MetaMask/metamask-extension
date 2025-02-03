@@ -1,4 +1,5 @@
 import { NftContract } from '@metamask/assets-controllers';
+import { mockNetworkState } from '../../test/stub/networks';
 import {
   getNftContractsByAddressByChain,
   getNftContractsByAddressOnCurrentChain,
@@ -37,6 +38,7 @@ describe('NFT Selectors', () => {
               [chainIdMock2]: [contractMock5],
             },
           },
+          allNfts: {},
         },
       };
 
@@ -68,9 +70,7 @@ describe('NFT Selectors', () => {
 
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: chainIdMock1,
-          },
+          ...mockNetworkState({ chainId: chainIdMock1 }),
           allNftContracts: {
             [userAccountMock1]: {
               [chainIdMock1]: [contractMock1, contractMock2],
@@ -81,6 +81,7 @@ describe('NFT Selectors', () => {
               [chainIdMock2]: [contractMock5],
             },
           },
+          allNfts: {},
         },
       };
 

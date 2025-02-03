@@ -1,18 +1,18 @@
 import { TransactionType } from '@metamask/transaction-controller';
 
-export const getUnapprovedTransaction = (
+export const getUnapprovedContractInteractionTransaction = (
   accountAddress: string,
   pendingTransactionId: string,
   pendingTransactionTime: number,
 ) => {
   return {
     actionId: 4256525906,
-    chainId: '0x5',
+    chainId: '0xaa36a7',
     dappSuggestedGasFees: {
       gas: '0x16a92',
     },
     id: pendingTransactionId,
-    origin: 'origin',
+    origin: 'local:http://localhost:8086/',
     securityAlertResponse: {},
     status: 'unapproved',
     time: pendingTransactionTime,
@@ -25,6 +25,7 @@ export const getUnapprovedTransaction = (
       maxFeePerGas: '0x5b06b0c0d',
       maxPriorityFeePerGas: '0x59682f00',
     },
+    gasLimitNoBuffer: '0x16a92',
     userEditedGasLimit: false,
     verifiedOnBlockchain: false,
     type: TransactionType.contractInteraction,
@@ -67,5 +68,124 @@ export const getUnapprovedTransaction = (
       },
     },
     gasFeeEstimatesLoaded: true,
+  };
+};
+
+export const getUnapprovedContractDeploymentTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  return {
+    ...getUnapprovedContractInteractionTransaction(
+      accountAddress,
+      pendingTransactionId,
+      pendingTransactionTime,
+    ),
+    txParams: {
+      ...getUnapprovedContractInteractionTransaction(
+        accountAddress,
+        pendingTransactionId,
+        pendingTransactionTime,
+      ).txParams,
+      data: '0xd0e30db0',
+    },
+    type: TransactionType.deployContract,
+  };
+};
+
+export const getUnapprovedApproveTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  return {
+    ...getUnapprovedContractInteractionTransaction(
+      accountAddress,
+      pendingTransactionId,
+      pendingTransactionTime,
+    ),
+    txParams: {
+      ...getUnapprovedContractInteractionTransaction(
+        accountAddress,
+        pendingTransactionId,
+        pendingTransactionTime,
+      ).txParams,
+      data: '0x095ea7b30000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000001',
+    },
+    type: TransactionType.tokenMethodApprove,
+  };
+};
+
+export const getUnapprovedIncreaseAllowanceTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  return {
+    ...getUnapprovedContractInteractionTransaction(
+      accountAddress,
+      pendingTransactionId,
+      pendingTransactionTime,
+    ),
+    txParams: {
+      ...getUnapprovedContractInteractionTransaction(
+        accountAddress,
+        pendingTransactionId,
+        pendingTransactionTime,
+      ).txParams,
+      data: '0x395093510000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000007530',
+    },
+    type: TransactionType.tokenMethodIncreaseAllowance,
+  };
+};
+
+export const getUnapprovedSetApprovalForAllTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  return {
+    ...getUnapprovedContractInteractionTransaction(
+      accountAddress,
+      pendingTransactionId,
+      pendingTransactionTime,
+    ),
+    txParams: {
+      ...getUnapprovedContractInteractionTransaction(
+        accountAddress,
+        pendingTransactionId,
+        pendingTransactionTime,
+      ).txParams,
+      data: '0xa22cb4650000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000000001',
+    },
+    type: TransactionType.tokenMethodSetApprovalForAll,
+  };
+};
+
+export const getMaliciousUnapprovedTransaction = (
+  accountAddress: string,
+  pendingTransactionId: string,
+  pendingTransactionTime: number,
+) => {
+  return {
+    ...getUnapprovedContractInteractionTransaction(
+      accountAddress,
+      pendingTransactionId,
+      pendingTransactionTime,
+    ),
+    securityAlertResponse: {
+      block: 6485814,
+      result_type: 'Malicious',
+      reason: 'raw_native_token_transfer',
+      description:
+        'Interaction with a known malicious address: 0x5fbdb2315678afecb367f032d93f642f64180aa3',
+      features: ['Interaction with a known malicious address'],
+      providerRequestsCount: {
+        eth_getBlockByNumber: 1,
+      },
+      source: 'local',
+      securityAlertId: '22ff30c4-0fe6-4d8b-af39-92aae0bd3c2c',
+    },
   };
 };

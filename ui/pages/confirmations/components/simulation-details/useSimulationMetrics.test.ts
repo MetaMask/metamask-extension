@@ -492,7 +492,7 @@ describe('useSimulationMetrics', () => {
             balanceChanges: [balanceChange1, balanceChange2],
           },
           expect.objectContaining({
-            sensitiveProperties: expect.objectContaining({
+            properties: expect.objectContaining({
               [property]: 2.46,
             }),
           }),

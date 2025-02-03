@@ -2,5 +2,5 @@
 export const metamaskStorybookTheme = {
   brandTitle: 'MetaMask Storybook',
   // Typography
-  fontBase: 'Euclid Circular B, Roboto, Helvetica, Arial, sans-serif',
+  fontBase: 'Euclid Circular B, Helvetica, Arial, sans-serif',
 };

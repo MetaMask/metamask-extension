@@ -36,15 +36,9 @@ describe('Change assets', function () {
         await driver.press('[data-testid="currency-input"]', '2');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Validate the send amount
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000042',
-        });
-
         // Click edit
         await driver.clickElement(
-          '[data-testid="confirm-page-back-edit-button"]',
+          '[data-testid="wallet-initiated-header-back-button"]',
         );
 
         // Open the Amount modal
@@ -66,10 +60,11 @@ describe('Change assets', function () {
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
-        await driver.waitForSelector(
-          '.confirm-page-container-summary__title img',
-        );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+        await driver.waitForSelector('[data-testid="nft-default-image"]');
+        await driver.waitForSelector({
+          css: 'h2',
+          text: 'Test Dapp NFTs #1',
+        });
 
         // Send it!
         await driver.clickElement({ text: 'Confirm', css: 'button' });
@@ -102,7 +97,7 @@ describe('Change assets', function () {
 
         // Click the Send button
         await driver.clickElement({
-          css: '[data-testid="multichain-token-list-button"] span',
+          css: '[data-testid="multichain-token-list-button"] p',
           text: 'TST',
         });
 
@@ -119,15 +114,9 @@ describe('Change assets', function () {
         await driver.press('[data-testid="currency-input"]', '0');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Validate the send amount
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '0.00008455',
-        });
-
         // Click edit
         await driver.clickElement(
-          '[data-testid="confirm-page-back-edit-button"]',
+          '[data-testid="wallet-initiated-header-back-button"]',
         );
 
         // Open the Amount modal
@@ -149,10 +138,11 @@ describe('Change assets', function () {
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
-        await driver.waitForSelector(
-          '.confirm-page-container-summary__title img',
-        );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+        await driver.waitForSelector('[data-testid="nft-default-image"]');
+        await driver.waitForSelector({
+          css: 'h2',
+          text: 'Test Dapp NFTs #1',
+        });
 
         // Send it!
         await driver.clickElement({ text: 'Confirm', css: 'button' });
@@ -196,14 +186,15 @@ describe('Change assets', function () {
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
-        await driver.waitForSelector(
-          '.confirm-page-container-summary__title img',
-        );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+        await driver.waitForSelector('[data-testid="nft-default-image"]');
+        await driver.waitForSelector({
+          css: 'h2',
+          text: 'Test Dapp NFTs #1',
+        });
 
         // Click edit
         await driver.clickElement(
-          '[data-testid="confirm-page-back-edit-button"]',
+          '[data-testid="wallet-initiated-header-back-button"]',
         );
 
         // Open the Amount modal
@@ -229,8 +220,8 @@ describe('Change assets', function () {
 
         // Validate the send amount
         await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000042',
+          css: 'h2',
+          text: '2',
         });
 
         // Send it!
@@ -342,7 +333,7 @@ describe('Change assets', function () {
 
         // Make sure gas is updated by resetting amount and hex data
         // Note: this is needed until the race condition is fixed on the wallet level (issue #25243)
-        await driver.fill('[data-testid="currency-input"]', '2');
+        await driver.fill('[data-testid="currency-input"]', '2.000042');
         await hexDataLocator.fill('0x');
         await hexDataLocator.fill('');
 
@@ -351,8 +342,8 @@ describe('Change assets', function () {
 
         // Validate the send amount
         await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000042',
+          css: 'h2',
+          text: '2 ETH',
         });
       },
     );

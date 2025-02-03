@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import { useSelector } from 'react-redux';
 import {
+  Box,
   Icon,
   IconName,
   IconSize,
@@ -17,9 +18,8 @@ import {
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import {
-  getPreferences,
+  getShouldShowFiat,
   getTxData,
-  getUseCurrencyRateCheck,
   transactionFeeSelector,
 } from '../../../../selectors';
 import { getCurrentDraftTransaction } from '../../../../ducks/send';
@@ -31,7 +31,6 @@ import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransaction
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import Box from '../../../../components/ui/box';
 import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import EditGasFeeIcon from '../edit-gas-fee-icon/edit-gas-fee-icon';
 import GasTiming from '../gas-timing/gas-timing.component';
@@ -44,12 +43,14 @@ const GasDetailsItem = ({
   userAcknowledgedGasMissing = false,
 }) => {
   const t = useI18nContext();
+  const shouldShowFiat = useSelector(getShouldShowFiat);
 
   const txData = useSelector(getTxData);
   const { layer1GasFee } = txData;
 
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const transactionData = useDraftTransactionWithTxParams();
+
   const {
     hexMinimumTransactionFee: draftHexMinimumTransactionFee,
     hexMaximumTransactionFee: draftHexMaximumTransactionFee,
@@ -66,9 +67,6 @@ const GasDetailsItem = ({
     supportsEIP1559,
   } = useGasFeeContext();
 
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const getTransactionFeeTotal = useMemo(() => {
     if (layer1GasFee) {
       return sumHexes(hexMinimumTransactionFee, layer1GasFee);
@@ -137,7 +135,7 @@ const GasDetailsItem = ({
             <EditGasFeeIcon
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
-            {useCurrencyRateCheck && (
+            {shouldShowFiat && (
               <UserPreferencedCurrencyDisplay
                 paddingInlineStart={1}
                 suffixProps={{
@@ -148,7 +146,7 @@ const GasDetailsItem = ({
                 }}
                 type={SECONDARY}
                 value={getTransactionFeeTotal}
-                hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                hideLabel // Label not required here as it will always display fiat value.
               />
             )}
           </div>
@@ -168,7 +166,7 @@ const GasDetailsItem = ({
             }}
             type={PRIMARY}
             value={getTransactionFeeTotal || draftHexMinimumTransactionFee}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            // Label required here as it will always display crypto value
           />
         </div>
       }
@@ -196,10 +194,10 @@ const GasDetailsItem = ({
                 {t('editGasSubTextFeeLabel')}
               </Text>
             </Box>
-            <div
+            <Box
               key="editGasSubTextFeeValue"
               className="gas-details-item__currency-container"
-              paddingStart={1}
+              paddingInlineStart={1}
             >
               <LoadingHeartBeat estimateUsed={estimateUsed} />
               <UserPreferencedCurrencyDisplay
@@ -216,9 +214,8 @@ const GasDetailsItem = ({
                 value={
                   getMaxTransactionFeeTotal || draftHexMaximumTransactionFee
                 }
-                hideLabel={!useNativeCurrencyAsPrimaryCurrency}
               />
-            </div>
+            </Box>
           </Box>
         </>
       }

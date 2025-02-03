@@ -18,6 +18,7 @@ const Tab = (props) => {
     className,
     'data-testid': dataTestId,
     isActive,
+    isSingleTab,
     name,
     onClick,
     tabIndex,
@@ -32,6 +33,7 @@ const Tab = (props) => {
     <Box
       as="li"
       className={classnames('tab', className, {
+        'tab--single': isSingleTab,
         'tab--active': isActive,
         [activeClassName]: activeClassName && isActive,
       })}
@@ -64,6 +66,7 @@ Tab.propTypes = {
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   isActive: PropTypes.bool, // required, but added using React.cloneElement
+  isSingleTab: PropTypes.bool, // required, but added using React.cloneElement
   name: PropTypes.node.isRequired,
   tabKey: PropTypes.string.isRequired, // for Tabs selection purpose
   onClick: PropTypes.func,

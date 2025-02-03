@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import semver from 'semver';
+import { isSnapId } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -129,6 +130,15 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     }
   };
 
+  const connectedTitle = () => {
+    if (connectedSubjects.every((subject) => isSnapId(subject.origin))) {
+      return t('connectedSnaps');
+    } else if (connectedSubjects.some((subject) => isSnapId(subject.origin))) {
+      return t('connectedSitesAndSnaps');
+    }
+    return t('connectedSites');
+  };
+
   useEffect(() => {
     if (initRemove) {
       setIsShowingRemoveWarning(true);
@@ -162,11 +172,12 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
           snapName={snapName}
           permissions={permissions ?? {}}
           showOptions
+          showAllPermissions
         />
       </Box>
       <Box className="snap-view__content__connected-sites" marginTop={12}>
         <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
-          {t('connectedSites')}
+          {connectedTitle()}
         </Text>
         <ConnectedSitesList
           connectedSubjects={connectedSubjects}

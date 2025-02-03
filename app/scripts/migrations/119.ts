@@ -1,7 +1,7 @@
 import { cloneDeep, isObject } from 'lodash';
 import { hasProperty } from '@metamask/utils';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 
 type VersionedData = {
   meta: { version: number };
@@ -46,13 +46,13 @@ function transformState(state: Record<string, any>) {
         .accounts,
     ).length > 0
   ) {
-    Object.values(accountsController.internalAccounts.accounts).forEach(
-      (internalAccount: InternalAccount) => {
-        if (!internalAccount.metadata?.importTime) {
-          internalAccount.metadata.importTime = Date.now();
-        }
-      },
-    );
+    Object.values<InternalAccount>(
+      accountsController.internalAccounts.accounts,
+    ).forEach((internalAccount) => {
+      if (!internalAccount.metadata?.importTime) {
+        internalAccount.metadata.importTime = Date.now();
+      }
+    });
   }
 
   return {

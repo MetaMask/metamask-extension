@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccountListItem should match snapshot 1`] = `
+<div>
+  <div>
+    <div
+      aria-describedby="tippy-tooltip-1"
+      class=""
+      data-original-title="Copy to clipboard"
+      data-tooltipped=""
+      style="display: inline;"
+      tabindex="0"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
+        data-testid="address-copy-button-text"
+      >
+        <span
+          class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+        >
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc
+          </div>
+        </span>
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+`;

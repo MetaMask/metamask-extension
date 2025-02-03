@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { MockedEndpoint } from 'mockttp';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
-import { Driver } from '../../../webdriver/driver';
+import { MockedEndpoint, MockttpServer } from 'mockttp';
+import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { Driver } from '../../../webdriver/driver';
 
 const {
   logInWithBalanceValidation,
@@ -14,17 +15,17 @@ const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 export type TestSuiteArguments = {
   driver: Driver;
   ganacheServer?: Ganache;
-  contractRegistry?: GanacheContractAddressRegistry;
+  contractRegistry?: ContractAddressRegistry;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };
 
 export async function openDAppWithContract(
   driver: Driver,
-  contractRegistry: GanacheContractAddressRegistry | undefined,
+  contractRegistry: ContractAddressRegistry | undefined,
   smartContract: string,
 ) {
   const contractAddress = await (
-    contractRegistry as GanacheContractAddressRegistry
+    contractRegistry as ContractAddressRegistry
   ).getContractAddress(smartContract);
 
   await logInWithBalanceValidation(driver);
@@ -42,11 +43,39 @@ export async function confirmContractDeploymentTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({
-    css: '.confirm-page-container-summary__action__name',
-    text: 'Contract deployment',
+    css: 'h2',
+    text: 'Deploy a contract',
   });
 
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  await scrollAndConfirmAndAssertConfirm(driver);
+
+  await driver.delay(2000);
+  await driver.waitUntilXWindowHandles(2);
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElement({ text: 'Activity', tag: 'button' });
+  await driver.waitForSelector(
+    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+  );
+}
+
+export async function confirmRedesignedContractDeploymentTransaction(
+  driver: Driver,
+) {
+  await driver.waitUntilXWindowHandles(3);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  await driver.waitForSelector({
+    css: 'h2',
+    text: 'Deploy a contract',
+  });
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'This site wants you to deploy a contract',
+  });
+
+  await scrollAndConfirmAndAssertConfirm(driver);
 
   await driver.delay(2000);
   await driver.waitUntilXWindowHandles(2);
@@ -81,6 +110,7 @@ export async function confirmDepositTransaction(driver: Driver) {
     text: 'Nonce',
   });
 
+  await driver.delay(veryLargeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 }
 
@@ -109,6 +139,7 @@ export async function confirmDepositTransactionWithCustomNonce(
     text: 'Save',
     tag: 'button',
   });
+  await driver.delay(veryLargeDelayMs);
   await scrollAndConfirmAndAssertConfirm(driver);
 
   // Confirm tx was submitted with the higher nonce
@@ -195,15 +226,78 @@ export async function toggleAdvancedDetails(driver: Driver) {
 }
 
 export async function assertAdvancedGasDetails(driver: Driver) {
-  await driver.waitForSelector({ css: 'p', text: 'Estimated fee' });
+  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
   await driver.waitForSelector({ css: 'p', text: 'Speed' });
   await driver.waitForSelector({ css: 'p', text: 'Max fee' });
 }
 
 export async function assertAdvancedGasDetailsWithL2Breakdown(driver: Driver) {
-  await driver.waitForSelector({ css: 'p', text: 'Estimated fee' });
+  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
   await driver.waitForSelector({ css: 'p', text: 'L1 fee' });
   await driver.waitForSelector({ css: 'p', text: 'L2 fee' });
   await driver.waitForSelector({ css: 'p', text: 'Speed' });
   await driver.waitForSelector({ css: 'p', text: 'Max fee' });
+}
+
+export async function editSpendingCap(driver: Driver, newSpendingCap: string) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.clickElement('[data-testid="edit-spending-cap-icon"');
+
+  await driver.fill(
+    '[data-testid="custom-spending-cap-input"]',
+    newSpendingCap,
+  );
+
+  await driver.delay(largeDelayMs);
+
+  await driver.clickElement({ text: 'Save', tag: 'button' });
+
+  // wait for the confirmation to be updated before submitting tx
+  await driver.delay(veryLargeDelayMs * 2);
+}
+
+export async function assertChangedSpendingCap(
+  driver: Driver,
+  newSpendingCap: string,
+) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  await driver.clickElement({ text: 'Activity', tag: 'button' });
+
+  await driver.delay(veryLargeDelayMs);
+
+  await driver.clickElement(
+    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+  );
+
+  await driver.waitForSelector({
+    text: `${newSpendingCap} TST`,
+    tag: 'span',
+  });
+
+  await driver.waitForSelector({ text: 'Confirmed', tag: 'div' });
+}
+
+export async function mocked4BytesApprove(mockServer: MockttpServer) {
+  return await mockServer
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .always()
+    .withQuery({ hex_signature: '0x095ea7b3' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [
+          {
+            id: 149,
+            created_at: '2016-07-09T03:58:29.617584Z',
+            text_signature: 'approve(address,uint256)',
+            hex_signature: '0x095ea7b3',
+            bytes_signature: '\t^§³',
+          },
+        ],
+      },
+    }));
 }

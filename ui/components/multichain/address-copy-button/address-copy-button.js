@@ -1,15 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../selectors';
-import {
-  getIsCustodianSupportedChain,
-  getCustodianIconForAddress,
-} from '../../../selectors/institutional/selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
-///: END:ONLY_INCLUDE_IF
 import { ButtonBase, IconName, Box } from '../../component-library';
 import {
   AlignItems,
@@ -25,6 +16,8 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MINUTE } from '../../../../shared/constants/time';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export const AddressCopyButton = ({
@@ -40,30 +33,12 @@ export const AddressCopyButton = ({
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, selectedAddress),
-  );
-  const isCustodianSupportedChain = useSelector(getIsCustodianSupportedChain);
-  const { nickname, type: networkType } = useSelector(getProviderConfig);
-  ///: END:ONLY_INCLUDE_IF
-
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
-  let tooltipTitle = tooltipText;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  tooltipTitle = isCustodianSupportedChain
-    ? tooltipText
-    : t('custodyWrongChain', [nickname || networkType]);
-  ///: END:ONLY_INCLUDE_IF
+  const tooltipTitle = tooltipText;
 
   return (
     <Tooltip position="bottom" title={tooltipTitle}>
       <ButtonBase
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        disabled={!isCustodianSupportedChain}
-        ///: END:ONLY_INCLUDE_IF
         backgroundColor={BackgroundColor.primaryMuted}
         onClick={() => {
           handleCopy(checksummedAddress);
@@ -82,21 +57,7 @@ export const AddressCopyButton = ({
         alignItems={AlignItems.center}
         data-testid="address-copy-button-text"
       >
-        <Box display={Display.Flex}>
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            custodianIcon && (
-              <img
-                src={custodianIcon}
-                data-testid="custody-logo"
-                className="custody-logo"
-                alt="custody logo"
-              />
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
-          {displayAddress}
-        </Box>
+        <Box display={Display.Flex}>{displayAddress}</Box>
       </ButtonBase>
     </Tooltip>
   );

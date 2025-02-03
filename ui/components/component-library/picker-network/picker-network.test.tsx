@@ -2,6 +2,9 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { IconName } from '..';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import configureStore from '../../../store/store';
+import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { PickerNetwork } from './picker-network';
 
 describe('PickerNetwork', () => {
@@ -18,12 +21,12 @@ describe('PickerNetwork', () => {
       <PickerNetwork
         data-testid="picker-network"
         label="Imported"
-        src="./images/matic-token.svg"
+        src="./images/pol-token.svg"
       />,
     );
     const image = screen.getByRole('img');
     expect(image).toBeDefined();
-    expect(image).toHaveAttribute('src', './images/matic-token.svg');
+    expect(image).toHaveAttribute('src', './images/pol-token.svg');
   });
   it('should render avatar network inside the PickerNetwork with custom props', () => {
     const container = (
@@ -76,5 +79,47 @@ describe('PickerNetwork', () => {
       />,
     );
     expect(getByTestId('picker-network-label')).toHaveClass('test-class');
+  });
+  // avatarGroupProps
+  it('should render multiple avatars when avatarGroupProps is present', () => {
+    const { container } = renderWithProvider(
+      <PickerNetwork
+        data-testid="picker-network"
+        label="test"
+        avatarGroupProps={{
+          members: [
+            { avatarValue: 'img1', symbol: 'Network1' },
+            { avatarValue: 'img2', symbol: 'Network3' },
+            { avatarValue: 'img3', symbol: 'Network4' },
+            { avatarValue: 'img4', symbol: 'Network4' },
+          ],
+          limit: 2,
+          avatarType: AvatarType.NETWORK,
+        }}
+      />,
+      configureStore({ metamask: { useBlockie: false } }),
+    );
+    expect(container).toMatchSnapshot();
+  });
+  it('should render multiple avatars with a stacked tag when isTagOverlay is present', () => {
+    const { container } = renderWithProvider(
+      <PickerNetwork
+        data-testid="picker-network"
+        label="test"
+        avatarGroupProps={{
+          members: [
+            { avatarValue: 'img1', symbol: 'Network1' },
+            { avatarValue: 'img2', symbol: 'Network3' },
+            { avatarValue: 'img3', symbol: 'Network4' },
+            { avatarValue: 'img4', symbol: 'Network4' },
+          ],
+          limit: 2,
+          isTagOverlay: true,
+          avatarType: AvatarType.NETWORK,
+        }}
+      />,
+      configureStore({ metamask: { useBlockie: true } }),
+    );
+    expect(container).toMatchSnapshot();
   });
 });

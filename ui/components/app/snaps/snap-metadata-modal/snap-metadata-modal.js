@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
+import {
+  getSnapPrefix,
+  isSnapId,
+  stripSnapPrefix,
+} from '@metamask/snaps-utils';
 import {
   getSnap,
   getSnapRegistryData,
@@ -32,7 +36,6 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import SnapAvatar from '../snap-avatar';
 import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
@@ -40,6 +43,7 @@ import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 import Tooltip from '../../../ui/tooltip';
+import { SnapIcon } from '../snap-icon';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   const t = useI18nContext();
@@ -60,6 +64,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
     : undefined;
 
   const installOrigin = useOriginMetadata(installInfo?.origin);
+  const isSnapRequesting = isSnapId(installInfo?.origin);
 
   const snapPrefix = getSnapPrefix(snapId);
   const packageName = stripSnapPrefix(snapId);
@@ -99,7 +104,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
           }}
         >
           <Box>
-            <SnapAvatar snapId={snapId} />
+            <SnapIcon snapId={snapId} />
           </Box>
           <Text variant={TextVariant.bodyMdMedium} textAlign={TextAlign.Center}>
             {snapName}
@@ -161,7 +166,11 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
                   </Tooltip>
                 )}
               </Box>
-              <Text ellipsis>{installOrigin.host}</Text>
+              <Text ellipsis>
+                {isSnapRequesting
+                  ? stripSnapPrefix(installInfo.origin)
+                  : installOrigin.host}
+              </Text>
             </Box>
           )}
           <Box

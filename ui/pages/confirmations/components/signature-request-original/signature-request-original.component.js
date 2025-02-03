@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
@@ -10,9 +10,6 @@ import {
   getURLHostName,
   hexToText,
   sanitizeString,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shortenAddress,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SiteOrigin from '../../../../components/ui/site-origin';
@@ -24,23 +21,8 @@ import {
   TextAlign,
   TextColor,
   Size,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  IconColor,
-  Display,
-  BlockSize,
-  TextVariant,
-  BackgroundColor,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
-import {
-  ButtonLink,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  Box,
-  Icon,
-  IconName,
-  Text,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../components/component-library';
+import { ButtonLink } from '../../../../components/component-library';
 
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
@@ -50,6 +32,7 @@ import SignatureRequestHeader from '../signature-request-header';
 import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-legacy-authorship-header';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
 import { QueuedRequestsBannerAlert } from '../../confirmation/components/queued-requests-banner-alert';
 
 export default class SignatureRequestOriginal extends Component {
@@ -76,12 +59,6 @@ export default class SignatureRequestOriginal extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    // Used to show a warning if the signing account is not the selected account
-    // Largely relevant for contract wallet custodians
-    selectedAccount: PropTypes.object,
-    mmiOnSignCallback: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IF
     warnings: PropTypes.array,
   };
 
@@ -148,33 +125,6 @@ export default class SignatureRequestOriginal extends Component {
           />
         )}
         <QueuedRequestsBannerAlert />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          this.props.selectedAccount.address ===
-          this.props.fromAccount.address ? null : (
-            <Box
-              className="request-signature__mismatch-info"
-              display={Display.Flex}
-              width={BlockSize.Full}
-              padding={4}
-              marginBottom={4}
-              backgroundColor={BackgroundColor.primaryMuted}
-            >
-              <Icon
-                name={IconName.Info}
-                color={IconColor.infoDefault}
-                marginRight={2}
-              />
-              <Text variant={TextVariant.bodyXs} color={TextColor.textDefault}>
-                {this.context.t('mismatchAccount', [
-                  shortenAddress(this.props.selectedAccount.address),
-                  shortenAddress(this.props.fromAccount.address),
-                ])}
-              </Text>
-            </Box>
-          )
-          ///: END:ONLY_INCLUDE_IF
-        }
         <div className="request-signature__origin">
           {
             // Use legacy authorship header for snaps
@@ -250,12 +200,6 @@ export default class SignatureRequestOriginal extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    if (this.props.mmiOnSignCallback) {
-      await this.props.mmiOnSignCallback(txData);
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
 
     await resolvePendingApproval(txData.id);
     completedTx(txData.id);
@@ -274,7 +218,7 @@ export default class SignatureRequestOriginal extends Component {
 
     await rejectPendingApproval(
       id,
-      serializeError(ethErrors.provider.userRejectedRequest()),
+      serializeError(providerErrors.userRejectedRequest()),
     );
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
@@ -303,7 +247,7 @@ export default class SignatureRequestOriginal extends Component {
         onCancel={async () => {
           await rejectPendingApproval(
             txData.id,
-            serializeError(ethErrors.provider.userRejectedRequest()),
+            serializeError(providerErrors.userRejectedRequest()),
           );
           clearConfirmTransaction();
           history.push(mostRecentOverviewPage);
@@ -315,12 +259,7 @@ export default class SignatureRequestOriginal extends Component {
 
           return await this.onSubmit();
         }}
-        disabled={
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          Boolean(txData?.custodyId) ||
-          ///: END:ONLY_INCLUDE_IF
-          hardwareWalletRequiresConnection
-        }
+        disabled={hardwareWalletRequiresConnection}
         submitButtonType={submitButtonType}
       />
     );
@@ -392,6 +331,7 @@ export default class SignatureRequestOriginal extends Component {
             {rejectNText}
           </ButtonLink>
         ) : null}
+        <NetworkChangeToastLegacy confirmation={txData} />
       </div>
     );
   };

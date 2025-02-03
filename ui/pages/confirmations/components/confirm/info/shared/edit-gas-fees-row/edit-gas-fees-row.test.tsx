@@ -1,9 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import mockState from '../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../test/lib/render-helpers';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+
+import { getMockContractInteractionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 
 jest.mock(
@@ -19,17 +19,13 @@ describe('<EditGasFeesRow />', () => {
   const middleware = [thunk];
 
   it('renders component', () => {
-    const state = {
-      ...mockState,
-      confirm: {
-        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-      },
-    };
+    const state = getMockContractInteractionConfirmState();
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithProvider(
+    const { container } = renderWithConfirmContextProvider(
       <EditGasFeesRow
         fiatFee="$1"
         nativeFee="0.001 ETH"
+        fiatFeeWith18SignificantDigits="0.001234"
         supportsEIP1559={true}
         setShowCustomizeGasPopover={() => console.log('open popover')}
       />,

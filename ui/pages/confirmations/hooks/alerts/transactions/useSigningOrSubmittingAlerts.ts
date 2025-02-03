@@ -1,30 +1,24 @@
-import { useSelector } from 'react-redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import {
-  currentConfirmationSelector,
-  getApprovedAndSignedTransactions,
-} from '../../../../../selectors';
+import { useSelector } from 'react-redux';
+
+import { getApprovedAndSignedTransactions } from '../../../../../selectors';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { useConfirmContext } from '../../../context/confirm';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 
 export function useSigningOrSubmittingAlerts(): Alert[] {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
   const { type } = (currentConfirmation ?? {}) as TransactionMeta;
 
   const signingOrSubmittingTransactions = useSelector(
     getApprovedAndSignedTransactions,
   );
 
-  const isValidType = REDESIGN_TRANSACTION_TYPES.includes(
-    type as TransactionType,
-  );
+  const isValidType = isCorrectDeveloperTransactionType(type);
 
   const isSigningOrSubmitting =
     isValidType && signingOrSubmittingTransactions.length > 0;
@@ -38,8 +32,8 @@ export function useSigningOrSubmittingAlerts(): Alert[] {
       {
         isBlocking: true,
         key: 'signingOrSubmitting',
-        message: t('alertMessageSigningOrSubmitting'),
-        severity: Severity.Warning,
+        message: t('isSigningOrSubmitting'),
+        severity: Severity.Danger,
       },
     ];
   }, [isSigningOrSubmitting]);

@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import {
   clearAlerts,
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
-import { currentConfirmationSelector } from '../../../selectors';
+import { useConfirmContext } from '../context/confirm';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 const setConfirmationAlerts = () => {
   const dispatch = useDispatch();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation } = useConfirmContext();
   const alerts = useConfirmationAlerts();
   const ownerId = currentConfirmation?.id as string;
 

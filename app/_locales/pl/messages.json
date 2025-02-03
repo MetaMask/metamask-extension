@@ -205,9 +205,6 @@
   "delete": {
     "message": "Usuń"
   },
-  "deleteNetwork": {
-    "message": "Usunąć sieć?"
-  },
   "details": {
     "message": "Szczegóły"
   },
@@ -229,9 +226,6 @@
   "editContact": {
     "message": "Edytuj kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Błąd w rejestracji nazwy ENS"
-  },
   "enterPasswordContinue": {
     "message": "Podaj hasło żeby kontynuować"
   },
@@ -249,10 +243,6 @@
   },
   "fast": {
     "message": "Szybko"
-  },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Importowanie pliku nie działa? Kliknij tutaj!",
@@ -354,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "Nieprawidłowy adres odbiorcy"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "To nie jest sieć ETH, zmień na małe litery"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nieprawidłowe Block Explorer URI"
-  },
   "invalidRPC": {
     "message": "Nieprawidłowe RPC URI"
   },
@@ -396,9 +380,6 @@
   },
   "loading": {
     "message": "Ładowanie..."
-  },
-  "loadingTokens": {
-    "message": "Ładowanie tokenów..."
   },
   "localhost": {
     "message": "Serwer lokalny 8545"
@@ -456,14 +437,8 @@
   "next": {
     "message": "Dalej"
   },
-  "noAddressForName": {
-    "message": "Nie wybrano żadnego adresu dla tej nazwy."
-  },
   "noConversionRateAvailable": {
     "message": "Brak kursu waluty"
-  },
-  "noTransactions": {
-    "message": "Nie ma transakcji"
   },
   "noWebcamFound": {
     "message": "Twoja kamera nie została znaleziona. Spróbuj ponownie."
@@ -517,12 +492,6 @@
   "prev": {
     "message": "Poprzednie"
   },
-  "primaryCurrencySetting": {
-    "message": "Waluta podstawowa"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Wybierz walutę natywną, aby preferować wyświetlanie wartości w walucie natywnej łańcucha (np. ETH). Wybierz walutę fiat, aby preferować wyświetlanie wartości w wybranej przez siebie walucie fiat."
-  },
   "privacyMsg": {
     "message": "Polityka prywatności"
   },
@@ -538,9 +507,6 @@
   },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Szukaj, adres publiczny (0x) lub ENS"
   },
   "reject": {
     "message": "Odrzuć"
@@ -729,9 +695,6 @@
   "transactionErrored": {
     "message": "Wystąpił błąd podczas wykonywania transakcji."
   },
-  "transactionFee": {
-    "message": "Opłata transakcyjna"
-  },
   "transactionResubmitted": {
     "message": "Transakcja wysłana ponownie z opłatą za gaz podwyższoną do $1 – $2"
   },
@@ -770,9 +733,6 @@
   },
   "unlockMessage": {
     "message": "Zdecentralizowana sieć oczekuje"
-  },
-  "updatedWithDate": {
-    "message": "Zaktualizowano $1"
   },
   "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
@@ -39,6 +40,10 @@ export const ConnectAccountsModal = ({
     setSelectedAccounts(newSelectedAccounts);
   };
 
+  const deselectAll = () => {
+    setSelectedAccounts([]);
+  };
+
   const selectAll = () => {
     const newSelectedAccounts = accounts.map(
       (account: { address: string }) => account.address,
@@ -46,22 +51,13 @@ export const ConnectAccountsModal = ({
     setSelectedAccounts(newSelectedAccounts);
   };
 
-  const deselectAll = () => {
-    setSelectedAccounts([]);
-  };
-
   const allAreSelected = () => {
     return accounts.length === selectedAccounts.length;
   };
-  let checked = false;
-  let isIndeterminate = false;
-  if (allAreSelected()) {
-    checked = true;
-    isIndeterminate = false;
-  } else if (selectedAccounts.length > 0 && !allAreSelected()) {
-    checked = false;
-    isIndeterminate = true;
-  }
+
+  const checked = allAreSelected();
+  const isIndeterminate = !checked && selectedAccounts.length > 0;
+
   return (
     <ConnectAccountsModalList
       accounts={accounts}

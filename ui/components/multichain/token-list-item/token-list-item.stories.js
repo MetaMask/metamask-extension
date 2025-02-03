@@ -6,6 +6,7 @@ import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { TokenListItem } from '.';
 
 export default {
@@ -45,9 +46,7 @@ const customNetworkData = {
   ...testData,
   metamask: {
     ...testData.metamask,
-    providerConfig: {
-      chainId: CHAIN_IDS.MAINNET,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
   },
 };
 const customNetworkStore = configureStore(customNetworkData);
@@ -93,4 +92,34 @@ export const NoImagesStory = Template.bind({});
 
 NoImagesStory.args = {
   tokenImage: '',
+};
+
+export const CrossChainTokenStory = (args) => (
+  <div
+    style={{ width: '336px', border: '1px solid var(--color-border-muted)' }}
+  >
+    <TokenListItem {...args} />
+  </div>
+);
+CrossChainTokenStory.decorators = [
+  (Story) => (
+    <Provider
+      store={configureStore({
+        metamask: {
+          ...testData.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        },
+      })}
+    >
+      <Story />
+    </Provider>
+  ),
+];
+
+CrossChainTokenStory.args = {
+  title: 'USDC',
+  secondary: '$94556756776.80 USD',
+  primary: '34449765768526.00',
+  isTitleNetworkName: true,
+  chainId: CHAIN_IDS.LINEA_SEPOLIA,
 };

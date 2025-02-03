@@ -5,6 +5,8 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { sanitizeMessage } from '../../../../../helpers/utils/util';
 import Identicon from '../../../../../components/ui/identicon';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
 import SignatureRequestData from './signature-request-data';
 
 describe('Signature Request Data', () => {
@@ -36,10 +38,7 @@ describe('Signature Request Data', () => {
             unlisted: false,
           },
         },
-        providerConfig: {
-          type: 'test',
-          chainId: '0x5',
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

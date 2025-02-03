@@ -1,19 +1,14 @@
 import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../../../store/store';
+import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { GasFeesRow } from './gas-fees-row';
 
 function getStore() {
-  return configureStore({
-    ...mockState,
-    metamask: { ...mockState.metamask },
-    confirm: {
-      currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-    },
-  });
+  return configureStore(mockState);
 }
 
 const Story = {
@@ -38,12 +33,15 @@ const Story = {
 export default Story;
 
 export const DefaultStory = () => (
-  <GasFeesRow
-    label="Some kind of fee"
-    tooltipText="Tooltip text"
-    fiatFee="$1"
-    nativeFee="0.0001 ETH"
-  />
+  <ConfirmContextProvider>
+    <GasFeesRow
+      label="Some kind of fee"
+      tooltipText="Tooltip text"
+      fiatFee="$1"
+      fiatFeeWith18SignificantDigits="0.001234"
+      nativeFee="0.0001 ETH"
+    />
+  </ConfirmContextProvider>
 );
 
 DefaultStory.storyName = 'Default';

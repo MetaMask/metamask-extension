@@ -1,24 +1,32 @@
-import React, { useContext, useState, useMemo } from 'react';
+import React, {
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useLocation,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BtcAccountType,
   EthAccountType,
+  SolAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  InternalAccount,
   KeyringAccountType,
-  KeyringClient,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { CaipChainId } from '@metamask/utils';
 import {
   BITCOIN_WALLET_NAME,
   BITCOIN_WALLET_SNAP_ID,
-  BitcoinWalletSnapSender,
-} from '../../../../app/scripts/lib/snap-keyring/bitcoin-wallet-snap';
+} from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
   Box,
@@ -34,12 +42,9 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import {
-  AccountListItem,
-  AccountListItemMenuTypes,
-  CreateEthAccount,
-  ImportAccount,
-} from '..';
+import { AccountListItem } from '../account-list-item';
+import { AccountListItemMenuTypes } from '../account-list-item/account-list-item.types';
+
 import {
   AlignItems,
   BlockSize,
@@ -57,6 +62,7 @@ import {
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  getIsWatchEthereumAccountEnabled,
   getIsBitcoinSupportEnabled,
   getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -64,6 +70,10 @@ import {
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
   getUpdatedAndSortedAccounts,
+  getDefaultHomeActiveTabName,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  getIsSolanaSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -73,25 +83,53 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CUSTODY_ACCOUNT_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  CONFIRMATION_V_NEXT_ROUTE,
+  SETTINGS_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import {
+  ACCOUNT_WATCHER_NAME,
+  ACCOUNT_WATCHER_SNAP_ID,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 import {
   hasCreatedBtcMainnetAccount,
   hasCreatedBtcTestnetAccount,
 } from '../../../selectors/accounts';
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,solana)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
+  WalletClientType,
+  useMultichainWalletSnapClient,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 import {
   InternalAccountWithBalance,
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import {
+  ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
+  AccountOverviewTabKey,
+} from '../../../../shared/constants/app-state';
+import { CreateEthAccount } from '../create-eth-account';
+import { ImportAccount } from '../import-account';
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+import {
+  SOLANA_WALLET_NAME,
+  SOLANA_WALLET_SNAP_ID,
+} from '../../../../shared/lib/accounts/solana-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -102,6 +140,8 @@ const ACTION_MODES = {
   // Displays the add account form controls
   ADD: 'add',
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  // Displays the add account form controls (for watch-only account)
+  ADD_WATCH_ONLY: 'add-watch-only',
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
   // Same but for testnet
@@ -124,15 +164,15 @@ export const getActionTitle = (
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
+    case ACTION_MODES.MENU:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    case ACTION_MODES.ADD_WATCH_ONLY:
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccount');
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
       return t('addAccount');
     ///: END:ONLY_INCLUDE_IF
-    case ACTION_MODES.MENU:
-      return t('addAccount');
     case ACTION_MODES.IMPORT:
       return t('importAccount');
     default:
@@ -140,38 +180,9 @@ export const getActionTitle = (
   }
 };
 
-/**
- * Merges ordered accounts with balances with each corresponding account data from internal accounts
- *
- * @param accountsWithBalances - ordered accounts with balances
- * @param internalAccounts - internal accounts
- * @returns merged accounts list with balances and internal account data
- */
-export const mergeAccounts = (
-  accountsWithBalances: MergedInternalAccount[],
-  internalAccounts: InternalAccount[],
-) => {
-  return accountsWithBalances.map((account) => {
-    const internalAccount = internalAccounts.find(
-      (intAccount) => intAccount.address === account.address,
-    );
-    if (internalAccount) {
-      return {
-        ...account,
-        ...internalAccount,
-        keyring: internalAccount.metadata.keyring,
-        label: getAccountLabel(
-          internalAccount.metadata.keyring.type,
-          internalAccount,
-        ),
-      };
-    }
-    return account;
-  });
-};
-
 type AccountListMenuProps = {
   onClose: () => void;
+  privacyMode?: boolean;
   showAccountCreation?: boolean;
   accountListItemProps?: object;
   allowedAccountTypes?: KeyringAccountType[];
@@ -179,16 +190,21 @@ type AccountListMenuProps = {
 
 export const AccountListMenu = ({
   onClose,
+  privacyMode = false,
   showAccountCreation = true,
-  accountListItemProps = {},
+  accountListItemProps,
   allowedAccountTypes = [
     EthAccountType.Eoa,
     EthAccountType.Erc4337,
     BtcAccountType.P2wpkh,
+    SolAccountType.DataAccount,
   ],
 }: AccountListMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountList });
+  }, []);
   const accounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );
@@ -206,6 +222,9 @@ export const AccountListMenu = ({
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const { pathname } = useLocation();
+  ///: END:ONLY_INCLUDE_IF
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   const filteredUpdatedAccountList = useMemo(
@@ -215,10 +234,31 @@ export const AccountListMenu = ({
       ),
     [updatedAccountsList, allowedAccountTypes],
   );
+  const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
+    getDefaultHomeActiveTabName,
+  );
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const isAddWatchEthereumAccountEnabled = useSelector(
+    getIsWatchEthereumAccountEnabled,
+  );
+  const handleAddWatchAccount = useCallback(async () => {
+    await trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.AccountAddSelected,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Snap,
+        snap_id: ACCOUNT_WATCHER_SNAP_ID,
+        snap_name: ACCOUNT_WATCHER_NAME,
+        location: 'Main Menu',
+      },
+    });
+    onClose();
+    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  }, [trackEvent, onClose, history]);
+
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinTestnetSupportEnabled = useSelector(
     getIsBitcoinTestnetSupportEnabled,
@@ -230,15 +270,28 @@ export const AccountListMenu = ({
     hasCreatedBtcTestnetAccount,
   );
 
-  const createBitcoinAccount = async (scope: CaipChainId) => {
-    // Client to create the account using the Bitcoin Snap
-    const client = new KeyringClient(new BitcoinWalletSnapSender());
+  const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Bitcoin,
+  );
+  const handleAccountCreation = async (network: MultichainNetworks) => {
+    // The account creation + renaming is handled by the Snap account bridge, so
+    // we need to close the current modal
+    onClose();
+    if (pathname.includes(SETTINGS_ROUTE)) {
+      // The settings route does not redirect pending confirmations. We need to redirect manually here.
+      history.push(CONFIRMATION_V_NEXT_ROUTE);
+    }
 
-    // This will trigger the Snap account creation flow (+ account renaming)
-    await client.createAccount({
-      scope,
-    });
+    await bitcoinWalletSnapClient.createAccount(network);
   };
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  const solanaSupportEnabled = useSelector(getIsSolanaSupportEnabled);
+  const solanaWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Solana,
+  );
+
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -257,12 +310,14 @@ export const AccountListMenu = ({
     fuse.setCollection(filteredAccounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, filteredAccounts);
 
-  const title = getActionTitle(t as (text: string) => string, actionMode);
+  const title = useMemo(
+    () => getActionTitle(t as (text: string) => string, actionMode),
+    [actionMode, t],
+  );
 
   // eslint-disable-next-line no-empty-function
-  let onBack = () => {};
+  let onBack;
   if (actionMode !== ACTION_MODES.LIST) {
     if (actionMode === ACTION_MODES.MENU) {
       onBack = () => setActionMode(ACTION_MODES.LIST);
@@ -270,6 +325,33 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  const onAccountListItemItemClicked = useCallback(
+    (account) => {
+      return () => {
+        onClose();
+        trackEvent({
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.NavAccountSwitched,
+          properties: {
+            location: 'Main Menu',
+          },
+        });
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
+        });
+        trace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+            defaultHomeActiveTabName
+          ],
+        });
+        dispatch(setSelectedAccount(account.address));
+      };
+    },
+    [dispatch, onClose, trackEvent],
+  );
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -360,12 +442,7 @@ export const AccountListMenu = ({
                         },
                       });
 
-                      // The account creation + renaming is handled by the
-                      // Snap account bridge, so we need to close the current
-                      // model
-                      onClose();
-
-                      await createBitcoinAccount(MultichainNetworks.BITCOIN);
+                      await handleAccountCreation(MultichainNetworks.BITCOIN);
                     }}
                     data-testid="multichain-account-menu-popover-add-btc-account"
                   >
@@ -384,11 +461,7 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     onClick={async () => {
-                      // The account creation + renaming is handled by the Snap account bridge, so
-                      // we need to close the current model
-                      onClose();
-
-                      await createBitcoinAccount(
+                      await handleAccountCreation(
                         MultichainNetworks.BITCOIN_TESTNET,
                       );
                     }}
@@ -400,10 +473,47 @@ export const AccountListMenu = ({
               ) : null
               ///: END:ONLY_INCLUDE_IF
             }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(solana)
+              solanaSupportEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    onClick={async () => {
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          snap_id: SOLANA_WALLET_SNAP_ID,
+                          snap_name: SOLANA_WALLET_NAME,
+                          location: 'Main Menu',
+                        },
+                      });
+
+                      // The account creation + renaming is handled by the
+                      // Snap account bridge, so we need to close the current
+                      // modal
+                      onClose();
+
+                      await solanaWalletSnapClient.createAccount(
+                        MultichainNetworks.SOLANA,
+                      );
+                    }}
+                    data-testid="multichain-account-menu-popover-add-solana-account"
+                  >
+                    {t('addNewSolanaAccount')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
             <Box marginTop={4}>
               <ButtonLink
                 size={ButtonLinkSize.Sm}
                 startIconName={IconName.Import}
+                data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
@@ -474,30 +584,20 @@ export const AccountListMenu = ({
               ///: END:ONLY_INCLUDE_IF
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              <Box marginTop={4}>
-                <ButtonLink
-                  size={ButtonLinkSize.Sm}
-                  startIconName={IconName.Custody}
-                  onClick={() => {
-                    onClose();
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event:
-                        MetaMetricsEventName.ConnectCustodialAccountClicked,
-                    });
-                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                      global.platform.openExtensionInBrowser?.(
-                        CUSTODY_ACCOUNT_ROUTE,
-                      );
-                    } else {
-                      history.push(CUSTODY_ACCOUNT_ROUTE);
-                    }
-                  }}
-                >
-                  {t('connectCustodialAccountMenu')}
-                </ButtonLink>
-              </Box>
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              isAddWatchEthereumAccountEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={!isAddWatchEthereumAccountEnabled}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Eye}
+                    onClick={handleAddWatchAccount}
+                    data-testid="multichain-account-menu-popover-add-watch-only-account"
+                  >
+                    {t('addEthereumWatchOnlyAccount')}
+                  </ButtonLink>
+                </Box>
+              )
               ///: END:ONLY_INCLUDE_IF
             }
           </Box>
@@ -564,17 +664,7 @@ export const AccountListMenu = ({
                     key={account.address}
                   >
                     <AccountListItem
-                      onClick={() => {
-                        onClose();
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.NavAccountSwitched,
-                          properties: {
-                            location: 'Main Menu',
-                          },
-                        });
-                        dispatch(setSelectedAccount(account.address));
-                      }}
+                      onClick={onAccountListItemItemClicked(account)}
                       account={account}
                       key={account.address}
                       selected={selectedAccount.address === account.address}
@@ -585,6 +675,7 @@ export const AccountListMenu = ({
                       isHidden={Boolean(account.hidden)}
                       currentTabOrigin={currentTabOrigin}
                       isActive={Boolean(account.active)}
+                      privacyMode={privacyMode}
                       {...accountListItemProps}
                     />
                   </Box>

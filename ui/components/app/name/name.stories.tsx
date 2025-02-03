@@ -3,109 +3,75 @@ import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
-import Name from './name';
+import Name, { NameProps } from './name';
+import mockState from '../../../../test/data/mock-state.json';
+import {
+  EXPERIENCES_TYPE,
+  FIRST_PARTY_CONTRACT_NAMES,
+} from '../../../../shared/constants/first-party-contracts';
+import { cloneDeep } from 'lodash';
 
-const addressNoSavedNameMock = '0xc0ffee254729296a45a3885639ac7e10f9d54978';
-const addressSavedNameMock = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
-const addressSavedTokenMock = '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d';
-const addressUnsavedTokenMock = '0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8';
-const chainIdMock = '0x1';
+const ADDRESS_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54978';
+const ADDRESS_NFT_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';
+const VARIATION_MOCK = '0x1';
+const NAME_MOCK = 'Saved Name';
 
-const storeMock = configureStore({
+const ADDRESS_FIRST_PARTY_MOCK =
+  FIRST_PARTY_CONTRACT_NAMES[EXPERIENCES_TYPE.METAMASK_BRIDGE][
+    VARIATION_MOCK
+  ].toLowerCase();
+
+const PROPOSED_NAMES_MOCK = {
+  ens: {
+    proposedNames: ['test.eth'],
+    lastRequestTime: 123,
+    retryDelay: null,
+  },
+  etherscan: {
+    proposedNames: ['TestContract'],
+    lastRequestTime: 123,
+    retryDelay: null,
+  },
+  token: {
+    proposedNames: ['Test Token'],
+    lastRequestTime: 123,
+    retryDelay: null,
+  },
+  lens: {
+    proposedNames: ['test.lens'],
+    lastRequestTime: 123,
+    retryDelay: null,
+  },
+};
+
+const STATE_MOCK = {
+  ...mockState,
   metamask: {
-    providerConfig: {
-      chainId: chainIdMock,
-    },
+    ...mockState.metamask,
     useTokenDetection: true,
-    tokenList: {
-      '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
-        address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
-        symbol: 'IUSD',
-        name: 'iZUMi Bond USD',
-        iconUrl:
-          'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
-      },
-      '0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8': {
-        address: '0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8',
-        symbol: 'USX',
-        name: 'dForce USD',
-        iconUrl:
-          'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8.png',
-      },
-    },
+    tokensChainsCache: {},
     names: {
       [NameType.ETHEREUM_ADDRESS]: {
-        [addressNoSavedNameMock]: {
-          [chainIdMock]: {
-            proposedNames: {
-              ens: {
-                proposedNames: ['test.eth'],
-                lastRequestTime: 123,
-                retryDelay: null,
-              },
-              etherscan: {
-                proposedNames: ['TestContract'],
-                lastRequestTime: 123,
-                retryDelay: null,
-              },
-              token: {
-                proposedNames: ['Test Token'],
-                lastRequestTime: 123,
-                retryDelay: null,
-              },
-              lens: {
-                proposedNames: ['test.lens'],
-                lastRequestTime: 123,
-                retryDelay: null,
-              },
-            },
+        [ADDRESS_MOCK]: {
+          [VARIATION_MOCK]: {
+            proposedNames: PROPOSED_NAMES_MOCK,
           },
         },
-        [addressSavedNameMock]: {
-          [chainIdMock]: {
-            proposedNames: {
-              ens: {
-                proposedNames: ['test.eth'],
-                lastRequestTime: 123,
-                retryDelay: null,
-              },
-              etherscan: {
-                proposedNames: ['TestContract'],
-                lastRequestTime: 123,
-                retryDelay: null,
-              },
-              token: {
-                proposedNames: ['Test Token'],
-                lastRequestTime: 123,
-                retryDelay: null,
-              },
-              lens: {
-                proposedNames: ['test.lens'],
-                lastRequestTime: 123,
-                retryDelay: null,
-              },
-            },
-            name: 'Test Token',
-            sourceId: 'token',
+        [ADDRESS_NFT_MOCK]: {
+          [VARIATION_MOCK]: {
+            proposedNames: PROPOSED_NAMES_MOCK,
           },
         },
-        [addressSavedTokenMock]: {
-          [chainIdMock]: {
-            proposedNames: {},
-            name: 'Saved Token Name',
-            sourceId: 'token',
+        [ADDRESS_FIRST_PARTY_MOCK]: {
+          [VARIATION_MOCK]: {
+            proposedNames: PROPOSED_NAMES_MOCK,
           },
         },
       },
     },
-    nameSources: {
-      ens: { label: 'Ethereum Name Service (ENS)' },
-      etherscan: { label: 'Etherscan (Verified Contract Name)' },
-      token: { label: 'Blockchain (Token Name)' },
-      lens: { label: 'Lens Protocol' },
-    },
+    nameSources: {},
   },
-});
+};
 
 /**
  * Displays the saved name for a raw value such as an Ethereum address.<br/><br/>
@@ -126,6 +92,10 @@ export default {
       description: `The type of value.<br/><br/>
         Limited to the values in the \`NameType\` enum.`,
     },
+    variation: {
+      control: 'text',
+      description: `The variation of the value.<br/><br/>For example, the chain ID if the type is Ethereum address.`,
+    },
     disableEdit: {
       control: 'boolean',
       description: `Whether to prevent the modal from opening when the component is clicked.`,
@@ -135,68 +105,141 @@ export default {
     },
   },
   args: {
-    value: addressNoSavedNameMock,
+    value: ADDRESS_MOCK,
     type: NameType.ETHEREUM_ADDRESS,
+    variation: VARIATION_MOCK,
     disableEdit: false,
   },
-  decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
+  render: ({ state, ...args }) => {
+    const finalState = cloneDeep(STATE_MOCK);
+    state?.(finalState);
+
+    return (
+      <Provider store={configureStore(finalState)}>
+        <Name {...(args as NameProps)} />
+      </Provider>
+    );
+  },
 };
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * No name has been saved for the value and type.
  */
-export const DefaultStory = (args) => {
-  return <Name {...args} />;
+export const NoSavedName = {
+  name: 'No Saved Name',
+  args: {
+    value: ADDRESS_MOCK,
+    type: NameType.ETHEREUM_ADDRESS,
+    variation: VARIATION_MOCK,
+  },
 };
-
-DefaultStory.storyName = 'No Saved Name';
 
 /**
  * A name was previously saved for this value and type.<br/><br/>
  * The component will still display a modal when clicked to edit the name.
  */
-export const SavedNameStory = () => {
-  return <Name value={addressSavedNameMock} type={NameType.ETHEREUM_ADDRESS} />;
+export const SavedNameStory = {
+  name: 'Saved Name',
+  args: {
+    value: ADDRESS_MOCK,
+    type: NameType.ETHEREUM_ADDRESS,
+    variation: VARIATION_MOCK,
+    state: (state) => {
+      state.metamask.names[NameType.ETHEREUM_ADDRESS][ADDRESS_MOCK][
+        VARIATION_MOCK
+      ].name = NAME_MOCK;
+    },
+  },
 };
-
-SavedNameStory.storyName = 'Saved Name';
 
 /**
  * No name was previously saved for this recognized token.<br/><br/>
  * The component will still display a modal when clicked to edit the name.
  */
-export const UnsavedTokenNameStory = () => {
-  return (
-    <Name value={addressUnsavedTokenMock} type={NameType.ETHEREUM_ADDRESS} />
-  );
+export const DefaultTokenNameStory = {
+  name: 'Default ERC-20 Token Name',
+  args: {
+    value: ADDRESS_MOCK,
+    type: NameType.ETHEREUM_ADDRESS,
+    variation: VARIATION_MOCK,
+    state: (state) => {
+      state.metamask.tokensChainsCache = {
+        [VARIATION_MOCK]: {
+          data: {
+            [ADDRESS_MOCK]: {
+              address: ADDRESS_MOCK,
+              symbol: 'IUSD',
+              name: 'iZUMi Bond USD',
+              iconUrl:
+                'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+            },
+          },
+        },
+      };
+    },
+  },
 };
-
-UnsavedTokenNameStory.storyName = 'Unsaved Token Name';
 
 /**
- * A name was previously saved for this recognized token.<br/><br/>
+ * No name was previously saved for this watched NFT.<br/><br/>
  * The component will still display a modal when clicked to edit the name.
  */
-export const SavedTokenNameStory = () => {
-  return (
-    <Name value={addressSavedTokenMock} type={NameType.ETHEREUM_ADDRESS} />
-  );
+export const DefaultWatchedNFTNameStory = {
+  name: 'Default Watched NFT Name',
+  args: {
+    value: ADDRESS_MOCK,
+    type: NameType.ETHEREUM_ADDRESS,
+    variation: VARIATION_MOCK,
+    state: (state) => {
+      state.metamask.allNftContracts = {
+        '0x123': {
+          [VARIATION_MOCK]: [
+            {
+              address: ADDRESS_MOCK,
+              name: 'Everything I Own',
+            },
+          ],
+        },
+      };
+    },
+  },
 };
 
-SavedTokenNameStory.storyName = 'Saved Token Name';
+/**
+ * No name was previously saved for this recognized NFT.<br/><br/>
+ * The component will still display a modal when clicked to edit the name.
+ */
+export const DefaultNFTNameStory = {
+  name: 'Default NFT Name',
+  args: {
+    value: ADDRESS_NFT_MOCK,
+    type: NameType.ETHEREUM_ADDRESS,
+    variation: VARIATION_MOCK,
+  },
+};
+
+/**
+ * No name was previously saved for this first-party contract.<br/><br/>
+ * The component will still display a modal when clicked to edit the name.
+ */
+export const DefaultFirstPartyNameStory = {
+  name: 'Default First-Party Name',
+  args: {
+    value: ADDRESS_FIRST_PARTY_MOCK,
+    type: NameType.ETHEREUM_ADDRESS,
+    variation: VARIATION_MOCK,
+  },
+};
 
 /**
  * Clicking the component will not display a modal to edit the name.
  */
-export const EditDisabledStory = () => {
-  return (
-    <Name
-      value={addressSavedNameMock}
-      type={NameType.ETHEREUM_ADDRESS}
-      disableEdit
-    />
-  );
+export const EditDisabledStory = {
+  name: 'Edit Disabled',
+  args: {
+    value: ADDRESS_MOCK,
+    type: NameType.ETHEREUM_ADDRESS,
+    variation: VARIATION_MOCK,
+    disableEdit: true,
+  },
 };
-
-EditDisabledStory.storyName = 'Edit Disabled';

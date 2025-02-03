@@ -96,49 +96,6 @@ exports[`SendPage render and initialization should render correctly even when a 
                   </div>
                 </div>
               </div>
-              <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
-              >
-                <div
-                  class="mm-avatar-account__jazzicon"
-                >
-                  <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
-                  >
-                    <svg
-                      height="32"
-                      width="32"
-                      x="0"
-                      y="0"
-                    >
-                      <rect
-                        fill="#2362E1"
-                        height="32"
-                        transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#F94301"
-                        height="32"
-                        transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#FA7900"
-                        height="32"
-                        transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
               <span
                 class="mm-box mm-text multichain-account-picker__label multichain-send-page__account-picker__label mm-text--body-md mm-text--ellipsis mm-box--padding-inline-start-1 mm-box--color-text-default"
                 style="flex-grow: 1; text-align: start;"
@@ -178,7 +135,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                   class="ens-input__wrapper__input"
                   data-testid="ens-input"
                   dir="auto"
-                  placeholder="Enter public address (0x) or ENS name"
+                  placeholder="Enter public address (0x) or domain name"
                   spellcheck="false"
                   type="text"
                   value=""
@@ -203,7 +160,7 @@ exports[`SendPage render and initialization should render correctly even when a 
               class="box tabs box--flex-direction-row"
             >
               <ul
-                class="box tabs__list box--display-flex box--gap-1 box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
+                class="box tabs__list box--display-flex box--flex-direction-row box--justify-content-flex-start box--background-color-background-default"
               >
                 <li
                   class="box tab tab--active box--flex-direction-row"
@@ -232,8 +189,11 @@ exports[`SendPage render and initialization should render correctly even when a 
                   class="mm-box mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
-                    class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+                    class="mm-box multichain-account-list-item multichain-account-list-item--selected multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-primary-muted"
                   >
+                    <div
+                      class="mm-box multichain-account-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
+                    />
                     <div
                       class="mm-box mm-box--display-flex mm-box--sm:display-none"
                       data-testid="account-list-item-badge"
@@ -298,54 +258,11 @@ exports[`SendPage render and initialization should render correctly even when a 
                                 </div>
                               </div>
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-                              >
-                                <div
-                                  class="mm-avatar-account__jazzicon"
-                                >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
-                                  >
-                                    <svg
-                                      height="32"
-                                      width="32"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#2362E1"
-                                        height="32"
-                                        transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
-                                        width="32"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F94301"
-                                        height="32"
-                                        transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
-                                        width="32"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#FA7900"
-                                        height="32"
-                                        transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
-                                        width="32"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
                                 class="mm-box mm-badge-wrapper__badge-container"
                                 style="bottom: -1px; right: 2px;"
                               >
                                 <div
-                                  class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                                  class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                                 />
                               </div>
                             </div>
@@ -356,49 +273,6 @@ exports[`SendPage render and initialization should render correctly even when a 
                     <div
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
-                      <div
-                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-                      >
-                        <div
-                          class="mm-avatar-account__jazzicon"
-                        >
-                          <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
-                          >
-                            <svg
-                              height="32"
-                              width="32"
-                              x="0"
-                              y="0"
-                            >
-                              <rect
-                                fill="#2362E1"
-                                height="32"
-                                transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#F94301"
-                                height="32"
-                                transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#FA7900"
-                                height="32"
-                                transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                       >
@@ -471,6 +345,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                             >
                               <span
                                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                                data-testid="account-value-and-suffix"
                               >
                                 $0.00
                               </span>
@@ -514,6 +389,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                             >
                               <span
                                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                                data-testid="account-value-and-suffix"
                               >
                                 0
                               </span>
@@ -549,6 +425,7 @@ exports[`SendPage render and initialization should render correctly even when a 
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            data-theme="light"
           >
             Continue
           </button>

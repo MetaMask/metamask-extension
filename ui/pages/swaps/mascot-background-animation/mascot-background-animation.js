@@ -1,10 +1,11 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import EventEmitter from 'events';
 import React, { useRef } from 'react';
+import PropTypes from 'prop-types';
 
 import Mascot from '../../../components/ui/mascot';
 
-export default function MascotBackgroundAnimation() {
+export default function MascotBackgroundAnimation({ height, width }) {
   const animationEventEmitter = useRef(new EventEmitter());
 
   return (
@@ -220,11 +221,16 @@ export default function MascotBackgroundAnimation() {
       >
         <Mascot
           animationEventEmitter={animationEventEmitter.current}
-          width="42"
-          height="42"
+          width={width ?? '42'}
+          height={height ?? '42'}
           followMouse={false}
         />
       </div>
     </div>
   );
 }
+
+MascotBackgroundAnimation.propTypes = {
+  height: PropTypes.string,
+  width: PropTypes.string,
+};

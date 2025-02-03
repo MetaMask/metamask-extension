@@ -12,6 +12,7 @@ import {
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import {
+  BackgroundColor,
   BlockSize,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -63,25 +64,36 @@ export const SnapHomeRenderer = ({ snapId }) => {
     }
   }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
 
+  if (error) {
+    return (
+      <Box
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        style={{
+          overflowY: 'auto',
+        }}
+      >
+        <Box height={BlockSize.Full} padding={4}>
+          <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
+            <Text variant={TextVariant.bodySm} marginBottom={4}>
+              {t('snapsUIError', [<b key="0">{snapName}</b>])}
+            </Text>
+            <Copyable text={error.message} />
+          </SnapDelineator>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
-    <Box height={BlockSize.Full}>
-      {error && (
-        <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
-          <Text variant={TextVariant.bodySm} marginBottom={4}>
-            {t('snapsUIError', [<b key="0">{snapName}</b>])}
-          </Text>
-          <Copyable text={error.message} />
-        </SnapDelineator>
-      )}
-      {(interfaceId || loading) && (
-        <SnapUIRenderer
-          snapId={snapId}
-          interfaceId={interfaceId}
-          isLoading={loading}
-          useDelineator={false}
-        />
-      )}
-    </Box>
+    <SnapUIRenderer
+      snapId={snapId}
+      interfaceId={interfaceId}
+      isLoading={loading}
+      useDelineator={false}
+      useFooter
+    />
   );
 };
 

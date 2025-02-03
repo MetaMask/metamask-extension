@@ -18,7 +18,6 @@ import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
-  getInternalAccounts,
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
@@ -43,7 +42,6 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import {
   AccountListItem,
   AccountListItemMenuTypes,
@@ -53,7 +51,7 @@ import {
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
 import {
-  requestAccountsPermissionWithId,
+  requestAccountsAndChainPermissionsWithId,
   removePermissionsFor,
 } from '../../../../store/actions';
 import {
@@ -85,10 +83,10 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const urlParams: { origin: string } = useParams();
-  const securedOrigin = decodeURIComponent(urlParams.origin);
+  const urlParams = useParams<{ origin: string }>();
+  // @ts-expect-error TODO: Fix this type error by handling undefined parameters
+  const activeTabOrigin = decodeURIComponent(urlParams.origin);
 
-  const activeTabOrigin: string = securedOrigin;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -109,8 +107,6 @@ export const Connections = () => {
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
   const selectedAccount = useSelector(getSelectedAccount);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
 
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
@@ -130,7 +126,7 @@ export const Connections = () => {
   }
   const requestAccountsPermission = async () => {
     const requestId = await dispatch(
-      requestAccountsPermissionWithId(tabToConnect.origin),
+      requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
     );
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
@@ -165,25 +161,33 @@ export const Connections = () => {
     }
   };
 
-  // In the mergeAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
-  const latestSelected = mergedAccounts.findIndex(
+  // In the connectedAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
+  const latestSelected = connectedAccounts.findIndex(
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_account: any, index: any) => {
       return (
         index ===
-        mergedAccounts.reduce(
+        connectedAccounts.reduce(
           (
-            acc: number,
-            cur: { metadata: { lastSelected: number } },
+            indexOfAccountWIthHighestLastSelected: number,
+            currentAccountToCompare: AccountType,
             // TODO: Replace `any` with type
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i: any,
-          ) =>
-            cur.metadata.lastSelected >
-            mergedAccounts[acc].metadata.lastSelected
+          ) => {
+            const currentLastSelected =
+              currentAccountToCompare.metadata.lastSelected ?? 0;
+            const accountAtIndexLastSelected = connectedAccounts[
+              indexOfAccountWIthHighestLastSelected
+            ].metadata.lastSelected
               ? i
-              : acc,
+              : indexOfAccountWIthHighestLastSelected;
+
+            return currentLastSelected > accountAtIndexLastSelected
+              ? i
+              : indexOfAccountWIthHighestLastSelected;
+          },
           0,
         )
       );
@@ -235,16 +239,16 @@ export const Connections = () => {
             textAlign={TextAlign.Center}
             ellipsis
           >
-            {getURLHost(securedOrigin)}
+            {getURLHost(activeTabOrigin)}
           </Text>
         </Box>
       </Header>
       <Content padding={0}>
-        {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
+        {permittedAccounts.length > 0 && connectedAccounts.length > 0 ? (
           <Box>
             {/* TODO: Replace `any` with type */}
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {mergedAccounts.map((account: AccountType, index: any) => {
+            {connectedAccounts.map((account: AccountType, index: any) => {
               const connectedSites: ConnectedSites = {};
               const connectedSite = connectedSites[account.address]?.find(
                 ({ origin }) => origin === activeTabOrigin,
@@ -252,17 +256,15 @@ export const Connections = () => {
               const isSelectedAccount =
                 selectedAccount.address === account.address;
               // Match the index of latestSelected Account with the index of all the accounts and set the active status
-              let mergedAccountsProps;
-              if (index === latestSelected) {
-                mergedAccountsProps = { ...account, isAccountActive: true };
-              } else {
-                mergedAccountsProps = { ...account };
-              }
+              const mergedAccountsProps = {
+                ...account,
+                isAccountActive: index === latestSelected,
+              };
               return (
                 <AccountListItem
                   account={mergedAccountsProps}
                   key={account.address}
-                  accountsCount={mergedAccounts.length}
+                  accountsCount={connectedAccounts.length}
                   selected={isSelectedAccount}
                   connectedAvatar={connectedSite?.iconUrl}
                   menuType={AccountListItemMenuTypes.Connection}
@@ -353,7 +355,7 @@ export const Connections = () => {
               />
             </ToastContainer>
           ) : null}
-          {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
+          {permittedAccounts.length > 0 && connectedAccounts.length > 0 ? (
             <Box
               display={Display.Flex}
               gap={2}
@@ -387,7 +389,7 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
-              onClick={() => dispatch(requestAccountsPermission())}
+              onClick={() => requestAccountsPermission()}
             >
               {t('connectAccounts')}
             </ButtonPrimary>

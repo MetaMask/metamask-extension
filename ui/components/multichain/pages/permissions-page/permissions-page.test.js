@@ -2,6 +2,8 @@ import React from 'react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { PermissionsPage } from './permissions-page';
 
 mockState.metamask.subjectMetadata = {
@@ -33,17 +35,27 @@ mockState.metamask.subjects = {
   'https://metamask.github.io': {
     origin: 'https://metamask.github.io',
     permissions: {
-      eth_accounts: {
+      'endowment:caip25': {
         caveats: [
           {
-            type: 'restrictReturnedAccounts',
-            value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+            type: 'authorizedScopes',
+            value: {
+              requiredScopes: {},
+              optionalScopes: {
+                'eip155:1': {
+                  accounts: [
+                    'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                  ],
+                },
+              },
+              isMultichainOrigin: false,
+            },
           },
         ],
         date: 1698071087770,
         id: 'BIko27gpEajmo_CcNYPxD',
         invoker: 'https://metamask.github.io',
-        parentCapability: 'eth_accounts',
+        parentCapability: 'endowment:caip25',
       },
     },
   },
@@ -86,7 +98,13 @@ mockState.metamask.domains = {
   'npm:@metamask/testSnap3': 'mainnet',
 };
 
-let store = configureStore(mockState);
+let store = configureStore({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+  },
+});
 
 describe('All Connections', () => {
   describe('render', () => {

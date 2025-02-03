@@ -28,6 +28,8 @@ export type ConfirmInfoRowTextProps = {
   onEditClick?: () => void;
   editIconClassName?: string;
   tooltip?: string;
+  'data-testid'?: string;
+  editIconDataTestId?: string;
 };
 
 export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
@@ -35,6 +37,8 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
   onEditClick,
   editIconClassName,
   tooltip,
+  'data-testid': dataTestId,
+  editIconDataTestId,
 }) => {
   const t = useContext(I18nContext);
 
@@ -42,12 +46,26 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
 
   return (
     <Box
+      data-testid={dataTestId}
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
       gap={2}
       minWidth={BlockSize.Zero}
     >
+      {isEditable ? (
+        <ButtonIcon
+          className={editIconClassName || undefined}
+          color={IconColor.primaryDefault}
+          ariaLabel={t('edit')}
+          iconName={IconName.Edit}
+          onClick={onEditClick}
+          size={ButtonIconSize.Sm}
+          // to reset the button padding
+          style={{ marginRight: '-4px' }}
+          data-testid={editIconDataTestId}
+        />
+      ) : null}
       {tooltip ? (
         <Tooltip
           position="bottom"
@@ -60,19 +78,6 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
       ) : (
         <InfoText text={text} />
       )}
-      {isEditable ? (
-        <ButtonIcon
-          className={editIconClassName || undefined}
-          color={IconColor.primaryDefault}
-          ariaLabel={t('edit')}
-          iconName={IconName.Edit}
-          onClick={onEditClick}
-          size={ButtonIconSize.Sm}
-          // to reset the button padding
-          style={{ marginLeft: '-4px' }}
-          data-testid="edit-nonce-icon"
-        />
-      ) : null}
     </Box>
   );
 };

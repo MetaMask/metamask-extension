@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   withFixtures,
   openDapp,
@@ -8,7 +7,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Wallet Revoke Permissions', function () {
-  it('should revoke eth_accounts permissions via test dapp', async function () {
+  it('should revoke "eth_accounts" permissions via test dapp', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -25,12 +24,10 @@ describe('Wallet Revoke Permissions', function () {
         // Get initial accounts permissions
         await driver.clickElement('#getPermissions');
 
-        const permissionsResult = await driver.findElement(
-          '#permissionsResult',
-        );
-
-        // Eth_accounts permission
-        assert.equal(await permissionsResult.getText(), 'eth_accounts');
+        await driver.waitForSelector({
+          css: '#permissionsResult',
+          text: 'eth_accounts',
+        });
 
         // Revoke eth_accounts permissions
         await driver.clickElement('#revokeAccountsPermission');
@@ -39,10 +36,53 @@ describe('Wallet Revoke Permissions', function () {
         await driver.clickElement('#getPermissions');
 
         // Eth_accounts permissions removed
-        assert.equal(
-          await permissionsResult.getText(),
-          'No permissions found.',
+        await driver.waitForSelector({
+          css: '#permissionsResult',
+          text: 'No permissions found.',
+        });
+      },
+    );
+  });
+
+  it('should revoke "endowment:permitted-chains" permissions', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await openDapp(driver);
+
+        // Get initial accounts permissions
+        await driver.clickElement('#getPermissions');
+
+        const revokeChainsRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_revokePermissions',
+          params: [
+            {
+              'endowment:permitted-chains': {},
+            },
+          ],
+        });
+
+        await driver.executeScript(
+          `return window.ethereum.request(${revokeChainsRequest})`,
         );
+
+        // Get new allowed permissions
+        await driver.clickElement('#getPermissions');
+
+        // Eth_accounts permissions removed
+        await driver.waitForSelector({
+          css: '#permissionsResult',
+          text: 'No permissions found.',
+        });
       },
     );
   });

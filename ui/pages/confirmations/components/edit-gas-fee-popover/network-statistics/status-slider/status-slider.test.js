@@ -34,13 +34,13 @@ describe('StatusSlider', () => {
     expect(getByText('Stable')).toBeInTheDocument();
   });
 
-  it('should show "Busy" when networkCongestion is 0.66', () => {
-    const { getByText } = renderComponent({ networkCongestion: 0.66 });
+  it('should show "Busy" when networkCongestion is 0.9', () => {
+    const { getByText } = renderComponent({ networkCongestion: 0.9 });
     expect(getByText('Busy')).toBeInTheDocument();
   });
 
-  it('should show "Busy" when networkCongestion is greater than 0.66', () => {
-    const { getByText } = renderComponent({ networkCongestion: 0.67 });
+  it('should show "Busy" when networkCongestion is greater than 0.9', () => {
+    const { getByText } = renderComponent({ networkCongestion: 0.91 });
     expect(getByText('Busy')).toBeInTheDocument();
   });
 

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isSnapId } from '@metamask/snaps-utils';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -47,8 +48,9 @@ export default function SnapInstall({
   const { origin, iconUrl } = siteMetadata;
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
+  const [showAllPermissions, setShowAllPermissions] = useState(false);
 
-  const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
+  const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
 
   const onCancel = useCallback(
@@ -67,6 +69,9 @@ export default function SnapInstall({
 
   const hasError = !requestState.loading && requestState.error;
   const isLoading = requestState.loading;
+
+  // we already have access to the requesting snap's metadata
+  const isOriginSnap = isSnapId(request?.metadata?.dappOrigin);
 
   const warnings = getSnapInstallWarnings(
     requestState?.permissions ?? {},
@@ -96,6 +101,10 @@ export default function SnapInstall({
     return 'confirm';
   };
 
+  const onShowAllPermissionsHandler = () => {
+    setShowAllPermissions(true);
+  };
+
   return (
     <Box
       className="snap-install"
@@ -106,11 +115,15 @@ export default function SnapInstall({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      {isLoading || hasError ? (
+      {(isLoading || hasError) && !isOriginSnap ? (
         <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
       ) : (
         <SnapAuthorshipHeader
-          snapId={targetSubjectMetadata.origin}
+          snapId={
+            isLoading && isOriginSnap
+              ? request?.metadata?.dappOrigin
+              : targetSubjectMetadata.origin
+          }
           onCancel={onCancel}
         />
       )}
@@ -190,10 +203,12 @@ export default function SnapInstall({
                 snapName={snapName}
                 permissions={requestState.permissions || {}}
                 connections={requestState.connections || {}}
+                onShowAllPermissions={onShowAllPermissionsHandler}
               />
             </Box>
-            {isScrollable && !isScrolledToBottom ? (
-              <Box className="snap-install__scroll-button-area">
+
+            <Box className="snap-install__scroll-button-area">
+              {isScrollable && !hasScrolledToBottom && !showAllPermissions ? (
                 <AvatarIcon
                   className="snap-install__scroll-button"
                   data-testid="snap-install-scroll"
@@ -203,8 +218,8 @@ export default function SnapInstall({
                   onClick={scrollToBottom}
                   style={{ cursor: 'pointer' }}
                 />
-              </Box>
-            ) : null}
+              ) : null}
+            </Box>
           </>
         )}
       </Box>
@@ -219,7 +234,7 @@ export default function SnapInstall({
           cancelButtonType="default"
           hideCancel={hasError}
           disabled={
-            isLoading || (!hasError && isScrollable && !isScrolledToBottom)
+            isLoading || (!hasError && isScrollable && !hasScrolledToBottom)
           }
           onCancel={onCancel}
           cancelText={t('cancel')}
