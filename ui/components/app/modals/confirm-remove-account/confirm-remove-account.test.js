@@ -7,6 +7,7 @@ import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmRemoveAccount from '.';
 
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
@@ -54,9 +55,7 @@ describe('Confirm Remove Account', () => {
   const state = {
     metamask: {
       completedOnboarding: true,
-      providerConfig: {
-        chainId: '0x99',
-      },
+      ...mockNetworkState({ chainId: '0x99' }),
       internalAccounts: {
         accounts: {
           [mockAccount.id]: mockAccount,

@@ -45,7 +45,9 @@ export default function SnapUpdate({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
-  const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
+  const [showAllPermissions, setShowAllPermissions] = useState(false);
+
+  const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
   const snapsMetadata = useSelector(getSnapsMetadata);
 
@@ -91,6 +93,10 @@ export default function SnapUpdate({
     } else {
       onSubmit();
     }
+  };
+
+  const onShowAllPermissions = () => {
+    setShowAllPermissions(true);
   };
 
   return (
@@ -196,10 +202,11 @@ export default function SnapUpdate({
                 revokedConnections={revokedConnections}
                 newConnections={newConnections}
                 targetSubjectMetadata={targetSubjectMetadata}
+                showAllPermissions={onShowAllPermissions}
               />
             </Box>
-            {isScrollable && !isScrolledToBottom ? (
-              <Box className="snap-update__scroll-button-area">
+            <Box className="snap-update__scroll-button-area">
+              {isScrollable && !hasScrolledToBottom && !showAllPermissions ? (
                 <AvatarIcon
                   className="snap-install__scroll-button"
                   data-testid="snap-update-scroll"
@@ -209,8 +216,8 @@ export default function SnapUpdate({
                   onClick={scrollToBottom}
                   style={{ cursor: 'pointer' }}
                 />
-              </Box>
-            ) : null}
+              ) : null}
+            </Box>
           </>
         )}
       </Box>
@@ -225,7 +232,7 @@ export default function SnapUpdate({
           cancelButtonType="default"
           hideCancel={hasError}
           disabled={
-            isLoading || (!hasError && isScrollable && !isScrolledToBottom)
+            isLoading || (!hasError && isScrollable && !hasScrolledToBottom)
           }
           onCancel={onCancel}
           cancelText={t('cancel')}

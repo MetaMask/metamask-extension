@@ -1,7 +1,7 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import * as ethUtil from 'ethereumjs-util';
+import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -13,6 +13,8 @@ import bowser from 'bowser';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
@@ -30,6 +32,8 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -39,13 +43,17 @@ export function formatDate(date, format = "M/d/y 'at' T") {
   return DateTime.fromMillis(date).toFormat(format);
 }
 
-export const formatUTCDate = (dateInMillis) => {
-  if (!dateInMillis) {
-    return dateInMillis;
+/**
+ * @param {number} unixTimestamp - timestamp as seconds since unix epoch
+ * @returns {string} formatted date string e.g. "14 July 2034, 22:22"
+ */
+export const formatUTCDateFromUnixTimestamp = (unixTimestamp) => {
+  if (!unixTimestamp) {
+    return unixTimestamp;
   }
 
-  return DateTime.fromMillis(dateInMillis)
-    .setZone('utc')
+  return DateTime.fromSeconds(unixTimestamp)
+    .toUTC()
     .toFormat('dd LLLL yyyy, HH:mm');
 };
 
@@ -162,10 +170,10 @@ export function isOriginContractAddress(to, sendTokenAddress) {
 // Takes wei Hex, returns wei BN, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new ethUtil.BN(0, 16);
+    return new BN(0, 16);
   }
   const stripped = stripHexPrefix(balance);
-  return new ethUtil.BN(stripped, 16);
+  return new BN(stripped, 16);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
@@ -221,7 +229,11 @@ export function formatBalance(
 }
 
 export function getContractAtAddress(tokenAddress) {
-  return global.eth.contract(abi).at(tokenAddress);
+  return new Contract(
+    tokenAddress,
+    abi,
+    new Web3Provider(global.ethereumProvider),
+  );
 }
 
 export function getRandomFileName() {
@@ -295,6 +307,25 @@ export function shortenAddress(address = '') {
 
 export function getAccountByAddress(accounts = [], targetAddress) {
   return accounts.find(({ address }) => address === targetAddress);
+}
+
+/**
+ * Sort the given list of account their selecting order (descending). Meaning the
+ * first account of the sorted list will be the last selected account.
+ *
+ * @param {import('@metamask/keyring-api').InternalAccount[]} accounts - The internal accounts list.
+ * @returns {import('@metamask/keyring-api').InternalAccount[]} The sorted internal account list.
+ */
+export function sortSelectedInternalAccounts(accounts) {
+  // This logic comes from the `AccountsController`:
+  // TODO: Expose a free function from this controller and use it here
+  return accounts.sort((accountA, accountB) => {
+    // Sort by `.lastSelected` in descending order
+    return (
+      (accountB.metadata.lastSelected ?? 0) -
+      (accountA.metadata.lastSelected ?? 0)
+    );
+  });
 }
 
 /**
@@ -562,7 +593,7 @@ export const sanitizeMessage = (msg, primaryType, types) => {
   return { value: sanitizedStruct, type: primaryType };
 };
 
-export function getAssetImageURL(image, ipfsGateway) {
+export async function getAssetImageURL(image, ipfsGateway) {
   if (!image || typeof image !== 'string') {
     return '';
   }
@@ -593,7 +624,7 @@ export function getAssetImageURL(image, ipfsGateway) {
     // In the future, we can look into solving the root cause, which might require
     // no longer using multiform's CID.parse() method within the assets-controller
     try {
-      return getFormattedIpfsUrl(ipfsGateway, image, true);
+      return await getFormattedIpfsUrl(ipfsGateway, image, true);
     } catch (e) {
       logErrorWithMessage(e);
       return '';
@@ -780,4 +811,55 @@ export const hexToText = (hex) => {
  */
 export const getAvatarFallbackLetter = (subjectName) => {
   return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+};
+
+/**
+ * Get abstracted Snap permissions filtered by weight.
+ *
+ * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
+ * @param weightThreshold - Number that represents weight threshold for filtering.
+ * @param minPermissionCount - Minimum number of permissions to show,
+ * if filtered permissions count are less than the value specified.
+ * @returns Subset of permissions passing weight criteria.
+ */
+export const getFilteredSnapPermissions = (
+  weightedPermissions,
+  weightThreshold = Infinity,
+  minPermissionCount = 3,
+) => {
+  const filteredPermissions = weightedPermissions.filter(
+    (permission) => permission.weight <= weightThreshold,
+  );
+
+  // If there are not enough permissions that fall into desired set filtered by weight,
+  // then fill the gap, no matter what the weight is
+  if (minPermissionCount && filteredPermissions.length < minPermissionCount) {
+    const remainingPermissions = weightedPermissions.filter(
+      (permission) => permission.weight > weightThreshold,
+    );
+    // Add permissions until desired count is reached
+    return filteredPermissions.concat(
+      remainingPermissions.slice(
+        0,
+        minPermissionCount - filteredPermissions.length,
+      ),
+    );
+  }
+
+  return filteredPermissions;
+};
+/**
+ * Helper function to calculate the token amount 1dAgo using price percentage a day ago.
+ *
+ * @param {*} tokenFiatBalance - current token fiat balance
+ * @param {*} tokenPricePercentChange1dAgo - price percentage 1day ago
+ * @returns token amount 1day ago
+ */
+export const getCalculatedTokenAmount1dAgo = (
+  tokenFiatBalance,
+  tokenPricePercentChange1dAgo,
+) => {
+  return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
+    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+    : tokenFiatBalance ?? 0;
 };

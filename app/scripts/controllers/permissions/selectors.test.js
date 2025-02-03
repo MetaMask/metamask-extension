@@ -1,21 +1,27 @@
 import { cloneDeep } from 'lodash';
-import { getChangedAccounts, getPermittedAccountsByOrigin } from './selectors';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/multichain';
+import {
+  diffMap,
+  getPermittedAccountsByOrigin,
+  getPermittedChainsByOrigin,
+} from './selectors';
 
 describe('PermissionController selectors', () => {
-  describe('getChangedAccounts', () => {
+  describe('diffMap', () => {
     it('returns the new value if the previous value is undefined', () => {
       const newAccounts = new Map([['foo.bar', ['0x1']]]);
-      expect(getChangedAccounts(newAccounts)).toBe(newAccounts);
+      expect(diffMap(newAccounts)).toBe(newAccounts);
     });
 
     it('returns an empty map if the new and previous values are the same', () => {
       const newAccounts = new Map([['foo.bar', ['0x1']]]);
-      expect(getChangedAccounts(newAccounts, newAccounts)).toStrictEqual(
-        new Map(),
-      );
+      expect(diffMap(newAccounts, newAccounts)).toStrictEqual(new Map());
     });
 
-    it('returns a new map of the changed accounts if the new and previous values differ', () => {
+    it('returns a new map of the changed key/value pairs if the new and previous maps differ', () => {
       // We set this on the new and previous value under the key 'foo.bar' to
       // check that identical values are excluded.
       const identicalValue = ['0x1'];
@@ -32,7 +38,7 @@ describe('PermissionController selectors', () => {
       ]);
       newAccounts.set('foo.bar', identicalValue);
 
-      expect(getChangedAccounts(newAccounts, previousAccounts)).toStrictEqual(
+      expect(diffMap(newAccounts, previousAccounts)).toStrictEqual(
         new Map([
           ['bar.baz', ['0x1', '0x2']],
           ['fizz.buzz', []],
@@ -49,25 +55,72 @@ describe('PermissionController selectors', () => {
           'foo.bar': {
             origin: 'foo.bar',
             permissions: {
-              eth_accounts: {
-                caveats: [{ type: 'restrictReturnedAccounts', value: ['0x1'] }],
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x1'],
+                        },
+                      },
+                      optionalScopes: {
+                        'bip122:000000000019d6689c085ae165831e93': {
+                          accounts: [
+                            'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
               },
             },
           },
           'bar.baz': {
             origin: 'bar.baz',
             permissions: {
-              eth_accounts: {
-                caveats: [{ type: 'restrictReturnedAccounts', value: ['0x2'] }],
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x2'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
               },
             },
           },
           'baz.bizz': {
             origin: 'baz.fizz',
             permissions: {
-              eth_accounts: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
-                  { type: 'restrictReturnedAccounts', value: ['0x1', '0x2'] },
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x1'],
+                        },
+                      },
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x2'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
                 ],
               },
             },
@@ -111,6 +164,123 @@ describe('PermissionController selectors', () => {
       // Since we didn't mutate the state at this point, the value should once
       // again be the memoized.
       expect(selected2).toBe(getPermittedAccountsByOrigin(state2));
+    });
+  });
+
+  describe('getPermittedChainsByOrigin', () => {
+    it('memoizes and gets permitted chains by origin', () => {
+      const state1 = {
+        subjects: {
+          'foo.bar': {
+            origin: 'foo.bar',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: [],
+                        },
+                      },
+                      optionalScopes: {
+                        'bip122:000000000019d6689c085ae165831e93': {
+                          accounts: [],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'bar.baz': {
+            origin: 'bar.baz',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:2': {
+                          accounts: [],
+                        },
+                      },
+                      optionalScopes: {},
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'baz.bizz': {
+            origin: 'baz.fizz',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: [],
+                        },
+                      },
+                      optionalScopes: {
+                        'eip155:2': {
+                          accounts: [],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'no.chains': {
+            // we shouldn't see this in the result
+            permissions: {
+              foobar: {},
+            },
+          },
+        },
+      };
+
+      const expected1 = new Map([
+        ['foo.bar', ['0x1']],
+        ['bar.baz', ['0x2']],
+        ['baz.fizz', ['0x1', '0x2']],
+      ]);
+
+      const selected1 = getPermittedChainsByOrigin(state1);
+
+      expect(selected1).toStrictEqual(expected1);
+      // The selector should return the memoized value if state.subjects is
+      // the same object
+      expect(selected1).toBe(getPermittedChainsByOrigin(state1));
+
+      // If we mutate the state, the selector return value should be different
+      // from the first.
+      const state2 = cloneDeep(state1);
+      delete state2.subjects['foo.bar'];
+
+      const expected2 = new Map([
+        ['bar.baz', ['0x2']],
+        ['baz.fizz', ['0x1', '0x2']],
+      ]);
+
+      const selected2 = getPermittedChainsByOrigin(state2);
+
+      expect(selected2).toStrictEqual(expected2);
+      expect(selected2).not.toBe(selected1);
+      // Since we didn't mutate the state at this point, the value should once
+      // again be the memoized.
+      expect(selected2).toBe(getPermittedChainsByOrigin(state2));
     });
   });
 });

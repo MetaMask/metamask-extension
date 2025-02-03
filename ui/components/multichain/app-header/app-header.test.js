@@ -4,8 +4,11 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import { AppHeader } from '.';
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
@@ -23,8 +26,7 @@ jest.mock('react-router-dom', () => ({
 
 const render = ({
   stateChanges = {},
-  provider = {},
-  networkConfigurations = {},
+  network = { chainId: '0x5', nickname: 'Chain 5', ticker: 'ETH' },
   location = {},
   isUnlocked = true,
 } = {}) => {
@@ -32,14 +34,7 @@ const render = ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: {
-        ...mockState.metamask.providerConfig,
-        ...(provider ?? {}),
-      },
-      networkConfigurations: {
-        ...mockState.metamask.networkConfigurations,
-        ...(networkConfigurations ?? {}),
-      },
+      ...mockNetworkState(network),
       isUnlocked: isUnlocked ?? true,
     },
     activeTab: {
@@ -189,20 +184,13 @@ describe('App Header', () => {
   describe('network picker', () => {
     it('shows custom rpc if it has the same chainId as a default network', () => {
       const mockProviderConfig = {
-        id: 'custom-rpc-localhost',
-        type: 'rpc',
-        ticker: 'ETH',
         chainId: '0x1',
         rpcUrl: 'https://localhost:8545',
         nickname: 'Localhost',
       };
-      const mockNetworkConfigurations = {
-        [mockProviderConfig.id]: mockProviderConfig,
-      };
 
       const { getByText } = render({
-        provider: mockProviderConfig,
-        networkConfigurations: mockNetworkConfigurations,
+        network: mockProviderConfig,
         isUnlocked: true,
       });
       expect(getByText(mockProviderConfig.nickname)).toBeInTheDocument();
@@ -210,20 +198,13 @@ describe('App Header', () => {
 
     it("shows rpc url as nickname if there isn't a nickname set", () => {
       const mockProviderConfig = {
-        id: 'custom-rpc-localhost',
-        type: 'rpc',
-        ticker: 'ETH',
         chainId: '0x1',
         rpcUrl: 'https://localhost:8545',
-        nickname: null,
-      };
-      const mockNetworkConfigurations = {
-        [mockProviderConfig.id]: mockProviderConfig,
+        nickname: undefined,
       };
 
       const { getByText } = render({
-        provider: mockProviderConfig,
-        networkConfigurations: mockNetworkConfigurations,
+        network: mockProviderConfig,
         isUnlocked: true,
       });
       expect(getByText(mockProviderConfig.rpcUrl)).toBeInTheDocument();

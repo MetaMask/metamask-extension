@@ -1,9 +1,14 @@
 import React from 'react';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 
 import {
   NotificationListItem,
@@ -35,11 +40,13 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type StakeNotification = ExtractedNotification<
-  | TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED
-  | TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED
-  | TRIGGER_TYPES.LIDO_STAKE_COMPLETED
-  | TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED
+  | NotificationServicesController.Constants.TRIGGER_TYPES.LIDO_STAKE_COMPLETED
+  | NotificationServicesController.Constants.TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED
 >;
 const isStakeNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED,
@@ -144,7 +151,7 @@ export const components: NotificationComponent<StakeNotification> = {
       );
     },
     body: {
-      type: 'body_onchain_notification',
+      type: NotificationComponentType.OnChainBody,
       Account: ({ notification }) => {
         if (!notification.address) {
           return null;
@@ -230,6 +237,7 @@ export const components: NotificationComponent<StakeNotification> = {
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
+              notification={notification}
               text={notification.tx_hash}
               displayText={t('notificationItemTransactionId') || ''}
             />
@@ -262,7 +270,7 @@ export const components: NotificationComponent<StakeNotification> = {
     },
   },
   footer: {
-    type: 'footer_onchain_notification',
+    type: NotificationComponentType.OnChainFooter,
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton

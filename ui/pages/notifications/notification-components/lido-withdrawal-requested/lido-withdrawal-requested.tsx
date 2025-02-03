@@ -1,7 +1,10 @@
 import React from 'react';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 
 import {
@@ -20,6 +23,8 @@ import {
   getNetworkDetailsByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
 import {
   TextVariant,
@@ -34,8 +39,10 @@ import {
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type LidoWithdrawalRequestedNotification =
-  ExtractedNotification<TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED>;
+  ExtractedNotification<NotificationServicesController.Constants.TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED>;
 const isLidoWithdrawalRequestedNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED,
 ]);
@@ -100,7 +107,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
         );
       },
       body: {
-        type: 'body_onchain_notification',
+        type: NotificationComponentType.OnChainBody,
         Account: ({ notification }) => {
           if (!notification.address) {
             return null;
@@ -123,6 +130,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
             detail={t('notificationItemConfirmed') || ''}
             action={
               <NotificationDetailCopyButton
+                notification={notification}
                 text={notification.tx_hash}
                 displayText={t('notificationItemTransactionId') || ''}
               />
@@ -180,7 +188,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       },
     },
     footer: {
-      type: 'footer_onchain_notification',
+      type: NotificationComponentType.OnChainFooter,
       ScanLink: ({ notification }) => {
         return (
           <NotificationDetailBlockExplorerButton

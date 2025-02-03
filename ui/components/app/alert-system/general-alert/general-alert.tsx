@@ -21,13 +21,14 @@ import { AlertProvider } from '../alert-provider';
 import { AlertSeverity } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type GeneralAlertProps = {
-  description: string;
+  description?: string;
   details?: React.ReactNode | string[];
   onClickSupportLink?: () => void;
   provider?: SecurityProvider;
   reportUrl?: string;
   severity: AlertSeverity;
-  title: string;
+  title?: string;
+  children?: React.ReactNode;
 };
 
 function ReportLink({
@@ -77,7 +78,7 @@ function AlertDetails({
     <Box marginTop={1}>
       <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
         {details instanceof Array ? (
-          <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
+          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
             {details.map((detail, index) => (
               <Box as="li" key={`disclosure-detail-${index}`}>
                 <Text
@@ -119,6 +120,7 @@ function GeneralAlert({
       description={description}
       {...props}
     >
+      {props.children}
       <AlertDetails
         details={details}
         reportUrl={reportUrl}

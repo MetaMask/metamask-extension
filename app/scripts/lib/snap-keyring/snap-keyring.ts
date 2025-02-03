@@ -1,5 +1,4 @@
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
-import type { SnapController } from '@metamask/snaps-controllers';
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
 import {
@@ -10,6 +9,8 @@ import {
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
@@ -96,7 +97,6 @@ export async function showAccountNameSuggestionDialog(
  * Constructs a SnapKeyring builder with specified handlers for managing snap accounts.
  *
  * @param controllerMessenger - The controller messenger instance.
- * @param getSnapController - A function that retrieves the Snap Controller instance.
  * @param persistKeyringHelper - A function that persists all keyrings in the vault.
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @param trackEvent - A function to track MetaMetrics events.
@@ -110,7 +110,6 @@ export async function showAccountNameSuggestionDialog(
  */
 export const snapKeyringBuilder = (
   controllerMessenger: SnapKeyringBuilderMessenger,
-  getSnapController: () => SnapController,
   persistKeyringHelper: () => Promise<void>,
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -129,7 +128,7 @@ export const snapKeyringBuilder = (
   const builder = (() => {
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return new SnapKeyring(getSnapController() as any, {
+    return new SnapKeyring(controllerMessenger, {
       addressExists: async (address) => {
         const addresses = await controllerMessenger.call(
           'KeyringController:getAccounts',

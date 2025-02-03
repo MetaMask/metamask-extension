@@ -101,6 +101,87 @@ describe('Text', () => {
     expect(container).toMatchSnapshot();
   });
 
+  // Brand Evolution Typography
+  it('should render the Text with proper brand evolution class name', () => {
+    const { getByText } = render(
+      <>
+        <Text variant={TextVariant.displayMd} isBrandEvolution>
+          display-md
+        </Text>
+        <Text variant={TextVariant.headingLg} isBrandEvolution>
+          heading-lg
+        </Text>
+        <Text variant={TextVariant.headingMd} isBrandEvolution>
+          heading-md
+        </Text>
+        <Text variant={TextVariant.headingSm} isBrandEvolution>
+          heading-sm
+        </Text>
+        <Text variant={TextVariant.bodyLgMedium} isBrandEvolution>
+          body-lg-medium
+        </Text>
+        <Text variant={TextVariant.bodyMd} isBrandEvolution>
+          body-md
+        </Text>
+        <Text variant={TextVariant.bodyMdMedium} isBrandEvolution>
+          body-md-medium
+        </Text>
+        <Text variant={TextVariant.bodyMdBold} isBrandEvolution>
+          body-md-bold
+        </Text>
+        <Text variant={TextVariant.bodySm} isBrandEvolution>
+          body-sm
+        </Text>
+        <Text variant={TextVariant.bodySmMedium} isBrandEvolution>
+          body-sm-medium
+        </Text>
+        <Text variant={TextVariant.bodySmBold} isBrandEvolution>
+          body-sm-bold
+        </Text>
+        <Text variant={TextVariant.bodyXs} isBrandEvolution>
+          body-xs
+        </Text>
+        <Text variant={TextVariant.bodyXsMedium} isBrandEvolution>
+          body-xs-medium
+        </Text>
+      </>,
+    );
+
+    expect(getByText('display-md')).toHaveClass(
+      'mm-text--display-md-brand-evo',
+    );
+    expect(getByText('heading-lg')).toHaveClass(
+      'mm-text--heading-lg-brand-evo',
+    );
+    expect(getByText('heading-md')).toHaveClass(
+      'mm-text--heading-md-brand-evo',
+    );
+    expect(getByText('heading-sm')).toHaveClass(
+      'mm-text--heading-sm-brand-evo',
+    );
+    expect(getByText('body-lg-medium')).toHaveClass(
+      'mm-text--body-lg-medium-brand-evo',
+    );
+    expect(getByText('body-md')).toHaveClass('mm-text--body-md-brand-evo');
+    expect(getByText('body-md-medium')).toHaveClass(
+      'mm-text--body-md-medium-brand-evo',
+    );
+    expect(getByText('body-md-bold')).toHaveClass(
+      'mm-text--body-md-bold-brand-evo',
+    );
+    expect(getByText('body-sm')).toHaveClass('mm-text--body-sm-brand-evo');
+    expect(getByText('body-sm-medium')).toHaveClass(
+      'mm-text--body-sm-medium-brand-evo',
+    );
+    expect(getByText('body-sm-bold')).toHaveClass(
+      'mm-text--body-sm-bold-brand-evo',
+    );
+    expect(getByText('body-xs')).toHaveClass('mm-text--body-xs-brand-evo');
+    expect(getByText('body-xs-medium')).toHaveClass(
+      'mm-text--body-xs-medium-brand-evo',
+    );
+  });
+
   it('should render the Text with proper font weight class name', () => {
     const { getByText } = render(
       <>

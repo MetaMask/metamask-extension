@@ -33,7 +33,9 @@ function renderElement(element) {
 function getPropComponents(components) {
   return Object.entries(components).reduce((accumulator, [key, component]) => {
     if (component) {
-      accumulator[key] = renderElement(component);
+      accumulator[key] = Array.isArray(component)
+        ? component.map(renderElement)
+        : renderElement(component);
     }
     return accumulator;
   }, {});

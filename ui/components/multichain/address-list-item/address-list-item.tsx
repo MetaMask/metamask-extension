@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import Confusable from '../../ui/confusable';
 import {
@@ -7,6 +7,8 @@ import {
   AvatarAccountVariant,
   Text,
   AvatarAccountSize,
+  Icon,
+  IconName,
 } from '../../component-library';
 import {
   TextAlign,
@@ -18,15 +20,18 @@ import {
   BackgroundColor,
   TextColor,
   AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
+import { I18nContext } from '../../../contexts/i18n';
 
 type AddressListItemProps = {
   address: string;
   label: string;
   useConfusable?: boolean;
+  isDuplicate?: boolean;
   onClick: () => void;
 };
 
@@ -34,8 +39,11 @@ export const AddressListItem = ({
   address,
   label,
   useConfusable = false,
+  isDuplicate = false,
   onClick,
 }: AddressListItemProps) => {
+  const t = useContext(I18nContext);
+
   const useBlockie = useSelector(getUseBlockie);
   let displayName: string | React.ReactNode = shortenAddress(address);
   if (label) {
@@ -100,6 +108,13 @@ export const AddressListItem = ({
           </Tooltip>
         </Text>
       </Box>
+      {isDuplicate && (
+        <Box className="address-list-item__duplicate-contact-warning-icon">
+          <Tooltip title={t('duplicateContactTooltip')} position="top">
+            <Icon name={IconName.Danger} color={IconColor.warningDefault} />
+          </Tooltip>
+        </Box>
+      )}
     </Box>
   );
 };

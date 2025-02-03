@@ -40,7 +40,7 @@ describe('SnapView', () => {
       renderWithProvider(<SnapView />, mockStore);
 
     // Snap name & Snap authorship component
-    expect(getAllByText('BIP-44 Test Snap')).toHaveLength(1);
+    expect(getAllByText('BIP-44 Test Snap')).toHaveLength(3);
     expect(
       container.getElementsByClassName('snaps-authorship-expanded')?.length,
     ).toBe(1);

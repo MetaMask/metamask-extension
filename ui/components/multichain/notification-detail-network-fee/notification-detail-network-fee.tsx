@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import type { FC } from 'react';
-import type { OnChainRawNotificationsWithNetworkFields } from '../../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
+import type { NotificationServicesController } from '@metamask/notification-services-controller';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getNetworkFees,
   getNetworkDetailsByChainId,
 } from '../../../helpers/utils/notification.util';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 import { NotificationDetail } from '../notification-detail';
 import {
@@ -32,6 +37,9 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
+
+type OnChainRawNotificationsWithNetworkFields =
+  NotificationServicesController.Types.OnChainRawNotificationsWithNetworkFields;
 
 type NetworkFees = {
   transactionFee: {
@@ -83,6 +91,7 @@ export const NotificationDetailNetworkFee: FC<
   NotificationDetailNetworkFeeProps
 > = ({ notification }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [networkFees, setNetworkFees] = useState<NetworkFees>(null);
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
@@ -119,6 +128,18 @@ export const NotificationDetailNetworkFee: FC<
   }, []);
 
   const handleClick = () => {
+    if (!isOpen) {
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationInteraction,
+        event: MetaMetricsEventName.NotificationDetailClicked,
+        properties: {
+          notification_id: notification.id,
+          notification_type: notification.type,
+          chain_id: notification.chain_id,
+          clicked_item: 'fee_details',
+        },
+      });
+    }
     setIsOpen(!isOpen);
   };
 

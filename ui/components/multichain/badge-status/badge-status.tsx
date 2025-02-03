@@ -19,9 +19,7 @@ import {
 } from '../../component-library';
 import { getUseBlockie } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
+
 import { BadgeStatusProps } from './badge-status.types';
 
 export const BadgeStatus: React.FC<BadgeStatusProps> = ({
@@ -34,12 +32,6 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   ...props
 }): JSX.Element => {
   const useBlockie = useSelector(getUseBlockie);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, address),
-  );
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box
@@ -73,7 +65,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
               backgroundColor={badgeBackgroundColor}
               borderRadius={BorderRadius.full}
               borderColor={badgeBorderColor}
-              borderWidth={isConnectedAndNotActive ? 2 : 4}
+              borderWidth={2}
             />
           }
         >
@@ -90,31 +82,6 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
               }
               marginInlineEnd={2}
             />
-            ///: END:ONLY_INCLUDE_IF
-          }
-
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            custodianIcon ? (
-              <img
-                src={custodianIcon}
-                data-testid="custody-logo"
-                className="custody-logo"
-                alt="custody logo"
-              />
-            ) : (
-              <AvatarAccount
-                borderColor={BorderColor.transparent}
-                size={AvatarAccountSize.Md}
-                address={address}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                marginInlineEnd={2}
-              />
-            )
             ///: END:ONLY_INCLUDE_IF
           }
         </BadgeWrapper>

@@ -59,7 +59,7 @@ export default class ComposableObservableStore extends ObservableStore {
       const store = config[key];
       if (store.subscribe) {
         config[key].subscribe((state) => {
-          this.updateState({ [key]: state });
+          this.#onStateChange(key, state);
         });
       } else {
         this.controllerMessenger.subscribe(
@@ -69,7 +69,7 @@ export default class ComposableObservableStore extends ObservableStore {
             if (this.persist) {
               updatedState = getPersistentState(state, config[key].metadata);
             }
-            this.updateState({ [key]: updatedState });
+            this.#onStateChange(key, updatedState);
           },
         );
       }
@@ -103,5 +103,13 @@ export default class ComposableObservableStore extends ObservableStore {
       flatState = { ...flatState, ...state };
     }
     return flatState;
+  }
+
+  #onStateChange(controllerKey, newState) {
+    const oldState = this.getState()[controllerKey];
+
+    this.updateState({ [controllerKey]: newState });
+
+    this.emit('stateChange', { oldState, newState, controllerKey });
   }
 }

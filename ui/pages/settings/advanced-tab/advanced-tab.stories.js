@@ -7,11 +7,11 @@ export default {
 
   argTypes: {
     warning: { control: 'text' },
-    useNonceField: { control: 'boolean' },
     sendHexData: { control: 'boolean' },
     showFiatInTestnets: { control: 'boolean' },
     useLedgerLive: { control: 'boolean' },
     dismissSeedBackUpReminder: { control: 'boolean' },
+    overrideContentSecurityPolicyHeader: { control: 'boolean' },
     setAutoLockTimeLimit: { action: 'setAutoLockTimeLimit' },
     setShowFiatConversionOnTestnetsPreference: {
       action: 'setShowFiatConversionOnTestnetsPreference',
@@ -20,9 +20,12 @@ export default {
     setIpfsGateway: { action: 'setIpfsGateway' },
     setIsIpfsGatewayEnabled: { action: 'setIsIpfsGatewayEnabled' },
     setDismissSeedBackUpReminder: { action: 'setDismissSeedBackUpReminder' },
-    setUseNonceField: { action: 'setUseNonceField' },
+    setOverrideContentSecurityPolicyHeader: {
+      action: 'setOverrideContentSecurityPolicyHeader',
+    },
     setHexDataFeatureFlag: { action: 'setHexDataFeatureFlag' },
-    displayWarning: { action: 'displayWarning' },
+    displayErrorInSettings: { action: 'displayErrorInSettings' },
+    hideErrorInSettings: { action: 'hideErrorInSettings' },
     history: { action: 'history' },
     showResetAccountConfirmationModal: {
       action: 'showResetAccountConfirmationModal',
@@ -33,19 +36,13 @@ export default {
 export const DefaultStory = (args) => {
   const [
     {
-      useNonceField,
       sendHexData,
       showFiatInTestnets,
       dismissSeedBackUpReminder,
+      overrideContentSecurityPolicyHeader,
     },
     updateArgs,
   ] = useArgs();
-
-  const handleUseNonceField = () => {
-    updateArgs({
-      useNonceField: !useNonceField,
-    });
-  };
 
   const handleSendHexData = () => {
     updateArgs({
@@ -64,18 +61,28 @@ export const DefaultStory = (args) => {
       dismissSeedBackUpReminder: !dismissSeedBackUpReminder,
     });
   };
+
+  const handleOverrideContentSecurityPolicyHeader = () => {
+    updateArgs({
+      overrideContentSecurityPolicyHeader: !overrideContentSecurityPolicyHeader,
+    });
+  };
   return (
     <div style={{ flex: 1, height: 500 }}>
       <AdvancedTab
         {...args}
-        useNonceField={useNonceField}
-        setUseNonceField={handleUseNonceField}
         sendHexData={sendHexData}
         setHexDataFeatureFlag={handleSendHexData}
         showFiatInTestnets={showFiatInTestnets}
         setShowFiatConversionOnTestnetsPreference={handleShowFiatInTestnets}
         dismissSeedBackUpReminder={dismissSeedBackUpReminder}
         setDismissSeedBackUpReminder={handleDismissSeedBackUpReminder}
+        overrideContentSecurityPolicyHeader={
+          overrideContentSecurityPolicyHeader
+        }
+        setOverrideContentSecurityPolicyHeader={
+          handleOverrideContentSecurityPolicyHeader
+        }
         ipfsGateway="ipfs-gateway"
       />
     </div>
@@ -85,9 +92,9 @@ export const DefaultStory = (args) => {
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   warning: 'Warning Sample',
-  useNonceField: false,
   sendHexData: false,
   showFiatInTestnets: false,
   useLedgerLive: false,
   dismissSeedBackUpReminder: false,
+  overrideContentSecurityPolicyHeader: true,
 };

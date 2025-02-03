@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { debounce } from 'lodash';
+import { usePrevious } from './usePrevious';
 
 /**
  * Utility hook for requiring users to scroll through content.
@@ -17,6 +18,7 @@ export const useScrollRequired = (
   { offsetPxFromBottom = 16 } = {},
 ) => {
   const ref = useRef(null);
+  const prevOffsetHeight = usePrevious(ref.current?.offsetHeight);
 
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
@@ -26,6 +28,7 @@ export const useScrollRequired = (
     if (!ref.current) {
       return;
     }
+
     const isScrollable =
       ref.current && ref.current.scrollHeight > ref.current.clientHeight;
 
@@ -38,7 +41,11 @@ export const useScrollRequired = (
         offsetPxFromBottom >=
         ref.current.scrollHeight;
 
-    setIsScrollable(isScrollable);
+    if (isScrollable !== isScrollableState) {
+      setHasScrolledToBottom(false);
+      setIsScrollable(isScrollable);
+    }
+
     setIsScrolledToBottom(!isScrollable || isScrolledToBottom);
 
     if (!isScrollable || isScrolledToBottom) {
@@ -47,6 +54,12 @@ export const useScrollRequired = (
   };
 
   useEffect(update, [ref, ...dependencies]);
+
+  useEffect(() => {
+    if (prevOffsetHeight !== ref.current?.offsetHeight) {
+      update();
+    }
+  }, [ref.current?.offsetHeight]);
 
   const scrollToBottom = () => {
     setIsScrolledToBottom(true);

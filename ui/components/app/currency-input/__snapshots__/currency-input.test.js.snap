@@ -36,6 +36,7 @@ exports[`CurrencyInput Component rendering should disable unit input 1`] = `
       >
         <span
           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          data-testid="account-value-and-suffix"
         >
           $0.00
         </span>
@@ -89,6 +90,7 @@ exports[`CurrencyInput Component rendering should render properly with a fiat va
       >
         <span
           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          data-testid="account-value-and-suffix"
         >
           0.004327880204275946
         </span>
@@ -183,6 +185,7 @@ exports[`CurrencyInput Component rendering should render properly with an ETH va
       >
         <span
           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          data-testid="account-value-and-suffix"
         >
           $231.06
         </span>
@@ -237,6 +240,7 @@ exports[`CurrencyInput Component rendering should render properly without a suff
       >
         <span
           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          data-testid="account-value-and-suffix"
         >
           $0.00
         </span>

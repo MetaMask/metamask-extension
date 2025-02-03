@@ -8,6 +8,7 @@ exports[`CurrencyDisplay Component should match default snapshot 1`] = `
   >
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      data-testid="account-value-and-suffix"
     />
   </div>
 </div>
@@ -21,6 +22,7 @@ exports[`CurrencyDisplay Component should render text with a className 1`] = `
   >
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      data-testid="account-value-and-suffix"
     >
       $123.45
     </span>
@@ -36,6 +38,7 @@ exports[`CurrencyDisplay Component should render text with a prefix 1`] = `
   >
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      data-testid="account-value-and-suffix"
     >
       -
       $123.45

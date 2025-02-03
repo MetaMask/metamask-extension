@@ -6,8 +6,11 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import type { NotificationComponent } from '../../notifications/notification-components/types/notifications/notifications';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/types';
+import {
+  Notification,
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../../notifications/notification-components/types/notifications/notifications';
 
 type NotificationDetailsFooterProps = {
   footer: NotificationComponent['footer'];
@@ -27,15 +30,22 @@ export const NotificationDetailsFooter = ({
       padding={4}
       gap={4}
     >
-      {footer.type === 'footer_onchain_notification' && (
-        <>
-          <footer.ScanLink notification={notification} />
-        </>
+      {footer.type === NotificationComponentType.OnChainFooter && (
+        <footer.ScanLink notification={notification} />
       )}
-      {footer.type === 'footer_feature_announcement' && (
-        <>
+      {footer.type === NotificationComponentType.AnnouncementFooter && (
+        <Box
+          display={Display.Flex}
+          gap={4}
+          flexDirection={FlexDirection.Row}
+          width={BlockSize.Full}
+        >
+          <footer.ExternalLink notification={notification} />
           <footer.ExtensionLink notification={notification} />
-        </>
+        </Box>
+      )}
+      {footer.type === NotificationComponentType.SnapFooter && (
+        <footer.Link notification={notification} />
       )}
     </Box>
   );

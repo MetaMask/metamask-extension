@@ -7,15 +7,14 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/base-fee-input/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/priority-fee-input/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
-@import 'approve-content-card/index';
 @import 'confirmation-warning-modal/index';
 @import 'confirm-page-container/index';
 @import 'confirm/footer';
 @import 'confirm/header/header.scss';
 @import 'confirm/scroll-to-bottom';
 @import 'confirm/nav/nav.scss';
+@import "confirm/network-change-toast/index";
 @import 'contract-details-modal/index';
-@import 'custom-nonce/index';
 @import 'edit-gas-display/index';
 @import 'edit-gas-fee-button/index';
 @import 'edit-gas-fee-popover/index';
@@ -25,7 +24,6 @@
 @import 'edit-gas-fee-popover/edit-gas-tooltip/index';
 @import 'edit-gas-popover/index';
 @import 'gas-details-item/index';
-@import 'gas-timing/index';
 @import 'multilayer-fee-message/index';
 @import 'review-spending-cap/index';
 @import 'set-approval-for-all-warning/index';

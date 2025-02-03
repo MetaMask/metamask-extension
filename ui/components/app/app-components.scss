@@ -1,6 +1,5 @@
 /** Please import your files in alphabetical order **/
 @import 'account-list-item/index';
-@import 'add-network/index';
 @import 'app-loading-spinner/index';
 @import 'alerts/alerts';
 @import 'beta-header/index';
@@ -8,8 +7,6 @@
 @import 'alert-system/alert-modal/index';
 @import 'alert-system/inline-alert/index';
 @import 'import-token/index';
-@import 'assets/nfts/nfts-items/index';
-@import 'assets/nfts/nfts-tab/index';
 @import 'assets/nfts/nft-details/index';
 @import 'assets/nfts/nft-default-image/index';
 @import 'assets/nfts/nft-options/index';
@@ -23,7 +20,10 @@
 @import 'snaps/snap-ui-renderer/index';
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-ui-button/index';
+@import 'snaps/snap-ui-input/index';
 @import 'snaps/snap-ui-file-input/index';
+@import 'snaps/snap-ui-selector/index';
+@import 'snaps/snap-ui-link/index';
 @import 'snaps/snap-delineator/index';
 @import 'snaps/snap-home-menu/index';
 @import 'snaps/snap-list-item/index';
@@ -32,6 +32,8 @@
 @import 'snaps/show-more/index';
 @import 'snaps/insight-warnings/index';
 @import 'snaps/snap-authorship-header/index';
+@import 'snaps/snap-authorship-pill/index';
+@import 'snaps/snap-ui-footer-button/index';
 @import 'hold-to-reveal-button/index';
 @import 'home-notification/index';
 @import 'info-box/index';
@@ -47,13 +49,13 @@
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
-@import 'assets/auto-detect-token/index';
-@import 'smart-transactions/index';
 @import 'srp-input/srp-input';
 @import 'snaps/snap-privacy-warning/index';
 @import 'tab-bar/index';
+@import 'assets/asset-list/asset-list-control-bar/index';
+@import 'assets/asset-list/sort-control/index';
 @import 'assets/token-cell/token-cell';
-@import 'assets/token-list-display/token-list-display';
+@import 'assets/nfts/nft-grid/index';
 @import 'transaction-activity-log/index';
 @import 'transaction-breakdown/index';
 @import 'transaction-icon/transaction-icon';
@@ -74,10 +76,4 @@
 @import 'name/index';
 @import 'name/name-details/index';
 @import 'confirm/info/row/index';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-@import '../institutional/interactive-replacement-token-notification/index';
-@import '../institutional/confirm-remove-jwt-modal/index';
-@import '../institutional/custody-confirm-link-modal/index';
-@import '../institutional/transaction-failed-modal/index';
-///: END:ONLY_INCLUDE_IF
 @import 'snaps/snap-insight/index';

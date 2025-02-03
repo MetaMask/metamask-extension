@@ -10,10 +10,9 @@
   border-radius: 8px;
   min-height: 116px;
   padding: 16px;
+  width: calc(100% - 16px);
+  max-width: 472px;
 
-  @include design-system.screen-sm-min {
-    min-width: 472px;
-  }
 
   &__content-container {
     display: flex;

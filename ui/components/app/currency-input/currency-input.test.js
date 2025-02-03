@@ -24,10 +24,6 @@ describe('CurrencyInput Component', () => {
           conversionRate: 231.06,
         },
       },
-      providerConfig: {
-        chainId: '0x5',
-        ticker: 'ETH',
-      },
       preferences: {
         showFiatInTestnets: true,
       },

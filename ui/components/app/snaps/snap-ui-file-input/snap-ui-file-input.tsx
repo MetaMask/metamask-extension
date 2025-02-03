@@ -146,7 +146,13 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
 
   if (compact) {
     return (
-      <Box className="snap-ui-renderer__file-input">
+      <Box
+        className={classnames('snap-ui-renderer__file-input', {
+          'snap-ui-renderer__field': label !== undefined,
+        })}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+      >
         {header}
         <ButtonIcon
           type="button"
@@ -168,7 +174,13 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
   }
 
   return (
-    <Box className="snap-ui-renderer__file-input">
+    <Box
+      className={classnames('snap-ui-renderer__file-input', {
+        'snap-ui-renderer__field': label !== undefined,
+      })}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+    >
       {header}
       <Box
         className="snap-ui-renderer__file-input__drop-zone"
@@ -187,8 +199,8 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
         style={{
           cursor: 'pointer',
           backgroundColor: active
-            ? 'var(--color-background-alternative-hover)'
-            : undefined,
+            ? 'var(--color-background-default-hover)'
+            : 'var(--color-background-default)',
         }}
         onClick={handleClick}
         onDragOver={handleDragOver}

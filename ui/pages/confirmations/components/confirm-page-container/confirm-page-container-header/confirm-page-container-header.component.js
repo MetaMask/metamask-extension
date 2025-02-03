@@ -5,6 +5,8 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
 } from '../../../../../../shared/constants/app';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import NetworkDisplay from '../../../../../components/app/network-display';
 import Identicon from '../../../../../components/ui/identicon';

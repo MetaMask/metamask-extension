@@ -5,7 +5,7 @@ import {
   rejectPendingApproval,
   resolvePendingApproval,
   setNewNetworkAdded,
-  upsertNetworkConfiguration,
+  addNetwork,
 } from '../../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -27,6 +27,7 @@ import error from './error';
 import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
+import snapDefault from './snaps/snap-default/snap-default';
 
 /**
  * Approval templates that will be prioritized ahead of transaction and signature confirmations.
@@ -46,6 +47,7 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
+  [ApprovalType.SnapDialogDefault]: snapDefault,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
     createSnapAccount,
@@ -150,8 +152,7 @@ function getAttenuatedDispatch(dispatch) {
       dispatch(rejectPendingApproval(...args)),
     resolvePendingApproval: (...args) =>
       dispatch(resolvePendingApproval(...args)),
-    upsertNetworkConfiguration: (...args) =>
-      dispatch(upsertNetworkConfiguration(...args)),
+    addNetwork: (...args) => dispatch(addNetwork(...args)),
     setNewNetworkAdded: (...args) => dispatch(setNewNetworkAdded(...args)),
     deleteInterface: (...args) => dispatch(deleteInterface(...args)),
   };

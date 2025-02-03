@@ -69,6 +69,20 @@ export class Ganache {
     return Number(fiatBalance);
   }
 
+  async setAccountBalance(address: string, balance: string) {
+    return await this.getProvider()?.request({
+      method: 'evm_setAccountBalance',
+      params: [address, balance],
+    });
+  }
+
+  async mineBlock() {
+    return await this.getProvider()?.request({
+      method: 'evm_mine',
+      params: [],
+    });
+  }
+
   async quit() {
     if (!this.#server) {
       throw new Error('Server not running yet');

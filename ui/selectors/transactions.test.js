@@ -13,6 +13,7 @@ import {
   ETH_4337_METHODS,
   ETH_EOA_METHODS,
 } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../test/stub/networks';
 import {
   unapprovedMessagesSelector,
   transactionsSelector,
@@ -46,9 +47,7 @@ describe('Transaction Selectors', () => {
           unapprovedPersonalMsgs: {
             1: msg,
           },
-          providerConfig: {
-            chainId: '0x5',
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         },
       };
 
@@ -77,9 +76,7 @@ describe('Transaction Selectors', () => {
           unapprovedTypedMessages: {
             1: msg,
           },
-          providerConfig: {
-            chainId: '0x5',
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
         },
       };
 
@@ -115,10 +112,8 @@ describe('Transaction Selectors', () => {
     const createState = (smartTransaction) => {
       return {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -343,10 +338,8 @@ describe('Transaction Selectors', () => {
     it('selects the current network transactions', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -400,10 +393,8 @@ describe('Transaction Selectors', () => {
     it('should not duplicate incoming transactions', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
           featureFlags: {},
           internalAccounts: {
             accounts: {
@@ -489,10 +480,8 @@ describe('Transaction Selectors', () => {
 
       const state = {
         metamask: {
-          providerConfig: {
-            nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -592,10 +581,8 @@ describe('Transaction Selectors', () => {
 
     const state = {
       metamask: {
-        providerConfig: {
-          nickname: 'mainnet',
-          chainId: CHAIN_IDS.MAINNET,
-        },
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -681,9 +668,7 @@ describe('Transaction Selectors', () => {
     const mockChainId = 'mockChainId';
     const mockedState = {
       metamask: {
-        providerConfig: {
-          chainId: mockChainId,
-        },
+        ...mockNetworkState({ chainId: mockChainId }),
         pendingApprovalCount: 2,
         pendingApprovals: {
           1: {
@@ -757,9 +742,8 @@ describe('Transaction Selectors', () => {
     it('returns transactions with status of approved or signed for all networks', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
           transactions: [
             {
               id: 0,
@@ -802,9 +786,8 @@ describe('Transaction Selectors', () => {
     it('returns an empty array if there are no approved or signed transactions', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
           transactions: [
             {
               id: 0,
@@ -830,9 +813,8 @@ describe('Transaction Selectors', () => {
     it('returns all transactions for all networks', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
           transactions: [
             {
               id: 0,
@@ -869,16 +851,7 @@ describe('Transaction Selectors', () => {
     });
 
     it('returns an empty array if there are no transactions', () => {
-      const state = {
-        metamask: {
-          providerConfig: {
-            chainId: CHAIN_IDS.MAINNET,
-          },
-        },
-      };
-
-      const results = getTransactions(state);
-
+      const results = getTransactions({});
       expect(results).toStrictEqual([]);
     });
   });

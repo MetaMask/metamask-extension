@@ -5,8 +5,9 @@ import {
   PAYMASTER_AND_DATA,
   genUnapprovedContractInteractionConfirmation,
 } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import mockState from '../../../../../../../../test/data/mock-state.json';
+import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
+import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { TransactionDetails } from './transaction-details';
 
 function getStore() {
@@ -15,25 +16,22 @@ function getStore() {
     isUserOperation: true,
   };
 
-  return configureStore({
-    metamask: {
-      ...mockState.metamask,
-      preferences: {
-        ...mockState.metamask.preferences,
-        petnamesEnabled: true,
-      },
-      userOperations: {
-        [confirmation.id]: {
-          userOperation: {
-            paymasterAndData: PAYMASTER_AND_DATA,
+  return configureStore(
+    getMockConfirmStateForTransaction(confirmation, {
+      metamask: {
+        preferences: {
+          petnamesEnabled: true,
+        },
+        userOperations: {
+          [confirmation.id]: {
+            userOperation: {
+              paymasterAndData: PAYMASTER_AND_DATA,
+            },
           },
         },
       },
-    },
-    confirm: {
-      currentConfirmation: confirmation,
-    },
-  });
+    }),
+  );
 }
 
 const Story = {
@@ -42,14 +40,16 @@ const Story = {
   decorators: [
     (story: () => Meta<typeof TransactionDetails>) => (
       <Provider store={getStore()}>
-        <div
-          style={{
-            backgroundColor: 'var(--color-background-alternative)',
-            padding: 30,
-          }}
-        >
-          {story()}
-        </div>
+        <ConfirmContextProvider>
+          <div
+            style={{
+              backgroundColor: 'var(--color-background-alternative)',
+              padding: 30,
+            }}
+          >
+            {story()}
+          </div>
+        </ConfirmContextProvider>
       </Provider>
     ),
   ],

@@ -11,7 +11,6 @@ export const MALFORMED_TRANSACTION_MOCK = {
 
 export const MALFORMED_TRANSACTION_REQUEST_MOCK: MockRequestResponse = {
   request: {
-    id: '21',
     jsonrpc: '2.0',
     method: 'infura_simulateTransactions',
     params: [

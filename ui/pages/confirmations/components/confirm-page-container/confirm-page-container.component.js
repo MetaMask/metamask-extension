@@ -44,8 +44,8 @@ import {
   getAddressBookEntry,
   getInternalAccounts,
   getMetadataContractName,
-  getNetworkIdentifier,
   getSwapsDefaultToken,
+  selectNetworkIdentifierByChainId,
 } from '../../../../selectors';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -106,9 +106,6 @@ const ConfirmPageContainer = (props) => {
     assetStandard,
     isApprovalOrRejection,
     displayAccountBalanceHeader,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    noteComponent,
-    ///: END:ONLY_INCLUDE_IF
   } = props;
 
   const t = useI18nContext();
@@ -120,7 +117,6 @@ const ConfirmPageContainer = (props) => {
     useState(false);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
-  const networkIdentifier = useSelector(getNetworkIdentifier);
   const defaultToken = useSelector(getSwapsDefaultToken);
   const accountBalance = defaultToken.string;
   const internalAccounts = useSelector(getInternalAccounts);
@@ -139,8 +135,13 @@ const ConfirmPageContainer = (props) => {
   const shouldDisplayWarning =
     contentComponent && disabled && (errorKey || errorMessage);
 
-  const networkName =
-    NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
+  const { chainId } = currentTransaction;
+
+  const networkIdentifier = useSelector((state) =>
+    selectNetworkIdentifierByChainId(state, chainId),
+  );
+
+  const networkName = NETWORK_TO_NAME_MAP[chainId] || networkIdentifier;
 
   const fetchCollectionBalance = useCallback(async () => {
     const tokenBalance = await fetchTokenBalance(
@@ -218,6 +219,7 @@ const ConfirmPageContainer = (props) => {
                 recipientEns={toEns}
                 recipientNickname={toNickname}
                 recipientIsOwnedAccount={recipientIsOwnedAccount}
+                chainId={currentTransaction.chainId}
               />
             )}
           </ConfirmPageContainerHeader>
@@ -256,9 +258,6 @@ const ConfirmPageContainer = (props) => {
             isBuyableChain={isBuyableChain}
             openBuyCryptoInPdapp={openBuyCryptoInPdapp}
             txData={txData}
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            noteComponent={noteComponent}
-            ///: END:ONLY_INCLUDE_IF
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -427,9 +426,6 @@ ConfirmPageContainer.propTypes = {
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
   displayAccountBalanceHeader: PropTypes.bool,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  noteComponent: PropTypes.node,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export default ConfirmPageContainer;

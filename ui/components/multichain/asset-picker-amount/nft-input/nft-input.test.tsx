@@ -5,15 +5,11 @@ import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
 import { NFTInput } from './nft-input';
 
-const createStore = ({
-  useNativeCurrencyAsPrimaryCurrency,
-  sendInputCurrencySwitched,
-}: Record<string, boolean>) =>
+const createStore = ({ sendInputCurrencySwitched }: Record<string, boolean>) =>
   configureStore({
     ...mockSendState,
     metamask: {
       ...mockSendState.metamask,
-      preferences: { useNativeCurrencyAsPrimaryCurrency },
     },
     appState: { ...mockSendState.appState, sendInputCurrencySwitched },
   });
@@ -25,7 +21,6 @@ describe('NFTInput', () => {
     const { asFragment } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >
@@ -39,7 +34,6 @@ describe('NFTInput', () => {
     const { getByTestId } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >
@@ -56,7 +50,6 @@ describe('NFTInput', () => {
     const { queryByTestId } = render(
       <Provider
         store={createStore({
-          useNativeCurrencyAsPrimaryCurrency: true,
           sendInputCurrencySwitched: true,
         })}
       >

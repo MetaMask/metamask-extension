@@ -8,6 +8,8 @@ import {
 import { BackgroundColor } from '../constants/design-system';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../app/scripts/translate';
 
 export function getAccountNameErrorMessage(
@@ -70,7 +72,13 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-export function getAccountLabel(type, account) {
+export function getAccountLabel(
+  type,
+  account,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  snapName,
+  ///: END:ONLY_INCLUDE_IF
+) {
   if (!account) {
     return null;
   }
@@ -89,8 +97,8 @@ export function getAccountLabel(type, account) {
       return HardwareKeyringNames.lattice;
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap:
-      if (account.metadata.snap?.name) {
-        return `${account.metadata.snap?.name} (${t('beta')})`;
+      if (snapName) {
+        return `${snapName} (${t('beta')})`;
       }
       return `${t('snaps')} (${t('beta')})`;
     ///: END:ONLY_INCLUDE_IF

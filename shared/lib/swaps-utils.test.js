@@ -9,11 +9,14 @@ import {
 import {
   TOKENS,
   MOCK_TRADE_RESPONSE_2,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../ui/pages/swaps/swaps-util-test-constants';
 import {
   fetchTradesInfo,
   shouldEnableDirectWrapping,
   calculateMaxGasLimit,
+  calcTokenValue,
 } from './swaps-utils';
 
 jest.mock('./storage-helpers', () => ({
@@ -84,6 +87,7 @@ describe('Swaps Utils', () => {
           sourceDecimals: TOKENS[0].decimals,
           sourceTokenInfo: { ...TOKENS[0] },
           destinationTokenInfo: { ...TOKENS[1] },
+          enableGasIncludedQuotes: false,
         },
         { chainId: CHAIN_IDS.MAINNET },
       );
@@ -268,6 +272,15 @@ describe('Swaps Utils', () => {
         customMaxGas,
       );
       expect(result).toStrictEqual(expectedMaxGas);
+    });
+  });
+
+  describe('calcTokenValue', () => {
+    it('should be possible to calculate very big values', () => {
+      let result = calcTokenValue(1, 20);
+      expect(result.toString()).toStrictEqual('100000000000000000000');
+      result = calcTokenValue(1, 30);
+      expect(result.toString()).toStrictEqual('1e+30');
     });
   });
 });

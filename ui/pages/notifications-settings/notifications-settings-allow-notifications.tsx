@@ -20,7 +20,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
+import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { Box, Text } from '../../components/component-library';
 import {
@@ -74,7 +74,7 @@ export function NotificationsSettingsAllowNotifications({
   }, [isMetamaskNotificationsEnabled]);
 
   useEffect(() => {
-    if (isMetamaskNotificationsEnabled && !error) {
+    if (!error && isMetamaskNotificationsEnabled) {
       listNotifications();
     }
   }, [isMetamaskNotificationsEnabled, error, listNotifications]);
@@ -82,29 +82,29 @@ export function NotificationsSettingsAllowNotifications({
   const toggleNotifications = useCallback(async () => {
     setLoading(true);
     if (isMetamaskNotificationsEnabled) {
-      await disableNotifications();
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
-          setting_type: 'notifications',
-          is_profile_syncing_enabled: isProfileSyncingEnabled,
+          settings_type: 'notifications',
+          was_profile_syncing_on: isProfileSyncingEnabled,
           old_value: true,
           new_value: false,
         },
       });
+      await disableNotifications();
     } else {
-      await enableNotifications();
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
-          setting_type: 'notifications',
-          is_profile_syncing_enabled: isProfileSyncingEnabled,
+          settings_type: 'notifications',
+          was_profile_syncing_on: isProfileSyncingEnabled,
           old_value: false,
           new_value: true,
         },
       });
+      await enableNotifications();
     }
     setLoading(false);
     setToggleValue(!toggleValue);

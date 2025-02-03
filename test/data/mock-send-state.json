@@ -12,7 +12,7 @@
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
-    "gasIsLoading": false,
+    "showPermittedNetworkToastOpen": false,
     "isLoading": false,
     "importTokensModalOpen": false,
     "modal": {
@@ -62,6 +62,12 @@
     "currentLocale": "en"
   },
   "metamask": {
+    "accountsByChainId": {},
+    "tokenBalances": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "0x5": {}
+      }
+    },
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
@@ -126,34 +132,36 @@
         }
       }
     },
-    "snaps": [{}],
+    "snaps": {},
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "tokenNetworkFilter": {}
     },
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
     "isUnlocked": true,
     "completedOnboarding": true,
-    "usedNetworks": {
-      "0x1": true,
-      "0x5": true,
-      "0x539": true
-    },
     "showTestnetMessageInDropdown": true,
-    "networkConfigurations": {},
     "alertEnabledness": {
       "unconnectedAccount": true
     },
     "featureFlags": {},
     "network": "5",
-    "providerConfig": {
-      "type": "rpc",
-      "chainId": "0x5",
-      "ticker": "ETH"
+
+    "networkConfigurationsByChainId": {
+      "0x5": {
+        "nativeCurrency": "ETH",
+        "chainId": "0x5",
+        "defaultRpcEndpointIndex": 0,
+        "rpcEndpoints": [
+          {
+            "networkClientId": "goerli"
+          }
+        ]
+      }
     },
     "internalAccounts": {
       "accounts": {

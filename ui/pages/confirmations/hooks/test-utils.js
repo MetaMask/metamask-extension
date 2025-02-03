@@ -3,17 +3,15 @@ import { useSelector } from 'react-redux';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
-import {
-  getCurrentCurrency,
   getShouldShowFiat,
-  getPreferences,
   txDataSelector,
   getCurrentKeyring,
   getTokenExchangeRates,
+  getPreferences,
+  selectConversionRateByChainId,
+  selectNetworkConfigurationByChainId,
 } from '../../../selectors';
 
 import {
@@ -107,18 +105,15 @@ export const generateUseSelectorRouter =
     if (selector === getMultichainIsEvm) {
       return true;
     }
-    if (selector === getConversionRate) {
+    if (selector === selectConversionRateByChainId) {
       return MOCK_ETH_USD_CONVERSION_RATE;
     }
-    if (
-      selector === getMultichainNativeCurrency ||
-      selector === getNativeCurrency
-    ) {
+    if (selector === getMultichainNativeCurrency) {
       return EtherDenomination.ETH;
     }
     if (selector === getPreferences) {
       return {
-        useNativeCurrencyAsPrimaryCurrency: true,
+        showNativeTokenAsMainBalance: true,
       };
     }
     if (
@@ -126,6 +121,9 @@ export const generateUseSelectorRouter =
       selector === getCurrentCurrency
     ) {
       return 'USD';
+    }
+    if (selector === selectNetworkConfigurationByChainId) {
+      return '2';
     }
     if (
       selector === getMultichainShouldShowFiat ||

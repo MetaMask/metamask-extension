@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -10,7 +9,6 @@ const {
   regularDelayMs,
   WINDOW_TITLES,
   defaultGanacheOptions,
-  switchToNotificationWindow,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function () {
@@ -22,7 +20,6 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         dappOptions: { numberOfDapps: 2 },
@@ -46,9 +43,21 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
 
         // Dapp Send Button
         await driver.clickElement('#sendButton');
+        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.waitForSelector({
+          text: 'Cancel',
+          tag: 'button',
+        });
+
+        await driver.delay(regularDelayMs);
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // Leave the confirmation pending
-
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         const accountsOnload = await (
@@ -67,23 +76,20 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         assert.deepStrictEqual(accountsBeforeConnect, '');
 
         // Reject the pending confirmation from the first dapp
-        await switchToNotificationWindow(driver, 4);
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.clickElement({
+          text: 'Cancel',
+          tag: 'button',
+        });
 
         // Wait for switch confirmation to close then request accounts confirmation to show for the second dapp
         await driver.delay(regularDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
-          text: 'Next',
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -104,7 +110,6 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
           .withPermissionControllerConnectedToTwoTestDapps()
           .build(),
         dappOptions: { numberOfDapps: 2 },

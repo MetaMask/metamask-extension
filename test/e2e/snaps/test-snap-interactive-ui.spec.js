@@ -2,7 +2,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -22,31 +21,53 @@ describe('Test Snap Interactive UI', function () {
 
         // navigate to test snaps page and connect to interactive ui snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // scroll to interactive-ui snap
         const dialogButton = await driver.findElement('#connectinteractive-ui');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectinteractive-ui');
         await driver.clickElement('#connectinteractive-ui');
 
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+        // We need a bigger timeout as the Connect action takes some time
+        await driver.clickElementSafe(
+          '[data-testid="snap-install-scroll"]',
+          3000,
+        );
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click OK and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -62,7 +83,7 @@ describe('Test Snap Interactive UI', function () {
         await driver.delay(500);
 
         // switch to dialog popup
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.delay(500);
 
         // fill in thr example input
@@ -75,15 +96,25 @@ describe('Test Snap Interactive UI', function () {
         // try to select option 2 from the list
         await driver.clickElement({ text: 'Option 2', tag: 'option' });
 
+        // click on option 3 radio button
+        await driver.clickElement({ text: 'Option 3', tag: 'label' });
+
+        // click on checkbox
+        await driver.clickElement({ tag: 'span', text: 'Checkbox' });
+
         // try to click approve
         await driver.clickElement('#submit');
 
         // check for returned values
         await driver.waitForSelector({ text: 'foo bar', tag: 'p' });
         await driver.waitForSelector({ text: 'option2', tag: 'p' });
+        await driver.waitForSelector({ text: 'option3', tag: 'p' });
+        await driver.waitForSelector({ text: 'true', tag: 'p' });
 
-        // try to click on approve
-        await driver.clickElement('[data-testid="confirmation-submit-button"]');
+        // click on approve and wait for window to close
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="confirmation-submit-button"]',
+        );
 
         // switch to test snaps tab
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);

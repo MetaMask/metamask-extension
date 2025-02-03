@@ -5,6 +5,8 @@ import {
   PLATFORM_BRAVE,
   PLATFORM_FIREFOX,
 } from '../../../shared/constants/app';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType, getPlatform } from '../../../app/scripts/lib/util';
 
 class WebcamUtils {

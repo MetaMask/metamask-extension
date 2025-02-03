@@ -3,39 +3,29 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
-import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
 const middleware = [thunk];
 
 const mockApprovalId = 1;
-const providerConfig = {
-  type: 'rpc',
-  rpcUrl: 'http://example-custom-rpc.metamask.io',
-  chainId: '0x9999',
-  nickname: 'Test initial state',
-};
-
 const mockApproval = {
   id: mockApprovalId,
   origin: 'https://test-dapp.metamask.io',
   requestData: {
     toNetworkConfiguration: {
-      rpcUrl: 'https://rpcurl.test.chain',
-      rpcPrefs: {
-        blockExplorerUrl: 'https://blockexplorer.test.chain',
-      },
-      chainName: 'Test chain',
-      ticker: 'TST',
       chainId: '0x9999',
-      nickname: 'Test chain',
+      name: 'Test chain',
     },
-    fromNetworkConfiguration: providerConfig,
+    fromNetworkConfiguration: {
+      chainId: '0x9999',
+      name: 'Test initial state',
+    },
   },
 };
 
@@ -46,14 +36,10 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
-    providerConfig,
-    selectedNetworkClientId: 'test-network-client-id',
-    networksMetadata: {
-      'test-network-client-id': {
-        EIPS: {},
-        status: NetworkStatus.Available,
-      },
-    },
+    ...mockNetworkState({
+      chainId: '0x9999',
+      nickname: 'Test initial state',
+    }),
     snaps: {},
   },
 };

@@ -22,13 +22,14 @@ import { TemplateType, templates } from './shared/template';
 import { retrievePullRequest } from './shared/pull-request';
 
 enum RegressionStage {
-  Development,
+  DevelopmentFeature,
+  DevelopmentMain,
   Testing,
   Beta,
   Production
 }
 
-const knownBots = ["metamaskbot", "dependabot", "github-actions", "sentry-io"];
+const knownBots = ["metamaskbot", "dependabot", "github-actions", "sentry-io", "devin-ai-integration"];
 
 main().catch((error: Error): void => {
   console.error(error);
@@ -82,7 +83,7 @@ async function main(): Promise<void> {
   }
 
   // If author is not part of the MetaMask organisation
-  if (!(await userBelongsToMetaMaskOrg(octokit, labelable?.author))) {
+  if (!knownBots.includes(labelable?.author) && !(await userBelongsToMetaMaskOrg(octokit, labelable?.author))) {
     // Add external contributor label to the issue
     await addLabelToLabelable(octokit, labelable, externalContributorLabel);
   }
@@ -132,7 +133,7 @@ async function main(): Promise<void> {
 
     } else {
       const errorMessage =
-        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/develop/.github/scripts/shared/template.ts#L14-L37";
+        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
       console.log(errorMessage);
 
       // Add label to indicate issue doesn't match any template
@@ -152,7 +153,7 @@ async function main(): Promise<void> {
       );
     } else {
       const errorMessage =
-        `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/develop/.github/scripts/shared/template.ts#L40-L47`;
+        `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L40-L47`;
       console.log(errorMessage);
 
       // Add label to indicate PR body doesn't match template
@@ -217,8 +218,10 @@ function extractRegressionStageFromBugReportIssueBody(
   const extractedAnswer = match ? match[1].trim() : undefined;
 
   switch (extractedAnswer) {
-    case 'On the development branch':
-      return RegressionStage.Development;
+    case 'On a feature branch':
+      return RegressionStage.DevelopmentFeature;
+    case 'On main branch':
+      return RegressionStage.DevelopmentMain;
     case 'During release testing':
       return RegressionStage.Testing;
     case 'In beta':
@@ -332,11 +335,18 @@ async function userBelongsToMetaMaskOrg(
 // This function crafts appropriate label, corresponding to regression stage and release version.
 function craftRegressionLabel(regressionStage: RegressionStage | undefined, releaseVersion: string | undefined): Label {
   switch (regressionStage) {
-    case RegressionStage.Development:
+    case RegressionStage.DevelopmentFeature:
       return {
-        name: `regression-develop`,
+        name: `feature-branch-bug`,
         color: '5319E7', // violet
-        description: `Regression bug that was found on development branch, but not yet present in production`,
+        description: `bug that was found on a feature branch, but not yet merged in main branch`,
+      };
+
+    case RegressionStage.DevelopmentMain:
+      return {
+        name: `regression-main`,
+        color: '5319E7', // violet
+        description: `Regression bug that was found on main branch, but not yet present in production`,
       };
 
     case RegressionStage.Testing:
@@ -364,7 +374,7 @@ function craftRegressionLabel(regressionStage: RegressionStage | undefined, rele
       return {
         name: `regression-*`,
         color: 'EDEDED', // grey
-        description: `TODO: Unknown regression stage. Please replace with correct regression label: 'regression-develop', 'regression-RC-x.y.z', or 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
+        description: `TODO: Unknown regression stage. Please replace with correct regression label: 'regression-main', 'regression-RC-x.y.z', or 'regression-prod-x.y.z' label, where 'x.y.z' is the number of the release where bug was found.`,
       };
   }
 }

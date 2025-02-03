@@ -1,0 +1,116 @@
+@use "design-system";
+
+.prepare-bridge-page {
+  flex: 1;
+
+  .mm-text-field {
+    background-color: inherit;
+
+    &--focused {
+      outline: none;
+    }
+  }
+
+  .defined {
+    & > .mm-input--disabled,
+    p {
+      opacity: 1;
+    }
+  }
+
+  .mm-select-button__content {
+    max-height: 100%;
+    overflow: hidden;
+  }
+
+  .amount-input {
+    border: none;
+    padding: 0;
+    width: 100%;
+    gap: 4px;
+    height: fit-content;
+  }
+
+  &__switch-tokens {
+    button {
+      &:hover:enabled {
+        background: var(--color-background-default-hover);
+
+        .mm-icon {
+          color: var(--color-icon-default);
+        }
+      }
+
+      &:active {
+        background: var(--color-background-default-pressed);
+
+        .mm-icon {
+          color: var(--color-icon-default);
+        }
+      }
+
+      .rotate {
+        transform: rotate(360deg);
+      }
+    }
+
+    .mm-icon {
+      transition: all 0.3s ease-in-out;
+    }
+  }
+
+  .mascot-background-animation__animation {
+    margin-top: 24px;
+    margin-bottom: 16px;
+  }
+
+  .highlight {
+    padding: 16px;
+    background: var(--color-background-default);
+    border: none;
+    border-radius: 8px;
+
+    .row-with-warning {
+      padding-left: 16px;
+      padding-right: 12px;
+      margin-left: -16px;
+      max-width: calc(100% + 32px);
+      width: calc(100% + 32px);
+    }
+
+    [data-theme='light'],
+    .light {
+      box-shadow: 0 0 2px 0 #e2e4e9, 0 0 16px 0 rgba(226, 228, 233, 0.16);
+    }
+
+    [data-theme='dark'],
+    .dark {
+      box-shadow: 0 0 2px 0 #18191b, 0 0 16px 0 #18191b;
+    }
+  }
+}
+
+.bridge-settings-modal {
+  .mm-button-secondary {
+    &:hover {
+      background-color: var(--color-background-default-hover);
+    }
+  }
+
+  .mm-text-field {
+    height: 32px;
+    width: 94px;
+
+    &--focused,
+    &:focus-visible {
+      outline: none;
+    }
+
+    input {
+      font-size: var(--font-size-2);
+      padding-top: 1px;
+      width: 100%;
+      height: 32px;
+    }
+  }
+}

@@ -40,7 +40,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           <div
             class="confirm-page-container-navigation__navtext"
           >
-            0
+            1
              
             of
              
@@ -54,7 +54,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
         </div>
         <div
           class="confirm-page-container-navigation__container"
-          style="visibility: initial;"
+          style="visibility: hidden;"
         >
           <button
             class="confirm-page-container-navigation__arrow"
@@ -149,7 +149,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
               data-testid="signature-request-network-display"
             >
-              goerli
+              Goerli
             </h6>
             <h6
               class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"

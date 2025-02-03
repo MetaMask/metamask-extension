@@ -24,6 +24,7 @@ import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
+import TestDapp from '../page-objects/pages/test-dapp';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -76,24 +77,38 @@ async function setSnapConfig(
     entrypoint,
     simpleAccountFactory,
     paymaster,
+    paymasterSK,
   }: {
     bundlerUrl: string;
     entrypoint: string;
     simpleAccountFactory: string;
     paymaster?: string;
+    paymasterSK?: string;
   },
 ) {
-  const data = JSON.stringify({
-    bundlerUrl,
-    entryPoint: entrypoint,
-    simpleAccountFactory,
-    customVerifyingPaymasterAddress: paymaster,
-  });
-
   await driver.switchToWindowWithTitle('Account Abstraction Snap');
-  await driver.clickElement({ text: 'Set Chain Config' });
-  await driver.fill('#set-chain-config-chain-config-object', data);
-  await driver.clickElement({ text: 'Set Chain Configs', tag: 'button' });
+  await driver.clickElement('[data-testid="chain-select"]');
+  await driver.clickElement('[data-testid="chain-id-1337"]');
+  await driver.fill('[data-testid="bundlerUrl"]', bundlerUrl);
+  await driver.fill('[data-testid="entryPoint"]', entrypoint);
+  await driver.fill(
+    '[data-testid="simpleAccountFactory"]',
+    simpleAccountFactory,
+  );
+  if (paymaster) {
+    await driver.fill(
+      '[data-testid="customVerifyingPaymasterAddress"]',
+      paymaster,
+    );
+  }
+  if (paymasterSK) {
+    await driver.fill(
+      '[data-testid="customVerifyingPaymasterSK"]',
+      paymasterSK,
+    );
+  }
+
+  await driver.clickElement({ text: 'Set Chain Config', tag: 'button' });
 }
 
 async function createSwap(driver: Driver) {
@@ -190,9 +205,7 @@ async function withAccountSnap(
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilder()
-        .withPermissionControllerConnectedToTestDapp()
-        .build(),
+      fixtures: new FixtureBuilder().build(),
       title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),
@@ -225,7 +238,10 @@ async function withAccountSnap(
         ERC_4337_ACCOUNT_SALT,
       );
 
-      await driver.closeWindow();
+      const testDapp = new TestDapp(driver);
+      await testDapp.openTestDappPage();
+      await testDapp.connectAccount({ publicAddress: ERC_4337_ACCOUNT });
+
       await driver.switchToWindowWithTitle(
         WINDOW_TITLES.ExtensionInFullScreenView,
       );
@@ -242,7 +258,8 @@ describe('User Operations', function () {
         from: ERC_4337_ACCOUNT,
         to: GANACHE_ACCOUNT,
         value: convertETHToHexGwei(1),
-        data: '0x',
+        maxFeePerGas: '0x0',
+        maxPriorityFeePerGas: '0x0',
       });
 
       await confirmTransaction(driver);
@@ -280,7 +297,8 @@ describe('User Operations', function () {
           from: ERC_4337_ACCOUNT,
           to: GANACHE_ACCOUNT,
           value: convertETHToHexGwei(1),
-          data: '0x',
+          maxFeePerGas: '0x0',
+          maxPriorityFeePerGas: '0x0',
         });
 
         await confirmTransaction(driver);

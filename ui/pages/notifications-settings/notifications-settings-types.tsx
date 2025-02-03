@@ -58,7 +58,7 @@ export function NotificationsSettingsTypes({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
-          setting_type: 'feature_announcements',
+          settings_type: 'product_announcements',
           old_value: featureAnnouncementsEnabled,
           new_value: !featureAnnouncementsEnabled,
         },
@@ -101,6 +101,7 @@ export function NotificationsSettingsTypes({
           onToggle={onToggleFeatureAnnouncements}
           error={errorFeatureAnnouncements}
           disabled={disabled}
+          data-testid="product-announcements-toggle"
         >
           <NotificationsSettingsType
             icon={IconName.Star}

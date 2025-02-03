@@ -13,6 +13,7 @@ import * as actions from '../../../../store/actions';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {
@@ -109,9 +110,7 @@ describe('Unconnected Account Alert', () => {
       accounts,
       accountsByChainId,
       keyrings,
-      providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
-      },
+      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {
@@ -124,15 +123,25 @@ describe('Unconnected Account Alert', () => {
       subjects: {
         'https://test.dapp': {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [
+                          'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               invoker: 'https://test.dapp',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },

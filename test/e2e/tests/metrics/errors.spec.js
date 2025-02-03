@@ -5,12 +5,15 @@ const { get, has, set, unset, cloneDeep } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
-const { SENTRY_UI_STATE } = require('../../../../app/scripts/lib/setupSentry');
+const {
+  SENTRY_UI_STATE,
+} = require('../../../../app/scripts/constants/sentry-state');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   convertToHexValue,
   logInWithBalanceValidation,
   withFixtures,
+  sentryRegEx,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -44,6 +47,8 @@ const maskedBackgroundFields = [
   'AppStateController.notificationGasPollTokens',
   'AppStateController.popupGasPollTokens',
   'CurrencyController.currencyRates.ETH.conversionDate',
+  'CurrencyController.currencyRates.LineaETH.conversionDate',
+  'CurrencyController.currencyRates.SepoliaETH.conversionDate',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
@@ -54,11 +59,17 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
+  'AppStateController.lastInteractedConfirmationInfo',
+  'BridgeController.bridgeState.quoteRequest.walletAddress',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
+  // This property is timing-dependent
+  'MetaMetricsController.latestNonAnonymousEventTimestamp',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
+
+const WAIT_FOR_SENTRY_MS = 10000;
 
 /**
  * Transform background state to make it consistent between test runs.
@@ -177,7 +188,7 @@ describe('Sentry errors', function () {
       : 'meta is undefined';
   async function mockSentryMigratorError(mockServer) {
     return await mockServer
-      .forPost('https://sentry.io/api/0000000/envelope/')
+      .forPost(sentryRegEx)
       .withBodyIncluding(migrationError)
       .thenCallback(() => {
         return {
@@ -189,7 +200,7 @@ describe('Sentry errors', function () {
 
   async function mockSentryInvariantMigrationError(mockServer) {
     return await mockServer
-      .forPost('https://sentry.io/api/0000000/envelope/')
+      .forPost(sentryRegEx)
       .withBodyIncluding('typeof state.PreferencesController is number')
       .thenCallback(() => {
         return {
@@ -201,7 +212,7 @@ describe('Sentry errors', function () {
 
   async function mockSentryTestError(mockServer) {
     return await mockServer
-      .forPost('https://sentry.io/api/0000000/envelope/')
+      .forPost(sentryRegEx)
       .withBodyIncluding('Test Error')
       .thenCallback(() => {
         return {
@@ -220,7 +231,7 @@ describe('Sentry errors', function () {
     ],
   };
 
-  describe('before initialization, after opting out of metrics @no-mmi', function () {
+  describe('before initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -237,6 +248,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -265,6 +279,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -286,7 +303,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('before initialization, after opting into metrics @no-mmi', function () {
+  describe('before initialization, after opting into metrics', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -303,16 +320,18 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
           await driver.navigate(PAGES.HOME, { waitForControllers: false });
-
           // Wait for Sentry request
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
@@ -347,6 +366,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           // we don't wait for the controllers to be loaded
@@ -356,7 +378,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
@@ -405,6 +427,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryInvariantMigrationError,
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -413,7 +438,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
 
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
@@ -450,6 +475,10 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['TestError'],
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -466,7 +495,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
@@ -492,6 +521,10 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['TestError'],
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -508,7 +541,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
@@ -540,7 +573,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting out of metrics @no-mmi', function () {
+  describe('after initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
@@ -553,6 +586,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -585,6 +621,10 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['TestError'],
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -604,7 +644,7 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting into metrics @no-mmi', function () {
+  describe('after initialization, after opting into metrics', function () {
     it('should send error events in background', async function () {
       await withFixtures(
         {
@@ -617,6 +657,9 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -631,7 +674,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
@@ -660,10 +703,14 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, ganacheServer, mockedEndpoint }) => {
           await logInWithBalanceValidation(driver, ganacheServer);
 
+          await driver.delay(2000);
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
@@ -673,11 +720,12 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
             'version',
@@ -693,6 +741,11 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
+          assert.ok(
+            typeof extensionId === 'string' && extensionId.length > 0,
+            `${extensionId} is not a valid extension ID`,
+          );
+          assert.equal(installType, 'development');
           await matchesSnapshot({
             data: transformBackgroundState(appState.state),
             snapshot: 'errors-after-init-opt-in-background-state',
@@ -713,6 +766,10 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['TestError'],
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
@@ -725,7 +782,7 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
@@ -753,9 +810,15 @@ describe('Sentry errors', function () {
           ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
+          ignoredConsoleErrors: ['TestError'],
+          manifestFlags: {
+            sentry: { forceEnable: false },
+          },
         },
         async ({ driver, ganacheServer, mockedEndpoint }) => {
           await logInWithBalanceValidation(driver, ganacheServer);
+
+          await driver.delay(2000);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -764,11 +827,12 @@ describe('Sentry errors', function () {
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 3000);
+          }, WAIT_FOR_SENTRY_MS);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+          const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
             'version',
@@ -784,6 +848,11 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
+          assert.ok(
+            typeof extensionId === 'string' && extensionId.length > 0,
+            `${extensionId} is not a valid extension ID`,
+          );
+          assert.equal(installType, 'development');
           await matchesSnapshot({
             data: transformUiState(appState.state),
             snapshot: 'errors-after-init-opt-in-ui-state',
@@ -793,32 +862,24 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should have no policy gaps for UI controller state @no-mmi', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.findElement('#password');
-
-        const fullUiState = await driver.executeScript(() =>
-          window.stateHooks?.getCleanAppState?.(),
-        );
-
-        const missingState = getMissingProperties(
-          fullUiState.metamask,
-          SENTRY_UI_STATE.metamask,
-        );
-        assert.deepEqual(missingState, {});
-      },
-    );
-  });
-
-  it('should not have extra properties in UI state mask @no-mmi', async function () {
+  it('should not have extra properties in UI state mask', async function () {
     const expectedMissingState = {
+      bridgeState: {
+        // This can get wiped out during initialization due to a bug in
+        // the "resetState" method
+        quoteRequest: {
+          destChainId: true,
+          destTokenAddress: true,
+          srcChainId: true,
+          srcTokenAmount: true,
+          walletAddress: false,
+        },
+        quotesLastFetched: true,
+        quotesLoadingStatus: true,
+        quotesRefreshCount: true,
+        quoteFetchError: true,
+        quotesInitialLoadTime: true,
+      },
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
       // state
@@ -826,6 +887,7 @@ describe('Sentry errors', function () {
       preferences: {
         autoLockTimeLimit: true, // Initialized as undefined
         showConfirmationAdvancedDetails: true,
+        privacyMode: false,
       },
       smartTransactionsState: {
         fees: {
@@ -840,6 +902,13 @@ describe('Sentry errors', function () {
         // the "resetState" method
         swapsFeatureFlags: true,
       },
+      // Part of the AuthenticationController store, but initialized as undefined
+      // Only populated once the client is authenticated
+      sessionData: {
+        accessToken: false,
+        expiresIn: true,
+        profile: true,
+      },
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler
       timeoutMinutes: true,
@@ -847,12 +916,16 @@ describe('Sentry errors', function () {
       opts: true,
       store: true,
       configurationClient: true,
+      lastInteractedConfirmationInfo: undefined,
     };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.fullTitle(),
+        manifestFlags: {
+          sentry: { forceEnable: false },
+        },
       },
       async ({ driver }) => {
         await driver.navigate();

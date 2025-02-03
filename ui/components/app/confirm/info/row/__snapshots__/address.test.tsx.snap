@@ -9,10 +9,11 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
     >
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        class=""
       >
         <div
-          class="mm-avatar-account__jazzicon"
+          class="identicon"
+          style="height: 16px; width: 16px; border-radius: 8px;"
         >
           <div
             style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(249, 108, 1);"
@@ -71,47 +72,13 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
     >
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        class="identicon"
+        style="height: 16px; width: 16px; border-radius: 8px;"
       >
-        <div
-          class="mm-avatar-account__jazzicon"
-        >
-          <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 47);"
-          >
-            <svg
-              height="16"
-              width="16"
-              x="0"
-              y="0"
-            >
-              <rect
-                fill="#2346E1"
-                height="16"
-                transform="translate(-5.054099824190616 -1.1961526949032948) rotate(220.4 8 8)"
-                width="16"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#F96801"
-                height="16"
-                transform="translate(8.4860698787506 -0.0890679807090961) rotate(482.1 8 8)"
-                width="16"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#FA9E00"
-                height="16"
-                transform="translate(5.64879181058228 9.815863735670636) rotate(211.9 8 8)"
-                width="16"
-                x="0"
-                y="0"
-              />
-            </svg>
-          </div>
-        </div>
+        <img
+          src="https://s3.amazonaws.com/airswap-token-images/WBTC.png"
+          style="width: 100%;"
+        />
       </div>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
@@ -133,10 +100,11 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
     >
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        class=""
       >
         <div
-          class="mm-avatar-account__jazzicon"
+          class="identicon"
+          style="height: 16px; width: 16px; border-radius: 8px;"
         >
           <div
             style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(249, 108, 1);"
@@ -195,10 +163,11 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
     >
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        class=""
       >
         <div
-          class="mm-avatar-account__jazzicon"
+          class="identicon"
+          style="height: 16px; width: 16px; border-radius: 8px;"
         >
           <div
             style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(249, 108, 1);"
@@ -257,10 +226,11 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with
       class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
     >
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        class=""
       >
         <div
-          class="mm-avatar-account__jazzicon"
+          class="identicon"
+          style="height: 16px; width: 16px; border-radius: 8px;"
         >
           <div
             style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(249, 108, 1);"
@@ -315,7 +285,9 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames enabled 1`] =
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
   >
-    <div>
+    <div
+      class="mm-box mm-box--display-flex"
+    >
       <div
         class="name name__missing"
       >

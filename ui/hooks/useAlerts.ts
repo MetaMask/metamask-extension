@@ -16,20 +16,20 @@ import { Severity } from '../helpers/constants/design-system';
 const useAlerts = (ownerId: string) => {
   const dispatch = useDispatch();
 
-  const alerts: Alert[] = useSelector((state) =>
-    selectAlerts(state as AlertsState, ownerId),
+  const alerts: Alert[] = sortAlertsBySeverity(
+    useSelector((state) => selectAlerts(state as AlertsState, ownerId)),
   );
 
   const confirmedAlertKeys = useSelector((state) =>
     selectConfirmedAlertKeys(state as AlertsState, ownerId),
   );
 
-  const generalAlerts = useSelector((state) =>
-    selectGeneralAlerts(state as AlertsState, ownerId),
+  const generalAlerts = sortAlertsBySeverity(
+    useSelector((state) => selectGeneralAlerts(state as AlertsState, ownerId)),
   );
 
-  const fieldAlerts = useSelector((state) =>
-    selectFieldAlerts(state as AlertsState, ownerId),
+  const fieldAlerts = sortAlertsBySeverity(
+    useSelector((state) => selectFieldAlerts(state as AlertsState, ownerId)),
   );
 
   const getFieldAlerts = useCallback(
@@ -61,11 +61,19 @@ const useAlerts = (ownerId: string) => {
     (alert) =>
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
+
   const hasAlerts = alerts.length > 0;
+
   const dangerAlerts = alerts.filter(
     (alert) => alert.severity === Severity.Danger,
   );
+
   const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
+
+  const unconfirmedFieldDangerAlerts = fieldAlerts.filter(
+    (alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+  );
 
   return {
     alerts,
@@ -79,7 +87,21 @@ const useAlerts = (ownerId: string) => {
     isAlertConfirmed,
     setAlertConfirmed,
     unconfirmedDangerAlerts,
+    unconfirmedFieldDangerAlerts,
+    hasUnconfirmedFieldDangerAlerts: unconfirmedFieldDangerAlerts.length > 0,
   };
 };
+
+function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
+  const severityOrder = {
+    [Severity.Danger]: 3,
+    [Severity.Warning]: 2,
+    [Severity.Info]: 1,
+  };
+
+  return alerts.sort(
+    (a, b) => severityOrder[b.severity] - severityOrder[a.severity],
+  );
+}
 
 export default useAlerts;

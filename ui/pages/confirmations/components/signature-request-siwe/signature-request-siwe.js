@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { BannerAlert, Text } from '../../../../components/component-library';
 import Popover from '../../../../components/ui/popover';
 import Checkbox from '../../../../components/ui/check-box';
@@ -44,6 +44,7 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import SignatureRequestHeader from '../signature-request-header';
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { NetworkChangeToastLegacy } from '../confirm/network-change-toast';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -101,7 +102,7 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
       await dispatch(
         rejectPendingApproval(
           id,
-          serializeError(ethErrors.provider.userRejectedRequest()),
+          serializeError(providerErrors.userRejectedRequest()),
         ),
       );
     } catch (e) {
@@ -280,6 +281,7 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
           }}
         />
       )}
+      <NetworkChangeToastLegacy confirmation={txData} />
     </>
   );
 }

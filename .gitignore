@@ -1,3 +1,6 @@
+.yalc
+yalc.lock
+
 npm-debug.log
 yarn-error.log
 node_modules
@@ -64,12 +67,11 @@ test-results/
 !.yarn/versions
 development/generate-attributions/.yarn/*
 
-# MMI Playwright
+# MetaMask
+.metamask/*
+
+# Playwright
 public/playwright
-test/e2e/playwright/mmi/.env
-test/e2e/playwright/mmi/playwright.config.ts
-test/e2e/playwright/mmi/specs/**/*-darwin.png
-test/e2e/playwright/mmi/dist/
 lavamoat/**/policy-debug.json
 
 # Attributions
@@ -78,3 +80,8 @@ licenseInfos.json
 # API Spec tests
 html-report/
 
+/app/images/branding
+/changed-files
+
+# UI Integration tests
+test/integration/config/assets

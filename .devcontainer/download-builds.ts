@@ -7,7 +7,7 @@ function getGitBranch() {
   const gitOutput = execSync('git status').toString();
 
   const branchRegex = /On branch (?<branch>.*)\n/;
-  return gitOutput.match(branchRegex)?.groups?.branch || 'develop';
+  return gitOutput.match(branchRegex)?.groups?.branch || 'main';
 }
 
 async function getCircleJobs(branch: string) {
@@ -52,7 +52,11 @@ async function getBuilds(branch: string, jobNames: string[]) {
 
     const artifacts = await response.json();
 
-    if (!artifacts || artifacts.length === 0) {
+    if (
+      !artifacts ||
+      artifacts.length === 0 ||
+      artifacts.message === 'Not Found'
+    ) {
       return [];
     }
 

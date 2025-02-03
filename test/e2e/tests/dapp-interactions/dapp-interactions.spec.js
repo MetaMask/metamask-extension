@@ -31,7 +31,7 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await unlockWallet(driver);
         const notification = await driver.isElementPresent({
-          text: 'Allow this site to add a network?',
+          text: 'Add Localhost 8546',
           tag: 'h3',
         });
 
@@ -65,8 +65,7 @@ describe('Dapp interactions', function () {
           navigate: false,
         });
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.waitForSelector({
           css: '#accounts',
@@ -84,11 +83,6 @@ describe('Dapp interactions', function () {
         );
 
         await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Got it',
-          tag: 'button',
-        });
-
         const connectedDapp1 = await driver.isElementPresent({
           text: '127.0.0.1:8080',
           tag: 'p',

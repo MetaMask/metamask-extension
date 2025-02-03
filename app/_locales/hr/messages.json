@@ -205,9 +205,6 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteNetwork": {
-    "message": "Izbrisati mrežu?"
-  },
   "details": {
     "message": "Detalji"
   },
@@ -228,9 +225,6 @@
   },
   "editContact": {
     "message": "Uredi kontakt"
-  },
-  "ensRegistrationError": {
-    "message": "Greška u registraciji naziva ENS"
   },
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
@@ -350,12 +344,6 @@
   "invalidAddressRecipient": {
     "message": "Adresa primatelja nije valjana"
   },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ne mreža ETH, postavite na mala slova"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Nevaljani URL Block Explorer-a"
-  },
   "invalidRPC": {
     "message": "Nevaljani URL RPC-a"
   },
@@ -392,9 +380,6 @@
   },
   "loading": {
     "message": "Učitavanje..."
-  },
-  "loadingTokens": {
-    "message": "Učitavanje tokena..."
   },
   "lock": {
     "message": "Odjava"
@@ -452,14 +437,8 @@
   "next": {
     "message": "Sljedeće"
   },
-  "noAddressForName": {
-    "message": "Nijedna adresa nije postavljena za ovaj naziv."
-  },
   "noConversionRateAvailable": {
     "message": "Nijedan konverzijski tečaj nije dostupan"
-  },
-  "noTransactions": {
-    "message": "Nemate transkacija"
   },
   "noWebcamFound": {
     "message": "Mrežna kamera vašeg računala nije pronađena. Pokušajte ponovno."
@@ -516,12 +495,6 @@
   "prev": {
     "message": "Prethodno"
   },
-  "primaryCurrencySetting": {
-    "message": "Glavna valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Odaberite da se prvo prikazuju valute u osnovnoj valuti bloka (npr. ETH). Odaberite mogućnost Fiat za prikazivanje valuta u odabranoj valuti Fiat."
-  },
   "privacyMsg": {
     "message": "Pravilnik o zaštiti privatnosti"
   },
@@ -537,9 +510,6 @@
   },
   "readdToken": {
     "message": "Ovaj token možete dodati kasnije odlaskom pod stavku „Dodaj token” u izborniku mogućnosti računa. "
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Pretraži, javne adrese (0x) ili ENS"
   },
   "reject": {
     "message": "Odbaci"
@@ -731,9 +701,6 @@
   "transactionErrored": {
     "message": "Došlo je do greške prilikom transakcije."
   },
-  "transactionFee": {
-    "message": "Naknada za transakciju"
-  },
   "transactionResubmitted": {
     "message": "Transakcija je ponovno poslana s naknadom za gorivo povećanom do vrijednosti od $1 u $2."
   },
@@ -772,9 +739,6 @@
   },
   "unlockMessage": {
     "message": "Decentralizirani internet čeka"
-  },
-  "updatedWithDate": {
-    "message": "Ažurirano $1"
   },
   "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."

@@ -17,6 +17,9 @@ import {
   TextColor,
   TextVariant,
   FontWeight,
+  FlexDirection,
+  FlexWrap,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import TokenListPlaceholder from './token-list-placeholder';
 
@@ -56,7 +59,11 @@ export default class TokenList extends Component {
             <TokenListPlaceholder />
           </Box>
         ) : (
-          <Box className="token-list__tokens-container">
+          <Box
+            className="token-list__tokens-container"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+          >
             {Array(12)
               .fill(undefined)
               .map((_, i) => {
@@ -72,9 +79,19 @@ export default class TokenList extends Component {
                     <Box
                       key={address}
                       display={Display.Flex}
+                      alignItems={AlignItems.center}
+                      flexDirection={FlexDirection.Row}
+                      flexWrap={FlexWrap.NoWrap}
+                      paddingLeft={4}
+                      paddingRight={4}
+                      paddingTop={2}
+                      paddingBottom={2}
+                      backgroundColor={
+                        selectedTokens[address]
+                          ? BackgroundColor.primaryMuted
+                          : BackgroundColor.transparent
+                      }
                       className={classnames('token-list__token_component', {
-                        'token-list__token_component--selected':
-                          selectedTokens[address],
                         'token-list__token_component--disabled':
                           tokenAlreadyAdded,
                       })}
@@ -100,6 +117,7 @@ export default class TokenList extends Component {
                                 name={currentNetwork?.nickname}
                                 src={currentNetwork?.rpcPrefs?.imageUrl}
                                 backgroundColor={testNetworkBackgroundColor}
+                                className="token-list__token_component__network-badge"
                               />
                             }
                             marginRight={4}

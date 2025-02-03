@@ -4,7 +4,11 @@ import {
   BlockaidResultType,
   SecurityAlertSource,
 } from '../../../shared/constants/security-provider';
-import { getBlockaidMetricsProps, getMethodName } from './metrics';
+import {
+  getBlockaidMetricsProps,
+  getMethodName,
+  getSwapAndSendMetricsProps,
+} from './metrics';
 
 describe('getMethodName', () => {
   it('gets correct method names', () => {
@@ -179,5 +183,41 @@ describe('getBlockaidMetricsProps', () => {
       ...expectedMetricsPropsBase,
       security_alert_source: SecurityAlertSource.API,
     });
+  });
+});
+
+describe('getSwapAndSendMetricsProps', () => {
+  it('returns an empty object when transaction type is not swapAndSend', () => {
+    const transactionMeta = {
+      type: 'other',
+    };
+    const result = getSwapAndSendMetricsProps(transactionMeta);
+    expect(result).toStrictEqual({});
+  });
+
+  it('returns the expected metrics props when transaction type is swapAndSend', () => {
+    const transactionMeta = {
+      type: 'swapAndSend',
+      chainId: 1,
+      sourceTokenAmount: '1000000000000',
+      sourceTokenDecimals: 12,
+      destinationTokenAmount: '200',
+      destinationTokenDecimals: 2,
+      sourceTokenSymbol: 'ETH',
+      destinationTokenAddress: '0x123',
+      destinationTokenSymbol: 'ABC',
+      sourceTokenAddress: '0x456',
+    };
+    const expectedMetricsProps = {
+      chain_id: 1,
+      token_amount_source: '1',
+      token_amount_dest_estimate: '2',
+      token_symbol_source: 'ETH',
+      token_symbol_destination: 'ABC',
+      token_address_source: '0x456',
+      token_address_destination: '0x123',
+    };
+    const result = getSwapAndSendMetricsProps(transactionMeta);
+    expect(result).toStrictEqual(expectedMetricsProps);
   });
 });

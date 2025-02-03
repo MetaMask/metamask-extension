@@ -11,11 +11,20 @@ import {
 } from '../../../../../../test/jest/mocks';
 import { CombinedBackgroundAndReduxState } from '../../../../../store/store';
 import { shortenAddress } from '../../../../../helpers/utils/util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multichain/address';
 import { SendPageAccountPicker } from '.';
 
+type State = {
+  metamask: Pick<
+    CombinedBackgroundAndReduxState['metamask'],
+    'internalAccounts' | 'keyrings'
+  >;
+};
+
 const render = (
-  state: Partial<CombinedBackgroundAndReduxState> = {},
+  state: Partial<State> = {},
   props = {},
   sendStage = SEND_STAGES.ADD_RECIPIENT,
 ) => {
@@ -44,15 +53,25 @@ const render = (
       subjects: {
         'https://test.dapp': {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [
+                          'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               invoker: 'https://test.dapp',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },
@@ -121,7 +140,7 @@ describe('SendPageAccountPicker', () => {
             },
           ],
         },
-      } as CombinedBackgroundAndReduxState);
+      });
 
       expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
 

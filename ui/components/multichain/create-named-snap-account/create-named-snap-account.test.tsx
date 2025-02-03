@@ -3,6 +3,8 @@ import React from 'react';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import {
@@ -57,6 +59,7 @@ const render = (
     onActionComplete: jest.fn().mockResolvedValue({ success: true }),
     snapSuggestedAccountName: mockSnapSuggestedAccountName,
   },
+  overrideAccountNames?: { [accountId: string]: string },
 ) => {
   const store = configureStore({
     ...mockState,
@@ -67,8 +70,24 @@ const render = (
         ...mockState.metamask.internalAccounts,
         accounts: {
           ...mockState.metamask.internalAccounts.accounts,
-          [mockSnapAccount1.id]: mockSnapAccount1,
-          [mockSnapAccount2.id]: mockSnapAccount2,
+          [mockSnapAccount1.id]: {
+            ...mockSnapAccount1,
+            metadata: {
+              ...mockSnapAccount1.metadata,
+              name:
+                overrideAccountNames?.[mockSnapAccount1.id] ||
+                mockSnapAccount1.metadata.name,
+            },
+          },
+          [mockSnapAccount2.id]: {
+            ...mockSnapAccount2,
+            metadata: {
+              ...mockSnapAccount2.metadata,
+              name:
+                overrideAccountNames?.[mockSnapAccount2.id] ||
+                mockSnapAccount2.metadata.name,
+            },
+          },
         },
         options: {},
         methods: ETH_EOA_METHODS,
@@ -153,6 +172,30 @@ describe('CreateNamedSnapAccount', () => {
       expect(onActionComplete).toHaveBeenCalledWith({
         success: true,
         name: '',
+      });
+    });
+  });
+
+  it('increases suffix on snap account names when suggested name is already taken', async () => {
+    const onActionComplete = jest.fn();
+    const { getByText, getByPlaceholderText } = render(
+      {
+        onActionComplete,
+        snapSuggestedAccountName: mockSnapSuggestedAccountName,
+      },
+      { [mockSnapAccount1.id]: mockSnapSuggestedAccountName },
+    );
+
+    await waitFor(() =>
+      getByPlaceholderText(`${mockSnapSuggestedAccountName} 2`),
+    );
+    fireEvent.click(getByText(messages.addAccount.message));
+
+    await waitFor(() => {
+      expect(onActionComplete).toHaveBeenCalledTimes(1);
+      expect(onActionComplete).toHaveBeenCalledWith({
+        success: true,
+        name: `${mockSnapSuggestedAccountName} 2`,
       });
     });
   });

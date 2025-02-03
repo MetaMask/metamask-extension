@@ -57,6 +57,13 @@
     "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
+  "bridgeState": {
+    "bridgeFeatureFlags": {
+      "extensionConfig": {
+        "support": false
+      }
+    }
+  },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
   "completedOnboarding": false,
   "confirmationExchangeRates": {},
@@ -177,7 +184,24 @@
       }
     }
   },
-  "networkConfigurations": {},
+  "networkConfigurationsByChainId": {
+    "0xaa36a7": {
+      "chainId": "0xaa36a7",
+      "rpcEndpoints": [
+        {
+          "networkClientId": "sepolia",
+          "url": "https://sepolia.infura.io/v3/{infuraProjectId}",
+          "type": "infura",
+          "name": "Sepolia"
+        }
+      ],
+      "defaultRpcEndpointIndex": 0,
+      "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+      "defaultBlockExplorerUrlIndex": 0,
+      "name": "Sepolia",
+      "nativeCurrency": "SepoliaETH"
+    }
+  },
   "networksMetadata": { "sepolia": { "status": "unknown", "EIPS": {} } },
   "nextNonce": null,
   "nftsDetectionNoticeDismissed": false,
@@ -198,15 +222,22 @@
   "pinnedAccountList": [],
   "popupGasPollTokens": [],
   "preferences": {
+    "hideZeroBalanceTokens": false,
     "showExtensionInFullSizeView": false,
     "showFiatInTestnets": false,
     "showTestNetworks": false,
-    "smartTransactionsOptInStatus": null,
-    "useNativeCurrencyAsPrimaryCurrency": true,
-    "hideZeroBalanceTokens": false,
+    "smartTransactionsOptInStatus": true,
     "petnamesEnabled": true,
-    "redesignedConfirmationsEnabled": true,
-    "featureNotificationsEnabled": false
+    "showConfirmationAdvancedDetails": false,
+    "featureNotificationsEnabled": false,
+    "showMultiRpcModal": false,
+    "privacyMode": false,
+    "tokenNetworkFilter": {},
+    "tokenSortConfig": {
+      "key": "token-sort-key",
+      "order": "dsc",
+      "sortCallback": "stringNumeric"
+    }
   },
   "preventPollingOnNetworkRestart": false,
   "previousAppVersion": "",
@@ -263,6 +294,7 @@
   "showPermissionsTour": true,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
+  "slides": [],
   "smartTransactionsState": {
     "smartTransactions": { "0x1": [] },
     "fees": {},
@@ -411,6 +443,14 @@
   "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1715944006161,
   "theme": "os",
+  "tokenBalances": {
+    "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {
+      "0x1": {
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "0xbdbd",
+        "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e": "0x501b4176a64d6"
+      }
+    }
+  },
   "tokenList": {},
   "tokens": [],
   "tokensChainsCache": {},
@@ -435,13 +475,10 @@
   "useExternalServices": true,
   "useMultiAccountBalanceChecker": true,
   "useNftDetection": false,
-  "useNonceField": false,
   "usePhishDetect": true,
-  "useRequestQueue": true,
   "useSafeChainsListValidation": true,
   "useTokenDetection": true,
   "useTransactionSimulations": true,
-  "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
   "userOperations": {},
   "versionFileETag": "",
   "versionInfo": [],

@@ -1,9 +1,14 @@
 import React from 'react';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -36,8 +41,11 @@ import {
   IconName,
 } from '../../../../components/component-library';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type ERC20Notification = ExtractedNotification<
-  TRIGGER_TYPES.ERC20_RECEIVED | TRIGGER_TYPES.ERC20_SENT
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ERC20_RECEIVED
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ERC20_SENT
 >;
 
 const isERC20Notification = isOfTypeNodeGuard([
@@ -102,7 +110,7 @@ export const components: NotificationComponent<ERC20Notification> = {
       />
     ),
     body: {
-      type: 'body_onchain_notification',
+      type: NotificationComponentType.OnChainBody,
       From: ({ notification }) => (
         <NotificationDetailAddress
           side={`${t('notificationItemFrom')}${
@@ -130,6 +138,7 @@ export const components: NotificationComponent<ERC20Notification> = {
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
+              notification={notification}
               text={notification.tx_hash}
               displayText={t('notificationItemTransactionId') || ''}
             />
@@ -188,7 +197,7 @@ export const components: NotificationComponent<ERC20Notification> = {
     },
   },
   footer: {
-    type: 'footer_onchain_notification',
+    type: NotificationComponentType.OnChainFooter,
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton

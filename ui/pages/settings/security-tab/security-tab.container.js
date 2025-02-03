@@ -20,20 +20,19 @@ import {
   setUseExternalNameSources,
   setUseTransactionSimulations,
   setSecurityAlertsEnabled,
+  updateDataDeletionTaskStatus,
 } from '../../../store/actions';
 import {
-  getAllNetworks,
   getIsSecurityAlertsEnabled,
+  getMetaMetricsDataDeletionId,
   getPetnamesEnabled,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
-  const {
-    appState: { warning },
-    metamask,
-  } = state;
+  const { metamask } = state;
 
   const petnamesEnabled = getPetnamesEnabled(state);
 
@@ -55,12 +54,11 @@ const mapStateToProps = (state) => {
     useExternalNameSources,
   } = metamask;
 
-  const allNetworks = getAllNetworks(state);
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   return {
-    warning,
     incomingTransactionsPreferences,
-    allNetworks,
+    networkConfigurations,
     participateInMetaMetrics,
     dataCollectionForMarketing,
     usePhishDetect,
@@ -78,6 +76,7 @@ const mapStateToProps = (state) => {
     petnamesEnabled,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
+    metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
   };
 };
 
@@ -115,6 +114,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setUseTransactionSimulations: (value) => {
       return dispatch(setUseTransactionSimulations(value));
+    },
+    updateDataDeletionTaskStatus: () => {
+      return updateDataDeletionTaskStatus();
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
   };

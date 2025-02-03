@@ -5,7 +5,7 @@ export const NO_CHANGES_TRANSACTION_MOCK = {
   maxFeePerGas: '0x0',
   maxPriorityFeePerGas: '0x0',
   to: SENDER_ADDRESS_MOCK,
-  value: '0x38d7ea4c68000',
+  value: '0x0',
 };
 
 export const NO_CHANGES_REQUEST_MOCK: MockRequestResponse = {
@@ -42,6 +42,7 @@ export const NO_CHANGES_REQUEST_MOCK: MockRequestResponse = {
           stateDiff: {
             post: {
               [SENDER_ADDRESS_MOCK]: {
+                balance: '0x3185e67a46d9066',
                 nonce: '0x3c0',
               },
             },

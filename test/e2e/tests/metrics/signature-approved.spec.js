@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+
 const {
   defaultGanacheOptions,
   switchToNotificationWindow,
@@ -6,9 +7,7 @@ const {
   openDapp,
   unlockWallet,
   getEventPayloads,
-  clickSignOnSignatureConfirmation,
-  tempToggleSettingRedesignedConfirmations,
-  validateContractDetails,
+  clickSignOnRedesignedSignatureConfirmation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -47,7 +46,18 @@ async function mockSegment(mockServer) {
   ];
 }
 
-describe('Signature Approved Event @no-mmi', function () {
+const expectedEventPropertiesBase = {
+  account_type: 'MetaMask',
+  category: 'inpage_provider',
+  locale: 'en',
+  chain_id: '0x539',
+  environment_type: 'background',
+  security_alert_reason: 'CheckingChain',
+  security_alert_response: 'loading',
+  ui_customizations: ['redesigned_confirmation'],
+};
+
+describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
     await withFixtures(
       {
@@ -65,41 +75,30 @@ describe('Signature Approved Event @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV4');
         await switchToNotificationWindow(driver);
-        await validateContractDetails(driver);
-        await clickSignOnSignatureConfirmation({ driver });
+        await clickSignOnRedesignedSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
-          account_type: 'MetaMask',
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v4',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
           eip712_primary_type: 'Mail',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
 
         assert.deepStrictEqual(events[1].properties, {
-          account_type: 'MetaMask',
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v4',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
           eip712_primary_type: 'Mail',
-          environment_type: 'background',
-          security_alert_response: 'NotApplicable',
+          security_alert_response: 'Benign',
         });
       },
     );
   });
+
   it('Successfully tracked for signTypedData_v3', async function () {
     await withFixtures(
       {
@@ -117,37 +116,28 @@ describe('Signature Approved Event @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV3');
         await switchToNotificationWindow(driver);
-        await validateContractDetails(driver);
-        await clickSignOnSignatureConfirmation({ driver });
+        await clickSignOnRedesignedSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
+
         assert.deepStrictEqual(events[0].properties, {
-          account_type: 'MetaMask',
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v3',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
+
         assert.deepStrictEqual(events[1].properties, {
-          account_type: 'MetaMask',
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData_v3',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_response: 'NotApplicable',
+          security_alert_response: 'Benign',
         });
       },
     );
   });
+
   it('Successfully tracked for signTypedData', async function () {
     await withFixtures(
       {
@@ -165,36 +155,28 @@ describe('Signature Approved Event @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedData');
         await switchToNotificationWindow(driver);
-        await clickSignOnSignatureConfirmation({ driver });
+        await clickSignOnRedesignedSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
+
         assert.deepStrictEqual(events[0].properties, {
-          account_type: 'MetaMask',
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
+
         assert.deepStrictEqual(events[1].properties, {
-          account_type: 'MetaMask',
+          ...expectedEventPropertiesBase,
           signature_type: 'eth_signTypedData',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_response: 'NotApplicable',
+          security_alert_response: 'Benign',
         });
       },
     );
   });
+
   it('Successfully tracked for personalSign', async function () {
     await withFixtures(
       {
@@ -212,32 +194,23 @@ describe('Signature Approved Event @no-mmi', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#personalSign');
         await switchToNotificationWindow(driver);
-        await clickSignOnSignatureConfirmation({ driver });
+        await clickSignOnRedesignedSignatureConfirmation({ driver });
         const events = await getEventPayloads(driver, mockedEndpoints);
+
         assert.deepStrictEqual(events[0].properties, {
-          account_type: 'MetaMask',
+          ...expectedEventPropertiesBase,
           signature_type: 'personal_sign',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
-          security_alert_response: 'NotApplicable',
         });
+
         assert.deepStrictEqual(events[1].properties, {
-          account_type: 'MetaMask',
+          ...expectedEventPropertiesBase,
           signature_type: 'personal_sign',
-          category: 'inpage_provider',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-          security_alert_response: 'NotApplicable',
+          security_alert_response: 'Benign',
         });
       },
     );

@@ -1,17 +1,11 @@
 import { useSelector } from 'react-redux';
 import { getAccountByAddress } from '../../../helpers/utils/util';
-import {
-  accountsWithSendEtherInfoSelector,
-  currentConfirmationSelector,
-} from '../../../selectors';
+import { accountsWithSendEtherInfoSelector } from '../../../selectors';
 import { getConfirmationSender } from '../components/confirm/utils';
-import { Confirmation } from '../types/confirm';
+import { useConfirmContext } from '../context/confirm';
 
 function useConfirmationRecipientInfo() {
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as Confirmation;
-
+  const { currentConfirmation } = useConfirmContext();
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 
   let senderAddress, senderName;

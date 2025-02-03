@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   ButtonIcon,
@@ -8,7 +8,6 @@ import {
 } from '../../../../../components/component-library';
 import { I18nContext } from '../../../../../contexts/i18n';
 
-import { updateConfirm } from '../../../../../ducks/confirm/confirm';
 import {
   BackgroundColor,
   BlockSize,
@@ -19,8 +18,9 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
-import { currentConfirmationSelector } from '../../../selectors';
+import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
+import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 
 type ContentProps = {
   /**
@@ -31,8 +31,8 @@ type ContentProps = {
 
 const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
-  const dispatch = useDispatch();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { currentConfirmation, setIsScrollToBottomCompleted } =
+    useConfirmContext();
   const previousId = usePrevious(currentConfirmation?.id);
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
@@ -49,6 +49,13 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   } = useScrollRequired([currentConfirmation?.id, showAdvancedDetails], {
     offsetPxFromBottom: 0,
   });
+
+  const isTransactionRedesign = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
+  );
+
+  const showScrollToBottom =
+    isScrollable && !isScrolledToBottom && !isTransactionRedesign;
 
   /**
    * Scroll to the top of the page when the confirmation changes. This happens
@@ -72,12 +79,13 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   }, [currentConfirmation?.id, previousId, ref?.current]);
 
   useEffect(() => {
-    dispatch(
-      updateConfirm({
-        isScrollToBottomNeeded: isScrollable && !hasScrolledToBottom,
-      }),
-    );
-  }, [isScrollable, hasScrolledToBottom]);
+    if (isTransactionRedesign) {
+      setIsScrollToBottomCompleted(true);
+      return;
+    }
+
+    setIsScrollToBottomCompleted(!isScrollable || hasScrolledToBottom);
+  }, [isScrollable, hasScrolledToBottom, isTransactionRedesign]);
 
   return (
     <Box
@@ -109,9 +117,9 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       >
         {children}
 
-        {isScrollable && !isScrolledToBottom && (
+        {showScrollToBottom && (
           <ButtonIcon
-            className={'confirm-scroll-to-bottom__button'}
+            className="confirm-scroll-to-bottom__button"
             onClick={scrollToBottom}
             iconName={IconName.Arrow2Down}
             ariaLabel={t('scrollDown')}

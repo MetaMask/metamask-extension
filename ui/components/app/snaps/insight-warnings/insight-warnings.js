@@ -74,17 +74,18 @@ export default function InsightWarnings({
     return (
       <Box className="insights-warnings-modal__content">
         {warnings.map((warning, idx) => {
-          const { snapId, id } = warning;
+          const { snapId, interfaceId } = warning;
           return (
             <SnapUIRenderer
               key={`${snapId}-${idx}`}
               snapId={snapId}
-              interfaceId={id}
+              interfaceId={interfaceId}
               delineatorType={DelineatorType.Warning}
               onClick={() => handleWarningClick(snapId)}
               isCollapsable
               isCollapsed={warningState[snapId]}
               boxProps={{ marginBottom: idx === lastWarningIdx ? 0 : 4 }}
+              contentBackgroundColor={BackgroundColor.backgroundDefault}
             />
           );
         })}

@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   getMultichainCurrencyImage,
   getMultichainBalances,
@@ -31,9 +32,9 @@ export const useMultichainAccountTotalFiatBalance = (
   tokensWithBalances: {
     address: string;
     symbol: string;
-    decimals: string;
-    isERC721: boolean;
-    image: string;
+    decimals: number;
+    isERC721?: boolean;
+    image?: string;
   }[];
   totalWeiBalance?: string;
   totalBalance?: string;
@@ -68,7 +69,7 @@ export const useMultichainAccountTotalFiatBalance = (
 
   if (!balances[account.id]?.[asset]) {
     // FIXME: We might try to get the balance for a created account, but the
-    // BalancesController might not have updated it yet!
+    // MultichainBalancesController might not have updated it yet!
     return EMPTY_VALUES;
   }
   const { amount: balance } = balances[account.id][asset];

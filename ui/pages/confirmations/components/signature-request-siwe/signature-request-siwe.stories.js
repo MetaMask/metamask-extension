@@ -1,18 +1,37 @@
 import React from 'react';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { Provider } from 'react-redux';
 import testData from '../../../../../.storybook/test-data';
+import configureStore from '../../../../store/store';
+import { mockNetworkState } from '../../../../../test/stub/networks';
 import README from './README.mdx';
 import SignatureRequestSIWE from './signature-request-siwe';
+
+const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
+
+const TRANSACTION_DATA_MOCK = {
+  chainId: CHAIN_ID_MOCK,
+};
 
 const {
   internalAccounts: { accounts, selectedAccount },
 } = testData.metamask;
+
 const otherAccount = Object.values(accounts)[1];
 
 const { address: selectedAddress } = accounts[selectedAccount];
 
+const store = configureStore({
+  ...testData,
+  metamask: {
+    ...testData.metamask,
+    ...mockNetworkState({ chainId: CHAIN_ID_MOCK }),
+  },
+});
+
 export default {
   title: 'Confirmations/Components/SignatureRequestSIWE',
-
+  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   component: SignatureRequestSIWE,
   parameters: {
     docs: {
@@ -134,6 +153,7 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   txData: {
+    ...TRANSACTION_DATA_MOCK,
     msgParams,
   },
 };
@@ -144,6 +164,7 @@ export const BadDomainStory = (args) => {
 
 BadDomainStory.args = {
   txData: {
+    ...TRANSACTION_DATA_MOCK,
     msgParams: badDomainParams,
   },
 };
@@ -154,6 +175,7 @@ export const BadAddressStory = (args) => {
 
 BadAddressStory.args = {
   txData: {
+    ...TRANSACTION_DATA_MOCK,
     msgParams: badAddressParams,
   },
 };
@@ -164,6 +186,7 @@ export const BadDomainAndAddressStory = (args) => {
 
 BadDomainAndAddressStory.args = {
   txData: {
+    ...TRANSACTION_DATA_MOCK,
     msgParams: badDomainAndAddressParams,
   },
 };

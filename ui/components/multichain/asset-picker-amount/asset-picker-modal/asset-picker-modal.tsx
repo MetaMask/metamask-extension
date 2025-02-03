@@ -1,23 +1,26 @@
-import React, { useState, useCallback, useMemo, useContext } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
-import { Tab, Tabs } from '../../../ui/tabs';
+import {
+  Token,
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
+import { Hex } from '@metamask/utils';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   Modal,
   ModalContent,
   ModalOverlay,
   ModalHeader,
-  TextFieldSearch,
   Box,
-  ButtonIconSize,
-  TextFieldSearchSize,
   AvatarTokenSize,
   AvatarToken,
   Text,
+  PickerNetwork,
 } from '../../../component-library';
 import {
-  BlockSize,
   BorderRadius,
   TextVariant,
   TextAlign,
@@ -27,120 +30,132 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
-
-import { useNftsCollections } from '../../../../hooks/useNftsCollections';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/modules/selectors/networks';
 import {
   getAllTokens,
-  getCurrentChainId,
-  getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getTokenList,
+  getUseExternalServices,
 } from '../../../../selectors';
 import {
   getConversionRate,
+  getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
-import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
-import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
-import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
-} from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  getSendAnalyticProperties,
-  getSwapsBlockedTokens,
-} from '../../../../ducks/send';
+import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { Asset, Collection, Token } from './types';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../shared/constants/network';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { AvatarType } from '../../avatar-group/avatar-group.types';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
+import { useAsyncResult } from '../../../../hooks/useAsyncResult';
+import { fetchTopAssetsList } from '../../../../pages/swaps/swaps.util';
+import {
+  ERC20Asset,
+  NativeAsset,
+  NFT,
+  AssetWithDisplayData,
+  TokenWithBalance,
+} from './types';
+import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
+import { Search } from './asset-picker-modal-search';
+import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
 type AssetPickerModalProps = {
+  header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
-  asset: Asset;
-  onAssetChange: (asset: Asset) => void;
-  sendingAssetImage?: string;
-  sendingAssetSymbol?: string;
-};
+  action?: 'send' | 'receive';
+  asset?:
+    | ERC20Asset
+    | NativeAsset
+    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
+  onBack?: () => void;
+  onAssetChange: (
+    asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
+  ) => void;
+  /**
+   * Sending asset for UI treatments; only for dest component
+   */
+  sendingAsset?: { image: string; symbol: string } | undefined;
+  onNetworkPickerClick?: () => void;
+  /**
+   * Generator function that returns a list of tokens filtered by a predicate and sorted
+   * by a custom order.
+   */
+  customTokenListGenerator?: (
+    filterPredicate: (
+      symbol: string,
+      address?: null | string,
+      chainId?: string,
+    ) => boolean,
+  ) => Generator<
+    AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
+  >;
+  isTokenListLoading?: boolean;
+  autoFocus: boolean;
+} & Pick<
+  React.ComponentProps<typeof AssetPickerModalTabs>,
+  'visibleTabs' | 'defaultActiveTabKey'
+> &
+  Pick<
+    React.ComponentProps<typeof AssetPickerModalNetwork>,
+    'network' | 'networks' | 'isMultiselectEnabled' | 'selectedChainIds'
+  >;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 export function AssetPickerModal({
+  header,
   isOpen,
   onClose,
+  onBack,
   asset,
   onAssetChange,
-  sendingAssetImage,
-  sendingAssetSymbol,
+  sendingAsset,
+  network,
+  networks,
+  action,
+  onNetworkPickerClick,
+  customTokenListGenerator,
+  isTokenListLoading = false,
+  isMultiselectEnabled,
+  selectedChainIds,
+  autoFocus,
+  ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [searchQuery, setSearchQuery] = useState('');
-
-  const { collections, previouslyOwnedCollection } = useNftsCollections();
-
-  const collectionsKeys = Object.keys(collections);
-
-  const collectionsData = collectionsKeys.reduce((acc: unknown[], key) => {
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const collection = (collections as any)[key];
-
-    const isMatchingQuery = collection.collectionName
-      ?.toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    if (isMatchingQuery) {
-      acc.push(collection);
-      return acc;
-    }
-    return acc;
-  }, []);
-
-  // filter and exclude ERC1155
-  const collectionDataFiltered = (collectionsData as Collection[]).filter(
-    (collection) => collection.nfts.length > 0,
-  );
 
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set<string>(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
 
-  const isDest = sendingAssetImage && sendingAssetSymbol;
+  const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
 
-  const handleAssetChange = useCallback(
-    (token: Token) => {
-      onAssetChange(token);
-      trackEvent({
-        event: MetaMetricsEventName.sendAssetSelected,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          ...sendAnalytics,
-          is_destination_asset_picker_modal: Boolean(isDest),
-          new_asset_symbol: token.symbol,
-          new_asset_address: token.address,
-          is_nft: false,
-        },
-      });
-      onClose();
-    },
-    [onAssetChange],
-  );
-
-  const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
-
-  const chainId = useSelector(getCurrentChainId);
+  const currentChainId = useSelector(getCurrentChainId);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const selectedNetwork =
+    network ?? (currentChainId && allNetworks[currentChainId]);
+  const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
+  // This indicates whether tokens in the wallet's active network are displayed
+  const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;
 
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -155,101 +170,228 @@ export function AssetPickerModal({
     getShouldHideZeroBalanceTokens,
   );
 
-  const detectedTokens = useSelector(getAllTokens);
-  const tokens = detectedTokens?.[chainId]?.[selectedAddress] ?? [];
+  const detectedTokens: Record<Hex, Record<string, Token[]>> = useSelector(
+    getAllTokens,
+  );
+  const tokens = detectedTokens?.[currentChainId]?.[selectedAddress] ?? [];
 
-  const { tokensWithBalances } = useTokenTracker({
-    tokens,
-    address: selectedAddress,
-    hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
-  });
+  const { tokensWithBalances }: { tokensWithBalances: TokenWithBalance[] } =
+    useTokenTracker({
+      tokens,
+      address: selectedAddress,
+      hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
+    });
 
-  // Swaps token list
-  const tokenList = useSelector(getTokenList) as Record<string, Token>;
-  const topTokens = useSelector(getTopAssets, isEqual);
+  const { assetsWithBalance: multichainTokensWithBalance } =
+    useMultichainBalances();
 
-  const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address');
+  const tokenList = useSelector(getTokenList) as TokenListMap;
 
-  const memoizedUsersTokens = useEqualityCheck(usersTokens);
+  const allowExternalServices = useSelector(getUseExternalServices);
+  // Swaps top tokens
+  const { value: topTokensResponse } = useAsyncResult<
+    { address: string }[] | undefined
+  >(async () => {
+    if (allowExternalServices && selectedNetwork?.chainId) {
+      return await fetchTopAssetsList(selectedNetwork.chainId);
+    }
+    return undefined;
+  }, [selectedNetwork?.chainId, allowExternalServices]);
+  const topTokens = topTokensResponse ?? [];
 
-  const filteredTokenList = useMemo(() => {
-    const nativeToken = {
-      address: null,
-      symbol: nativeCurrency,
-      decimals: 18,
-      image: nativeCurrencyImage,
-      balance: balanceValue,
-      type: AssetType.native,
-    };
-
-    const filteredTokens: Token[] = [];
-    // undefined would be the native token address
-    const filteredTokensAddresses = new Set<string | undefined>();
-
-    const getIsDisabled = ({ address, symbol }: Token) => {
-      const isDisabled = sendingAssetSymbol
-        ? !isEqualCaseInsensitive(sendingAssetSymbol, symbol) &&
+  const getIsDisabled = useCallback(
+    ({
+      address,
+      symbol,
+    }:
+      | TokenListToken
+      | AssetWithDisplayData<ERC20Asset>
+      | AssetWithDisplayData<NativeAsset>) => {
+      const isDisabled = sendingAsset?.symbol
+        ? !isEqualCaseInsensitive(sendingAsset.symbol, symbol) &&
           memoizedSwapsBlockedTokens.has(address || '')
         : false;
 
       return isDisabled;
-    };
+    },
+    [sendingAsset?.symbol, memoizedSwapsBlockedTokens],
+  );
 
-    function* tokenGenerator() {
-      yield nativeToken;
+  const memoizedUsersTokens: TokenWithBalance[] = useMemo(() => {
+    return uniqBy<TokenWithBalance>(
+      [...tokensWithBalances, ...tokens],
+      'address',
+    );
+  }, [tokensWithBalances, tokens]);
 
+  /**
+   * Generates a list of tokens sorted in this order
+   * - native tokens with balance
+   * - tokens with highest to lowest balance in selected currency
+   * - selected network's native token
+   * - matches URL token parameter
+   * - matches search query
+   * - detected tokens (without balance)
+   * - popularity
+   * - all other tokens
+   * - blocked tokens
+   */
+  const tokenListGenerator = useCallback(
+    function* (
+      shouldAddToken: (
+        symbol: string,
+        address?: null | string,
+        tokenChainId?: string,
+      ) => boolean,
+    ): Generator<
+      | AssetWithDisplayData<NativeAsset>
+      | ((Token | TokenListToken) & {
+          chainId: string;
+          balance?: string;
+          string?: string;
+        })
+    > {
       const blockedTokens = [];
 
-      for (const token of memoizedUsersTokens) {
-        yield token;
-      }
-
-      // topTokens should already be sorted by popularity
-      for (const address of Object.keys(topTokens)) {
-        const token = tokenList?.[address];
-        if (token) {
-          if (isDest && getIsDisabled(token)) {
-            blockedTokens.push(token);
-            continue;
-          } else {
+      // Yield multichain tokens with balances
+      if (isMultiselectEnabled) {
+        for (const token of multichainTokensWithBalance) {
+          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
             yield token;
           }
         }
       }
 
+      // Yield the native token for the selected chain
+      const nativeToken: AssetWithDisplayData<NativeAsset> = {
+        address: null,
+        symbol: nativeCurrency,
+        decimals: 18,
+        image: nativeCurrencyImage,
+        balance: balanceValue,
+        string: undefined,
+        chainId: currentChainId,
+        type: AssetType.native,
+      };
+
+      if (
+        shouldAddToken(
+          nativeToken.symbol,
+          nativeToken.address,
+          nativeToken.chainId,
+        )
+      ) {
+        yield nativeToken;
+      }
+
+      for (const token of memoizedUsersTokens) {
+        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
+          yield { ...token, chainId: currentChainId };
+        }
+      }
+
+      // topTokens are sorted by popularity
+      for (const topToken of topTokens) {
+        const token = tokenList?.[topToken.address];
+        if (
+          token &&
+          shouldAddToken(token.symbol, token.address, currentChainId)
+        ) {
+          if (getIsDisabled(token)) {
+            blockedTokens.push(token);
+            continue;
+          } else {
+            yield { ...token, chainId: currentChainId };
+          }
+        }
+      }
+
       for (const token of Object.values(tokenList)) {
-        yield token;
+        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
+          yield { ...token, chainId: currentChainId };
+        }
       }
 
       for (const token of blockedTokens) {
-        yield token;
+        yield { ...token, chainId: currentChainId };
       }
-    }
+    },
+    [
+      nativeCurrency,
+      nativeCurrencyImage,
+      balanceValue,
+      memoizedUsersTokens,
+      topTokens,
+      tokenList,
+      getIsDisabled,
+      isMultiselectEnabled,
+      multichainTokensWithBalance,
+    ],
+  );
 
-    let token: Token;
-    for (token of tokenGenerator()) {
-      if (
-        token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !filteredTokensAddresses.has(token.address?.toLowerCase())
-      ) {
-        filteredTokensAddresses.add(token.address?.toLowerCase());
-        filteredTokens.push(
-          getRenderableTokenData(
-            token.address
-              ? {
-                  ...token,
-                  ...tokenList[token.address.toLowerCase()],
-                  type: AssetType.token,
-                }
-              : token,
-            tokenConversionRates,
-            conversionRate,
-            currentCurrency,
-            chainId,
-            tokenList,
-          ),
-        );
+  const filteredTokenList = useMemo(() => {
+    const filteredTokens: (
+      | AssetWithDisplayData<ERC20Asset>
+      | AssetWithDisplayData<NativeAsset>
+    )[] = [];
+    // List of token identifiers formatted like `chainId:address`
+    const filteredTokensAddresses = new Set<string | undefined>();
+    const getTokenKey = (address?: string | null, tokenChainId?: string) =>
+      `${address?.toLowerCase() ?? zeroAddress()}:${
+        tokenChainId ?? currentChainId
+      }`;
+
+    // Default filter predicate for whether a token should be included in displayed list
+    const shouldAddToken = (
+      symbol: string,
+      address?: string | null,
+      tokenChainId?: string,
+    ) => {
+      const trimmedSearchQuery = searchQuery.trim().toLowerCase();
+      const isMatchedBySearchQuery = Boolean(
+        !trimmedSearchQuery ||
+          symbol?.toLowerCase().includes(trimmedSearchQuery) ||
+          address?.toLowerCase().includes(trimmedSearchQuery),
+      );
+      const isTokenInSelectedChain = isMultiselectEnabled
+        ? tokenChainId && selectedChainIds?.includes(tokenChainId)
+        : selectedNetwork?.chainId === tokenChainId;
+
+      return Boolean(
+        isTokenInSelectedChain &&
+          isMatchedBySearchQuery &&
+          !filteredTokensAddresses.has(getTokenKey(address, tokenChainId)),
+      );
+    };
+
+    // If filteredTokensGenerator is passed in, use it to generate the filtered tokens
+    // Otherwise use the default tokenGenerator
+    for (const token of (customTokenListGenerator ?? tokenListGenerator)(
+      shouldAddToken,
+    )) {
+      if (action === 'send' && token.balance === undefined) {
+        continue;
       }
+
+      filteredTokensAddresses.add(getTokenKey(token.address, token.chainId));
+      filteredTokens.push(
+        customTokenListGenerator
+          ? token
+          : getRenderableTokenData(
+              token.address
+                ? ({
+                    ...token,
+                    ...tokenList[token.address.toLowerCase()],
+                    type: AssetType.token,
+                  } as AssetWithDisplayData<ERC20Asset>)
+                : token,
+              tokenConversionRates,
+              conversionRate,
+              currentCurrency,
+              token.chainId,
+              tokenList,
+            ),
+      );
 
       if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
         break;
@@ -258,54 +400,45 @@ export function AssetPickerModal({
 
     return filteredTokens;
   }, [
-    memoizedUsersTokens,
-    topTokens,
     searchQuery,
-    nativeCurrency,
-    nativeCurrencyImage,
-    balanceValue,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-    chainId,
-    tokenList,
-    sendingAssetSymbol,
+    currentChainId,
+    tokenListGenerator,
+    customTokenListGenerator,
+    isMultiselectEnabled,
+    selectedChainIds,
+    selectedNetwork,
   ]);
 
-  const Search = useCallback(
-    ({
-      isNFTSearch = false,
-      props,
-    }: {
-      isNFTSearch?: boolean;
-      props?: React.ComponentProps<typeof Box>;
-    }) => (
-      <Box padding={4} {...props}>
-        <TextFieldSearch
-          borderRadius={BorderRadius.LG}
-          placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          error={false}
-          autoFocus
-          autoComplete={false}
-          width={BlockSize.Full}
-          clearButtonOnClick={() => setSearchQuery('')}
-          clearButtonProps={{
-            size: ButtonIconSize.Sm,
-          }}
-          showClearButton={true}
-          className="asset-picker-modal__search-list"
-          inputProps={{
-            'data-testid': 'asset-picker-modal-search-input',
-          }}
-          endAccessory={null}
-          size={TextFieldSearchSize.Lg}
-        />
-      </Box>
-    ),
-    [searchQuery],
-  );
+  const getNetworkImageUrl = (networkChainId: string) =>
+    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+      networkChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+    ];
+
+  const getNetworkPickerLabel = () => {
+    if (!isMultiselectEnabled) {
+      return (
+        (selectedNetwork?.chainId &&
+          NETWORK_TO_NAME_MAP[
+            selectedNetwork.chainId as keyof typeof NETWORK_TO_NAME_MAP
+          ]) ??
+        selectedNetwork?.name ??
+        t('bridgeSelectNetwork')
+      );
+    }
+    switch (selectedChainIds?.length) {
+      case allNetworksToUse.length:
+        return t('allNetworks');
+      case 1:
+        return t('singleNetwork');
+      case 0:
+        return t('bridgeSelectNetwork');
+      default:
+        return t('someNetworks', [selectedChainIds?.length]);
+    }
+  };
 
   return (
     <Modal
@@ -316,80 +449,95 @@ export function AssetPickerModal({
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader paddingBottom={2} onClose={onClose}>
+        <ModalHeader onClose={onClose} onBack={asset ? undefined : onBack}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-            {t(isDest ? 'sendSelectReceiveAsset' : 'sendSelectSendAsset')}
+            {header}
           </Text>
         </ModalHeader>
-        {isDest && (
+        {sendingAsset?.image && sendingAsset?.symbol && (
           <Box
             display={Display.Flex}
             gap={1}
             alignItems={AlignItems.center}
             marginInline="auto"
-            marginBottom={3}
           >
             <AvatarToken
               borderRadius={BorderRadius.full}
-              src={sendingAssetImage}
+              src={sendingAsset.image}
               size={AvatarTokenSize.Xs}
             />
             <Text variant={TextVariant.bodySm}>
-              {t('sendingAsset', [sendingAssetSymbol])}
+              {t('sendingAsset', [sendingAsset.symbol])}
             </Text>
           </Box>
         )}
+        {onNetworkPickerClick && (
+          <Box className="network-picker">
+            <PickerNetwork
+              label={getNetworkPickerLabel()}
+              src={
+                selectedNetwork?.chainId
+                  ? getNetworkImageUrl(selectedNetwork.chainId)
+                  : undefined
+              }
+              avatarGroupProps={
+                isMultiselectEnabled && selectedChainIds
+                  ? {
+                      limit: 2,
+                      members: selectedChainIds.map((c) => ({
+                        avatarValue: getNetworkImageUrl(c),
+                        symbol:
+                          NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                            c as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+                          ],
+                      })),
+                      avatarType: AvatarType.NETWORK,
+                    }
+                  : undefined
+              }
+              onClick={onNetworkPickerClick}
+              data-testid="multichain-asset-picker__network"
+            />
+          </Box>
+        )}
         <Box className="modal-tab__wrapper">
-          {isDest ? (
-            <>
-              <Search props={{ paddingTop: 1 }} />
-              <AssetList
-                handleAssetChange={handleAssetChange}
-                asset={asset}
-                tokenList={filteredTokenList}
-                sendingAssetSymbol={sendingAssetSymbol}
-                memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
+          <AssetPickerModalTabs {...tabProps}>
+            <React.Fragment key={TabName.TOKENS}>
+              <Search
+                searchQuery={searchQuery}
+                onChange={(value) => setSearchQuery(value)}
+                autoFocus={autoFocus}
               />
-            </>
-          ) : (
-            <Tabs
-              defaultActiveTabKey={defaultActiveTabKey}
-              tabsClassName="modal-tab__tabs"
-            >
-              {
-                <Tab
-                  activeClassName="modal-tab__tab--active"
-                  className="modal-tab__tab"
-                  name={t('tokens')}
-                  tabKey="tokens"
-                >
-                  <Search />
-                  <AssetList
-                    handleAssetChange={handleAssetChange}
-                    asset={asset}
-                    tokenList={filteredTokenList}
-                    memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
-                  />
-                </Tab>
-              }
-
-              {
-                <Tab
-                  activeClassName="modal-tab__tab--active"
-                  className="modal-tab__tab"
-                  name={t('nfts')}
-                  tabKey="nfts"
-                >
-                  <AssetPickerModalNftTab
-                    collectionDataFiltered={collectionDataFiltered}
-                    previouslyOwnedCollection={previouslyOwnedCollection}
-                    onClose={onClose}
-                    renderSearch={() => Search({ isNFTSearch: true })}
-                  />
-                </Tab>
-              }
-            </Tabs>
-          )}
+              <AssetList
+                network={network}
+                handleAssetChange={handleAssetChange}
+                asset={asset?.type === AssetType.NFT ? undefined : asset}
+                tokenList={filteredTokenList}
+                isTokenDisabled={getIsDisabled}
+                isTokenListLoading={isTokenListLoading}
+                assetItemProps={{
+                  isTitleNetworkName:
+                    // For src cross-chain swaps assets
+                    isMultiselectEnabled,
+                  isTitleHidden:
+                    // For dest cross-chain swaps assets
+                    !isSelectedNetworkActive,
+                }}
+              />
+            </React.Fragment>
+            <AssetPickerModalNftTab
+              key={TabName.NFTS}
+              searchQuery={searchQuery}
+              onClose={onClose}
+              renderSearch={() => (
+                <Search
+                  isNFTSearch
+                  searchQuery={searchQuery}
+                  onChange={(value) => setSearchQuery(value)}
+                />
+              )}
+            />
+          </AssetPickerModalTabs>
         </Box>
       </ModalContent>
     </Modal>

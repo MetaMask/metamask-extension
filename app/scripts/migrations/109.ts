@@ -1,6 +1,6 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import { FALLBACK_VARIATION, NameOrigin } from '@metamask/name-controller';
-import { PreferencesControllerState } from '../controllers/preferences';
+import { PreferencesControllerState } from '../controllers/preferences-controller';
 
 type VersionedData = {
   meta: { version: number };

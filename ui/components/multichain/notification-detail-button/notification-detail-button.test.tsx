@@ -1,9 +1,22 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { ButtonVariant } from '../../component-library';
-import { TRIGGER_TYPES } from '../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { NotificationDetailButton } from './notification-detail-button';
+
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
+type Notification = NotificationServicesController.Types.INotification;
+
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
+  return {
+    ...original,
+    useHistory: () => ({
+      push: jest.fn(),
+    }),
+  };
+});
 
 describe('NotificationDetailButton', () => {
   const defaultProps = {

@@ -56,14 +56,6 @@ describe('AlertRow', () => {
           [OWNER_ID_MOCK]: { [KEY_ALERT_KEY_MOCK]: false },
         },
       },
-      confirm: {
-        currentConfirmation: {
-          id: OWNER_ID_MOCK,
-          status: 'unapproved',
-          time: new Date().getTime(),
-          type: 'personal_sign',
-        },
-      },
       ...state,
     };
 
@@ -97,6 +89,24 @@ describe('AlertRow', () => {
     it('does not render when alert properties are not provided', () => {
       const { queryByTestId } = renderAlertRow();
       expect(queryByTestId('inline-alert')).toBeNull();
+    });
+
+    describe('display row only when there is an alert', () => {
+      it('does not render when isShownWithAlertsOnly is true and there is no alert', () => {
+        const { queryByTestId } = renderAlertRow({
+          isShownWithAlertsOnly: true,
+        });
+        expect(queryByTestId('inline-alert')).toBeNull();
+      });
+
+      it('renders when isShownWithAlertsOnly is false and there is an alert', () => {
+        const { getByTestId } = renderAlertRow({
+          alertKey: KEY_ALERT_KEY_MOCK,
+          ownerId: OWNER_ID_MOCK,
+          isShownWithAlertsOnly: false,
+        });
+        expect(getByTestId('inline-alert')).toBeDefined();
+      });
     });
 
     describe('Modal visibility', () => {

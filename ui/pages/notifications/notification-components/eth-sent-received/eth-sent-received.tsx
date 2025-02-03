@@ -1,9 +1,14 @@
 import React from 'react';
+import { NotificationServicesController } from '@metamask/notification-services-controller';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../../../app/scripts/translate';
-import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -35,8 +40,11 @@ import {
   IconName,
 } from '../../../../components/component-library';
 
+const { TRIGGER_TYPES } = NotificationServicesController.Constants;
+
 type ETHNotification = ExtractedNotification<
-  TRIGGER_TYPES.ETH_RECEIVED | TRIGGER_TYPES.ETH_SENT
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ETH_RECEIVED
+  | NotificationServicesController.Constants.TRIGGER_TYPES.ETH_SENT
 >;
 const isETHNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.ETH_RECEIVED,
@@ -115,7 +123,7 @@ export const components: NotificationComponent<ETHNotification> = {
       );
     },
     body: {
-      type: 'body_onchain_notification',
+      type: NotificationComponentType.OnChainBody,
       From: ({ notification }) => (
         <NotificationDetailAddress
           side={`${t('notificationItemFrom')}${
@@ -143,6 +151,7 @@ export const components: NotificationComponent<ETHNotification> = {
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
+              notification={notification}
               text={notification.tx_hash}
               displayText={t('notificationItemTransactionId') || ''}
             />
@@ -197,7 +206,7 @@ export const components: NotificationComponent<ETHNotification> = {
     },
   },
   footer: {
-    type: 'footer_onchain_notification',
+    type: NotificationComponentType.OnChainFooter,
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton
