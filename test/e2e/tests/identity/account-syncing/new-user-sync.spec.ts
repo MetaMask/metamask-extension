@@ -48,7 +48,7 @@ describe('Account syncing - New User', function () {
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           // Open account menu and validate 1 account is shown
@@ -111,7 +111,7 @@ describe('Account syncing - New User', function () {
           });
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed();
+          await homePage.check_expectedBalanceIsDisplayed('0');
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           // Open account menu and validate the 2 accounts have been retrieved

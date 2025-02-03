@@ -215,6 +215,11 @@ describe('Simple Send Security Alert - Blockaid', function () {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
 
+        // We validate custom balance as it doesn't come from ganache but it's mocked
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '20 ETH',
+        });
         await sendScreenToConfirmScreen(
           driver,
           '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
