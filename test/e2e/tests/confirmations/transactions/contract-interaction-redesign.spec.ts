@@ -5,7 +5,6 @@ import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   assertAdvancedGasDetails,
   confirmDepositTransaction,
@@ -96,16 +95,8 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x100000000000000000000',
           );
-          const contractAddress =
-            contractRegistry?.getContractAddress(smartContract);
 
-          await loginWithoutBalanceValidation(driver);
-          // We validate custom balance as it doesn't come from ganache but it's mocked
-          await driver.waitForSelector({
-            css: '[data-testid="eth-overview__primary-currency"]',
-            text: '1208925.8196 ETH',
-          });
-          await openDapp(driver, contractAddress);
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);

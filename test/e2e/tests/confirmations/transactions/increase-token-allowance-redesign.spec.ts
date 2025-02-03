@@ -21,14 +21,9 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForLegacyTx(this),
-        async ({
-          driver,
-          ganacheServer,
-          contractRegistry,
-        }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
-            ganacheServer,
             '3',
             contractRegistry,
           );
@@ -39,14 +34,9 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 2 transaction (EIP1559) with a small spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForEIP1559Tx(this),
-        async ({
-          driver,
-          ganacheServer,
-          contractRegistry,
-        }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
-            ganacheServer,
             '3',
             contractRegistry,
           );
@@ -57,14 +47,9 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 0 transaction (Legacy) with a large spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForLegacyTx(this),
-        async ({
-          driver,
-          ganacheServer,
-          contractRegistry,
-        }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
-            ganacheServer,
             '3000',
             contractRegistry,
           );
@@ -75,14 +60,9 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 2 transaction (EIP1559) with a large spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForEIP1559Tx(this),
-        async ({
-          driver,
-          ganacheServer,
-          contractRegistry,
-        }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
-            ganacheServer,
             '3000',
             contractRegistry,
           );
