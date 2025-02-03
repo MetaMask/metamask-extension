@@ -1,6 +1,6 @@
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
@@ -54,9 +54,9 @@ export type TransactionControllerInitMessenger = ReturnType<
 >;
 
 export function getTransactionControllerMessenger(
-  controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>,
+  messenger: Messenger<MessengerActions, MessengerEvents>,
 ): TransactionControllerMessenger {
-  return controllerMessenger.getRestricted({
+  return messenger.getRestricted({
     name: 'TransactionController',
     allowedActions: [
       'AccountsController:getSelectedAccount',
@@ -69,9 +69,9 @@ export function getTransactionControllerMessenger(
 }
 
 export function getTransactionControllerInitMessenger(
-  controllerMessenger: ControllerMessenger<MessengerActions, MessengerEvents>,
+  messenger: Messenger<MessengerActions, MessengerEvents>,
 ) {
-  return controllerMessenger.getRestricted({
+  return messenger.getRestricted({
     name: 'TransactionControllerInit',
     allowedEvents: [
       'TransactionController:transactionApproved',
@@ -87,6 +87,10 @@ export function getTransactionControllerInitMessenger(
       'SmartTransactionsController:smartTransaction',
     ],
     allowedActions: [
+      'ApprovalController:addRequest',
+      'ApprovalController:endFlow',
+      'ApprovalController:startFlow',
+      'ApprovalController:updateRequestState',
       'NetworkController:getEIP1559Compatibility',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',

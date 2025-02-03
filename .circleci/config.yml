@@ -134,9 +134,6 @@ workflows:
       - prep-build-test-flask-mv2:
           requires:
             - prep-deps
-      - prep-build-storybook:
-          requires:
-            - prep-deps
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
@@ -185,10 +182,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-      - test-storybook:
-          requires:
-            - prep-deps
-            - prep-build-storybook
       - validate-source-maps:
           requires:
             - prep-build
@@ -222,7 +215,6 @@ workflows:
             - test-e2e-firefox-flask
             - test-e2e-chrome-vault-decryption
             - test-e2e-chrome-webpack
-            - test-storybook
       - benchmark:
           requires:
             - prep-build-test
@@ -243,7 +235,6 @@ workflows:
             - prep-build-test-mv2
             - prep-build-test-flask
             - prep-build-test-flask-mv2
-            - prep-build-storybook
             - prep-build-ts-migration-dashboard
             - benchmark
             - user-actions-benchmark
@@ -260,12 +251,6 @@ workflows:
             - prep-build-flask
             - prep-build-flask-mv2
             - all-tests-pass
-      - job-publish-storybook:
-          filters:
-            branches:
-              only: main
-          requires:
-            - prep-build-storybook
       - job-publish-ts-migration-dashboard:
           filters:
             branches:
@@ -336,12 +321,15 @@ jobs:
       - run:
           name: Save Yarn version
           command: yarn --version > /tmp/YARN_VERSION
+      - run:
+          name: Save Foundry version
+          command: node -e "process.stdout.write(require('./package.json').foundryup.version)" > /tmp/FOUNDRY_VERSION
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
             # This cache key lookup will fail if the lock file is modified and a cache
             # has not yet been persisted for the new checksum.
-            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
+            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}-{{ checksum "/tmp/FOUNDRY_VERSION" }}
             # To prevent having to do a full install of every node_module when
             # dependencies change, restore from the last known cache of any
             # branch/checksum with the same Yarn version, the install step will remove
@@ -353,12 +341,14 @@ jobs:
           name: Install dependencies
           command: yarn --immutable
       - save_cache:
-          key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}-{{ checksum "/tmp/FOUNDRY_VERSION" }}
           paths:
             - .yarn/cache
+            - .metamask/cache # should match yarn's relative location
       - persist_to_workspace:
           root: .
           paths:
+            - .metamask/cache # ensures anvil is installed
             - node_modules
             - build-artifacts
 
@@ -663,21 +653,6 @@ jobs:
           paths:
             - dist-test-webpack
 
-  prep-build-storybook:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build Storybook
-          command: yarn storybook:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - storybook-build
-
   prep-build-ts-migration-dashboard:
     executor: node-browsers-small
     steps:
@@ -703,20 +678,6 @@ jobs:
       - run:
           name: Rerun workflows from failed
           command: yarn ci-rerun-from-failed
-
-  test-storybook:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Playwright browsers
-          command: yarn exec playwright install chromium
-      - run:
-          name: Test Storybook
-          command: yarn test-storybook:ci
 
   test-e2e-chrome-webpack:
     executor: node-browsers-medium-plus
@@ -1086,9 +1047,6 @@ jobs:
           path: build-artifacts
           destination: build-artifacts
       - store_artifacts:
-          path: storybook-build
-          destination: storybook
-      - store_artifacts:
           path: development/ts-migration-dashboard/build/final
           destination: ts-migration-dashboard
 
@@ -1114,22 +1072,6 @@ jobs:
       - run:
           name: Create GitHub release
           command: .circleci/scripts/release-create-gh-release.sh
-
-  job-publish-storybook:
-    executor: node-browsers-small
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: storybook:deploy
-          command: |
-            git remote add storybook git@github.com:MetaMask/metamask-storybook.git
-            yarn storybook:deploy
 
   job-publish-ts-migration-dashboard:
     executor: node-browsers-small

@@ -11,7 +11,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
@@ -85,7 +85,7 @@ export type AllowedActions =
  */
 export type AllowedEvents = AccountsControllerChangeEvent;
 
-export type PreferencesControllerMessenger = RestrictedControllerMessenger<
+export type PreferencesControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   PreferencesControllerActions | AllowedActions,
   PreferencesControllerEvents | AllowedEvents,
@@ -133,7 +133,6 @@ export type PreferencesControllerState = Omit<
   | 'useMultiRpcMigration'
 > & {
   useBlockie: boolean;
-  useNonceField: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
   overrideContentSecurityPolicyHeader: boolean;
@@ -174,7 +173,6 @@ export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
     selectedAddress: '',
     useBlockie: false,
-    useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
     overrideContentSecurityPolicyHeader: true,
@@ -291,10 +289,6 @@ const controllerMetadata = {
     anonymous: false,
   },
   useBlockie: {
-    persist: true,
-    anonymous: true,
-  },
-  useNonceField: {
     persist: true,
     anonymous: true,
   },
@@ -527,17 +521,6 @@ export class PreferencesController extends BaseController<
   setUseBlockie(val: boolean): void {
     this.update((state) => {
       state.useBlockie = val;
-    });
-  }
-
-  /**
-   * Setter for the `useNonceField` property
-   *
-   * @param val - Whether or not the user prefers to set nonce
-   */
-  setUseNonceField(val: boolean): void {
-    this.update((state) => {
-      state.useNonceField = val;
     });
   }
 
