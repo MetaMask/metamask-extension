@@ -22,9 +22,6 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     getProvider: jest.fn(),
     getTransactionMetricsRequest: jest.fn(),
     persistedState: {},
-    metaMaskController: {
-      getPrimaryKeyringMnemonic: jest.fn(),
-      removeAllConnections: jest.fn(),
-    },
+    removeAllConnections: jest.fn(),
   };
 }

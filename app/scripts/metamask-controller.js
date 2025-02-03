@@ -7674,7 +7674,7 @@ export default class MetamaskController extends EventEmitter {
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
       persistedState: initState,
-      metaMaskController: this,
+      removeAllConnections: this.removeAllConnections.bind(this),
     };
 
     return initControllers({

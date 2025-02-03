@@ -112,14 +112,12 @@ export type ControllerInitRequest<
   persistedState: ControllerPersistedState;
 
   /**
-   * The `MetaMaskController` instance.
+   * Close all connections for the given origin, and removes the references
+   * to them. Ignores unknown origins.
    *
-   * This should only be used if the controller messenger cannot be used
-   * instead.
+   * @param origin - The origin for which to remove all connections.
    */
-  // `MetaMaskController` is untyped.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metaMaskController: any;
+  removeAllConnections(origin: string): void;
 } & (InitMessengerType extends BaseRestrictedControllerMessenger
   ? {
       /**

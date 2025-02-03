@@ -1,4 +1,5 @@
 import { SnapController } from '@metamask/snaps-controllers';
+import { hasProperty } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -7,6 +8,7 @@ import {
 } from '../../../../shared/constants/snaps/permissions';
 import { encryptorFactory } from '../../lib/encryptor-factory';
 import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
+import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
@@ -22,7 +24,8 @@ import {
  * @param request.controllerMessenger - The controller messenger to use for the
  * controller.
  * @param request.persistedState - The persisted state of the extension.
- * @param request.metaMaskController - The MetaMask controller.
+ * @param request.removeAllConnections - Function to remove all connections for
+ * a given origin.
  * @returns The initialized controller.
  */
 export const SnapControllerInit: ControllerInitFunction<
@@ -33,13 +36,31 @@ export const SnapControllerInit: ControllerInitFunction<
   initMessenger,
   controllerMessenger,
   persistedState,
-  metaMaskController,
+  removeAllConnections,
 }) => {
   const allowLocalSnaps = Boolean(process.env.ALLOW_LOCAL_SNAPS);
   const requireAllowlist = Boolean(process.env.REQUIRE_SNAPS_ALLOWLIST);
   const rejectInvalidPlatformVersion = Boolean(
     process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
   );
+
+  function getMnemonic() {
+    const keyrings = initMessenger.call(
+      'KeyringController:getKeyringsByType',
+      KeyringType.hdKeyTree,
+    );
+
+    if (
+      !keyrings[0] ||
+      !hasProperty(keyrings[0], 'mnemonic') ||
+      !(keyrings[0].mnemonic instanceof Uint8Array)
+    ) {
+      throw new Error('Primary keyring mnemonic unavailable.');
+    }
+
+    // `SnapController` expects a promise.
+    return Promise.resolve(keyrings[0].mnemonic);
+  }
 
   /**
    * Get the feature flags for the `SnapController.
@@ -64,8 +85,7 @@ export const SnapControllerInit: ControllerInitFunction<
       ...ExcludedSnapEndowments,
     },
 
-    closeAllConnections:
-      metaMaskController.removeAllConnections.bind(metaMaskController),
+    closeAllConnections: removeAllConnections,
 
     // @ts-expect-error: `persistedState.SnapController` is not compatible with
     // the expected type.
@@ -87,8 +107,7 @@ export const SnapControllerInit: ControllerInitFunction<
     // TODO: Look into the type mismatch.
     encryptor: encryptorFactory(600_000),
 
-    getMnemonic:
-      metaMaskController.getPrimaryKeyringMnemonic.bind(metaMaskController),
+    getMnemonic,
 
     // @ts-expect-error: `PREINSTALLED_SNAPS` is readonly, but the controller
     // expects a mutable array.
