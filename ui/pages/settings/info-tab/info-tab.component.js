@@ -15,7 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
 
 export default class InfoTab extends PureComponent {
   static propTypes = {
@@ -24,6 +24,7 @@ export default class InfoTab extends PureComponent {
 
   state = {
     version: process.env.METAMASK_VERSION,
+    isVisitSupportDataConsentModalOpen: false,
   };
 
   static contextTypes = {
@@ -56,6 +57,13 @@ export default class InfoTab extends PureComponent {
       );
     }
   }
+
+  toggleVisitSupportDataConsentModal = () => {
+    this.setState((prevState) => ({
+      isVisitSupportDataConsentModalOpen:
+        !prevState.isVisitSupportDataConsentModalOpen,
+    }));
+  };
 
   renderInfoLinks() {
     const { t } = this.context;
@@ -118,26 +126,10 @@ export default class InfoTab extends PureComponent {
         <div ref={this.settingsRefs[5]} className="info-tab__link-item">
           <Button
             type="link"
-            href={SUPPORT_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
-            onClick={() => {
-              this.context.trackEvent(
-                {
-                  category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.SupportLinkClicked,
-                  properties: {
-                    url: SUPPORT_LINK,
-                  },
-                },
-                {
-                  contextPropsIntoEventProperties: [
-                    MetaMetricsContextProp.PageTitle,
-                  ],
-                },
-              );
-            }}
+            onClick={this.toggleVisitSupportDataConsentModal}
           >
             {t('supportCenter')}
           </Button>
@@ -215,6 +207,10 @@ export default class InfoTab extends PureComponent {
             alt="MetaMask Logo"
           />
         </div>
+        <VisitSupportDataConsentModal
+          isOpen={this.state.isVisitSupportDataConsentModalOpen}
+          onClose={this.toggleVisitSupportDataConsentModal}
+        />
       </div>
     );
   }

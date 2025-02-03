@@ -16,6 +16,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   endAccessory,
   onClose,
   closeButtonProps,
+
   onBack,
   backButtonProps,
   ...props

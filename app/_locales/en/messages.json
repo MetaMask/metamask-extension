@@ -1,4 +1,19 @@
 {
+  "visitSupportDataConsentModalTitle": {
+    "message": "Share device details with support"
+  },
+  "visitSupportDataConsentModalDescription": {
+    "message": "Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional."
+  },
+  "visitSupportDataConsentModalCheckboxDescription": {
+    "message": "Save my preference"
+  },
+  "visitSupportDataConsentModalReject": {
+    "message": "Don’t share"
+  },
+  "visitSupportDataConsentModalAccept": {
+    "message": "Confirm"
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
