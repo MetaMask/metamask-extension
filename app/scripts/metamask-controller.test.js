@@ -858,14 +858,42 @@ describe('MetaMaskController', () => {
 
       describe('the wallet is locked', () => {
         beforeEach(() => {
-          jest.spyOn(metamaskController, 'isUnlocked').mockReturnValue(false);
+          const internalAccounts = [
+            {
+              address: '0xbeef',
+              id: '0bd7348e-bdfe-4f67-875c-de831a583857',
+              metadata: {
+                name: 'Test Account',
+                lastSelected: 2,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+            {
+              address: '0xdead',
+              id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
+              metadata: {
+                name: 'Test Account',
+                lastSelected: 3,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+          ];
+          jest
+            .spyOn(metamaskController.accountsController, 'listAccounts')
+            .mockReturnValueOnce(internalAccounts);
         });
 
-        it.only('returns `permittedAccounts` if there is a CAIP-25 permission for the origin', async () => {
-          // TODO: get back here, this fails. Need to understand what I should do with keyringController
-          // jest
-          //   .spyOn(metamaskController.keyringController, 'getAccounts')
-          //   .mockReturnValue(['0xdead', '0xbeef']);
+        it('returns `permittedAccounts` if there is a CAIP-25 permission for the origin', async () => {
           jest
             .spyOn(metamaskController.permissionController, 'getCaveat')
             .mockReturnValue({
