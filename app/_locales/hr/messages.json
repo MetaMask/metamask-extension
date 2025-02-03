@@ -701,9 +701,6 @@
   "transactionErrored": {
     "message": "Došlo je do greške prilikom transakcije."
   },
-  "transactionFee": {
-    "message": "Naknada za transakciju"
-  },
   "transactionResubmitted": {
     "message": "Transakcija je ponovno poslana s naknadom za gorivo povećanom do vrijednosti od $1 u $2."
   },

@@ -160,7 +160,7 @@ export const AssetPickerModalNetwork = ({
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader
-          onBack={onBack}
+          onBack={network ? onBack : undefined}
           onClose={isMultiselectEnabled ? undefined : onClose}
           endAccessory={
             isMultiselectEnabled && selectedChainIds ? (

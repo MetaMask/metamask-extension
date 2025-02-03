@@ -475,7 +475,6 @@
   "useExternalServices": true,
   "useMultiAccountBalanceChecker": true,
   "useNftDetection": false,
-  "useNonceField": false,
   "usePhishDetect": true,
   "useSafeChainsListValidation": true,
   "useTokenDetection": true,

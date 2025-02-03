@@ -67,6 +67,9 @@ test-results/
 !.yarn/versions
 development/generate-attributions/.yarn/*
 
+# MetaMask
+.metamask/*
+
 # Playwright
 public/playwright
 lavamoat/**/policy-debug.json
