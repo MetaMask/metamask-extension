@@ -70,11 +70,10 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
             disabled={disabled || option.disabled}
           />
           <Text
-            className={
-              disabled || option.disabled
-                ? 'snap-ui-renderer__radio-label--disabled'
-                : ''
-            }
+            className={classnames({
+              'snap-ui-renderer__radio-label--disabled':
+                disabled || option.disabled,
+            })}
             as="label"
             htmlFor={option.name}
             variant={TextVariant.bodyMd}
