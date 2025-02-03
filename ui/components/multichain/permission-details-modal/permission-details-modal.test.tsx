@@ -1,6 +1,6 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { EthAccountType, EthMethod, EthScopes } from '@metamask/keyring-api';
+import { EthAccountType, EthMethod, EthScope } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -45,7 +45,7 @@ describe('PermissionDetailsModal', () => {
             },
             options: {},
             methods: [...Object.values(EthMethod)],
-            scopes: [EthScopes.Namespace],
+            scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
           },
           '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -62,7 +62,7 @@ describe('PermissionDetailsModal', () => {
             },
             options: {},
             methods: [...Object.values(EthMethod)],
-            scopes: [EthScopes.Namespace],
+            scopes: [EthScope.Eoa],
             type: EthAccountType.Eoa,
           },
         },
@@ -138,7 +138,7 @@ describe('PermissionDetailsModal', () => {
       },
       options: {},
       methods: ETH_EOA_METHODS,
-      scopes: [EthScopes.Namespace],
+      scopes: [EthScope.Eoa],
       type: EthAccountType.Eoa,
       label: '',
     },

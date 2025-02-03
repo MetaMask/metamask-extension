@@ -705,9 +705,6 @@
   "transactionErrored": {
     "message": "لقد حدث خطأ ما أثناء معالجة المعاملة."
   },
-  "transactionFee": {
-    "message": "رسوم التحويل"
-  },
   "transactionResubmitted": {
     "message": "زادت رسوم جاس على المعاملة التي أعيد تقديمها إلى $1 عند $2"
   },

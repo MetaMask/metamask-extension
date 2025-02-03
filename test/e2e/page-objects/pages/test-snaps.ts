@@ -12,6 +12,26 @@ export class TestSnaps {
 
   private readonly dialogsSnapConfirmationButton = '#sendConfirmationButton';
 
+  private readonly dialogConnectButton = {
+    text: 'Connect',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  };
+
+  private readonly dialogConfirmButton = {
+    text: 'Confirm',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  };
+
+  private readonly dialogOkButton = {
+    text: 'OK',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  };
+
+  private readonly connectHomePage = '#connecthomepage';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -36,21 +56,33 @@ export class TestSnaps {
   async completeSnapInstallConfirmation() {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-    await this.driver.clickElement({
-      text: 'Connect',
-      tag: 'button',
-    });
+    await this.driver.waitForSelector(this.dialogConnectButton);
 
-    await this.driver.clickElement({
-      text: 'Confirm',
-      tag: 'button',
-    });
+    await this.driver.clickElement(this.dialogConnectButton);
 
-    await this.driver.clickElement({
-      text: 'OK',
-      tag: 'button',
-    });
+    await this.driver.waitForSelector(this.dialogConfirmButton);
+
+    await this.driver.clickElement(this.dialogConfirmButton);
+
+    await this.driver.waitForSelector(this.dialogOkButton);
+
+    await this.driver.clickElement(this.dialogOkButton);
 
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+  }
+
+  async clickConnectHomePage() {
+    // find and scroll to the homepage snap
+    const connectHomePageButton = await this.driver.findElement(
+      this.connectHomePage,
+    );
+    await this.driver.scrollToElement(connectHomePageButton);
+
+    // added delay for firefox
+    await this.driver.delayFirefox(1000);
+
+    // wait for and click connect
+    await this.driver.waitForSelector(this.connectHomePage);
+    await this.driver.clickElement(this.connectHomePage);
   }
 }

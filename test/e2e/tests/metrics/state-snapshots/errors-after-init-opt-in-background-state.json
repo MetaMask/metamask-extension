@@ -198,7 +198,6 @@
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,
-    "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
     "overrideContentSecurityPolicyHeader": true,

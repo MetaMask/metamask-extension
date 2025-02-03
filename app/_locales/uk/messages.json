@@ -704,9 +704,6 @@
   "transactionErrored": {
     "message": "Під час виконання транзакції сталася помилка."
   },
-  "transactionFee": {
-    "message": "Комісія за транзакцію"
-  },
   "transactionResubmitted": {
     "message": "Транзакція повторно подана з підвищеною платою за газ до $1 о $2"
   },

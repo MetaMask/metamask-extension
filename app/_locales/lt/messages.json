@@ -704,9 +704,6 @@
   "transactionErrored": {
     "message": "Įvyko operacijos klaida"
   },
-  "transactionFee": {
-    "message": "Operacijos mokestis"
-  },
   "transactionResubmitted": {
     "message": "Operacija pakartotinai pateikta$2 su iki $1 padidintu dujų mokesčiu"
   },

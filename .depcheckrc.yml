@@ -40,6 +40,8 @@ ignores:
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
+  - 'tar' # used by foundryup.ts
+  - 'minipass' # used by foundryup.ts
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
@@ -65,7 +67,7 @@ ignores:
   - 'html-bundler-webpack-plugin' # build tool
   - 'postcss-loader' # build tool
   - '@swc/helpers' # build tool
-  - browserslist # build tool
+  - 'browserslist' # build tool
   - 'buffer' # polyfill
   - 'crypto-browserify' # polyfill
   - 'process' # polyfill

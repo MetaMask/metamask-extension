@@ -65,10 +65,6 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-import { useTheme } from '../../../hooks/useTheme';
-///: END:ONLY_INCLUDE_IF
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
@@ -168,13 +164,6 @@ const AccountListItem = ({
     balanceToTranslate = accountTotalFiatBalances.totalBalance;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, account.address),
-  );
-  const theme = useTheme();
-  ///: END:ONLY_INCLUDE_IF
-
   // If this is the selected item in the Account menu,
   // scroll the item into view
   const itemRef = useRef(null);
@@ -253,34 +242,6 @@ const AccountListItem = ({
               }
               marginInlineEnd={2}
             />
-            ///: END:ONLY_INCLUDE_IF
-          }
-
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            custodianIcon ? (
-              <img
-                src={custodianIcon}
-                data-testid="custody-logo"
-                className="custody-logo"
-                alt="custody logo"
-                style={{
-                  backgroundColor: theme === 'light' ? 'transparent' : 'white',
-                }}
-              />
-            ) : (
-              <AvatarAccount
-                borderColor={BorderColor.transparent}
-                size={Size.MD}
-                address={account.address}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                marginInlineEnd={2}
-              />
-            )
             ///: END:ONLY_INCLUDE_IF
           }
         </Box>

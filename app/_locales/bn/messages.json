@@ -698,9 +698,6 @@
   "transactionErrored": {
     "message": "লেনদেনে একটি ত্রুটি হয়েছে।"
   },
-  "transactionFee": {
-    "message": "লেনদেন ফী"
-  },
   "transactionResubmitted": {
     "message": "$2 এ গ্যাস ফী $1 তে বাড়িয়ে লেনদেন আবার জমা করা হয়েছে"
   },

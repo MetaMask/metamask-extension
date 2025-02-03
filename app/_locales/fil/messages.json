@@ -620,9 +620,6 @@
   "transactionErrored": {
     "message": "Nagkaroon ng error ang transaksyon."
   },
-  "transactionFee": {
-    "message": "Fee sa Transaksyon"
-  },
   "transactionResubmitted": {
     "message": "Nasumite ulit ang transaksyon nang may gas fee na ginawang $1 sa ganap na $2"
   },

@@ -113,10 +113,6 @@
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 может получить доступ к этому активу и потратить его",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "Получайте доступ к кошельку с помощью секретной фразы для восстановления"
   },
@@ -290,9 +286,6 @@
   "addNewSolanaAccount": {
     "message": "Добавить новый счет в Solana (бета-версия)"
   },
-  "addNewToken": {
-    "message": "Добавить новый токен"
-  },
   "addNft": {
     "message": "Добавить NFT"
   },
@@ -395,9 +388,6 @@
   "alert": {
     "message": "Оповещение"
   },
-  "alertActionBuy": {
-    "message": "Купить ETH"
-  },
   "alertActionUpdateGas": {
     "message": "Обновить лимит газа"
   },
@@ -424,9 +414,6 @@
   },
   "alertMessageGasTooLow": {
     "message": "Чтобы продолжить эту транзакцию, вам необходимо увеличить лимит газа до 21 000 или выше."
-  },
-  "alertMessageInsufficientBalance2": {
-    "message": "У вас на счету недостаточно ETH для оплаты комиссий сети."
   },
   "alertMessageNetworkBusy": {
     "message": "Цены газа высоки, а оценки менее точны."
@@ -485,16 +472,6 @@
   "all": {
     "message": "Все"
   },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "Вы либо уже подключили все свои счета депозитария, либо у вас нет счета для подключения к MetaMask Institutional."
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "Нет доступных счетов для подключения"
-  },
-  "allOfYour": {
-    "message": "Все ваши $1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "Все разрешения"
   },
@@ -504,22 +481,8 @@
   "allTimeLow": {
     "message": "Минимум за все время"
   },
-  "allYourNFTsOf": {
-    "message": "Все ваши NFT из $1",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "allow": {
-    "message": "Разрешить"
-  },
-  "allowMmiToConnectToCustodian": {
-    "message": "Это позволит MMI подключиться к $1 для импорта ваших счетов."
-  },
   "allowNotifications": {
     "message": "Разрешить уведомления"
-  },
-  "allowSpendToken": {
-    "message": "Разрешить доступ к вашему $1?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "Разрешить $1 снять и потратить до следующей суммы:",
@@ -565,14 +528,6 @@
   "approve": {
     "message": "Одобрить лимит расходов"
   },
-  "approveAllTokensTitle": {
-    "message": "Разрешить доступ ко всем вашим $1 и перевести их?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "Разрешить доступ к вашим NFT из $1 и перевести их?",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "Одобрить"
   },
@@ -584,22 +539,8 @@
     "message": "Одобрить лимит расходов в размере $1",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "Это позволяет третьей стороне получать доступ и переводить следующие NFT без дополнительного уведомления, пока вы не отзовете ее доступ."
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "Это позволяет третьей стороне получать доступ и переводить все ваши NFT из $1 без дополнительного уведомления, пока вы не закроете ей доступ.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "Разрешить доступ и перевод ваших $1?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "Одобрен"
-  },
-  "approvedAsset": {
-    "message": "Одобренный актив"
   },
   "approvedOn": {
     "message": "Одобрено $1",
@@ -654,9 +595,6 @@
   },
   "average": {
     "message": "Средний"
-  },
-  "awaitingApproval": {
-    "message": "Ожидание одобрения..."
   },
   "back": {
     "message": "Назад"
@@ -722,9 +660,6 @@
   "betaHeaderText": {
     "message": "Это бета-версия. Пожалуйста, сообщайте об ошибках $1",
     "description": "$1 represents the word 'here' in a hyperlink"
-  },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "Бета-версия MetaMask Institutional"
   },
   "betaMetamaskVersion": {
     "message": "Бета-версия MetaMask"
@@ -982,15 +917,6 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "Я подтвердил(-а) получение предупреждения и все еще хочу продолжить"
   },
-  "confirmConnectCustodianRedirect": {
-    "message": "Мы перенаправим вас на $1 после нажатия кнопки «Продолжить»."
-  },
-  "confirmConnectCustodianText": {
-    "message": "Чтобы подключить свои счета, войдите в свой счет $1 и нажмите кнопку «Подключиться к MMI»."
-  },
-  "confirmConnectionTitle": {
-    "message": "Подтвердите подключение к $1"
-  },
   "confirmFieldPaymaster": {
     "message": "Комиссия оплачена"
   },
@@ -1071,18 +997,6 @@
   },
   "connectAccounts": {
     "message": "Подключить счета"
-  },
-  "connectCustodialAccountMenu": {
-    "message": "Подключить депозитарный счет"
-  },
-  "connectCustodialAccountMsg": {
-    "message": "Выберите депозитария, к которому вы хотите подключиться, чтобы добавить или обновить токен."
-  },
-  "connectCustodialAccountTitle": {
-    "message": "Депозитарные счета"
-  },
-  "connectCustodianAccounts": {
-    "message": "Подключить счета $1"
   },
   "connectManually": {
     "message": "Подключиться к текущему сайту вручную"
@@ -1205,12 +1119,6 @@
   },
   "continue": {
     "message": "Продолжить"
-  },
-  "continueMmiOnboarding": {
-    "message": "Продолжить регистрацию в MetaMask Institutional"
-  },
-  "continueToWallet": {
-    "message": "Перейти в кошелек"
   },
   "contract": {
     "message": "Контракт"
@@ -1344,60 +1252,6 @@
   },
   "curveMediumGasEstimate": {
     "message": "График рыночной оценки газа"
-  },
-  "custodian": {
-    "message": "Депозитарий"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "Теперь вы можете использовать свои счета в MetaMask Institutional."
-  },
-  "custodianAccountAddedTitle": {
-    "message": "Добавлены $1 выбранных счета(-ов)."
-  },
-  "custodianQRCodeScan": {
-    "message": "Отсканируйте QR-код с помощью мобильного приложения $1"
-  },
-  "custodianQRCodeScanDescription": {
-    "message": "Или войдите в свой счет $1 и нажмите кнопку «Подключиться к MMI»"
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "Перейдите к $1 и нажмите кнопку «Подключиться к MMI» в их пользовательском интерфейсе, чтобы снова подключить свои счета к MMI."
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "Теперь вы можете использовать свои депозитарные счета в MetaMask Institutional."
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "Ваш токен депозитария обновлен"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "Он заменит токен депозитария для следующего адреса:"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "Заменить токен депозитария"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "Подтвердите транзакцию в приложении $1. После того как все необходимые разрешения на депозитарное хранение будут предоставлены, транзакция будет завершена. Проверьте статус своего приложения $1."
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "Перейдите к $1 и нажмите кнопку «Подключиться к MMI» в их пользовательском интерфейсе, чтобы снова подключить свои счета к MMI."
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "Ваш депозитарий выпускает токен, который аутентифицирует расширение MetaMask Institutional, позволяя вам подключать свои счета."
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "Срок действия этого токена истекает через определенный срок по соображениям безопасности. Это требует повторного подключения к MMI."
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "Почему я это вижу?"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Срок сеанса вашего депозитария истек"
-  },
-  "custodySessionExpired": {
-    "message": "Сеанс депозитария истек."
-  },
-  "custodyWrongChain": {
-    "message": "Этот счет не настроен для использования с $1"
   },
   "custom": {
     "message": "Дополнительно"
@@ -1559,9 +1413,6 @@
   "deleteNetworkTitle": {
     "message": "Удалить сеть $1?",
     "description": "$1 represents the name of the network"
-  },
-  "deposit": {
-    "message": "Депозит"
   },
   "depositCrypto": {
     "message": "Внесите криптовалюту с другого счета, используя адрес кошелька или QR-код."
@@ -1752,10 +1603,6 @@
   "editGasPriceTooltip": {
     "message": "В этой сети необходимо заполнить поле «Цена газа» при отправке транзакции. Цена газа — это сумма, которую вы будете платить за единицу газа."
   },
-  "editGasSubTextAmountLabel": {
-    "message": "Макс. сумма:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
-  },
   "editGasSubTextFeeLabel": {
     "message": "Макс. комиссия:"
   },
@@ -1860,9 +1707,6 @@
   },
   "enterChainId": {
     "message": "Введите ID блокчейна"
-  },
-  "enterCustodianToken": {
-    "message": "Введите свой токен $1 или добавьте новый токен"
   },
   "enterMaxSpendLimit": {
     "message": "Введите максимальный лимит расходов"
@@ -2000,12 +1844,6 @@
     "message": "Изучите Snaps, созданные сообществом, чтобы персонализировать работу с web3",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
-  "extensionInsallCompleteDescription": {
-    "message": "Вернитесь к настройке продукта MetaMask Institutional, чтобы подключить свои депозитарные или само-дерпозитарные счета."
-  },
-  "extensionInsallCompleteTitle": {
-    "message": "Установка расширения завершена"
-  },
   "externalExtension": {
     "message": "Внешнее расширение"
   },
@@ -2026,9 +1864,6 @@
   },
   "fast": {
     "message": "Быстрый"
-  },
-  "feeAssociatedRequest": {
-    "message": "За выполнение этого запроса взимается комиссия."
   },
   "feeDetails": {
     "message": "Сведения о комиссии"
@@ -2091,12 +1926,6 @@
   },
   "function": {
     "message": "Функция: $1"
-  },
-  "functionApprove": {
-    "message": "Функция: Одобрить"
-  },
-  "functionSetApprovalForAll": {
-    "message": "Функция: SetApprovalForAll"
   },
   "functionType": {
     "message": "Тип функции"
@@ -2202,9 +2031,6 @@
   "gotIt": {
     "message": "Понятно!"
   },
-  "grantedToWithColon": {
-    "message": "Предоставляется:"
-  },
   "gwei": {
     "message": "Гвей"
   },
@@ -2245,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "Скрыть счет"
-  },
-  "hideFullTransactionDetails": {
-    "message": "Скрыть полную информацию о транзакции"
   },
   "hideSeedPhrase": {
     "message": "Скрыть сид-фразу"
@@ -2463,12 +2286,6 @@
   "install": {
     "message": "Установите,"
   },
-  "installExtension": {
-    "message": "Установить расширение"
-  },
-  "installExtensionDescription": {
-    "message": "Соответствующая институциональным требованиям версия ведущего в мире web3-кошелька MetaMask."
-  },
   "installOrigin": {
     "message": "Источник установки"
   },
@@ -2485,10 +2302,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "У вас недостаточно $1 для оплаты комиссий за транзакцию в сети $2. $3 или внесите депозит с другого счета.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "У вас недостаточно $1 на счету для оплаты комиссий за транзакцию в сети $2. $3 или $4 с другого счета.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "У вас недостаточно $1 для оплаты комиссий за транзакцию в сети $2. Внесите депозит $1 с другого счета.",
@@ -2760,9 +2573,6 @@
   "loading": {
     "message": "Загрузка..."
   },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "Завершите транзакцию в аппаратном кошельке."
-  },
   "loadingScreenSnapMessage": {
     "message": "Завершите транзакцию в Snap."
   },
@@ -2861,9 +2671,6 @@
     "message": "$1 размещается на npm, а $2 — это уникальный идентификатор Snap.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
-  "metamaskInstitutionalVersion": {
-    "message": "Версия MetaMask Institutional"
-  },
   "metamaskNotificationsAreOff": {
     "message": "Уведомления кошелька в настоящее время неактивны."
   },
@@ -2888,9 +2695,6 @@
   "millionAbbreviation": {
     "message": "млн",
     "description": "Shortened form of 'million'"
-  },
-  "mismatchAccount": {
-    "message": "Выбранный вами счет ($1) отличается от счета, который вы пытаетесь подписать ($2)"
   },
   "mismatchedChainLinkText": {
     "message": "проверить сведения о сети",
@@ -2917,15 +2721,6 @@
   },
   "missingSettingRequest": {
     "message": "Запросите здесь"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional разработан и создан с учетом потребностей в разных частях мира."
-  },
-  "mmiNewNFTDetectedInNFTsTabMessage": {
-    "message": "Разрешите MetaMask Institutional автоматически определять и отображать NFT в вашем кошельке."
-  },
-  "mmiPasswordSetupDetails": {
-    "message": "Этот пароль разблокирует только ваше расширение MetaMask Institutional."
   },
   "more": {
     "message": "больше"
@@ -3219,10 +3014,6 @@
   "next": {
     "message": "Далее"
   },
-  "nextNonceWarning": {
-    "message": "Одноразовый номер больше, чем предложенный одноразовый номер $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "Невозможно добавить NFT, так как сведения о владельце не совпадают. Убедитесь, что вы ввели правильную информацию."
   },
@@ -3301,20 +3092,8 @@
   "noWebcamFoundTitle": {
     "message": "Веб-камера не найдена"
   },
-  "nonCustodialAccounts": {
-    "message": "MetaMask Institutional позволяет вам использовать некастодиальные счета, если вы планируете использовать эти счета для резервного копирования секретной фразы для восстановления."
-  },
   "nonce": {
     "message": "Одноразовый номер"
-  },
-  "nonceField": {
-    "message": "Настроить одноразовый номер транзакции"
-  },
-  "nonceFieldDesc": {
-    "message": "Включите это, чтобы изменить одноразовый номер (номер транзакции) при отправке активов. Это продвинутая функция, используйте ее с осторожностью."
-  },
-  "nonceFieldHeading": {
-    "message": "Пользовательский одноразовый номер"
   },
   "none": {
     "message": "Нет"
@@ -3330,12 +3109,6 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
-  },
-  "note": {
-    "message": "Примечание"
-  },
-  "notePlaceholder": {
-    "message": "Утверждающее лицо увидит это примечание при одобрении транзакции у депозитария."
   },
   "notificationDetail": {
     "message": "Подробности"
@@ -3671,9 +3444,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Установка MetaMask завершена!"
   },
-  "onboardingPinMmiExtensionLabel": {
-    "message": "Закрепить MetaMask Institutional"
-  },
   "oneDayAbbreviation": {
     "message": "1 Д",
     "description": "Shortened form of '1 day'"
@@ -3697,10 +3467,6 @@
     "message": "Подключайтесь только к сайтам, которым доверяете. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
-  "openCustodianApp": {
-    "message": "Открыть приложение $1",
-    "description": "The $1 is the name of the Custodian that will be open"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Перейдите в полноэкранный режим, чтобы подключить свой Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3711,17 +3477,11 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
-  "operationFailed": {
-    "message": "Операция не удалась"
-  },
   "optional": {
     "message": "Необязательно"
   },
   "options": {
     "message": "Опционы"
-  },
-  "or": {
-    "message": "или"
   },
   "origin": {
     "message": "Источник"
@@ -3757,9 +3517,6 @@
   "password": {
     "message": "Пароль"
   },
-  "passwordMmiTermsWarning": {
-    "message": "Я понимаю, что MetaMask Institutional не может восстановить этот пароль для меня. $1"
-  },
   "passwordNotLongEnough": {
     "message": "Пароль недостаточно длинный"
   },
@@ -3778,9 +3535,6 @@
   },
   "passwordsDontMatch": {
     "message": "Пароли не совпадают"
-  },
-  "pasteJWTToken": {
-    "message": "Вставьте или перетащите свой токен сюда:"
   },
   "pastePrivateKey": {
     "message": "Вставьте строку вашего закрытого ключа сюда:",
@@ -3811,9 +3565,6 @@
   },
   "permissionFrom": {
     "message": "Разрешение от"
-  },
-  "permissionRequest": {
-    "message": "Запрос разрешения"
   },
   "permissionRequested": {
     "message": "Запрошено сейчас"
@@ -4065,12 +3816,6 @@
   "petnamesEnabledToggleDescription": {
     "message": "Эта функция позволяет вам присвоить псевдоним любому адресу. По возможности мы будем предлагать имена адресов, с которыми вы взаимодействуете."
   },
-  "pinExtensionDescription": {
-    "message": "Перейдите в меню расширения и закрепите MetaMask Institutional для беспрепятственного доступа."
-  },
-  "pinExtensionTitle": {
-    "message": "Закрепить расширение"
-  },
   "pinToTop": {
     "message": "Закрепить вверху"
   },
@@ -4091,9 +3836,6 @@
   },
   "portfolio": {
     "message": "Portfolio"
-  },
-  "portfolioDashboard": {
-    "message": "Панель инструментов Portfolio"
   },
   "preparingSwap": {
     "message": "Подготовка свопа..."
@@ -4340,12 +4082,6 @@
   "removeAccountDescription": {
     "message": "Этот счет будет удален из вашего кошелька. Перед продолжением убедитесь, что у вас есть секретная фраза для восстановления или закрытый ключ для этого импортированного счета. Вы можете импортировать или снова создать счета из раскрывающегося списка счетов. "
   },
-  "removeJWT": {
-    "message": "Удалить токен депозитария"
-  },
-  "removeJWTDescription": {
-    "message": "Уверены, что хотите удалить этот токен? Все счета, назначенные этому токену, также будут удалены из расширения: "
-  },
   "removeKeyringSnap": {
     "message": "Удаление этого Snap приведет к удалению этих счетов из MetaMask:"
   },
@@ -4524,31 +4260,11 @@
   "reviewPermissions": {
     "message": "Проверить разрешения"
   },
-  "revokeAllTokensTitle": {
-    "message": "Отозвать разрешение на доступ ко всем вашим $1 и их перевод?",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "Отозвать разрешение на доступ ко всем вашим NFT из $1 и их перевод?",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "Это отменит разрешение третьей стороне на доступ ко всем вашим $1 и их перевод без дальнейшего уведомления.",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "Это отменит разрешение третьей стороне на доступ ко всем вашим NFT из $1 и их перевод без дальнейшего уведомления.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "Отозвать разрешение"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Вы удаляете чье-либо разрешение на трату токенов с вашего счета."
-  },
-  "revokeSpendingCap": {
-    "message": "Отменить верхний лимит расходов для вашего $1",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "Эта третья сторона больше не сможет тратить ваши текущие или будущие токены."
@@ -4691,26 +4407,17 @@
   "selectAll": {
     "message": "Выбрать все"
   },
-  "selectAllAccounts": {
-    "message": "Выбрать все счета"
-  },
   "selectAnAccount": {
     "message": "Выберите счет"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Этот счет уже подключен к MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Выберите депозитарные счета для использования в MetaMask Institutional."
-  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Включить отображение носителя NFT"
   },
   "selectHdPath": {
     "message": "Выберите путь HD"
-  },
-  "selectJWT": {
-    "message": "Выбрать токен"
   },
   "selectNFTPrivacyPreference": {
     "message": "Включите автоопределение NFT"
@@ -5243,9 +4950,6 @@
   "spendingCapErrorDescription": {
     "message": "Введите только то число в качестве лимита для $1, которое приемлемо для вас. Вы всегда можете увеличить лимит токенов позже.",
     "description": "$1 is origin of the site requesting the token limit"
-  },
-  "spendingCapRequest": {
-    "message": "Запрос лимита расходов для вашего $1"
   },
   "spendingCapTooltipDesc": {
     "message": "Это количество токенов, к которым покупатель сможет получить доступ от вашего имени."
@@ -5925,9 +5629,6 @@
     "message": "Уведомление о стороннем ПО",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "эта коллекция"
-  },
   "threeMonthsAbbreviation": {
     "message": "3 М",
     "description": "Shortened form of '3 months'"
@@ -6042,29 +5743,8 @@
   "transactionDataFunction": {
     "message": "Функция"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Рекомендовано сайтом"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Измените, чтобы использовать рекомендованную MetaMask плату за газ с учетом последнего блока."
-  },
   "transactionDetailGasHeading": {
     "message": "Примерная плата за газ"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Подробнее о плате за газ"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Плата за газ устанавливается сетью и варьируется в зависимости от сетевого трафика и сложности транзакции."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Плата за газ переводится криптомайнерам, которые обрабатывают транзакции в сети $1. MetaMask не получает прибыли от платы за газ."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Сумма + плата за газ"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Плата за газ 2-го уровня"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Сумма + комиссии"
@@ -6080,12 +5760,6 @@
   },
   "transactionErrored": {
     "message": "Транзакция обнаружила ошибку."
-  },
-  "transactionFailed": {
-    "message": "Транзакция не удалась"
-  },
-  "transactionFee": {
-    "message": "Комиссия за транзакцию"
   },
   "transactionFlowNetwork": {
     "message": "Сеть"
@@ -6110,9 +5784,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Итого платы за газ"
-  },
-  "transactionNote": {
-    "message": "Примечание к транзакции"
   },
   "transactionResubmitted": {
     "message": "Транзакция отправлена повторно с платой за газ, увеличенной до $1, в $2"
@@ -6167,9 +5838,6 @@
   },
   "troubleStarting": {
     "message": "У MetaMask возникли проблемы с запуском. Эта ошибка может быть непостоянной, поэтому попробуйте перезапустить расширение."
-  },
-  "trustSiteApprovePermission": {
-    "message": "Давая разрешение, вы предоставляете следующему $1 доступ к вашим средствам."
   },
   "tryAgain": {
     "message": "Попробуйте еще раз"
@@ -6363,12 +6031,6 @@
   "viewContact": {
     "message": "Смотреть контакт"
   },
-  "viewDetails": {
-    "message": "Просмотр сведений"
-  },
-  "viewFullTransactionDetails": {
-    "message": "Смотреть все реквизиты транзакции"
-  },
   "viewMore": {
     "message": "Больше"
   },
@@ -6391,9 +6053,6 @@
   },
   "viewTransaction": {
     "message": "Смотреть транзакцию"
-  },
-  "viewinCustodianApp": {
-    "message": "Смотреть в приложении депозитария"
   },
   "viewinExplorer": {
     "message": "Смотреть $1 в обозревателе",

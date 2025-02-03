@@ -468,9 +468,6 @@
   "fast": {
     "message": "快"
   },
-  "feeAssociatedRequest": {
-    "message": "這個請求會附帶一筆手續費。"
-  },
   "fileImportFail": {
     "message": "檔案匯入失敗？點擊這裡！",
     "description": "Helps user import their account from a JSON file"
@@ -487,9 +484,6 @@
   "fromAddress": {
     "message": "來自：$1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
-  "functionApprove": {
-    "message": "函式：Approve"
   },
   "functionType": {
     "message": "函式型別"
@@ -796,10 +790,6 @@
   "next": {
     "message": "下一頁"
   },
-  "nextNonceWarning": {
-    "message": "Nonce 比建議的 $1 高",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftTokenIdPlaceholder": {
     "message": "Enter the NFT ID"
   },
@@ -814,12 +804,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "找不到攝影鏡頭"
-  },
-  "nonceField": {
-    "message": "自訂交易 nonce"
-  },
-  "nonceFieldHeading": {
-    "message": "自訂 nonce"
   },
   "notCurrentAccount": {
     "message": "這是正確的帳戶嗎？它與您的錢包目前所選擇的帳戶不同"
@@ -1261,9 +1245,6 @@
   "transactionErrored": {
     "message": "交易遇到錯誤。"
   },
-  "transactionFee": {
-    "message": "交易手續費"
-  },
   "transactionResubmitted": {
     "message": "交易重新送出，手續費提高至 $1 @ $2"
   },
@@ -1282,9 +1263,6 @@
   "troubleConnectingToWallet": {
     "message": "我們在連線到您的 $1 的時候遇到問題，試著檢查 $2 然後再試一次。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "trustSiteApprovePermission": {
-    "message": "您信任這個網站嗎？當您授予這個權限，$1 就能提領您的 $2 並且代替您自動發送交易。"
   },
   "tryAgain": {
     "message": "再試一次"

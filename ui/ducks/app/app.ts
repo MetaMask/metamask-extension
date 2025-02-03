@@ -72,6 +72,7 @@ type AppState = {
   buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
+    onekey: string;
     ledger: string;
     lattice: string;
   };
@@ -180,6 +181,7 @@ const initialState: AppState = {
   buyView: {},
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
+    onekey: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
     lattice: `m/44'/60'/0'/0`,
   },

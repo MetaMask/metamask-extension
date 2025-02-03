@@ -143,10 +143,6 @@
   "alerts": {
     "message": "Alertas"
   },
-  "allowSpendToken": {
-    "message": "¿Dar permiso para acceder a su $1?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
-  },
   "allowWithdrawAndSpend": {
     "message": "Permitir que se retire $1 y gastar hasta el siguiente importe:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
@@ -627,10 +623,6 @@
   "editGasPriceTooltip": {
     "message": "Esta red requiere un campo \"Precio del gas\" cuando se envía una transacción. El precio del gas es la cantidad que se pagará por unidad de gas."
   },
-  "editGasSubTextAmountLabel": {
-    "message": "Cantidad máxima:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
-  },
   "editGasSubTextFeeLabel": {
     "message": "Tarifa máxima:"
   },
@@ -738,9 +730,6 @@
   "fast": {
     "message": "Rápido"
   },
-  "feeAssociatedRequest": {
-    "message": "Esta solicitud tiene asociada una tarifa."
-  },
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? ¡Haga clic aquí!",
     "description": "Helps user import their account from a JSON file"
@@ -780,9 +769,6 @@
   "fromAddress": {
     "message": "De: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
-  "functionApprove": {
-    "message": "Función: Aprobar"
   },
   "functionType": {
     "message": "Tipo de función"
@@ -857,9 +843,6 @@
   },
   "goerli": {
     "message": "Red de prueba Goerli"
-  },
-  "grantedToWithColon": {
-    "message": "Concedido a:"
   },
   "gwei": {
     "message": "GWEI"
@@ -1254,10 +1237,6 @@
   "next": {
     "message": "Siguiente"
   },
-  "nextNonceWarning": {
-    "message": "El nonce es superior al nonce sugerido de $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nfts": {
     "message": "NFT"
   },
@@ -1278,12 +1257,6 @@
   },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "Personalizar nonce de transacción"
-  },
-  "nonceFieldHeading": {
-    "message": "Nonce personalizado"
   },
   "notBusy": {
     "message": "No ocupado"
@@ -1362,9 +1335,6 @@
   "optional": {
     "message": "Opcional"
   },
-  "or": {
-    "message": "o"
-  },
   "origin": {
     "message": "Origen"
   },
@@ -1408,9 +1378,6 @@
   "pendingTransactionSingle": {
     "message": "Tiene (1) transacción pendiente.",
     "description": "$1 is count of pending transactions"
-  },
-  "permissionRequest": {
-    "message": "Solicitud de permiso"
   },
   "permission_ethereumAccounts": {
     "message": "Ver dirección, saldo de cuenta, actividad e iniciar transacciones",
@@ -2149,29 +2116,8 @@
   "transactionCreated": {
     "message": "La transacción se creó con un valor de $1 en $2."
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Sitio sugerido"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Editar para utilizar la tarifa de gas recomendada por MetaMask según el último bloque."
-  },
   "transactionDetailGasHeading": {
     "message": "Tarifa estimada de gas"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Más información sobre las tarifas de gas"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Las tarifas de gas son fijadas por la red y fluctúan en función del tráfico de la red y la complejidad de las transacciones."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Cantidad + tarifa de gas"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Tarifa de gas de la capa 2"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Monto + cargos"
@@ -2187,9 +2133,6 @@
   },
   "transactionErrored": {
     "message": "La transacción encontró un error."
-  },
-  "transactionFee": {
-    "message": "Tarifa de transacción"
   },
   "transactionHistoryBaseFee": {
     "message": "Tarifa base (GWEI)"
@@ -2230,9 +2173,6 @@
   "troubleConnectingToWallet": {
     "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Al conceder el permiso, usted permite que los siguientes $1 tengan acceso a sus fondos"
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"
@@ -2299,9 +2239,6 @@
   },
   "viewContact": {
     "message": "Ver contacto"
-  },
-  "viewFullTransactionDetails": {
-    "message": "Ver detalles completos de la transacción"
   },
   "viewMore": {
     "message": "Ver más"

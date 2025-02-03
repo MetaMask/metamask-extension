@@ -701,9 +701,6 @@
   "transactionErrored": {
     "message": "העסקה נתקלה בשגיאה."
   },
-  "transactionFee": {
-    "message": "עמלת עסקה"
-  },
   "transactionResubmitted": {
     "message": "העסקה הוגשה מחדש עם עמלת דלק שעלתה ל-$1 ב-$2"
   },

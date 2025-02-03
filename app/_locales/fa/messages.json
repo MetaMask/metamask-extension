@@ -704,9 +704,6 @@
   "transactionErrored": {
     "message": "معامله با خطا مواجه شد."
   },
-  "transactionFee": {
-    "message": "فیس معامله"
-  },
   "transactionResubmitted": {
     "message": "معامله دوباره با فیس افزایش یافته گاز به 1$1 در 2$2 تسلیم داده شد"
   },

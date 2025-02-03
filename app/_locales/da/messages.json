@@ -677,9 +677,6 @@
   "transactionErrored": {
     "message": "Transaktionen stødte på en fejl."
   },
-  "transactionFee": {
-    "message": "Transaktionsgebyr"
-  },
   "transactionResubmitted": {
     "message": "Transaktion genindsendt med brændstofgebyr forøget til $1 på $2"
   },

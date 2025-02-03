@@ -692,9 +692,6 @@
   "transactionErrored": {
     "message": "Transakcija je naišla na grešku"
   },
-  "transactionFee": {
-    "message": "Provizija"
-  },
   "transactionResubmitted": {
     "message": "Transakcija je ponovo prosleđena sa naknadom za gas povećanom sa $1 na $2"
   },

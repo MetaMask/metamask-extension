@@ -167,7 +167,6 @@
     "keyrings": "object",
     "keyringsMetadata": "object",
     "selectedAddress": "string",
-    "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
     "overrideContentSecurityPolicyHeader": true,

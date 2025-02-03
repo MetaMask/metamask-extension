@@ -683,9 +683,6 @@
   "transactionErrored": {
     "message": "Det oppsto en feil under transaksjonen."
   },
-  "transactionFee": {
-    "message": "Transaksjonsavgift"
-  },
   "transactionResubmitted": {
     "message": "Transaksjonen som ble sendt inn igjen med bensinavgift økte til $1 på $2"
   },

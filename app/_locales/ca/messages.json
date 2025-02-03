@@ -683,9 +683,6 @@
   "transactionErrored": {
     "message": "La transacció ha tingut un error."
   },
-  "transactionFee": {
-    "message": "Preu de la transacció"
-  },
   "transactionResubmitted": {
     "message": "Transacció reenviada amb tarifa del gas incrementada d'$1 a $2"
   },

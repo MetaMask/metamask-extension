@@ -701,9 +701,6 @@
   "transactionErrored": {
     "message": "Tapahtumissa tapahtui virhe."
   },
-  "transactionFee": {
-    "message": "Siirtomaksu"
-  },
   "transactionResubmitted": {
     "message": "Tapahtuma toimitettiin uudelleen bensataksan noustessa summaan $1 kohdassa $2."
   },

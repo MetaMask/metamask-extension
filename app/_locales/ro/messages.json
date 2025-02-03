@@ -692,9 +692,6 @@
   "transactionErrored": {
     "message": "Tranzacția a întâlnit o eroare."
   },
-  "transactionFee": {
-    "message": "Taxa tranzacției"
-  },
   "transactionResubmitted": {
     "message": "Tranzacția a fost redepusă cu taxa gaz majorată de la $1 la $2"
   },
