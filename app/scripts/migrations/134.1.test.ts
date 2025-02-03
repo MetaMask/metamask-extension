@@ -1,5 +1,5 @@
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { migrate, version } from './142.1';
+import { migrate, version } from './134.1';
 
 describe(`Migration ${version}`, () => {
   let originalSentry: typeof global.sentry;
@@ -21,14 +21,14 @@ describe(`Migration ${version}`, () => {
     sentryCaptureExceptionMock.mockClear();
   });
 
-  it('updates the meta version to 142.1 regardless of state content', async () => {
+  it('updates the meta version to 134.1 regardless of state content', async () => {
     const dummyState = {
       meta: { version: 0 },
       data: {},
     };
 
     const migrated = await migrate(dummyState);
-    expect(migrated.meta.version).toBe(142.1);
+    expect(migrated.meta.version).toBe(134.1);
   });
 
   it('returns original state if AccountsController is missing', async () => {
@@ -43,7 +43,7 @@ describe(`Migration ${version}`, () => {
 
     expect(sentryCaptureExceptionMock).toHaveBeenCalled();
     expect(result.data).toEqual(originalState.data);
-    expect(result.meta.version).toBe(142.1);
+    expect(result.meta.version).toBe(134.1);
   });
 
   it('returns original state if AccountsController is not an object', async () => {
@@ -313,6 +313,6 @@ describe(`Migration ${version}`, () => {
     >;
     expect(tokensControllerState.tokens).toEqual(originalTokens);
 
-    expect(result.meta.version).toBe(142.1);
+    expect(result.meta.version).toBe(134.1);
   });
 });
