@@ -187,7 +187,7 @@ if (args.lavamoat) {
       readableResourceIds: true,
       inlineLockdown: /^runtime|contentscript\.js/u,
       unlockedChunksUnsafe: /inpage\.js/u,
-      debugRuntime: true,
+      debugRuntime: false,
       __unsafeAllowContextModules: true,
     }),
   );
