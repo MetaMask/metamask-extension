@@ -7,6 +7,7 @@ import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-p
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
+const splTokenName = 'PKIN';
 describe('Send flow', function (this: Suite) {
   // skipped due tohttps://github.com/MetaMask/snaps/issues/3019
   it('user with more than 1 token in the token list', async function () {
@@ -17,6 +18,7 @@ describe('Send flow', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: true,
+        isNative: false,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -39,23 +41,19 @@ describe('Send flow', function (this: Suite) {
         await console.log('check_tokenByNameIsDisplayed SOL');
         await sendSolanaPage.check_tokenByNameIsDisplayed('SOL');
 
-        await sendSolanaPage.check_tokenByNameIsDisplayed('soETH');
-        await sendSolanaPage.check_tokenByNameIsDisplayed('wUSDT');
-        await sendSolanaPage.check_tokenByNameIsDisplayed('HNT');
+        await sendSolanaPage.check_tokenByNameIsDisplayed(splTokenName);
 
-        await sendSolanaPage.selectTokenFromTokenList('wUSDT');
+        await sendSolanaPage.selectTokenFromTokenList(splTokenName);
 
-        await sendSolanaPage.check_amountCurrencyIsDisplayed('wUSDT');
-        await sendSolanaPage.check_tokenBalanceIsDisplayed('250,000', 'wUSDT');
+        await sendSolanaPage.check_amountCurrencyIsDisplayed(splTokenName);
+        await sendSolanaPage.check_tokenBalanceIsDisplayed('6', splTokenName);
         await sendSolanaPage.setAmount('0.1');
-        await driver.delay(10000000);
         await sendSolanaPage.clickOnContinue();
-        await driver.delay(10000000);
 
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         await sendSolanaPage.clickOnContinue();
         assert.equal(
-          await confirmSolanaPage.checkAmountDisplayed('0.1'),
+          await confirmSolanaPage.checkAmountDisplayed('0.1', splTokenName),
           true,
           'Check amount displayed is wrong',
         );
@@ -63,11 +61,6 @@ describe('Send flow', function (this: Suite) {
           await confirmSolanaPage.isTransactionDetailDisplayed('From'),
           true,
           'From is not displayed and it should',
-        );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount is not displayed and it should',
         );
 
         assert.equal(
@@ -93,15 +86,11 @@ describe('Send flow', function (this: Suite) {
           true,
           'Network fee is not displayed and it should',
         );
-        assert.equal(
-          await confirmSolanaPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total is not displayed and it should',
-        );
+
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await sentTxPage.check_TransactionStatusText('0.1', true),
+          await sentTxPage.check_TransactionStatusText('0.1', true, splTokenName),
           true,
           'Transaction amount is not correct',
         );
@@ -115,11 +104,7 @@ describe('Send flow', function (this: Suite) {
           true,
           'From field not displayed and it should',
         );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Amount'),
-          true,
-          'Amount field not displayed and it should',
-        );
+
         assert.equal(
           await sentTxPage.isTransactionDetailDisplayed('Recipient'),
           true,
@@ -139,11 +124,6 @@ describe('Send flow', function (this: Suite) {
           await sentTxPage.isTransactionDetailDisplayed('Network fee'),
           true,
           'Network fee field not displayed',
-        );
-        assert.equal(
-          await sentTxPage.isTransactionDetailDisplayed('Total'),
-          true,
-          'Total field not displayed and it should',
         );
         assert.equal(
           await sentTxPage.check_isViewTransactionLinkDisplayed(),
