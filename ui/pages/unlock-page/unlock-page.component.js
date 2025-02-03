@@ -157,11 +157,7 @@ export default class UnlockPage extends Component {
     const { t } = this.context;
     const { onRestore } = this.props;
 
-    let needHelpText = t('appNameMmi');
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    needHelpText = t('needHelpLinkText');
-    ///: END:ONLY_INCLUDE_IF
+    const needHelpText = t('needHelpLinkText');
 
     return (
       <div className="unlock-page__container">
