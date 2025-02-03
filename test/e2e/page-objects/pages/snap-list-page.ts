@@ -33,6 +33,16 @@ class SnapListPage {
   // this selector needs to be combined with snap name to be unique.
   private readonly snapListItem = '.snap-list-item';
 
+  private readonly homePageSnap = {
+    text: 'Home Page Example Snap',
+    tag: 'p',
+  };
+
+  private readonly homePageTitle = {
+    text: 'Welcome to my Snap home page!',
+    tag: 'p',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -74,6 +84,17 @@ class SnapListPage {
   async check_noSnapInstalledMessageIsDisplayed(): Promise<void> {
     console.log('Verifying no snaps is installed for current account');
     await this.driver.waitForSelector(this.noSnapInstalledMessage);
+  }
+
+  async clickHomePageSnap(): Promise<void> {
+    console.log('Clicking default snap');
+    await this.driver.waitForSelector(this.homePageSnap);
+    await this.driver.clickElement(this.homePageSnap);
+  }
+
+  async check_homePageTitle(): Promise<void> {
+    console.log('Checking title of snap list page');
+    await this.driver.waitForSelector(this.homePageTitle);
   }
 }
 

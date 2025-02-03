@@ -6,6 +6,11 @@ import { AccountsController } from '@metamask/accounts-controller';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import { Hex } from '@metamask/utils';
+import {
+  SnapKeyringAccountAssetListUpdatedEvent,
+  SnapKeyringAccountBalancesUpdatedEvent,
+  SnapKeyringAccountTransactionsUpdatedEvent,
+} from '@metamask/eth-snap-keyring';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -44,6 +49,9 @@ const setupController = ({
     | AllowedEvents
     | KeyringControllerStateChangeEvent
     | SnapControllerStateChangeEvent
+    | SnapKeyringAccountAssetListUpdatedEvent
+    | SnapKeyringAccountBalancesUpdatedEvent
+    | SnapKeyringAccountTransactionsUpdatedEvent
   >();
   const preferencesControllerMessenger: PreferencesControllerMessenger =
     controllerMessenger.getRestricted({
@@ -74,6 +82,9 @@ const setupController = ({
     allowedEvents: [
       'KeyringController:stateChange',
       'SnapController:stateChange',
+      'SnapKeyring:accountAssetListUpdated',
+      'SnapKeyring:accountBalancesUpdated',
+      'SnapKeyring:accountTransactionsUpdated',
     ],
     allowedActions: [],
   });
@@ -334,15 +345,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('isRedesignedConfirmationsFeatureEnabled', () => {
-    const { controller } = setupController({});
-    it('isRedesignedConfirmationsFeatureEnabled should default to false', () => {
-      expect(
-        controller.state.preferences.isRedesignedConfirmationsDeveloperEnabled,
-      ).toStrictEqual(false);
-    });
-  });
-
   describe('setUseSafeChainsListValidation', function () {
     const { controller } = setupController({});
     it('should default to true', function () {
@@ -591,19 +593,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('useNonceField', () => {
-    it('defaults useNonceField to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useNonceField).toStrictEqual(false);
-    });
-
-    it('setUseNonceField to true', () => {
-      const { controller } = setupController({});
-      controller.setUseNonceField(true);
-      expect(controller.state.useNonceField).toStrictEqual(true);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -725,11 +714,8 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        redesignedConfirmationsEnabled: true,
-        redesignedTransactionsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
@@ -756,11 +742,8 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         privacyMode: false,
-        redesignedConfirmationsEnabled: true,
-        redesignedTransactionsEnabled: true,
         shouldShowAggregatedBalancePopover: true,
         featureNotificationsEnabled: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,

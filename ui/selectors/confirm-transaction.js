@@ -216,6 +216,7 @@ export const transactionFeeSelector = function (state, txData) {
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
+    gasLimitNoBuffer: txData.gasLimitNoBuffer,
   };
 
   if (networkAndAccountSupportsEIP1559) {
@@ -367,3 +368,10 @@ export const selectTransactionValue = createSelector(
   (isMaxValueEnabled, maxValue, transactionMetadata) =>
     isMaxValueEnabled ? maxValue : transactionMetadata?.txParams?.value,
 );
+
+const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
+
+export function selectMaxValueModeForTransaction(state, transactionId) {
+  const maxValueModes = maxValueModeSelector(state);
+  return maxValueModes[transactionId];
+}
