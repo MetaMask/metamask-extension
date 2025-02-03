@@ -91,12 +91,15 @@
 }
 
 // Additional adjustments for interactive components disabled states
-.snap-ui-renderer, .snap-ui-renderer__content {
+.snap-ui-renderer,
+.snap-ui-renderer__content {
   [disabled] {
     cursor: not-allowed !important;
   }
 
-  .mm-text-field--disabled, .toggle-button--disabled, .toggle-button--disabled *div {
+  .mm-text-field--disabled,
+  .toggle-button--disabled,
+  .toggle-button--disabled *div {
     cursor: not-allowed;
   }
 
@@ -106,7 +109,8 @@
   }
 }
 
-.snap-ui-snap-ui-renderer__file-input__drop-zone--disabled, .snap-ui-renderer__radio-label--disabled {
+.snap-ui-snap-ui-renderer__file-input__drop-zone--disabled,
+.snap-ui-renderer__radio-label--disabled {
   opacity: 0.5;
   cursor: not-allowed !important;
 }
