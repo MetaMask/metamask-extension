@@ -312,7 +312,7 @@
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
     "@metamask/keyring-api": "^14.0.0",
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.0.4-preview-5b9e9f05",
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@19.0.5-preview-37653b42",
     "@metamask/keyring-internal-api": "^2.0.1",
     "@metamask/keyring-snap-client": "^3.0.0",
     "@metamask/logging-controller": "^6.0.0",
