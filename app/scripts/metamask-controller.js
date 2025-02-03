@@ -6839,7 +6839,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    // TODO: Does this need to go before the wallet_createSession middleware?
     // Add a middleware that will switch chain on each request (as needed)
     const requestQueueMiddleware = createQueuedRequestMiddleware({
       enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
