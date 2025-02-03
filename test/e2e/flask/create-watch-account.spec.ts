@@ -257,7 +257,7 @@ describe('Account-watcher snap', function (this: Suite) {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
         },
-        async ({ driver }: { driver: Driver }) => {
+        async ({ driver }) => {
           await loginWithBalanceValidation(driver);
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
@@ -297,7 +297,7 @@ describe('Account-watcher snap', function (this: Suite) {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
         },
-        async ({ driver }: { driver: Driver }) => {
+        async ({ driver }) => {
           await loginWithBalanceValidation(driver);
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();

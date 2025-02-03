@@ -6,7 +6,6 @@ import {
 } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
-import { Ganache } from '../../../seeder/ganache';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
@@ -120,16 +119,10 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
 
 async function createAndAssertIncreaseAllowanceSubmission(
   driver: Driver,
-  ganacheServer: Ganache,
   newSpendingCap: string,
   contractRegistry?: ContractAddressRegistry,
 ) {
-  await openDAppWithContract(
-    driver,
-    ganacheServer,
-    contractRegistry,
-    SMART_CONTRACTS.HST,
-  );
+  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.HST);
 
   await createERC20IncreaseAllowanceTransaction(driver);
 

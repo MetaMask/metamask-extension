@@ -31,7 +31,12 @@ export class Ganache {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async start(opts: any) {
-    const options = { ...defaultOptions, ...opts };
+    // Check if mnemonic is provided in options
+    const options = {
+      ...defaultOptions,
+      ...opts,
+      accounts: opts.mnemonic ? undefined : defaultOptions.accounts,
+    };
 
     this.#server = server(options);
     await this.#server.listen(options.port);

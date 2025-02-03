@@ -32,17 +32,8 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          contractRegistry,
-          ganacheServer,
-        }: TestSuiteArguments) => {
-          await openDAppWithContract(
-            driver,
-            ganacheServer,
-            contractRegistry,
-            smartContract,
-          );
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await importTST(driver);
 
@@ -67,17 +58,8 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          contractRegistry,
-          ganacheServer,
-        }: TestSuiteArguments) => {
-          await openDAppWithContract(
-            driver,
-            ganacheServer,
-            contractRegistry,
-            smartContract,
-          );
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+          await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await importTST(driver);
 

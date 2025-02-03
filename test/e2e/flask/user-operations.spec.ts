@@ -212,6 +212,7 @@ async function withAccountSnap(
       dapp: true,
       localNodeOptions: {
         hardfork: 'london',
+        mnemonic: 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
       },
       testSpecificMock: mockSwapsTransactionQuote,
     },
