@@ -606,7 +606,8 @@
         "accounts": [
           "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
-        ]
+        ],
+        "fingerprint": "mock-fingerprint"
       },
       {
         "type": "Ledger Hardware",
@@ -623,28 +624,6 @@
       {
         "type": "Custody test",
         "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
-      }
-    ],
-    "keyringsMetadata": [
-      {
-        "id": "ULID01234567890ABCDEFGHIJKLMN",
-        "name": ""
-      },
-      {
-        "id": "ULID01234567890ABCDEFGHIJKLMN",
-        "name": ""
-      },
-      {
-        "id": "ULID01234567890ABCDEFGHIJKLMN",
-        "name": ""
-      },
-      {
-        "id": "ULID01234567890ABCDEFGHIJKLMN",
-        "name": ""
-      },
-      {
-        "id": "ULID01234567890ABCDEFGHIJKLMN",
-        "name": ""
       }
     ],
     "identities": {
