@@ -19,7 +19,7 @@ export const CONTROLLER_MESSENGERS = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
   },
-  JsonSnapsRegistry: {
+  SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
   },
   SnapController: {
