@@ -13,6 +13,10 @@ import {
   Platform,
 } from './types';
 
+function isVersionString(value: string): value is `v${string}` {
+  return /^v\d/u.test(value);
+}
+
 export function printBanner() {
   console.log(`
 .xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx.xOx
@@ -118,8 +122,8 @@ function getOptions(
         if (/^nightly/u.test(rawVersion)) {
           return { version: 'nightly', tag: rawVersion };
           // we don't validate the version much, we just trust the user
-        } else if (/^\d/u.test(rawVersion)) {
-          return { version: `v${rawVersion}`, tag: rawVersion };
+        } else if (isVersionString(rawVersion)) {
+          return { version: rawVersion, tag: rawVersion };
         }
         throw new Error('Invalid version');
       },

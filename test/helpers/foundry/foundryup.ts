@@ -16,7 +16,7 @@ import {
 } from './utils';
 import { extractFrom } from './extract';
 import { parseArgs, printBanner } from './options';
-import { Architecture, Checksums, Extension, Platform } from './types';
+import { Architecture, Binary, Checksums, Extension, Platform } from './types';
 
 export function getCacheDirectory(): string {
   let enableGlobalCache = false;
@@ -45,7 +45,7 @@ export function getBinaryArchiveUrl(
 
 export async function checkAndDownloadBinaries(
   url: URL,
-  binaries: string[],
+  binaries: Binary[],
   cachePath: string,
   platform: Platform,
   arch: Architecture,

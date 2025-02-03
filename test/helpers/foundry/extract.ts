@@ -25,7 +25,7 @@ import { Extension, Binary } from './types';
 
 export async function extractFrom(
   url: URL,
-  binaries: string[],
+  binaries: Binary[],
   dir: string,
   checksums: { algorithm: string; binaries: Record<Binary, string> } | null,
 ) {
@@ -55,7 +55,7 @@ export async function extractFrom(
     for (const { path, binary, checksum } of downloads) {
       if (checksums) {
         say(`verifying checksum for ${binary}`);
-        const expected = checksums.binaries[binary as Binary];
+        const expected = checksums.binaries[binary];
         if (checksum === expected) {
           say(`checksum verified for ${binary}`);
         } else {
@@ -92,13 +92,13 @@ export async function extractFrom(
 
 async function extractFromTar(
   url: URL,
-  binaries: string[],
+  binaries: Binary[],
   dir: string,
   checksumAlgorithm?: string,
 ) {
   const downloads: {
     path: string;
-    binary: string;
+    binary: Binary;
     checksum?: string;
   }[] = [];
   await pipeline(
@@ -119,7 +119,7 @@ async function extractFromTar(
             passThrough.on('end', () => {
               downloads.push({
                 path: absolutePath,
-                binary: entry.path,
+                binary: entry.path as Binary,
                 checksum: hash.digest('hex'),
               });
             });
@@ -130,7 +130,7 @@ async function extractFromTar(
           // to use the original stream without transformation
           downloads.push({
             path: absolutePath,
-            binary: entry.path,
+            binary: entry.path as Binary,
           });
           return undefined;
         },
@@ -152,7 +152,7 @@ async function extractFromTar(
 
 async function extractFromZip(
   url: URL,
-  binaries: string[],
+  binaries: Binary[],
   dir: string,
   checksumAlgorithm?: string,
 ) {
@@ -179,13 +179,14 @@ async function extractFromZip(
 
   const { files } = await Open.custom(source, {});
   const filtered = files.filter(({ path }) =>
-    binaries.includes(basename(path, extname(path))),
+    binaries.includes(basename(path, extname(path)) as Binary),
   );
   return await Promise.all(
     filtered.map(async ({ path, stream }) => {
       const dest = join(dir, path);
       const entry = stream();
       const destStream = createWriteStream(dest);
+      const binary = basename(path, extname(path)) as Binary;
       if (checksumAlgorithm) {
         const hash = createHash(checksumAlgorithm);
         const hashStream = async function* (entryStream: Entry) {
@@ -197,14 +198,14 @@ async function extractFromZip(
         await pipeline(entry, hashStream, destStream);
         return {
           path: dest,
-          binary: path,
+          binary,
           checksum: hash.digest('hex'),
         };
       }
       await pipeline(entry, destStream);
       return {
         path: dest,
-        binary: basename(path, extname(path)),
+        binary,
       };
     }),
   );
