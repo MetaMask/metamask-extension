@@ -1,14 +1,28 @@
 import { Server, server } from 'ganache';
+import { BigNumber } from 'bignumber.js';
+import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../constants';
+
+const PRIVATE_KEY =
+  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
+const convertToHexValue = (val: string) =>
+  `0x${new BigNumber(val, 10).toString(16)}`;
+
+const convertETHToHexGwei = (eth: string) => convertToHexValue(eth * 10 ** 18);
 
 const defaultOptions = {
   blockTime: 2,
   network_id: 1337,
-  mnemonic:
-    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
   port: 8545,
   vmErrorsOnRPCResponse: false,
   hardfork: 'muirGlacier',
   quiet: true,
+  accounts: [
+    {
+      secretKey: PRIVATE_KEY,
+      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+    },
+  ],
 };
 
 export class Ganache {
