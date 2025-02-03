@@ -28,7 +28,6 @@ import {
   RatesController,
   TokenListController,
   MultichainBalancesController,
-  MultichainAssetsController,
   BalancesTracker as MultichainBalancesTracker,
   BALANCE_UPDATE_INTERVALS as MULTICHAIN_BALANCES_UPDATE_TIME,
 } from '@metamask/assets-controllers';
