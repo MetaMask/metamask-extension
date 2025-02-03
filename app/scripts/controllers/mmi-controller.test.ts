@@ -118,6 +118,9 @@ describe('MMIController', function () {
           'KeyringController:stateChange',
           'KeyringController:persistAllKeyrings',
           'AccountsController:selectedAccountChange',
+          'SnapKeyring:accountAssetListUpdated',
+          'SnapKeyring:accountBalancesUpdated',
+          'SnapKeyring:accountTransactionsUpdated',
         ],
         allowedActions: [
           'AccountsController:setCurrentAccount',

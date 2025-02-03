@@ -87,7 +87,9 @@ const srcChainStatusValidators = [
     property: 'token',
     type: 'object|undefined',
     validator: (v: unknown): v is object | undefined =>
-      v === undefined || assetValidator(v),
+      v === undefined ||
+      (v && typeof v === 'object' && Object.keys(v).length === 0) ||
+      assetValidator(v),
   },
 ];
 
