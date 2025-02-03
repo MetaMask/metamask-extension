@@ -1,6 +1,4 @@
 import { Mockttp } from 'mockttp';
-import { Suite } from 'mocha';
-import { is } from 'immer/dist/internal.js';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -11,8 +9,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 
 const SOLANA_URL_REGEX =
   /^https:\/\/(solana-mainnet\.infura\.io|api\.devnet\.solana\.com)/u;
-// const SOLANA_RPC_PROVIDER = 'https://api.devnet.solana.com/';
-const SOLANA_PRICE_REGEX = /^https:\/\/price\.uat-api\.cx\.metamask\.io\/v3/u;
+const SOLANA_PRICE_API = 'https://price.uat-api.cx.metamask.io/v3/spot-prices';
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX =
   /^https:\/\/static\.metamask\.io\/token-images\/solana\//u;
 const SOLANA_BITCOIN_MIN_API =
@@ -28,7 +25,7 @@ export const commonSolanaAddress =
 export const SIMPLEHASH_URL = 'https://api.simplehash.com';
 
 export const SOLANA_TOKEN_API =
-  /^https:\/\/tokens\.uat-api\.cx\.metamask\.io\/v3\/assets$/u;
+  'https://tokens.uat-api.cx.metamask.io/v3/assets';
 
 export const METAMASK_PHISHING_DETECTION_API =
   /^https:\/\/phishing-detection\.api\.cx\.metamask\.io\/$/u;
@@ -68,7 +65,6 @@ export async function mockPhishingDetectionApi(mockServer: Mockttp) {
 }
 
 export async function mockPriceApi(mockServer: Mockttp) {
-  console.log('AQUI ENTRA EN MOCK PRICE');
   const response = {
     statusCode: 200,
     json: {
@@ -81,15 +77,9 @@ export async function mockPriceApi(mockServer: Mockttp) {
         },
     },
   };
-  return await mockServer
-    .forGet(SOLANA_PRICE_REGEX)
-    /* .withQuery({
-      vsCurrency: 'usd',
-      assetIds: 'solana',
-    })*/
-    .thenCallback(() => {
-      return response;
-    });
+  return await mockServer.forGet(SOLANA_PRICE_API).thenCallback(() => {
+    return response;
+  });
 }
 
 export async function mockStaticMetamaskTokenIcon(mockServer: Mockttp) {
@@ -103,7 +93,6 @@ export async function mockStaticMetamaskTokenIcon(mockServer: Mockttp) {
 }
 
 export async function mockTokenApi(mockServer: Mockttp) {
-  console.log('AQUI ENTRA EN MOCK TOKEN');
   const response = {
     statusCode: 200,
     json: {
@@ -217,7 +206,6 @@ export async function simulateSolanaTransaction(
   mockServer: Mockttp,
   isNative: boolean = true,
 ) {
-  console.log('AQUI ENTRA EN SIMULATE');
   const response = isNative
     ? {
         statusCode: 200,
@@ -462,24 +450,6 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     });
 }
 
-export async function mockSolanaRatesCall(mockServer: Mockttp) {
-  return await mockServer.forGet(SOLANA_PRICE_REGEX).thenCallback(() => {
-    const priceResponse = {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        usd: 241.33,
-      },
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
-        {
-          usd: 0.01538629,
-        },
-    };
-    return {
-      statusCode: 200,
-      json: priceResponse,
-    };
-  });
-}
-
 export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX)
@@ -652,6 +622,7 @@ export async function withSolanaAccountSnap(
     mockSendTransaction,
     importAccount,
     isNative,
+    simulateTransaction,
   }: {
     title?: string;
     solanaSupportEnabled?: boolean;
@@ -660,6 +631,7 @@ export async function withSolanaAccountSnap(
     mockSendTransaction?: boolean;
     importAccount?: boolean;
     isNative?: boolean;
+    simulateTransaction?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -687,9 +659,7 @@ export async function withSolanaAccountSnap(
         if (mockCalls) {
           mockList.push([
             await mockSolanaBalanceQuote(mockServer),
-            await mockSolanaRatesCall(mockServer),
             await mockGetTransaction(mockServer),
-            await simulateSolanaTransaction(mockServer, isNative),
             await mockGetTokenAccountsByOwner(mockServer),
             await mockGetSignaturesForAddress(mockServer),
             await mockMultiCoinPrice(mockServer),
@@ -702,6 +672,9 @@ export async function withSolanaAccountSnap(
         if (mockSendTransaction) {
           mockList.push(await mockSendSolanaTransaction(mockServer));
           // mockList.push(await mockGetAccountInfo(mockServer));
+        }
+        if (simulateTransaction) {
+          mockList.push(await simulateSolanaTransaction(mockServer, isNative));
         }
         return mockList;
       },

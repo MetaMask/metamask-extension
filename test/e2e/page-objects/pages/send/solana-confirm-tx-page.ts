@@ -21,9 +21,16 @@ class ConfirmSolanaTxPage {
 
   async checkAmountDisplayed(
     amount: string,
-    tokenName: string = 'SOL',
+    tokenName: string = '',
   ): Promise<boolean> {
     try {
+      if (tokenName === '') {
+        await this.driver.waitForSelector({
+          text: `${amount}`,
+          tag: 'h2',
+        });
+        return true;
+      }
       await this.driver.waitForSelector({
         text: `${amount} ${tokenName}`,
         tag: 'h2',

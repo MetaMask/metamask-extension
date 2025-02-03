@@ -100,6 +100,18 @@ class SendSolanaPage {
     }
   }
 
+  async check_TxSimulationFailed(): Promise<void> {
+    await this.driver.waitForControllersLoaded();
+    await this.driver.waitForSelector(
+      { text: 'Transaction simulation failed', tag: 'p' },
+      { timeout: 5000 },
+    );
+    await this.driver.waitForSelector(
+      { text: 'This transaction was reverted during simulation.', tag: 'p' },
+      { timeout: 5000 },
+    );
+  }
+
   async setAmount(amount: string): Promise<void> {
     await this.driver.waitForControllersLoaded();
     await this.driver.waitForSelector(this.sendAmountInput, { timeout: 10000 });
