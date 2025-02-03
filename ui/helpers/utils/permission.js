@@ -551,12 +551,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     weight: PermissionWeight.endowment_assets,
   }),
   [EndowmentPermissions['endowment:protocol']]: ({ t, subjectName }) => ({
-    // TODO
-    label: t('permission_assets'),
-    description: t('permission_assetsDescription', [
+    label: t('permission_protocol'),
+    description: t('permission_protocolDescription', [
       getSnapNameComponent(subjectName),
     ]),
-    leftIcon: IconName.Coin,
+    leftIcon: IconName.GlobalSearch,
     weight: PermissionWeight.endowment_protocol,
   }),
   [EndowmentPermissions['endowment:signature-insight']]: ({
