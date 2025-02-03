@@ -6077,3 +6077,7 @@ export async function sendMultichainTransaction(
     },
   });
 }
+
+export async function getCode(address, networkClientId) {
+  return await submitRequestToBackground('getCode', [address, networkClientId]);
+}

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -34,7 +34,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { useDowngradeAccount } from '../../../pages/confirmations/hooks/useDowngradeAccount';
+import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
+import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import Spinner from '../../ui/spinner';
 
 export const AccountDetailsDisplay = ({
   accounts,
@@ -45,15 +47,21 @@ export const AccountDetailsDisplay = ({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTransactionRedirect = useCallback(() => {
     dispatch(clearAccountDetails());
     dispatch(setAccountDetailsAddress(''));
   }, [dispatch]);
 
-  const { addDowngradeTransaction } = useDowngradeAccount({
+  const { hasDelegation, revokeDelegation, setDelegation } = useEIP7702Account({
     onRedirect: handleTransactionRedirect,
   });
+
+  const { value: isAccountUpgraded } = useAsyncResult(
+    () => hasDelegation(address),
+    [address, hasDelegation],
+  );
 
   const {
     metadata: { keyring },
@@ -64,8 +72,14 @@ export const AccountDetailsDisplay = ({
   const deviceName = useSelector(getHardwareWalletType);
 
   const handleDowngradeClick = useCallback(async () => {
-    await addDowngradeTransaction(address);
-  }, [addDowngradeTransaction, address]);
+    setIsLoading(true);
+    await revokeDelegation(address);
+  }, [revokeDelegation, address]);
+
+  const handleUpgradeClick = useCallback(async () => {
+    setIsLoading(true);
+    await setDelegation(address);
+  }, [setDelegation, address]);
 
   return (
     <Box
@@ -90,35 +104,53 @@ export const AccountDetailsDisplay = ({
         accounts={accounts}
       />
       <QrCodeView Qr={{ data: address }} />
-      {exportPrivateKeyFeatureEnabled ? (
-        <ButtonSecondary
-          block
-          size={ButtonSecondarySize.Lg}
-          variant={TextVariant.bodyMd}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Accounts,
-              event: MetaMetricsEventName.KeyExportSelected,
-              properties: {
-                key_type: MetaMetricsEventKeyType.Pkey,
-                location: 'Account Details Modal',
-              },
-            });
-            onExportClick();
-          }}
-        >
-          {t('showPrivateKey')}
-        </ButtonSecondary>
-      ) : null}
-      <ButtonSecondary
-        block
-        size={ButtonSecondarySize.Lg}
-        variant={TextVariant.bodyMd}
-        marginTop={2}
-        onClick={handleDowngradeClick}
-      >
-        Downgrade Account
-      </ButtonSecondary>
+      {isLoading ? (
+        <Spinner className="loading-overlay__spinner" />
+      ) : (
+        <>
+          {exportPrivateKeyFeatureEnabled ? (
+            <ButtonSecondary
+              block
+              size={ButtonSecondarySize.Lg}
+              variant={TextVariant.bodyMd}
+              onClick={() => {
+                trackEvent({
+                  category: MetaMetricsEventCategory.Accounts,
+                  event: MetaMetricsEventName.KeyExportSelected,
+                  properties: {
+                    key_type: MetaMetricsEventKeyType.Pkey,
+                    location: 'Account Details Modal',
+                  },
+                });
+                onExportClick();
+              }}
+            >
+              {t('showPrivateKey')}
+            </ButtonSecondary>
+          ) : null}
+          {isAccountUpgraded ? (
+            <ButtonSecondary
+              block
+              size={ButtonSecondarySize.Lg}
+              variant={TextVariant.bodyMd}
+              marginTop={4}
+              onClick={handleDowngradeClick}
+            >
+              Downgrade account
+            </ButtonSecondary>
+          ) : (
+            <ButtonSecondary
+              block
+              size={ButtonSecondarySize.Lg}
+              variant={TextVariant.bodyMd}
+              marginTop={4}
+              onClick={handleUpgradeClick}
+            >
+              Upgrade account
+            </ButtonSecondary>
+          )}
+        </>
+      )}
     </Box>
   );
 };

@@ -407,6 +407,11 @@ export function useTransactionDisplayData(transactionGroup) {
     title = 'Downgrade account';
     subtitle = origin;
     subtitleContainsOrigin = true;
+  } else if (type === TransactionType.setDelegation) {
+    category = TransactionGroupCategory.interaction;
+    title = 'Upgrade account';
+    subtitle = origin;
+    subtitleContainsOrigin = true;
   } else {
     dispatch(
       captureSingleException(

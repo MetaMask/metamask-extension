@@ -15,6 +15,7 @@ const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
   TransactionType.deployContract,
   TransactionType.revokeDelegation,
+  TransactionType.setDelegation,
   TransactionType.simpleSend,
   TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodIncreaseAllowance,

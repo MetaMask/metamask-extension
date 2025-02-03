@@ -29,6 +29,7 @@ const Info = () => {
       [TransactionType.deployContract]: () => BaseTransactionInfo,
       [TransactionType.batch]: () => BaseTransactionInfo,
       [TransactionType.revokeDelegation]: () => BaseTransactionInfo,
+      [TransactionType.setDelegation]: () => BaseTransactionInfo,
       [TransactionType.personalSign]: () => PersonalSignInfo,
       [TransactionType.simpleSend]: () => NativeTransferInfo,
       [TransactionType.signTypedData]: () => {

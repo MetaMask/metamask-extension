@@ -4444,7 +4444,19 @@ export default class MetamaskController extends EventEmitter {
         ),
       // Trace
       endTrace,
+      // EIP-7702
+      getCode: this.getCode.bind(this),
     };
+  }
+
+  async getCode(address, networkClientId) {
+    const { provider } =
+      this.networkController.getNetworkClientById(networkClientId);
+
+    return await provider.request({
+      method: 'eth_getCode',
+      params: [address],
+    });
   }
 
   async exportAccount(address, password) {
