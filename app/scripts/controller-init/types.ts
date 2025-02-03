@@ -118,6 +118,19 @@ export type ControllerInitRequest<
    * @param origin - The origin for which to remove all connections.
    */
   removeAllConnections(origin: string): void;
+
+  /**
+   * Show a native notification.
+   *
+   * @param title - The title of the notification.
+   * @param message - The message of the notification.
+   * @param url - The URL to open when the notification is clicked.
+   */
+  showNotification: (
+    title: string,
+    message: string,
+    url?: string,
+  ) => Promise<void>;
 } & (InitMessengerType extends BaseRestrictedControllerMessenger
   ? {
       /**

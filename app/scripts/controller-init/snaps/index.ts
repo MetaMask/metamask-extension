@@ -1,5 +1,10 @@
 export { CronjobControllerInit } from './cronjob-controller-init';
 export { getCronjobControllerMessenger } from './cronjob-controller-messenger';
+export { RateLimitControllerInit } from './rate-limit-controller-init';
+export {
+  getRateLimitControllerMessenger,
+  getRateLimitControllerInitMessenger,
+} from './rate-limit-controller-messenger';
 export { SnapControllerInit } from './snap-controller-init';
 export {
   getSnapControllerMessenger,

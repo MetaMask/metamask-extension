@@ -76,7 +76,6 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
-import { RateLimitController } from '@metamask/rate-limit-controller';
 import {
   IframeExecutionService,
   OffscreenExecutionService,
@@ -368,6 +367,7 @@ import { PPOMControllerInit } from './controller-init/confirmations/ppom-control
 import { initControllers } from './controller-init/utils';
 import {
   CronjobControllerInit,
+  RateLimitControllerInit,
   SnapControllerInit,
   SnapInsightsControllerInit,
   SnapInterfaceControllerInit,
@@ -1340,66 +1340,6 @@ export default class MetamaskController extends EventEmitter {
             offscreenPromise: this.offscreenPromise,
           });
 
-    this.rateLimitController = new RateLimitController({
-      state: initState.RateLimitController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'RateLimitController',
-      }),
-      implementations: {
-        showNativeNotification: {
-          method: (origin, message) => {
-            const subjectMetadataState = this.controllerMessenger.call(
-              'SubjectMetadataController:getState',
-            );
-
-            const originMetadata = subjectMetadataState.subjectMetadata[origin];
-
-            this.platform
-              ._showNotification(originMetadata?.name ?? origin, message)
-              .catch((error) => {
-                log.error('Failed to create notification', error);
-              });
-
-            return null;
-          },
-          // 2 calls per 5 minutes
-          rateLimitCount: 2,
-          rateLimitTimeout: 300000,
-        },
-        showInAppNotification: {
-          method: (origin, args) => {
-            const { message, title, footerLink, interfaceId } = args;
-
-            const detailedView = {
-              title,
-              ...(footerLink ? { footerLink } : {}),
-              interfaceId,
-            };
-
-            const notification = {
-              data: {
-                message,
-                origin,
-                ...(interfaceId ? { detailedView } : {}),
-              },
-              type: TRIGGER_TYPES.SNAP,
-              readDate: null,
-            };
-
-            this.controllerMessenger.call(
-              'NotificationServicesController:updateMetamaskNotificationsList',
-              notification,
-            );
-
-            return null;
-          },
-          // 5 calls per minute
-          rateLimitCount: 5,
-          rateLimitTimeout: 60000,
-        },
-      },
-    });
-
     // Notification Controllers
     this.authenticationController = new AuthenticationController.Controller({
       state: initState.AuthenticationController,
@@ -2199,6 +2139,7 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     const controllerInitFunctions = {
+      RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
       SnapController: SnapControllerInit,
       SnapInsightsController: SnapInsightsControllerInit,
@@ -2226,6 +2167,7 @@ export default class MetamaskController extends EventEmitter {
 
     // Backwards compatibility for existing references
     this.cronjobController = controllersByName.CronjobController;
+    this.rateLimitController = controllersByName.RateLimitController;
     this.snapController = controllersByName.SnapController;
     this.snapInsightsController = controllersByName.SnapInsightsController;
     this.snapInterfaceController = controllersByName.SnapInterfaceController;
@@ -7675,6 +7617,7 @@ export default class MetamaskController extends EventEmitter {
         this.getTransactionMetricsRequest.bind(this),
       persistedState: initState,
       removeAllConnections: this.removeAllConnections.bind(this),
+      showNotification: this.platform._showNotification,
     };
 
     return initControllers({

@@ -1,5 +1,7 @@
 import {
   getCronjobControllerMessenger,
+  getRateLimitControllerInitMessenger,
+  getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
   getSnapControllerMessenger,
   getSnapInsightsControllerMessenger,
@@ -18,6 +20,10 @@ import {
 export const CONTROLLER_MESSENGERS = {
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
+  },
+  RateLimitController: {
+    getMessenger: getRateLimitControllerMessenger,
+    getInitMessenger: getRateLimitControllerInitMessenger,
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,

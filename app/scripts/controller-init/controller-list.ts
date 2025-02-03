@@ -18,6 +18,10 @@ import {
   SnapInsightsController,
   SnapInterfaceController,
 } from '@metamask/snaps-controllers';
+import {
+  RateLimitController,
+  RateLimitedApiMap,
+} from '@metamask/rate-limit-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -38,6 +42,7 @@ export type Controller =
     >
   | PPOMController
   | PreferencesController
+  | RateLimitController<RateLimitedApiMap>
   | SmartTransactionsController
   // TODO: Update `name` to `SnapController` instead of `string`.
   | SnapController
@@ -66,6 +71,7 @@ export type ControllerFlatState = AccountsController['state'] &
   >['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
+  RateLimitController<RateLimitedApiMap>['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
