@@ -30,16 +30,18 @@ export class Ganache {
       ...defaultOptions,
       ...opts,
     };
-    if(!options.mnemonic) {
+    if (!options.mnemonic) {
       options = {
-        ...defaultOptions,
+        ...options,
         accounts: [
           {
             secretKey: PRIVATE_KEY,
-            balance: convertETHToHexGwei(Number(DEFAULT_GANACHE_ETH_BALANCE_DEC)),
+            balance: convertETHToHexGwei(
+              Number(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+            ),
           },
         ],
-      }
+      };
     }
 
     this.#server = server(options);

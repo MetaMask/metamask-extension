@@ -131,6 +131,8 @@ async function withFixtures(options, testSuite) {
           chain: { chainId },
           port,
           vmErrorsOnRPCResponse: false,
+          mnemonic:
+            'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
           ...ganacheOptions2,
         });
       });

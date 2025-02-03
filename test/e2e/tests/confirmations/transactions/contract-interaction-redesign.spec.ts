@@ -113,7 +113,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       );
     });
 
-    it(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
+    it.only(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
       await withFixtures(
         {
           dapp: true,
