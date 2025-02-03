@@ -3,9 +3,10 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   sendScreenToConfirmScreen,
-  logInWithBalanceValidation,
   WINDOW_TITLES,
 } = require('../../helpers');
+const { loginWithoutBalanceValidation } = require('../../page-objects/flows/login.flow');
+
 const {
   mockMultiNetworkBalancePolling,
 } = require('../../mock-balance-polling/mock-balance-polling');
@@ -131,8 +132,13 @@ describe('Simple Send Security Alert - Blockaid', function () {
         title: this.test.fullTitle(),
       },
 
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithoutBalanceValidation(driver);
+        // We validate custom balance as it doesn't come from ganache but it's mocked
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '20 ETH',
+        });
 
         await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
 
@@ -166,8 +172,13 @@ describe('Simple Send Security Alert - Blockaid', function () {
         title: this.test.fullTitle(),
       },
 
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithoutBalanceValidation(driver);
+        // We validate custom balance as it doesn't come from ganache but it's mocked
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '20 ETH',
+        });
 
         await driver.openNewPage('http://localhost:8080');
 
@@ -201,8 +212,8 @@ describe('Simple Send Security Alert - Blockaid', function () {
         title: this.test.fullTitle(),
       },
 
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithoutBalanceValidation(driver);
 
         await sendScreenToConfirmScreen(
           driver,
