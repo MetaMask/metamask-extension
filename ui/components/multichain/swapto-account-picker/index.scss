@@ -1,0 +1,15 @@
+.swap-to-account-picker {
+  &__list {
+    max-height: 400px;
+    overflow-y: auto;
+
+    .multichain-account-list-item {
+      padding: 8px 16px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--color-background-default-hover);
+      }
+    }
+  }
+}

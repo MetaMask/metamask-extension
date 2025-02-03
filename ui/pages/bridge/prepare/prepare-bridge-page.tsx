@@ -561,6 +561,7 @@ const PrepareBridgePage = () => {
           }}
           isTokenListLoading={isToTokensLoading}
         />
+        {/* // TODO: place swap-to-account-picker here */}
         <Column height={BlockSize.Full} justifyContent={JustifyContent.center}>
           {isLoading && !activeQuote ? (
             <>
