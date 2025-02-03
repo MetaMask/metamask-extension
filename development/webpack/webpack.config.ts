@@ -134,7 +134,7 @@ const plugins: WebpackPluginInstance[] = [
     transform: transformManifest(
       args,
       isDevelopment,
-      variables.get('MANIFEST_OVERRIDES'),
+      variables.get('MANIFEST_OVERRIDES') as string | undefined,
     ),
     zip: args.zip,
     ...(args.zip

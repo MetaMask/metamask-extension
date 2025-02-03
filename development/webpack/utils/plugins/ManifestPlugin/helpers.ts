@@ -18,7 +18,7 @@
 export function transformManifest(
   args: { lockdown: boolean; test: boolean },
   isDevelopment: boolean,
-  manifestOverridesPath?: string,
+  manifestOverridesPath?: string | undefined,
 ) {
   const transforms: ((manifest: chrome.runtime.Manifest) => void)[] = [];
 

@@ -55,7 +55,9 @@ function createManifestTasks({
 }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
-    const manifestFlags = await loadManifestFlags();
+    const isDevelopment =
+      getEnvironment({ buildTarget: entryTask }) === 'development';
+    const manifestFlags = isDevelopment ? await loadManifestFlags() : undefined;
     return Promise.all(
       browserPlatforms.map(async (platform) => {
         const platformModifications = await readJson(
