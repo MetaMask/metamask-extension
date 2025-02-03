@@ -53,7 +53,7 @@ notes.txt
 .metamaskprodrc
 
 # Customized manifest configuration
-.manifest-overrides.json
+.manifest-overrides*.json
 
 # Test results
 test-results/
