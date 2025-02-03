@@ -4685,7 +4685,7 @@ export default class MetamaskController extends EventEmitter {
         address = await this.keyringController.withKeyring(
           keyringSelector,
           async (keyring) => {
-            await keyring.addAccounts(1);
+            return (await keyring.addAccounts(1))[0];
           },
         );
       }

@@ -1125,7 +1125,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util": true,
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/key-tree": true,
         "@metamask/scure-bip39": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/utils": true,
         "browserify>buffer": true,
@@ -1449,6 +1449,19 @@
         "@metamask/safe-event-emitter": true,
         "@metamask/json-rpc-middleware-stream>@metamask/utils": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/key-tree": {
+      "globals": {
+        "crypto.subtle": true
+      },
+      "packages": {
+        "@metamask/scure-bip39": true,
+        "@metamask/utils": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/utils": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true
       }
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
