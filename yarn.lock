@@ -4805,6 +4805,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/eth-trezor-keyring@npm:6.0.1-776292e":
+  version: 6.0.1-776292e
+  resolution: "@metamask-previews/eth-trezor-keyring@npm:6.0.1-776292e"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@trezor/connect-plugin-ethereum": "npm:^9.0.3"
+    "@trezor/connect-web": "npm:^9.1.11"
+    hdkey: "npm:^2.1.0"
+    tslib: "npm:^2.6.2"
+  checksum: 10/b83d2d7764243f5c125b43ae388b1a0fda3d7a33d58889b3000275a88579c9d1d8c29227efe92e524807384a1e1dc94e462cb3cf0ef049a90e03fc869c552e9c
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^2.0.2, @metamask/abi-utils@npm:^2.0.3, @metamask/abi-utils@npm:^2.0.4":
   version: 2.0.4
   resolution: "@metamask/abi-utils@npm:2.0.4"
@@ -5310,6 +5325,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-sig-util@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "@metamask/eth-sig-util@npm:8.2.0"
+  dependencies:
+    "@ethereumjs/rlp": "npm:^4.0.1"
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/abi-utils": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.0.1"
+    "@scure/base": "npm:~1.1.3"
+    ethereum-cryptography: "npm:^2.1.2"
+    tweetnacl: "npm:^1.0.3"
+  checksum: 10/385df1ec541116e1bd725a1df1a519996bad167f99d1b2677126e398cdfda6fc3f03d2ff8f1ca523966bc0aae3ea92a9050953a45d5a7711f4128aacf9242bfc
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-simple-keyring@npm:^6.0.5":
   version: 6.0.5
   resolution: "@metamask/eth-simple-keyring@npm:6.0.5"
@@ -5359,21 +5389,6 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.21.0
   checksum: 10/b43de24564d111172b304f32ecb02a36347b4f9cde158ba48424663427a0119ce12084652cff063cce202b678526b7e51363d76f20e80b481edc239aab0dbe3b
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-trezor-keyring@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/eth-trezor-keyring@npm:6.0.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/eth-sig-util": "npm:^8.0.0"
-    "@trezor/connect-plugin-ethereum": "npm:^9.0.3"
-    "@trezor/connect-web": "npm:^9.1.11"
-    hdkey: "npm:^2.1.0"
-    tslib: "npm:^2.6.2"
-  checksum: 10/d5d799c60eeab963ef3e5533de472044b08b6f72652ecefbf26cec99784829bbcd706df57f6450ddb019c7dff7c41b0e0dad244aad62b7d03b51fc97755e2c4c
   languageName: node
   linkType: hard
 
@@ -26558,6 +26573,7 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.2.0"
     "@metamask-institutional/transaction-update": "npm:^0.2.6"
     "@metamask-institutional/types": "npm:^1.2.0"
+    "@metamask-previews/eth-trezor-keyring": "npm:6.0.1-776292e"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.2"
     "@metamask/accounts-controller": "npm:^22.0.0"
@@ -26589,7 +26605,6 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^9.1.1"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
-    "@metamask/eth-trezor-keyring": "npm:^6.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^22.0.1"

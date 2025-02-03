@@ -1,4 +1,4 @@
-import type { TrezorBridge } from '@metamask/eth-trezor-keyring';
+import type { TrezorBridge } from '@metamask-previews/eth-trezor-keyring';
 import type {
   LedgerBridge,
   LedgerBridgeOptions,
