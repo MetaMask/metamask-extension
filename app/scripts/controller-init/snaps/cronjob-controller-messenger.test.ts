@@ -7,10 +7,9 @@ import { getCronjobControllerMessenger } from './cronjob-controller-messenger';
 describe('getCronjobControllerMessenger', () => {
   it('returns a restricted controller messenger', () => {
     const controllerMessenger = new ControllerMessenger<never, never>();
-    const cronjobControllerMessenger = getCronjobControllerMessenger(
-      controllerMessenger,
-    );
+    const cronjobControllerMessenger =
+      getCronjobControllerMessenger(controllerMessenger);
 
     expect(cronjobControllerMessenger).toBeInstanceOf(RestrictedMessenger);
   });
-})
+});

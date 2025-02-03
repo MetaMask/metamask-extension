@@ -10,9 +10,8 @@ import {
 describe('getSnapControllerMessenger', () => {
   it('returns a restricted controller messenger', () => {
     const controllerMessenger = new ControllerMessenger<never, never>();
-    const snapControllerMessenger = getSnapControllerMessenger(
-      controllerMessenger,
-    );
+    const snapControllerMessenger =
+      getSnapControllerMessenger(controllerMessenger);
 
     expect(snapControllerMessenger).toBeInstanceOf(RestrictedMessenger);
   });
@@ -21,9 +20,8 @@ describe('getSnapControllerMessenger', () => {
 describe('getSnapControllerInitMessenger', () => {
   it('returns a restricted controller messenger', () => {
     const controllerMessenger = new ControllerMessenger<never, never>();
-    const snapControllerMessenger = getSnapControllerInitMessenger(
-      controllerMessenger,
-    );
+    const snapControllerMessenger =
+      getSnapControllerInitMessenger(controllerMessenger);
 
     expect(snapControllerMessenger).toBeInstanceOf(RestrictedMessenger);
   });
