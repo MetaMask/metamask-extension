@@ -116,6 +116,8 @@ const getTitle = (
       return 'Transaction batch request';
     case TransactionType.batch:
       return 'Transaction batch request';
+    case TransactionType.revokeDelegation:
+      return 'Downgrade account';
     default:
       return '';
   }

@@ -154,6 +154,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     case TransactionType.batch: {
       return 'Transaction batch request';
     }
+    case TransactionType.revokeDelegation: {
+      return 'Downgrade account';
+    }
     default: {
       throw new Error(`Unrecognized transaction type: ${type}`);
     }

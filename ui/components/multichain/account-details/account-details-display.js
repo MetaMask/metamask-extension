@@ -1,11 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
 import QrCodeView from '../../ui/qr-code-view';
 import EditableLabel from '../../ui/editable-label/editable-label';
 
-import { setAccountLabel } from '../../../store/actions';
+import {
+  clearAccountDetails,
+  setAccountDetailsAddress,
+  setAccountLabel,
+} from '../../../store/actions';
 import {
   getHardwareWalletType,
   getInternalAccountByAddress,
@@ -30,6 +34,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { useDowngradeAccount } from '../../../pages/confirmations/hooks/useDowngradeAccount';
 
 export const AccountDetailsDisplay = ({
   accounts,
@@ -41,13 +46,26 @@ export const AccountDetailsDisplay = ({
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
+  const handleTransactionRedirect = useCallback(() => {
+    dispatch(clearAccountDetails());
+    dispatch(setAccountDetailsAddress(''));
+  }, [dispatch]);
+
+  const { addDowngradeTransaction } = useDowngradeAccount({
+    onRedirect: handleTransactionRedirect,
+  });
+
   const {
     metadata: { keyring },
   } = useSelector((state) => getInternalAccountByAddress(state, address));
-  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
 
+  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
+
+  const handleDowngradeClick = useCallback(async () => {
+    await addDowngradeTransaction(address);
+  }, [addDowngradeTransaction, address]);
 
   return (
     <Box
@@ -92,6 +110,15 @@ export const AccountDetailsDisplay = ({
           {t('showPrivateKey')}
         </ButtonSecondary>
       ) : null}
+      <ButtonSecondary
+        block
+        size={ButtonSecondarySize.Lg}
+        variant={TextVariant.bodyMd}
+        marginTop={2}
+        onClick={handleDowngradeClick}
+      >
+        Downgrade Account
+      </ButtonSecondary>
     </Box>
   );
 };

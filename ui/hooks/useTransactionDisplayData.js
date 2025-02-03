@@ -402,6 +402,11 @@ export function useTransactionDisplayData(transactionGroup) {
     title = 'Batch';
     subtitle = origin;
     subtitleContainsOrigin = true;
+  } else if (type === TransactionType.revokeDelegation) {
+    category = TransactionGroupCategory.interaction;
+    title = 'Downgrade account';
+    subtitle = origin;
+    subtitleContainsOrigin = true;
   } else {
     dispatch(
       captureSingleException(

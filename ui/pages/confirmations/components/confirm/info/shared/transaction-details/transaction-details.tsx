@@ -47,7 +47,15 @@ export const OriginRow = () => {
   );
 };
 
-export const RecipientRow = ({ override }: { override?: string }) => {
+export const RecipientRow = ({
+  label,
+  override,
+  tooltip,
+}: {
+  label?: string;
+  override?: string;
+  tooltip?: string;
+}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
@@ -62,8 +70,8 @@ export const RecipientRow = ({ override }: { override?: string }) => {
   return (
     <ConfirmInfoRow
       data-testid="transaction-details-recipient-row"
-      label={t('interactingWith')}
-      tooltip={t('interactingWithTransactionDescription')}
+      label={label ?? t('interactingWith')}
+      tooltip={tooltip ?? t('interactingWithTransactionDescription')}
     >
       <ConfirmInfoRowAddress address={to} chainId={chainId} />
     </ConfirmInfoRow>

@@ -26,6 +26,7 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { isSignatureTransactionType } from '../../../../../utils';
 import { TransactionData } from '../transaction-data/transaction-data';
 import { NestedTransactions } from '../../transaction-batch/transaction-batch-item';
+import { EIP7702AuthorizationInfo } from '../../base-transaction-info/eip-7702-authorization-info';
 
 const NonceDetails = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -97,6 +98,9 @@ export const AdvancedDetails = ({
   return (
     <>
       <NonceDetails />
+      <EIP7702AuthorizationInfo
+        authorizationList={txParams?.authorizationList}
+      />
       {!isBatch && (
         <TransactionData
           transactionData={txParams?.data as Hex}
