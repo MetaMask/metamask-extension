@@ -3366,21 +3366,6 @@ export function setUseBlockie(
   };
 }
 
-export function setUseNonceField(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setUseNonceField`);
-    try {
-      await submitRequestToBackground('setUseNonceField', [val]);
-    } catch (error) {
-      dispatch(displayWarning(error));
-    }
-    dispatch(hideLoadingIndication());
-  };
-}
-
 export function setUsePhishDetect(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

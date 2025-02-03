@@ -186,9 +186,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              useNonceField: true,
-            })
             .build(),
           ganacheOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
@@ -201,6 +198,10 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // re open advanced details
+          await toggleAdvancedDetails(driver);
+
           await confirmDepositTransactionWithCustomNonce(driver, '10');
         },
       );
@@ -228,33 +229,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await toggleAdvancedDetails(driver);
-          await assertAdvancedGasDetails(driver);
-        },
-      );
-    });
-
-    it('If nonce editing is enabled, advanced details are shown', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              useNonceField: true,
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
-          smartContract,
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createDepositTransaction(driver);
-
-          await driver.waitUntilXWindowHandles(3);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
           await assertAdvancedGasDetails(driver);
         },
       );

@@ -24,7 +24,6 @@ export const FIXTURES_PREFERENCES = {
   participateInMetaMetrics: true,
   dataCollectionForMarketing: true,
   useNftDetection: true,
-  useNonceField: true,
   usePhishDetect: true,
   useTokenDetection: true,
   useCurrencyRateCheck: true,

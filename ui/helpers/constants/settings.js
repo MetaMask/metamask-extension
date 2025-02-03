@@ -122,20 +122,12 @@ const SETTINGS_CONSTANTS = [
   // advanced settingsRefs[6]
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('nonceField'),
-    descriptionMessage: (t) => t('nonceFieldDesc'),
-    route: `${ADVANCED_ROUTE}#customize-nonce`,
-    icon: 'fas fa-sliders-h',
-  },
-  // advanced settingsRefs[7]
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('autoLockTimeLimit'),
     descriptionMessage: (t) => t('autoLockTimeLimitDescription'),
     route: `${ADVANCED_ROUTE}#autolock-timer`,
     icon: 'fas fa-sliders-h',
   },
-  // advanced settingsRefs[8]
+  // advanced settingsRefs[7]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showExtensionInFullSizeView'),
@@ -143,7 +135,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#extension-full-size-view`,
     icon: 'fas fa-sliders-h',
   },
-  // advanced settingsRefs[9]
+  // advanced settingsRefs[8]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('dismissReminderField'),
@@ -151,7 +143,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#dismiss-secretrecovery`,
     icon: 'fas fa-sliders-h',
   },
-  // advanced settingsRefs[10]
+  // advanced settingsRefs[9]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('exportYourData'),
@@ -159,7 +151,7 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#export-data`,
     icon: 'fas fa-download',
   },
-  // advanced settingsRefs[11]
+  // advanced settingsRefs[10]
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('overrideContentSecurityPolicyHeader'),

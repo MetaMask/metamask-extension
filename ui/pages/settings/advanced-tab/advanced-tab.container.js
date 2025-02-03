@@ -13,7 +13,6 @@ import {
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
   setSmartTransactionsPreferenceEnabled,
-  setUseNonceField,
   showModal,
 } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
@@ -30,7 +29,6 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData } = {},
-    useNonceField,
     dismissSeedBackUpReminder,
     overrideContentSecurityPolicyHeader,
   } = metamask;
@@ -49,7 +47,6 @@ export const mapStateToProps = (state) => {
     showExtensionInFullSizeView,
     smartTransactionsEnabled: getSmartTransactionsPreferenceEnabled(state),
     autoLockTimeLimit,
-    useNonceField,
     dismissSeedBackUpReminder,
     overrideContentSecurityPolicyHeader,
   };
@@ -65,7 +62,6 @@ export const mapDispatchToProps = (dispatch) => {
     hideErrorInSettings: () => dispatch(hideErrorInSettings()),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));
     },

@@ -16,8 +16,15 @@ import { shortenAddress } from '../../../../../helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../../../app/scripts/lib/multichain/address';
 import { SendPageAccountPicker } from '.';
 
+type State = {
+  metamask: Pick<
+    MetaMaskReduxState['metamask'],
+    'internalAccounts' | 'keyrings'
+  >;
+};
+
 const render = (
-  state: Partial<MetaMaskReduxState> = {},
+  state: Partial<State> = {},
   props = {},
   sendStage = SEND_STAGES.ADD_RECIPIENT,
 ) => {
@@ -132,7 +139,7 @@ describe('SendPageAccountPicker', () => {
               accounts: [mockBtcAccount.address],
             },
           ],
-        } as MetaMaskReduxState['metamask'],
+        },
       });
 
       expect(queryByText(mockAccount.metadata.name)).toBeInTheDocument();
