@@ -72,7 +72,6 @@ async function withFixtures(options, testSuite) {
     title,
     ignoredConsoleErrors = [],
     dappPath = undefined,
-    disableGanache,
     disableServerMochaToBackground = false,
     dappPaths,
     testSpecificMock = function () {
@@ -107,16 +106,17 @@ async function withFixtures(options, testSuite) {
 
   try {
     switch (localNode) {
-      case 'ganache':
-        if (!disableGanache) {
-          ganacheServer = new Ganache();
-          await ganacheServer.start(ganacheOptions);
-        }
-        break;
-
       case 'anvil':
         anvilServer = new Anvil();
         await anvilServer.start(anvilOptions);
+        break;
+
+      case 'ganache':
+        ganacheServer = new Ganache();
+        await ganacheServer.start(ganacheOptions);
+        break;
+
+      case 'none':
         break;
 
       default:
@@ -130,12 +130,12 @@ async function withFixtures(options, testSuite) {
 
     if (smartContract) {
       switch (localNode) {
-        case 'ganache':
-          seeder = new GanacheSeeder(ganacheServer.getProvider());
-          break;
-
         case 'anvil':
           seeder = new AnvilSeeder(anvilServer.getProvider());
+          break;
+
+        case 'ganache':
+          seeder = new GanacheSeeder(ganacheServer.getProvider());
           break;
 
         default:
@@ -169,7 +169,7 @@ async function withFixtures(options, testSuite) {
       });
     }
 
-    if (!disableGanache && useBundler) {
+    if (ganacheServer && useBundler) {
       await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
