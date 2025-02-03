@@ -795,6 +795,7 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: [
           'AccountsController:accountAdded',
           'AccountsController:accountRemoved',
+          'AccountsController:accountAssetListUpdated',
         ],
         allowedActions: [
           'SnapController:handleRequest',
@@ -2397,16 +2398,6 @@ export default class MetamaskController extends EventEmitter {
       'TransactionController:transactionStatusUpdated',
       ({ transactionMeta }) => {
         this._onFinishedTransaction(transactionMeta);
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'notify:accountAssetListUpdated',
-      async (assetsChanged) => {
-        console.log('🚀 ~ MetamaskController ~ assetsChanged:', assetsChanged);
-        await this.multichainAssetsController.updateAccountAssetsList(
-          assetsChanged,
-        );
       },
     );
 
