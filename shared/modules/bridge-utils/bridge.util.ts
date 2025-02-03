@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { Hex, add0x } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   BRIDGE_API_BASE_URL,
@@ -10,7 +10,7 @@ import {
 } from '../../constants/bridge';
 import { MINUTE } from '../../constants/time';
 import fetchWithCache from '../../lib/fetch-with-cache';
-import { decimalToHex, hexToDecimal } from '../conversion.utils';
+import { hexToDecimal } from '../conversion.utils';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SwapsTokenObject,
@@ -42,6 +42,7 @@ import {
   QUOTE_RESPONSE_VALIDATORS,
   FEE_DATA_VALIDATORS,
 } from './validators';
+import { formatChainIdFromApi } from './multichain';
 
 const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
 const CACHE_REFRESH_TEN_MINUTES = 10 * MINUTE;
@@ -70,7 +71,7 @@ export async function fetchBridgeFeatureFlags(): Promise<BridgeFeatureFlags> {
         ).reduce(
           (acc, [chainId, value]) => ({
             ...acc,
-            [add0x(decimalToHex(chainId))]: value,
+            [formatChainIdFromApi(chainId)]: value,
           }),
           {},
         ),
