@@ -387,8 +387,10 @@ export const fetchWithSentryInstrumentation = async (
       ? inputUrl
       : inputUrl.toString() || String(inputUrl);
   const { method = 'GET' } = opts ?? {};
+
   const response = await globalThis.fetch(url, {
     method,
+    ...opts,
   });
   // Do not create spans for outgoing requests to a 'sentry.io' domain.
   if (!url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u)) {
