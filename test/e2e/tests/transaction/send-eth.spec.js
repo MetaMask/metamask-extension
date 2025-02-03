@@ -8,7 +8,6 @@ const {
   unlockWallet,
   editGasFeeForm,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -18,11 +17,11 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
+          localNode: 'anvil',
         },
-        async ({ driver, ganacheServer }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, anvilServer }) => {
+          await logInWithBalanceValidation(driver, anvilServer);
 
           await openActionMenuAndStartSendFlow(driver);
 
@@ -99,9 +98,8 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
-          defaultGanacheOptions,
           title: this.test.fullTitle(),
+          localNode: 'anvil',
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -155,21 +153,27 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: {
-            ...defaultGanacheOptions,
+          anvilOptions: {
             hardfork: 'london',
           },
           smartContract,
           title: this.test.fullTitle(),
+          localNode: 'anvil',
         },
-        async ({ driver, ganacheServer }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, contractRegistry, anvilServer }) => {
+          const contractAddress = await contractRegistry.getContractAddress(
+            smartContract,
+          );
+          await logInWithBalanceValidation(driver, anvilServer);
 
           // Wait for balance to load
           await driver.delay(500);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
-          await driver.clickElement({ text: 'Account 1', tag: 'button' });
+          await driver.fill(
+            'input[placeholder="Enter public address (0x) or domain name"]',
+            contractAddress,
+          );
 
           const inputAmount = await driver.findElement(
             'input[placeholder="0"]',
@@ -207,8 +211,8 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
+          localNode: 'anvil',
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -244,9 +248,8 @@ describe('Send ETH', function () {
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .build(),
-            ganacheOptions: defaultGanacheOptions,
-            defaultGanacheOptions,
             title: this.test.fullTitle(),
+            localNode: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -319,11 +322,11 @@ describe('Send ETH', function () {
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .build(),
-            ganacheOptions: {
-              ...defaultGanacheOptions,
+            anvilOptions: {
               hardfork: 'london',
             },
             title: this.test.fullTitle(),
+            localNode: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -428,8 +431,8 @@ describe('Send ETH', function () {
               })
               .withPreferencesControllerPetnamesDisabled()
               .build(),
-            ganacheOptions: defaultGanacheOptions,
             title: this.test.fullTitle(),
+            localNode: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);
