@@ -3282,7 +3282,8 @@ export default class MetamaskController extends EventEmitter {
     const publicConfigStore = new ObservableStore();
 
     const selectPublicState = async ({ isUnlocked }) => {
-      const { chainId, networkVersion, isConnected } = await this.getProviderNetworkState();
+      const { chainId, networkVersion, isConnected } =
+        await this.getProviderNetworkState();
 
       return {
         isUnlocked,
@@ -3362,12 +3363,13 @@ export default class MetamaskController extends EventEmitter {
       this.deprecatedNetworkVersions[networkClientId] = networkVersion;
     }
 
-    const metadata = this.networkController.state.networksMetadata[networkClientId]
+    const metadata =
+      this.networkController.state.networksMetadata[networkClientId];
 
     return {
       chainId,
       networkVersion: networkVersion ?? 'loading',
-      isConnected: metadata?.status === NetworkStatus.Available
+      isConnected: metadata?.status === NetworkStatus.Available,
     };
   }
 
