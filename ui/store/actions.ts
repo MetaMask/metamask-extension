@@ -67,7 +67,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
-  getInternalAccounts,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
