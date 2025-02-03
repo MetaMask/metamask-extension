@@ -36,7 +36,7 @@ describe('Add account', function () {
           accountType: ACCOUNT_TYPE.Ethereum,
         });
         await headerNavbar.check_accountLabel(newAccountName);
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // Switch back to the first account and transfer some balance to 2nd account so they will not be removed after recovering SRP
         await headerNavbar.openAccountMenu();
@@ -101,7 +101,7 @@ describe('Add account', function () {
           accountType: ACCOUNT_TYPE.Ethereum,
         });
         await headerNavbar.check_accountLabel('Account 2');
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // Check user cannot delete 2nd account generated from the SRP imported in onboarding
         await headerNavbar.openAccountMenu();
@@ -112,13 +112,13 @@ describe('Add account', function () {
         // Create 3rd account with private key
         await accountListPage.addNewImportedAccount(testPrivateKey);
         await headerNavbar.check_accountLabel('Account 3');
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
 
         // Remove the 3rd account imported with a private key
         await headerNavbar.openAccountMenu();
         await accountListPage.removeAccount('Account 3');
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_accountIsNotDisplayedInAccountList(
           'Account 3',

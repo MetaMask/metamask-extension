@@ -43,8 +43,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -63,8 +72,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -95,7 +113,12 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x100000000000000000000',
           );
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           await createDepositTransaction(driver);
           await confirmDepositTransaction(driver);
@@ -167,8 +190,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           await createDepositTransaction(driver);
 
@@ -188,8 +220,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           await createDepositTransaction(driver);
 
@@ -217,8 +258,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           await createDepositTransaction(driver);
 
@@ -242,8 +292,17 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           await toggleOnHexData(driver);
 

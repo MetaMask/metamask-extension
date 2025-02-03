@@ -6,6 +6,7 @@ import {
 } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { Ganache } from '../../../seeder/ganache';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
@@ -21,9 +22,14 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForLegacyTx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          ganacheServer,
+          contractRegistry,
+        }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
+            ganacheServer,
             '3',
             contractRegistry,
           );
@@ -34,9 +40,14 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 2 transaction (EIP1559) with a small spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForEIP1559Tx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          ganacheServer,
+          contractRegistry,
+        }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
+            ganacheServer,
             '3',
             contractRegistry,
           );
@@ -47,9 +58,14 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 0 transaction (Legacy) with a large spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForLegacyTx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          ganacheServer,
+          contractRegistry,
+        }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
+            ganacheServer,
             '3000',
             contractRegistry,
           );
@@ -60,9 +76,14 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 2 transaction (EIP1559) with a large spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForEIP1559Tx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
+        async ({
+          driver,
+          ganacheServer,
+          contractRegistry,
+        }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
+            ganacheServer,
             '3000',
             contractRegistry,
           );
@@ -99,10 +120,16 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
 
 async function createAndAssertIncreaseAllowanceSubmission(
   driver: Driver,
+  ganacheServer: Ganache,
   newSpendingCap: string,
   contractRegistry?: ContractAddressRegistry,
 ) {
-  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.HST);
+  await openDAppWithContract(
+    driver,
+    ganacheServer,
+    contractRegistry,
+    SMART_CONTRACTS.HST,
+  );
 
   await createERC20IncreaseAllowanceTransaction(driver);
 

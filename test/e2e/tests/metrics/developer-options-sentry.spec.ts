@@ -81,7 +81,13 @@ describe('Developer Options - Sentry', function (this: Suite) {
           'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
         ],
       },
-      async ({ driver, ganacheServer }: { driver: Driver }) => {
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer: Ganache;
+      }) => {
         await loginWithBalanceValidation(driver, ganacheServer);
         await triggerCrash(driver);
 

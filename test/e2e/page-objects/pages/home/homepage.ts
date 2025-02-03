@@ -180,11 +180,11 @@ class HomePage {
   /**
    * Checks if the expected balance is displayed on homepage.
    *
-   * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
+   * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    */
   async check_expectedBalanceIsDisplayed(
-    expectedBalance: string = '0',
+    expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
     try {

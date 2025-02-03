@@ -33,8 +33,17 @@ describe('Alert for insufficient funds', function () {
         smartContract: nftSmartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await openDAppWithContract(driver, contractRegistry, nftSmartContract);
+      async ({
+        driver,
+        contractRegistry,
+        ganacheServer,
+      }: TestSuiteArguments) => {
+        await openDAppWithContract(
+          driver,
+          ganacheServer,
+          contractRegistry,
+          nftSmartContract,
+        );
 
         await mintNft(driver);
 

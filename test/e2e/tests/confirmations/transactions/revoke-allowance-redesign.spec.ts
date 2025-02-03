@@ -33,8 +33,17 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           await createERC20ApproveTransaction(driver);
 
@@ -65,8 +74,17 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           await createERC20ApproveTransaction(driver);
 

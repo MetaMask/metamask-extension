@@ -155,8 +155,17 @@ describe('Queued Confirmations', function () {
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          ganacheServer,
+        }: TestSuiteArguments) => {
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           const contractAddress = await (
             contractRegistry as ContractAddressRegistry
@@ -299,9 +308,15 @@ describe('Queued Confirmations', function () {
         async ({
           driver,
           contractRegistry,
+          ganacheServer,
           mockedEndpoint: mockedEndpoints,
         }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+          await openDAppWithContract(
+            driver,
+            ganacheServer,
+            contractRegistry,
+            smartContract,
+          );
 
           const contractAddress = await (
             contractRegistry as ContractAddressRegistry
