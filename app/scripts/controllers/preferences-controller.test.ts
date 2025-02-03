@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
@@ -44,7 +44,7 @@ const setupController = ({
 }: {
   state?: Partial<PreferencesControllerState>;
 }) => {
-  const controllerMessenger = new ControllerMessenger<
+  const messenger = new Messenger<
     AllowedActions,
     | AllowedEvents
     | KeyringControllerStateChangeEvent
@@ -54,7 +54,7 @@ const setupController = ({
     | SnapKeyringAccountTransactionsUpdatedEvent
   >();
   const preferencesControllerMessenger: PreferencesControllerMessenger =
-    controllerMessenger.getRestricted({
+    messenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
@@ -66,7 +66,7 @@ const setupController = ({
       allowedEvents: ['AccountsController:stateChange'],
     });
 
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getState',
     jest.fn().mockReturnValue({
       networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
@@ -77,7 +77,7 @@ const setupController = ({
     state,
   });
 
-  const accountsControllerMessenger = controllerMessenger.getRestricted({
+  const accountsControllerMessenger = messenger.getRestricted({
     name: 'AccountsController',
     allowedEvents: [
       'KeyringController:stateChange',
@@ -101,7 +101,7 @@ const setupController = ({
 
   return {
     controller,
-    messenger: controllerMessenger,
+    messenger,
     accountsController,
   };
 };
