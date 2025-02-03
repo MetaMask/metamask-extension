@@ -2523,12 +2523,6 @@ export default class MetamaskController extends EventEmitter {
       SnapsRegistry: this.snapsRegistry,
       SnapInterfaceController: this.snapInterfaceController,
       SnapInsightsController: this.snapInsightsController,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      CustodyController: this.custodyController.store,
-      InstitutionalFeaturesController:
-        this.institutionalFeaturesController.store,
-      MmiConfigurationController: this.mmiConfigurationController.store,
-      ///: END:ONLY_INCLUDE_IF
       NameController: this.nameController,
       UserOperationController: this.userOperationController,
       // Notification Controllers
@@ -2581,12 +2575,6 @@ export default class MetamaskController extends EventEmitter {
         SnapsRegistry: this.snapsRegistry,
         SnapInterfaceController: this.snapInterfaceController,
         SnapInsightsController: this.snapInsightsController,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        CustodyController: this.custodyController.store,
-        InstitutionalFeaturesController:
-          this.institutionalFeaturesController.store,
-        MmiConfigurationController: this.mmiConfigurationController.store,
-        ///: END:ONLY_INCLUDE_IF
         NameController: this.nameController,
         UserOperationController: this.userOperationController,
         // Notification Controllers
@@ -3293,7 +3281,7 @@ export default class MetamaskController extends EventEmitter {
 
     const updatePublicConfigStore = async (memState) => {
       const networkStatus =
-        memState.networksMetadata[memState.selectedNetworkClientId]?.status;
+        memState.networksMetadata?.[memState.selectedNetworkClientId]?.status;
       if (networkStatus === NetworkStatus.Available) {
         publicConfigStore.putState(await selectPublicState(memState));
       }
@@ -3376,11 +3364,11 @@ export default class MetamaskController extends EventEmitter {
   getState() {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
-    const flatState = this.memStore.getFlatState();
+    const memStoreState = this.memStore.getState();
 
     return {
       isInitialized,
-      ...sanitizeUIState(flatState),
+      ...sanitizeUIState(memStoreState),
     };
   }
 

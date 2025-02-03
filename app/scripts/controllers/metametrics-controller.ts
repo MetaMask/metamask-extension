@@ -10,8 +10,14 @@ import {
 } from 'lodash';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
-import { NameControllerState, NameType } from '@metamask/name-controller';
 import { AccountsControllerState } from '@metamask/accounts-controller';
+import { AddressBookControllerState } from '@metamask/address-book-controller';
+import {
+  Nft,
+  NftControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
+import { NameControllerState, NameType } from '@metamask/name-controller';
 import {
   getErrorMessage,
   Hex,
@@ -26,11 +32,6 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import { Browser } from 'webextension-polyfill';
-import {
-  Nft,
-  NftControllerState,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
 import { captureException as sentryCaptureException } from '@sentry/browser';
 import {
   BaseController,
@@ -38,7 +39,6 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { AddressBookControllerState } from '@metamask/address-book-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -72,9 +72,10 @@ import Analytics from '../lib/segment/analytics';
 import { ENVIRONMENT } from '../../../development/build/constants';
 ///: END:ONLY_INCLUDE_IF
 
+import { BackgroundStateProxy } from '../../../shared/types/background';
 import type {
-  PreferencesControllerState,
   PreferencesControllerGetStateAction,
+  PreferencesControllerState,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 
@@ -168,13 +169,6 @@ export type MetaMaskState = {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
     tokenNetworkFilter: string[];
   };
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyAccountDetails: {
-    [address: string]: {
-      custodianName: string;
-    };
-  };
-  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -358,10 +352,6 @@ export default class MetaMetricsController extends BaseController<
 
   #environment: MetaMetricsControllerOptions['environment'];
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  #selectedAddress: PreferencesControllerState['selectedAddress'];
-  ///: END:ONLY_INCLUDE_IF
-
   #segment: MetaMetricsControllerOptions['segment'];
 
   /**
@@ -411,10 +401,6 @@ export default class MetaMetricsController extends BaseController<
       environment === 'production' ? version : `${version}-${environment}`;
     this.#extension = extension;
     this.#environment = environment;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this.#selectedAddress = preferencesControllerState.selectedAddress;
-    ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(state.fragments, 'persist');
 
@@ -584,6 +570,7 @@ export default class MetaMetricsController extends BaseController<
       : {};
 
     this.update((state) => {
+      // @ts-expect-error TODO: Fix `Type instantiation is excessively deep and possibly infinite.ts(2589)`
       state.fragments[id] = merge({}, additionalFragmentProps, fragment);
     });
 
@@ -1004,7 +991,7 @@ export default class MetaMetricsController extends BaseController<
     }
   }
 
-  handleMetaMaskStateUpdate(newState: MetaMaskState): void {
+  handleMetaMaskStateUpdate(newState: BackgroundStateProxy): void {
     const userTraits = this._buildUserTraitsObject(newState);
     if (userTraits) {
       this.identify(userTraits);
@@ -1067,23 +1054,10 @@ export default class MetaMetricsController extends BaseController<
     referrer: MetaMetricsContext['referrer'],
     page: MetaMetricsContext['page'] = METAMETRICS_BACKGROUND_PAGE_OBJECT,
   ): MetaMetricsContext {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps: {
-      extensionId?: string;
-    } = {};
-
-    if (this.#extension?.runtime?.id) {
-      mmiProps.extensionId = this.#extension.runtime.id;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        ...mmiProps,
-        ///: END:ONLY_INCLUDE_IF
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -1115,21 +1089,6 @@ export default class MetaMetricsController extends BaseController<
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiProps: {
-      extensionId?: string;
-      accountAddress?: string;
-    } = {};
-
-    if (this.#extension?.runtime?.id) {
-      mmiProps.extensionId = this.#extension.runtime.id;
-    }
-
-    if (this.#selectedAddress) {
-      mmiProps.accountAddress = this.#selectedAddress;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     return {
       event,
       messageId: buildUniqueMessageId(rawPayload),
@@ -1153,9 +1112,6 @@ export default class MetaMetricsController extends BaseController<
             ? properties.chain_id
             : this.chainId,
         environment_type: environmentType,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        ...mmiProps,
-        ///: END:ONLY_INCLUDE_IF
       },
       context: this.#buildContext(referrer, page),
     };
@@ -1169,73 +1125,73 @@ export default class MetaMetricsController extends BaseController<
    * @returns traits that have changed since last update
    */
   _buildUserTraitsObject(
-    metamaskState: MetaMaskState,
+    metamaskState: BackgroundStateProxy,
   ): Partial<MetaMetricsUserTraits> | null {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const mmiAccountAddress =
-      metamaskState.custodyAccountDetails &&
-      Object.keys(metamaskState.custodyAccountDetails).length
-        ? Object.keys(metamaskState.custodyAccountDetails)[0]
-        : null;
-    ///: END:ONLY_INCLUDE_IF
     const { traits, previousUserTraits } = this.state;
 
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
-        Object.values(metamaskState.addressBook).map(size),
+        Object.values(metamaskState.AddressBookController.addressBook).map(
+          size,
+        ),
       ),
       [MetaMetricsUserTrait.InstallDateExt]:
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
       [MetaMetricsUserTrait.LedgerConnectionType]:
-        metamaskState.ledgerTransportType,
+        metamaskState.PreferencesController.ledgerTransportType,
       [MetaMetricsUserTrait.NetworksAdded]: Object.values(
-        metamaskState.networkConfigurationsByChainId,
+        metamaskState.NetworkController.networkConfigurationsByChainId,
       ).map((networkConfiguration) => networkConfiguration.chainId),
       [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
-        metamaskState.networkConfigurationsByChainId,
+        metamaskState.NetworkController.networkConfigurationsByChainId,
       )
         .filter(({ nativeCurrency }) => !nativeCurrency)
         .map(({ chainId }) => chainId),
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
-        metamaskState.useNftDetection,
+        metamaskState.PreferencesController.useNftDetection,
       [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
-        metamaskState.internalAccounts.accounts,
+        metamaskState.AccountsController.internalAccounts.accounts,
       ).length,
       [MetaMetricsUserTrait.NumberOfNftCollections]:
-        this.#getAllUniqueNFTAddressesLength(metamaskState.allNfts),
+        this.#getAllUniqueNFTAddressesLength(
+          metamaskState.NftController.allNfts,
+        ),
       [MetaMetricsUserTrait.NumberOfNfts]: this.#getAllNFTsFlattened(
-        metamaskState.allNfts,
+        metamaskState.NftController.allNfts,
       ).length,
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
-        metamaskState.allTokens,
+        metamaskState.TokensController.allTokens,
       ),
-      [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
+      [MetaMetricsUserTrait.OpenSeaApiEnabled]:
+        metamaskState.PreferencesController.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
-      [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
+      [MetaMetricsUserTrait.Theme]:
+        metamaskState.PreferencesController.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
-        metamaskState.useTokenDetection,
+        metamaskState.PreferencesController.useTokenDetection,
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.ShowNativeTokenAsMainBalance,
-      [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      [MetaMetricsUserTrait.MmiExtensionId]: this.#extension?.runtime?.id,
-      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress ?? null,
-      [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
-      ///: END:ONLY_INCLUDE_IF
-      [MetaMetricsUserTrait.SecurityProviders]:
-        metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
+        metamaskState.PreferencesController.preferences
+          ?.showNativeTokenAsMainBalance,
+      [MetaMetricsUserTrait.CurrentCurrency]:
+        metamaskState.CurrencyController.currentCurrency,
+      [MetaMetricsUserTrait.SecurityProviders]: metamaskState
+        .PreferencesController.securityAlertsEnabled
+        ? ['blockaid']
+        : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this.#getPetnameAddressCount(metamaskState),
       [MetaMetricsUserTrait.IsMetricsOptedIn]:
-        metamaskState.participateInMetaMetrics,
+        metamaskState.MetaMetricsController.participateInMetaMetrics,
       [MetaMetricsUserTrait.HasMarketingConsent]:
-        metamaskState.dataCollectionForMarketing,
+        metamaskState.MetaMetricsController.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.tokenSortConfig?.key || '',
+        metamaskState.PreferencesController.preferences?.tokenSortConfig?.key ||
+        '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
-        metamaskState.preferences.privacyMode,
+        metamaskState.PreferencesController.preferences?.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
-        metamaskState.preferences.tokenNetworkFilter || {},
+        metamaskState.PreferencesController.preferences?.tokenNetworkFilter ||
+          {},
       ),
     };
 
@@ -1299,11 +1255,13 @@ export default class MetaMetricsController extends BaseController<
    *
    * @param allNfts
    */
-  #getAllNFTsFlattened = memoize((allNfts: MetaMaskState['allNfts'] = {}) => {
-    return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
-      return result.concat(...Object.values(chainNFTs));
-    }, []);
-  });
+  #getAllNFTsFlattened = memoize(
+    (allNfts: BackgroundStateProxy['NftController']['allNfts'] = {}) => {
+      return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
+        return result.concat(...Object.values(chainNFTs));
+      }, []);
+    },
+  );
 
   /**
    * Returns the number of unique NFT addresses the user
@@ -1312,7 +1270,7 @@ export default class MetaMetricsController extends BaseController<
    * @param allNfts
    */
   #getAllUniqueNFTAddressesLength(
-    allNfts: MetaMaskState['allNfts'] = {},
+    allNfts: BackgroundStateProxy['NftController']['allNfts'] = {},
   ): number {
     const allNFTAddresses = this.#getAllNFTsFlattened(allNfts).map(
       (nft) => nft.address,
@@ -1325,7 +1283,9 @@ export default class MetaMetricsController extends BaseController<
    * @param allTokens
    * @returns number of unique token addresses
    */
-  #getNumberOfTokens(allTokens: MetaMaskState['allTokens']): number {
+  #getNumberOfTokens(
+    allTokens: BackgroundStateProxy['TokensController']['allTokens'],
+  ): number {
     return Object.values(allTokens).reduce((result, accountsByChain) => {
       return result + sum(Object.values(accountsByChain).map(size));
     }, 0);
@@ -1549,8 +1509,9 @@ export default class MetaMetricsController extends BaseController<
    *
    * @param metamaskState
    */
-  #getPetnameAddressCount(metamaskState: MetaMaskState): number {
-    const addressNames = metamaskState.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
+  #getPetnameAddressCount(metamaskState: BackgroundStateProxy): number {
+    const addressNames =
+      metamaskState.NameController.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
 
     return Object.keys(addressNames).reduce((totalCount, address) => {
       const addressEntry = addressNames[address];
