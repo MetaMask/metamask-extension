@@ -4,6 +4,7 @@ exports[`Security Tab should match snapshot 1`] = `
 <div>
   <div
     class="settings-page__body"
+    data-testid="settings-page-body-section"
   >
     <div
       class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
