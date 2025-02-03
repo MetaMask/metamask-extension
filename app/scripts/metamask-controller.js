@@ -2199,7 +2199,7 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     const controllerInitFunctions = {
-      JsonSnapsRegistry: SnapsRegistryInit,
+      SnapsRegistry: SnapsRegistryInit,
       SnapController: SnapControllerInit,
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
@@ -2229,7 +2229,7 @@ export default class MetamaskController extends EventEmitter {
     this.snapController = controllersByName.SnapController;
     this.snapInsightsController = controllersByName.SnapInsightsController;
     this.snapInterfaceController = controllersByName.SnapInterfaceController;
-    this.snapsRegistry = controllersByName.JsonSnapsRegistry;
+    this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
     this.txController = controllersByName.TransactionController;
 
