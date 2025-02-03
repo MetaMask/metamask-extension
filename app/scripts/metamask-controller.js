@@ -6889,9 +6889,13 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'MultichainRouter:isSupportedScope',
         ),
-        handleNonEvmRequest: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
+        handleNonEvmRequestForOrigin: (params) =>
+          this.controllerMessenger.call(
           'MultichainRouter:handleRequest',
+          {
+            ...params,
+            origin,
+          }
         ),
       }),
     );
