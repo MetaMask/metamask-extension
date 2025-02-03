@@ -21,13 +21,6 @@ import {
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
-import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
-import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
-import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
-import CustodyPage from '../institutional/custody';
-///: END:ONLY_INCLUDE_IF
 
 import {
   ASSET_ROUTE,
@@ -49,13 +42,6 @@ import {
   CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  INSTITUTIONAL_FEATURES_DONE_ROUTE,
-  CUSTODY_ACCOUNT_DONE_ROUTE,
-  CONFIRM_ADD_CUSTODIAN_TOKEN,
-  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
-  CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
   NOTIFICATIONS_ROUTE,
@@ -339,41 +325,6 @@ export default class Routes extends Component {
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
             component={ConfirmationPage}
           />
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          }
-          <Authenticated
-            path={CUSTODY_ACCOUNT_DONE_ROUTE}
-            component={InstitutionalEntityDonePage}
-            exact
-          />
-          <Authenticated
-            path={INSTITUTIONAL_FEATURES_DONE_ROUTE}
-            component={InstitutionalEntityDonePage}
-            exact
-          />
-          <Authenticated
-            path={CONFIRM_ADD_CUSTODIAN_TOKEN}
-            component={ConfirmAddCustodianToken}
-            exact
-          />
-          <Authenticated
-            path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
-            component={InteractiveReplacementTokenPage}
-            exact
-          />
-          <Authenticated
-            path={CONFIRM_ADD_CUSTODIAN_TOKEN}
-            component={ConfirmAddCustodianToken}
-          />
-          <Authenticated
-            path={CUSTODY_ACCOUNT_ROUTE}
-            component={CustodyPage}
-            exact
-          />
-          {
-            ///: END:ONLY_INCLUDE_IF
-          }
           <Authenticated
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
@@ -530,11 +481,6 @@ export default class Routes extends Component {
         {!hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
         {showOnboardingHeader(location) && <OnboardingAppHeader />}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          isUnlocked ? <InteractiveReplacementTokenNotification /> : null
-          ///: END:ONLY_INCLUDE_IF
-        }
         {isAccountMenuOpen ? (
           <AccountListMenu
             onClose={() => toggleAccountMenu()}
