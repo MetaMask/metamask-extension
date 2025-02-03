@@ -17,7 +17,7 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   MultichainNetworks.SOLANA,
   ///: END:ONLY_INCLUDE_IF
-];
+] as const;
 
 export type AllowedBridgeChainIds = (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number];
 

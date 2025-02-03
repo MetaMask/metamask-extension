@@ -1,6 +1,7 @@
 import type { Hex } from '@metamask/utils';
 import type { BigNumber } from 'bignumber.js';
 import type { AssetType } from '../constants/transaction';
+import { AllowedBridgeChainIds } from '../constants/bridge';
 
 export type ChainConfiguration = {
   isActiveSrc: boolean;
@@ -142,6 +143,7 @@ export enum ChainId {
   ARBITRUM = 42161,
   AVALANCHE = 43114,
   LINEA = 59144,
+  SOLANA = 1151111081099710,
 }
 
 export enum FeeType {
@@ -169,7 +171,7 @@ export type BridgeFeatureFlags = {
     refreshRate: number;
     maxRefreshCount: number;
     support: boolean;
-    chains: Record<Hex, ChainConfiguration>;
+    chains: Record<AllowedBridgeChainIds, ChainConfiguration>;
   };
 };
 export enum RequestStatus {
