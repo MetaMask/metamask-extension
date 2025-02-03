@@ -3,17 +3,46 @@ import { Driver } from '../../../webdriver/driver';
 class ConfirmTxPage {
   private driver: Driver;
 
-  private confirmButton: string;
+  private confirmButton = '[data-testid="page-container-footer-next"]';
 
-  private totalFee: string;
+  private transactionFee = '[data-testid="confirm-gas-display"]';
 
-  private transactionFee: string;
+  private totalFee = '[data-testid="confirm-page-total-amount"]';
+
+  private gasInputs = 'input[type="number"]';
+
+  private editButton = { text: 'Edit', tag: 'button' };
+
+  private saveButton = { text: 'Save', tag: 'button' };
+
+  private hexTabButton = {
+    css: 'button',
+    text: 'Hex',
+  };
+
+  private detailsTabButton = {
+    css: 'button',
+    text: 'Details',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.confirmButton = '[data-testid="page-container-footer-next"]';
-    this.transactionFee = '[data-testid="confirm-gas-display"]';
-    this.totalFee = '[data-testid="confirm-page-total-amount"]';
+  }
+
+  async check_functionTypeAndHexData(
+    expectedFunctionsType: string,
+    expectedHexData: string,
+  ): Promise<void> {
+    console.log('Switch to hex tab and check functions type and hex data');
+    await this.driver.clickElement(this.hexTabButton);
+    await this.driver.waitForSelector({
+      tag: 'span',
+      text: expectedFunctionsType,
+    });
+    await this.driver.waitForSelector({
+      css: 'p',
+      text: expectedHexData,
+    });
   }
 
   /**
@@ -49,9 +78,41 @@ class ConfirmTxPage {
     console.log('Confirm transaction page is loaded with expected gas value');
   }
 
-  async confirmTx(): Promise<void> {
+  // Action methods
+
+  async clickConfirmButton(): Promise<void> {
     console.log('Click confirm button to confirm transaction');
     await this.driver.clickElement(this.confirmButton);
+  }
+
+  /**
+   * Edits the gas fee by setting custom gas limit and price values
+   *
+   * @param gasLimit - The gas limit value to set
+   * @param gasPrice - The gas price value to set
+   */
+  async editGasFee(gasLimit: string, gasPrice: string): Promise<void> {
+    console.log('Editing gas fee values');
+
+    await this.driver.clickElement(this.editButton);
+
+    const inputs = await this.driver.findElements(this.gasInputs);
+    const [gasLimitInput, gasPriceInput] = inputs;
+
+    await gasLimitInput.clear();
+    await gasLimitInput.sendKeys(gasLimit);
+    await gasPriceInput.clear();
+    await gasPriceInput.sendKeys(gasPrice);
+
+    await this.driver.clickElement(this.saveButton);
+
+    console.log('Gas fee values updated successfully');
+  }
+
+  async switchToDetailsTab(): Promise<void> {
+    console.log('Switch to details tab');
+    await this.driver.clickElement(this.detailsTabButton);
+    await this.driver.waitForSelector(this.transactionFee);
   }
 }
 

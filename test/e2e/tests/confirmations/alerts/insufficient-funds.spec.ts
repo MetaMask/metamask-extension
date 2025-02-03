@@ -12,7 +12,7 @@ import {
 } from '../transactions/shared';
 import { Driver } from '../../../webdriver/driver';
 
-describe('Alert for insufficient funds @no-mmi', function () {
+describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
     const nftSmartContract = SMART_CONTRACTS.NFTS;
     const ganacheOptions = {
@@ -28,12 +28,6 @@ describe('Alert for insufficient funds @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
         ganacheOptions,
         smartContract: nftSmartContract,

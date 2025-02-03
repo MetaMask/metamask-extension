@@ -11,11 +11,7 @@ import type { ChainId } from '@metamask/controller-utils';
 import {
   fetchBridgeFeatureFlags,
   fetchBridgeQuotes,
-  fetchBridgeTokens,
 } from '../../../../shared/modules/bridge-utils/bridge.util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { fetchTopAssetsList } from '../../../../ui/pages/swaps/swaps.util';
 import {
   decimalToHex,
   sumHexes,
@@ -35,12 +31,12 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { REFRESH_INTERVAL_MS } from '../../../../shared/constants/bridge';
 import {
   BRIDGE_CONTROLLER_NAME,
-  DEFAULT_BRIDGE_CONTROLLER_STATE,
+  DEFAULT_BRIDGE_STATE,
   METABRIDGE_CHAIN_TO_ADDRESS_MAP,
 } from './constants';
 import type { BridgeControllerMessenger } from './types';
 
-const metadata: StateMetadata<{ bridgeState: BridgeControllerState }> = {
+const metadata: StateMetadata<BridgeControllerState> = {
   bridgeState: {
     persist: false,
     anonymous: false,
@@ -57,7 +53,7 @@ type BridgePollingInput = {
 
 export default class BridgeController extends StaticIntervalPollingController<BridgePollingInput>()<
   typeof BRIDGE_CONTROLLER_NAME,
-  { bridgeState: BridgeControllerState },
+  BridgeControllerState,
   BridgeControllerMessenger
 > {
   #abortController: AbortController | undefined;
@@ -84,7 +80,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       metadata,
       messenger,
       state: {
-        bridgeState: DEFAULT_BRIDGE_CONTROLLER_STATE,
+        bridgeState: { ...DEFAULT_BRIDGE_STATE },
       },
     });
 
@@ -95,10 +91,6 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:setBridgeFeatureFlags`,
       this.setBridgeFeatureFlags.bind(this),
-    );
-    this.messagingSystem.registerActionHandler(
-      `${BRIDGE_CONTROLLER_NAME}:selectDestNetwork`,
-      this.selectDestNetwork.bind(this),
     );
     this.messagingSystem.registerActionHandler(
       `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
@@ -128,7 +120,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     const { bridgeState } = this.state;
     const updatedQuoteRequest = {
-      ...DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest,
+      ...DEFAULT_BRIDGE_STATE.quoteRequest,
       ...paramsToUpdate,
     };
 
@@ -136,14 +128,12 @@ export default class BridgeController extends StaticIntervalPollingController<Br
       _state.bridgeState = {
         ...bridgeState,
         quoteRequest: updatedQuoteRequest,
-        quotes: DEFAULT_BRIDGE_CONTROLLER_STATE.quotes,
-        quotesLastFetched: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLastFetched,
-        quotesLoadingStatus:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesLoadingStatus,
-        quoteFetchError: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteFetchError,
-        quotesRefreshCount: DEFAULT_BRIDGE_CONTROLLER_STATE.quotesRefreshCount,
-        quotesInitialLoadTime:
-          DEFAULT_BRIDGE_CONTROLLER_STATE.quotesInitialLoadTime,
+        quotes: DEFAULT_BRIDGE_STATE.quotes,
+        quotesLastFetched: DEFAULT_BRIDGE_STATE.quotesLastFetched,
+        quotesLoadingStatus: DEFAULT_BRIDGE_STATE.quotesLoadingStatus,
+        quoteFetchError: DEFAULT_BRIDGE_STATE.quoteFetchError,
+        quotesRefreshCount: DEFAULT_BRIDGE_STATE.quotesRefreshCount,
+        quotesInitialLoadTime: DEFAULT_BRIDGE_STATE.quotesInitialLoadTime,
       };
     });
 
@@ -193,7 +183,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
 
     this.update((_state) => {
       _state.bridgeState = {
-        ...DEFAULT_BRIDGE_CONTROLLER_STATE,
+        ...DEFAULT_BRIDGE_STATE,
         quotes: [],
         bridgeFeatureFlags: _state.bridgeState.bridgeFeatureFlags,
       };
@@ -211,22 +201,6 @@ export default class BridgeController extends StaticIntervalPollingController<Br
     );
   };
 
-  selectDestNetwork = async (chainId: Hex) => {
-    this.update((state) => {
-      state.bridgeState.destTokensLoadingStatus = RequestStatus.LOADING;
-      return state;
-    });
-    try {
-      await this.#setTopAssets(chainId, 'destTopAssets');
-      await this.#setTokens(chainId, 'destTokens');
-    } finally {
-      this.update((state) => {
-        state.bridgeState.destTokensLoadingStatus = RequestStatus.FETCHED;
-        return state;
-      });
-    }
-  };
-
   #fetchBridgeQuotes = async ({
     networkClientId: _networkClientId,
     updatedQuoteRequest,
@@ -242,7 +216,7 @@ export default class BridgeController extends StaticIntervalPollingController<Br
         ...bridgeState,
         quotesLoadingStatus: RequestStatus.LOADING,
         quoteRequest: updatedQuoteRequest,
-        quoteFetchError: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteFetchError,
+        quoteFetchError: DEFAULT_BRIDGE_STATE.quoteFetchError,
       };
     });
 
@@ -344,25 +318,6 @@ export default class BridgeController extends StaticIntervalPollingController<Br
         return quoteResponse;
       }),
     );
-  };
-
-  #setTopAssets = async (
-    chainId: Hex,
-    stateKey: 'srcTopAssets' | 'destTopAssets',
-  ) => {
-    const { bridgeState } = this.state;
-    const topAssets = await fetchTopAssetsList(chainId);
-    this.update((_state) => {
-      _state.bridgeState = { ...bridgeState, [stateKey]: topAssets };
-    });
-  };
-
-  #setTokens = async (chainId: Hex, stateKey: 'srcTokens' | 'destTokens') => {
-    const { bridgeState } = this.state;
-    const tokens = await fetchBridgeTokens(chainId);
-    this.update((_state) => {
-      _state.bridgeState = { ...bridgeState, [stateKey]: tokens };
-    });
   };
 
   #getSelectedAccount() {

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
 import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
@@ -30,6 +36,7 @@ export const useMetamaskNotificationsContext = () => {
 
 export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isProfileSyncingEnabledRef = useRef(isProfileSyncingEnabled);
   const isNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -37,6 +44,18 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   const isUnlocked = useSelector(getIsUnlocked);
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
+
+  const wasProfileSyncingDisabled =
+    isProfileSyncingEnabledRef.current && !isProfileSyncingEnabled;
+
+  useEffect(() => {
+    if (wasProfileSyncingDisabled) {
+      // list notifications to update the counter
+      listNotifications();
+    }
+
+    isProfileSyncingEnabledRef.current = isProfileSyncingEnabled;
+  }, [isProfileSyncingEnabled]);
 
   const shouldFetchNotifications = useMemo(
     () => isProfileSyncingEnabled && isNotificationsEnabled,

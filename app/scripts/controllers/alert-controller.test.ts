@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 import { ControllerMessenger } from '@metamask/base-controller';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import {
   AlertController,
   AllowedActions,
@@ -163,7 +163,8 @@ describe('AlertController', () => {
           address: '0x1234567',
           options: {},
           methods: [],
-          type: 'eip155:eoa',
+          scopes: [EthScope.Eoa],
+          type: EthAccountType.Eoa,
           metadata: {
             name: '',
             keyring: {
