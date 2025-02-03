@@ -112,7 +112,6 @@ export type Preferences = {
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
   privacyMode: boolean;
-  isRedesignedConfirmationsDeveloperEnabled: boolean;
   showConfirmationAdvancedDetails: boolean;
   tokenSortConfig: {
     key: string;
@@ -134,7 +133,6 @@ export type PreferencesControllerState = Omit<
   | 'useMultiRpcMigration'
 > & {
   useBlockie: boolean;
-  useNonceField: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
   overrideContentSecurityPolicyHeader: boolean;
@@ -175,7 +173,6 @@ export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
     selectedAddress: '',
     useBlockie: false,
-    useNonceField: false,
     usePhishDetect: true,
     dismissSeedBackUpReminder: false,
     overrideContentSecurityPolicyHeader: true,
@@ -221,7 +218,6 @@ export const getDefaultPreferencesControllerState =
       hideZeroBalanceTokens: false,
       petnamesEnabled: true,
       featureNotificationsEnabled: false,
-      isRedesignedConfirmationsDeveloperEnabled: false,
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
       privacyMode: false,
@@ -293,10 +289,6 @@ const controllerMetadata = {
     anonymous: false,
   },
   useBlockie: {
-    persist: true,
-    anonymous: true,
-  },
-  useNonceField: {
     persist: true,
     anonymous: true,
   },
@@ -529,17 +521,6 @@ export class PreferencesController extends BaseController<
   setUseBlockie(val: boolean): void {
     this.update((state) => {
       state.useBlockie = val;
-    });
-  }
-
-  /**
-   * Setter for the `useNonceField` property
-   *
-   * @param val - Whether or not the user prefers to set nonce
-   */
-  setUseNonceField(val: boolean): void {
-    this.update((state) => {
-      state.useNonceField = val;
     });
   }
 

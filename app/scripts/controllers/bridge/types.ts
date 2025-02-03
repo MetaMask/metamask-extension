@@ -25,7 +25,6 @@ type BridgeControllerActions =
   | BridgeControllerAction<BridgeBackgroundAction.SET_FEATURE_FLAGS>
   | BridgeControllerAction<BridgeBackgroundAction.RESET_STATE>
   | BridgeControllerAction<BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE>
-  | BridgeControllerAction<BridgeUserAction.SELECT_DEST_NETWORK>
   | BridgeControllerAction<BridgeUserAction.UPDATE_QUOTE_PARAMS>;
 
 type BridgeControllerEvents = ControllerStateChangeEvent<
@@ -34,9 +33,9 @@ type BridgeControllerEvents = ControllerStateChangeEvent<
 >;
 
 type AllowedActions =
-  | AccountsControllerGetSelectedAccountAction['type']
-  | NetworkControllerGetSelectedNetworkClientAction['type']
-  | NetworkControllerFindNetworkClientIdByChainIdAction['type'];
+  | AccountsControllerGetSelectedAccountAction
+  | NetworkControllerGetSelectedNetworkClientAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction;
 type AllowedEvents = never;
 
 /**
@@ -44,11 +43,8 @@ type AllowedEvents = never;
  */
 export type BridgeControllerMessenger = RestrictedControllerMessenger<
   typeof BRIDGE_CONTROLLER_NAME,
-  | BridgeControllerActions
-  | AccountsControllerGetSelectedAccountAction
-  | NetworkControllerGetSelectedNetworkClientAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction,
-  BridgeControllerEvents,
-  AllowedActions,
-  AllowedEvents
+  BridgeControllerActions | AllowedActions,
+  BridgeControllerEvents | AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
 >;

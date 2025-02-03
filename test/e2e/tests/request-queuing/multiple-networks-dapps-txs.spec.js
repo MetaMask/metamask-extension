@@ -11,7 +11,7 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should switch to the dapps network automatically when handling sendTransaction calls @no-mmi', async function () {
+  it('should switch to the dapps network automatically when handling sendTransaction calls', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(

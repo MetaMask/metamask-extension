@@ -695,9 +695,6 @@
   "transactionErrored": {
     "message": "Napaka pri transakciji."
   },
-  "transactionFee": {
-    "message": "Transakcijska provizija"
-  },
   "transactionResubmitted": {
     "message": "Transakcija ponovno oddana s povečanim gas fee $1 na $2"
   },
