@@ -7,7 +7,9 @@ import {
 import { deferredPromise } from '../../util';
 import * as Util from '../../util';
 import { flushPromises } from '../../../../../test/lib/timer-helpers';
-import requestEthereumAccounts from './request-accounts';
+import requestEthereumAccounts, {
+  type RequestEthereumAccountsOptions,
+} from './request-accounts';
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -53,7 +55,8 @@ const createMockedHandler = () => {
       getAccounts,
       getUnlockPromise,
       sendMetrics,
-      metamaskState,
+      metamaskState:
+        metamaskState as unknown as RequestEthereumAccountsOptions['metamaskState'],
       requestCaip25ApprovalForOrigin,
       grantPermissionsForOrigin,
     });
