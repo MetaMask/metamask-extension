@@ -9,7 +9,8 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "postinstall": "yarn webpack:clearcache",
+    "foundryup": "tsx ./test/helpers/foundry/foundryup.ts",
+    "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
@@ -44,6 +45,7 @@
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "test:unit": "jest",
+    "anvil": "node_modules/.bin/anvil",
     "test:unit:watch": "jest --watch",
     "test:unit:coverage": "jest --coverage",
     "test:unit:webpack": "tsx --test development/webpack/test/*.test.ts",
@@ -533,6 +535,7 @@
     "@types/serve-handler": "^6.1.4",
     "@types/sinon": "^10.0.13",
     "@types/sprintf-js": "^1",
+    "@types/unzipper": "^0.10.10",
     "@types/w3c-web-hid": "^1.0.3",
     "@types/watchify": "^3.11.1",
     "@types/webextension-polyfill": "^0.10.4",
@@ -616,6 +619,7 @@
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",
     "mini-css-extract-plugin": "^2.9.1",
+    "minipass": "^7.1.2",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
     "mockttp": "^3.10.1",
@@ -658,13 +662,15 @@
     "style-loader": "^0.21.0",
     "stylelint": "^13.6.1",
     "superstruct": "^1.0.3",
+    "tar": "^7.4.3",
     "terser": "^5.7.0",
     "terser-webpack-plugin": "^5.3.10",
     "through2": "^4.0.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.7.1",
+    "tsx": "^4.19.2",
     "ttest": "^2.1.1",
     "typescript": "~5.4.5",
+    "unzipper": "^0.12.3",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
@@ -681,7 +687,7 @@
     "yargs-parser": "^21.1.1"
   },
   "engines": {
-    "node": ">= 20",
+    "node": ">=20.12.0 <20.15.0 || >=20.17.0",
     "yarn": "^4.4.1"
   },
   "lavamoat": {
@@ -764,5 +770,23 @@
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false
     }
   },
-  "packageManager": "yarn@4.5.1"
+  "packageManager": "yarn@4.5.1",
+  "foundryup": {
+    "binaries": [
+      "anvil"
+    ],
+    "checksums": {
+      "algorithm": "sha256",
+      "binaries": {
+        "anvil": {
+          "darwin-amd64": "8404e555223fe884557d5e22de494baf8b5f0b82c6f87a4c790c5150e546c9d0",
+          "darwin-arm64": "888500bc210752e71a355ed4d492ad6dcb4c0ef54d283c105a29a5ccc73d0dbd",
+          "linux-amd64": "6104069b183fa0f3cdcb692681da9dbd203a3c1bceb435853bbf7abd991c649e",
+          "linux-arm64": "d66ed8f848e829882ebb65d28aaac72aeab6a101655bb62147186040655928b5",
+          "win32-amd64": "6c71d9a7be39ed32b53c89bdbc83aa748f41587517212ffe2a8b955c3e9c2e9b"
+        }
+      }
+    },
+    "version": "v0.3.0"
+  }
 }

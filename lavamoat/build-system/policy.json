@@ -2401,9 +2401,9 @@
         "stylelint>postcss-html>htmlparser2>domelementtype": true
       }
     },
-    "browserify>duplexer2": {
+    "unzipper>duplexer2": {
       "packages": {
-        "browserify>duplexer2>readable-stream": true
+        "unzipper>duplexer2>readable-stream": true
       }
     },
     "debounce-stream>duplexer": {
@@ -4646,7 +4646,7 @@
         "browserify>concat-stream": true,
         "watchify>defined": true,
         "browserify>module-deps>detective": true,
-        "browserify>duplexer2": true,
+        "unzipper>duplexer2": true,
         "pumpify>inherits": true,
         "loose-envify": true,
         "browserify>parents": true,
@@ -6421,7 +6421,7 @@
         "readable-stream>util-deprecate": true
       }
     },
-    "browserify>duplexer2>readable-stream": {
+    "unzipper>duplexer2>readable-stream": {
       "builtin": {
         "events.EventEmitter": true,
         "stream": true,
@@ -6438,10 +6438,10 @@
       "packages": {
         "readable-stream-2>core-util-is": true,
         "pumpify>inherits": true,
-        "browserify>duplexer2>readable-stream>isarray": true,
+        "unzipper>duplexer2>readable-stream>isarray": true,
         "readable-stream-2>process-nextick-args": true,
-        "browserify>duplexer2>readable-stream>safe-buffer": true,
-        "browserify>duplexer2>readable-stream>string_decoder": true,
+        "unzipper>duplexer2>readable-stream>safe-buffer": true,
+        "unzipper>duplexer2>readable-stream>string_decoder": true,
         "readable-stream>util-deprecate": true
       }
     },
@@ -7373,7 +7373,7 @@
         "buffer": true
       }
     },
-    "browserify>duplexer2>readable-stream>safe-buffer": {
+    "unzipper>duplexer2>readable-stream>safe-buffer": {
       "builtin": {
         "buffer": true
       }
@@ -7851,7 +7851,7 @@
     },
     "browserify>module-deps>stream-combiner2": {
       "packages": {
-        "browserify>duplexer2": true,
+        "unzipper>duplexer2": true,
         "browserify>module-deps>stream-combiner2>readable-stream": true
       }
     },
@@ -7942,9 +7942,9 @@
         "browserify>concat-stream>readable-stream>safe-buffer": true
       }
     },
-    "browserify>duplexer2>readable-stream>string_decoder": {
+    "unzipper>duplexer2>readable-stream>string_decoder": {
       "packages": {
-        "browserify>duplexer2>readable-stream>safe-buffer": true
+        "unzipper>duplexer2>readable-stream>safe-buffer": true
       }
     },
     "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>string_decoder": {
