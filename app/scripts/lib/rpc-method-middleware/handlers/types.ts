@@ -76,15 +76,23 @@ export type UpsertNetworkConfigurationOptions = {
 };
 
 export type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
+
 export type EndApprovalFlow = ({ id }: EndFlowOptions) => void;
+
 export type FindNetworkClientIdByChainId = (chainId: Hex) => NetworkClientId;
+
 export type FindNetworkConfigurationBy = (
   rpcInfo: Record<string, string>,
 ) => NetworkConfiguration | null;
+
 export type HasPermission = (origin: OriginString) => boolean;
+
 export type GetAccounts = (options: { ignoreLock: boolean }) => Promise<Hex[]>;
+
 export type GetCurrentChainId = () => Hex;
+
 export type GetCurrentRpcUrl = () => string | undefined;
+
 export type GetNetworkConfigurations = () => NetworkConfiguration;
 
 export type RequestCaip25ApprovalForOrigin = (
@@ -104,13 +112,17 @@ export type GrantPermissionsForOrigin = (
 export type GetProviderState = (
   origin: OriginString,
 ) => Promise<ProviderStateHandlerResult>;
+
 export type GetUnlockPromise = (
   shouldShowUnlockRequest: boolean,
 ) => Promise<void>;
+
 export type GetWeb3ShimUsageState = (origin: OriginString) => undefined | 1 | 2;
+
 export type HandleWatchAssetRequest = (
   options: Record<string, string>,
 ) => Promise<void>;
+
 export type RequestAccountsPermission<
   ControllerPermissionSpecification extends PermissionSpecificationConstraint = PermissionSpecificationConstraint,
   ControllerCaveatSpecification extends CaveatSpecificationConstraint = CaveatSpecificationConstraint,
@@ -136,25 +148,33 @@ export type RequestAccountsPermission<
     },
   ]
 >;
+
 export type RequestUserApproval = (
   options?: AddApprovalOptions,
 ) => Promise<unknown>;
+
 export type SendMetrics = (
   payload: MetaMetricsEventPayload,
   options?: MetaMetricsPageOptions,
 ) => void;
+
 export type SetActiveNetwork = (
   networkConfigurationIdOrType: string,
 ) => Promise<void>;
+
 export type SetNetworkClientIdForDomain = (
   domain: string,
   networkClientId: NetworkClientId,
 ) => void;
+
 export type SetProviderType = (type: InfuraNetworkType) => Promise<void>;
+
 export type SetWeb3ShimUsageRecorded = (origin: OriginString) => void;
+
 export type StartApprovalFlow = (
   options?: StartFlowOptions,
 ) => ApprovalFlowStartResult;
+
 export type UpsertNetworkConfiguration = (
   networkConfiguration: NetworkConfiguration,
   options?: UpsertNetworkConfigurationOptions,
