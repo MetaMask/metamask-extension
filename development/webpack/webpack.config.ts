@@ -188,6 +188,7 @@ if (args.lavamoat) {
       inlineLockdown: /^runtime|contentscript\.js/u,
       unlockedChunksUnsafe: /inpage\.js/u,
       debugRuntime: true,
+      __unsafeAllowContextModules: true,
     }),
   );
 }
