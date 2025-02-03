@@ -975,7 +975,7 @@
         "node:path.relative": true
       },
       "packages": {
-        "depcheck>resolve": true
+        "lavamoat>@lavamoat/aa>resolve": true
       }
     },
     "@lavamoat/lavapack": {
@@ -2401,9 +2401,9 @@
         "stylelint>postcss-html>htmlparser2>domelementtype": true
       }
     },
-    "browserify>duplexer2": {
+    "unzipper>duplexer2": {
       "packages": {
-        "browserify>duplexer2>readable-stream": true
+        "unzipper>duplexer2>readable-stream": true
       }
     },
     "debounce-stream>duplexer": {
@@ -4106,7 +4106,7 @@
         "gulp>gulp-cli>replace-homedir>is-absolute>is-relative>is-unc-path>unc-path-regex": true
       }
     },
-    "mocha>log-symbols>is-unicode-supported": {
+    "madge>ora>is-unicode-supported": {
       "globals": {
         "process.env.CI": true,
         "process.env.TERM": true,
@@ -4348,7 +4348,7 @@
         "console.log": true
       },
       "packages": {
-        "@babel/core>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -4444,7 +4444,7 @@
     "mocha>log-symbols": {
       "packages": {
         "chalk": true,
-        "mocha>log-symbols>is-unicode-supported": true
+        "madge>ora>is-unicode-supported": true
       }
     },
     "loose-envify": {
@@ -4646,7 +4646,7 @@
         "browserify>concat-stream": true,
         "watchify>defined": true,
         "browserify>module-deps>detective": true,
-        "browserify>duplexer2": true,
+        "unzipper>duplexer2": true,
         "pumpify>inherits": true,
         "loose-envify": true,
         "browserify>parents": true,
@@ -6421,7 +6421,7 @@
         "readable-stream>util-deprecate": true
       }
     },
-    "browserify>duplexer2>readable-stream": {
+    "unzipper>duplexer2>readable-stream": {
       "builtin": {
         "events.EventEmitter": true,
         "stream": true,
@@ -6438,10 +6438,10 @@
       "packages": {
         "readable-stream-2>core-util-is": true,
         "pumpify>inherits": true,
-        "browserify>duplexer2>readable-stream>isarray": true,
+        "unzipper>duplexer2>readable-stream>isarray": true,
         "readable-stream-2>process-nextick-args": true,
-        "browserify>duplexer2>readable-stream>safe-buffer": true,
-        "browserify>duplexer2>readable-stream>string_decoder": true,
+        "unzipper>duplexer2>readable-stream>safe-buffer": true,
+        "unzipper>duplexer2>readable-stream>string_decoder": true,
         "readable-stream>util-deprecate": true
       }
     },
@@ -7222,6 +7222,36 @@
         "gulp>vinyl-fs>value-or-function": true
       }
     },
+    "lavamoat>@lavamoat/aa>resolve": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "fs.realpathSync": true,
+        "fs.statSync": true,
+        "os.homedir": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "process.env.HOME": true,
+        "process.env.HOMEDRIVE": true,
+        "process.env.HOMEPATH": true,
+        "process.env.LNAME": true,
+        "process.env.LOGNAME": true,
+        "process.env.USER": true,
+        "process.env.USERNAME": true,
+        "process.env.USERPROFILE": true,
+        "process.getuid": true,
+        "process.platform": true,
+        "process.versions.pnp": true
+      },
+      "packages": {
+        "depcheck>is-core-module": true,
+        "depcheck>resolve>path-parse": true
+      }
+    },
     "depcheck>resolve": {
       "builtin": {
         "fs.readFile": true,
@@ -7373,7 +7403,7 @@
         "buffer": true
       }
     },
-    "browserify>duplexer2>readable-stream>safe-buffer": {
+    "unzipper>duplexer2>readable-stream>safe-buffer": {
       "builtin": {
         "buffer": true
       }
@@ -7851,7 +7881,7 @@
     },
     "browserify>module-deps>stream-combiner2": {
       "packages": {
-        "browserify>duplexer2": true,
+        "unzipper>duplexer2": true,
         "browserify>module-deps>stream-combiner2>readable-stream": true
       }
     },
@@ -7942,9 +7972,9 @@
         "browserify>concat-stream>readable-stream>safe-buffer": true
       }
     },
-    "browserify>duplexer2>readable-stream>string_decoder": {
+    "unzipper>duplexer2>readable-stream>string_decoder": {
       "packages": {
-        "browserify>duplexer2>readable-stream>safe-buffer": true
+        "unzipper>duplexer2>readable-stream>safe-buffer": true
       }
     },
     "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>string_decoder": {
