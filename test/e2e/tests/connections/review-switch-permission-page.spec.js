@@ -24,7 +24,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
 
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        ganacheOptions: {
+        localNodeOptions: {
           ...defaultGanacheOptions,
           concurrent: [
             {

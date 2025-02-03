@@ -4,7 +4,6 @@ const {
   WINDOW_TITLES,
   connectToDapp,
   logInWithBalanceValidation,
-  defaultGanacheOptions,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -15,7 +14,6 @@ describe('Review Permissions page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
-        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
@@ -65,7 +63,6 @@ describe('Review Permissions page', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
-        ganacheOptions: defaultGanacheOptions,
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);

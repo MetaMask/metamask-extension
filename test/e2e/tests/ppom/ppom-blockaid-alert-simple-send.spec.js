@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  defaultGanacheOptions,
   withFixtures,
   sendScreenToConfirmScreen,
   logInWithBalanceValidation,
@@ -128,7 +127,6 @@ describe('Simple Send Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithBenignResponses,
         title: this.test.fullTitle(),
       },
@@ -164,7 +162,6 @@ describe('Simple Send Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
       },
@@ -200,7 +197,6 @@ describe('Simple Send Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithFailedResponses,
         title: this.test.fullTitle(),
       },

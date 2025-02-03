@@ -248,14 +248,14 @@ class HomePage {
     return true;
   }
 
-  async check_localBlockchainBalanceIsDisplayed(
-    localBlockchainServer?: Ganache,
+  async check_localNodeBalanceIsDisplayed(
+    localNode?: Ganache,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
-    if (localBlockchainServer) {
+    if (localNode) {
       expectedBalance = (
-        await localBlockchainServer.getBalance(address)
+        await localNode.getBalance(address)
       ).toString();
     } else {
       expectedBalance = '0';

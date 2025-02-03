@@ -1,4 +1,4 @@
-import { defaultGanacheOptions, withFixtures } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import { ACCOUNT_TYPE } from '../../../constants';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
@@ -18,7 +18,6 @@ describe('Import NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -44,7 +43,6 @@ describe('Import NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -78,7 +76,7 @@ describe('Import NFT', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homepage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homepage.check_localNodeBalanceIsDisplayed(ganacheServer);
         await nftList.check_nftImageIsDisplayed();
       },
     );
@@ -91,7 +89,6 @@ describe('Import NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },

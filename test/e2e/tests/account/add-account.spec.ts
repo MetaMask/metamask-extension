@@ -1,11 +1,7 @@
 import { E2E_SRP } from '../../default-fixture';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
-import {
-  WALLET_PASSWORD,
-  defaultGanacheOptions,
-  withFixtures,
-} from '../../helpers';
+import { WALLET_PASSWORD, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
@@ -21,7 +17,6 @@ describe('Add account', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
@@ -29,7 +24,7 @@ describe('Add account', function () {
 
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
@@ -49,7 +44,7 @@ describe('Add account', function () {
         await accountListPage.check_accountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.check_accountLabel('Account 1');
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
 
         await sendRedesignedTransactionToAccount({
           driver,
@@ -71,7 +66,7 @@ describe('Add account', function () {
 
         // Check wallet balance for both accounts
         await homePage.check_pageIsLoaded();
-        await homePage.check_localBlockchainBalanceIsDisplayed(ganacheServer);
+        await homePage.check_localNodeBalanceIsDisplayed(ganacheServer);
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         await accountListPage.check_accountDisplayedInAccountList(

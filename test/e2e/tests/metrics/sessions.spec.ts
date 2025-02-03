@@ -1,7 +1,6 @@
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   unlockWallet,
   withFixtures,
 } from '../../helpers';
@@ -34,7 +33,6 @@ describe('Sessions', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {
@@ -56,7 +54,6 @@ describe('Sessions', function () {
             participateInMetaMetrics: false,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {

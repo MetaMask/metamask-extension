@@ -60,7 +60,7 @@ async function withFixtures(options, testSuite) {
   const {
     dapp,
     fixtures,
-    ganacheOptions,
+    localNodeOptions,
     smartContract,
     driverOptions,
     dappOptions,
@@ -102,7 +102,7 @@ async function withFixtures(options, testSuite) {
   let failed = false;
   try {
     if (!disableGanache) {
-      await ganacheServer.start(ganacheOptions);
+      await ganacheServer.start(localNodeOptions);
     }
     let contractRegistry;
 
@@ -121,8 +121,8 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
 
-    if (ganacheOptions?.concurrent) {
-      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
+    if (localNodeOptions?.concurrent) {
+      localNodeOptions.concurrent.forEach(async (ganacheSettings) => {
         const { port, chainId, ganacheOptions2 } = ganacheSettings;
         const server = new Ganache();
         secondaryGanacheServer.push(server);
@@ -174,7 +174,7 @@ async function withFixtures(options, testSuite) {
       mockServer,
       testSpecificMock,
       {
-        chainId: ganacheOptions?.chainId || 1337,
+        chainId: localNodeOptions?.chainId || 1337,
         ethConversionInUsd,
       },
     );
@@ -308,7 +308,7 @@ async function withFixtures(options, testSuite) {
         await ganacheServer.quit();
       }
 
-      if (ganacheOptions?.concurrent) {
+      if (localNodeOptions?.concurrent) {
         secondaryGanacheServer.forEach(async (server) => {
           await server.quit();
         });

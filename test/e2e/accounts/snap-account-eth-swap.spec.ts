@@ -1,4 +1,4 @@
-import { withFixtures, defaultGanacheOptions, WINDOW_TITLES } from '../helpers';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
 import { Ganache } from '../seeder/ganache';
@@ -32,7 +32,6 @@ describe('Snap Account - Swap', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapsTransactionQuote,
       },
