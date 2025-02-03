@@ -6530,7 +6530,6 @@ __metadata:
     "@babel/runtime": ^7.0.0
     "@metamask/accounts-controller": ^26.0.0
     "@metamask/approval-controller": ^7.0.0
-    "@metamask/eth-block-tracker": ">=9"
     "@metamask/gas-fee-controller": ^22.0.0
     "@metamask/network-controller": ^22.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0

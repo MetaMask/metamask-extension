@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
-import { updateTransactionFocus } from '../../../store/actions';
+import { setTransactionActive } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
 
@@ -29,7 +29,7 @@ export const useTransactionFocusEffect = () => {
 
   const setTransactionFocus = useCallback(
     async (transactionId: string, isFocused: boolean) => {
-      await dispatch(updateTransactionFocus(transactionId, isFocused));
+      await dispatch(setTransactionActive(transactionId, isFocused));
     },
     [dispatch],
   );

@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch } from 'react-redux';
 import { useConfirmContext } from '../context/confirm';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
-import { updateTransactionFocus } from '../../../store/actions';
+import { setTransactionActive } from '../../../store/actions';
 import { type Confirmation } from '../types/confirm';
 import { useTransactionFocusEffect } from './useTransactionFocusEffect';
 
@@ -21,7 +21,7 @@ jest.mock('../../../hooks/useWindowFocus', () => ({
 }));
 
 jest.mock('../../../store/actions', () => ({
-  updateTransactionFocus: jest.fn(),
+  setTransactionActive: jest.fn(),
 }));
 
 const mockConfirmation: Confirmation = {
@@ -37,9 +37,9 @@ const confirmContextMock = {
 
 describe('useTransactionFocusEffect', () => {
   const dispatchMock = jest.fn();
-  const updateTransactionFocusMock =
-    updateTransactionFocus as jest.MockedFunction<
-      typeof updateTransactionFocus
+  const setTransactionActiveMock =
+    setTransactionActive as jest.MockedFunction<
+      typeof setTransactionActive
     >;
   const useConfirmContextMock = useConfirmContext as jest.MockedFunction<
     typeof useConfirmContext
@@ -56,7 +56,7 @@ describe('useTransactionFocusEffect', () => {
     useWindowFocusMock.mockReturnValue(true);
     useConfirmContextMock.mockReturnValue(confirmContextMock);
 
-    updateTransactionFocusMock.mockClear();
+    setTransactionActiveMock.mockClear();
     dispatchMock.mockClear();
   });
 
@@ -64,7 +64,7 @@ describe('useTransactionFocusEffect', () => {
     renderHook(() => useTransactionFocusEffect());
 
     expect(dispatchMock).toHaveBeenCalledWith(
-      updateTransactionFocus('1', true),
+      setTransactionActive('1', true),
     );
   });
 
@@ -84,10 +84,10 @@ describe('useTransactionFocusEffect', () => {
     rerender();
 
     expect(dispatchMock).toHaveBeenCalledWith(
-      updateTransactionFocus('1', false),
+      setTransactionActive('1', false),
     );
     expect(dispatchMock).toHaveBeenCalledWith(
-      updateTransactionFocus('2', true),
+      setTransactionActive('2', true),
     );
   });
 
@@ -99,7 +99,7 @@ describe('useTransactionFocusEffect', () => {
     rerender();
 
     expect(dispatchMock).toHaveBeenCalledWith(
-      updateTransactionFocus('1', false),
+      setTransactionActive('1', false),
     );
   });
 
@@ -134,10 +134,10 @@ describe('useTransactionFocusEffect', () => {
       rerender();
 
       expect(dispatchMock).toHaveBeenCalledWith(
-        updateTransactionFocus('1', false),
+        setTransactionActive('1', false),
       );
       expect(dispatchMock).toHaveBeenCalledWith(
-        updateTransactionFocus('2', true),
+        setTransactionActive('2', true),
       );
     });
   });
