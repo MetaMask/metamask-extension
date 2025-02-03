@@ -16,7 +16,6 @@ import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { Ganache } from '../../seeder/ganache';
 
 const SIMPLEHASH_URL = 'https://api.simplehash.com';
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
@@ -241,16 +240,8 @@ export async function withBtcAccountSnap(
         await mockBtcSatProtectionService(mockServer),
       ],
     },
-    async ({
-      driver,
-      mockServer,
-      ganacheServer,
-    }: {
-      driver: Driver;
-      mockServer: Mockttp;
-      ganacheServer: Ganache;
-    }) => {
-      await loginWithBalanceValidation(driver, ganacheServer);
+    async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
+      await loginWithBalanceValidation(driver);
       // create one BTC account
       await new HeaderNavbar(driver).openAccountMenu();
       const accountListPage = new AccountListPage(driver);

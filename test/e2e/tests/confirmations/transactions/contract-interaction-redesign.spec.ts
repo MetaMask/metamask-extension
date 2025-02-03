@@ -5,6 +5,7 @@ import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   assertAdvancedGasDetails,
   confirmDepositTransaction,
@@ -15,7 +16,6 @@ import {
   toggleAdvancedDetails,
   toggleOnHexData,
 } from './shared';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 const { hexToNumber } = require('@metamask/utils');
 const {
@@ -114,7 +114,8 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x100000000000000000000',
           );
-          const contractAddress = contractRegistry?.getContractAddress(smartContract);
+          const contractAddress =
+            contractRegistry?.getContractAddress(smartContract);
 
           await loginWithoutBalanceValidation(driver);
           // We validate custom balance as it doesn't come from ganache but it's mocked

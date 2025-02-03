@@ -8,7 +8,6 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import DevelopOptions from '../../page-objects/pages/developer-options-page';
 import ErrorPage from '../../page-objects/pages/error-page';
-import { Ganache } from '../../seeder/ganache';
 
 const triggerCrash = async (driver: Driver): Promise<void> => {
   const headerNavbar = new HeaderNavbar(driver);
@@ -53,14 +52,8 @@ describe('Developer Options - Sentry', function (this: Suite) {
           'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
         ],
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await triggerCrash(driver);
         const errorPage = new ErrorPage(driver);
         await errorPage.check_pageIsLoaded();
@@ -81,14 +74,8 @@ describe('Developer Options - Sentry', function (this: Suite) {
           'React will try to recreate this component tree from scratch using the error boundary you provided, Index.',
         ],
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await triggerCrash(driver);
 
         const errorPage = new ErrorPage(driver);

@@ -22,8 +22,8 @@ describe('Chain Interactions', function () {
         localNodeOptions: ganacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // trigger add chain confirmation
         await openDapp(driver);

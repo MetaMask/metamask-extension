@@ -5,7 +5,9 @@ const {
   sendScreenToConfirmScreen,
   WINDOW_TITLES,
 } = require('../../helpers');
-const { loginWithoutBalanceValidation } = require('../../page-objects/flows/login.flow');
+const {
+  loginWithoutBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 
 const {
   mockMultiNetworkBalancePolling,

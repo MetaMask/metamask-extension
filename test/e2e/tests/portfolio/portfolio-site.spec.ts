@@ -35,8 +35,8 @@ describe('Portfolio site', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockPortfolioSite,
       },
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         await new HomePage(driver).openPortfolioPage();
         await driver.switchToWindowWithTitle(PORTFOLIO_PAGE_TITLE);
 

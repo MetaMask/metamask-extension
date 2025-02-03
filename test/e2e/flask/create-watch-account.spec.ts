@@ -11,7 +11,6 @@ import HomePage from '../page-objects/pages/home/homepage';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { watchEoaAddress } from '../page-objects/flows/watch-account.flow';
-import { Ganache } from '../seeder/ganache';
 
 const ACCOUNT_1 = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 const EOA_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
@@ -31,15 +30,9 @@ describe('Account-watcher snap', function (this: Suite) {
             .build(),
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          driver: Driver;
-          ganacheServer: Ganache;
-        }) => {
+        async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver, ganacheServer);
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // new account should be displayed in the account list
@@ -61,15 +54,9 @@ describe('Account-watcher snap', function (this: Suite) {
             .build(),
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          driver: Driver;
-          ganacheServer: Ganache;
-        }) => {
+        async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver, ganacheServer);
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.check_accountLabel(
@@ -133,14 +120,8 @@ describe('Account-watcher snap', function (this: Suite) {
               .build(),
             title: this.test?.fullTitle(),
           },
-          async ({
-            driver,
-            ganacheServer,
-          }: {
-            driver: Driver;
-            ganacheServer: Ganache;
-          }) => {
-            await loginWithBalanceValidation(driver, ganacheServer);
+          async ({ driver }: { driver: Driver }) => {
+            await loginWithBalanceValidation(driver);
             const homePage = new HomePage(driver);
             await homePage.check_pageIsLoaded();
             await homePage.check_expectedBalanceIsDisplayed();
@@ -172,15 +153,9 @@ describe('Account-watcher snap', function (this: Suite) {
             .build(),
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          driver: Driver;
-          ganacheServer: Ganache;
-        }) => {
+        async ({ driver }: { driver: Driver }) => {
           // watch an EOA address for ACCOUNT_2
-          await loginWithBalanceValidation(driver, ganacheServer);
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, ACCOUNT_2);
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
@@ -208,15 +183,9 @@ describe('Account-watcher snap', function (this: Suite) {
             .build(),
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          driver: Driver;
-          ganacheServer: Ganache;
-        }) => {
+        async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver, ganacheServer);
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // open account details modal in header navbar
@@ -243,15 +212,9 @@ describe('Account-watcher snap', function (this: Suite) {
             .build(),
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          driver: Driver;
-          ganacheServer: Ganache;
-        }) => {
+        async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver, ganacheServer);
+          await loginWithBalanceValidation(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.check_accountLabel(
@@ -294,14 +257,8 @@ describe('Account-watcher snap', function (this: Suite) {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          driver: Driver;
-          ganacheServer: Ganache;
-        }) => {
-          await loginWithBalanceValidation(driver, ganacheServer);
+        async ({ driver }: { driver: Driver }) => {
+          await loginWithBalanceValidation(driver);
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();
@@ -340,14 +297,8 @@ describe('Account-watcher snap', function (this: Suite) {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
         },
-        async ({
-          driver,
-          ganacheServer,
-        }: {
-          driver: Driver;
-          ganacheServer: Ganache;
-        }) => {
-          await loginWithBalanceValidation(driver, ganacheServer);
+        async ({ driver }: { driver: Driver }) => {
+          await loginWithBalanceValidation(driver);
           const homePage = new HomePage(driver);
           await homePage.check_pageIsLoaded();
           await homePage.check_expectedBalanceIsDisplayed();

@@ -7,7 +7,6 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { Ganache } from '../../seeder/ganache';
 
 const newAccountLabel = 'Custom name';
 const anotherAccountLabel = '2nd custom name';
@@ -19,14 +18,8 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
@@ -60,7 +53,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
 
         // Lock and unlock wallet
         await headerNavbar.lockMetaMask();
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver);
 
         // Verify both account labels persist after unlock
         await headerNavbar.check_accountLabel(newAccountLabel);

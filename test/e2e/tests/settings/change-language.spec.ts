@@ -10,7 +10,6 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { Ganache } from '../../seeder/ganache';
 
 const selectors = {
   labelSpanish: { tag: 'p', text: 'Idioma actual' },
@@ -33,14 +32,8 @@ describe('Settings - general tab', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.check_pageIsLoaded();
@@ -77,14 +70,8 @@ describe('Settings - general tab', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.check_pageIsLoaded();
@@ -134,14 +121,8 @@ describe('Settings - general tab', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.check_pageIsLoaded();
@@ -181,14 +162,8 @@ describe('Settings - general tab', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.check_pageIsLoaded();
@@ -229,14 +204,8 @@ describe('Settings - general tab', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.check_pageIsLoaded();
@@ -268,14 +237,8 @@ describe('Settings - general tab', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.check_pageIsLoaded();

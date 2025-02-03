@@ -14,14 +14,13 @@ const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
   driver: Driver;
-  ganacheServer: Ganache;
+  ganacheServer?: Ganache;
   contractRegistry?: ContractAddressRegistry;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };
 
 export async function openDAppWithContract(
   driver: Driver,
-  ganacheServer: Ganache,
   contractRegistry: ContractAddressRegistry | undefined,
   smartContract: string,
 ) {
@@ -29,7 +28,7 @@ export async function openDAppWithContract(
     contractRegistry as ContractAddressRegistry
   ).getContractAddress(smartContract);
 
-  await logInWithBalanceValidation(driver, ganacheServer);
+  await logInWithBalanceValidation(driver);
 
   await openDapp(driver, contractAddress);
 }

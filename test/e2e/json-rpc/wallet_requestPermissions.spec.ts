@@ -5,7 +5,6 @@ import FixtureBuilder from '../fixture-builder';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { Driver } from '../webdriver/driver';
-import { Ganache } from '../seeder/ganache';
 
 describe('wallet_requestPermissions', function () {
   it('executes a request permissions on eth_accounts event', async function () {
@@ -15,14 +14,8 @@ describe('wallet_requestPermissions', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.title,
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 

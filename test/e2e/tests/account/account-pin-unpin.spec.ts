@@ -5,7 +5,6 @@ import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { Ganache } from '../../seeder/ganache';
 
 describe('Account list - pin/unpin functionality', function (this: Suite) {
   it('pin and unpin account by clicking the pin/unpin button', async function () {
@@ -14,14 +13,8 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         new HeaderNavbar(driver).openAccountMenu();
 
         // pin account
@@ -45,14 +38,8 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         new HeaderNavbar(driver).openAccountMenu();
 
         // pin account

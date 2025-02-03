@@ -21,8 +21,8 @@ describe('NFT detection', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
       },
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // navigate to security & privacy settings and toggle on NFT autodetection
         await new HeaderNavbar(driver).openSettingsPage();
