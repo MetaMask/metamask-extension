@@ -7,7 +7,7 @@ import SolanaTxresultPage from '../../page-objects/pages/send/solana-tx-result-p
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
-describe.skip('Send flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   // skipped due tohttps://github.com/MetaMask/snaps/issues/3019
   it('with some field validation', async function () {
     this.timeout(120000);
