@@ -68,5 +68,7 @@ export type ControllerFlatState = AccountsController['state'] &
   PreferencesController['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
+  SnapInsightsController['state'] &
+  SnapInterfaceController['state'] &
   TransactionController['state'] &
   SwapsController['state'];
