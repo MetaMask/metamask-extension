@@ -1,6 +1,7 @@
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-import { MultichainNetworks } from './multichain/networks';
-///: END:ONLY_INCLUDE_IF
+import {
+  MULTICHAIN_TOKEN_IMAGE_MAP,
+  MultichainNetworks,
+} from './multichain/networks';
 import {
   ETH_TOKEN_IMAGE_URL,
   TEST_ETH_TOKEN_IMAGE_URL,
@@ -128,6 +129,14 @@ export const LINEA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
 export const BASE_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   ...ETH_SWAPS_TOKEN_OBJECT,
 } as const;
+
+const SOLANA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  symbol: 'SOL',
+  name: 'Solana',
+  address: DEFAULT_TOKEN_ADDRESS,
+  decimals: 9,
+  iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
+};
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
 export const DEFAULT_ERC20_APPROVE_GAS = '0x1d4c0';
@@ -288,6 +297,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_ERA_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.BASE]: BASE_SWAPS_TOKEN_OBJECT,
+  [MultichainNetworks.SOLANA]: SOLANA_SWAPS_TOKEN_OBJECT,
 } as const;
 
 export const ETHEREUM = 'ethereum';
