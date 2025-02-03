@@ -21,6 +21,7 @@ export type TestSuiteArguments = {
 
 export async function openDAppWithContract(
   driver: Driver,
+  ganacheServer: Ganache,
   contractRegistry: ContractAddressRegistry | undefined,
   smartContract: string,
 ) {
@@ -28,7 +29,7 @@ export async function openDAppWithContract(
     contractRegistry as ContractAddressRegistry
   ).getContractAddress(smartContract);
 
-  await logInWithBalanceValidation(driver);
+  await logInWithBalanceValidation(driver, ganacheServer);
 
   await openDapp(driver, contractAddress);
 }

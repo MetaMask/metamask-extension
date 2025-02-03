@@ -131,8 +131,8 @@ describe('Simple Send Security Alert - Blockaid', function () {
         title: this.test.fullTitle(),
       },
 
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await sendScreenToConfirmScreen(driver, mockBenignAddress, '1');
 
@@ -166,8 +166,8 @@ describe('Simple Send Security Alert - Blockaid', function () {
         title: this.test.fullTitle(),
       },
 
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.openNewPage('http://localhost:8080');
 
@@ -201,8 +201,8 @@ describe('Simple Send Security Alert - Blockaid', function () {
         title: this.test.fullTitle(),
       },
 
-      async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await sendScreenToConfirmScreen(
           driver,

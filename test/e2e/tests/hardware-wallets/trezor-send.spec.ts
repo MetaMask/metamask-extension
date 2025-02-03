@@ -29,7 +29,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         );
-        await logInWithBalanceValidation(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
         await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,

@@ -5,10 +5,10 @@ import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../constants';
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
-const convertToHexValue = (val: string) =>
+const convertToHexValue = (val: number) =>
   `0x${new BigNumber(val, 10).toString(16)}`;
 
-const convertETHToHexGwei = (eth: string) => convertToHexValue(eth * 10 ** 18);
+const convertETHToHexGwei = (eth: number) => convertToHexValue(eth * 10 ** 18);
 
 const defaultOptions = {
   blockTime: 2,
@@ -20,7 +20,7 @@ const defaultOptions = {
   accounts: [
     {
       secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+      balance: convertETHToHexGwei(Number(DEFAULT_GANACHE_ETH_BALANCE_DEC)),
     },
   ],
 };

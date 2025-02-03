@@ -52,8 +52,8 @@ describe('Import flow', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
@@ -98,8 +98,8 @@ describe('Import flow', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_accountLabel('Account 1');

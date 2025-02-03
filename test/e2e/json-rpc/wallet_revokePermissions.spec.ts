@@ -4,6 +4,8 @@ import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { Driver } from '../webdriver/driver';
+import { Ganache } from '../seeder/ganache';
 
 describe('Revoke Dapp Permissions', function () {
   it('should revoke "eth_accounts" and "endowment:permitted-chains" when the dapp revokes permissions for just "eth_accounts"', async function () {
@@ -15,8 +17,14 @@ describe('Revoke Dapp Permissions', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -73,8 +81,14 @@ describe('Revoke Dapp Permissions', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -131,8 +145,8 @@ describe('Revoke Dapp Permissions', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 

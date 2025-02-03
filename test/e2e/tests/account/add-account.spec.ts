@@ -88,8 +88,8 @@ describe('Add account', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const headerNavbar = new HeaderNavbar(driver);
         const homePage = new HomePage(driver);
         await headerNavbar.openAccountMenu();

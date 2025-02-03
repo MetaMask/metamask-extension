@@ -16,8 +16,8 @@ describe('Edit Networks Permissions', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.check_pageIsLoaded();

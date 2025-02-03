@@ -17,8 +17,8 @@ describe('Reveal SRP through settings', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // navigate to security & privacy settings
         await new HeaderNavbar(driver).openSettingsPage();
@@ -44,8 +44,8 @@ describe('Reveal SRP through settings', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // navigate to security & privacy settings
         await new HeaderNavbar(driver).openSettingsPage();
@@ -76,8 +76,8 @@ describe('Reveal SRP through settings', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, ganacheServer }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // Navigate to security & privacy settings
         await new HeaderNavbar(driver).openSettingsPage();

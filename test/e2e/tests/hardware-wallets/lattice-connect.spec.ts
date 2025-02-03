@@ -8,6 +8,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { Ganache } from '../../seeder/ganache';
 
 describe('Lattice hardware wallet', function (this: Suite) {
   it('lattice page rendering validation', async function () {
@@ -16,8 +17,14 @@ describe('Lattice hardware wallet', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 

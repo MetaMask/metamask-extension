@@ -8,6 +8,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { Ganache } from '../../seeder/ganache';
 
 describe('BTC Experimental Settings', function (this: Suite) {
   it('will show `Add a new Bitcoin account (Beta)` option when setting is enabled', async function () {
@@ -16,8 +17,14 @@ describe('BTC Experimental Settings', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer: Ganache;
+      }) => {
+        await loginWithBalanceValidation(driver, ganacheServer);
 
         // go to experimental settings page and enable add new Bitcoin account toggle
         const homePage = new HomePage(driver);
