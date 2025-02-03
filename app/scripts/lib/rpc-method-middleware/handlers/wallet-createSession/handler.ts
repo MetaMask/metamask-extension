@@ -182,6 +182,13 @@ async function walletCreateSessionHandler(
       supportedEthAccounts,
     );
 
+    // Note that we do not verify non-evm accounts here. Instead we rely on
+    // the CAIP-25 caveat validator to throw an error about the requested
+    // accounts being invalid. Once the Approval UI supports displaying and selecting
+    // non-evm accounts and networks, we should add the non-evm account filtering
+    // logic to this handler so that unsupported/invalid non-evm accounts
+    // never make it into the approval request in the first place.
+
     const { permissions: approvedPermissions } =
       await hooks.requestPermissionApprovalForOrigin({
         [Caip25EndowmentPermissionName]: {
