@@ -234,7 +234,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,

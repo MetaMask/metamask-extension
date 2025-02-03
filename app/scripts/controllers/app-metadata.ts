@@ -2,7 +2,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 
 // Unique name for the controller
@@ -75,7 +75,7 @@ type AllowedEvents = never;
 /**
  * Messenger type for the {@link AppMetadataController}.
  */
-type AppMetadataControllerMessenger = RestrictedControllerMessenger<
+type AppMetadataControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AppMetadataControllerActions | AllowedActions,
   AppMetadataControllerEvents | AllowedEvents,

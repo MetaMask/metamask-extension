@@ -3,10 +3,10 @@ import { HandlerType } from '@metamask/snaps-utils';
 import {
   BtcAccountType,
   BtcMethod,
-  BtcScopes,
+  BtcScope,
   SolAccountType,
   SolMethod,
-  SolScopes,
+  SolScope,
 } from '@metamask/keyring-api';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
@@ -43,7 +43,7 @@ describe('useMultichainWalletSnapClient', () => {
         id: '11a33c6b-0d46-43f4-a401-01587d575fd0',
         options: {},
         methods: [BtcMethod.SendBitcoin],
-        scopes: [BtcScopes.Testnet],
+        scopes: [BtcScope.Testnet],
         type: BtcAccountType.P2wpkh,
       },
     },
@@ -56,7 +56,7 @@ describe('useMultichainWalletSnapClient', () => {
         id: '22b44d7c-1e57-4b5b-8502-02698e686fd1',
         options: {},
         methods: [SolMethod.SendAndConfirmTransaction],
-        scopes: [SolScopes.Mainnet, SolScopes.Testnet, SolScopes.Devnet],
+        scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
         type: SolAccountType.DataAccount,
       },
     },

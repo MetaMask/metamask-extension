@@ -166,7 +166,6 @@
     "networkConfigurationsByChainId": "object",
     "keyrings": "object",
     "selectedAddress": "string",
-    "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
     "overrideContentSecurityPolicyHeader": true,

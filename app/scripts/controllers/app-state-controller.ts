@@ -6,7 +6,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   AcceptRequest,
@@ -132,7 +132,7 @@ type AllowedEvents =
   | PreferencesControllerStateChangeEvent
   | KeyringControllerQRKeyringStateChangeEvent;
 
-export type AppStateControllerMessenger = RestrictedControllerMessenger<
+export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AppStateControllerActions | AllowedActions,
   AppStateControllerEvents | AllowedEvents,

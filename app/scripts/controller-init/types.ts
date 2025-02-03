@@ -1,9 +1,9 @@
 import { Provider } from '@metamask/network-controller';
 import {
   ActionConstraint,
-  ControllerMessenger,
+  Messenger,
   EventConstraint,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { Hex } from '@metamask/utils';
 import { TransactionMetricsRequest } from '../lib/transaction/metrics';
@@ -26,13 +26,13 @@ export type ControllerPersistedState = Partial<{
 }>;
 
 /** Generic controller messenger using base template types. */
-export type BaseControllerMessenger = ControllerMessenger<
+export type BaseControllerMessenger = Messenger<
   ActionConstraint,
   EventConstraint
 >;
 
 /** Generic restricted controller messenger using base template types. */
-export type BaseRestrictedControllerMessenger = RestrictedControllerMessenger<
+export type BaseRestrictedControllerMessenger = RestrictedMessenger<
   string,
   ActionConstraint,
   EventConstraint,

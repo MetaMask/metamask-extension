@@ -707,9 +707,6 @@
   "transactionErrored": {
     "message": "Възникна грешка в транзакцията."
   },
-  "transactionFee": {
-    "message": "Такса за транзакция"
-  },
   "transactionResubmitted": {
     "message": "Повторната транзакция с такса за газ се увеличи до $1 при $2"
   },

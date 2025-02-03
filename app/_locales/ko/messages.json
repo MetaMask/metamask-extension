@@ -113,10 +113,6 @@
     "message": "$1의 내용을 읽고 이에 동의합니다",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 측이 이 자산에 접근하여 사용할 수 있습니다",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessYourWalletWithSRP": {
     "message": "비밀복구구문으로 지갑에 액세스하세요"
   },
@@ -476,10 +472,6 @@
   "all": {
     "message": "모두"
   },
-  "allOfYour": {
-    "message": "내 모든 $1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
   "allPermissions": {
     "message": "모든 권한"
   },
@@ -489,16 +481,8 @@
   "allTimeLow": {
     "message": "역대 최저"
   },
-  "allYourNFTsOf": {
-    "message": "$1의 모든 내 NFT",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "allowNotifications": {
     "message": "알림 허용"
-  },
-  "allowSpendToken": {
-    "message": "$1에 액세스할 수 있는 권한을 부여하시겠습니까?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "$1에서 다음 금액까지 인출 및 지출하도록 허용:",
@@ -544,14 +528,6 @@
   "approve": {
     "message": "지출 한도 승인"
   },
-  "approveAllTokensTitle": {
-    "message": "액세스를 허용하고 모든 $1 전송 권한을 부여하시겠습니까?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
-  "approveAllTokensTitleWithoutSymbol": {
-    "message": "$1에 액세스하여 모든 NFT 전송 권한을 부여하시겠습니까?",
-    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "approveButtonText": {
     "message": "승인"
   },
@@ -563,22 +539,8 @@
     "message": "$1 지출 한도 승인",
     "description": "The token symbol that is being approved"
   },
-  "approveTokenDescription": {
-    "message": "이렇게 하면 사용자가 해당 액세스를 취소할 때까지 제삼자가 별도의 통보 없이 다음과 같은 NFT에 액세스하고 이를 전송할 수 있습니다."
-  },
-  "approveTokenDescriptionWithoutSymbol": {
-    "message": "이렇게 하면 회원님이 해당 액세스를 취소할 때까지 제삼자가 별도의 통보 없이 회원님의 $1에 액세스하여 모든 NFT를 전송하게 됩니다.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "approveTokenTitle": {
-    "message": "내 $1에 액세스 및 전송할 수 있는 권한을 부여하시겠습니까?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approved": {
     "message": "승인됨"
-  },
-  "approvedAsset": {
-    "message": "승인된 자산"
   },
   "approvedOn": {
     "message": "$1에 승인",
@@ -1452,9 +1414,6 @@
     "message": "$1 네트워크를 삭제하시겠습니까?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "예치"
-  },
   "depositCrypto": {
     "message": "지갑 주소 또는 QR 코드를 사용하여 다른 계정에서 암호화폐를 입금합니다."
   },
@@ -1643,10 +1602,6 @@
   },
   "editGasPriceTooltip": {
     "message": "이 네트워크에서는 트랜잭션을 제출할 때 \"가스 가격\"을 필수 입력해야 합니다. 가스 가격은 가스 단위당 지급할 금액입니다."
-  },
-  "editGasSubTextAmountLabel": {
-    "message": "최대 금액:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
     "message": "최대 요금"
@@ -1910,9 +1865,6 @@
   "fast": {
     "message": "빠름"
   },
-  "feeAssociatedRequest": {
-    "message": "수수료가 이 요청과 연결되어 있습니다."
-  },
   "feeDetails": {
     "message": "수수료 세부 정보"
   },
@@ -1974,12 +1926,6 @@
   },
   "function": {
     "message": "기능: $1"
-  },
-  "functionApprove": {
-    "message": "기능: 승인"
-  },
-  "functionSetApprovalForAll": {
-    "message": "함수: SetApprovalForAll"
   },
   "functionType": {
     "message": "기능 유형"
@@ -2085,9 +2031,6 @@
   "gotIt": {
     "message": "확인"
   },
-  "grantedToWithColon": {
-    "message": "부여 대상:"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -2128,9 +2071,6 @@
   },
   "hideAccount": {
     "message": "계정 숨기기"
-  },
-  "hideFullTransactionDetails": {
-    "message": "전체 트랜잭션 세부 정보 숨기기"
   },
   "hideSeedPhrase": {
     "message": "시드 구문 숨기기"
@@ -2365,10 +2305,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "$2 네트워크의 트랜잭션 수수료를 지불할 계정에 $1(이)가 부족합니다. $3 또는 다른 계정에서 입금하세요.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "$2 네트워크의 트랜잭션 수수료를 지불할 계정에 $1(이)가 부족합니다. 다른 계정에서 $3 또는 $4 하세요.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "$2 네트워크의 트랜잭션 수수료를 지불할 계정에 $1(이)가 부족합니다. 다른 계좌에서 $1(을)를 입금하세요.",
@@ -2639,9 +2575,6 @@
   },
   "loading": {
     "message": "로드 중..."
-  },
-  "loadingScreenHardwareWalletMessage": {
-    "message": "하드웨어 지갑에서 트랜잭션을 완료하세요."
   },
   "loadingScreenSnapMessage": {
     "message": "Snap에서 트랜잭션을 완료하세요."
@@ -3084,10 +3017,6 @@
   "next": {
     "message": "다음"
   },
-  "nextNonceWarning": {
-    "message": "논스가 권장 논스값인 $1보다 큽니다.",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "소유권 정보가 일치하지 않아 NFT를 추가할 수 없습니다. 올바른 정보를 입력했는지 확인하세요."
   },
@@ -3168,15 +3097,6 @@
   },
   "nonce": {
     "message": "논스"
-  },
-  "nonceField": {
-    "message": "트랜잭션 논스 맞춤화"
-  },
-  "nonceFieldDesc": {
-    "message": "자산을 전송할 때 논스(트랜잭션 번호)를 변경하려면 이 기능을 켭니다. 이 기능은 고급 기능이므로 신중하게 사용하세요."
-  },
-  "nonceFieldHeading": {
-    "message": "맞춤 논스"
   },
   "none": {
     "message": "없음"
@@ -3648,9 +3568,6 @@
   },
   "permissionFrom": {
     "message": "승인자:"
-  },
-  "permissionRequest": {
-    "message": "권한 요청"
   },
   "permissionRequested": {
     "message": "지금 요청됨"
@@ -4346,31 +4263,11 @@
   "reviewPermissions": {
     "message": "권한 검토"
   },
-  "revokeAllTokensTitle": {
-    "message": "모든 $1에 액세스할 수 있는 권한을 철회하시겠습니까?",
-    "description": "$1 is the symbol of the token for which the user is revoking approval"
-  },
-  "revokeAllTokensTitleWithoutSymbol": {
-    "message": "$1에 액세스하여 모든 NFT를 전송하는 권한을 취소하시겠습니까?",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
-  "revokeApproveForAllDescription": {
-    "message": "권한을 철회하면 제삼자가 별도의 통보 없이 회원님의 $1에 액세스하거나 이를 모두 전송할 수 없습니다.",
-    "description": "$1 is either a string or link of a given token symbol or name"
-  },
-  "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "권한을 철회하면 제삼자가 별도의 통보 없이 회원님의 $1에 액세스하거나 모든 NFT를 전송할 수 없습니다.",
-    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
-  },
   "revokePermission": {
     "message": "권한 철회"
   },
   "revokeSimulationDetailsDesc": {
     "message": "계정에서 토큰을 사용할 수 있는 다른 사람의 권한을 제거합니다."
-  },
-  "revokeSpendingCap": {
-    "message": "$1에 대한 지출 한도 취소",
-    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "해당 타사는 현재는 물론 미래에도 토큰을 더 이상 사용할 수 없습니다."
@@ -5057,9 +4954,6 @@
     "message": "$1에서 현재나 추후 지출하기에 무리가 없는 금액만 입력하세요. 지출 한도는 나중에 언제든지 상향할 수 있습니다.",
     "description": "$1 is origin of the site requesting the token limit"
   },
-  "spendingCapRequest": {
-    "message": "$1 관련 지출 한도 요청"
-  },
   "spendingCapTooltipDesc": {
     "message": "지출자가 회원님을 대신하여 접근할 수 있는 토큰의 양입니다."
   },
@@ -5738,9 +5632,6 @@
     "message": "타사 소프트웨어 알림",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "thisCollection": {
-    "message": "이 컬렉션"
-  },
   "threeMonthsAbbreviation": {
     "message": "3개월",
     "description": "Shortened form of '3 months'"
@@ -5855,29 +5746,8 @@
   "transactionDataFunction": {
     "message": "기능"
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "추천 사이트"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "최신 블록을 기반으로 MetaMask의 권장 가스비를 사용하도록 편집합니다."
-  },
   "transactionDetailGasHeading": {
     "message": "예상 가스비"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "가스 요금 자세히 알아보기"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "가스비는 네트워크에 의해 설정되며 네트워크 트래픽 및 트랜잭션의 복잡성에 따라 변동합니다."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "가스비는 $1 네트워크에서 트랜잭션을 처리하는 암호화폐 채굴자에게 지급됩니다. MetaMask는 가스 요금으로 수익을 창출하지 않습니다."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "금액 + 가스비"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "레이어 2 가스비"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "금액 + 요금"
@@ -5893,9 +5763,6 @@
   },
   "transactionErrored": {
     "message": "트랜잭션에 오류가 발생했습니다."
-  },
-  "transactionFee": {
-    "message": "트랜잭션 수수료"
   },
   "transactionFlowNetwork": {
     "message": "네트워크"
@@ -5974,9 +5841,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
-  },
-  "trustSiteApprovePermission": {
-    "message": "권한을 부여하면 다음 $1에서 회원님의 자금에 액세스할 수 있습니다."
   },
   "tryAgain": {
     "message": "다시 시도"
@@ -6169,12 +6033,6 @@
   },
   "viewContact": {
     "message": "연락처 보기"
-  },
-  "viewDetails": {
-    "message": "세부 정보 보기"
-  },
-  "viewFullTransactionDetails": {
-    "message": "전체 트랜잭션 세부정보 표시"
   },
   "viewMore": {
     "message": "더 보기"
