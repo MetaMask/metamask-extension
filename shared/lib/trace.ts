@@ -392,6 +392,7 @@ export const fetchWithSentryInstrumentation = async (
     method,
     ...opts,
   });
+
   // Do not create spans for outgoing requests to a 'sentry.io' domain.
   if (!url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u)) {
     return response;
@@ -423,6 +424,7 @@ export const fetchWithSentryInstrumentation = async (
       }
     },
   );
+
   return response;
 };
 
