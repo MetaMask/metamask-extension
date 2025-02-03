@@ -18,7 +18,7 @@ import {
   BtcMethod,
   EthAccountType,
 } from '@metamask/keyring-api';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import {
   CHAIN_IDS,
@@ -378,7 +378,7 @@ describe('MetaMaskController', () => {
         )
         .mockReturnValue();
 
-      jest.spyOn(ControllerMessenger.prototype, 'subscribe');
+      jest.spyOn(Messenger.prototype, 'subscribe');
       jest.spyOn(TokenListController.prototype, 'start');
       jest.spyOn(TokenListController.prototype, 'stop');
       jest.spyOn(TokenListController.prototype, 'clearingTokenListData');
@@ -4056,7 +4056,7 @@ describe('MetaMaskController', () => {
           TransactionController.prototype.updateIncomingTransactions,
         ).not.toHaveBeenCalled();
 
-        await ControllerMessenger.prototype.subscribe.mock.calls
+        await Messenger.prototype.subscribe.mock.calls
           .filter((args) => args[0] === 'NetworkController:networkDidChange')
           .slice(-1)[0][1]();
 

@@ -19,7 +19,7 @@ import {
 } from '../../../shared/constants/network';
 import { MMIController, AllowedActions } from './mmi-controller';
 import { AppStateController } from './app-state-controller';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -87,7 +87,6 @@ const mockMetaMetricsId = 'mock-metametrics-id';
 describe('MMIController', function () {
   let mmiController,
     mmiConfigurationController,
-    controllerMessenger,
     accountsController,
     keyringController,
     custodyController,
@@ -104,13 +103,10 @@ describe('MMIController', function () {
       subscribe: jest.fn(),
     };
 
-    const controllerMessenger = new ControllerMessenger<
-      AllowedActions,
-      never
-    >();
+    const messenger = new Messenger<AllowedActions, never>();
 
     accountsController = new AccountsController({
-      messenger: controllerMessenger.getRestricted({
+      messenger: messenger.getRestricted({
         name: 'AccountsController',
         allowedEvents: [
           'SnapController:stateChange',
@@ -155,7 +151,7 @@ describe('MMIController', function () {
     );
 
     keyringController = new KeyringController({
-      messenger: controllerMessenger.getRestricted({
+      messenger: messenger.getRestricted({
         name: 'KeyringController',
         allowedActions: [
           'KeyringController:getState',
@@ -209,26 +205,23 @@ describe('MMIController', function () {
       },
     });
 
-    controllerMessenger.registerActionHandler(
-      'MetaMetricsController:getState',
-      () => ({
-        metaMetricsId: mockMetaMetricsId,
-      }),
-    );
+    messenger.registerActionHandler('MetaMetricsController:getState', () => ({
+      metaMetricsId: mockMetaMetricsId,
+    }));
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getState',
       jest
         .fn()
         .mockReturnValue(mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA })),
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:setActiveNetwork',
       InfuraNetworkType['sepolia'],
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getNetworkClientById',
       jest.fn().mockReturnValue({
         configuration: {
@@ -237,12 +230,12 @@ describe('MMIController', function () {
       }),
     );
 
-    controllerMessenger.registerActionHandler(
+    messenger.registerActionHandler(
       'NetworkController:getNetworkConfigurationByChainId',
       jest.fn().mockReturnValue(createMockNetworkConfiguration()),
     );
 
-    mmiControllerMessenger = controllerMessenger.getRestricted({
+    mmiControllerMessenger = messenger.getRestricted({
       name: 'MMIController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
