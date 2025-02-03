@@ -94,6 +94,19 @@ const MADGE_CONFIG = {
   excludeRegExp: IGNORE_PATTERNS.map(globToRegExp),
   tsConfig: 'tsconfig.json',
   webpackConfig: 'webpack.config.js',
+  detectiveOptions: {
+    es6: {
+      skipTypeImports: true,
+    },
+    ts: {
+      skipTypeImports: true,
+      skipAsyncImports: true,
+    },
+    tsx: {
+      skipTypeImports: true,
+      skipAsyncImports: true,
+    },
+  },
 };
 
 async function getMadgeCircularDeps(): Promise<CircularDeps> {
