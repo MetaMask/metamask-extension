@@ -6333,16 +6333,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^6.16.0":
-  version: 6.16.0
-  resolution: "@metamask/snaps-sdk@npm:6.16.0"
+"@metamask/snaps-sdk@npm:^6.17.0":
+  version: 6.17.0
+  resolution: "@metamask/snaps-sdk@npm:6.17.0"
   dependencies:
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/providers": "npm:^18.3.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.0.1"
-  checksum: 10/eb76c00df13a845f2c19ec014b1439647adda1455486f4d4b0153e0690eccf7bc1ba0dc8a5472566f267eba722ef26bd99a15a49ed7c5273ff7b452f5d4b7600
+  checksum: 10/96dd2555d354234ce6a5fbe00912e75fe86af482bb9df4c225927d125ca1e0e1880c0d806ce6ad097c6778d00d35d290204db17797685a8dd0bc63fc8f4a0991
   languageName: node
   linkType: hard
 
